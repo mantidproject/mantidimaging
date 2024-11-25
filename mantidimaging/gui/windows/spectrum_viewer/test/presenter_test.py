@@ -7,14 +7,14 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
+from PyQt5.QtWidgets import QPushButton, QGroupBox, QCheckBox, QTabWidget
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import StrictDataset, Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
+from mantidimaging.gui.windows.spectrum_viewer.model import ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.test_helpers import mock_versions, start_qapplication
@@ -218,7 +218,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_handle_rits_export(self, path_name: str, mock_save_rits_roi: mock.Mock):
         self.view.get_rits_export_filename = mock.Mock(return_value=Path(path_name))
         self.view.transmission_error_mode = "Standard Deviation"
-        self.presenter.model.set_new_roi("rits_roi")
+        self.view.spectrum_widget.add_new_roi("rits_roi")
 
         self.presenter.model.set_stack(generate_images())
 
@@ -226,41 +226,36 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
         self.view.get_rits_export_filename.assert_called_once()
         mock_save_rits_roi.assert_called_once_with(Path("/fake/path.dat"), ErrorMode.STANDARD_DEVIATION,
-                                                   self.presenter.model.get_roi("rits_roi"))
+                                                   self.view.spectrum_widget.get_roi("rits_roi"))
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
-        self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi")
+        self.assertEqual(["all", "roi"], self.view.spectrum_widget.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi_1")
+        self.assertEqual(["all", "roi", "roi_1"], self.view.spectrum_widget.get_list_of_roi_names())
 
-    def test_WHEN_do_add_roi_given_dupelicate_THEN_exception_raised(self):
-        self.presenter.model.set_stack(generate_images())
-        with (mock.patch.object(self.presenter.model, "roi_name_generator") as
-              mocked_generator, mock.patch.object(self.view, "spectrum_widget") as mocked_spectrum_widget):
-            mocked_generator.return_value = "roi"
+    def test_WHEN_do_add_roi_given_duplicate_THEN_exception_raised(self):
+        with (mock.patch.object(self.view.spectrum_widget, "roi_dict") as mocked_spectrum_widget):
             mocked_spectrum_widget.roi_dict = {"all": mock.Mock, "roi": mock.Mock}
-            self.assertRaises(ValueError, self.presenter.do_add_roi)
+            with self.assertRaises(ValueError):
+                self.view.spectrum_widget.add_new_roi("roi")
 
     def test_WHEN_do_add_roi_to_table_called_THEN_roi_added_to_table(self):
-        self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
+        self.view.spectrum_widget.add_new_roi("roi")
         self.view.add_roi_table_row.assert_called_once_with("roi", mock.ANY)
         self.view.add_roi_table_row.reset_mock()
 
-        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.view.spectrum_widget.roi_dict = {"roi_1": mock.Mock()}
-        self.presenter.do_add_roi_to_table("roi_1")
+        self.assertEqual(["all", "roi"], self.view.spectrum_widget.get_list_of_roi_names())
+        self.view.spectrum_widget.roi_dict = {"roi_1": mock.Mock()}
+        self.view.spectrum_widget.add_new_roi("roi_1")
         self.view.add_roi_table_row.assert_called_once_with("roi_1", mock.ANY)
 
     def test_WHEN_do_remove_roi_called_THEN_roi_removed(self):
-        self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.do_remove_roi("roi_1")
-        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi")
+        self.view.spectrum_widget.add_new_roi("roi_1")
+        self.assertEqual(["all", "roi", "roi_1"], self.view.spectrum_widget.get_list_of_roi_names())
+        self.view.spectrum_widget.remove_roi("roi_1")
+        self.assertEqual(["all", "roi"], self.view.spectrum_widget.get_list_of_roi_names())
 
     def test_WHEN_roi_clicked_THEN_roi_updated(self):
         roi = SpectrumROI("themightyroi", SensibleROI())
@@ -278,37 +273,30 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.set_roi_properties.assert_not_called()
 
     def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
-        self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.rename_roi("roi_1", "imaging_is_the_best")
-        self.assertEqual(["all", "roi", "imaging_is_the_best"], self.presenter.model.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi")
+        self.view.spectrum_widget.rename_roi("roi", "imaging_is_the_best")
+        self.assertEqual(self.view.spectrum_widget.get_list_of_roi_names(), ["all", "imaging_is_the_best"])
 
     def test_WHEN_default_ROI_renamed_THEN_default_roi_renamed(self):
-        self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi", "roi_1"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.rename_roi("roi", "imaging_is_the_best")
-        self.assertEqual(["all", "roi_1", "imaging_is_the_best"], self.presenter.model.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi")
+        self.view.spectrum_widget.rename_roi("roi", "imaging_is_the_best")
+        self.assertEqual(self.view.spectrum_widget.get_list_of_roi_names(), ["all", "imaging_is_the_best"])
 
     @parameterized.expand(["all", "roi"])
     def test_WHEN_ROI_renamed_to_existing_name_THEN_runtimeerror(self, name):
-        self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi")
+        self.assertEqual(["all", "roi"], self.view.spectrum_widget.get_list_of_roi_names())
         with self.assertRaises(KeyError):
-            self.presenter.rename_roi("roi", name)
-        self.assertEqual(["all", "roi"], self.presenter.model.get_list_of_roi_names())
+            self.view.spectrum_widget.rename_roi("roi", name)
+        self.assertEqual(["all", "roi"], self.view.spectrum_widget.get_list_of_roi_names())
 
     def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
-        self.presenter.model.set_stack(generate_images())
-        for _ in range(3):
-            self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.presenter.model.get_list_of_roi_names())
-        self.presenter.do_remove_roi()
-        self.assertEqual([], self.presenter.model.get_list_of_roi_names())
+        self.view.spectrum_widget.add_new_roi("roi")
+        self.view.spectrum_widget.add_new_roi("roi_1")
+        self.view.spectrum_widget.add_new_roi("roi_2")
+        self.assertEqual(["all", "roi", "roi_1", "roi_2"], self.view.spectrum_widget.get_list_of_roi_names())
+        self.view.spectrum_widget.remove_all_rois()
+        self.assertEqual([], self.view.spectrum_widget.get_list_of_roi_names())
 
     @parameterized.expand([("Image Index", ToFUnitMode.IMAGE_NUMBER), ("Wavelength", ToFUnitMode.WAVELENGTH),
                            ("Energy", ToFUnitMode.ENERGY), ("Time of Flight (\u03BCs)", ToFUnitMode.TOF_US)])
@@ -431,14 +419,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
                 return SensibleROI(0, 0, 10, 8)
             if name == "roi":
                 return SensibleROI(1, 4, 3, 2)
+            return None
 
         self.view.spectrum_widget.get_roi = mock.Mock(side_effect=spec_roi_mock)
         self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
+        self.view.spectrum_widget.add_new_roi("roi")
+
         self.presenter.model.get_spectrum = mock.Mock()
         self.presenter.redraw_all_rois()
-        self.assertEqual(self.presenter.model.get_roi("all"), SensibleROI(0, 0, 10, 8))
-        self.assertEqual(self.presenter.model.get_roi("roi"), SensibleROI(1, 4, 3, 2))
+
+        self.assertEqual(self.view.spectrum_widget.get_roi("all"), SensibleROI(0, 0, 10, 8))
+        self.assertEqual(self.view.spectrum_widget.get_roi("roi"), SensibleROI(1, 4, 3, 2))
+
         calls = [mock.call(a, b) for a, b in [("roi", mock.ANY)]]
         self.view.set_spectrum.assert_has_calls(calls)
 
