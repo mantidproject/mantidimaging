@@ -99,6 +99,7 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
+        self._rois: list[SensibleROI] = []
 
         self.units = UnitConversion()
 
@@ -112,11 +113,17 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter += 1
         return new_name
 
-    def get_list_of_roi_names(self) -> list[str]:
+    def get_list_of_rois(self) -> list[SensibleROI]:
         """
-        Get a list of rois available in the model
+        Returns a list of all ROI objects.
         """
-        return list(self._roi_ranges.keys())
+        return self._rois
+
+    def add_roi(self, roi: SensibleROI) -> None:
+        """
+        Adds an ROI to the list.
+        """
+        self._rois.append(roi)
 
     def set_stack(self, stack: ImageStack | None) -> None:
         """
@@ -161,6 +168,12 @@ class SpectrumViewerWindowModel:
         if roi_name not in self._roi_ranges.keys():
             raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
         return self._roi_ranges[roi_name]
+
+    def get_list_of_roi_names(self) -> list[str]:
+        """
+        Returns the names of all ROIs.
+        """
+        return [roi.name for roi in self._rois]
 
     def get_averaged_image(self) -> np.ndarray | None:
         """
@@ -218,15 +231,9 @@ class SpectrumViewerWindowModel:
             return "Need 2 different ShutterCount stacks"
         return ""
 
-    def get_spectrum(self,
-                     roi: str | SensibleROI,
-                     mode: SpecType,
-                     normalise_with_shuttercount: bool = False) -> np.ndarray:
+    def get_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool = False) -> np.ndarray:
         if self._stack is None:
             return np.array([])
-
-        if isinstance(roi, str):
-            roi = self.get_roi(roi)
 
         if mode == SpecType.SAMPLE:
             return self.get_stack_spectrum(self._stack, roi)
@@ -241,14 +248,14 @@ class SpectrumViewerWindowModel:
                 return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
-        spectrum = np.divide(roi_spectrum,
-                             roi_norm_spectrum,
-                             out=np.zeros_like(roi_spectrum),
-                             where=roi_norm_spectrum != 0)
-        if normalise_with_shuttercount:
-            average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
-            spectrum = spectrum / average_shuttercount
-        return spectrum
+            spectrum = np.divide(roi_spectrum,
+                                 roi_norm_spectrum,
+                                 out=np.zeros_like(roi_spectrum),
+                                 where=roi_norm_spectrum != 0)
+            if normalise_with_shuttercount:
+                average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
+                spectrum = spectrum / average_shuttercount
+            return spectrum
 
     def get_shuttercount_normalised_correction_parameter(self) -> float:
         """
@@ -335,7 +342,8 @@ class SpectrumViewerWindowModel:
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
 
         @param path: The path to save the CSV file to.
-        @param normalized: Whether to save the normalized spectrum.
+        @param normalise: Whether to save the normalized spectrum.
+        @param normalise_with_shuttercount: Whether to normalize with the shutter count.
         """
         if self._stack is None:
             raise ValueError("No stack selected")
@@ -349,15 +357,15 @@ class SpectrumViewerWindowModel:
             csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
             csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
 
-        for roi_name in self.get_list_of_roi_names():
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE, normalise_with_shuttercount),
+        for roi in self.get_list_of_rois():
+            csv_output.add_column(roi.name, self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount),
                                   "Counts")
             if normalise:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
-                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN), "Counts")
-                csv_output.add_column(roi_name + "_norm",
-                                      self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
+                csv_output.add_column(roi.name + "_open", self.get_spectrum(roi, SpecType.OPEN), "Counts")
+                csv_output.add_column(roi.name + "_norm",
+                                      self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
                                       "Counts")
 
         with path.open("w") as outfile:

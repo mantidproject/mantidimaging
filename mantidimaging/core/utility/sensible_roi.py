@@ -13,25 +13,27 @@ if TYPE_CHECKING:
 
 @dataclass
 class SensibleROI(Iterable):
-    __slots__ = ("left", "top", "right", "bottom")
+    __slots__ = ("left", "top", "right", "bottom", "name")
     left: int
     top: int
     right: int
     bottom: int
+    name: str
 
-    def __init__(self, left=0, top=0, right=0, bottom=0):
+    def __init__(self, left=0, top=0, right=0, bottom=0, name: str = ""):
         self.left = left
         self.top = top
         self.right = right
         self.bottom = bottom
+        self.name = name
 
     @staticmethod
     def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> SensibleROI:
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
 
     @staticmethod
-    def from_list(roi: list[int] | list[float]) -> SensibleROI:
-        return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]))
+    def from_list(roi: list[int] | list[float], name: str = "") -> SensibleROI:
+        return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]), name=name)
 
     def __iter__(self) -> Iterator[int]:
         """
