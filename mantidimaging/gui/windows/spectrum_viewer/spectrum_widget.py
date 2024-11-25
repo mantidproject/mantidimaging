@@ -188,23 +188,77 @@ class SpectrumWidget(QWidget):
         """
         self.roi_dict[name].set_visibility(visible)
 
-    def add_roi(self, roi: SensibleROI, name: str) -> None:
+    def get_list_of_roi_names(self) -> list[str]:
+        """
+        Return a list of all ROI names currently in the widget.
+        """
+        return list(self.roi_dict.keys())
+
+    def generate_new_roi_name(self) -> str:
+        """
+        Generate a unique name for a new ROI.
+        """
+        base_name = "roi"
+        existing_names = self.roi_dict.keys()
+        index = 1
+        while f"{base_name}_{index}" in existing_names:
+            index += 1
+        return f"{base_name}_{index}"
+
+    def add_new_roi(self, name: str) -> SensibleROI:
+        """
+        Add a new ROI to the SpectrumWidget.
+
+        @param name: The name of the new ROI.
+        @return: The created SensibleROI.
+        """
+        # Get the image dimensions for ROI
+        image_shape = self.image.image_data.shape if self.image.image_data is not None else (1, 1)
+        left, top, right, bottom = 0, 0, image_shape[1], image_shape[0]
+        default_roi = SensibleROI.from_list([left, top, right, bottom])
+        self.add_roi(default_roi, name)
+
+        return default_roi
+
+    def redraw_spectrum(self, name: str) -> None:
+
+        roi = self.spectrum_widget.get_roi(name)
+        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        self.view.set_spectrum(name, spectrum)
+
+    def get_roi_names(self) -> list[str]:
+        """
+        Returns a list of all ROI names currently in the widget.
+        """
+        return list(self.roi_dict.keys())
+
+    def do_remove_roi(self, roi_name: str | None = None) -> None:
+        """
+        Remove a given ROI from the table by ROI name or all ROIs if no name is provided.
+        """
+        if roi_name is None:
+            self.view.spectrum_widget.roi_dict.clear()
+        else:
+            self.view.spectrum_widget.remove_roi(roi_name)
+        self.view.clear_spectrum_data(roi_name)
+
+    def add_roi(self, roi: SensibleROI, name: str | None = None) -> str:
         """
         Add an ROI to the image view.
 
         @param roi: The ROI to add.
-        @param name: The name of the ROI.
+        @param name: The name of the ROI. If None, a new unique name will be generated.
+        @return: The name of the added ROI.
         """
+        if name is None:
+            name = f"roi_{len(self.roi_dict)}"
         roi_object = SpectrumROI(name, roi, rotatable=False, scaleSnap=True, translateSnap=True)
         roi_object.colour = self.colour_generator()
         roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
-
         self.roi_dict[name] = roi_object.roi
-        self.max_roi_size = roi_object.size()
-        self.roi_dict[name].sigRegionChangeFinished.connect(self.roi_changed.emit)
-        self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+        return name
 
     def adjust_roi(self, new_roi: SensibleROI, roi_name: str) -> None:
         """
@@ -214,9 +268,14 @@ class SpectrumWidget(QWidget):
         """
         self.roi_dict[roi_name].adjust_spec_roi(new_roi)
 
+    def adjust_spec_roi(self, roi: SensibleROI) -> None:
+        self.setPos((roi.left, roi.top))
+        self.setSize((roi.width, roi.height))
+
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
         Get the ROI with the given name. If no name is given, the default ROI is returned.
+        If the name is "all", return a SensibleROI covering the entire image.
 
         @param roi_name: The name of the ROI to return.
         @return: The ROI with the given name.
@@ -241,6 +300,15 @@ class SpectrumWidget(QWidget):
         if roi_name in self.roi_dict.keys() and roi_name != "all":
             self.image.vb.removeItem(self.roi_dict[roi_name])
             del self.roi_dict[roi_name]
+
+    def remove_all_rois(self) -> None:
+        """
+        Remove all ROIs from the spectrum widget and clear the ROI dictionary.
+        """
+        for roi_name in list(self.roi_dict.keys()):
+            self.remove_roi(roi_name)
+        self.roi_dict.clear()
+        self.spectrum_data_dict.clear()
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """

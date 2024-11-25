@@ -49,7 +49,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     roiPropertiesTableWidget: QTableWidget
     roiPropertiesGroupBox: QGroupBox
 
-    last_clicked_roi: str
+    last_clicked_roi: str | None = None
 
     spectrum_widget: SpectrumWidget
 
@@ -68,7 +68,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
         self.selected_row: int = 0
-        self.current_roi_name: str = ""
+        self.current_roi_name: str | None = None
         self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
         self.roiPropertiesLabels: dict[str, QLabel] = {}
         self.old_table_names: list[str] = []
@@ -84,6 +84,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum_widget.roi_changed.connect(lambda roi_name: self.update_roi_table_row(roi_name))
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
         self.spectrum_right_click_menu = self.spectrum.spectrum_viewbox.menu
@@ -170,9 +171,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
-        _ = self.roi_table_model  # Initialise model
-        self.current_roi_name = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
-        self.set_roi_properties()
+        roi_names = self.roi_table_model.roi_names()
+        self.current_roi_name = self.last_clicked_roi = roi_names[0] if roi_names else None
 
         self.flightPathSpinBox.setMinimum(0)
         self.flightPathSpinBox.setMaximum(1e10)
@@ -199,28 +199,21 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         def on_data_in_table_change() -> None:
             """
-            Check if an ROI name has changed in the table or if the visibility of an ROI has changed.
-            If the ROI name has changed, update the ROI name in the spectrum widget.
-            If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
+            Handle changes to the ROI table, including name changes and visibility updates.
             """
-            entered_name = self.roi_table_model.get_element(self.selected_row, 0)
-            if entered_name.lower() not in ["", " ", "all"] and entered_name != self.current_roi_name:
-                if entered_name in self.presenter.get_roi_names():
-                    entered_name = self.old_table_names[self.selected_row]
+
+        entered_name = self.roi_table_model.get_element(self.selected_row, 0).strip()
+
+        if entered_name and entered_name.lower() not in ["all", ""]:
+            if entered_name != self.current_roi_name:
+                if entered_name in self.spectrum_widget.roi_dict:
                     self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
-                    self.current_roi_name = entered_name
-                    self.last_clicked_roi = self.current_roi_name
-                else:
+                elif self.current_roi_name is not None:
                     self.presenter.rename_roi(self.current_roi_name, entered_name)
                     self.current_roi_name = entered_name
-                    self.last_clicked_roi = self.current_roi_name
-                    self.set_roi_properties()
-            else:
-                self.roi_table_model.set_element(self.selected_row, 0, self.old_table_names[self.selected_row])
 
-            self.set_old_table_names()
-            self.on_visibility_change()
-            return
+        self.set_old_table_names()
+        self.on_visibility_change()
 
         self.roi_table_model.dataChanged.connect(on_data_in_table_change)
         header = self.tableView.horizontalHeader()
@@ -331,7 +324,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.spectrum_widget.spectrum_data_dict[name] = spectrum_data
         self.spectrum_widget.spectrum.clearPlots()
-
         self.show_visible_spectrums()
 
     def clear(self) -> None:
@@ -463,7 +455,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         roi_name = self.roi_table_model.get_element(self.selected_row, 0)
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
-            self.presenter.do_remove_roi(roi_name)
+            self.spectrum_widget.remove_roi(roi_name)
             self.spectrum_widget.spectrum_data_dict.pop(roi_name)
             self.spectrum_widget.spectrum.removeItem(roi_name)
             self.presenter.handle_roi_moved()
@@ -518,11 +510,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.current_roi_name = ROI_RITS
-        if self.current_roi_name not in self.presenter.model.get_list_of_roi_names() or not self.roiPropertiesSpinBoxes:
+
+        if self.current_roi_name not in self.spectrum_widget.roi_dict or not self.roiPropertiesSpinBoxes:
             return
-        else:
-            current_roi = self.presenter.model.get_roi(self.current_roi_name)
-        self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi_name}")
+
+        current_roi = self.spectrum_widget.get_roi(self.current_roi_name)
+        self.roiPropertiesGroupBox.setTitle(f"ROI Properties: {self.current_roi_name}")
+
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         for row, pos in enumerate(current_roi):
             with QSignalBlocker(self.roiPropertiesSpinBoxes[roi_iter_order[row]]):
@@ -558,7 +552,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         return self.tof_mode_select_group.checkedAction()
 
     def set_old_table_names(self) -> None:
-        self.old_table_names = self.presenter.get_roi_names()
+        self.old_table_names = list(self.spectrum_widget.roi_dict.keys())
         if 'all' in self.old_table_names:
             self.old_table_names.remove('all')
         if 'rits_roi' in self.old_table_names:

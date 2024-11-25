@@ -112,12 +112,6 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter += 1
         return new_name
 
-    def get_list_of_roi_names(self) -> list[str]:
-        """
-        Get a list of rois available in the model
-        """
-        return list(self._roi_ranges.keys())
-
     def set_stack(self, stack: ImageStack | None) -> None:
         """
         Sets the stack to be used by the model
@@ -134,33 +128,9 @@ class SpectrumViewerWindowModel:
         self.tof_range = (0, stack.data.shape[0] - 1)
         self.tof_range_full = self.tof_range
         self.tof_data = self.get_stack_time_of_flight()
-        self.set_new_roi(ROI_ALL)
-
-    def set_new_roi(self, name: str) -> None:
-        """
-        Sets a new ROI with the given name
-
-        @param name: The name of the new ROI
-        """
-        height, width = self.get_image_shape()
-        self.set_roi(name, SensibleROI.from_list([0, 0, width, height]))
 
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
-
-    def set_roi(self, roi_name: str, roi: SensibleROI) -> None:
-        self._roi_ranges[roi_name] = roi
-
-    def get_roi(self, roi_name: str) -> SensibleROI:
-        """
-        Get the ROI with the given name from the model
-
-        @param roi_name: The name of the ROI to get
-        @return: The ROI with the given name
-        """
-        if roi_name not in self._roi_ranges.keys():
-            raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
-        return self._roi_ranges[roi_name]
 
     def get_averaged_image(self) -> np.ndarray | None:
         """
@@ -218,15 +188,9 @@ class SpectrumViewerWindowModel:
             return "Need 2 different ShutterCount stacks"
         return ""
 
-    def get_spectrum(self,
-                     roi: str | SensibleROI,
-                     mode: SpecType,
-                     normalise_with_shuttercount: bool = False) -> np.ndarray:
+    def get_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool = False) -> np.ndarray:
         if self._stack is None:
             return np.array([])
-
-        if isinstance(roi, str):
-            roi = self.get_roi(roi)
 
         if mode == SpecType.SAMPLE:
             return self.get_stack_spectrum(self._stack, roi)
@@ -241,14 +205,14 @@ class SpectrumViewerWindowModel:
                 return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
-        spectrum = np.divide(roi_spectrum,
-                             roi_norm_spectrum,
-                             out=np.zeros_like(roi_spectrum),
-                             where=roi_norm_spectrum != 0)
-        if normalise_with_shuttercount:
-            average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
-            spectrum = spectrum / average_shuttercount
-        return spectrum
+            spectrum = np.divide(roi_spectrum,
+                                 roi_norm_spectrum,
+                                 out=np.zeros_like(roi_spectrum),
+                                 where=roi_norm_spectrum != 0)
+            if normalise_with_shuttercount:
+                average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
+                spectrum = spectrum / average_shuttercount
+            return spectrum
 
     def get_shuttercount_normalised_correction_parameter(self) -> float:
         """
@@ -349,22 +313,21 @@ class SpectrumViewerWindowModel:
             csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
             csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
 
-        for roi_name in self.get_list_of_roi_names():
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE, normalise_with_shuttercount),
+        for roi in rois:
+            csv_output.add_column(f"ROI_{roi}", self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount),
                                   "Counts")
             if normalise:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
-                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN), "Counts")
-                csv_output.add_column(roi_name + "_norm",
-                                      self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
+                csv_output.add_column(f"ROI_{roi}_open", self.get_spectrum(roi, SpecType.OPEN), "Counts")
+                csv_output.add_column(f"ROI_{roi}_norm",
+                                      self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
                                       "Counts")
 
         with path.open("w") as outfile:
             csv_output.write(outfile)
-            self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
+    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode, roi: SensibleROI) -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
 
@@ -372,7 +335,28 @@ class SpectrumViewerWindowModel:
         @param normalized: Whether to save the normalized spectrum.
         @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
         """
-        self.save_rits_roi(path, error_mode, self.get_roi(ROI_RITS))
+        if self._stack is None:
+            raise ValueError("No stack selected")
+
+        if self._normalise_stack is None:
+            raise ValueError("A normalise stack must be selected")
+
+        tof = self.get_stack_time_of_flight()
+        if tof is None:
+            raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
+
+        tof *= 1e6  # Convert ToF to μs for RITS format
+
+        transmission = self.get_spectrum(roi, SpecType.SAMPLE_NORMED)
+
+        if error_mode == ErrorMode.STANDARD_DEVIATION:
+            transmission_error = self.get_transmission_error_standard_dev(roi)
+        elif error_mode == ErrorMode.PROPAGATED:
+            transmission_error = self.get_transmission_error_propagated(roi)
+        else:
+            raise ValueError("Invalid error_mode provided")
+
+        self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
 
     def save_rits_roi(self, path: Path, error_mode: ErrorMode, roi: SensibleROI, normalise: bool = False) -> None:
         """
@@ -386,6 +370,7 @@ class SpectrumViewerWindowModel:
 
         if self._normalise_stack is None:
             raise ValueError("A normalise stack must be selected")
+
         tof = self.get_stack_time_of_flight()
         if tof is None:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
@@ -430,7 +415,8 @@ class SpectrumViewerWindowModel:
                          bin_size: int,
                          step: int,
                          normalise: bool = False,
-                         progress: Progress | None = None) -> None:
+                         progress: Progress | None = None,
+                         roi: SensibleROI | None = None) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
 
@@ -449,13 +435,19 @@ class SpectrumViewerWindowModel:
         bin_size (int): The size of the sub-regions.
         step (int): The step size to use when sliding the window across the ROI.
 
-        Returns:
-        None
+        @param directory: Directory where the RITS images will be saved.
+        @param error_mode: Error mode to use when saving images (e.g., standard deviation or propagated).
+        @param bin_size: Size of each sub-region.
+        @param step: Step size for sliding the window across the ROI.
+        @param normalise: Whether to normalise the images.
+        @param progress: Optional progress tracker.
+        @param roi: The ROI to be used for saving the RITS images.
+        @raises ValueError: If bin size or step size is invalid.
         """
-        roi = self.get_roi(ROI_RITS)
-        left, top, right, bottom = roi
-        x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
-        y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
+        rois = self.roi_dict.keys()
+        left, top, right, bottom = roi.left, roi.top, roi.right, roi.bottom
+        x_iterations = max(1, ceil((right - left - bin_size) / step) + 1)
+        y_iterations = max(1, ceil((bottom - top - bin_size) / step) + 1)
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
 
         self.validate_bin_and_step_size(roi, bin_size, step)
@@ -516,36 +508,6 @@ class SpectrumViewerWindowModel:
         """
         rits_data = saver.create_rits_format(tof, transmission, absorption)
         saver.export_to_dat_rits_format(rits_data, path)
-
-    def remove_roi(self, roi_name: str) -> None:
-        """
-        Remove the selected ROI from the model
-
-        @param roi_name: The name of the ROI to remove
-        """
-        if roi_name in self._roi_ranges.keys():
-            if roi_name in self.special_roi_list:
-                raise RuntimeError(f"Cannot remove ROI: {roi_name}")
-            del self._roi_ranges[roi_name]
-        else:
-            raise KeyError(
-                f"Cannot remove ROI {roi_name} as it does not exist. \n Available ROIs: {self._roi_ranges.keys()}")
-
-    def rename_roi(self, old_name: str, new_name: str) -> None:
-        """
-        Rename the selected ROI from the model
-
-        @param old_name: The current name of the ROI
-        @param new_name: The new name of the ROI
-        @raises KeyError: If the ROI does not exist
-        @raises RuntimeError: If the ROI is 'all'
-        """
-        if old_name in self._roi_ranges.keys() and new_name not in self._roi_ranges.keys():
-            if old_name in self.special_roi_list:
-                raise RuntimeError(f"Cannot remove ROI: {old_name}")
-            self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
-        else:
-            raise KeyError(f"Cannot rename {old_name} to {new_name} Available:{self._roi_ranges.keys()}")
 
     def remove_all_roi(self) -> None:
         """
