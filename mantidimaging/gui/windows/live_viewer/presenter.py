@@ -69,12 +69,19 @@ class LiveViewerWindowPresenter(BasePresenter):
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
         if not images_list:
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 1 +++++++++++++++++++++++++++++++++")
             self.handle_deleted()
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 2 +++++++++++++++++++++++++++++++++")
             self.view.set_load_as_dataset_enabled(False)
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 3 +++++++++++++++++++++++++++++++++")
         else:
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 4 +++++++++++++++++++++++++++++++++")
             self.view.set_image_range((0, len(images_list) - 1))
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 5 +++++++++++++++++++++++++++++++++")
             self.view.set_image_index(len(images_list) - 1)
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 6 +++++++++++++++++++++++++++++++++")
             self.view.set_load_as_dataset_enabled(True)
+            print("++++++++++++++++++++++++++++ presenter.update_image_list() 7 +++++++++++++++++++++++++++++++++")
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
@@ -104,7 +111,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-
         self.view.show_most_recent_image(image_data)
         self.view.live_viewer.show_error(None)
 
