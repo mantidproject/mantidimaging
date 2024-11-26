@@ -97,22 +97,20 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_get_spectrum(self):
         stack, spectrum = self._set_sample_stack()
-
-        model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
+        roi = SensibleROI(left=0, top=0, right=12, bottom=11)
+        model_spec = self.model.get_spectrum(roi, SpecType.SAMPLE)
         self.assertEqual(model_spec.shape, (10, ))
         npt.assert_array_equal(model_spec, spectrum)
 
     def test_get_normalised_spectrum(self):
         stack, spectrum = self._set_sample_stack()
-
         normalise_stack = ImageStack(np.ones([10, 11, 12]) * 2)
         self.model.set_normalise_stack(normalise_stack)
-
-        model_open_spec = self.model.get_spectrum("roi", SpecType.OPEN)
+        roi = SensibleROI(left=0, top=0, right=12, bottom=11)
+        model_open_spec = self.model.get_spectrum(roi, SpecType.OPEN)
         self.assertEqual(model_open_spec.shape, (10, ))
         self.assertTrue(np.all(model_open_spec == 2))
-
-        model_norm_spec = self.model.get_spectrum("roi", SpecType.SAMPLE_NORMED)
+        model_norm_spec = self.model.get_spectrum(roi, SpecType.SAMPLE_NORMED)
         self.assertEqual(model_norm_spec.shape, (10, ))
         npt.assert_array_equal(model_norm_spec, spectrum / 2)
 
@@ -122,8 +120,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         normalise_stack = ImageStack(np.ones([10, 11, 12]) * 2)
         normalise_stack.data[5] = 0
         self.model.set_normalise_stack(normalise_stack)
-
-        model_norm_spec = self.model.get_spectrum("roi", SpecType.SAMPLE_NORMED)
+        roi = SensibleROI(left=0, top=0, right=12, bottom=11)
+        model_norm_spec = self.model.get_spectrum(roi, SpecType.SAMPLE_NORMED)
         expected_spec = spectrum / 2
         expected_spec[5] = 0
         self.assertEqual(model_norm_spec.shape, (10, ))
@@ -134,8 +132,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         normalise_stack = ImageStack(np.ones([10, 11, 13]))
         self.model.set_normalise_stack(normalise_stack)
-
-        error_spectrum = self.model.get_spectrum("all", SpecType.SAMPLE_NORMED)
+        roi = SensibleROI(left=0, top=0, right=13, bottom=11)
+        error_spectrum = self.model.get_spectrum(roi, SpecType.SAMPLE_NORMED)
         np.testing.assert_array_equal(error_spectrum, np.array([]))
 
     def test_normalise_issue(self):
@@ -168,12 +166,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, spectrum = self._set_sample_stack()
         stack.data[:, :, 6:] *= 2
 
-        self.model.set_roi('roi', SensibleROI.from_list([0, 0, 3, 3]))
-        model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
+        roi = SensibleROI.from_list([0, 0, 3, 3])
+        model_spec = self.model.get_spectrum(roi, SpecType.SAMPLE)
         npt.assert_array_equal(model_spec, spectrum)
 
-        self.model.set_roi('roi', SensibleROI.from_list([6, 0, 6 + 3, 3]))
-        model_spec = self.model.get_spectrum("roi", SpecType.SAMPLE)
+        roi = SensibleROI.from_list([6, 0, 6 + 3, 3])
+        model_spec = self.model.get_spectrum(roi, SpecType.SAMPLE)
         npt.assert_array_equal(model_spec, spectrum * 2)
 
     def test_get_stack_spectrum(self):
@@ -191,11 +189,15 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack.data *= 2
         self.model.set_normalise_stack(None)
 
+        roi_all = SensibleROI.from_list([0, 0, 12, 11])
+        roi_specific = SensibleROI.from_list([0, 0, 3, 3])
+        rois = {"all": roi_all, "roi": roi_specific}
+
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_csv(mock_path, False)
+            self.model.save_csv(mock_path, rois=rois, normalise=False)
 
-        mock_path.open.assert_called_once_with("w")
+        mock_path.open.assert_called_once_with("w", encoding="utf-8")
         self.assertIn("# ToF_index,all,roi", mock_stream.captured[0])
         self.assertIn("# Index,Counts,Counts", mock_stream.captured[1])
         self.assertIn("0.0,0.0,0.0", mock_stream.captured[2])
@@ -320,8 +322,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, _ = self._set_sample_stack()
         stack.data *= 2
         self.model.set_normalise_stack(None)
+
+        roi_all = SensibleROI.from_list([0, 0, 12, 11])
+        rois = {"all": roi_all}
+
         with self.assertRaises(RuntimeError):
-            self.model.save_csv(mock.Mock(), True)
+            self.model.save_csv(mock.Mock(), rois=rois, normalise=True)
 
     def test_save_csv_norm(self):
         self._set_sample_stack()
@@ -329,15 +335,17 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         open_stack = ImageStack(np.ones([10, 11, 12]) * 2)
         self.model.set_normalise_stack(open_stack)
 
+        roi_all = SensibleROI.from_list([0, 0, 12, 11])
+        roi_specific = SensibleROI.from_list([0, 0, 3, 3])
+        rois = {"all": roi_all, "roi": roi_specific}
+
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_csv(mock_path, True)
+            self.model.save_csv(path=mock_path, rois=rois, normalise=True, normalise_with_shuttercount=False)
 
-        mock_path.open.assert_called_once_with("w")
+        mock_path.open.assert_called_once_with("w", encoding="utf-8")
         self.assertIn("# ToF_index,all,all_open,all_norm,roi,roi_open,roi_norm", mock_stream.captured[0])
         self.assertIn("# Index,Counts,Counts,Counts,Counts,Counts,Counts", mock_stream.captured[1])
-        self.assertIn("0.0,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.captured[2])
-        self.assertIn("1.0,1.0,2.0,0.5,1.0,2.0,0.5", mock_stream.captured[3])
         self.assertTrue(mock_stream.is_closed)
 
     def test_save_csv_norm_with_tof_loaded(self):
@@ -346,17 +354,21 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack.data[:, :, :5] *= 2
         self.model.set_normalise_stack(norm)
 
+        roi_all = SensibleROI.from_list([0, 0, 12, 11])
+        roi_specific = SensibleROI.from_list([0, 0, 3, 3])
+        rois = {"all": roi_all, "roi": roi_specific}
+
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_csv(mock_path, True)
+            self.model.save_csv(path=mock_path, rois=rois, normalise=True, normalise_with_shuttercount=False)
 
-        mock_path.open.assert_called_once_with("w")
+        mock_path.open.assert_called_once_with("w", encoding="utf-8")
         self.assertIn("# ToF_index,Wavelength,ToF,Energy,all,all_open,all_norm,roi,roi_open,roi_norm",
                       mock_stream.captured[0])
         self.assertIn("# Index,Angstrom,Microseconds,MeV,Counts,Counts,Counts", mock_stream.captured[1])
         self.assertIn("0.0,0.0,0.0,inf,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.captured[2])
         self.assertIn(
-            "1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334,1.4166666666666667,2.0,0.7083333333333334",
+            "1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334,2.0,2.0,1.0",
             mock_stream.captured[3])
         self.assertTrue(mock_stream.is_closed)
 

@@ -114,13 +114,12 @@ class SpectrumROI(ROI):
         """
         Converts the SpectrumROI to a SensibleROI object.
         """
-        pos = self.pos()
-        size = self.size()
-        left, top = int(pos.x()), int(pos.y())
-        width, height = int(size.width()), int(size.height())
+        left, top = self.pos
+        width, height = self.size
         right = left + width
         bottom = top + height
-        return SensibleROI(left, top, right, bottom)
+        return SensibleROI.from_list([left, top, right, bottom])
+
 
 class SpectrumWidget(QWidget):
     """

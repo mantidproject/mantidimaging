@@ -339,7 +339,6 @@ class SpectrumViewerWindowModel:
             normalise (bool): Whether to save the normalized spectrum.
             normalise_with_shuttercount (bool): Whether to normalize using shutter count correction.
         """
-
         if self._stack is None:
             raise ValueError("No stack selected")
         if not rois:
@@ -347,7 +346,6 @@ class SpectrumViewerWindowModel:
 
         csv_output = CSVOutput()
         csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
-
         self.tof_data = self.get_stack_time_of_flight()
         if self.tof_data is not None:
             self.units.set_data_to_convert(self.tof_data)
