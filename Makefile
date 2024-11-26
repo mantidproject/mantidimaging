@@ -43,7 +43,7 @@ install-dev-requirements:
 	python ./setup.py create_dev_env
 
 test:
-	python -m pytest -n auto
+	python -m pytest -n auto --maxprocesses=4
 
 test-verbose:
 	python -m pytest -vs -o log_cli=true
