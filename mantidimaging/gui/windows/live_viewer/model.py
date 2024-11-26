@@ -37,6 +37,7 @@ class DaskImageDataStack:
     mean: np.ndarray = np.array([])
     roi: SensibleROI | None = None
     param_to_calc: list[str] = []
+    max_cache_size: int = 2
 
     def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = False):
         self.image_list = image_list
@@ -78,7 +79,7 @@ class DaskImageDataStack:
         with fits.open(image_data.image_path.__str__()) as fit:
             return fit[0].data
 
-    @lru_cache(maxsize=100)  # noqa: B019
+    @lru_cache(maxsize=max_cache_size)  # noqa: B019
     def get_computed_image(self, index: int):
         if index < 0:
             return None
@@ -129,6 +130,8 @@ class DaskImageDataStack:
         return delayed_stack
 
     def update_delayed_stack(self, new_image_list) -> None:
+        print(f"\nupdate_delayed_stack:\n {len(self.mean)=} ================== {len(self.image_list)=}\n")
+        print(f"{new_image_list=}\n")
         if self.delayed_stack is None:
             self.delayed_stack = self.create_delayed_stack_from_image_data(new_image_list)
         else:
@@ -136,6 +139,19 @@ class DaskImageDataStack:
             self.delayed_stack = dask.optimize(
                 dask.array.concatenate([self.delayed_stack,
                                         self.create_delayed_stack_from_image_data(new_images)]))[0]
+
+    def update_image_list(self, new_image_list: list, update_stack: bool = True) -> None:
+        print(f"\n ========================= update_image_list =============================\n")
+        if update_stack and self.create_delayed_array:
+            self.update_delayed_stack(new_image_list)
+        self.image_list = new_image_list
+        self.update_image_paths(new_image_list)
+        print(f"@@@@@@@@@@@@@@@update_image_list 1 : {len(self.mean)=} ================== {len(self.image_list)=}\n")
+        #self.update_param_calculations()
+        print(f"@@@@@@@@@@@@@@@update_image_list 2 : {len(self.mean)=} ================== {len(self.image_list)=}\n")
+
+    def update_param_calculations(self) -> None:
+        print(f"update_param_calculations: {len(self.mean)=} ================== {len(self.image_list)=}\n")
         if 'mean' in self.param_to_calc:
             if len(self.mean) == len(self.image_list) - 1:
                 self.add_last_mean()
@@ -145,26 +161,27 @@ class DaskImageDataStack:
                 else:
                     self.calc_mean_fully()
 
-    def update_image_list(self, new_image_list: list, update_stack: bool = True) -> None:
-        if update_stack and self.create_delayed_array:
-            self.update_delayed_stack(new_image_list)
-        self.image_list = new_image_list
-        self.update_image_paths(new_image_list)
-
     def update_image_paths(self, new_image_list: list):
         for image in new_image_list:
             self.image_paths.add(image.image_path)
 
     def add_last_mean(self) -> None:
+        print("ADD LAST MEAN")
         if self.delayed_stack is not None:
             if self.roi:
                 left, top, right, bottom = self.roi
+                print(f"{(left, top, right, bottom)=}")
+                print(f"{self.delayed_stack=}")
+                print(f"{self.delayed_stack.compute()=}")
+                print(f"{self.delayed_stack[-1, top:bottom, left:right].compute()=}")
                 mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom,
                                                                                left:right]))[0].compute()
-                self.mean = np.append(self.mean, mean_to_add)
             else:
                 mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1]))[0].compute()
-                self.mean = np.append(self.mean, mean_to_add)
+            print(f"{mean_to_add=}")
+            self.mean = np.append(self.mean, mean_to_add)
+            print(f"{self.mean=}")
+            #self.calc_mean_buffer()
 
     def calc_mean_fully(self) -> None:
         if self.delayed_stack is not None:
@@ -174,13 +191,16 @@ class DaskImageDataStack:
         if self.delayed_stack is not None and self.image_list:
             left, top, right, bottom = self.roi
             current_cache_size = self.get_computed_image.cache_info()[3]
-            self.mean = np.zeros(len(self.image_list))
+            print(f"calc_mean_fully_roi ================== \n{len(self.mean)=}\n{len(self.image_list)=}\n{range(-current_cache_size, 0)=}\n{self.calc_mean_cached_images(left, top, right, bottom)}\n")
+            self.mean = np.full(len(self.image_list), np.nan)
+            print(f"calc_mean_fully_roi 1: {len(self.mean)=} ================== {len(self.image_list)=}\n{self.mean=}")
             np.put(self.mean, range(-current_cache_size, 0), self.calc_mean_cached_images(left, top, right, bottom))
-            if len(self.image_list) > current_cache_size:
-                dask_mean = dask.optimize(
-                    dask.array.mean(self.delayed_stack[0:current_cache_size, top:bottom, left:right],
-                                    axis=(1, 2)))[0].compute()
-                np.put(self.mean, range(-len(self.image_list), -current_cache_size), dask_mean)
+            print(f"calc_mean_fully_roi 2: {len(self.mean)=} ================== {len(self.image_list)=}\n{self.mean=}")
+            # if len(self.image_list) > current_cache_size and False:
+            #     dask_mean = dask.optimize(
+            #         dask.array.mean(self.delayed_stack[0:current_cache_size, top:bottom, left:right],
+            #                         axis=(1, 2)))[0].compute()
+            #     np.put(self.mean, range(-len(self.image_list), -current_cache_size), dask_mean)
 
     def calc_mean_cached_images(self, left, top, right, bottom):
         current_cache_size = self.get_computed_image.cache_info()[3]
@@ -188,9 +208,14 @@ class DaskImageDataStack:
             self.get_computed_image(index)
             for index in range(self.selected_index - current_cache_size + 1, self.selected_index + 1, 1)
         ]
+        print(f"calc_mean_cached_images: {cache_stack=}")
         cache_stack_array = np.stack(cache_stack)
         cache_stack_mean = np.mean(cache_stack_array[:, top:bottom, left:right], axis=(1, 2))
         return cache_stack_mean
+
+    def calc_mean_buffer(self):
+        nanInds = np.argwhere(np.isnan(self.mean))
+        print(f"{nanInds=}")
 
     def set_roi(self, roi: SensibleROI):
         self.roi = roi
@@ -321,6 +346,7 @@ class LiveViewerWindowModel:
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data],
                                       dask_image_stack: DaskImageDataStack) -> None:
+        print("++++++++++++++++++++++++++++ _handle_image_changed_in_list ++++++++++++++++++++++++++++++++++++++++++")
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
@@ -332,8 +358,11 @@ class LiveViewerWindowModel:
         self.image_stack = dask_image_stack
         # if dask_image_stack.image_list:
         #     self.image_stack = dask_image_stack
+        print("++++++++++++++++++++++++++++ _handle_image_changed_in_list 1 ++++++++++++++++++++++++++++++++++++++++++")
         self.presenter.update_image_list(image_files)
+        print("++++++++++++++++++++++++++++ _handle_image_changed_in_list 2 ++++++++++++++++++++++++++++++++++++++++++")
         self.presenter.update_image_stack(self.image_stack)
+        print("++++++++++++++++++++++++++++ _handle_image_changed_in_list 3 ++++++++++++++++++++++++++++++++++++++++++")
 
     def handle_image_modified(self, image_path: Path):
         self.image_stack.remove_image_data_by_path(image_path)
@@ -494,6 +523,8 @@ class ImageWatcher(QObject):
             self.image_stack.update_image_list(images)
 
         if 'mean' in self.image_stack.param_to_calc:
+            print("<<<<<<<<<<<<< UPDATE SPECTRUM EMITTED!!! <<<<<<<<<<<<<<<<<<<<<<<<<<<")
+            print(f"{self.image_stack.mean=}")
             self.update_spectrum.emit(self.image_stack.mean)
 
         self.update_recent_watcher(images[-1:])
