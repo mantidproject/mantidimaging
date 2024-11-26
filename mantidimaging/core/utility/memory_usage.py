@@ -6,7 +6,7 @@ from __future__ import annotations
 # Our Linux installation steps request 90% of RAM for shared memory and taking up nearly all of that makes it more
 # likely to get hit by SIGBUS by the OS. Even if the allocation is permitted, it could slow the
 # system down to the point of being unusable
-MEMORY_CAP_PERCENTAGE = 0.125
+MEMORY_CAP_PERCENTAGE = 0.05
 
 
 def system_free_memory():

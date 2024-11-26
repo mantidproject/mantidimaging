@@ -85,11 +85,12 @@ def start_qapplication(cls):
 def start_multiprocessing_pool(cls):
 
     def setUpClass():
-        create_and_start_pool(0)
+        create_and_start_pool(2)
 
     def tearDownClass():
         end_pool()
 
+    cls = pytest.mark.xdist_group("uses_multiprocessing")(cls)
     return augment_test_setup_methods(cls, setup_class=setUpClass, teardown_class=tearDownClass)
 
 

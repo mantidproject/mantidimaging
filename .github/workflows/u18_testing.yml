@@ -52,5 +52,5 @@ jobs:
       timeout-minutes: 5
       uses: ./.github/actions/test
       with:
-        command: xvfb-run pytest -n auto -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+        command: xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
         label: ubuntu18
