@@ -272,10 +272,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         rois = {
             roi.name: roi.as_sensible_roi()
-            for roi in self.view.spectrum_widget.roi_dict.values() if isinstance(roi, SpectrumROI)}
+            for roi in self.view.spectrum_widget.roi_dict.values() if isinstance(roi, SpectrumROI)
+        }
 
-        self.model.save_csv(path=path,
-                            rois=rois,
+        self.model.save_csv(path,
+                            rois,
                             normalise=self.spectrum_mode == SpecType.SAMPLE_NORMED,
                             normalise_with_shuttercount=self.view.shuttercount_norm_enabled())
 
