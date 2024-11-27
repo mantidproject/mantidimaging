@@ -518,10 +518,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.current_roi_name = ROI_RITS
-        if self.current_roi_name not in self.presenter.model.get_list_of_roi_names() or not self.roiPropertiesSpinBoxes:
+        if self.current_roi_name not in self.presenter.view.spectrum_widget.roi_dict or not self.roiPropertiesSpinBoxes:
             return
-        else:
-            current_roi = self.presenter.model.get_roi(self.current_roi_name)
+        current_roi = self.presenter.view.spectrum_widget.get_roi(self.current_roi_name)
         self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.current_roi_name}")
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         for row, pos in enumerate(current_roi):

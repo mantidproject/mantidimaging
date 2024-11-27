@@ -112,12 +112,6 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter += 1
         return new_name
 
-    def get_list_of_roi_names(self) -> list[str]:
-        """
-        Get a list of rois available in the model
-        """
-        return list(self._roi_ranges.keys())
-
     def set_stack(self, stack: ImageStack | None) -> None:
         """
         Sets the stack to be used by the model
@@ -349,13 +343,15 @@ class SpectrumViewerWindowModel:
             csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
             csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
 
-        for roi_name in self.get_list_of_roi_names():
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE, normalise_with_shuttercount),
+        roi_names = self.presenter.view.spectrum_widget.roi_dict.keys()
+        for roi_name in roi_names:
+            roi = self.presenter.view.spectrum_widget.get_roi(roi_name)
+            csv_output.add_column(roi_name, self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount),
                                   "Counts")
             if normalise:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
-                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN), "Counts")
+                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi, SpecType.OPEN), "Counts")
                 csv_output.add_column(roi_name + "_norm",
                                       self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
                                       "Counts")

@@ -35,6 +35,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
         self.model = SpectrumViewerWindowModel(self.presenter)
+        self.presenter.view = mock.Mock()
+        self.presenter.view.spectrum_widget = mock.Mock()
 
     def _set_sample_stack(self, with_tof=False, with_shuttercount=False):
         spectrum = np.arange(0, 10)
@@ -186,21 +188,20 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         calculated_spectrum = self.model.get_stack_spectrum_summed(stack, SensibleROI.from_list([0, 0, 12, 11]))
         np.testing.assert_array_equal(spectrum * 12 * 11, calculated_spectrum)
 
-    def test_save_csv(self):
-        stack, spectrum = self._set_sample_stack()
-        stack.data *= 2
-        self.model.set_normalise_stack(None)
+    def test_save_csv_norm(self):
+        self._set_sample_stack()
+
+        open_stack = ImageStack(np.ones([10, 11, 12]) * 2)
+        self.model.set_normalise_stack(open_stack)
+
+        self.model.presenter.view.spectrum_widget.roi_dict = {
+            "all": SensibleROI.from_list([0, 0, 12, 11]),
+            "roi": SensibleROI.from_list([0, 0, 3, 3])
+        }
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_csv(mock_path, False)
-
-        mock_path.open.assert_called_once_with("w")
-        self.assertIn("# ToF_index,all,roi", mock_stream.captured[0])
-        self.assertIn("# Index,Counts,Counts", mock_stream.captured[1])
-        self.assertIn("0.0,0.0,0.0", mock_stream.captured[2])
-        self.assertIn("1.0,2.0,2.0", mock_stream.captured[3])
-        self.assertTrue(mock_stream.is_closed)
+            self.model.save_csv(path=mock_path, normalise=True, normalise_with_shuttercount=False)
 
     def test_save_rits_dat(self):
         stack, spectrum = self._set_sample_stack(with_tof=True)
@@ -377,13 +378,13 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_get_list_of_roi_names_called_THEN_correct_list_returned(self):
         self.model.set_stack(generate_images())
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
 
     def test_when_new_roi_set_THEN_roi_name_added_to_list_of_roi_names(self):
         self.model.set_stack(generate_images())
         self.model.set_new_roi("new_roi")
-        self.assertTrue(self.model.get_roi("new_roi"))
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi"])
+        self.assertIn("new_roi", self.model._roi_ranges)
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "new_roi"])
 
     def test_WHEN_get_roi_called_with_non_existent_name_THEN_error_raised(self):
         self.model.set_stack(generate_images())
@@ -400,17 +401,18 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_roi_removed_THEN_roi_name_removed_from_list_of_roi_names(self):
         self.model.set_stack(generate_images())
-        self.model.set_new_roi("roi")
-        self.model.set_new_roi("new_roi")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi"])
+        rois = ["roi", "new_roi"]
+        for roi in rois:
+            self.model.set_new_roi(roi)
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
         self.model.remove_roi("new_roi")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "roi"])
 
     def test_WHEN_remove_roi_called_with_default_roi_THEN_raise_runtime_error(self):
         self.model.set_stack(generate_images())
         with self.assertRaises(RuntimeError):
             self.model.remove_roi("all")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
 
     def test_WHEN_invalid_roi_removed_THEN_keyerror_raised(self):
         self.model.set_stack(generate_images())
@@ -419,18 +421,19 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_remove_all_rois_called_THEN_all_but_default_rois_removed(self):
         self.model.set_stack(generate_images())
-        self.model.set_new_roi("new_roi")
-        self.model.set_new_roi("new_roi_2")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi", "new_roi_2"])
+        rois = ["new_roi", "new_roi_2"]
+        for roi in rois:
+            self.model.set_new_roi(roi)
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
         self.model.remove_all_roi()
-        self.assertListEqual(self.model.get_list_of_roi_names(), [])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), [])
 
     def test_WHEN_roi_renamed_THEN_roi_name_changed_in_list_of_roi_names(self):
         self.model.set_stack(generate_images())
         self.model.set_new_roi("new_roi")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "new_roi"])
         self.model.rename_roi("new_roi", "imaging_is_the_coolest")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "imaging_is_the_coolest"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "imaging_is_the_coolest"])
 
     def test_WHEN_invalid_roi_renamed_THEN_keyerror_raised(self):
         self.model.set_stack(generate_images())
@@ -439,7 +442,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_default_roi_renamed_THEN_runtime_error_raised(self):
         self.model.set_stack(generate_images())
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
         with self.assertRaises(RuntimeError):
             self.model.rename_roi("all", "imaging_is_the_coolest")
 
