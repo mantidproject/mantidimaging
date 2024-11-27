@@ -233,8 +233,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.add_roi.side_effect = lambda roi, name: self.view.spectrum_widget.roi_dict.update(
             {name: mock.Mock()})
         self.presenter.model.set_stack(generate_images())
-        self.presenter.do_add_roi()
-        self.presenter.do_add_roi()
+        for _ in range(2):
+            self.presenter.do_add_roi()
         self.assertIn("roi", self.view.spectrum_widget.roi_dict)
         self.assertIn("roi_1", self.view.spectrum_widget.roi_dict)
         self.assertEqual(len(self.view.spectrum_widget.roi_dict), 3)
@@ -257,18 +257,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.add_roi_table_row.assert_called_once_with("roi_1", (255, 0, 0))
 
     def test_WHEN_do_remove_roi_called_THEN_roi_removed(self):
-        self.presenter.model._roi_ranges = {"all": mock.Mock(), "roi": mock.Mock(), "roi_1": mock.Mock()}
-        self.view.spectrum_widget.roi_dict = {"all": mock.Mock(), "roi": mock.Mock(), "roi_1": mock.Mock()}
-
-        def remove_roi_mock(name):
-            del self.view.spectrum_widget.roi_dict[name]
-
-        self.view.spectrum_widget.remove_roi.side_effect = remove_roi_mock
-
+        self.presenter.model.set_stack(generate_images())
+        for _ in range(2):
+            self.presenter.do_add_roi()
+        self.assertEqual(["all", "roi", "roi_1"], list(self.presenter.model._roi_ranges.keys()))
         self.presenter.do_remove_roi("roi_1")
-
-        self.assertNotIn("roi_1", self.presenter.model._roi_ranges)
-        self.assertNotIn("roi_1", self.view.spectrum_widget.roi_dict)
+        self.assertEqual(["all", "roi"], list(self.presenter.model._roi_ranges.keys()))
 
     def test_WHEN_roi_clicked_THEN_roi_updated(self):
         roi = SpectrumROI("themightyroi", SensibleROI())
@@ -289,10 +283,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         rois = ["all", "roi", "roi_1"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
         self.presenter.model._roi_ranges = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi.side_effect = (
-            lambda old_name, new_name: self.view.spectrum_widget.roi_dict.update(
-                {new_name: self.view.spectrum_widget.roi_dict.pop(old_name)}))
-
+        self.view.spectrum_widget.rename_roi.side_effect = lambda old, new: self.view.spectrum_widget.roi_dict.update(
+            {new: self.view.spectrum_widget.roi_dict.pop(old)})
         self.presenter.rename_roi("roi_1", "imaging_is_the_best")
 
         for roi in ["imaging_is_the_best", "roi", "all"]:
@@ -305,10 +297,10 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         rois = ["all", "roi", "roi_1"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
         self.presenter.model._roi_ranges = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi.side_effect = (
-            lambda old_name, new_name: self.view.spectrum_widget.roi_dict.update(
-                {new_name: self.view.spectrum_widget.roi_dict.pop(old_name)}))
+        self.view.spectrum_widget.rename_roi.side_effect = lambda old, new: self.view.spectrum_widget.roi_dict.update(
+            {new: self.view.spectrum_widget.roi_dict.pop(old)})
         self.presenter.rename_roi("roi", "imaging_is_the_best")
+
         self.assertIn("imaging_is_the_best", self.view.spectrum_widget.roi_dict)
         self.assertIn("imaging_is_the_best", self.presenter.model._roi_ranges)
         self.assertNotIn("roi", self.view.spectrum_widget.roi_dict)
@@ -449,21 +441,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_WHEN_redraw_all_rois_THEN_rois_set_correctly(self):
         rois = ["all", "roi"]
-        roi_data = {
-            "all": SensibleROI(0, 0, 10, 8),
-            "roi": SensibleROI(1, 4, 3, 2),
-        }
-
+        roi_data = {"all": SensibleROI(0, 0, 10, 8), "roi": SensibleROI(1, 4, 3, 2)}
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.get_roi = mock.Mock(side_effect=lambda name: roi_data[name])
+        self.view.spectrum_widget.get_roi = mock.Mock(side_effect=roi_data.get)
         self.presenter.model.get_spectrum = mock.Mock()
         self.presenter.redraw_all_rois()
 
-        for roi in rois:
-            self.view.spectrum_widget.get_roi.assert_any_call(roi)
-
-        expected_calls = [mock.call(roi, mock.ANY) for roi in rois]
-        self.view.set_spectrum.assert_has_calls(expected_calls, any_order=True)
+        self.view.spectrum_widget.get_roi.assert_has_calls([mock.call(roi) for roi in rois])
+        self.view.set_spectrum.assert_has_calls([mock.call(roi, mock.ANY) for roi in rois], any_order=True)
 
     @parameterized.expand([("roi", "roi_clicked", "roi_clicked"), ("roi", ROI_RITS, "roi")])
     def test_WHEN_roi_clicked_THEN_current_and_last_clicked_roi_updated_correctly(self, old_roi, clicked_roi,

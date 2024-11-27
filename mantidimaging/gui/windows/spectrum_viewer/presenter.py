@@ -229,7 +229,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Redraw all ROIs and spectrum plots
         """
-        for roi_name in self.view.spectrum_widget.roi_dict.keys():
+        for roi_name, roi in self.view.spectrum_widget.roi_dict.items():
             roi = self.view.spectrum_widget.get_roi(roi_name)
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             self.view.set_spectrum(roi_name, spectrum)
