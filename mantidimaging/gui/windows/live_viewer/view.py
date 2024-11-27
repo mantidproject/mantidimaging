@@ -103,11 +103,8 @@ class LiveViewerWindowView(BaseMainWindowView):
     def set_image_index(self, index: int) -> None:
         """Set the position on the z-slider, triggering valueChanged signal once"""
         with QSignalBlocker(self.live_viewer.z_slider):
-            print("++++++++++++++++++++++++++++ view.set_image_index() 1 +++++++++++++++++++++++++++++++++")
             self.live_viewer.z_slider.set_value(index)
-            print("++++++++++++++++++++++++++++ view.set_image_index() 2 +++++++++++++++++++++++++++++++++")
         self.live_viewer.z_slider.valueChanged.emit(index)
-        print("++++++++++++++++++++++++++++ view.set_image_index() 3 +++++++++++++++++++++++++++++++++")
 
     def closeEvent(self, e) -> None:
         """Close the window and remove it from the main window list"""
