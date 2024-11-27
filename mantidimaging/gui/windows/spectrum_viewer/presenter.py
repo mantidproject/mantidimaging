@@ -270,15 +270,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if path.suffix != ".csv":
             path = path.with_suffix(".csv")
 
-        rois = {
-            roi.name: roi.as_sensible_roi()
-            for roi in self.view.spectrum_widget.roi_dict.values() if isinstance(roi, SpectrumROI)
-        }
+        rois = {roi.name: roi.as_sensible_roi() for roi in self.view.spectrum_widget.roi_dict.values()}
 
-        self.model.save_csv(path,
-                            rois,
-                            normalise=self.spectrum_mode == SpecType.SAMPLE_NORMED,
-                            normalise_with_shuttercount=self.view.shuttercount_norm_enabled())
+        self.model.save_csv(
+            path=path,
+            rois=rois,
+            normalise=self.spectrum_mode == SpecType.SAMPLE_NORMED,
+            normalise_with_shuttercount=self.view.shuttercount_norm_enabled(),
+        )
 
     def handle_rits_export(self) -> None:
         """

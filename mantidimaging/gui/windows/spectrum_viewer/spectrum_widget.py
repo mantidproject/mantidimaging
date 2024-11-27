@@ -114,8 +114,10 @@ class SpectrumROI(ROI):
         """
         Converts the SpectrumROI to a SensibleROI object.
         """
-        left, top = self.pos
-        width, height = self.size
+        pos = self.pos()
+        size = self.size()
+        left, top = pos
+        width, height = size
         right = left + width
         bottom = top + height
         return SensibleROI.from_list([left, top, right, bottom])

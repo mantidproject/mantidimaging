@@ -99,7 +99,6 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
         self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
-        self._rois: list[SensibleROI] = []
 
         self.units = UnitConversion()
 
@@ -367,7 +366,7 @@ class SpectrumViewerWindowModel:
                 csv_output.add_column(f"{roi_name}_open", open_spectrum, "Counts")
                 csv_output.add_column(f"{roi_name}_norm", norm_spectrum, "Counts")
 
-        with path.open("w", encoding="utf-8") as outfile:
+        with path.open("w") as outfile:
             csv_output.write(outfile)
 
     def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:

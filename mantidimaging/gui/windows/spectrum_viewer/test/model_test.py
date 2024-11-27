@@ -197,7 +197,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_csv(mock_path, rois=rois, normalise=False)
 
-        mock_path.open.assert_called_once_with("w", encoding="utf-8")
+        mock_path.open.assert_called_once_with("w")
         self.assertIn("# ToF_index,all,roi", mock_stream.captured[0])
         self.assertIn("# Index,Counts,Counts", mock_stream.captured[1])
         self.assertIn("0.0,0.0,0.0", mock_stream.captured[2])
@@ -343,7 +343,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_csv(path=mock_path, rois=rois, normalise=True, normalise_with_shuttercount=False)
 
-        mock_path.open.assert_called_once_with("w", encoding="utf-8")
+        mock_path.open.assert_called_once_with("w")
         self.assertIn("# ToF_index,all,all_open,all_norm,roi,roi_open,roi_norm", mock_stream.captured[0])
         self.assertIn("# Index,Counts,Counts,Counts,Counts,Counts,Counts", mock_stream.captured[1])
         self.assertTrue(mock_stream.is_closed)
@@ -362,7 +362,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_csv(path=mock_path, rois=rois, normalise=True, normalise_with_shuttercount=False)
 
-        mock_path.open.assert_called_once_with("w", encoding="utf-8")
+        mock_path.open.assert_called_once_with("w")
         self.assertIn("# ToF_index,Wavelength,ToF,Energy,all,all_open,all_norm,roi,roi_open,roi_norm",
                       mock_stream.captured[0])
         self.assertIn("# Index,Angstrom,Microseconds,MeV,Counts,Counts,Counts", mock_stream.captured[1])
