@@ -689,7 +689,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.nexus_save">[docs]</a>
 <span class="k">def</span> <span class="nf">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Uses information from a StrictDataset to create a NeXus file.</span>
+<span class="sd">    Uses information from a Dataset to create a NeXus file.</span>
 <span class="sd">    :param dataset: The dataset to save as a NeXus file.</span>
 <span class="sd">    :param path: The NeXus file path.</span>
 <span class="sd">    :param sample_name: The sample name.</span>
@@ -712,9 +712,9 @@ document.write(`
 
 <span class="k">def</span> <span class="nf">_nexus_save</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Takes a NeXus file and writes the StrictDataset information to it.</span>
+<span class="sd">    Takes a NeXus file and writes the Dataset information to it.</span>
 <span class="sd">    :param nexus_file: The NeXus file.</span>
-<span class="sd">    :param dataset: The StrictDataset.</span>
+<span class="sd">    :param dataset: The Dataset.</span>
 <span class="sd">    :param sample_name: The sample name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Top-level group</span>

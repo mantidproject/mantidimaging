@@ -499,7 +499,6 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QPushButton</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">StrictDataset</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector.view</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
@@ -535,9 +534,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_label</span><span class="p">)</span>
 
         <span class="c1"># Dataset selector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_selector_widget</span> <span class="o">=</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                                                 <span class="n">relevant_dataset_types</span><span class="o">=</span><span class="n">StrictDataset</span><span class="p">,</span>
-                                                                 <span class="n">show_stacks</span><span class="o">=</span><span class="n">show_stacks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_selector_widget</span> <span class="o">=</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_stacks</span><span class="o">=</span><span class="n">show_stacks</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_selector_widget</span><span class="o">.</span><span class="n">subscribe_to_main_window</span><span class="p">(</span><span class="n">main_window</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_selector_widget</span><span class="p">)</span>
 

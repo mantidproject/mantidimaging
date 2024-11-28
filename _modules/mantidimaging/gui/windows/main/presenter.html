@@ -1222,16 +1222,16 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Unable to find destination dataset with ID </span><span class="si">{</span><span class="n">destination_dataset_id</span><span class="si">}</span><span class="s2"> when attempting to move stack&quot;</span><span class="p">)</span>
 
         <span class="n">stack_to_move</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
-        <span class="n">stack_to_move</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">destination_stack_type</span><span class="p">,</span> <span class="n">destination_dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">stack_to_move</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_dataset_stack_name</span><span class="p">(</span><span class="n">destination_stack_type</span><span class="p">,</span> <span class="n">destination_dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="n">origin_dataset</span><span class="o">.</span><span class="n">delete_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">destination_dataset_id</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_create_strict_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_create_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a name for strict dataset stacks by using the dataset name and the image type.</span>
-<span class="sd">        :param stack_type: The type of stack in the StrictDataset.</span>
+<span class="sd">        Creates a name for dataset stacks by using the dataset name and the image type.</span>
+<span class="sd">        :param stack_type: The type of stack in the Dataset.</span>
 <span class="sd">        :param dataset_name: The name of the dataset.</span>
 <span class="sd">        :return: A string for the stack name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

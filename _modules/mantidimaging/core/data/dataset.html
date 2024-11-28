@@ -688,7 +688,7 @@ document.write(`
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;StrictDataset does not have an attribute for </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset does not have an attribute for </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Dataset.set_stack_by_type_name">
@@ -715,13 +715,6 @@ document.write(`
             <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">is_processed</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
-
-
-
-<div class="viewcode-block" id="StrictDataset">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.StrictDataset">[docs]</a>
-<span class="k">class</span> <span class="nc">StrictDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
-    <span class="k">pass</span></div>
 
 
 
