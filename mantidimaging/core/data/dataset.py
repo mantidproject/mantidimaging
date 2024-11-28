@@ -176,7 +176,7 @@ class Dataset:
         if hasattr(self, attr_name):
             setattr(self, attr_name, image_stack)
         else:
-            raise AttributeError(f"StrictDataset does not have an attribute for {attr_name}")
+            raise AttributeError(f"Dataset does not have an attribute for {attr_name}")
 
     def set_stack_by_type_name(self, file_type_name: str, image_stack: ImageStack) -> None:
         file_type_name = file_type_name.upper().replace(" ", "_")
@@ -199,10 +199,6 @@ class Dataset:
             if image.is_processed:
                 return True
         return False
-
-
-class StrictDataset(Dataset):
-    pass
 
 
 def _get_stack_data_type(stack_id: uuid.UUID, dataset: Dataset) -> str:

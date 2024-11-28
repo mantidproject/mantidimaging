@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from PyQt5.QtWidgets import QApplication
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
@@ -15,7 +15,7 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         sample_stack.name = "Sample Stack"
         open_stack = generate_images(seed=666, shape=(20, 10, 10))
         open_stack.name = "Open Beam Stack"
-        dataset = StrictDataset(sample=sample_stack, flat_before=open_stack)
+        dataset = Dataset(sample=sample_stack, flat_before=open_stack)
         self.imaging.presenter.model.add_dataset_to_model(dataset)
         QApplication.sendPostedEvents()
 

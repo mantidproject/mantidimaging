@@ -12,7 +12,7 @@ import numpy as np
 from mantidimaging.core.io.saver import NEXUS_PROCESSED_DATA_PATH
 from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img_numpy_rand
 
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
     IMAGE_KEY_PATH, NexusLoadPresenter, ROTATION_ANGLE_PATH
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import logger as nexus_logger
@@ -157,7 +157,7 @@ class NexusLoaderTest(unittest.TestCase):
     def test_complete_file_returns_expected_dataset_and_title(self):
         self.nexus_loader.scan_nexus_file()
         dataset, title = self.nexus_loader.get_dataset()
-        self.assertIsInstance(dataset, StrictDataset)
+        self.assertIsInstance(dataset, Dataset)
         self.assertEqual(title, self.title)
         self.assertEqual(dataset.sample.pixel_size, self.expected_pixel_size)
 

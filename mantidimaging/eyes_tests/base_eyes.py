@@ -13,7 +13,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset, Dataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.loader import loader
 from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
@@ -101,7 +101,7 @@ class BaseEyesTest(unittest.TestCase):
         filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
         filename_group.find_all_files()
         image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
-        dataset = StrictDataset(sample=image_stack)
+        dataset = Dataset(sample=image_stack)
         image_stack.name = "Stack 1"
         self.imaging.presenter.model.add_dataset_to_model(dataset)
         self.imaging.presenter._add_dataset_to_view(dataset)

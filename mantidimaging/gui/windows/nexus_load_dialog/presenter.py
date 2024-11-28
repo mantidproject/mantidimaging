@@ -11,7 +11,7 @@ import h5py
 import numpy as np
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.dataset import StrictDataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.utility import NEXUS_PROCESSED_DATA_PATH
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -297,7 +297,7 @@ class NexusLoadPresenter:
             logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
-    def get_dataset(self) -> tuple[StrictDataset, str]:
+    def get_dataset(self) -> tuple[Dataset, str]:
         """
         Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.
         :return: A tuple containing the Dataset and the data title string.
@@ -306,16 +306,16 @@ class NexusLoadPresenter:
         sample_images.name = self.title
         assert self.flat_before_array is not None and self.flat_after_array is not None
         assert self.dark_before_array is not None and self.dark_after_array is not None
-        ds = StrictDataset(sample=sample_images,
-                           flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before",
-                                                                       ImageKeys.FlatField.value),
-                           flat_after=self._create_images_if_required(self.flat_after_array, "Flat After",
-                                                                      ImageKeys.FlatField.value),
-                           dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before",
-                                                                       ImageKeys.DarkField.value),
-                           dark_after=self._create_images_if_required(self.dark_after_array, "Dark After",
-                                                                      ImageKeys.DarkField.value),
-                           name=self.title)
+        ds = Dataset(sample=sample_images,
+                     flat_before=self._create_images_if_required(self.flat_before_array, "Flat Before",
+                                                                 ImageKeys.FlatField.value),
+                     flat_after=self._create_images_if_required(self.flat_after_array, "Flat After",
+                                                                ImageKeys.FlatField.value),
+                     dark_before=self._create_images_if_required(self.dark_before_array, "Dark Before",
+                                                                 ImageKeys.DarkField.value),
+                     dark_after=self._create_images_if_required(self.dark_after_array, "Dark After",
+                                                                ImageKeys.DarkField.value),
+                     name=self.title)
 
         self._add_recons_to_dataset(ds)
 
@@ -372,6 +372,6 @@ class NexusLoadPresenter:
                 image_stack.set_projection_angles(ProjectionAngles(projection_angles))
         return image_stack
 
-    def _add_recons_to_dataset(self, ds: StrictDataset) -> None:
+    def _add_recons_to_dataset(self, ds: Dataset) -> None:
         for recon_array in self.recon_data:
             ds.add_recon(ImageStack(recon_array))

@@ -625,16 +625,16 @@ class MainWindowPresenter(BasePresenter):
                 f"Unable to find destination dataset with ID {destination_dataset_id} when attempting to move stack")
 
         stack_to_move = self.get_stack(stack_id)
-        stack_to_move.name = self._create_strict_dataset_stack_name(destination_stack_type, destination_dataset.name)
+        stack_to_move.name = self._create_dataset_stack_name(destination_stack_type, destination_dataset.name)
 
         origin_dataset.delete_stack(stack_id)
         self.add_images_to_existing_dataset(destination_dataset_id, stack_to_move, destination_stack_type)
 
     @staticmethod
-    def _create_strict_dataset_stack_name(stack_type: str, dataset_name: str) -> str:
+    def _create_dataset_stack_name(stack_type: str, dataset_name: str) -> str:
         """
-        Creates a name for strict dataset stacks by using the dataset name and the image type.
-        :param stack_type: The type of stack in the StrictDataset.
+        Creates a name for dataset stacks by using the dataset name and the image type.
+        :param stack_type: The type of stack in the Dataset.
         :param dataset_name: The name of the dataset.
         :return: A string for the stack name.
         """

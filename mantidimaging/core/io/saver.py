@@ -182,7 +182,7 @@ def image_save(images: ImageStack,
 
 def nexus_save(dataset: Dataset, path: str, sample_name: str, save_as_float: bool) -> None:
     """
-    Uses information from a StrictDataset to create a NeXus file.
+    Uses information from a Dataset to create a NeXus file.
     :param dataset: The dataset to save as a NeXus file.
     :param path: The NeXus file path.
     :param sample_name: The sample name.
@@ -204,9 +204,9 @@ def nexus_save(dataset: Dataset, path: str, sample_name: str, save_as_float: boo
 
 def _nexus_save(nexus_file: h5py.File, dataset: Dataset, sample_name: str, save_as_float: bool) -> None:
     """
-    Takes a NeXus file and writes the StrictDataset information to it.
+    Takes a NeXus file and writes the Dataset information to it.
     :param nexus_file: The NeXus file.
-    :param dataset: The StrictDataset.
+    :param dataset: The Dataset.
     :param sample_name: The sample name.
     """
     # Top-level group

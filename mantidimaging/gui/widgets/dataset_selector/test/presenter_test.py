@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from mantidimaging.core.data.dataset import StrictDataset, Dataset
+from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.widgets.dataset_selector.presenter import DatasetSelectorWidgetPresenter, Notification
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
 
@@ -29,9 +29,9 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.img3.name = "Image 3"
         self.img4 = mock.Mock(id="img4")
         self.img4.name = "Image 4"
-        self.ds1 = StrictDataset(sample=self.img1)
+        self.ds1 = Dataset(sample=self.img1)
         self.ds1.name = "Dataset 1"
-        self.ds2 = StrictDataset(sample=self.img2, flat_before=self.img3)
+        self.ds2 = Dataset(sample=self.img2, flat_before=self.img3)
         self.ds2.name = "Dataset 2"
         self.ds3 = Dataset(stacks=[self.img4])
         self.ds3.name = "Dataset 3"
@@ -104,16 +104,3 @@ class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
         self.view.addItem.assert_any_call(self.img2.name, self.img2.id)
         self.view.addItem.assert_any_call(self.img3.name, self.img3.id)
         self.view.addItem.assert_any_call(self.img4.name, self.img4.id)
-
-    def test_do_reload_datasets_by_dataset_type(self):
-        self.view.main_window.presenter.datasets = [self.ds1, self.ds2, self.ds3]
-        self.presenter.show_stacks = True
-        self.presenter.relevant_dataset_types = StrictDataset
-        self.view.datasets_updated.emit = mock.Mock()
-        self.view.stack_selected_uuid.emit = mock.Mock()
-
-        self.presenter.do_reload_datasets()
-        self.assertEqual(self.view.addItem.call_count, 3)
-        self.view.addItem.assert_any_call(self.img1.name, self.img1.id)
-        self.view.addItem.assert_any_call(self.img2.name, self.img2.id)
-        self.view.addItem.assert_any_call(self.img3.name, self.img3.id)

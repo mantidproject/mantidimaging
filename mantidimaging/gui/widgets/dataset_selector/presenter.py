@@ -24,15 +24,11 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
     view: DatasetSelectorWidgetView
     show_stacks: bool
 
-    def __init__(self,
-                 view: DatasetSelectorWidgetView,
-                 show_stacks: bool = False,
-                 relevant_dataset_types: type | tuple[type] | None = None):
+    def __init__(self, view: DatasetSelectorWidgetView, show_stacks: bool = False):
         super().__init__(view)
 
         self.current_dataset: UUID | None = None
         self.show_stacks = show_stacks
-        self.relevant_dataset_types = relevant_dataset_types
 
     def notify(self, signal: Notification) -> None:
         try:
@@ -74,13 +70,11 @@ class DatasetSelectorWidgetPresenter(BasePresenter):
     def _get_dataset_list(self) -> list[tuple[UUID, str]]:
         result = []
         for dataset in self.view.main_window.presenter.datasets:
-            # If no relevant dataset types have been specified then all should be included
-            if not self.relevant_dataset_types or isinstance(dataset, self.relevant_dataset_types):
-                if not self.show_stacks:
-                    result.append((dataset.id, dataset.name))
-                else:
-                    for stack in dataset.all:
-                        result.append((stack.id, stack.name))
+            if not self.show_stacks:
+                result.append((dataset.id, dataset.name))
+            else:
+                for stack in dataset.all:
+                    result.append((stack.id, stack.name))
 
         return result
 
