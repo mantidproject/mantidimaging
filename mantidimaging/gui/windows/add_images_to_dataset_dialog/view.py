@@ -37,7 +37,7 @@ class AddImagesToDatasetDialog(BaseDialogView):
         """
         Select a file in the stack path that we wish to add/replace in the dataset.
         """
-        selected_file, _ = QFileDialog.getOpenFileName(caption="Images", filter="Image File (*.tif *.tiff)")
+        selected_file, _ = QFileDialog.getOpenFileName(caption="Images", filter="Image File (*.tif *.tiff *.fits)")
         if selected_file:
             self.filePathLineEdit.setText(selected_file)
             self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
