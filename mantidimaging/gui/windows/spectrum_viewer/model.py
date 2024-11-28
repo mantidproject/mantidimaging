@@ -331,12 +331,9 @@ class SpectrumViewerWindowModel:
                  normalise_with_shuttercount: bool = False) -> None:
         """
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
+        @param path: The path to save the CSV file to.
+        @param normalized: Whether to save the normalized spectrum.
 
-        Args:
-            path (Path): The path to save the CSV file to.
-            rois (dict[str, SensibleROI]): A dictionary mapping ROI names to SensibleROI objects.
-            normalise (bool): Whether to save the normalized spectrum.
-            normalise_with_shuttercount (bool): Whether to normalize using shutter count correction.
         """
         if self._stack is None:
             raise ValueError("No stack selected")
@@ -345,6 +342,7 @@ class SpectrumViewerWindowModel:
 
         csv_output = CSVOutput()
         csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
+
         self.tof_data = self.get_stack_time_of_flight()
         if self.tof_data is not None:
             self.units.set_data_to_convert(self.tof_data)
@@ -353,21 +351,21 @@ class SpectrumViewerWindowModel:
             csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
 
         for roi_name, roi in rois.items():
-            sample_spectrum = self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount)
-            csv_output.add_column(roi_name, sample_spectrum, "Counts")
+            csv_output.add_column(roi_name, self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount),
+                                  "Counts")
 
             if normalise:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
-
-                open_spectrum = self.get_spectrum(roi, SpecType.OPEN)
-                norm_spectrum = self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount)
-
-                csv_output.add_column(f"{roi_name}_open", open_spectrum, "Counts")
-                csv_output.add_column(f"{roi_name}_norm", norm_spectrum, "Counts")
-
+                csv_output.add_column(f"{roi_name}_open", self.get_spectrum(roi, SpecType.OPEN), "Counts")
+                csv_output.add_column(f"{roi_name}_norm",
+                                      self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
+                                      "Counts")
         with path.open("w") as outfile:
             csv_output.write(outfile)
+
+        roi_coords_filename = self.get_roi_coords_filename(path)
+        self.save_roi_coords(roi_coords_filename)
 
     def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
         """

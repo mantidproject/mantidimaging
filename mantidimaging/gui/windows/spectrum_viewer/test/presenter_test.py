@@ -201,38 +201,17 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     @parameterized.expand(["/fake/path", "/fake/path.csv"])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.shuttercount_issue")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv")
-    def test_handle_export_csv(self, path_name: str, mock_save_csv: mock.Mock, mock_shuttercount_issue: mock.Mock):
+    def test_handle_export_csv(self, path_name: str, mock_save_csv: mock.Mock, mock_shuttercount_issue):
         self.view.get_csv_filename = mock.Mock(return_value=Path(path_name))
         self.view.shuttercount_norm_enabled.return_value = False
         mock_shuttercount_issue.return_value = "Something wrong"
-
         self.presenter.model.set_stack(generate_images())
-        roi_all = SensibleROI.from_list([0, 0, 12, 11])
-        roi_specific = SensibleROI.from_list([0, 0, 3, 3])
-        mock_roi_all = mock.Mock(spec=SpectrumROI, name="ROI_ALL", as_sensible_roi=mock.Mock(return_value=roi_all))
-        mock_roi_all.name = "all"
-        mock_roi_specific = mock.Mock(spec=SpectrumROI,
-                                      name="ROI_SPECIFIC",
-                                      as_sensible_roi=mock.Mock(return_value=roi_specific))
-        mock_roi_specific.name = "roi"
-
-        self.view.spectrum_widget.roi_dict = {
-            "all": mock_roi_all,
-            "roi": mock_roi_specific,
-        }
-
         self.presenter.handle_export_csv()
+
         self.view.get_csv_filename.assert_called_once()
-        expected_rois = {
-            "all": roi_all,
-            "roi": roi_specific,
-        }
-        mock_save_csv.assert_called_once_with(
-            path=Path("/fake/path.csv"),
-            rois=expected_rois,
-            normalise=False,
-            normalise_with_shuttercount=False,
-        )
+        mock_save_csv.assert_called_once_with(Path("/fake/path.csv"), {},
+                                              normalise=False,
+                                              normalise_with_shuttercount=False)
 
     @parameterized.expand(["/fake/path", "/fake/path.dat"])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_roi")
