@@ -440,54 +440,8 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="tofPropertiesGroupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>300</width>
-            <height>84</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>Time of Flight Properties</string>
-          </property>
-            <layout class="QFormLayout" name="formLayout">
-                <item row="0" column="0">
-                <widget class="QLabel" name="label_3">
-                <property name="text">
-                <string>Flight path:</string>
-                </property>
-                </widget>
-                </item>
-                <item row="0" column="1">
-                    <widget class="QDoubleSpinBox" name="flightPathSpinBox">
-                    <property name="suffix">
-                    <string/>
-                    </property>
-                    </widget>
-                </item>
-                <item row="1" column="0">
-                    <widget class="QLabel" name="label_4">
-                    <property name="text">
-                    <string>Time delay: </string>
-                    </property>
-                    </widget>
-                </item>
-                <item row="1" column="1">
-                    <widget class="QDoubleSpinBox" name="timeDelaySpinBox">
-                    <property name="suffix">
-                    <string/>
-                    </property>
-                    </widget>
-                </item>
-            </layout>
-        </widget>
-    </item>
+            <widget class="QWidget" name="experimentSetupGroupBox"></widget>
+        </item>
         <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
