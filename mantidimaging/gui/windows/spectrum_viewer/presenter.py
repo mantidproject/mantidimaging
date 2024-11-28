@@ -200,12 +200,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Handle changes to any ROI position and size.
         """
-        for name in self.model.get_list_of_roi_names():
-            view_roi = self.view.spectrum_widget.get_roi(name)
-            if force_new_spectrums or view_roi != self.model.get_roi(name):
-                self.model.set_roi(name, view_roi)
+        for name, widget_roi in self.view.spectrum_widget.roi_dict.items():
+            current_roi = self.view.spectrum_widget.get_roi(name)
+            if force_new_spectrums or widget_roi != current_roi:
                 spectrum = self.model.get_spectrum(
-                    view_roi,
+                    current_roi,
                     self.spectrum_mode,
                     normalise_with_shuttercount=self.view.shuttercount_norm_enabled(),
                 )
@@ -221,27 +220,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Redraw the spectrum with the given name
         """
-        roi = self.model.get_roi(name)
-        self.view.set_spectrum(
-            name,
-            self.model.get_spectrum(roi,
-                                    self.spectrum_mode,
-                                    normalise_with_shuttercount=self.view.shuttercount_norm_enabled()))
-
-    def redraw_all_rois(self) -> None:
-        """
-        Redraw all ROIs and spectrum plots
-        """
-        for name in self.model.get_list_of_roi_names():
-            if name == "all" or not self.view.spectrum_widget.roi_dict[name].isVisible():
-                continue
-            roi = self.view.spectrum_widget.get_roi(name)
-            self.model.set_roi(name, roi)
+        for roi_name, roi in self.view.spectrum_widget.roi_dict.items():
+            roi = self.view.spectrum_widget.get_roi(roi_name)
             self.view.set_spectrum(
                 name,
                 self.model.get_spectrum(roi,
                                         self.spectrum_mode,
                                         normalise_with_shuttercount=self.view.shuttercount_norm_enabled()))
+
+    def redraw_all_rois(self) -> None:
+        """
+        Redraw all ROIs and spectrum plots
+        """
+        for roi_name in self.view.spectrum_widget.roi_dict:
+            widget_roi = self.view.spectrum_widget.get_roi(roi_name)
+            spectrum = self.model.get_spectrum(widget_roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+            self.view.set_spectrum(roi_name, spectrum)
 
     def handle_button_enabled(self) -> None:
         """
@@ -329,7 +323,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         @return: list of ROI names
         """
-        return self.model.get_list_of_roi_names()
+        return list(self.view.spectrum_widget.roi_dict.keys())
 
     def do_add_roi(self) -> None:
         """
@@ -361,7 +355,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def add_rits_roi(self) -> None:
         self.model.set_new_roi(ROI_RITS)
-        roi = self.model.get_roi(ROI_RITS)
+        roi = self.model.roi_ranges[ROI_RITS]
         self.view.spectrum_widget.add_roi(roi, ROI_RITS)
         self.view.set_spectrum(ROI_RITS,
                                self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
@@ -390,21 +384,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Remove a given ROI from the table by ROI name or all ROIs from
         the table if no name is passed as an argument
-
         @param roi_name: Name of the ROI to remove
         """
         if roi_name is None:
-            self.view.clear_all_rois()
-            for name in self.get_roi_names():
-                self.view.spectrum_widget.remove_roi(name)
+            self.view.spectrum_widget.roi_dict.clear()
             self.model.remove_all_roi()
         else:
-            roi = self.model.get_roi(roi_name)
             self.view.spectrum_widget.remove_roi(roi_name)
-            spectrum = self.model.get_spectrum(roi,
-                                               self.spectrum_mode,
-                                               normalise_with_shuttercount=self.view.shuttercount_norm_enabled())
-            self.view.set_spectrum(roi_name, spectrum)
             self.model.remove_roi(roi_name)
 
     def handle_export_tab_change(self, index: int) -> None:

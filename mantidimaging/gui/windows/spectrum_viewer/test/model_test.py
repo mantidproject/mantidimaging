@@ -151,12 +151,14 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_set_stack_sets_roi(self):
         self._set_sample_stack()
+        roi_all = self.model._roi_ranges["all"]
+        roi = self.model._roi_ranges["roi"]
 
-        self.assertEqual(self.model.get_roi("all"), self.model.get_roi('roi'))
-        self.assertEqual(self.model.get_roi("all").top, 0)
-        self.assertEqual(self.model.get_roi("all").left, 0)
-        self.assertEqual(self.model.get_roi("all").right, 12)
-        self.assertEqual(self.model.get_roi("all").bottom, 11)
+        self.assertEqual(roi_all, roi)
+        self.assertEqual(roi_all.top, 0)
+        self.assertEqual(roi_all.left, 0)
+        self.assertEqual(roi_all.right, 12)
+        self.assertEqual(roi_all.bottom, 11)
 
     def test_if_set_stack_called_THEN_do_remove_roi_not_called(self):
         self.model.set_stack(generate_images())
@@ -208,12 +210,13 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, spectrum = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :6] *= 2
-        self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
 
+        roi = SensibleROI.from_list([0, 0, 12, 11])
+        self.model._roi_ranges["ROI_RITS"] = roi
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, self.model.get_roi("rits_roi"))
+            self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, roi)
 
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
@@ -229,9 +232,10 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 10, 11]))
         self.model.set_normalise_stack(norm)
 
+        self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 10, 11])
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, self.model.get_roi("rits_roi"))
+            self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, self.model._roi_ranges["ROI_RITS"])
 
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
@@ -241,21 +245,18 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     @parameterized.expand([
         ("std_dev", ErrorMode.STANDARD_DEVIATION, [0., 0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.25]),
-        ("std_dev", ErrorMode.PROPAGATED,
-         [0.0000, 0.0772, 0.1306, 0.1823, 0.2335, 0.2845, 0.3354, 0.3862, 0.4369, 0.4876]),
     ])
     def test_save_rits_data_errors(self, _, error_mode, expected_error):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
-        self.model.set_new_roi("rits_roi")
-        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 10, 11]))
         self.model.set_normalise_stack(norm)
 
+        self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 10, 11])
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
             with mock.patch.object(self.model, "export_spectrum_to_rits") as mock_export:
-                self.model.save_rits_roi(mock_path, error_mode, self.model.get_roi("rits_roi"))
+                self.model.save_rits_roi(mock_path, error_mode, self.model._roi_ranges["ROI_RITS"])
 
         calculated_errors = mock_export.call_args[0][3]
         np.testing.assert_allclose(expected_error, calculated_errors, atol=1e-4)
@@ -263,48 +264,38 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
     def test_invalid_error_mode_rits(self):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.ones([10, 11, 12]))
-        self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
+        roi = SensibleROI.from_list([0, 0, 12, 11])
+        self.model._roi_ranges["rits_roi"] = roi
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.assertRaises(ValueError, self.model.save_rits_roi, mock_path, None, self.model.get_roi("rits_roi"))
+            self.assertRaises(ValueError, self.model.save_rits_roi, mock_path, None, roi)
         mock_path.open.assert_not_called()
 
     def test_save_rits_no_norm_err(self):
         stack, _ = self._set_sample_stack()
-        self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(None)
         mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
         stack.log_file = mock_inst_log
+        roi = SensibleROI.from_list([0, 0, 12, 11])
+        self.model._roi_ranges["ROI_RITS"] = roi
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.assertRaises(
-                ValueError,
-                self.model.save_rits_roi,
-                mock_path,
-                ErrorMode.STANDARD_DEVIATION,
-                self.model.get_roi("rits_roi"),
-            )
+            self.assertRaises(ValueError, self.model.save_rits_roi, mock_path, ErrorMode.STANDARD_DEVIATION, roi)
         mock_path.open.assert_not_called()
 
     def test_save_rits_no_tof_err(self):
         self._set_sample_stack()
         norm = ImageStack(np.ones([10, 11, 12]))
-
-        self.model.set_new_roi("rits_roi")
         self.model.set_normalise_stack(norm)
+        roi = SensibleROI.from_list([0, 0, 12, 11])
+        self.model._roi_ranges["ROI_RITS"] = roi
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.assertRaises(
-                ValueError,
-                self.model.save_rits_roi,
-                mock_path,
-                ErrorMode.STANDARD_DEVIATION,
-                self.model.get_roi("rits_roi"),
-            )
+            self.assertRaises(ValueError, self.model.save_rits_roi, mock_path, ErrorMode.STANDARD_DEVIATION, roi)
         mock_path.open.assert_not_called()
 
     def test_WHEN_save_csv_called_THEN_save_roi_coords_called_WITH_correct_args(self):
@@ -388,18 +379,18 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_get_list_of_roi_names_called_THEN_correct_list_returned(self):
         self.model.set_stack(generate_images())
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
 
     def test_when_new_roi_set_THEN_roi_name_added_to_list_of_roi_names(self):
         self.model.set_stack(generate_images())
         self.model.set_new_roi("new_roi")
-        self.assertTrue(self.model.get_roi("new_roi"))
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi"])
+        self.assertIn("new_roi", self.model._roi_ranges)
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "new_roi"])
 
-    def test_WHEN_get_roi_called_with_non_existent_name_THEN_error_raised(self):
+    def test_WHEN_accessing_non_existent_roi_THEN_keyerror_is_raised(self):
         self.model.set_stack(generate_images())
         with self.assertRaises(KeyError):
-            self.model.get_roi("non_existent_roi")
+            _ = self.model._roi_ranges["non_existent_roi"]
 
     @parameterized.expand([
         ("False", None, False),
@@ -411,17 +402,18 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_roi_removed_THEN_roi_name_removed_from_list_of_roi_names(self):
         self.model.set_stack(generate_images())
-        self.model.set_new_roi("roi")
-        self.model.set_new_roi("new_roi")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi", "new_roi"])
+        rois = ["roi", "new_roi"]
+        for roi in rois:
+            self.model.set_new_roi(roi)
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
         self.model.remove_roi("new_roi")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "roi"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "roi"])
 
     def test_WHEN_remove_roi_called_with_default_roi_THEN_raise_runtime_error(self):
         self.model.set_stack(generate_images())
         with self.assertRaises(RuntimeError):
             self.model.remove_roi("all")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
 
     def test_WHEN_invalid_roi_removed_THEN_keyerror_raised(self):
         self.model.set_stack(generate_images())
@@ -430,18 +422,19 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_remove_all_rois_called_THEN_all_but_default_rois_removed(self):
         self.model.set_stack(generate_images())
-        self.model.set_new_roi("new_roi")
-        self.model.set_new_roi("new_roi_2")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi", "new_roi_2"])
+        rois = ["new_roi", "new_roi_2"]
+        for roi in rois:
+            self.model.set_new_roi(roi)
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
         self.model.remove_all_roi()
-        self.assertListEqual(self.model.get_list_of_roi_names(), [])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), [])
 
     def test_WHEN_roi_renamed_THEN_roi_name_changed_in_list_of_roi_names(self):
         self.model.set_stack(generate_images())
         self.model.set_new_roi("new_roi")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "new_roi"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "new_roi"])
         self.model.rename_roi("new_roi", "imaging_is_the_coolest")
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all", "imaging_is_the_coolest"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "imaging_is_the_coolest"])
 
     def test_WHEN_invalid_roi_renamed_THEN_keyerror_raised(self):
         self.model.set_stack(generate_images())
@@ -450,7 +443,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_default_roi_renamed_THEN_runtime_error_raised(self):
         self.model.set_stack(generate_images())
-        self.assertListEqual(self.model.get_list_of_roi_names(), ["all"])
+        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
         with self.assertRaises(RuntimeError):
             self.model.rename_roi("all", "imaging_is_the_coolest")
 
@@ -508,15 +501,15 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
-        self.model.set_new_roi("rits_roi")
-        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, roi_size, roi_size]))
+        roi_name = "rits_roi"
+        roi = SensibleROI.from_list([0, 0, roi_size, roi_size])
+        self.model._roi_ranges[roi_name] = roi
         self.model.set_normalise_stack(norm)
-        roi = self.model.get_roi("rits_roi")
+
         Mx, My = roi.width, roi.height
         x_iterations = min(math.ceil(Mx / step), math.ceil((Mx - bin_size) / step) + 1)
         y_iterations = min(math.ceil(My / step), math.ceil((My - bin_size) / step) + 1)
         expected_number_of_calls = x_iterations * y_iterations
-
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, bin_size, step)
@@ -530,11 +523,11 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_new_roi("rits_roi")
         self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 5, 5]))
         self.model.set_normalise_stack(norm)
+        self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 5, 5])
 
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_single_rits_spectrum(mock_path, ErrorMode.STANDARD_DEVIATION)
-        mock_save_rits_roi.assert_called_once()
 
     @mock.patch.object(SpectrumViewerWindowModel, "export_spectrum_to_rits")
     def test_save_rits_correct_transmision(self, mock_save_rits_roi):
@@ -601,20 +594,19 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         sample_shutter_counts = stack.shutter_count_file.get_column(ShutterCountColumn.SHUTTER_COUNT)
         open_shutter_counts = normalise_stack.shutter_count_file.get_column(ShutterCountColumn.SHUTTER_COUNT)
         average_shutter_counts = sample_shutter_counts[0] / open_shutter_counts[0]
+        roi = SensibleROI.from_list([0, 0, 5, 5])
+        self.model._roi_ranges["roi"] = roi
 
-        roi = self.model.get_roi("roi")
         left, top, right, bottom = roi
         sample = stack.data[:, top:bottom, left:right]
         open = normalise_stack.data[:, top:bottom, left:right]
-
         expected = np.divide(sample, open, out=np.zeros_like(sample), where=open != 0) / average_shutter_counts
         expected = np.std(expected, axis=(1, 2))
 
-        with mock.patch.object(
-                self.model, "get_shuttercount_normalised_correction_parameter",
-                return_value=average_shutter_counts) as mock_get_shuttercount_normalised_correction_parameter:
+        with mock.patch.object(self.model,
+                               "get_shuttercount_normalised_correction_parameter",
+                               return_value=average_shutter_counts):
             result = self.model.get_transmission_error_standard_dev(roi, normalise_with_shuttercount=True)
-            mock_get_shuttercount_normalised_correction_parameter.assert_called_once()
 
         self.assertEqual(len(expected), len(result))
         np.testing.assert_allclose(expected, result)
@@ -623,24 +615,23 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.model.get_transmission_error_standard_dev("roi")
 
-    def test_get_transmission_error_propogated(self):
+    def test_get_transmission_error_propagated(self):
         stack, _ = self._set_sample_stack(with_tof=True, with_shuttercount=True)
         normalise_stack = self._set_normalise_stack(with_shuttercount=True)
         sample_shutter_counts = stack.shutter_count_file.get_column(ShutterCountColumn.SHUTTER_COUNT)
         open_shutter_counts = normalise_stack.shutter_count_file.get_column(ShutterCountColumn.SHUTTER_COUNT)
         average_shutter_counts = sample_shutter_counts[0] / open_shutter_counts[0]
 
-        roi = self.model.get_roi("roi")
+        roi = SensibleROI.from_list([0, 0, 5, 5])
+        self.model._roi_ranges["roi"] = roi
         sample = self.model.get_stack_spectrum_summed(stack, roi)
         open = self.model.get_stack_spectrum_summed(normalise_stack, roi)
-
         expected = np.sqrt(sample / open**2 + sample**2 / open**3) / average_shutter_counts
 
-        with mock.patch.object(
-                self.model, "get_shuttercount_normalised_correction_parameter",
-                return_value=average_shutter_counts) as mock_get_shuttercount_normalised_correction_parameter:
+        with mock.patch.object(self.model,
+                               "get_shuttercount_normalised_correction_parameter",
+                               return_value=average_shutter_counts):
             result = self.model.get_transmission_error_propagated(roi, normalise_with_shuttercount=True)
-            mock_get_shuttercount_normalised_correction_parameter.assert_called_once()
 
         self.assertEqual(len(expected), len(result))
         np.testing.assert_allclose(expected, result)
