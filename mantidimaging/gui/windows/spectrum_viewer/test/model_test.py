@@ -356,8 +356,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack.data[:, :, :5] *= 2
         self.model.set_normalise_stack(norm)
 
-        roi_all = SensibleROI.from_list([0, 0, 12, 11])  # Define an ROI
-        rois = {"all": roi_all}  # Provide ROIs to the method
+        roi_all = SensibleROI.from_list([0, 0, 12, 11])
+        rois = {"all": roi_all}
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
