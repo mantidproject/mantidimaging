@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction, QDoubleSpinBox
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction
 from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
 
 from mantidimaging.core.utility import finder
@@ -18,7 +18,7 @@ from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
-
+from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 import numpy as np
 
 if TYPE_CHECKING:
@@ -55,9 +55,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     number_roi_properties_procced: int = 0
 
-    tofPropertiesGroupBox: QGroupBox
-    flightPathSpinBox: QDoubleSpinBox
-    timeDelaySpinBox: QDoubleSpinBox
+    experimentSetupGroupBox: QGroupBox
+    experimentSetupFormWidget: ExperimentSetupFormWidget
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
@@ -174,15 +173,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.current_roi_name = self.last_clicked_roi = self.roi_table_model.roi_names()[0]
         self.set_roi_properties()
 
-        self.flightPathSpinBox.setMinimum(0)
-        self.flightPathSpinBox.setMaximum(1e10)
-        self.flightPathSpinBox.setValue(56.4)
-        self.flightPathSpinBox.setSuffix(" m")
-        self.timeDelaySpinBox.setMaximum(1e10)
-        self.timeDelaySpinBox.setSuffix(" \u03BCs")
-
-        self.flightPathSpinBox.valueChanged.connect(self.presenter.handle_flight_path_change)
-        self.timeDelaySpinBox.valueChanged.connect(self.presenter.handle_time_delay_change)
+        self.experimentSetupFormWidget = ExperimentSetupFormWidget(self.experimentSetupGroupBox)
+        self.experimentSetupFormWidget.flight_path = 56.4
+        self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
         def on_row_change(item: QModelIndex, _: Any) -> None:
             """
