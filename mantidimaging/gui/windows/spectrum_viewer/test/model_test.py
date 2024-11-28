@@ -367,10 +367,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertIn("# ToF_index,Wavelength,ToF,Energy,all,all_open,all_norm", mock_stream.captured[0])
         self.assertIn("# Index,Angstrom,Microseconds,MeV,Counts,Counts,Counts", mock_stream.captured[1])
         self.assertIn("0.0,0.0,0.0,inf,0.0,2.0,0.0", mock_stream.captured[2])
-        self.assertIn(
-            "1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334",
-            mock_stream.captured[3]
-        )
+        self.assertIn("1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334",
+                      mock_stream.captured[3])
         self.assertTrue(mock_stream.is_closed)
 
     def test_WHEN_roi_name_generator_called_THEN_correct_names_returned_visible_to_model(self):

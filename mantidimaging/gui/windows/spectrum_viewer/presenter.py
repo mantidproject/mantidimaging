@@ -269,7 +269,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             path,
             rois,
             normalise=self.spectrum_mode == SpecType.SAMPLE_NORMED,
-            normalise_with_shuttercount=self.view.shuttercount_norm_enabled(),)
+            normalise_with_shuttercount=self.view.shuttercount_norm_enabled(),
+        )
 
     def handle_rits_export(self) -> None:
         """
