@@ -363,9 +363,7 @@ class SpectrumViewerWindowModel:
                                       "Counts")
         with path.open("w") as outfile:
             csv_output.write(outfile)
-
-        roi_coords_filename = self.get_roi_coords_filename(path)
-        self.save_roi_coords(roi_coords_filename)
+            self.save_roi_coords(self.get_roi_coords_filename(path))
 
     def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
         """
