@@ -218,15 +218,9 @@ class SpectrumViewerWindowModel:
             return "Need 2 different ShutterCount stacks"
         return ""
 
-    def get_spectrum(self,
-                     roi: str | SensibleROI,
-                     mode: SpecType,
-                     normalise_with_shuttercount: bool = False) -> np.ndarray:
+    def get_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool = False) -> np.ndarray:
         if self._stack is None:
             return np.array([])
-
-        if isinstance(roi, str):
-            roi = self.get_roi(roi)
 
         if mode == SpecType.SAMPLE:
             return self.get_stack_spectrum(self._stack, roi)
@@ -330,18 +324,25 @@ class SpectrumViewerWindowModel:
         """
         return self._stack is not None
 
-    def save_csv(self, path: Path, normalise: bool, normalise_with_shuttercount: bool = False) -> None:
+    def save_csv(self,
+                 path: Path,
+                 rois: dict[str, SensibleROI],
+                 normalise: bool,
+                 normalise_with_shuttercount: bool = False) -> None:
         """
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
-
         @param path: The path to save the CSV file to.
         @param normalized: Whether to save the normalized spectrum.
+
         """
         if self._stack is None:
             raise ValueError("No stack selected")
+        if not rois:
+            raise ValueError("No ROIs provided")
 
         csv_output = CSVOutput()
         csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
+
         self.tof_data = self.get_stack_time_of_flight()
         if self.tof_data is not None:
             self.units.set_data_to_convert(self.tof_data)
@@ -349,17 +350,17 @@ class SpectrumViewerWindowModel:
             csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
             csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
 
-        for roi_name in self.get_list_of_roi_names():
-            csv_output.add_column(roi_name, self.get_spectrum(roi_name, SpecType.SAMPLE, normalise_with_shuttercount),
+        for roi_name, roi in rois.items():
+            csv_output.add_column(roi_name, self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount),
                                   "Counts")
+
             if normalise:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
-                csv_output.add_column(roi_name + "_open", self.get_spectrum(roi_name, SpecType.OPEN), "Counts")
-                csv_output.add_column(roi_name + "_norm",
-                                      self.get_spectrum(roi_name, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
+                csv_output.add_column(f"{roi_name}_open", self.get_spectrum(roi, SpecType.OPEN), "Counts")
+                csv_output.add_column(f"{roi_name}_norm",
+                                      self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
                                       "Counts")
-
         with path.open("w") as outfile:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))

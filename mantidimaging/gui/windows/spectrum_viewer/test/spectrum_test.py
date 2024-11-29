@@ -42,6 +42,11 @@ class SpectrumROITest(unittest.TestCase):
         self.spectrum_roi.onChangeColor()
         self.assertEqual(self.spectrum_roi.colour, (0, 0, 0, 255))
 
+    def test_WHEN_as_sensible_roi_called_THEN_correct_sensible_roi_returned(self):
+        sensible_roi = self.spectrum_roi.as_sensible_roi()
+        self.assertEqual((sensible_roi.left, sensible_roi.top, sensible_roi.right, sensible_roi.bottom),
+                         (10, 20, 30, 40))
+
 
 @mock_versions
 @start_qapplication
