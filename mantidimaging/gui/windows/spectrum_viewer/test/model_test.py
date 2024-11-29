@@ -348,18 +348,20 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_normalise_stack(norm)
 
         roi_all = SensibleROI.from_list([0, 0, 12, 11])
-        rois = {"all": roi_all}
+        rois = {"all": roi_all, "roi": roi_all}
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_csv(mock_path, rois=rois, normalise=True, normalise_with_shuttercount=False)
 
         mock_path.open.assert_called_once_with("w")
-        self.assertIn("# ToF_index,Wavelength,ToF,Energy,all,all_open,all_norm", mock_stream.captured[0])
+        self.assertIn("# ToF_index,Wavelength,ToF,Energy,all,all_open,all_norm,roi,roi_open,roi_norm",
+                      mock_stream.captured[0])
         self.assertIn("# Index,Angstrom,Microseconds,MeV,Counts,Counts,Counts", mock_stream.captured[1])
-        self.assertIn("0.0,0.0,0.0,inf,0.0,2.0,0.0", mock_stream.captured[2])
-        self.assertIn("1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334",
-                      mock_stream.captured[3])
+        self.assertIn("0.0,0.0,0.0,inf,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.captured[2])
+        self.assertIn(
+            "1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334,1.4166666666666667,2.0,0.7083333333333334",
+            mock_stream.captured[3])
         self.assertTrue(mock_stream.is_closed)
 
     def test_WHEN_roi_name_generator_called_THEN_correct_names_returned_visible_to_model(self):
