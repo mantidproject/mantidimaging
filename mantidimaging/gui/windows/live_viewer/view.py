@@ -41,7 +41,7 @@ class LiveViewerWindowView(BaseMainWindowView):
 
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-        self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
+        # self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self.splitter.addWidget(self.live_viewer)
         self.splitter.addWidget(self.spectrum_plot_widget)
@@ -70,7 +70,6 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.spectrum_action.setCheckable(True)
         operations_menu.addAction(self.spectrum_action)
         self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
-        self.presenter.model.image_stack.create_delayed_array = False
         self.live_viewer.set_roi_alpha(self.spectrum_action.isChecked() * 255)
         self.live_viewer.set_roi_visibility_flags(False)
 
@@ -134,12 +133,11 @@ class LiveViewerWindowView(BaseMainWindowView):
                 self.live_viewer.add_roi()
             self.live_viewer.set_roi_alpha(255)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
-            self.presenter.model.image_stack.create_delayed_array = True
-            self.presenter.model.image_stack.set_roi(self.live_viewer.get_roi())
-            self.presenter.model.image_stack.create_and_set_delayed_stack()
-            self.presenter.model.image_stack.calc_mean_fully_roi()
-            self.presenter.update_spectrum(self.presenter.model.image_stack.mean)
+            # self.presenter.model.image_stack.create_delayed_array = True
+            # self.presenter.model.image_stack.set_roi(self.live_viewer.get_roi())
+            # self.presenter.model.image_stack.create_and_set_delayed_stack()
+            # self.presenter.model.image_stack.calc_mean_fully_roi()
+            # self.presenter.update_spectrum(self.presenter.model.image_stack.mean)
         else:
             self.live_viewer.set_roi_alpha(0)
             self.splitter.setSizes([widget_height, 0])
-            self.presenter.model.image_stack.create_delayed_array = False

@@ -25,196 +25,97 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-class DaskImageDataStack:
+class ImageCache:
     """
-    A Dask Image Data Stack Class to hold a delayed array of all the images in the Live Viewer Path
+    An ImageCache class to be used as a decorator on image read functions to store recent images in memory
     """
-    delayed_stack: dask.array.Array | None = None
+    cache_dict: dict = {}
     image_list: list[Image_Data]
     image_paths: set[str] = set()
-    create_delayed_array: bool
-    _selected_index: int
     mean: np.ndarray = np.array([])
     roi: SensibleROI | None = None
     param_to_calc: list[str] = []
     max_cache_size: int = 100
     buffer_size: int = 10
 
-    def __init__(self, image_list: list[Image_Data], create_delayed_array: bool = False):
-        self.image_list = image_list
-        self.create_delayed_array = create_delayed_array
+    def __init__(self, func):
+        self.func = func
 
-        if image_list and create_delayed_array:
-            self.create_and_set_delayed_stack()
+    def __call__(self, *args, **kwargs):
+        #print(f"Arguments: {args}, Keyword Arguments: {kwargs}")
+        result = self.func(*args, **kwargs)
+        self.add_to_cache(args, result)
+        return result
 
-    @property
-    def shape(self):
-        return self.delayed_stack.shape
+    def add_to_cache(self, args, image_array: np.ndarray):
+        if args not in self.cache_dict.keys():
+            self.cache_dict[args] = image_array
 
-    @property
-    def selected_index(self):
-        return self._selected_index
+    def remove_from_cache(self, image: Image_Data):
+        if image.image_path in self.cache_dict.keys():
+            del self.cache_dict[image.image_path]
 
-    @selected_index.setter
-    def selected_index(self, index):
-        self._selected_index = index
+    # def update_param_calculations(self) -> None:
+    #     if 'mean' in self.param_to_calc:
+    #         if len(self.mean) == len(self.image_list) - 1:
+    #             self.add_last_mean()
+    #         else:
+    #             if self.roi:
+    #                 self.calc_mean_fully_roi()
+    #             else:
+    #                 self.calc_mean_fully()
+    #
+    # def add_last_mean(self) -> None:
+    #     if self.delayed_stack is not None:
+    #         if self.roi:
+    #             left, top, right, bottom = self.roi
+    #             mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom,
+    #                                                                            left:right]))[0].compute()
+    #         else:
+    #             mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1]))[0].compute()
+    #         self.mean = np.append(self.mean, mean_to_add)
+    #         self.calc_mean_buffer()
 
-    def get_delayed_arrays(self, image_list: list[Image_Data]) -> list[dask.array.Array] | None:
-        if image_list:
-            if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"] and self.create_delayed_array:
-                return [dask_image.imread.imread(image_data.image_path)[0] for image_data in image_list]
-            elif image_list[0].image_path.suffix.lower() == ".fits" and self.create_delayed_array:
-                return [dask.delayed(fits.open)(image_data.image_path)[0].data for image_data in image_list]
-            else:
-                return None
-        else:
-            return None
-
-    def get_delayed_image(self, index: int) -> dask.array.Array | None:
-        return self.delayed_stack[index] if self.delayed_stack is not None else None
-
-    def get_image_data(self, index: int) -> Image_Data | None:
-        return self.image_list[index] if self.image_list else None
-
-    def get_fits_sample(self, image_data: Image_Data) -> np.ndarray:
-        with fits.open(image_data.image_path.__str__()) as fit:
-            return fit[0].data
-
-    @lru_cache(maxsize=max_cache_size)  # noqa: B019
-    def get_computed_image(self, index: int):
-        if index < 0:
-            return None
-        try:
-            image_to_compute = self.get_delayed_image(index)
-            if image_to_compute is not None:
-                image_to_compute_opt = dask.optimize(image_to_compute)
-                computed_image = image_to_compute_opt[0].compute()
-        except dask_image.imread.pims.api.UnknownFormatError:
-            self.remove_image_data_by_index(index)
-            self.get_computed_image(index - 1)
-        except AttributeError:
-            return None
-        return computed_image
-
-    def get_selected_computed_image(self):
-        try:
-            return self.get_computed_image(self.selected_index)
-        except dask_image.imread.pims.api.UnknownFormatError:
-            pass
-
-    def remove_image_data_by_path(self, image_path: Path) -> None:
-        image_paths = [image.image_path for image in self.image_list]
-        index_to_remove = image_paths.index(image_path)
-        self.remove_image_data_by_index(index_to_remove)
-
-    def remove_image_data_by_index(self, index_to_remove: int) -> None:
-        self.image_list.pop(index_to_remove)
-        self.delayed_stack = dask.array.delete(self.delayed_stack, index_to_remove, 0)
-        if index_to_remove == self.selected_index and self.selected_index > 0:
-            self.selected_index = self.selected_index - 1
-        if not self.image_list:
-            self.delayed_stack = None
-
-    def create_delayed_stack_from_image_data(self, image_list: list[Image_Data]) -> None | dask.array.Array:
-        delayed_stack = None
-        arrays = self.get_delayed_arrays(image_list)
-        if arrays:
-            if image_list[0].image_path.suffix.lower() in [".tif", ".tiff"]:
-                delayed_stack = dask.array.stack(dask.array.array(arrays))
-            elif image_list[0].image_path.suffix.lower() in [".fits"]:
-                sample = self.get_fits_sample(image_list[0])
-                lazy_arrays = [dask.array.from_delayed(x, shape=sample.shape, dtype=sample.dtype) for x in arrays]
-                delayed_stack = dask.array.stack(lazy_arrays)
-            else:
-                raise NotImplementedError(f"DaskImageDataStack does not support image with extension "
-                                          f"{image_list[0].image_path.suffix.lower()}")
-        return delayed_stack
-
-    def update_delayed_stack(self, new_image_list) -> None:
-        if self.delayed_stack is None:
-            self.delayed_stack = self.create_delayed_stack_from_image_data(new_image_list)
-        else:
-            new_images = [image for image in new_image_list if image.image_path not in self.image_paths]
-            self.delayed_stack = dask.optimize(
-                dask.array.concatenate([self.delayed_stack,
-                                        self.create_delayed_stack_from_image_data(new_images)]))[0]
-
-    def update_image_list(self, new_image_list: list, update_stack: bool = True) -> None:
-        if update_stack and self.create_delayed_array:
-            self.update_delayed_stack(new_image_list)
-        self.image_list = new_image_list
-        self.update_image_paths(new_image_list)
-
-    def update_param_calculations(self) -> None:
-        if 'mean' in self.param_to_calc:
-            if len(self.mean) == len(self.image_list) - 1:
-                self.add_last_mean()
-            else:
-                if self.roi:
-                    self.calc_mean_fully_roi()
-                else:
-                    self.calc_mean_fully()
-
-    def update_image_paths(self, new_image_list: list):
-        for image in new_image_list:
-            self.image_paths.add(image.image_path)
-
-    def add_last_mean(self) -> None:
-        if self.delayed_stack is not None:
-            if self.roi:
-                left, top, right, bottom = self.roi
-                mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1, top:bottom,
-                                                                               left:right]))[0].compute()
-            else:
-                mean_to_add = dask.optimize(dask.array.mean(self.delayed_stack[-1]))[0].compute()
-            self.mean = np.append(self.mean, mean_to_add)
-            self.calc_mean_buffer()
-
-    def calc_mean_fully(self) -> None:
-        if self.delayed_stack is not None:
-            self.mean = dask.array.mean(self.delayed_stack, axis=(1, 2)).compute()
-
-    def calc_mean_fully_roi(self):
-        if self.delayed_stack is not None and self.image_list:
-            left, top, right, bottom = self.roi
-            current_cache_size = self.get_computed_image.cache_info()[3]
-            self.mean = np.full(len(self.image_list), np.nan)
-            np.put(self.mean, range(-current_cache_size, 0), self.calc_mean_cached_images(left, top, right, bottom))
-
-    def calc_mean_cached_images(self, left, top, right, bottom):
-        current_cache_size = self.get_computed_image.cache_info()[3]
-        cache_stack = [
-            self.get_computed_image(index)
-            for index in range(self.selected_index - current_cache_size + 1, self.selected_index + 1, 1)
-        ]
-        cache_stack_array = np.stack(cache_stack)
-        cache_stack_mean = np.mean(cache_stack_array[:, top:bottom, left:right], axis=(1, 2))
-        return cache_stack_mean
-
-    def calc_mean_buffer(self):
-        nanInds = np.argwhere(np.isnan(self.mean))
-        left, top, right, bottom = self.roi
-        if nanInds.size > 0:
-            print(f"{self.mean=}")
-            if nanInds.size < self.buffer_size:
-                buffer_start = 0
-            else:
-                buffer_start = nanInds.size - self.buffer_size
-            dask_mean = dask.optimize(
-                dask.array.mean(self.delayed_stack[buffer_start:nanInds.size, top:bottom, left:right],
-                                axis=(1, 2)))[0].compute()
-            np.put(self.mean, range(buffer_start, nanInds.size), dask_mean)
+    # def calc_mean_fully(self) -> None:
+    #     if self.delayed_stack is not None:
+    #         self.mean = dask.array.mean(self.delayed_stack, axis=(1, 2)).compute()
+    #
+    # def calc_mean_fully_roi(self):
+    #     if self.delayed_stack is not None and self.image_list:
+    #         left, top, right, bottom = self.roi
+    #         current_cache_size = len(self.)
+    #         self.mean = np.full(len(self.image_list), np.nan)
+    #         np.put(self.mean, range(-current_cache_size, 0), self.calc_mean_cached_images(left, top, right, bottom))
+    #
+    # def calc_mean_cached_images(self, left, top, right, bottom):
+    #     current_cache_size = self.get_computed_image.cache_info()[3]
+    #     cache_stack = [
+    #         self.get_computed_image(index)
+    #         for index in range(self.selected_index - current_cache_size + 1, self.selected_index + 1, 1)
+    #     ]
+    #     cache_stack_array = np.stack(cache_stack)
+    #     cache_stack_mean = np.mean(cache_stack_array[:, top:bottom, left:right], axis=(1, 2))
+    #     return cache_stack_mean
+    #
+    # def calc_mean_buffer(self):
+    #     nanInds = np.argwhere(np.isnan(self.mean))
+    #     left, top, right, bottom = self.roi
+    #     if nanInds.size > 0:
+    #         print(f"{self.mean=}")
+    #         if nanInds.size < self.buffer_size:
+    #             buffer_start = 0
+    #         else:
+    #             buffer_start = nanInds.size - self.buffer_size
+    #         dask_mean = dask.optimize(
+    #             dask.array.mean(self.delayed_stack[buffer_start:nanInds.size, top:bottom, left:right],
+    #                             axis=(1, 2)))[0].compute()
+    #         np.put(self.mean, range(buffer_start, nanInds.size), dask_mean)
 
     def set_roi(self, roi: SensibleROI):
         self.roi = roi
 
     def delete_all_data(self):
-        self.image_list = []
-        self.delayed_stack = None
-        self.selected_index = 0
-
-    def create_and_set_delayed_stack(self):
-        self.delayed_stack = self.create_delayed_stack_from_image_data(self.image_list)
+        pass
 
     def add_param_to_calc(self, param_name: str):
         self.param_to_calc.append(param_name)
@@ -309,7 +210,9 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self._images: list[Image_Data] = []
-        self.image_stack: DaskImageDataStack = DaskImageDataStack([])
+        self.mean: np.array = np.array([])
+        self.mean_dict: dict[Path, float] = {}
+        self.roi: SensibleROI | None = None
 
     @property
     def path(self) -> Path | None:
@@ -332,8 +235,7 @@ class LiveViewerWindowModel:
     def images(self, images):
         self._images = images
 
-    def _handle_image_changed_in_list(self, image_files: list[Image_Data],
-                                      dask_image_stack: DaskImageDataStack) -> None:
+    def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
         Handle an image changed event. Update the image in the view.
         This method is called when the image_watcher detects a change
@@ -342,16 +244,12 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        self.image_stack = dask_image_stack
         # if dask_image_stack.image_list:
         #     self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
-        self.presenter.update_image_stack(self.image_stack)
 
     def handle_image_modified(self, image_path: Path):
-        self.image_stack.remove_image_data_by_path(image_path)
         self.presenter.update_image_modified(image_path)
-        self.presenter.update_image_stack(self.image_stack)
 
     def close(self) -> None:
         """Close the model."""
@@ -359,6 +257,16 @@ class LiveViewerWindowModel:
             self.image_watcher.remove_path()
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
+
+    def add_mean(self, image_data_obj: Image_Data, image_array: np.array) -> None:
+        if self.roi:
+            left, top, right, bottom = self.roi
+            mean_to_add = np.mean(image_array[top:bottom, left:right])
+        else:
+            mean_to_add = np.mean(image_array)
+        self.mean_dict[image_data_obj.image_path] = mean_to_add
+        self.mean = list(self.mean_dict.values())
+
 
 
 class ImageWatcher(QObject):
@@ -383,11 +291,10 @@ class ImageWatcher(QObject):
     sort_images_by_modified_time(images)
         Sort the images by modified time.
     """
-    image_changed = pyqtSignal(list, DaskImageDataStack)  # Signal emitted when an image is added or removed
+    image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
     update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
     recent_image_changed = pyqtSignal(Path)
     create_delayed_array: bool = False
-    image_stack = DaskImageDataStack([])
 
     def __init__(self, directory: Path):
         """
@@ -413,8 +320,6 @@ class ImageWatcher(QObject):
 
         self.sub_directories: dict[Path, SubDirectory] = {}
         self.add_sub_directory(SubDirectory(self.directory))
-
-        self.image_stack.add_param_to_calc('mean')
 
     def find_images(self, directory: Path) -> list[Image_Data]:
         """
@@ -495,22 +400,9 @@ class ImageWatcher(QObject):
             if len(images) > 0:
                 break
         images = self.sort_images_by_modified_time(images)
-        if len(images) == 0:
-            self.image_stack.delete_all_data()
-
-        if len(images) % 50 == 0:
-            print("\n")
-            with ExecutionProfiler(msg=f"self.image_stack.update_image_list(images): {len(images)=}"):
-                self.image_stack.update_image_list(images)
-            print("\n")
-        else:
-            self.image_stack.update_image_list(images)
-
-        if 'mean' in self.image_stack.param_to_calc:
-            self.update_spectrum.emit(self.image_stack.mean)
 
         self.update_recent_watcher(images[-1:])
-        self.image_changed.emit(images, self.image_stack)
+        self.image_changed.emit(images)
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:

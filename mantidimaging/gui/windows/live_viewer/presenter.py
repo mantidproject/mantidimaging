@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 
-import dask_image.imread
 import numpy as np
 import dask.array
 
@@ -16,7 +15,7 @@ from tifffile import tifffile
 from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, DaskImageDataStack
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, ImageCache
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -37,7 +36,6 @@ class LiveViewerWindowPresenter(BasePresenter):
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
     op_func: Callable
-    image_stack: DaskImageDataStack
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -86,28 +84,19 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.update_image_list([])
             return
         self.selected_image = self.model.images[index]
-        self.image_stack = self.model.image_stack
-        self.image_stack.selected_index = index
         if not self.selected_image:
             return
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image, self.image_stack)
+        self.display_image(self.selected_image)
 
-    def display_image(self, image_data_obj: Image_Data, delayed_image_stack: DaskImageDataStack | None) -> None:
+    def display_image(self, image_data_obj: Image_Data) -> None:
         """
         Display image in the view after validating contents
         """
         try:
-            if (delayed_image_stack is None or delayed_image_stack.delayed_stack is None
-                    or not delayed_image_stack.create_delayed_array):
-                image_data = self.load_image_from_path(image_data_obj.image_path)
-            else:
-                try:
-                    image_data = self.load_image_from_delayed_stack(delayed_image_stack)
-                except (AttributeError, dask_image.imread.pims.api.UnknownFormatError):
-                    image_data = self.load_image_from_path(image_data_obj.image_path)
+            image_data = self.load_image_from_path(image_data_obj.image_path)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -117,33 +106,21 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.set_image_shape(image_data.shape)
         if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
             self.view.live_viewer.add_roi()
-        self.model.image_stack.set_roi(self.view.live_viewer.get_roi())
         image_data = self.perform_operations(image_data)
-        self.model.image_stack.update_param_calculations()
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
             logger.error("reading image: %s: Image has zero size", image_data_obj.image_path)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-        # if np.any(np.isnan(self.model.image_stack.mean)):
-        #     self.model.image_stack.calc_mean_fully_roi()
+        #if np.any(np.isnan(self.model.image_stack.mean)):
+        self.model.add_mean(image_data_obj, image_data)
         self.view.show_most_recent_image(image_data)
-        self.update_spectrum(self.model.image_stack.mean)
+        self.update_spectrum(self.model.mean)
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image_from_delayed_stack(delayed_image_stack: DaskImageDataStack | None) -> np.ndarray:
-        """
-        Load a delayed stack from a DaskImageDataStack and compute
-        """
-        if delayed_image_stack is not None:
-            image_data = delayed_image_stack.get_selected_computed_image()
-        else:
-            raise ValueError
-        return image_data
-
-    @staticmethod
+    @ImageCache
     def load_image_from_path(image_path: Path) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
@@ -162,14 +139,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(self.selected_image, self.image_stack)
+            self.display_image(self.selected_image)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image, self.image_stack)
+            self.display_image(self.selected_image)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
@@ -196,15 +173,13 @@ class LiveViewerWindowPresenter(BasePresenter):
             image_dir = self.model.images[0].image_path.parent
             self.main_window.show_image_load_dialog_with_path(str(image_dir))
 
-    def update_image_stack(self, image_stack: DaskImageDataStack):
-        self.image_stack = image_stack
 
     def update_spectrum(self, spec_data: list | np.ndarray):
         self.view.spectrum.clearPlots()
         self.view.spectrum.plot(spec_data)
 
-    def handle_roi_moved(self, force_new_spectrums: bool = False):
-        roi = self.view.live_viewer.get_roi()
-        self.model.image_stack.set_roi(roi)
-        self.model.image_stack.calc_mean_fully_roi()
-        self.update_spectrum(self.model.image_stack.mean)
+    # def handle_roi_moved(self, force_new_spectrums: bool = False):
+    #     roi = self.view.live_viewer.get_roi()
+    #     self.model.image_stack.set_roi(roi)
+    #     self.model.image_stack.calc_mean_fully_roi()
+    #     self.update_spectrum(self.model.image_stack.mean)
