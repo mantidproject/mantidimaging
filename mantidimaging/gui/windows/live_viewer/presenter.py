@@ -13,7 +13,7 @@ from tifffile import tifffile, TiffFileError
 from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, ImageCache
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -80,19 +80,21 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not self.model.images:
             return
         self.selected_image = self.model.images[index]
+        if not self.selected_image:
+            return
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image.image_path)
+        self.display_image(self.selected_image)
 
-    def display_image(self, image_path: Path) -> None:
+    def display_image(self, image_data_obj: Image_Data) -> None:
         """
         Display image in the view after validating contents
         """
         try:
-            image_data = self.load_image(image_path)
-        except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
-            message = f"{type(error).__name__} reading image: {image_path}: {error}"
+            image_data = self.load_image_from_path(image_data_obj.image_path)
+        except (OSError, KeyError, ValueError, DeflateError) as error:
+            message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
@@ -100,19 +102,22 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.set_image_shape(image_data.shape)
         if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
             self.view.live_viewer.add_roi()
-        self.model.image_stack.set_roi(self.view.live_viewer.get_roi())
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
-            logger.error("reading image: %s: Image has zero size", image_path)
+            logger.error("reading image: %s: Image has zero size", image_data_obj.image_path)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
+        #if np.any(np.isnan(self.model.image_stack.mean)):
+        self.model.add_mean(image_data_obj, image_data)
         self.view.show_most_recent_image(image_data)
+        self.update_spectrum(self.model.mean)
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image(image_path: Path) -> np.ndarray:
+    @ImageCache
+    def load_image_from_path(image_path: Path) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
@@ -130,14 +135,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(image_path)
+            self.display_image(self.selected_image)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image.image_path)
+            self.display_image(self.selected_image)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
@@ -163,3 +168,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         if self.model.images:
             image_dir = self.model.images[0].image_path.parent
             self.main_window.show_image_load_dialog_with_path(str(image_dir))
+
+
+    def update_spectrum(self, spec_data: list | np.ndarray):
+        self.view.spectrum.clearPlots()
+        self.view.spectrum.plot(spec_data)
+
+    # def handle_roi_moved(self, force_new_spectrums: bool = False):
+    #     roi = self.view.live_viewer.get_roi()
+    #     self.model.image_stack.set_roi(roi)
+    #     self.model.image_stack.calc_mean_fully_roi()
+    #     self.update_spectrum(self.model.image_stack.mean)

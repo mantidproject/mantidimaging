@@ -41,7 +41,7 @@ class LiveViewerWindowView(BaseMainWindowView):
 
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-        self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
+        # self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self.splitter.addWidget(self.live_viewer)
         self.splitter.addWidget(self.spectrum_plot_widget)
@@ -70,7 +70,6 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.spectrum_action.setCheckable(True)
         operations_menu.addAction(self.spectrum_action)
         self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
-        self.presenter.model.image_stack.create_delayed_array = False
         self.live_viewer.set_roi_alpha(self.spectrum_action.isChecked() * 255)
         self.live_viewer.set_roi_visibility_flags(False)
 
