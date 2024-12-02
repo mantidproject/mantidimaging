@@ -68,10 +68,12 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
+        # TODO: Might be a good idea to update and store the image list in the model so it can be cycled through
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
+            self.model.images = images_list
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -92,7 +94,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         Display image in the view after validating contents
         """
         try:
-            image_data = self.load_image_from_path(image_data_obj.image_path)
+            image_data = self.model.load_image_from_path(image_data_obj.image_path)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -110,25 +112,11 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.show_error(message)
             return
         #if np.any(np.isnan(self.model.image_stack.mean)):
+        self.model.set_roi(self.view.live_viewer.get_roi())
         self.model.add_mean(image_data_obj, image_data)
         self.view.show_most_recent_image(image_data)
         self.update_spectrum(self.model.mean)
         self.view.live_viewer.show_error(None)
-
-    @staticmethod
-    @ImageCache
-    def load_image_from_path(image_path: Path) -> np.ndarray:
-        """
-        Load a .Tif, .Tiff or .Fits file only if it exists
-        and returns as an ndarray
-        """
-        if image_path.suffix.lower() in [".tif", ".tiff"]:
-            with tifffile.TiffFile(image_path) as tif:
-                image_data = tif.asarray()
-        elif image_path.suffix.lower() == ".fits":
-            with fits.open(image_path.__str__()) as fit:
-                image_data = fit[0].data
-        return image_data
 
     def update_image_modified(self, image_path: Path) -> None:
         """
@@ -174,8 +162,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.spectrum.clearPlots()
         self.view.spectrum.plot(spec_data)
 
-    # def handle_roi_moved(self, force_new_spectrums: bool = False):
-    #     roi = self.view.live_viewer.get_roi()
-    #     self.model.image_stack.set_roi(roi)
-    #     self.model.image_stack.calc_mean_fully_roi()
-    #     self.update_spectrum(self.model.image_stack.mean)
+    def handle_roi_moved(self, force_new_spectrums: bool = False):
+        # TODO: should we make all these functions go in the model?
+        roi = self.view.live_viewer.get_roi()
+        self.model.set_roi(roi)
+        self.model.clear_mean()
+        self.model.calc_mean_fully()
+        self.update_spectrum(self.model.mean)
