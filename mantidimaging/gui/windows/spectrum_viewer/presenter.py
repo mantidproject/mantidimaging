@@ -329,14 +329,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_name = self.model.roi_name_generator()
         if roi_name in self.view.spectrum_widget.roi_dict:
             raise ValueError(f"ROI name already exists: {roi_name}")
-
         self.model.set_new_roi(roi_name)
-        roi = {roi.name: roi.as_sensible_roi() for roi in self.view.spectrum_widget.roi_dict.values()}
-        self.view.spectrum_widget.add_roi(roi, roi_name)
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
-        self.view.set_spectrum(roi_name, spectrum)
-        self.view.auto_range_image()
-        self.do_add_roi_to_table(roi_name)
+
+        if self.view.spectrum_widget.roi_dict:
+            last_roi = self.view.spectrum_widget.get_roi(list(self.view.spectrum_widget.roi_dict)[-1])
+            roi = SensibleROI(SensibleROI(last_roi.left, last_roi.top, last_roi.right, last_roi.bottom))
+            self.view.spectrum_widget.add_roi(roi, roi_name)
+            self.view.set_spectrum(
+                roi_name, self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
+            self.view.auto_range_image()
+            self.do_add_roi_to_table(roi_name)
 
     def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int]) -> None:
         """
