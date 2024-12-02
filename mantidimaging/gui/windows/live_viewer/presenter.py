@@ -9,11 +9,9 @@ from logging import getLogger
 import numpy as np
 
 from imagecodecs._deflate import DeflateError
-from tifffile import tifffile, TiffFileError
-from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, ImageCache
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -156,7 +154,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         if self.model.images:
             image_dir = self.model.images[0].image_path.parent
             self.main_window.show_image_load_dialog_with_path(str(image_dir))
-
 
     def update_spectrum(self, spec_data: list | np.ndarray):
         self.view.spectrum.clearPlots()
