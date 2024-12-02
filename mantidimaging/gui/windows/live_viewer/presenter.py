@@ -160,9 +160,12 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.spectrum.plot(spec_data)
 
     def handle_roi_moved(self, force_new_spectrums: bool = False):
-        # TODO: should we make all these functions go in the model?
         roi = self.view.live_viewer.get_roi()
         self.model.set_roi(roi)
         self.model.clear_mean()
         self.model.calc_mean_fully()
+        self.update_spectrum(self.model.mean)
+
+    def handle_roi_moved_start(self):
+        self.model.clear_mean_partial()
         self.update_spectrum(self.model.mean)
