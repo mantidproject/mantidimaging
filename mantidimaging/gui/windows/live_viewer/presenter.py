@@ -9,11 +9,9 @@ from logging import getLogger
 import numpy as np
 
 from imagecodecs._deflate import DeflateError
-from tifffile import tifffile, TiffFileError
-from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, ImageCache
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -68,10 +66,12 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
+        # TODO: Might be a good idea to update and store the image list in the model so it can be cycled through
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
+            self.model.images = images_list
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -92,7 +92,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         Display image in the view after validating contents
         """
         try:
-            image_data = self.load_image_from_path(image_data_obj.image_path)
+            image_data = self.model.load_image_from_path(image_data_obj.image_path)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -170,7 +170,14 @@ class LiveViewerWindowPresenter(BasePresenter):
             image_dir = self.model.images[0].image_path.parent
             self.main_window.show_image_load_dialog_with_path(str(image_dir))
 
-
     def update_spectrum(self, spec_data: list | np.ndarray):
         self.view.spectrum.clearPlots()
         self.view.spectrum.plot(spec_data)
+
+    def handle_roi_moved(self, force_new_spectrums: bool = False):
+        # TODO: should we make all these functions go in the model?
+        roi = self.view.live_viewer.get_roi()
+        self.model.set_roi(roi)
+        self.model.clear_mean()
+        self.model.calc_mean_fully()
+        self.update_spectrum(self.model.mean)

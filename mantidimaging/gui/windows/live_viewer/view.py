@@ -41,7 +41,7 @@ class LiveViewerWindowView(BaseMainWindowView):
 
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-        # self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
 
         self.splitter.addWidget(self.live_viewer)
         self.splitter.addWidget(self.spectrum_plot_widget)
@@ -133,6 +133,9 @@ class LiveViewerWindowView(BaseMainWindowView):
                 self.live_viewer.add_roi()
             self.live_viewer.set_roi_alpha(255)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
+            self.presenter.model.set_roi(self.live_viewer.get_roi())
+            self.presenter.model.calc_mean_fully()
+            self.presenter.update_spectrum(self.presenter.model.mean)
         else:
             self.live_viewer.set_roi_alpha(0)
             self.splitter.setSizes([widget_height, 0])

@@ -10,6 +10,10 @@ from logging import getLogger
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
+from tifffile import tifffile
+from astropy.io import fits
+
+#from mantidimaging.core.utility import ExecutionProfiler
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
@@ -104,9 +108,6 @@ class ImageCache:
     #             dask.array.mean(self.delayed_stack[buffer_start:nanInds.size, top:bottom, left:right],
     #                             axis=(1, 2)))[0].compute()
     #         np.put(self.mean, range(buffer_start, nanInds.size), dask_mean)
-
-    def set_roi(self, roi: SensibleROI):
-        self.roi = roi
 
     def delete_all_data(self):
         pass
@@ -203,7 +204,7 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self._images: list[Image_Data] = []
-        self.mean: np.array = np.array([])
+        self.mean: list[float] = []
         self.mean_dict: dict[Path, float] = {}
         self.roi: SensibleROI | None = None
 
@@ -226,6 +227,9 @@ class LiveViewerWindowModel:
     @images.setter
     def images(self, images):
         self._images = images
+
+    def set_roi(self, roi: SensibleROI):
+        self.roi = roi
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -250,7 +254,7 @@ class LiveViewerWindowModel:
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
-    def add_mean(self, image_data_obj: Image_Data, image_array: np.array) -> None:
+    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray) -> None:
         if self.roi:
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
@@ -259,6 +263,26 @@ class LiveViewerWindowModel:
         self.mean_dict[image_data_obj.image_path] = mean_to_add
         self.mean = list(self.mean_dict.values())
 
+    def clear_mean(self):
+        self.mean_dict.clear()
+
+    def calc_mean_fully(self) -> None:
+        for image in self.images:
+            self.add_mean(image, self.load_image_from_path(image.image_path))
+
+    @staticmethod
+    def load_image_from_path(image_path: Path) -> np.ndarray:
+        """
+        Load a .Tif, .Tiff or .Fits file only if it exists
+        and returns as an ndarray
+        """
+        if image_path.suffix.lower() in [".tif", ".tiff"]:
+            with tifffile.TiffFile(image_path) as tif:
+                image_data = tif.asarray()
+        elif image_path.suffix.lower() == ".fits":
+            with fits.open(image_path.__str__()) as fit:
+                image_data = fit[0].data
+        return image_data
 
 
 class ImageWatcher(QObject):
