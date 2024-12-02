@@ -7,7 +7,7 @@ from unittest import mock
 import numpy as np
 import os
 from mantidimaging.core.operations.loader import load_filter_packages
-from mantidimaging.gui.windows.live_viewer.model import Image_Data, DaskImageDataStack
+from mantidimaging.gui.windows.live_viewer.model import Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 from pathlib import Path
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
@@ -62,10 +62,9 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
     def test_live_view_opens_with_data(self, _mock_time, _mock_image_watcher, mock_load_image):
         file_list = self._make_simple_dir(self.live_directory)
         image_list = [Image_Data(path) for path in file_list]
-        dask_image_stack = DaskImageDataStack(image_list, create_delayed_array=False)
         mock_load_image.return_value = self._generate_image()
         self.imaging.show_live_viewer(self.live_directory)
-        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list, dask_image_stack)
+        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer)
 
     @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
@@ -74,10 +73,9 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
     def test_live_view_opens_with_bad_data(self, _mock_time, _mock_image_watcher, mock_load_image):
         file_list = self._make_simple_dir(self.live_directory)
         image_list = [Image_Data(path) for path in file_list]
-        dask_image_stack = DaskImageDataStack(image_list, create_delayed_array=False)
         mock_load_image.side_effect = ValueError
         self.imaging.show_live_viewer(self.live_directory)
-        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list, dask_image_stack)
+        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer)
 
     @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
@@ -86,9 +84,8 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
     def test_rotate_operation_rotates_image(self, _mock_time, _mock_image_watcher, mock_load_image):
         file_list = self._make_simple_dir(self.live_directory)
         image_list = [Image_Data(path) for path in file_list]
-        dask_image_stack = DaskImageDataStack(image_list, create_delayed_array=False)
         mock_load_image.return_value = self._generate_image()
         self.imaging.show_live_viewer(self.live_directory)
-        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list, dask_image_stack)
+        self.imaging.live_viewer.presenter.model._handle_image_changed_in_list(image_list)
         self.imaging.live_viewer.rotate_angles_group.actions()[1].trigger()
         self.check_target(widget=self.imaging.live_viewer)
