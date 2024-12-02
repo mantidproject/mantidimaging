@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 import time
-from functools import lru_cache
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
 
-import dask.array
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
-import dask_image.imread
+from tifffile import tifffile
 from astropy.io import fits
 
 from mantidimaging.core.utility import ExecutionProfiler
@@ -110,9 +108,6 @@ class ImageCache:
     #             dask.array.mean(self.delayed_stack[buffer_start:nanInds.size, top:bottom, left:right],
     #                             axis=(1, 2)))[0].compute()
     #         np.put(self.mean, range(buffer_start, nanInds.size), dask_mean)
-
-    def set_roi(self, roi: SensibleROI):
-        self.roi = roi
 
     def delete_all_data(self):
         pass
@@ -235,6 +230,9 @@ class LiveViewerWindowModel:
     def images(self, images):
         self._images = images
 
+    def set_roi(self, roi: SensibleROI):
+        self.roi = roi
+
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
         Handle an image changed event. Update the image in the view.
@@ -267,7 +265,26 @@ class LiveViewerWindowModel:
         self.mean_dict[image_data_obj.image_path] = mean_to_add
         self.mean = list(self.mean_dict.values())
 
+    def clear_mean(self):
+        self.mean_dict.clear()
 
+    def calc_mean_fully(self) -> None:
+        for image in self.images:
+            self.add_mean(image, self.load_image_from_path(image.image_path))
+
+    @staticmethod
+    def load_image_from_path(image_path: Path) -> np.ndarray:
+        """
+        Load a .Tif, .Tiff or .Fits file only if it exists
+        and returns as an ndarray
+        """
+        if image_path.suffix.lower() in [".tif", ".tiff"]:
+            with tifffile.TiffFile(image_path) as tif:
+                image_data = tif.asarray()
+        elif image_path.suffix.lower() == ".fits":
+            with fits.open(image_path.__str__()) as fit:
+                image_data = fit[0].data
+        return image_data
 
 class ImageWatcher(QObject):
     """
