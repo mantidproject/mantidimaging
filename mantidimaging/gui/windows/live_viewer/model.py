@@ -204,7 +204,7 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self._images: list[Image_Data] = []
-        self.mean: list[float] = []
+        self.mean: np.ndarray = np.empty(0)
         self.mean_dict: dict[Path, float] = {}
         self.roi: SensibleROI | None = None
 
@@ -261,10 +261,16 @@ class LiveViewerWindowModel:
         else:
             mean_to_add = np.mean(image_array)
         self.mean_dict[image_data_obj.image_path] = mean_to_add
-        self.mean = list(self.mean_dict.values())
+        #self.mean = np.array(list(self.mean_dict.values()))
+        self.mean = np.append(self.mean, mean_to_add)
+
+    def clear_mean_partial(self):
+        self.mean_dict.clear()
+        self.mean = np.full(len(self.images), np.nan)
 
     def clear_mean(self):
         self.mean_dict.clear()
+        self.mean = np.delete(self.mean, np.arange(self.mean.size))
 
     def calc_mean_fully(self) -> None:
         for image in self.images:
