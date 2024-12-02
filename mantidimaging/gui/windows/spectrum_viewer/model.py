@@ -112,12 +112,6 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter += 1
         return new_name
 
-    def get_list_of_roi_names(self) -> list[str]:
-        """
-        Get a list of rois available in the model
-        """
-        return list(self._roi_ranges.keys())
-
     def set_stack(self, stack: ImageStack | None) -> None:
         """
         Sets the stack to be used by the model
@@ -150,17 +144,6 @@ class SpectrumViewerWindowModel:
 
     def set_roi(self, roi_name: str, roi: SensibleROI) -> None:
         self._roi_ranges[roi_name] = roi
-
-    def get_roi(self, roi_name: str) -> SensibleROI:
-        """
-        Get the ROI with the given name from the model
-
-        @param roi_name: The name of the ROI to get
-        @return: The ROI with the given name
-        """
-        if roi_name not in self._roi_ranges.keys():
-            raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
-        return self._roi_ranges[roi_name]
 
     def get_averaged_image(self) -> np.ndarray | None:
         """
@@ -365,7 +348,7 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
+    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode, roi_name: str = "ROI_RITS") -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
 
@@ -373,7 +356,7 @@ class SpectrumViewerWindowModel:
         @param normalized: Whether to save the normalized spectrum.
         @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
         """
-        self.save_rits_roi(path, error_mode, self.get_roi(ROI_RITS))
+        self.save_rits_roi(path, error_mode, self._roi_ranges[roi_name])
 
     def save_rits_roi(self, path: Path, error_mode: ErrorMode, roi: SensibleROI, normalise: bool = False) -> None:
         """
@@ -453,7 +436,7 @@ class SpectrumViewerWindowModel:
         Returns:
         None
         """
-        roi = self.get_roi(ROI_RITS)
+        roi = self._roi_ranges[ROI_RITS]
         left, top, right, bottom = roi
         x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
         y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
