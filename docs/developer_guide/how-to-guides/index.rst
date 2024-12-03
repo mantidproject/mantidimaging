@@ -11,5 +11,5 @@ Specific guides for common development tasks.
 
    command.rst
    debugging.rst
-   conda_packaging_and_docker_image.rst
    testing.rst
+   release.rst

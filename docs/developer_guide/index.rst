@@ -15,7 +15,7 @@ Welcome to the developer guide. This guide is divided into several sections base
 
         Set up your environment and get started with development.
 
-    .. grid-item-card:: 📘
+    .. grid-item-card:: 🧪
         :link: how-to-guides
         :link-type: ref
         :text-align: center
@@ -24,7 +24,7 @@ Welcome to the developer guide. This guide is divided into several sections base
 
         Practical steps for common development tasks.
 
-    .. grid-item-card:: 🧠
+    .. grid-item-card:: ⚛️
         :link: explanations
         :link-type: ref
         :text-align: center
@@ -33,7 +33,7 @@ Welcome to the developer guide. This guide is divided into several sections base
 
         Deep dive into key development concepts.
 
-    .. grid-item-card:: 📚
+    .. grid-item-card:: 🔬
         :link: reference
         :link-type: ref
         :text-align: center
