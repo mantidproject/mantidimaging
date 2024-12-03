@@ -178,7 +178,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         roi = self.view.live_viewer.get_roi()
         self.model.set_roi(roi)
         self.model.clear_mean()
-        self.model.calc_mean_fully()
+        self.model.clear_and_update_mean_cache()
         self.update_spectrum(self.model.mean)
 
     def handle_roi_moved_start(self):
