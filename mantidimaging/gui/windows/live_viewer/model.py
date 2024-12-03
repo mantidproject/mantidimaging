@@ -23,6 +23,20 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
+def load_image_from_path(image_path: Path) -> np.ndarray:
+    """
+    Load a .Tif, .Tiff or .Fits file only if it exists
+    and returns as an ndarray
+    """
+    if image_path.suffix.lower() in [".tif", ".tiff"]:
+        with tifffile.TiffFile(image_path) as tif:
+            image_data = tif.asarray()
+    elif image_path.suffix.lower() == ".fits":
+        with fits.open(image_path.__str__()) as fit:
+            image_data = fit[0].data
+    return image_data
+
+
 class ImageCache:
     """
     An ImageCache class to be used as a decorator on image read functions to store recent images in memory
@@ -36,22 +50,34 @@ class ImageCache:
     max_cache_size: int = 100
     buffer_size: int = 10
 
-    def __init__(self, func):
-        self.func = func
+    def __init__(self):
+        pass
 
-    def __call__(self, *args, **kwargs):
-        #print(f"Arguments: {args}, Keyword Arguments: {kwargs}")
-        result = self.func(*args, **kwargs)
-        self.add_to_cache(args, result)
-        return result
-
-    def add_to_cache(self, args, image_array: np.ndarray):
-        if args not in self.cache_dict.keys():
-            self.cache_dict[args] = image_array
+    def add_to_cache(self, image: Image_Data, image_array: np.ndarray):
+        if image.image_path not in self.cache_dict.keys():
+            self.cache_dict[image.image_path] = (image_array, image.image_modified_time)
 
     def remove_from_cache(self, image: Image_Data):
         if image.image_path in self.cache_dict.keys():
             del self.cache_dict[image.image_path]
+
+    def load_image(self, image: Image_Data) -> np.ndarray:
+        if image.image_path in self.cache_dict.keys():
+            return self.cache_dict[image.image_path][0]
+        else:
+            image_array = load_image_from_path(image.image_path)
+            self.add_to_cache(image, image_array)
+            return image_array
+
+    def get_cache(self):
+        return self.cache_dict
+
+    def get_cached_image_paths(self):
+        return list(self.cache_dict.keys())
+
+    def get_cached_image_arrays(self):
+        return list(self.cache_dict.values())[::, 0]
+
 
     # def update_param_calculations(self) -> None:
     #     if 'mean' in self.param_to_calc:
@@ -207,6 +233,7 @@ class LiveViewerWindowModel:
         self.mean: np.ndarray = np.empty(0)
         self.mean_dict: dict[Path, float] = {}
         self.roi: SensibleROI | None = None
+        self.image_cache = ImageCache()
 
     @property
     def path(self) -> Path | None:
@@ -261,7 +288,6 @@ class LiveViewerWindowModel:
         else:
             mean_to_add = np.mean(image_array)
         self.mean_dict[image_data_obj.image_path] = mean_to_add
-        #self.mean = np.array(list(self.mean_dict.values()))
         self.mean = np.append(self.mean, mean_to_add)
 
     def clear_mean_partial(self):
@@ -274,21 +300,7 @@ class LiveViewerWindowModel:
 
     def calc_mean_fully(self) -> None:
         for image in self.images:
-            self.add_mean(image, self.load_image_from_path(image.image_path))
-
-    @staticmethod
-    def load_image_from_path(image_path: Path) -> np.ndarray:
-        """
-        Load a .Tif, .Tiff or .Fits file only if it exists
-        and returns as an ndarray
-        """
-        if image_path.suffix.lower() in [".tif", ".tiff"]:
-            with tifffile.TiffFile(image_path) as tif:
-                image_data = tif.asarray()
-        elif image_path.suffix.lower() == ".fits":
-            with fits.open(image_path.__str__()) as fit:
-                image_data = fit[0].data
-        return image_data
+            self.add_mean(image, self.image_cache.load_image(image))
 
 
 class ImageWatcher(QObject):

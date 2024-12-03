@@ -11,7 +11,8 @@ import numpy as np
 from imagecodecs._deflate import DeflateError
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import (LiveViewerWindowModel, Image_Data, load_image_from_path,
+                                                         ImageCache)
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -92,7 +93,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         Display image in the view after validating contents
         """
         try:
-            image_data = self.model.load_image_from_path(image_data_obj.image_path)
+            image_data = self.model.image_cache.load_image(image_data_obj)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
