@@ -67,7 +67,6 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
-        # TODO: Might be a good idea to update and store the image list in the model so it can be cycled through
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
@@ -183,5 +182,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.update_spectrum(self.model.mean)
 
     def handle_roi_moved_start(self):
-        self.model.clear_mean_partial()
+        self.model.clear_mean()
+        self.model.clear_and_update_mean_cache()
         self.update_spectrum(self.model.mean)
