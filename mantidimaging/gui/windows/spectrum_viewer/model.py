@@ -567,8 +567,3 @@ class SpectrumViewerWindowModel:
         else:
             self.tof_mode = ToFUnitMode.WAVELENGTH
             self.presenter.change_selected_menu_option("Wavelength")
-
-    def get_roi(self, roi_name: str) -> SensibleROI:
-        if roi_name not in self._roi_ranges.keys():
-            raise KeyError(f"ROI {roi_name} does not exist in roi_ranges {self._roi_ranges.keys()}")
-        return self._roi_ranges[roi_name]
