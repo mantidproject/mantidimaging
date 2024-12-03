@@ -193,6 +193,13 @@
 
 
 <li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
     Code Repository
   </a>
@@ -365,6 +372,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../release_notes/index.html">
     Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
   </a>
 </li>
 
@@ -561,7 +575,7 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.</span></span><span class="sig-name descname"><span class="pre">AutoColorMenu</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/auto_colour_menu/auto_color_menu.html#AutoColorMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Mixin class to be used with MIImageView and MIMiniImageView</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.add_auto_color_menu_action">
@@ -570,12 +584,12 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.histogram">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HistogramLUTItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.histogram" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">histogram</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">HistogramLUTItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.histogram" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.image_data">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.image_data" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu.image_data" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">

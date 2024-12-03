@@ -193,6 +193,13 @@
 
 
 <li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
     Code Repository
   </a>
@@ -365,6 +372,13 @@ document.write(`
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../release_notes/index.html">
     Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
   </a>
 </li>
 
@@ -597,7 +611,7 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.</span></span><span class="sig-name descname"><span class="pre">BadDataOverlay</span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/bad_data_overlay/bad_data_overlay.html#BadDataOverlay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Mixin class to be used with MIImageView and MIMiniImageView</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.check_for_bad_data">
@@ -636,7 +650,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.image_item">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_item</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ImageItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.image_item" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_item</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ImageItem</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.image_item" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -646,7 +660,7 @@ document.write(`
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.viewbox">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">viewbox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ViewBox</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.viewbox" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">viewbox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ViewBox</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.viewbox" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

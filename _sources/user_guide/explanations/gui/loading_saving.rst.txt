@@ -52,7 +52,7 @@ Load NeXus File
 NeXus Files can be loaded by selecting the "Load NeXus file" on the File menu. This brings up the NeXus Load dialog
 shown below.
 
-.. image:: ../../_static/nexus_loading_window.png
+.. image:: ../../../_static/nexus_loading_window.png
     :alt: NeXus Load Dialog
 
 From here you can choose a NeXus file that you wish to load. The program will then scan its contents and check for a

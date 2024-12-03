@@ -190,6 +190,13 @@
 
 
 <li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
   <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
     Code Repository
   </a>
@@ -365,6 +372,13 @@ document.write(`
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
     Code Repository
   </a>
@@ -495,11 +509,13 @@ document.write(`
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ViewBox</span>
 
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">_metaclass_sip_abc</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.indicator_icon.view</span> <span class="kn">import</span> <span class="n">IndicatorIconView</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
 
@@ -564,7 +580,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay">[docs]</a>
-<span class="k">class</span> <span class="nc">BadDataOverlay</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">BadDataOverlay</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_metaclass_sip_abc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mixin class to be used with MIImageView and MIMiniImageView</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -579,12 +595,14 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">sigTimeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_for_bad_data</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">image_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageItem</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">viewbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ViewBox</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 
 <div class="viewcode-block" id="BadDataOverlay.enable_nan_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_nan_check">[docs]</a>

@@ -34,15 +34,3 @@ Mantid Imaging can be run directly from the checked-out git directory::
 or to run with additional diagnostics::
 
     python3 -X faulthandler -m mantidimaging --log-level DEBUG
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents:
-
-   documentation
-   developer_conventions
-   debugging
-   conda_packaging_and_docker_image
-   release
-   testing
