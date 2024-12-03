@@ -1,10 +1,13 @@
 # Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QAction
 
+from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 
 if TYPE_CHECKING:
@@ -13,21 +16,24 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QWidget
 
 
-class AutoColorMenu:
+class AutoColorMenu(ABC, metaclass=_metaclass_sip_abc):
     """
     Mixin class to be used with MIImageView and MIMiniImageView
     """
 
     def __init__(self) -> None:
+        super().__init__()
         self.auto_color_action: QAction | None = None
 
     @property
+    @abstractmethod
     def histogram(self) -> HistogramLUTItem:
-        raise NotImplementedError('Required histogram property not implemented')
+        ...
 
     @property
+    @abstractmethod
     def image_data(self) -> np.ndarray | None:
-        raise NotImplementedError('Required image_data property not implemented')
+        ...
 
     @property
     def other_histograms(self) -> list[HistogramLUTItem]:
