@@ -11,7 +11,8 @@ import numpy as np
 from imagecodecs._deflate import DeflateError
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import (LiveViewerWindowModel, Image_Data, load_image_from_path,
+                                                         ImageCache)
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -92,7 +93,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         Display image in the view after validating contents
         """
         try:
-            image_data = self.model.load_image_from_path(image_data_obj.image_path)
+            image_data = self.model.image_cache.load_image(image_data_obj)
         except (OSError, KeyError, ValueError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
@@ -109,9 +110,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-        #if np.any(np.isnan(self.model.image_stack.mean)):
         self.model.set_roi(self.view.live_viewer.get_roi())
-        self.model.add_mean(image_data_obj, image_data)
+        if image_data_obj.image_path not in self.model.mean_dict.keys():
+            self.model.add_mean(image_data_obj, image_data)
         self.view.show_most_recent_image(image_data)
         self.update_spectrum(self.model.mean)
         self.view.live_viewer.show_error(None)
