@@ -114,6 +114,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.model.add_mean(image_data_obj, image_data)
         self.model.calc_mean_cache()
         self.model.update_mean_with_cached_images()
+        self.model.calc_mean_buffer()
         self.view.show_most_recent_image(image_data)
         self.update_spectrum(self.model.mean)
         self.view.live_viewer.show_error(None)
@@ -165,7 +166,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         roi = self.view.live_viewer.get_roi()
         self.model.set_roi(roi)
         self.model.clear_mean()
-        self.model.calc_mean_fully()
+        self.model.clear_and_update_mean_cache()
         self.update_spectrum(self.model.mean)
 
     def handle_roi_moved_start(self):
