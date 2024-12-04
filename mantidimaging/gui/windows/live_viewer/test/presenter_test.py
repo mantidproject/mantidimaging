@@ -45,6 +45,14 @@ class MainWindowPresenterTest(unittest.TestCase):
         ([mock.Mock()], True),
     ])
     def test_load_as_dataset_enabled_when_images(self, image_list, action_enabled):
+        self.model.set_roi = mock.Mock()
+        self.model.mean_dict = {}
+        self.model.mean = []
+        self.model.image_cache = mock.Mock()
+        self.model.add_mean = mock.Mock()
+        self.presenter.roi_moving = True
+        self.view.live_viewer = mock.Mock()
+        self.view.spectrum = mock.Mock()
         with mock.patch.object(self.presenter, "handle_deleted"):
             self.presenter.update_image_list(image_list)
 

@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import os
 import time
+import unittest
+
 from pathlib import Path
 from unittest import mock
 
+import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -159,3 +162,20 @@ class ImageWatcherTest(FakeFSTestCase):
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list2)
+
+
+class ImageCacheTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.image_data = mock.create_autospec(Image_Data)
+        self.image_data.image_path = Path("abc_1.tif")
+        self.image_data.image_modified_time = 12345312.023
+        self.image_array_mock = np.array(range(0, 5))
+
+    def test_WHEN_image_added_to_cache_THEN_image_is_in_cache(self):
+        image_cache = ImageCache()
+        image_cache.add_to_cache(self.image_data, self.image_array_mock)
+        np.testing.assert_array_equal(image_cache.cache_dict[self.image_data][0], self.image_array_mock)
+        print(f"{image_cache.cache_dict=}")
+        self.assertEqual(image_cache.cache_dict[self.image_data][1], 12345312.023)
