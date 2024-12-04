@@ -8,7 +8,6 @@ from collections.abc import Callable
 from logging import getLogger
 
 import numpy as np
-import dask.array
 
 from imagecodecs._deflate import DeflateError
 
