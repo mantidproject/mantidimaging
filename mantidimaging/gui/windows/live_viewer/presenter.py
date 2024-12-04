@@ -32,6 +32,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
     op_func: Callable
+    roi_moving: bool = False
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -72,7 +73,14 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
+            self.model.set_roi(self.view.live_viewer.get_roi())
             self.model.images = images_list
+            if images_list[-1].image_path not in self.model.mean_dict.keys():
+                image_data = self.model.image_cache.load_image(images_list[-1])
+                self.model.add_mean(images_list[-1], image_data)
+            if not self.roi_moving:
+                self.model.calc_mean_chunk(50)
+            self.update_spectrum(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -111,7 +119,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.show_error(message)
             return
         self.view.show_most_recent_image(image_data)
-        self.update_spectrum(self.model.mean)
         self.view.live_viewer.show_error(None)
 
     @staticmethod
@@ -178,11 +185,12 @@ class LiveViewerWindowPresenter(BasePresenter):
     def handle_roi_moved(self, force_new_spectrums: bool = False):
         roi = self.view.live_viewer.get_roi()
         self.model.set_roi(roi)
-        self.model.clear_mean()
-        self.model.clear_and_update_mean_cache()
+        self.model.clear_mean_partial()
+        self.model.calc_mean_chunk(100)
         self.update_spectrum(self.model.mean)
+        self.roi_moving = False
 
     def handle_roi_moved_start(self):
-        self.model.clear_mean()
-        self.model.clear_and_update_mean_cache()
+        self.roi_moving = True
+        self.model.clear_mean_partial()
         self.update_spectrum(self.model.mean)
