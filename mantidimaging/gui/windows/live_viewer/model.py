@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import time
-from operator import attrgetter, itemgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
@@ -41,7 +40,8 @@ class ImageCache:
     """
     An ImageCache class to be used as a decorator on image read functions to store recent images in memory
     """
-    cache_dict: dict[Image_Data: [np.ndarray, float]] = {}
+    #cache_dict: dict[Image_Data, list[np.ndarray, float]]
+    cache_dict: dict[Image_Data, tuple[np.ndarray, float]]
     max_cache_size: int | None = None
 
     def __init__(self, max_cache_size=None):
@@ -53,11 +53,11 @@ class ImageCache:
             if self.max_cache_size is not None:
                 if self.max_cache_size <= len(self.cache_dict):
                     self.remove_oldest_image()
-            self.cache_dict[image] = [image_array, image.image_modified_time]
+            self.cache_dict[image] = (image_array, image.image_modified_time)
 
     def remove_from_cache(self, image: Image_Data):
-        if image.image_path in self.cache_dict.keys():
-            del self.cache_dict[image.image_path]
+        if image in self.cache_dict:
+            del self.cache_dict[image]
 
     def get_oldest_image(self):
         time_ordered_cache = sorted(self.cache_dict.items(), key=lambda item: item[1][-1])
@@ -122,15 +122,11 @@ class Image_Data:
         self.image_path = image_path
         self.image_name = image_path.name
         self._stat = image_path.stat()
+        self.image_modified_time = self._stat.st_mtime
 
     @property
     def stat(self) -> stat_result:
         return self._stat
-
-    @property
-    def image_modified_time(self) -> float:
-        """Return the image modified time"""
-        return self._stat.st_mtime
 
     @property
     def image_modified_time_stamp(self) -> str:
@@ -222,7 +218,7 @@ class LiveViewerWindowModel:
         #     self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
 
-    def handle_image_modified(self, image_path: Path):
+    def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
 
     def close(self) -> None:
@@ -241,30 +237,32 @@ class LiveViewerWindowModel:
         self.mean_dict[image_data_obj.image_path] = mean_to_add
         self.mean = np.append(self.mean, mean_to_add)
 
-    def clear_mean_partial(self):
+    def clear_mean_partial(self) -> None:
         self.mean_dict.clear()
         self.mean = np.full(len(self.images), np.nan)
 
-    def clear_mean(self):
+    def clear_mean(self) -> None:
         self.mean_dict.clear()
         self.mean = np.delete(self.mean, np.arange(self.mean.size))
 
     def calc_mean_fully(self) -> None:
-        for image in self.images:
-            self.add_mean(image, self.image_cache.load_image(image))
+        if self.images is not None:
+            for image in self.images:
+                self.add_mean(image, self.image_cache.load_image(image))
 
     def calc_mean_chunk(self, chunk_size: int) -> None:
-        nanInds = np.argwhere(np.isnan(self.mean))
-        if self.roi:
-            left, top, right, bottom = self.roi
-        else:
-            left, top, right, bottom = (0, 0, -1, -1)
-        if nanInds.size > 0:
-            for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
-                if ind < 0:
-                    break
-                buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
-                np.put(self.mean, ind, buffer_mean)
+        if self.images is not None:
+            nanInds = np.argwhere(np.isnan(self.mean))
+            if self.roi:
+                left, top, right, bottom = self.roi
+            else:
+                left, top, right, bottom = (0, 0, -1, -1)
+            if nanInds.size > 0:
+                for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
+                    if ind < 0:
+                        break
+                    buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
+                    np.put(self.mean, ind, buffer_mean)
 
 
 class ImageWatcher(QObject):
