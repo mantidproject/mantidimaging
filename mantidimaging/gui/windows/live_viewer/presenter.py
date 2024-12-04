@@ -11,8 +11,7 @@ import numpy as np
 from imagecodecs._deflate import DeflateError
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import (LiveViewerWindowModel, Image_Data, load_image_from_path,
-                                                         ImageCache)
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -67,6 +66,8 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
+        # TODO: put add_mean in here and check that if images have been deleted, these are compared against the mean_dict
+        # TODO: throw away and recalc the mean_dict if needed
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
@@ -110,6 +111,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.show_error(message)
             return
         self.model.set_roi(self.view.live_viewer.get_roi())
+        #TODO: move all the add mean stuff into self.update_image_list()
         if image_data_obj.image_path not in self.model.mean_dict.keys():
             self.model.add_mean(image_data_obj, image_data)
         self.model.calc_mean_cache()
