@@ -17,6 +17,7 @@ from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, 
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
+from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -40,7 +41,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.addBtn = mock.create_autospec(QPushButton)
         self.view.exportTabs = mock.create_autospec(QTabWidget)
         self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
-        self.view.tofPropertiesGroupBox = mock.create_autospec(QGroupBox)
+        self.view.experimentSetupGroupBox = mock.create_autospec(QGroupBox)
+        self.view.experimentSetupFormWidget = mock.Mock(spec=ExperimentSetupFormWidget)
+        self.view.experimentSetupFormWidget.time_delay = 0.0
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
@@ -360,7 +363,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_sample_change(uuid.uuid4())
         expected_calls = [mock.call(b) for b in expected_calls]
         self.view.tof_mode_select_group.setEnabled.assert_has_calls(expected_calls)
-        self.view.tofPropertiesGroupBox.setEnabled.assert_has_calls(expected_calls)
+        self.view.experimentSetupGroupBox.setEnabled.assert_has_calls(expected_calls)
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
     def test_WHEN_no_stack_available_THEN_units_menu_disabled(self):
@@ -369,18 +372,16 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.tof_mode_select_group.setEnabled.assert_called_once_with(False)
 
     def test_WHEN_tof_flight_path_changed_THEN_unit_conversion_flight_path_set(self):
-        self.view.flightPathSpinBox = mock.Mock()
-        self.view.flightPathSpinBox.value.return_value = 10
+        self.view.experimentSetupFormWidget.flight_path = 10.0
         self.presenter.refresh_spectrum_plot = mock.Mock()
-        self.presenter.handle_flight_path_change()
-        self.assertEqual(self.presenter.model.units.target_to_camera_dist, 10)
+        self.presenter.handle_experiment_setup_properties_change()
+        self.assertEqual(self.presenter.model.units.target_to_camera_dist, 10.0)
 
     def test_WHEN_tof_delay_changed_THEN_unit_conversion_delay_set(self):
-        self.view.timeDelaySpinBox = mock.Mock()
-        self.view.timeDelaySpinBox.value.return_value = 400
+        self.view.experimentSetupFormWidget.time_delay = 400.00
         self.presenter.refresh_spectrum_plot = mock.Mock()
-        self.presenter.handle_time_delay_change()
-        self.assertEqual(self.presenter.model.units.data_offset, 400 * 1e-6)
+        self.presenter.handle_experiment_setup_properties_change()
+        self.assertEqual(float(self.presenter.model.units.data_offset), 400.00 * 1e-6)
 
     def test_WHEN_menu_option_selected_THEN_menu_option_changed(self):
         menu_options = [QAction("opt1"), QAction("opt2"), QAction("opt3"), QAction("opt4")]
