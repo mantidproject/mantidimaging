@@ -42,7 +42,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
-        self.selected_delayed_image: dask.array.Array | None
 
         self.filters = {f.filter_name: f for f in load_filter_packages()}
 
