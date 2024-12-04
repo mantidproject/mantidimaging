@@ -67,8 +67,9 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
-        # TODO: put add_mean in here and check that if images have been deleted, these are compared against the mean_dict
-        # TODO: throw away and recalc the mean_dict if needed
+        # TODO: put add_mean in here and check that if images have been deleted,
+        #  these are compared against the mean_dict
+        #  throw away and recalc the mean_dict if needed
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)

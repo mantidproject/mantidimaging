@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import time
-from operator import attrgetter, itemgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
@@ -41,7 +40,8 @@ class ImageCache:
     """
     An ImageCache class to be used as a decorator on image read functions to store recent images in memory
     """
-    cache_dict: dict[Image_Data: [np.ndarray, float]] = {}
+    #cache_dict: dict[Image_Data, list[np.ndarray, float]]
+    cache_dict: dict[Image_Data, tuple[np.ndarray, float]]
     max_cache_size: int | None = None
     # TODO: shouldnt need buffer_size
     buffer_size: int = 10
@@ -49,17 +49,18 @@ class ImageCache:
     def __init__(self, max_cache_size=None, buffer_size=10):
         self.max_cache_size = max_cache_size
         self.buffer_size = buffer_size
+        self.cache_dict = {}
 
     def add_to_cache(self, image: Image_Data, image_array: np.ndarray):
         if image not in self.cache_dict.keys():
             if self.max_cache_size is not None:
                 if self.max_cache_size <= len(self.cache_dict):
                     self.remove_oldest_image()
-            self.cache_dict[image] = [image_array, image.image_modified_time]
+            self.cache_dict[image] = (image_array, image.image_modified_time)
 
     def remove_from_cache(self, image: Image_Data):
         if image.image_path in self.cache_dict.keys():
-            del self.cache_dict[image.image_path]
+            del self.cache_dict[image]
 
     def get_oldest_image(self):
         time_ordered_cache = sorted(self.cache_dict.items(), key=lambda item: item[1][-1])
@@ -124,15 +125,11 @@ class Image_Data:
         self.image_path = image_path
         self.image_name = image_path.name
         self._stat = image_path.stat()
+        self.image_modified_time = self._stat.st_mtime
 
     @property
     def stat(self) -> stat_result:
         return self._stat
-
-    @property
-    def image_modified_time(self) -> float:
-        """Return the image modified time"""
-        return self._stat.st_mtime
 
     @property
     def image_modified_time_stamp(self) -> str:
