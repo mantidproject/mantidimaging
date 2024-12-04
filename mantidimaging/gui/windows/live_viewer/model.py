@@ -63,7 +63,6 @@ class ImageCache:
 
     def get_oldest_image(self):
         time_ordered_cache = sorted(self.cache_dict.items(), key=lambda item: item[1][-1])
-        print(f"{time_ordered_cache[0][0]=}")
         return time_ordered_cache[0][0]
 
     def remove_oldest_image(self):
@@ -256,35 +255,17 @@ class LiveViewerWindowModel:
         for image in self.images:
             self.add_mean(image, self.image_cache.load_image(image))
 
-    #TODO: The mean calcs shouldnt know or look at anything to do with the cache, the cache should be transparent
-
-    def calc_mean_cache(self) -> None:
-        if self.roi:
-            left, top, right, bottom = self.roi
-            self.mean_cached = np.mean(self.image_cache.get_cached_image_arrays()[:, top:bottom, left:right],
-                                       axis=(1, 2))
-        else:
-            self.mean_cached = np.mean(self.image_cache.get_cached_image_arrays(), axis=(1, 2))
-
-    def update_mean_with_cached_images(self) -> None:
-        np.put(self.mean, range(-self.image_cache.get_current_cache_size(), 0), self.mean_cached)
-
-    def clear_and_update_mean_cache(self) -> None:
-        self.mean = np.full(len(self.images), np.nan)
-        self.calc_mean_cache()
-        self.update_mean_with_cached_images()
-
-    def calc_mean_buffer(self):
+    def calc_mean_chunk(self, chunk_size: int) -> None:
         nanInds = np.argwhere(np.isnan(self.mean))
         if self.roi:
             left, top, right, bottom = self.roi
         else:
             left, top, right, bottom = (0, 0, -1, -1)
         if nanInds.size > 0:
-            for ind in range(len(nanInds) - 1, len(nanInds) - 1 - self.image_cache.buffer_size, -1):
+            for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
                 if ind < 0:
                     break
-                buffer_mean = np.mean(load_image_from_path(self.images[ind].image_path)[top:bottom, left:right])
+                buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
                 np.put(self.mean, ind, buffer_mean)
 
 
