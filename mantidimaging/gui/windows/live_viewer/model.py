@@ -40,15 +40,11 @@ class ImageCache:
     """
     An ImageCache class to be used as a decorator on image read functions to store recent images in memory
     """
-    #cache_dict: dict[Image_Data, list[np.ndarray, float]]
     cache_dict: dict[Image_Data, tuple[np.ndarray, float]]
     max_cache_size: int | None = None
-    # TODO: shouldnt need buffer_size
-    buffer_size: int = 10
 
-    def __init__(self, max_cache_size=None, buffer_size=10):
+    def __init__(self, max_cache_size=None):
         self.max_cache_size = max_cache_size
-        self.buffer_size = buffer_size
         self.cache_dict = {}
 
     def add_to_cache(self, image: Image_Data, image_array: np.ndarray):
