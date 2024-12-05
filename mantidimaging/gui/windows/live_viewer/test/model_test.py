@@ -13,7 +13,7 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data, load_image_from_path
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -169,9 +169,10 @@ class ImageCacheTest(unittest.TestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.image_data_list = [None]*5
-        self.image_array_mock_list = [np.random.rand(5)]*5
-        for i in range(len(self.image_data_list)):
+        self.image_data_list = []
+        self.image_array_mock_list = [np.random.default_rng().random(5)] * 5
+        for i in range(5):
+            self.image_data_list.append(mock.create_autospec(Image_Data))
             self.image_data_list[i] = mock.create_autospec(Image_Data)
             self.image_data_list[i].image_path = Path(f"abc_{i}.tif")
             self.image_data_list[i].image_modified_time = random.uniform(1000, 10000)
@@ -222,4 +223,3 @@ class ImageCacheTest(unittest.TestCase):
         self.image_cache.add_to_cache(self.image_data_list[1], self.image_array_mock_list[1])
         self.image_cache.add_to_cache(self.image_data_list[2], self.image_array_mock_list[2])
         self.image_cache.remove_oldest_image.assert_called_once()
-
