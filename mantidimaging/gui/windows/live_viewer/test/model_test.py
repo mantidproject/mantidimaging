@@ -13,7 +13,7 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data, load_image_from_path
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -192,9 +192,34 @@ class ImageCacheTest(unittest.TestCase):
         self.image_cache.remove_from_cache(image_data)
         self.assertNotIn(image_data, self.image_cache.cache_dict)
 
-    def test_WHEN_oldest_image_got_THEN_get_oldest_image(self):
-        self.image_cache = ImageCache()
+    def test_WHEN_remove_oldest_image_got_THEN_oldest_image_removed(self):
         for i in range(len(self.image_data_list)):
             self.image_cache.add_to_cache(self.image_data_list[i], self.image_array_mock_list[i])
         min_index = np.argmin([image.image_modified_time for image in self.image_data_list])
         self.assertEqual(self.image_cache.get_oldest_image(), self.image_data_list[min_index])
+        self.image_cache.remove_oldest_image()
+        self.assertNotIn(self.image_data_list[min_index], self.image_cache.cache_dict)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.load_image_from_path")
+    def test_WHEN_image_not_in_cache_when_loaded_THEN_image_added_to_cache(self, load_image_from_path_mock):
+        self.image_cache = ImageCache()
+        self.image_cache.load_image(self.image_data_list[0])
+        load_image_from_path_mock.assert_called_once()
+        self.assertIn(self.image_data_list[0], self.image_cache.cache_dict)
+
+    @mock.patch("mantidimaging.gui.windows.live_viewer.model.load_image_from_path")
+    def test_WHEN_image_in_cache_when_loaded_then_image_taken_from_cache(self, load_image_from_path_mock):
+        self.image_cache = ImageCache()
+        self.image_cache.add_to_cache(self.image_data_list[0], self.image_array_mock_list[0])
+        image_array = self.image_cache.load_image(self.image_data_list[0])
+        load_image_from_path_mock.assert_not_called()
+        np.testing.assert_array_equal(image_array, self.image_cache.cache_dict[self.image_data_list[0]][0])
+
+    def test_WHEN_cache_full_THEN_loading_image_removes_oldest_image(self):
+        self.image_cache = ImageCache(max_cache_size=2)
+        self.image_cache.remove_oldest_image = mock.Mock()
+        self.image_cache.add_to_cache(self.image_data_list[0], self.image_array_mock_list[0])
+        self.image_cache.add_to_cache(self.image_data_list[1], self.image_array_mock_list[1])
+        self.image_cache.add_to_cache(self.image_data_list[2], self.image_array_mock_list[2])
+        self.image_cache.remove_oldest_image.assert_called_once()
+
