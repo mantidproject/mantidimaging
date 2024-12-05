@@ -514,7 +514,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QPixmap</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QAbstractItemView</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span> \
-    <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QTableWidget</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QActionGroup</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QTableWidget</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QActionGroup</span><span class="p">,</span> <span class="n">QAction</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSignalBlocker</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QModelIndex</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
@@ -525,7 +525,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets</span> <span class="kn">import</span> <span class="n">RemovableRowTableView</span>
 <span class="kn">from</span> <span class="nn">.spectrum_widget</span> <span class="kn">import</span> <span class="n">SpectrumWidget</span>
 <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.spectrum_viewer.roi_table_model</span> <span class="kn">import</span> <span class="n">TableModel</span>
-
+<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.spectrum_widgets.tof_properties</span> <span class="kn">import</span> <span class="n">ExperimentSetupFormWidget</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -564,9 +564,8 @@ document.write(`
 
     <span class="n">number_roi_properties_procced</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="n">tofPropertiesGroupBox</span><span class="p">:</span> <span class="n">QGroupBox</span>
-    <span class="n">flightPathSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">timeDelaySpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">experimentSetupGroupBox</span><span class="p">:</span> <span class="n">QGroupBox</span>
+    <span class="n">experimentSetupFormWidget</span><span class="p">:</span> <span class="n">ExperimentSetupFormWidget</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;gui/ui/spectrum_viewer.ui&#39;</span><span class="p">)</span>
@@ -683,15 +682,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">roi_names</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mf">1e10</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mf">56.4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">&quot; m&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mf">1e10</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">&quot; </span><span class="se">\u03BC</span><span class="s2">s&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_flight_path_change</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_time_delay_change</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupFormWidget</span> <span class="o">=</span> <span class="n">ExperimentSetupFormWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupGroupBox</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupFormWidget</span><span class="o">.</span><span class="n">flight_path</span> <span class="o">=</span> <span class="mf">56.4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupFormWidget</span><span class="o">.</span><span class="n">connect_value_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_experiment_setup_properties_change</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">on_row_change</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">QModelIndex</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
