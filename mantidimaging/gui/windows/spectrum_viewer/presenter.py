@@ -129,13 +129,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def reset_units_menu(self) -> None:
         if self.model.tof_data is None:
             self.view.tof_mode_select_group.setEnabled(False)
-            self.view.tofPropertiesGroupBox.setEnabled(False)
+            self.view.experimentSetupGroupBox.setEnabled(False)
             self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
             self.change_selected_menu_option("Image Index")
             self.view.tof_mode_select_group.setEnabled(False)
         else:
             self.view.tof_mode_select_group.setEnabled(True)
-            self.view.tofPropertiesGroupBox.setEnabled(True)
+            self.view.experimentSetupGroupBox.setEnabled(True)
 
     def handle_normalise_stack_change(self, normalise_uuid: UUID | None) -> None:
         if normalise_uuid == self.current_norm_stack_uuid:
@@ -429,13 +429,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.auto_range_image()
 
-    def handle_flight_path_change(self) -> None:
-        self.model.units.target_to_camera_dist = self.view.flightPathSpinBox.value()
-        self.model.set_relevant_tof_units()
-        self.refresh_spectrum_plot()
-
-    def handle_time_delay_change(self) -> None:
-        self.model.units.data_offset = self.view.timeDelaySpinBox.value() * 1e-6
+    def handle_experiment_setup_properties_change(self) -> None:
+        self.model.units.target_to_camera_dist = self.view.experimentSetupFormWidget.flight_path
+        self.model.units.data_offset = self.view.experimentSetupFormWidget.time_delay * 1e-6
         self.model.set_relevant_tof_units()
         self.refresh_spectrum_plot()
 
