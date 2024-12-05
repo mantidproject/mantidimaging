@@ -55,7 +55,7 @@ class ImageCache:
             self.cache_dict[image] = (image_array, image.image_modified_time)
 
     def remove_from_cache(self, image: Image_Data):
-        if image.image_path in self.cache_dict.keys():
+        if image in self.cache_dict:
             del self.cache_dict[image]
 
     def get_oldest_image(self):
