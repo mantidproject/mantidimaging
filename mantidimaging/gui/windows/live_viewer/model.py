@@ -73,21 +73,6 @@ class ImageCache:
             self.add_to_cache(image, image_array)
             return image_array
 
-    def get_cache(self):
-        return self.cache_dict
-
-    def get_current_cache_size(self):
-        return len(self.cache_dict)
-
-    def get_cached_image_paths(self):
-        return list(self.cache_dict.keys())
-
-    def get_cached_image_arrays(self):
-        return np.stack([info[0] for info in list(self.cache_dict.values())])
-
-    def get_cached_image_modified_times(self):
-        return [info[1] for info in list(self.cache_dict.values())]
-
 
 class Image_Data:
     """
