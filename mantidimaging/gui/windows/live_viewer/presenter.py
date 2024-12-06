@@ -67,9 +67,6 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self, images_list: list[Image_Data]) -> None:
         """Update the image in the view."""
-        # TODO: put add_mean in here and check that if images have been deleted,
-        #  these are compared against the mean_dict
-        #  throw away and recalc the mean_dict if needed
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
@@ -79,8 +76,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             if images_list[-1].image_path not in self.model.mean_dict.keys():
                 image_data = self.model.image_cache.load_image(images_list[-1])
                 self.model.add_mean(images_list[-1], image_data)
-            if not self.roi_moving:
-                self.model.calc_mean_chunk(50)
             self.update_spectrum(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
@@ -187,8 +182,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         roi = self.view.live_viewer.get_roi()
         self.model.set_roi(roi)
         self.model.clear_mean_partial()
-        self.model.calc_mean_chunk(100)
-        self.update_spectrum(self.model.mean)
+        if self.model.calc_mean_all_chunks_thread is not None:
+            self.model.calc_mean_all_chunks_thread.join()
+        self.model.create_new_calc_mean_all_chunks_thread(100)
+        self.model.calc_mean_all_chunks_thread.start()
         self.roi_moving = False
 
     def handle_roi_moved_start(self):
