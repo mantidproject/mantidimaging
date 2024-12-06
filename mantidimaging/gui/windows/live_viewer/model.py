@@ -202,7 +202,7 @@ class LiveViewerWindowModel:
         #     self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
 
-    def handle_image_modified(self, image_path: Path):
+    def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
 
     def close(self) -> None:
@@ -221,30 +221,32 @@ class LiveViewerWindowModel:
         self.mean_dict[image_data_obj.image_path] = mean_to_add
         self.mean = np.append(self.mean, mean_to_add)
 
-    def clear_mean_partial(self):
+    def clear_mean_partial(self) -> None:
         self.mean_dict.clear()
         self.mean = np.full(len(self.images), np.nan)
 
-    def clear_mean(self):
+    def clear_mean(self) -> None:
         self.mean_dict.clear()
         self.mean = np.delete(self.mean, np.arange(self.mean.size))
 
     def calc_mean_fully(self) -> None:
-        for image in self.images:
-            self.add_mean(image, self.image_cache.load_image(image))
+        if self.images is not None:
+            for image in self.images:
+                self.add_mean(image, self.image_cache.load_image(image))
 
     def calc_mean_chunk(self, chunk_size: int) -> None:
-        nanInds = np.argwhere(np.isnan(self.mean))
-        if self.roi:
-            left, top, right, bottom = self.roi
-        else:
-            left, top, right, bottom = (0, 0, -1, -1)
-        if nanInds.size > 0:
-            for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
-                if ind < 0:
-                    break
-                buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
-                np.put(self.mean, ind, buffer_mean)
+        if self.images is not None:
+            nanInds = np.argwhere(np.isnan(self.mean))
+            if self.roi:
+                left, top, right, bottom = self.roi
+            else:
+                left, top, right, bottom = (0, 0, -1, -1)
+            if nanInds.size > 0:
+                for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
+                    if ind < 0:
+                        break
+                    buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
+                    np.put(self.mean, ind, buffer_mean)
 
 
 class ImageWatcher(QObject):
