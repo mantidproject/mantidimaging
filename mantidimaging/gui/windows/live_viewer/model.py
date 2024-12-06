@@ -6,6 +6,7 @@ import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
+from threading import Thread
 
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
@@ -165,6 +166,7 @@ class LiveViewerWindowModel:
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=10)
         self.mean_cached: np.ndarray = np.empty(0)
+        self.calc_mean_all_chunks_thread = None
 
     @property
     def path(self) -> Path | None:
@@ -213,7 +215,7 @@ class LiveViewerWindowModel:
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
     def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray) -> None:
-        if self.roi:
+        if self.roi and (self.roi.left, self.roi.top, self.roi.right, self.roi.bottom) != (0, 0, 0, 0):
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
         else:
@@ -247,6 +249,15 @@ class LiveViewerWindowModel:
                         break
                     buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
                     np.put(self.mean, ind, buffer_mean)
+
+    def create_new_calc_mean_all_chunks_thread(self, chunk_size: int) -> None:
+        self.calc_mean_all_chunks_thread = Thread(target=self.calc_mean_all_chunks, args=[chunk_size])
+
+    def calc_mean_all_chunks(self, chunk_size: int) -> None:
+        while np.isnan(self.mean).any():
+            self.calc_mean_chunk(chunk_size)
+            self.presenter.update_spectrum(self.mean)
+
 
 
 class ImageWatcher(QObject):
