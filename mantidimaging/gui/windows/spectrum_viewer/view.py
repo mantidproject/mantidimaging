@@ -67,6 +67,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
         self.selected_row: int = 0
+        self.last_clicked_roi = ""
         self.current_roi_name: str = ""
         self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
         self.roiPropertiesLabels: dict[str, QLabel] = {}
