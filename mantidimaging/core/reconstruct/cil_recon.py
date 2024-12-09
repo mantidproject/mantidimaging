@@ -53,6 +53,25 @@ class MIProgressCallback(Callback):
             )
 
 
+class RecordResidualsCallback(Callback):
+
+    def __init__(self, verbose=1, residual_interval: int = 1) -> None:
+        super().__init__(verbose)
+        self.residual_interval = residual_interval
+
+    def __call__(self, algo: Algorithm) -> None:
+        if algo.iteration % self.residual_interval == 0:
+            if isinstance(algo, PDHG):
+                forward_projection = algo.operator.direct(algo.solution)[1].as_array()
+                data = algo.f[1].b.as_array()
+                if len(forward_projection.shape) == 3:
+                    slice = forward_projection.shape[0] // 2
+                    forward_projection = forward_projection[slice]
+                    data = data[slice]
+                residual: np.ndarray = (data - forward_projection)**2
+                algo.last_residual = (algo.iteration, residual**2)
+
+
 class CILRecon(BaseRecon):
 
     @staticmethod
