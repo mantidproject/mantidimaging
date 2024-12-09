@@ -573,59 +573,99 @@ document.write(`
   <section id="center-of-rotation-and-tilt">
 <span id="center-of-rotation"></span><h1>Center of Rotation and Tilt<a class="headerlink" href="#center-of-rotation-and-tilt" title="Link to this heading">#</a></h1>
 <section id="center-of-rotation-cor-and-tilt-usage">
-<h2>Center of Rotation (COR) and Tilt usage<a class="headerlink" href="#center-of-rotation-cor-and-tilt-usage" title="Link to this heading">#</a></h2>
+<h2>Center of Rotation (COR) and Tilt Usage<a class="headerlink" href="#center-of-rotation-cor-and-tilt-usage" title="Link to this heading">#</a></h2>
 <p>The correct center of rotation is required for a good reconstruction.
 We provide two automatic ways of getting a center of rotation.
 However, sometimes the values they find are not accurate, so there is also a manual way
 to adjust the center of rotation.</p>
 <p>The algorithms used for reconstruction require a COR for each sinogram,
-i.e. a list of CORs equal to the number of sinograms (also equal to the number of rows in a projection).
-This is abstracted away and the two final values that are used are: center of rotation and tilt.</p>
-<p>In that case the COR refers to the value at sinogram 0 (also referred to as slice 0).
-Using the tilt we then use a linear regression to calculate the COR for each sinogram in the data.</p>
+i.e., a list of CORs equal to the number of sinograms (also equal to the number of rows in a projection).
+This is abstracted away, and the two final values that are used are: center of rotation and tilt.</p>
+<p>In that case, the COR refers to the value at sinogram 0 (also referred to as slice 0).
+Using the tilt, we then use a linear regression to calculate the COR for each sinogram in the data.</p>
+</section>
+<section id="what-is-the-center-of-rotation-cor">
+<h2>What is the Center of Rotation (COR)?<a class="headerlink" href="#what-is-the-center-of-rotation-cor" title="Link to this heading">#</a></h2>
+<p>The <strong>Center of Rotation (COR)</strong> is a reference point that defines the axis around which the object rotates
+during image acquisition in tomography. It is the midpoint of the rotational axis when looking at
+a slice of the data (a sinogram).</p>
+<a class="reference internal image-reference" href="../../../_images/cor_bad.png"><img alt="Misaligned Center of Rotation (COR) causing artifacts" class="align-left" src="../../../_images/cor_bad.png" style="width: 47%;" /></a>
+<a class="reference internal image-reference" href="../../../_images/cor_good.png"><img alt="Correctly aligned Center of Rotation (COR) for artifact-free reconstruction" class="align-right" src="../../../_images/cor_good.png" style="width: 47%;" /></a>
+<p>The left image shows a misaligned COR causing artifacts and distortions,
+while the right image depicts a properly aligned COR ensuring accurate and artifact-free reconstruction.</p>
+<dl class="simple">
+<dt>Why COR Matters:</dt><dd><ul class="simple">
+<li><p>If the COR is incorrect, the projections will not align correctly during reconstruction,
+leading to artifacts and blurred images.</p></li>
+<li><p>COR is specific for each sinogram (i.e., each slice of the object being scanned).</p></li>
+</ul>
+</dd>
+<dt>How COR is Used:</dt><dd><ul class="simple">
+<li><p>For accurate reconstruction, the COR for the first sinogram (sinogram 0, also called slice 0) is determined.</p></li>
+<li><p>Using the <strong>Tilt</strong> parameter, CORs for subsequent sinograms are calculated through a linear adjustment.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="what-is-tilt">
+<h2>What is Tilt?<a class="headerlink" href="#what-is-tilt" title="Link to this heading">#</a></h2>
+<p><strong>Tilt</strong> describes the gradual change in the Center of Rotation (COR) along the axis perpendicular
+to the rotation plane (typically corresponding to the rows in a projection).Without considering tilt,
+the reconstructed slices may not align correctly, causing distortions or streaking artifacts.</p>
+<dl class="simple">
+<dt>Key Points:</dt><dd><ul class="simple">
+<li><p>Tilt is measured in degrees.</p></li>
+<li><p>A tilt value of zero means the rotation axis is vertical, and the COR is the same for every sinogram.</p></li>
+<li><p>Using the COR of the first sinogram and the tilt value, the COR for each subsequent sinogram is interpolated or extrapolated.</p></li>
+</ul>
+</dd>
+<dt>GUI:</dt><dd><ul class="simple">
+<li><p>The GUI also displays <strong>Slope</strong>, which represents how far the COR moves from one slice to the next.</p></li>
+</ul>
+</dd>
+</dl>
 </section>
 <section id="entering-known-cor-and-tilt">
-<h2>Entering known COR and tilt<a class="headerlink" href="#entering-known-cor-and-tilt" title="Link to this heading">#</a></h2>
-<p>If the COR and tilt are already known you can enter them in the “Enter known COR/Tilt manually here” section
-and press “Use COR/Tilt values from above”. In this case you can go immediately to reconstruction.</p>
+<h2>Entering Known COR and Tilt<a class="headerlink" href="#entering-known-cor-and-tilt" title="Link to this heading">#</a></h2>
+<p>If the COR and tilt are already known, you can enter them in the “Enter known COR/Tilt manually here” section
+and press “Use COR/Tilt values from above.” In this case, you can go immediately to reconstruction.</p>
 </section>
 <section id="correlate-0-and-180">
 <h2>Correlate 0 and 180<a class="headerlink" href="#correlate-0-and-180" title="Link to this heading">#</a></h2>
 <p>This automatic COR algorithm finds the shift between the projections at 0 and 180 degrees.
-The projection exactly at 180 degrees is necessary for the best result.
-We provide the option of loading a 180 degree projection in the load dialog.</p>
-<p>The algorithm will not run unless a 180 degree projection has been loaded.</p>
+The projection exactly at 180 degrees is necessary for the best result. We provide the option
+of loading a 180-degree projection in the load dialog.</p>
+<p>The algorithm will not run unless a 180-degree projection has been loaded.</p>
 <p>This is not a problem and could be rectified either by adding a manual COR or using
 the minimisation algorithm.</p>
 </section>
 <section id="minimise-error">
-<h2>Minimise error<a class="headerlink" href="#minimise-error" title="Link to this heading">#</a></h2>
+<h2>Minimise Error<a class="headerlink" href="#minimise-error" title="Link to this heading">#</a></h2>
 <p>This automatic COR algorithm uses the square sum of the projection as a noise heuristic.
 It minimises the noise in order to find the best COR for that sinogram.</p>
 <p>It does so for a number of sinograms (slices) and adds the result in the COR table.</p>
 <p>This algorithm may not work well on noisy data or with very bright outliers, as the
 minimisation can get lost in a local minima and not find the best reconstructed slice.
-As the same heuristic is also used in the manual “Refine” window, to highlight
+As the same heuristic is also used in the manual “Refine” window to highlight
 one of the choices as the best, the behaviour can also be seen there.</p>
-<p>In this case the best action is to use the correlate as a starting point,
-and go immediately to manual COR correction.</p>
+<p>In this case, the best action is to use the correlate as a starting point and
+go immediately to manual COR correction.</p>
 </section>
 <section id="manual-cor-correction">
-<h2>Manual COR correction<a class="headerlink" href="#manual-cor-correction" title="Link to this heading">#</a></h2>
-<p>Due to the limitations of the algorithms above there is also a manual way of calculating the COR -
+<h2>Manual COR Correction<a class="headerlink" href="#manual-cor-correction" title="Link to this heading">#</a></h2>
+<p>Due to the limitations of the algorithms above, there is also a manual way of calculating the COR—
 using the “COR Table - refine manually” part of the GUI.</p>
-<p>In that table you can click Add to add a new COR for the currently selected slice. Once added
-you can click the row and then “Refine” which will take you
-to a window that reconstructs the sinogram with multiple CORs simultaneously, and allows you
-to visually pick the best one.</p>
+<p>In that table, you can click Add to add a new COR for the currently selected slice. Once added,
+you can click the row and then “Refine,” which will take you to a window that reconstructs
+the sinogram with multiple CORs simultaneously, and allows you to visually pick the best one.</p>
 <p>After you have two or more CORs in the table, a fit will be performed in order to find the COR and tilt
 using the data from the table rows.</p>
 <p>It is sometimes good enough to add a COR at the top of your data and the bottom.
 Once the best CORs for those are found, the resulting tilt should be accurate.
-To increase the accuracy further add more COR rows.</p>
+To increase the accuracy further, add more COR rows.</p>
 </section>
 <section id="to-reconstruction">
-<h2>To reconstruction<a class="headerlink" href="#to-reconstruction" title="Link to this heading">#</a></h2>
+<h2>To Reconstruction<a class="headerlink" href="#to-reconstruction" title="Link to this heading">#</a></h2>
 <p>Once you have a satisfactory value of COR or tilt, you are ready to proceed to the “Reconstruct” tab.</p>
 <p>Information about the filters and algorithms can be found in the other pages of the <a class="reference internal" href="index.html#reconstruction-help-page"><span class="std std-ref">Reconstruction Help page</span></a>.</p>
 </section>
@@ -677,12 +717,14 @@ To increase the accuracy further add more COR rows.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#center-of-rotation-cor-and-tilt-usage">Center of Rotation (COR) and Tilt usage</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#entering-known-cor-and-tilt">Entering known COR and tilt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#center-of-rotation-cor-and-tilt-usage">Center of Rotation (COR) and Tilt Usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-center-of-rotation-cor">What is the Center of Rotation (COR)?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-tilt">What is Tilt?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#entering-known-cor-and-tilt">Entering Known COR and Tilt</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlate-0-and-180">Correlate 0 and 180</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimise-error">Minimise error</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-cor-correction">Manual COR correction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#to-reconstruction">To reconstruction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimise-error">Minimise Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-cor-correction">Manual COR Correction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#to-reconstruction">To Reconstruction</a></li>
 </ul>
   </nav></div>
 
