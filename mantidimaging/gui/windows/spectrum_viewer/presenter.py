@@ -367,13 +367,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
-        Rename a given ROI from the table by ROI name
+        Rename a given ROI from the table by ROI name.
 
         @param old_name: Name of the ROI to rename
         @param new_name: New name of the ROI
         """
-        self.view.spectrum_widget.rename_roi(old_name, new_name)
-        self.model.rename_roi(old_name, new_name)
+        try:
+            self.view.spectrum_widget.rename_roi(old_name, new_name)
+        except RuntimeError:
+            raise RuntimeError(f"Cannot remove ROI: {old_name}")
+        except KeyError:
+            raise KeyError(
+                f"Cannot rename {old_name} to {new_name}. Available: {list(self.view.spectrum_widget.rois.keys())}")
 
     def do_remove_roi(self, roi_name: str | None = None) -> None:
         """
@@ -388,7 +393,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
-            self.model.remove_roi(roi_name)
 
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)

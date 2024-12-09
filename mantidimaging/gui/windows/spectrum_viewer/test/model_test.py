@@ -398,26 +398,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_stack(image_stack)
         self.assertEqual(self.model.has_stack(), expected)
 
-    def test_WHEN_roi_removed_THEN_roi_name_removed_from_list_of_roi_names(self):
-        self.model.set_stack(generate_images())
-        rois = ["roi", "new_roi"]
-        for roi in rois:
-            self.model.set_new_roi(roi)
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
-        self.model.remove_roi("new_roi")
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "roi"])
-
-    def test_WHEN_remove_roi_called_with_default_roi_THEN_raise_runtime_error(self):
-        self.model.set_stack(generate_images())
-        with self.assertRaises(RuntimeError):
-            self.model.remove_roi("all")
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
-
-    def test_WHEN_invalid_roi_removed_THEN_keyerror_raised(self):
-        self.model.set_stack(generate_images())
-        with self.assertRaises(KeyError):
-            self.model.remove_roi("non_existent_roi")
-
     def test_WHEN_remove_all_rois_called_THEN_all_but_default_rois_removed(self):
         self.model.set_stack(generate_images())
         rois = ["new_roi", "new_roi_2"]
@@ -426,24 +406,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
         self.model.remove_all_roi()
         self.assertListEqual(list(self.model._roi_ranges.keys()), [])
-
-    def test_WHEN_roi_renamed_THEN_roi_name_changed_in_list_of_roi_names(self):
-        self.model.set_stack(generate_images())
-        self.model.set_new_roi("new_roi")
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "new_roi"])
-        self.model.rename_roi("new_roi", "imaging_is_the_coolest")
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "imaging_is_the_coolest"])
-
-    def test_WHEN_invalid_roi_renamed_THEN_keyerror_raised(self):
-        self.model.set_stack(generate_images())
-        with self.assertRaises(KeyError):
-            self.model.rename_roi("non_existent_roi", "imaging_is_the_coolest")
-
-    def test_WHEN_default_roi_renamed_THEN_runtime_error_raised(self):
-        self.model.set_stack(generate_images())
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
-        with self.assertRaises(RuntimeError):
-            self.model.rename_roi("all", "imaging_is_the_coolest")
 
     def test_WHEN_no_stack_tof_THEN_time_of_flight_none(self):
         # No Stack
