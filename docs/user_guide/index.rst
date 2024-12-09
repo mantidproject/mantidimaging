@@ -47,6 +47,7 @@ Welcome to the user guide. This guide is organized based on the Diátaxis framew
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :hidden:
 
    tutorials/index
    how-to-guides/index
