@@ -21,6 +21,18 @@ Week 1 Overview
 
 **Milestone**: Successfully run Mantid Imaging and identify key areas for further learning.
 
+Week 2 Overview
+---------------
+
+**Focus**: Training and practical application
+
+- Deep dive into PyQt, MVP, and first tasks.
+
+- Submit a PR for review.
+
+
+**Milestone**: Successfully submit a PR and discuss in standups.
+
 
 Key Skills Development
 -----------------------
@@ -67,11 +79,13 @@ Core Skills: PyQt and Qt
 - `Python GUI Programming with PyQt5 <https://realpython.com/pyqt-python-gui-framework/>`_: RealPython's introduction to GUI programming with PyQt.
 
 
-**MVP Integration**:
+**MVP Mantidimaging**:
 
-- Practice creating and modifying PyQt-based UI components within Mantid Imaging’s MVP structure.
+**Path**: ``mantidimaging/gui/windows/spectrum_viewer/``
 
-- Experiment with dynamic UI updates triggered by Presenter logic.
+- Launch the Mantid Imaging application and interact with the Spectrum Viewer.
+- Open presenter.py to see how it interacts with the Model and View.
+- Open view.py to understand how UI elements are defined and updated.
 
 
 Core Skills: Neutron Imaging
@@ -80,8 +94,6 @@ Core Skills: Neutron Imaging
 **Key Learning Materials**:
 
 - `Neutron Imaging for Software Engineers <https://stfc365.sharepoint.com/:w:/r/sites/mantidimaging/Shared%20Documents/Training/Neutron%20Imaging%20for%20Software%20Engineers.docx>`_.
-
-- Explore imaging case studies available from IMAT to gain a deeper understanding of neutron imaging use cases.
 
 
 **Bragg Peak and TOF**:
@@ -158,18 +170,3 @@ Key Resources
 - `PyQt5 Tutorial (zetcode) <https://zetcode.com/gui/pyqt5/>`_.
 
 - `RealPython PyQt Guide <https://realpython.com/pyqt-python-gui-framework/>`_.
-
-
-Week 2 Overview
----------------
-
-**Focus**: Training, practical application, and team integration.
-
-- Attend standups, group discussions, and in-person meeting (Thursday).
-
-- Deep dive into PyQt, MVP, and first tasks.
-
-- Submit a PR for review.
-
-
-**Milestone**: Successfully submit a PR and discuss in standups.
