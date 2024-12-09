@@ -40,19 +40,17 @@ class MIProgressCallback(Callback):
     def __init__(self, verbose=1, progress: Progress | None = None) -> None:
         super().__init__(verbose)
         self.progress = progress
-        self.iteration_count = 1
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
             extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
             self.progress.update(
                 steps=1,
-                msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
+                msg=f'CIL: Iteration {algo.iteration} of {algo.max_iteration}'
                 f': Objective {algo.get_last_objective():.2f}',
                 force_continue=False,
                 extra_info=extra_info,
             )
-            self.iteration_count += 1
 
 
 class CILRecon(BaseRecon):
