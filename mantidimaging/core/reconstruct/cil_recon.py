@@ -44,6 +44,8 @@ class MIProgressCallback(Callback):
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
             extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
+            if algo.last_residual and algo.last_residual[0] == algo.iteration:
+                extra_info["residual"] = algo.last_residual[1]
             self.progress.update(
                 steps=1,
                 msg=f'CIL: Iteration {algo.iteration} of {algo.max_iteration}'
@@ -299,7 +301,11 @@ class CILRecon(BaseRecon):
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 algo.max_iteration = num_iter
-                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
+                algo.run(num_iter,
+                         callbacks=[
+                             RecordResidualsCallback(residual_interval=update_objective_interval),
+                             MIProgressCallback(progress=progress)
+                         ])
 
             finally:
                 if progress:
@@ -418,7 +424,11 @@ class CILRecon(BaseRecon):
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 algo.max_iteration = num_iter
-                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
+                algo.run(num_iter,
+                         callbacks=[
+                             RecordResidualsCallback(residual_interval=update_objective_interval),
+                             MIProgressCallback(progress=progress)
+                         ])
 
                 if isinstance(algo.solution, BlockDataContainer):
                     # TGV case
