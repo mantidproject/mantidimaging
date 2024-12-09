@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 from collections.abc import Callable
-from pyqtgraph import PlotWidget
+
+import numpy as np
+from pyqtgraph import PlotWidget, ImageView
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -24,11 +26,18 @@ class AsyncTaskDialogView(BaseDialogView):
 
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(1000)
+
         self.progress_plot = PlotWidget()
         self.PlotVerticalLayout.addWidget(self.progress_plot)
         self.progress_plot.hide()
         self.progress_plot.setLogMode(y=True)
         self.progress_plot.setMinimumHeight(300)
+
+        self.residual_image_view = ImageView()
+        self.residual_image_view.setMinimumHeight(400)
+        self.residual_image_view.setMinimumWidth(600)
+        self.PlotVerticalLayout.addWidget(self.residual_image_view)
+        self.residual_image_view.hide()
 
         self.show_timer = QTimer(self)
         self.cancelButton.clicked.connect(self.presenter.stop_progress)
@@ -72,6 +81,13 @@ class AsyncTaskDialogView(BaseDialogView):
     def set_progress_plot(self, x: list, y: list):
         self.progress_plot.show()
         self.progress_plot.plotItem.plot(x, y)
+
+    def set_progress_residual_plot(self, residual_image: np.ndarray):
+        self.residual_image_view.show()
+        max_level = np.percentile(residual_image, 95) * 2
+        self.residual_image_view.setImage(residual_image, levels=(0, max_level))
+        self.residual_image_view.ui.histogram.gradient.loadPreset("viridis")
+        self.residual_image_view.ui.histogram.setHistogramRange(0, max_level)
 
     def show_delayed(self, timeout) -> None:
         self.show_timer.singleShot(timeout, self.show_from_timer)
