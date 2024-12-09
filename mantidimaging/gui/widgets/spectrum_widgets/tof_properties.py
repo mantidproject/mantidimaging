@@ -47,6 +47,7 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
         self.flightPathSpinBox.setSuffix(" m")
         self.flightPathSpinBox.setMinimum(0)
         self.flightPathSpinBox.setMaximum(1e10)
+        self.flightPathSpinBox.setDecimals(3)
         self.flightPathSpinBox.setObjectName("flightPathSpinBox")
         layout.addWidget(self.flightPathSpinBox, 0, 1)
 
@@ -58,6 +59,7 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
         self.timeDelaySpinBox = QtWidgets.QDoubleSpinBox(self)
         self.timeDelaySpinBox.setSuffix(" \u03BCs")
         self.timeDelaySpinBox.setMaximum(1e10)
+        self.timeDelaySpinBox.setDecimals(3)
         self.timeDelaySpinBox.setObjectName("timeDelaySpinBox")
         layout.addWidget(self.timeDelaySpinBox, 1, 1)
 
@@ -71,7 +73,7 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
         return self.flightPathSpinBox.value()
 
     @flight_path.setter
-    def flight_path(self, value: float):
+    def flight_path(self, value: float) -> None:
         self.flightPathSpinBox.setValue(value)
 
     @property
