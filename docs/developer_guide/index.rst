@@ -45,6 +45,7 @@ Welcome to the developer guide. This guide is divided into several sections base
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :hidden:
 
    tutorials/index
    how-to-guides/index
