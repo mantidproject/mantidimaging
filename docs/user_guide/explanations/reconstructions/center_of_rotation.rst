@@ -20,10 +20,23 @@ Using the tilt, we then use a linear regression to calculate the COR for each si
 
 What is the Center of Rotation (COR)?
 -------------------------------------
-
 The **Center of Rotation (COR)** is a reference point that defines the axis around which the object rotates
 during image acquisition in tomography. It is the midpoint of the rotational axis when looking at
 a slice of the data (a sinogram).
+
+.. image:: ../../../_static/cor_bad.png
+    :alt: Misaligned Center of Rotation (COR) causing artifacts
+    :width: 47%
+    :align: left
+
+.. image:: ../../../_static/cor_good.png
+    :alt: Correctly aligned Center of Rotation (COR) for artifact-free reconstruction
+    :width: 47%
+    :align: right
+
+
+The left image shows a misaligned COR causing artifacts and distortions,
+while the right image depicts a properly aligned COR ensuring accurate and artifact-free reconstruction.
 
 Why COR Matters:
   - If the COR is incorrect, the projections will not align correctly during reconstruction,
@@ -37,18 +50,17 @@ How COR is Used:
 What is Tilt?
 -------------
 
-**Tilt** describes the gradual change in the COR along the axis perpendicular to the rotation plane
-(typically corresponding to the rows in a projection). It reflects any misalignment or non-uniformity
-in the system during the acquisition of the sinograms.
+**Tilt** describes the gradual change in the Center of Rotation (COR) along the axis perpendicular
+to the rotation plane (typically corresponding to the rows in a projection).Without considering tilt,
+the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
 
-Why Tilt Matters:
-  - Tilt accounts for the variation in COR values across sinograms due to physical or mechanical imperfections.
-  - Without considering tilt, the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
+Key Points:
+  - Tilt is measured in degrees.
+  - A tilt value of zero means the rotation axis is vertical, and the COR is the same for every sinogram.
+  - Using the COR of the first sinogram and the tilt value, the COR for each subsequent sinogram is interpolated or extrapolated.
 
-How Tilt is Used:
-  - Tilt is measured as the rate of change of COR across the sinograms.
-  - With the known COR of the first sinogram and the tilt value, the COR for every sinogram
-    is interpolated or extrapolated.
+GUI:
+  - The GUI also displays **Slope**, which represents how far the COR moves from one slice to the next.
 
 Entering Known COR and Tilt
 ---------------------------
