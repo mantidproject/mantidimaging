@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
+from PyQt5.QtCore import pyqtSignal, QObject, QThread
 
 from imagecodecs._deflate import DeflateError
 
@@ -20,6 +21,18 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 logger = getLogger(__name__)
+
+
+class Worker(QObject):
+    finished = pyqtSignal()
+
+    def __init__(self, presenter: LiveViewerWindowPresenter):
+        super().__init__()
+        self.presenter = presenter
+
+    def run(self):
+        self.presenter.model.calc_mean_all_chunks(100)
+        self.finished.emit()
 
 
 class LiveViewerWindowPresenter(BasePresenter):
@@ -180,15 +193,28 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def handle_roi_moved(self, force_new_spectrums: bool = False):
         roi = self.view.live_viewer.get_roi()
-        self.model.set_roi(roi)
-        self.model.clear_mean_partial()
-        if self.model.calc_mean_all_chunks_thread is not None:
-            self.model.calc_mean_all_chunks_thread.join()
-        self.model.create_new_calc_mean_all_chunks_thread(100)
-        self.model.calc_mean_all_chunks_thread.start()
+        if roi != self.model.roi:
+            self.model.clear_mean_partial()
+        self.model.roi = roi
+        self.run_mean_chunk_calc()
         self.roi_moving = False
+
+    def run_mean_chunk_calc(self):
+        self.thread = QThread()
+        self.worker = Worker(self)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.update_spectrum_with_mean)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.start()
 
     def handle_roi_moved_start(self):
         self.roi_moving = True
         self.model.clear_mean_partial()
         self.update_spectrum(self.model.mean)
+
+    def update_spectrum_with_mean(self):
+        self.view.spectrum.clearPlots()
+        self.view.spectrum.plot(self.model.mean)
