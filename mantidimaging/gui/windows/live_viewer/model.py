@@ -6,7 +6,6 @@ import time
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
-from threading import Thread
 
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
@@ -251,14 +250,9 @@ class LiveViewerWindowModel:
                     buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
                     np.put(self.mean, ind, buffer_mean)
 
-    def create_new_calc_mean_all_chunks_thread(self, chunk_size: int) -> None:
-        self.calc_mean_all_chunks_thread = Thread(target=self.calc_mean_all_chunks, args=[chunk_size])
-
     def calc_mean_all_chunks(self, chunk_size: int) -> None:
         while np.isnan(self.mean).any():
             self.calc_mean_chunk(chunk_size)
-            self.presenter.update_spectrum(self.mean)
-
 
 
 class ImageWatcher(QObject):
