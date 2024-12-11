@@ -29,19 +29,20 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
             self.main_window = MainWindowView()
-        self.view = mock.create_autospec(SpectrumViewerWindowView)
+        self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()
-        mock_spectrum_roi_dict = mock.create_autospec(dict)
-        self.view.spectrum_widget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict)
+        mock_spectrum_roi_dict = mock.create_autospec(dict, instance=True)
+        self.view.spectrum_widget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict, instance=True)
         self.view.spectrum_widget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,
-                                                                              roi_dict=mock_spectrum_roi_dict)
-        self.view.exportButton = mock.create_autospec(QPushButton)
-        self.view.exportButtonRITS = mock.create_autospec(QPushButton)
-        self.view.normalise_ShutterCount_CheckBox = mock.create_autospec(QCheckBox)
-        self.view.addBtn = mock.create_autospec(QPushButton)
-        self.view.exportTabs = mock.create_autospec(QTabWidget)
-        self.view.tof_mode_select_group = mock.create_autospec(QActionGroup)
-        self.view.experimentSetupGroupBox = mock.create_autospec(QGroupBox)
+                                                                              roi_dict=mock_spectrum_roi_dict,
+                                                                              instance=True)
+        self.view.exportButton = mock.create_autospec(QPushButton, instance=True)
+        self.view.exportButtonRITS = mock.create_autospec(QPushButton, instance=True)
+        self.view.normalise_ShutterCount_CheckBox = mock.create_autospec(QCheckBox, instance=True)
+        self.view.addBtn = mock.create_autospec(QPushButton, instance=True)
+        self.view.exportTabs = mock.create_autospec(QTabWidget, instance=True)
+        self.view.tof_mode_select_group = mock.create_autospec(QActionGroup, instance=True)
+        self.view.experimentSetupGroupBox = mock.create_autospec(QGroupBox, instance=True)
         self.view.experimentSetupFormWidget = mock.Mock(spec=ExperimentSetupFormWidget)
         self.view.experimentSetupFormWidget.time_delay = 0.0
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)

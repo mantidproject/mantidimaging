@@ -23,11 +23,11 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images, generat
 class MainWindowPresenterTest(unittest.TestCase):
 
     def setUp(self):
-        self.view = mock.create_autospec(MainWindowView)
-        self.view.image_load_dialog = mock.create_autospec(ImageLoadDialog)
+        self.view = mock.create_autospec(MainWindowView, instance=True)
+        self.view.image_load_dialog = mock.create_autospec(ImageLoadDialog, instance=True)
         self.presenter = MainWindowPresenter(self.view)
         self.dataset, self.images = generate_standard_dataset(shape=(10, 5, 5))
-        self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets={})
+        self.presenter.model = self.model = mock.create_autospec(MainWindowModel, datasets={}, instance=True)
 
         self.view.create_stack_window.return_value = mock.Mock()
         self.view.model_changed = mock.Mock()

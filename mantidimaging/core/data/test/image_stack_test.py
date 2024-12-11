@@ -73,7 +73,7 @@ class ImageStackTest(unittest.TestCase):
     def test_loading_metadata_preserves_existing_log(self):
         json_file = io.StringIO('{"pixel_size": 30.0, "log_file": "/old/logfile"}')
         mock_log_path = Path("/aaa/bbb")
-        mock_log_file = mock.create_autospec(InstrumentLog, source_file=mock_log_path)
+        mock_log_file = mock.create_autospec(InstrumentLog, source_file=mock_log_path, instance=True)
 
         imgs = ImageStack(np.asarray([1]))
         self.assertEqual({}, imgs.metadata)

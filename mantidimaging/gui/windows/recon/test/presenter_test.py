@@ -33,7 +33,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.uuid = self.data.id
 
     def make_view(self):
-        self.view = mock.create_autospec(ReconstructWindowView)
+        self.view = mock.create_autospec(ReconstructWindowView, instance=True)
         self.view.filterName = mock.Mock()
         self.view.filterNameLabel = mock.Mock()
         self.view.numIter = mock.Mock()
