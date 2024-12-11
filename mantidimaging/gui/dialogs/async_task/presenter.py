@@ -8,6 +8,7 @@ from enum import Enum
 
 from collections.abc import Callable
 
+import numpy as np
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from mantidimaging.core.utility.progress_reporting import ProgressHandler
@@ -21,6 +22,7 @@ class Notification(Enum):
 class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     progress_updated = pyqtSignal(float, str)
     progress_plot_updated = pyqtSignal(list, list)
+    progress_residual_plot_updated = pyqtSignal(np.ndarray)
 
     def __init__(self, view):
         super().__init__()
@@ -28,6 +30,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.view = view
         self.progress_updated.connect(self.view.set_progress)
         self.progress_plot_updated.connect(self.view.set_progress_plot)
+        self.progress_residual_plot_updated.connect(self.view.set_progress_residual_plot)
 
         self.model = AsyncTaskDialogModel()
         self.model.task_done.connect(self.view.handle_completion)
@@ -75,7 +78,11 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')
 
         if extra_info:
-            self.update_progress_plot(extra_info['iterations'], extra_info['losses'])
+            if 'losses' in extra_info:
+                self.update_progress_plot(extra_info['iterations'], extra_info['losses'])
+
+            if 'residual' in extra_info:
+                self.progress_residual_plot_updated.emit(extra_info["residual"])
 
     def show_stop_button(self, show: bool = False) -> None:
         self.view.show_cancel_button(show)

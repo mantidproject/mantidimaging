@@ -40,19 +40,39 @@ class MIProgressCallback(Callback):
     def __init__(self, verbose=1, progress: Progress | None = None) -> None:
         super().__init__(verbose)
         self.progress = progress
-        self.iteration_count = 1
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
             extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
+            if algo.last_residual and algo.last_residual[0] == algo.iteration:
+                extra_info["residual"] = algo.last_residual[1]
             self.progress.update(
                 steps=1,
-                msg=f'CIL: Iteration {self.iteration_count } of {algo.max_iteration}'
+                msg=f'CIL: Iteration {algo.iteration} of {algo.max_iteration}'
                 f': Objective {algo.get_last_objective():.2f}',
                 force_continue=False,
                 extra_info=extra_info,
             )
-            self.iteration_count += 1
+
+
+class RecordResidualsCallback(Callback):
+
+    def __init__(self, verbose=1, residual_interval: int = 1) -> None:
+        super().__init__(verbose)
+        self.residual_interval = residual_interval
+
+    def __call__(self, algo: Algorithm) -> None:
+        if algo.iteration % self.residual_interval == 0:
+            if isinstance(algo, PDHG):
+                forward_projection = algo.operator.direct(algo.solution)[1].as_array()
+                data = algo.f[1].b.as_array()
+                if forward_projection.ndim == 3:
+                    # For a full 3D recon, just select the middle slice
+                    slice = forward_projection.shape[0] // 2
+                    forward_projection = forward_projection[slice]
+                    data = data[slice]
+                residual: np.ndarray = (data - forward_projection)**2
+                algo.last_residual = (algo.iteration, residual**2)
 
 
 class CILRecon(BaseRecon):
@@ -282,7 +302,11 @@ class CILRecon(BaseRecon):
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 algo.max_iteration = num_iter
-                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
+                algo.run(num_iter,
+                         callbacks=[
+                             RecordResidualsCallback(residual_interval=update_objective_interval),
+                             MIProgressCallback(progress=progress)
+                         ])
 
             finally:
                 if progress:
@@ -401,7 +425,11 @@ class CILRecon(BaseRecon):
                 # this may be confusing for the user in case of SPDHG, because they will
                 # input num_iter and they will run num_iter * num_subsets
                 algo.max_iteration = num_iter
-                algo.run(num_iter, callbacks=[MIProgressCallback(progress=progress)])
+                algo.run(num_iter,
+                         callbacks=[
+                             RecordResidualsCallback(residual_interval=update_objective_interval),
+                             MIProgressCallback(progress=progress)
+                         ])
 
                 if isinstance(algo.solution, BlockDataContainer):
                     # TGV case
