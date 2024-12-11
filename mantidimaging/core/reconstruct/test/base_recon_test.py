@@ -22,7 +22,7 @@ class BaseReconTest(unittest.TestCase):
     ])
     def test_prepare_recon_bhc(self, dtype, coefs, input, output):
         data = np.zeros([10, 10], dtype=dtype) + input
-        recon_params = mock.create_autospec(ReconstructionParameters)
+        recon_params = mock.create_autospec(ReconstructionParameters, instance=True)
         recon_params.beam_hardening_coefs = coefs
 
         result = BaseRecon.prepare_sinogram(data, recon_params)

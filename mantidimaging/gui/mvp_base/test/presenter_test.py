@@ -13,21 +13,21 @@ from mantidimaging.gui.mvp_base import BaseDialogView, BaseMainWindowView, BaseP
 class MainWindowPresenterTest(unittest.TestCase):
 
     def test_default_notify_method_raises_exception(self):
-        view = mock.create_autospec(BaseMainWindowView)
+        view = mock.create_autospec(BaseMainWindowView, instance=True)
         presenter = BasePresenter(view)
 
         with self.assertRaises(NotImplementedError):
             presenter.notify(0)
 
     def test_show_error_message_forwarded_to_main_window_view(self):
-        view = mock.create_autospec(BaseMainWindowView)
+        view = mock.create_autospec(BaseMainWindowView, instance=True)
         presenter = BasePresenter(view)
 
         presenter.show_error("test message", traceback="")
         view.show_error_dialog.assert_called_once_with("test message")
 
     def test_show_error_message_forwarded_to_dialog_view(self):
-        view = mock.create_autospec(BaseDialogView)
+        view = mock.create_autospec(BaseDialogView, instance=True)
         presenter = BasePresenter(view)
 
         presenter.show_error("test message", traceback="")

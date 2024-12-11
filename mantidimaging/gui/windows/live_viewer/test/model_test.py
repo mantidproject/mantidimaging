@@ -21,12 +21,12 @@ class ImageWatcherTest(FakeFSTestCase):
         self.fs.create_dir(self.top_path)
         os.utime(self.top_path, (10, 10))
         with mock.patch("mantidimaging.gui.windows.live_viewer.model.QFileSystemWatcher") as mocker:
-            mock_dir_watcher = mock.create_autospec(QFileSystemWatcher, directoryChanged=mock.Mock())
-            mock_file_watcher = mock.create_autospec(QFileSystemWatcher, fileChanged=mock.Mock())
+            mock_dir_watcher = mock.create_autospec(QFileSystemWatcher, directoryChanged=mock.Mock(), instance=True)
+            mock_file_watcher = mock.create_autospec(QFileSystemWatcher, fileChanged=mock.Mock(), instance=True)
 
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
             self.watcher = ImageWatcher(self.top_path)
-            self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock())
+            self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
             self.watcher.image_changed = self.mock_signal_image
 
     def _make_simple_dir(self, directory: Path, t0: float = 1000):
@@ -76,7 +76,7 @@ class ImageWatcherTest(FakeFSTestCase):
         self.fs.remove(file_list[0])
 
         # mocked iterdir() gives full list, but first file as been deleted
-        mock_directory = mock.create_autospec(Path, iterdir=lambda: file_list)
+        mock_directory = mock.create_autospec(Path, iterdir=lambda: file_list, instance=True)
 
         images_datas = self.watcher.find_images(mock_directory)
 
