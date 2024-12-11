@@ -46,7 +46,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     ])
     def test_load_as_dataset_enabled_when_images(self, image_list, action_enabled):
         self.model.set_roi = mock.Mock()
-        self.model.mean_dict = {}
+        self.model.mean_paths = set()
         self.model.mean = []
         self.model.image_cache = mock.Mock()
         self.model.add_mean = mock.Mock()

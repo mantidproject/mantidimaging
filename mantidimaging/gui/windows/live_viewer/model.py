@@ -159,12 +159,11 @@ class LiveViewerWindowModel:
         self.presenter = presenter
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
-        self._images: list[Image_Data] = []
+        self.images: list[Image_Data] = []
         self.mean: np.ndarray = np.empty(0)
-        self.mean_dict: dict[Path, float] = {}
+        self.mean_paths: set[Path] = set()
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=10)
-        self.mean_cached: np.ndarray = np.empty(0)
         self.calc_mean_all_chunks_thread = None
 
     @property
@@ -178,17 +177,6 @@ class LiveViewerWindowModel:
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
-
-    @property
-    def images(self):
-        return self._images if self._images is not None else None
-
-    @images.setter
-    def images(self, images):
-        self._images = images
-
-    def set_roi(self, roi: SensibleROI):
-        self.roi = roi
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -219,15 +207,15 @@ class LiveViewerWindowModel:
             mean_to_add = np.mean(image_array[top:bottom, left:right])
         else:
             mean_to_add = np.mean(image_array)
-        self.mean_dict[image_data_obj.image_path] = mean_to_add
+        self.mean_paths.add(image_data_obj.image_path)
         self.mean = np.append(self.mean, mean_to_add)
 
     def clear_mean_partial(self) -> None:
-        self.mean_dict.clear()
+        self.mean_paths.clear()
         self.mean = np.full(len(self.images), np.nan)
 
     def clear_mean(self) -> None:
-        self.mean_dict.clear()
+        self.mean_paths.clear()
         self.mean = np.delete(self.mean, np.arange(self.mean.size))
 
     def calc_mean_fully(self) -> None:
@@ -243,10 +231,10 @@ class LiveViewerWindowModel:
             else:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
-                for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
-                    if ind < 0:
+                for ind in nanInds[-1:-chunk_size:-1]:
+                    if ind[0] < 0:
                         break
-                    buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
+                    buffer_mean = np.mean(self.image_cache.load_image(self.images[ind[0]])[top:bottom, left:right])
                     np.put(self.mean, ind, buffer_mean)
 
     def calc_mean_all_chunks(self, chunk_size: int) -> None:
@@ -279,7 +267,6 @@ class ImageWatcher(QObject):
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
     update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
     recent_image_changed = pyqtSignal(Path)
-    create_delayed_array: bool = False
 
     def __init__(self, directory: Path):
         """
