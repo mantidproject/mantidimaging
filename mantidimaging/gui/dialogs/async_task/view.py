@@ -81,6 +81,8 @@ class AsyncTaskDialogView(BaseDialogView):
     def set_progress_residual_plot(self, residual_image: np.ndarray) -> None:
         if self.residual_image_view is None:
             residual_image_view = ImageView()
+            residual_image_view.ui.roiBtn.hide()
+            residual_image_view.ui.menuBtn.hide()
             residual_image_view.setMinimumSize(600, 400)
             self.PlotVerticalLayout.addWidget(residual_image_view)
             self.residual_image_view = residual_image_view
