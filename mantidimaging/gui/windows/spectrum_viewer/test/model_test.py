@@ -595,11 +595,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         expected = np.divide(sample, open, out=np.zeros_like(sample), where=open != 0) / average_shutter_counts
         expected = np.std(expected, axis=(1, 2))
 
-        with mock.patch.object(self.model,
-                               "get_shuttercount_normalised_correction_parameter",
-                               return_value=average_shutter_counts):
+        with (mock.patch.object(self.model,
+                                "get_shuttercount_normalised_correction_parameter",
+                                return_value=average_shutter_counts) as
+              mock_get_shuttercount_normalised_correction_parameter):
             result = self.model.get_transmission_error_standard_dev(roi, normalise_with_shuttercount=True)
-
+            mock_get_shuttercount_normalised_correction_parameter.assert_called_once()
         self.assertEqual(len(expected), len(result))
         np.testing.assert_allclose(expected, result)
 
