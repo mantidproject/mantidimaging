@@ -515,6 +515,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span>
 
 <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">ProgressHandler</span>
@@ -533,6 +534,7 @@ document.write(`
 <span class="k">class</span> <span class="nc">AsyncTaskDialogPresenter</span><span class="p">(</span><span class="n">QObject</span><span class="p">,</span> <span class="n">ProgressHandler</span><span class="p">):</span>
     <span class="n">progress_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
     <span class="n">progress_plot_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="n">progress_residual_plot_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -540,6 +542,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_progress</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_progress_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_residual_plot_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_progress_residual_plot</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">AsyncTaskDialogModel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">task_done</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">handle_completion</span><span class="p">)</span>
@@ -610,7 +613,11 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">progress_updated</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">completion</span><span class="p">(),</span> <span class="n">msg</span> <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">extra_info</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_progress_plot</span><span class="p">(</span><span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">],</span> <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;losses&#39;</span><span class="p">])</span></div>
+            <span class="k">if</span> <span class="s1">&#39;losses&#39;</span> <span class="ow">in</span> <span class="n">extra_info</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_progress_plot</span><span class="p">(</span><span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">],</span> <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;losses&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="s1">&#39;residual&#39;</span> <span class="ow">in</span> <span class="n">extra_info</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">progress_residual_plot_updated</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;residual&quot;</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="AsyncTaskDialogPresenter.show_stop_button">

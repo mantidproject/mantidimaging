@@ -552,19 +552,42 @@ document.write(`
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">:</span>
             <span class="n">extra_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;iterations&#39;</span><span class="p">:</span> <span class="n">algo</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span> <span class="s1">&#39;losses&#39;</span><span class="p">:</span> <span class="n">algo</span><span class="o">.</span><span class="n">loss</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">last_residual</span> <span class="ow">and</span> <span class="n">algo</span><span class="o">.</span><span class="n">last_residual</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">algo</span><span class="o">.</span><span class="n">iteration</span><span class="p">:</span>
+                <span class="n">extra_info</span><span class="p">[</span><span class="s2">&quot;residual&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">last_residual</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;CIL: Iteration </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span><span class="w"> </span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;CIL: Iteration </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">iteration</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="sa">f</span><span class="s1">&#39;: Objective </span><span class="si">{</span><span class="n">algo</span><span class="o">.</span><span class="n">get_last_objective</span><span class="p">()</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                 <span class="n">force_continue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">extra_info</span><span class="o">=</span><span class="n">extra_info</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RecordResidualsCallback">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.RecordResidualsCallback">[docs]</a>
+<span class="k">class</span> <span class="nc">RecordResidualsCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">residual_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_interval</span> <span class="o">=</span> <span class="n">residual_interval</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">iteration</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">PDHG</span><span class="p">):</span>
+                <span class="n">forward_projection</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">direct</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">forward_projection</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="c1"># For a full 3D recon, just select the middle slice</span>
+                    <span class="nb">slice</span> <span class="o">=</span> <span class="n">forward_projection</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+                    <span class="n">forward_projection</span> <span class="o">=</span> <span class="n">forward_projection</span><span class="p">[</span><span class="nb">slice</span><span class="p">]</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="nb">slice</span><span class="p">]</span>
+                <span class="n">residual</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">forward_projection</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">last_residual</span> <span class="o">=</span> <span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">iteration</span><span class="p">,</span> <span class="n">residual</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 
@@ -814,7 +837,11 @@ document.write(`
                 <span class="c1"># this may be confusing for the user in case of SPDHG, because they will</span>
                 <span class="c1"># input num_iter and they will run num_iter * num_subsets</span>
                 <span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span> <span class="o">=</span> <span class="n">num_iter</span>
-                <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">MIProgressCallback</span><span class="p">(</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)])</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span>
+                         <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+                             <span class="n">RecordResidualsCallback</span><span class="p">(</span><span class="n">residual_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">),</span>
+                             <span class="n">MIProgressCallback</span><span class="p">(</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+                         <span class="p">])</span>
 
             <span class="k">finally</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">progress</span><span class="p">:</span>
@@ -936,7 +963,11 @@ document.write(`
                 <span class="c1"># this may be confusing for the user in case of SPDHG, because they will</span>
                 <span class="c1"># input num_iter and they will run num_iter * num_subsets</span>
                 <span class="n">algo</span><span class="o">.</span><span class="n">max_iteration</span> <span class="o">=</span> <span class="n">num_iter</span>
-                <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">MIProgressCallback</span><span class="p">(</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)])</span>
+                <span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">num_iter</span><span class="p">,</span>
+                         <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span>
+                             <span class="n">RecordResidualsCallback</span><span class="p">(</span><span class="n">residual_interval</span><span class="o">=</span><span class="n">update_objective_interval</span><span class="p">),</span>
+                             <span class="n">MIProgressCallback</span><span class="p">(</span><span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+                         <span class="p">])</span>
 
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">,</span> <span class="n">BlockDataContainer</span><span class="p">):</span>
                     <span class="c1"># TGV case</span>
