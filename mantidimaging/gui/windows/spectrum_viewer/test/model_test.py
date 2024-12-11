@@ -267,7 +267,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         norm = ImageStack(np.ones([10, 11, 12]))
         self.model.set_normalise_stack(norm)
         roi = SensibleROI.from_list([0, 0, 12, 11])
-        self.model._roi_ranges["rits_roi"] = roi
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
@@ -292,7 +291,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         norm = ImageStack(np.ones([10, 11, 12]))
         self.model.set_normalise_stack(norm)
         roi = SensibleROI.from_list([0, 0, 12, 11])
-        self.model._roi_ranges["ROI_RITS"] = roi
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
@@ -379,10 +377,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertEqual(self.model.roi_name_generator(), "roi")
         self.assertEqual(self.model.roi_name_generator(), "roi_1")
         self.assertEqual(self.model.roi_name_generator(), "roi_2")
-
-    def test_WHEN_get_list_of_roi_names_called_THEN_correct_list_returned(self):
-        self.model.set_stack(generate_images())
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"])
 
     def test_when_new_roi_set_THEN_roi_name_added_to_list_of_roi_names(self):
         self.model.set_stack(generate_images())

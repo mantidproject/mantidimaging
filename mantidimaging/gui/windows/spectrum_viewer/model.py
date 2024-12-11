@@ -348,15 +348,14 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path))
 
-    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode, roi_name: str = "ROI_RITS") -> None:
+    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
 
         @param path: The path to save the CSV file to.
-        @param normalized: Whether to save the normalized spectrum.
-        @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export
+        @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export.
         """
-        self.save_rits_roi(path, error_mode, self._roi_ranges[roi_name])
+        self.save_rits_roi(path, error_mode, self._roi_ranges["ROI_RITS"])
 
     def save_rits_roi(self, path: Path, error_mode: ErrorMode, roi: SensibleROI, normalise: bool = False) -> None:
         """
