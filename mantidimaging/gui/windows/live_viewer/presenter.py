@@ -84,9 +84,11 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
-            self.model.set_roi(self.view.live_viewer.get_roi())
+            if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
+                self.view.live_viewer.add_roi()
+            self.model.roi = self.view.live_viewer.get_roi()
             self.model.images = images_list
-            if images_list[-1].image_path not in self.model.mean_dict.keys():
+            if images_list[-1].image_path not in self.model.mean_paths:
                 image_data = self.model.image_cache.load_image(images_list[-1])
                 self.model.add_mean(images_list[-1], image_data)
             self.update_spectrum(self.model.mean)
@@ -117,9 +119,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-        self.view.live_viewer.set_image_shape(image_data.shape)
-        if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
-            self.view.live_viewer.add_roi()
+        # self.view.live_viewer.set_image_shape(image_data.shape)
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
@@ -128,6 +128,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.show_error(message)
             return
         self.view.show_most_recent_image(image_data)
+        # if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
+        #     self.view.live_viewer.add_roi()
+        #     self.model.roi = self.view.live_viewer.get_roi()
         self.view.live_viewer.show_error(None)
 
     def update_image_modified(self, image_path: Path) -> None:
@@ -175,7 +178,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def handle_roi_moved(self, force_new_spectrums: bool = False):
         roi = self.view.live_viewer.get_roi()
-        self.model.set_roi(roi)
+        self.model.roi = roi
         self.model.clear_mean_partial()
         self.run_mean_chunk_calc()
         self.roi_moving = False
