@@ -118,7 +118,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         roi_widget.movePoint(handle_index, new_position)
         QTest.qWait(SHORT_DELAY)
 
-        updated_roi = self.spectrum_window.presenter.model.get_roi(roi_name)
+        updated_roi = self.spectrum_window.spectrum_widget.get_roi(roi_name)
         self.assertEqual(updated_roi.right, new_position[0])
         self.assertEqual(updated_roi.bottom, new_position[1])
         self.assertEqual(updated_roi.top, 0)
