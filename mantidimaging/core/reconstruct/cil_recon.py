@@ -66,7 +66,7 @@ class RecordResidualsCallback(Callback):
             if isinstance(algo, PDHG):
                 forward_projection = algo.operator.direct(algo.solution)[1].as_array()
                 data = algo.f[1].b.as_array()
-                if len(forward_projection.shape) == 3:
+                if forward_projection.ndim == 3:
                     # For a full 3D recon, just select the middle slice
                     slice = forward_projection.shape[0] // 2
                     forward_projection = forward_projection[slice]

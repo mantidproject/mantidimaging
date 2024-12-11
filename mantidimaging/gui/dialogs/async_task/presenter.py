@@ -77,11 +77,12 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         extra_info = progress_info[-1].extra_info
         self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')
 
-        if extra_info and 'losses' in extra_info:
-            self.update_progress_plot(extra_info['iterations'], extra_info['losses'])
+        if extra_info:
+            if 'losses' in extra_info:
+                self.update_progress_plot(extra_info['iterations'], extra_info['losses'])
 
-        if extra_info and 'residual' in extra_info:
-            self.progress_residual_plot_updated.emit(extra_info["residual"])
+            if 'residual' in extra_info:
+                self.progress_residual_plot_updated.emit(extra_info["residual"])
 
     def show_stop_button(self, show: bool = False) -> None:
         self.view.show_cancel_button(show)
