@@ -27,7 +27,6 @@ class LiveViewWidget(GraphicsLayoutWidget):
     roi_changed = pyqtSignal()
     roi_changed_start = pyqtSignal(int)
     roi_object: SpectrumROI | None = None
-    sensible_roi: SensibleROI
 
     def __init__(self) -> None:
         super().__init__()
@@ -48,6 +47,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         Show the image in the image view.
         @param image: The image to show
         """
+        self.image_shape = image.shape
         self.image.setImage(image)
 
     def handle_deleted(self) -> None:
@@ -74,21 +74,13 @@ class LiveViewWidget(GraphicsLayoutWidget):
     def set_image_shape(self, shape: tuple) -> None:
         self.image_shape = shape
 
-    def get_roi(self) -> SensibleROI:
+    def get_roi(self) -> SensibleROI | None:
         if not self.roi_object:
-            return SensibleROI()
+            return None
         roi = self.roi_object.roi
         pos = CloseEnoughPoint(roi.pos())
         size = CloseEnoughPoint(roi.size())
         return SensibleROI.from_points(pos, size)
-
-    def set_roi_alpha(self, alpha: int) -> None:
-        if not self.roi_object:
-            return
-        self.roi_object.colour = self.roi_object.colour[:3] + (alpha, )
-        self.roi_object.setPen(self.roi_object.colour)
-        self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
-        self.set_roi_visibility_flags(bool(alpha))
 
     def set_roi_visibility_flags(self, visible: bool) -> None:
         if not self.roi_object:

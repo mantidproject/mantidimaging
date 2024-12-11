@@ -71,7 +71,6 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.spectrum_action.setCheckable(True)
         operations_menu.addAction(self.spectrum_action)
         self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
-        self.live_viewer.set_roi_alpha(self.spectrum_action.isChecked() * 255)
         self.live_viewer.set_roi_visibility_flags(False)
 
     def show(self) -> None:
@@ -132,11 +131,11 @@ class LiveViewerWindowView(BaseMainWindowView):
         if self.spectrum_action.isChecked():
             if not self.live_viewer.roi_object:
                 self.live_viewer.add_roi()
-            self.live_viewer.set_roi_alpha(255)
+            self.live_viewer.set_roi_visibility_flags(True)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
-            self.presenter.model.set_roi(self.live_viewer.get_roi())
+            self.presenter.model.roi = self.live_viewer.get_roi()
             self.presenter.model.calc_mean_fully()
             self.presenter.update_spectrum(self.presenter.model.mean)
         else:
-            self.live_viewer.set_roi_alpha(0)
+            self.live_viewer.set_roi_visibility_flags(False)
             self.splitter.setSizes([widget_height, 0])

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from operator import attrgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
@@ -48,30 +49,31 @@ class ImageCache:
         self.max_cache_size = max_cache_size
         self.cache_dict = {}
 
-    def add_to_cache(self, image: Image_Data, image_array: np.ndarray):
+    def _add_to_cache(self, image: Image_Data, image_array: np.ndarray) -> None:
         if image not in self.cache_dict.keys():
             if self.max_cache_size is not None:
                 if self.max_cache_size <= len(self.cache_dict):
-                    self.remove_oldest_image()
-            self.cache_dict[image] = (image_array, image.image_modified_time)
+                    self._remove_oldest_image()
+            self.cache_dict[image] = image_array
 
-    def remove_from_cache(self, image: Image_Data):
-        if image in self.cache_dict:
-            del self.cache_dict[image]
+    def _get_oldest_image(self) -> Image_Data:
+        time_ordered_cache = min(self.cache_dict.keys(), key=attrgetter('image_modified_time'))
+        return time_ordered_cache
 
-    def get_oldest_image(self):
-        time_ordered_cache = sorted(self.cache_dict.items(), key=lambda item: item[1][-1])
-        return time_ordered_cache[0][0]
+    def _remove_oldest_image(self) -> None:
+        del self.cache_dict[self._get_oldest_image()]
 
-    def remove_oldest_image(self):
-        del self.cache_dict[self.get_oldest_image()]
-
-    def load_image(self, image: Image_Data) -> np.ndarray:
+    def load_image(self, image: Image_Data) -> np.ndarray | None:
         if image in self.cache_dict.keys():
-            return self.cache_dict[image][0]
+            return self.cache_dict[image]
         else:
-            image_array = load_image_from_path(image.image_path)
-            self.add_to_cache(image, image_array)
+            try:
+                image_array = load_image_from_path(image.image_path)
+            except ValueError as error:
+                message = f"{type(error).__name__} reading image: {image.image_path}: {error}"
+                LOG.error(message)
+                raise ValueError from error
+            self._add_to_cache(image, image_array)
             return image_array
 
 
@@ -160,12 +162,11 @@ class LiveViewerWindowModel:
         self.presenter = presenter
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
-        self._images: list[Image_Data] = []
+        self.images: list[Image_Data] = []
         self.mean: np.ndarray = np.empty(0)
-        self.mean_dict: dict[Path, float] = {}
+        self.mean_paths: set[Path] = set()
         self.roi: SensibleROI | None = None
-        self.image_cache = ImageCache(max_cache_size=10)
-        self.mean_cached: np.ndarray = np.empty(0)
+        self.image_cache = ImageCache(max_cache_size=100)
         self.calc_mean_all_chunks_thread = None
 
     @property
@@ -179,17 +180,6 @@ class LiveViewerWindowModel:
         self.image_watcher.image_changed.connect(self._handle_image_changed_in_list)
         self.image_watcher.recent_image_changed.connect(self.handle_image_modified)
         self.image_watcher._handle_notified_of_directry_change(str(path))
-
-    @property
-    def images(self):
-        return self._images if self._images is not None else None
-
-    @images.setter
-    def images(self, images):
-        self._images = images
-
-    def set_roi(self, roi: SensibleROI):
-        self.roi = roi
 
     def _handle_image_changed_in_list(self, image_files: list[Image_Data]) -> None:
         """
@@ -214,21 +204,23 @@ class LiveViewerWindowModel:
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
-    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray) -> None:
-        if self.roi and (self.roi.left, self.roi.top, self.roi.right, self.roi.bottom) != (0, 0, 0, 0):
+    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
+        if image_array is None:
+            mean_to_add = np.nan
+        elif self.roi is not None:
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
         else:
             mean_to_add = np.mean(image_array)
-        self.mean_dict[image_data_obj.image_path] = mean_to_add
+        self.mean_paths.add(image_data_obj.image_path)
         self.mean = np.append(self.mean, mean_to_add)
 
     def clear_mean_partial(self) -> None:
-        self.mean_dict.clear()
+        self.mean_paths.clear()
         self.mean = np.full(len(self.images), np.nan)
 
     def clear_mean(self) -> None:
-        self.mean_dict.clear()
+        self.mean_paths.clear()
         self.mean = np.delete(self.mean, np.arange(self.mean.size))
 
     def calc_mean_fully(self) -> None:
@@ -244,11 +236,11 @@ class LiveViewerWindowModel:
             else:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
-                for ind in range(len(nanInds) - 1, len(nanInds) - 1 - chunk_size, -1):
-                    if ind < 0:
-                        break
-                    buffer_mean = np.mean(self.image_cache.load_image(self.images[ind])[top:bottom, left:right])
-                    np.put(self.mean, ind, buffer_mean)
+                for ind in nanInds[-1:-chunk_size:-1]:
+                    buffer_data = self.image_cache.load_image(self.images[ind[0]])
+                    if buffer_data is not None:
+                        buffer_mean = np.mean(buffer_data[top:bottom, left:right])
+                        np.put(self.mean, ind, buffer_mean)
 
     def calc_mean_all_chunks(self, chunk_size: int) -> None:
         while np.isnan(self.mean).any():
@@ -280,7 +272,6 @@ class ImageWatcher(QObject):
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
     update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
     recent_image_changed = pyqtSignal(Path)
-    create_delayed_array: bool = False
 
     def __init__(self, directory: Path):
         """
