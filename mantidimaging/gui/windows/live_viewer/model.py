@@ -65,11 +65,16 @@ class ImageCache:
     def remove_oldest_image(self):
         del self.cache_dict[self.get_oldest_image()]
 
-    def load_image(self, image: Image_Data) -> np.ndarray:
+    def load_image(self, image: Image_Data) -> np.ndarray | None:
         if image in self.cache_dict.keys():
             return self.cache_dict[image][0]
         else:
-            image_array = load_image_from_path(image.image_path)
+            try:
+                image_array = load_image_from_path(image.image_path)
+            except ValueError as error:
+                message = f"{type(error).__name__} reading image: {image.image_path}: {error}"
+                LOG.error(message)
+                raise ValueError from error
             self.add_to_cache(image, image_array)
             return image_array
 
@@ -201,8 +206,10 @@ class LiveViewerWindowModel:
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
-    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray) -> None:
-        if self.roi and (self.roi.left, self.roi.top, self.roi.right, self.roi.bottom) != (0, 0, 0, 0):
+    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
+        if image_array is None:
+            mean_to_add = np.nan
+        elif self.roi and (self.roi.left, self.roi.top, self.roi.right, self.roi.bottom) != (0, 0, 0, 0):
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
         else:
@@ -234,8 +241,10 @@ class LiveViewerWindowModel:
                 for ind in nanInds[-1:-chunk_size:-1]:
                     if ind[0] < 0:
                         break
-                    buffer_mean = np.mean(self.image_cache.load_image(self.images[ind[0]])[top:bottom, left:right])
-                    np.put(self.mean, ind, buffer_mean)
+                    buffer_data = self.image_cache.load_image(self.images[ind[0]])
+                    if buffer_data is not None:
+                        buffer_mean = np.mean(buffer_data[top:bottom, left:right])
+                        np.put(self.mean, ind, buffer_mean)
 
     def calc_mean_all_chunks(self, chunk_size: int) -> None:
         while np.isnan(self.mean).any():
