@@ -74,10 +74,9 @@ class LiveViewWidget(GraphicsLayoutWidget):
     def set_image_shape(self, shape: tuple) -> None:
         self.image_shape = shape
 
-    def get_roi(self) -> SensibleROI:
+    def get_roi(self) -> SensibleROI | None:
         if not self.roi_object:
-            return SensibleROI()
-        print(f"{self.roi_object.roi=}")
+            return None
         roi = self.roi_object.roi
         pos = CloseEnoughPoint(roi.pos())
         size = CloseEnoughPoint(roi.size())
