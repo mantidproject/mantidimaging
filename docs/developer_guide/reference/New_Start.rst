@@ -1,38 +1,5 @@
-Onboarding Plan
-===============
-
-Goals
------
-1. Establish a development environment.
-
-2. Gain familiarity with Mantid Imaging, MVP architecture, and PyQt.
-
-3. Begin working on a project issue and submit a PR.
-
-
-Week 1 Overview
-----------------
-
-**Focus**: Environment setup, initial training, and introductions.
-
-- Complete environment setup and review key learning resources.
-
-- Work through the **Quick Start Guide** for Mantid Imaging.
-
-**Milestone**: Successfully run Mantid Imaging and identify key areas for further learning.
-
-Week 2 Overview
----------------
-
-**Focus**: Training and practical application
-
-- Deep dive into PyQt, MVP, and first tasks.
-
-- Submit a PR for review.
-
-
-**Milestone**: Successfully submit a PR and discuss in standups.
-
+Resources
+==========
 
 Key Skills Development
 -----------------------
