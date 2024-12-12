@@ -209,7 +209,7 @@ class LiveViewerWindowModel:
     def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
         if image_array is None:
             mean_to_add = np.nan
-        elif self.roi and (self.roi.left, self.roi.top, self.roi.right, self.roi.bottom) != (0, 0, 0, 0):
+        elif self.roi is not None:
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
         else:
