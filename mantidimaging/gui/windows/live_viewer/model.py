@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from operator import attrgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
@@ -40,34 +41,30 @@ class ImageCache:
     """
     An ImageCache class to be used as a decorator on image read functions to store recent images in memory
     """
-    cache_dict: dict[Image_Data, tuple[np.ndarray, float]]
+    cache_dict: dict[Image_Data, np.ndarray]
     max_cache_size: int | None = None
 
     def __init__(self, max_cache_size=None):
         self.max_cache_size = max_cache_size
         self.cache_dict = {}
 
-    def add_to_cache(self, image: Image_Data, image_array: np.ndarray):
+    def _add_to_cache(self, image: Image_Data, image_array: np.ndarray) -> None:
         if image not in self.cache_dict.keys():
             if self.max_cache_size is not None:
                 if self.max_cache_size <= len(self.cache_dict):
-                    self.remove_oldest_image()
-            self.cache_dict[image] = (image_array, image.image_modified_time)
+                    self._remove_oldest_image()
+            self.cache_dict[image] = image_array
 
-    def remove_from_cache(self, image: Image_Data):
-        if image in self.cache_dict:
-            del self.cache_dict[image]
+    def _get_oldest_image(self) -> Image_Data:
+        time_ordered_cache = min(self.cache_dict.keys(), key=attrgetter('image_modified_time'))
+        return time_ordered_cache
 
-    def get_oldest_image(self):
-        time_ordered_cache = sorted(self.cache_dict.items(), key=lambda item: item[1][-1])
-        return time_ordered_cache[0][0]
-
-    def remove_oldest_image(self):
-        del self.cache_dict[self.get_oldest_image()]
+    def _remove_oldest_image(self) -> None:
+        del self.cache_dict[self._get_oldest_image()]
 
     def load_image(self, image: Image_Data) -> np.ndarray | None:
         if image in self.cache_dict.keys():
-            return self.cache_dict[image][0]
+            return self.cache_dict[image]
         else:
             try:
                 image_array = load_image_from_path(image.image_path)
@@ -75,7 +72,7 @@ class ImageCache:
                 message = f"{type(error).__name__} reading image: {image.image_path}: {error}"
                 LOG.error(message)
                 raise ValueError from error
-            self.add_to_cache(image, image_array)
+            self._add_to_cache(image, image_array)
             return image_array
 
 
@@ -239,8 +236,6 @@ class LiveViewerWindowModel:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
                 for ind in nanInds[-1:-chunk_size:-1]:
-                    if ind[0] < 0:
-                        break
                     buffer_data = self.image_cache.load_image(self.images[ind[0]])
                     if buffer_data is not None:
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
