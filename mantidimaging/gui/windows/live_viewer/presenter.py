@@ -89,8 +89,12 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.model.roi = self.view.live_viewer.get_roi()
             self.model.images = images_list
             if images_list[-1].image_path not in self.model.mean_paths:
-                image_data = self.model.image_cache.load_image(images_list[-1])
-                self.model.add_mean(images_list[-1], image_data)
+                try:
+                    image_data = self.model.image_cache.load_image(images_list[-1])
+                    self.model.add_mean(images_list[-1], image_data)
+                except (OSError, KeyError, ValueError, DeflateError) as error:
+                    message = f"{type(error).__name__} reading image: {images_list[-1].image_path}: {error}"
+                    logger.error(message)
             self.update_spectrum(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
