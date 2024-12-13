@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
-from PyQt5.QtCore import pyqtSignal, QObject, QThread
 
 from imagecodecs._deflate import DeflateError
 

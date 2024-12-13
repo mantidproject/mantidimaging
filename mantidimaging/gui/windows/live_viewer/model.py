@@ -62,7 +62,7 @@ class ImageCache:
     def _remove_oldest_image(self) -> None:
         del self.cache_dict[self._get_oldest_image()]
 
-    def load_image(self, image: Image_Data) -> np.ndarray | None:
+    def load_image(self, image: Image_Data) -> np.ndarray:
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:
