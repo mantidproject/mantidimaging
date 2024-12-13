@@ -19,7 +19,7 @@ class AsyncTaskDialogPresenterTest(unittest.TestCase):
             time.sleep(0.1)
             return a + b
 
-        v = mock.create_autospec(AsyncTaskDialogView)
+        v = mock.create_autospec(AsyncTaskDialogView, instance=True)
 
         p = AsyncTaskDialogPresenter(v)
         p.set_task(f)

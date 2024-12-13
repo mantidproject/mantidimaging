@@ -19,7 +19,7 @@ class DatasetSelectorWidgetViewTest(unittest.TestCase):
         self.view.presenter = self.presenter = mock.Mock()
 
     def test_subscribe_to_main_window(self):
-        main_window_mock = mock.create_autospec(MainWindowView)
+        main_window_mock = mock.create_autospec(MainWindowView, instance=True)
         main_window_mock.model_changed.connect = mock.Mock()
 
         self.view.subscribe_to_main_window(main_window_mock)
@@ -27,7 +27,7 @@ class DatasetSelectorWidgetViewTest(unittest.TestCase):
         main_window_mock.model_changed.connect.assert_called_once_with(self.view._handle_loaded_datasets_changed)
 
     def test_unsubscribe_from_main_window(self):
-        self.view.main_window = main_window_mock = mock.create_autospec(MainWindowView)
+        self.view.main_window = main_window_mock = mock.create_autospec(MainWindowView, instance=True)
         main_window_mock.model_changed.disconnect = mock.Mock()
 
         self.view.unsubscribe_from_main_window()

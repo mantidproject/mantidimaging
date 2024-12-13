@@ -21,7 +21,7 @@ class StackVisualiserPresenterTest(unittest.TestCase):
     def setUp(self):
         self.test_data = th.generate_images()
         # mock the view so it has the same methods
-        self.view = mock.create_autospec(StackVisualiserView)
+        self.view = mock.create_autospec(StackVisualiserView, instance=True)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
         self.presenter.model = mock.Mock()
         self.view._main_window = mock.Mock()

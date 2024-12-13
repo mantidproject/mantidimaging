@@ -33,7 +33,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self, _) -> None:
         self.main_window = MockMainWindow()
         with mock.patch("mantidimaging.gui.windows.recon.view.ReconImagesView") as mock_riv:
-            self.image_view = mock.create_autospec(ReconImagesView, sigSliceIndexChanged=mock.Mock())
+            self.image_view = mock.create_autospec(ReconImagesView, sigSliceIndexChanged=mock.Mock(), instance=True)
             mock_riv.side_effect = [self.image_view]
             self.view = ReconstructWindowView(self.main_window)
 

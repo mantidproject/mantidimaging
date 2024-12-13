@@ -38,7 +38,7 @@ class PolyfitCorrelationTest(unittest.TestCase):
         images = generate_images((10, 10, 10))
         images.data[0] = np.identity(10)
         images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
-        mock_progress = mock.create_autospec(Progress)
+        mock_progress = mock.create_autospec(Progress, instance=True)
         res_cor, res_tilt = find_center(images, mock_progress)
         assert mock_progress.update.call_count == 11
         assert res_cor.value == 5.0, f"Found {res_cor.value}"
@@ -50,7 +50,7 @@ class PolyfitCorrelationTest(unittest.TestCase):
         images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
         self.crop_images(images, (2, 10, 0, 10))
         self.crop_images(images.proj180deg, (2, 10, 0, 10))
-        mock_progress = mock.create_autospec(Progress)
+        mock_progress = mock.create_autospec(Progress, instance=True)
         res_cor, res_tilt = find_center(images, mock_progress)
         assert res_cor.value == 4.0, f"Found {res_cor.value}"
         assert abs(res_tilt.value) < 1e-6, f"Found {res_tilt.value}"

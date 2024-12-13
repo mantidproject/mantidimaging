@@ -146,8 +146,8 @@ class ProgressTest(unittest.TestCase):
         self.assertEqual(p.completion(), 1.0)
 
     def test_callbacks(self):
-        cb1 = mock.create_autospec(ProgressHandler)
-        cb2 = mock.create_autospec(ProgressHandler)
+        cb1 = mock.create_autospec(ProgressHandler, instance=True)
+        cb2 = mock.create_autospec(ProgressHandler, instance=True)
         callbacks = [cb1, cb2]
 
         def assert_call(expected_completion, expected_step, expected_msg):
