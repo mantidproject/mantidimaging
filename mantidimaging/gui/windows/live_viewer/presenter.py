@@ -23,18 +23,6 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
-class Worker(QObject):
-    finished = pyqtSignal()
-
-    def __init__(self, presenter: LiveViewerWindowPresenter):
-        super().__init__()
-        self.presenter = presenter
-
-    def run(self):
-        self.presenter.model.calc_mean_all_chunks(100)
-        self.finished.emit()
-
-
 class LiveViewerWindowPresenter(BasePresenter):
     """
     The presenter for the Live Viewer window.
@@ -123,7 +111,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-        # self.view.live_viewer.set_image_shape(image_data.shape)
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
@@ -132,9 +119,6 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.show_error(message)
             return
         self.view.show_most_recent_image(image_data)
-        # if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
-        #     self.view.live_viewer.add_roi()
-        #     self.model.roi = self.view.live_viewer.get_roi()
         self.view.live_viewer.show_error(None)
 
     def update_image_modified(self, image_path: Path) -> None:
@@ -188,15 +172,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.roi_moving = False
 
     def run_mean_chunk_calc(self):
-        self.thread = QThread()
-        self.worker = Worker(self)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.update_spectrum_with_mean)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.start()
+        self.model.calc_mean_all_chunks()
+        self.update_spectrum_with_mean()
 
     def handle_roi_moved_start(self):
         self.roi_moving = True

@@ -227,7 +227,7 @@ class LiveViewerWindowModel:
             for image in self.images:
                 self.add_mean(image, self.image_cache.load_image(image))
 
-    def calc_mean_chunk(self, chunk_size: int) -> None:
+    def calc_mean_chunk(self, chunk_size: int = 10000) -> None:
         if self.images is not None:
             nanInds = np.argwhere(np.isnan(self.mean))
             if self.roi:
@@ -241,7 +241,7 @@ class LiveViewerWindowModel:
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
                         np.put(self.mean, ind, buffer_mean)
 
-    def calc_mean_all_chunks(self, chunk_size: int) -> None:
+    def calc_mean_all_chunks(self, chunk_size: int = 10000) -> None:
         while np.isnan(self.mean).any():
             self.calc_mean_chunk(chunk_size)
 
