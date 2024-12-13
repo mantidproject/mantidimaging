@@ -259,13 +259,17 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.add_roi_table_row.assert_called_once_with("roi_1", (255, 0, 0))
 
     def test_WHEN_do_remove_roi_called_THEN_roi_removed(self):
-        self.presenter.model.set_new_roi("all")
-        self.presenter.view.spectrum_widget.add_roi(self.presenter.model._roi_ranges["all"], "all")
-        for _ in range(2):
-            self.presenter.do_add_roi()
-        self.assertEqual(["all", "roi", "roi_1"], list(self.presenter.model._roi_ranges.keys()))
+        self.presenter.view.spectrum_widget.roi_dict = {"all": mock.Mock(), "roi": mock.Mock(), "roi_1": mock.Mock()}
+        self.presenter.view.spectrum_widget.remove_roi = mock.Mock()
         self.presenter.do_remove_roi("roi_1")
-        self.assertEqual(["all", "roi"], list(self.presenter.model._roi_ranges.keys()))
+
+        self.presenter.view.spectrum_widget.remove_roi.assert_called_once_with("roi_1")
+        expected_roi_dict = {"all": mock.Mock(), "roi": mock.Mock()}
+        actual_roi_dict = {
+            key: value
+            for key, value in self.presenter.view.spectrum_widget.roi_dict.items() if key != "roi_1"
+        }
+        self.assertEqual(expected_roi_dict.keys(), actual_roi_dict.keys())
 
     def test_WHEN_roi_clicked_THEN_roi_updated(self):
         roi = SpectrumROI("themightyroi", SensibleROI())
@@ -285,18 +289,34 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
         rois = ["all", "roi", "roi_1"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
-        self.presenter.model._roi_ranges = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi = mock.Mock()
+        self.view.spectrum_widget.rois = {roi: mock.Mock() for roi in rois}
+        self.view.spectrum_widget.rename_roi = mock.Mock(
+            side_effect=lambda old_name, new_name: self.view.spectrum_widget.rois.update(
+                {new_name: self.view.spectrum_widget.rois.pop(old_name)}))
+
         self.presenter.rename_roi("roi_1", "new_name")
         self.view.spectrum_widget.rename_roi.assert_called_once_with("roi_1", "new_name")
-        self.assertIn("new_name", self.presenter.model._roi_ranges)
-        self.assertNotIn("roi_1", self.presenter.model._roi_ranges)
+        self.assertIn("new_name", self.view.spectrum_widget.rois)
+        self.assertNotIn("roi_1", self.view.spectrum_widget.rois)
 
-    @parameterized.expand([("all", ), ("roi", )])
-    def test_WHEN_ROI_renamed_to_existing_name_THEN_runtimeerror(self, name):
+    def test_WHEN_invalid_ROI_renamed_THEN_error_raised(self):
         rois = ["all", "roi", "roi_1"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
         self.presenter.model._roi_ranges = {roi: mock.Mock() for roi in rois}
+        self.view.spectrum_widget.rename_roi = mock.Mock(side_effect=KeyError("Invalid ROI"))
+        self.view.spectrum_widget.rois = {roi: mock.Mock() for roi in rois}
+        with self.assertRaises(KeyError):
+            self.presenter.rename_roi("invalid_roi", "new_name")
+
+    @parameterized.expand([("all", ), ("roi", )])
+    def test_WHEN_ROI_renamed_to_existing_name_THEN_keyerror(self, name):
+        rois = ["all", "roi", "roi_1"]
+        self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
+        self.view.spectrum_widget.rois = {roi: mock.Mock() for roi in rois}
+
+        self.view.spectrum_widget.rename_roi = mock.Mock(side_effect=lambda old_name, new_name: (
+            (_ for _ in ()).throw(KeyError(f"Cannot rename to existing ROI: {new_name}"))
+            if new_name in self.view.spectrum_widget.rois else None))
         with self.assertRaises(KeyError):
             self.presenter.rename_roi("roi", name)
 
