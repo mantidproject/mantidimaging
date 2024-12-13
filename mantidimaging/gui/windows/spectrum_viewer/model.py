@@ -500,36 +500,6 @@ class SpectrumViewerWindowModel:
         rits_data = saver.create_rits_format(tof, transmission, absorption)
         saver.export_to_dat_rits_format(rits_data, path)
 
-    def remove_roi(self, roi_name: str) -> None:
-        """
-        Remove the selected ROI from the model
-
-        @param roi_name: The name of the ROI to remove
-        """
-        if roi_name in self._roi_ranges.keys():
-            if roi_name in self.special_roi_list:
-                raise RuntimeError(f"Cannot remove ROI: {roi_name}")
-            del self._roi_ranges[roi_name]
-        else:
-            raise KeyError(
-                f"Cannot remove ROI {roi_name} as it does not exist. \n Available ROIs: {self._roi_ranges.keys()}")
-
-    def rename_roi(self, old_name: str, new_name: str) -> None:
-        """
-        Rename the selected ROI from the model
-
-        @param old_name: The current name of the ROI
-        @param new_name: The new name of the ROI
-        @raises KeyError: If the ROI does not exist
-        @raises RuntimeError: If the ROI is 'all'
-        """
-        if old_name in self._roi_ranges.keys() and new_name not in self._roi_ranges.keys():
-            if old_name in self.special_roi_list:
-                raise RuntimeError(f"Cannot remove ROI: {old_name}")
-            self._roi_ranges[new_name] = self._roi_ranges.pop(old_name)
-        else:
-            raise KeyError(f"Cannot rename {old_name} to {new_name} Available:{self._roi_ranges.keys()}")
-
     def remove_all_roi(self) -> None:
         """
         Remove all ROIs from the model
