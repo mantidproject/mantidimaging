@@ -165,7 +165,7 @@ class LiveViewerWindowModel:
         self.mean: np.ndarray = np.empty(0)
         self.mean_paths: set[Path] = set()
         self.roi: SensibleROI | None = None
-        self.image_cache = ImageCache(max_cache_size=10)
+        self.image_cache = ImageCache(max_cache_size=100)
         self.calc_mean_all_chunks_thread = None
 
     @property
