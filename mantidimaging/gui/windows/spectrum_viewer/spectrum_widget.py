@@ -250,9 +250,13 @@ class SpectrumWidget(QWidget):
 
         @param roi_name: The name of the ROI to remove.
         """
-        if roi_name in self.roi_dict.keys() and roi_name != "all":
-            self.image.vb.removeItem(self.roi_dict[roi_name])
-            del self.roi_dict[roi_name]
+        if roi_name == "all":
+            raise RuntimeError("Cannot remove the default 'all' ROI.")
+        if roi_name not in self.roi_dict:
+            raise KeyError(f"ROI '{roi_name}' does not exist.")
+
+        self.image.vb.removeItem(self.roi_dict[roi_name])
+        del self.roi_dict[roi_name]
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
@@ -263,10 +267,15 @@ class SpectrumWidget(QWidget):
         @param new_name: The new name of the ROI.
         @raise KeyError: If the new name is already in use or equal to 'roi' or 'all'.
         """
-        if old_name in self.roi_dict.keys() and new_name not in self.roi_dict.keys():
-            self.roi_dict[new_name] = self.roi_dict.pop(old_name)
-            self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
-            self.roi_dict[new_name].rename_roi(new_name)
+
+        if old_name not in self.roi_dict.keys():
+            raise RuntimeError(f"Cannot rename non-existent ROI: {old_name}")
+        if new_name in self.roi_dict.keys():
+            raise KeyError(f"New ROI name '{new_name}' is invalid or already in use.")
+
+        self.roi_dict[new_name] = self.roi_dict.pop(old_name)
+        self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
+        self.roi_dict[new_name].rename_roi(new_name)
 
 
 class CustomViewBox(ViewBox):

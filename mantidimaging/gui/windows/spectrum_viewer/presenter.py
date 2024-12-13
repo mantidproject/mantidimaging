@@ -375,14 +375,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param old_name: Name of the ROI to rename
         @param new_name: New name of the ROI
         """
-        try:
-            self.view.spectrum_widget.rename_roi(old_name, new_name)
-        except RuntimeError as err:
-            raise RuntimeError(f"Cannot remove ROI: {old_name}") from err
-        except KeyError as err:
-            raise KeyError(
-                f"Cannot rename {old_name} to {new_name}. Available: {list(self.view.spectrum_widget.rois.keys())}"
-            ) from err
+        self.view.spectrum_widget.rename_roi(old_name, new_name)
 
     def do_remove_roi(self, roi_name: str | None = None) -> None:
         """

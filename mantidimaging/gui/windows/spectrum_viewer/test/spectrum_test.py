@@ -132,15 +132,46 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.assertNotIn("roi_1", self.spectrum_widget.roi_dict)
         self.assertIn("roi_2", self.spectrum_widget.roi_dict)
 
-    def test_WHEN_rename_roi_called_with_default_roi_THEN_roi_name_not_changed(self):
+    def test_WHEN_rename_roi_called_with_default_roi_THEN_keyerror_is_raised(self):
         spectrum_roi = SpectrumROI("roi_1", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.spectrum_widget.roi_dict["roi"] = spectrum_roi
         self.spectrum_widget.roi_dict["roi_1"] = spectrum_roi
         self.spectrum_widget.spectrum_data_dict["roi_1"] = np.array([0, 0, 0, 0])
-        self.assertIn("roi_1", self.spectrum_widget.roi_dict.keys())
-        self.spectrum_widget.rename_roi("roi_1", "roi")
-        self.assertIn("roi_1", self.spectrum_widget.roi_dict)
+        with self.assertRaises(KeyError):
+            self.spectrum_widget.rename_roi("roi_1", "roi")
 
     def test_WHEN_tof_axis_label_changed_THEN_axis_label_set(self):
         self.spectrum_plot_widget.set_tof_axis_label("test")
         self.assertEqual(self.spectrum_plot_widget.spectrum.getAxis('bottom').labelText, "test")
+
+    def test_WHEN_roi_removed_THEN_roi_name_removed_from_list_of_roi_names(self):
+        spectrum_roi = SpectrumROI("new_roi", self.sensible_roi, rotatable=False, scaleSnap=True, translateSnap=True)
+        self.spectrum_widget.roi_dict = {"all": mock.Mock(), "roi": mock.Mock(), "new_roi": spectrum_roi}
+        self.spectrum_widget.image.vb = mock.Mock()
+
+        self.spectrum_widget.remove_roi("new_roi")
+        self.assertListEqual(list(self.spectrum_widget.roi_dict.keys()), ["all", "roi"])
+
+    def test_WHEN_remove_roi_called_with_default_roi_THEN_raise_runtime_error(self):
+        self.spectrum_widget.roi_dict = {"all": mock.Mock(), "roi": mock.Mock()}
+        with self.assertRaises(RuntimeError):
+            self.spectrum_widget.remove_roi("all")
+
+    def test_WHEN_invalid_roi_removed_THEN_keyerror_raised(self):
+        self.spectrum_widget.roi_dict = {"all": mock.Mock(), "roi": mock.Mock()}
+        with self.assertRaises(KeyError):
+            self.spectrum_widget.remove_roi("non_existent_roi")
+
+    def test_WHEN_rename_non_existent_roi_THEN_runtime_error(self):
+        self.spectrum_widget.roi_dict = {"roi_1": mock.Mock(), "roi_2": mock.Mock()}
+        self.spectrum_widget.spectrum_data_dict = {"roi_1": mock.Mock(), "roi_2": mock.Mock()}
+
+        with self.assertRaises(RuntimeError):
+            self.spectrum_widget.rename_roi("roi_invalid", "roi_new")
+
+    def test_WHEN_rename_to_existing_roi_name_THEN_key_error(self):
+        self.spectrum_widget.roi_dict = {"roi_1": mock.Mock(), "roi_2": mock.Mock()}
+        self.spectrum_widget.spectrum_data_dict = {"roi_1": mock.Mock(), "roi_2": mock.Mock()}
+
+        with self.assertRaises(KeyError):
+            self.spectrum_widget.rename_roi("roi_1", "roi_2")
