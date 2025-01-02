@@ -809,9 +809,13 @@ document.write(`
 
 <span class="sd">        @param roi_name: The name of the ROI to remove.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">roi_name</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">])</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span></div>
+        <span class="k">if</span> <span class="n">roi_name</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot remove the default &#39;all&#39; ROI.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI &#39;</span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">])</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.rename_roi">
@@ -825,10 +829,15 @@ document.write(`
 <span class="sd">        @param new_name: The new name of the ROI.</span>
 <span class="sd">        @raise KeyError: If the new name is already in use or equal to &#39;roi&#39; or &#39;all&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">new_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span></div>
+
+        <span class="k">if</span> <span class="n">old_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot rename non-existent ROI: </span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New ROI name &#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&#39; is invalid or already in use.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span></div>
 </div>
 
 

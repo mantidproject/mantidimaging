@@ -1102,42 +1102,6 @@ document.write(`
         <span class="n">saver</span><span class="o">.</span><span class="n">export_to_dat_rits_format</span><span class="p">(</span><span class="n">rits_data</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SpectrumViewerWindowModel.remove_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.remove_roi">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove the selected ROI from the model</span>
-
-<span class="sd">        @param roi_name: The name of the ROI to remove</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">special_roi_list</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot remove ROI: </span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot remove ROI </span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2"> as it does not exist. </span><span class="se">\n</span><span class="s2"> Available ROIs: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowModel.rename_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.rename_roi">[docs]</a>
-    <span class="k">def</span> <span class="nf">rename_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Rename the selected ROI from the model</span>
-
-<span class="sd">        @param old_name: The current name of the ROI</span>
-<span class="sd">        @param new_name: The new name of the ROI</span>
-<span class="sd">        @raises KeyError: If the ROI does not exist</span>
-<span class="sd">        @raises RuntimeError: If the ROI is &#39;all&#39;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">new_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">special_roi_list</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot remove ROI: </span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot rename </span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2"> Available:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="SpectrumViewerWindowModel.remove_all_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.remove_all_roi">[docs]</a>
     <span class="k">def</span> <span class="nf">remove_all_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
