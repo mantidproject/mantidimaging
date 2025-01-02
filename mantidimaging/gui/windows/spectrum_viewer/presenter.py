@@ -376,7 +376,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param new_name: New name of the ROI
         """
         self.view.spectrum_widget.rename_roi(old_name, new_name)
-        self.model.rename_roi(old_name, new_name)
 
     def do_remove_roi(self, roi_name: str | None = None) -> None:
         """
@@ -391,7 +390,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
-            self.model.remove_roi(roi_name)
 
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
