@@ -1,4 +1,4 @@
-# Copyright (C) 2024 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import unittest
 from unittest.mock import patch, Mock
