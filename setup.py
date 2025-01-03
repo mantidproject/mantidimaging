@@ -141,9 +141,11 @@ class CreateDeveloperEnvironment(Command):
         return output_env_file.name
 
     def run(self):
-        print("Removing existing mantidimaging-dev environment")
-        command_conda_env_remove = [self.conda, "env", "remove", "-n", "mantidimaging-dev"]
-        subprocess.check_call(command_conda_env_remove)
+        existing_envs_output = subprocess.check_output([self.conda, "env", "list"], encoding="utf8")
+        if any(line.startswith("mantidimaging-dev ") for line in existing_envs_output.split("\n")):
+            print("Removing existing mantidimaging-dev environment")
+            command_conda_env_remove = [self.conda, "env", "remove", "-n", "mantidimaging-dev"]
+            subprocess.check_call(command_conda_env_remove)
         extra_deps = self.get_package_depends()
         env_file_path = self.make_environment_file(extra_deps)
         print("Creating conda environment for development")
