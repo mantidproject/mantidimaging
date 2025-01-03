@@ -191,7 +191,7 @@ class Progress:
             mean_time = self.calculate_mean_time(self.progress_history)
             eta = mean_time * (self.end_step - self.current_step)
 
-            msg = f"{f'{msg}' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
+            msg = f"{msg} | {self.current_step}/{self.end_step} | " \
                   f"Time: {self._format_time(self.execution_time())}, ETA: {self._format_time(eta)}"
             step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
             self.progress_history.append(step_details)
