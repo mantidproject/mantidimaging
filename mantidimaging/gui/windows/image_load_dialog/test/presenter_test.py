@@ -19,7 +19,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         self.assertEqual(Path(file1).absolute(), Path(file2).absolute())
 
     def setUp(self):
-        self.fields = {ft.fname: mock.create_autospec(Field) for ft in FILE_TYPES}
+        self.fields = {ft.fname: mock.create_autospec(Field, instance=True) for ft in FILE_TYPES}
         self.v = mock.MagicMock(fields=self.fields)
         self.v.sample = self.fields["Sample"]
         self.p = LoadPresenter(self.v)
@@ -48,7 +48,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_do_update_flat_or_dark.assert_not_called()
 
     def test_update_field_with_filegroup_sample(self):
-        mock_file_group = mock.create_autospec(FilenameGroup)
+        mock_file_group = mock.create_autospec(FilenameGroup, instance=True)
         file_list = [mock.Mock()]
         file_log_path = mock.Mock()
         mock_file_group.all_files.return_value = file_list
@@ -66,7 +66,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_field_path.assert_called_once_with(file_log_path)
 
     def test_update_field_with_filegroup_dark_before(self):
-        mock_file_group = mock.create_autospec(FilenameGroup)
+        mock_file_group = mock.create_autospec(FilenameGroup, instance=True)
         file_list = [mock.Mock()]
         mock_file_group.all_files.return_value = file_list
 
@@ -82,7 +82,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
     def test_do_update_sample_no_related(self, mock_update_field, mock_read_image_dimensions, mock_filename_group):
         selected_file = "/a/b/img_000.tif"
         mock_read_image_dimensions.return_value = [10, 11]
-        mock_sample_fg = mock.create_autospec(FilenameGroup)
+        mock_sample_fg = mock.create_autospec(FilenameGroup, instance=True)
         mock_filename_group.from_file.return_value = mock_sample_fg
         mock_sample_fg.all_indexes = [0, 1, 2, 3]
         mock_sample_fg.find_related.return_value = None
@@ -101,8 +101,8 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
                                                   mock_filename_group):
         selected_file = "/a/b/img_000.tif"
         mock_read_image_dimensions.return_value = [10, 11]
-        mock_sample_fg = mock.create_autospec(FilenameGroup)
-        mock_fb_fg = mock.create_autospec(FilenameGroup)
+        mock_sample_fg = mock.create_autospec(FilenameGroup, instance=True)
+        mock_fb_fg = mock.create_autospec(FilenameGroup, instance=True)
         mock_filename_group.from_file.return_value = mock_sample_fg
         mock_sample_fg.all_indexes = [0, 1, 2, 3]
         mock_sample_fg.find_related.side_effect = lambda ft: mock_fb_fg if ft == FILE_TYPES.FLAT_BEFORE else None
@@ -156,7 +156,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
         field = mock.MagicMock(file_info=FILE_TYPES.SAMPLE_LOG)
 
-        self.p.sample_fg = mock.create_autospec(FilenameGroup)
+        self.p.sample_fg = mock.create_autospec(FilenameGroup, instance=True)
         self.p.do_update_sample_log(field, file_name)
 
         mock_ensure.assert_called_once_with(field, file_name, [])
@@ -166,7 +166,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         """
         Test behaviour when the number of projection angles and files matches
         """
-        mock_log = mock.create_autospec(InstrumentLog)
+        mock_log = mock.create_autospec(InstrumentLog, instance=True)
         mock_load_log.return_value = mock_log
         file_name = "file_name"
         field = mock.MagicMock()
@@ -183,7 +183,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
     def test_ensure_sample_log_consistency_exits_when_none_or_empty_str(self, mock_load_log):
-        mock_log = mock.create_autospec(InstrumentLog)
+        mock_log = mock.create_autospec(InstrumentLog, instance=True)
         mock_load_log.return_value = mock_log
         file_name = None
         field = mock.MagicMock()

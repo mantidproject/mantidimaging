@@ -33,18 +33,18 @@ class CloseCheckStream(io.StringIO):
 class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter)
+        self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter, instance=True)
         self.model = SpectrumViewerWindowModel(self.presenter)
 
     def _set_sample_stack(self, with_tof=False, with_shuttercount=False):
         spectrum = np.arange(0, 10)
         stack = ImageStack(np.ones([10, 11, 12]) * spectrum.reshape((10, 1, 1)))
         if with_tof:
-            mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
+            mock_inst_log = mock.create_autospec(InstrumentLog, source_file="", instance=True)
             mock_inst_log.get_column.return_value = np.arange(0, 10) * 0.1
             stack.log_file = mock_inst_log
         if with_shuttercount:
-            mock_shuttercounts = mock.create_autospec(ShutterCount, source_file="")
+            mock_shuttercounts = mock.create_autospec(ShutterCount, source_file="", instance=True)
             mock_shuttercounts.get_column.return_value = np.arange(5, 15)
             stack._shutter_count_file = mock_shuttercounts
         self.model.set_stack(stack)
@@ -56,14 +56,14 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         normalise_stack = ImageStack(np.ones([10, 11, 12]) * spectrum.reshape((10, 1, 1)))
         self.model.set_normalise_stack(normalise_stack)
         if with_shuttercount:
-            mock_shuttercounts = mock.create_autospec(ShutterCount, source_file="")
+            mock_shuttercounts = mock.create_autospec(ShutterCount, source_file="", instance=True)
             mock_shuttercounts.get_column.return_value = np.arange(10, 20)
             normalise_stack._shutter_count_file = mock_shuttercounts
         return normalise_stack
 
     def _make_mock_path_stream(self):
         mock_stream = CloseCheckStream()
-        mock_path = mock.create_autospec(Path)
+        mock_path = mock.create_autospec(Path, instance=True)
         mock_path.open.return_value = mock_stream
         return mock_stream, mock_path
 
@@ -276,7 +276,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
     def test_save_rits_no_norm_err(self):
         stack, _ = self._set_sample_stack()
         self.model.set_normalise_stack(None)
-        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="")
+        mock_inst_log = mock.create_autospec(InstrumentLog, source_file="", instance=True)
         stack.log_file = mock_inst_log
         roi = SensibleROI.from_list([0, 0, 12, 11])
         self.model._roi_ranges["ROI_RITS"] = roi
@@ -411,7 +411,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertIsNone(self.model.get_stack_time_of_flight())
 
         # Log but not tof
-        mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt")
+        mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt", instance=True)
         mock_log.get_column.side_effect = KeyError()
         stack.log_file = mock_log
         self.assertIsNone(self.model.get_stack_time_of_flight())
@@ -492,7 +492,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_new_roi("rits_roi")
         self.model.set_roi("rits_roi", SensibleROI.from_list([1, 0, 6, 4]))
         self.model.set_normalise_stack(norm)
-        mock_path = mock.create_autospec(Path)
+        mock_path = mock.create_autospec(Path, instance=True)
 
         self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, 3, 1)
 

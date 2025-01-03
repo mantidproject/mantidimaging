@@ -16,9 +16,9 @@ from mantidimaging.gui.windows.main import MainWindowView
 class MainWindowPresenterTest(unittest.TestCase):
 
     def setUp(self):
-        self.view = mock.create_autospec(LiveViewerWindowView)
-        self.main_window = mock.create_autospec(MainWindowView)
-        self.model = mock.create_autospec(LiveViewerWindowModel)
+        self.view = mock.create_autospec(LiveViewerWindowView, instance=True)
+        self.main_window = mock.create_autospec(MainWindowView, instance=True)
+        self.model = mock.create_autospec(LiveViewerWindowModel, instance=True)
 
         with mock.patch("mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowModel") as mock_model:
             mock_model.return_value = self.model
@@ -27,7 +27,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_load_as_dataset(self):
         image_dir = Path("/path/to/dir")
         image_paths = [image_dir / f"image_{i:03d}.tif" for i in range(5)]
-        self.model.images = [mock.create_autospec(Image_Data, image_path=p) for p in image_paths]
+        self.model.images = [mock.create_autospec(Image_Data, image_path=p, instance=True) for p in image_paths]
 
         self.presenter.load_as_dataset()
 

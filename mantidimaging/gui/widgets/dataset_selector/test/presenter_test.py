@@ -13,7 +13,7 @@ from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidge
 class DatasetSelectorWidgetPresenterTests(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.view = mock.create_autospec(DatasetSelectorWidgetView)
+        self.view = mock.create_autospec(DatasetSelectorWidgetView, instance=True)
         self.presenter = DatasetSelectorWidgetPresenter(self.view)
 
         self.view.main_window = mock.Mock()

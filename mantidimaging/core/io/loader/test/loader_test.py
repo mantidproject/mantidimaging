@@ -77,11 +77,11 @@ class LoaderTest(FakeFSTestCase):
         filenames = [Path(f"foo_{n}.tif") for n in range(20)]
         angles = np.array([(n * 137.507764) % 360 for n in range(20)])
 
-        mock_filename_group = mock.create_autospec(FilenameGroup, metadata_path=None)
+        mock_filename_group = mock.create_autospec(FilenameGroup, metadata_path=None, instance=True)
         mock_filename_group.all_files.return_value = filenames
         mock_filename_group.first_file.return_value = filenames[0]
 
-        mock_log_data = mock.create_autospec(InstrumentLog)
+        mock_log_data = mock.create_autospec(InstrumentLog, instance=True)
         mock_log_data.has_projection_angles.return_value = True
         mock_log_data.projection_angles.return_value = ProjectionAngles(np.deg2rad(angles))
 
