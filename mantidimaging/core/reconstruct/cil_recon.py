@@ -43,7 +43,9 @@ class MIProgressCallback(Callback):
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
-            extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
+            extra_info = {}
+            if algo.iterations and algo.iterations[-1] == algo.iteration:
+                extra_info = {'iterations': algo.iterations, 'losses': algo.loss}
             if algo.last_residual and algo.last_residual[0] == algo.iteration:
                 extra_info["residual"] = algo.last_residual[1]
             self.progress.update(
