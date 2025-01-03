@@ -27,12 +27,7 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(1000)
 
-        self.progress_plot = PlotWidget()
-        self.PlotVerticalLayout.addWidget(self.progress_plot)
-        self.progress_plot.hide()
-        self.progress_plot.setLogMode(y=True)
-        self.progress_plot.setMinimumHeight(300)
-
+        self.progress_plot: PlotWidget | None = None
         self.residual_image_view: ImageView | None = None
 
         self.show_timer = QTimer(self)
@@ -75,6 +70,12 @@ class AsyncTaskDialogView(BaseDialogView):
         self.progressBar.setValue(int(progress * 1000))
 
     def set_progress_plot(self, x: list, y: list):
+        if self.progress_plot is None:
+            self.progress_plot = PlotWidget()
+            self.PlotVerticalLayout.addWidget(self.progress_plot)
+            self.progress_plot.hide()
+            self.progress_plot.setLogMode(y=True)
+            self.progress_plot.setMinimumHeight(300)
         self.progress_plot.show()
         self.progress_plot.plotItem.plot(x, y)
 
