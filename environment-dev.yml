@@ -29,7 +29,7 @@ dependencies:
   - pyinstaller==6.9.*
   - pyright==1.1.*
   - make==4.3
-  - ruff=0.3.3
+  - ruff=0.3.7
   - pre-commit==3.5.*
   - sphinx==7.2.*
   - pydata-sphinx-theme==0.15.*
