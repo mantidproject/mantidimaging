@@ -22,6 +22,7 @@ Subpackages
    mantidimaging.gui.widgets.mi_mini_image_view
    mantidimaging.gui.widgets.palette_changer
    mantidimaging.gui.widgets.roi_selector
+   mantidimaging.gui.widgets.spectrum_widgets
    mantidimaging.gui.widgets.zslider
 
 Submodules
