@@ -1,0 +1,1 @@
+#2397: Fix FITS file support for drag and drop functionality within Mantid Imaging. This fix also resolves FITS file support when launching Mantid Imaging via the CLI with the `--path` optional argument.
