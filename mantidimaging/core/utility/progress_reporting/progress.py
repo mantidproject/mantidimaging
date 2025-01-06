@@ -9,8 +9,7 @@ from typing import NamedTuple, SupportsInt
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
-ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str),
-                                                 ('extra_info', dict | None)])
+ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str)])
 
 
 class ProgressHandler:
@@ -59,6 +58,7 @@ class Progress:
         # List of tuples defining progress history
         # (timestamp, step, message)
         self.progress_history: list[ProgressHistory] = []
+        self.extra_info: dict | None = None
 
         # Lock used to synchronise modifications to the progress state
         self.lock = threading.Lock()
@@ -191,10 +191,11 @@ class Progress:
             mean_time = self.calculate_mean_time(self.progress_history)
             eta = mean_time * (self.end_step - self.current_step)
 
-            msg = f"{f'{msg}' if len(msg) > 0 else ''} | {self.current_step}/{self.end_step} | " \
+            msg = f"{msg} | {self.current_step}/{self.end_step} | " \
                   f"Time: {self._format_time(self.execution_time())}, ETA: {self._format_time(eta)}"
-            step_details = ProgressHistory(time.perf_counter(), self.current_step, msg, extra_info)
+            step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
             self.progress_history.append(step_details)
+            self.extra_info = extra_info
 
         # process progress callbacks
         for cb in self.progress_handlers:
