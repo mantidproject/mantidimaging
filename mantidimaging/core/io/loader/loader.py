@@ -67,7 +67,9 @@ def _fitsread(filename: Path | str) -> np.ndarray:
         raise RuntimeError(f"Could not load at least one FITS image/table file from: {filename}")
 
     # get the image data
-    return image[0].data
+    image_data = image[0].data
+    image.close(filename)
+    return image_data
 
 
 def _imread(filename: Path | str) -> np.ndarray:
