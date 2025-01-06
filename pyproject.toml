@@ -3,9 +3,12 @@ line-length = 120
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["F", "E", "W", "UP", "B", "C4", "FA", "NPY"]
+select = ["F", "E", "W", "UP", "B", "C4", "FA", "NPY", "INP"]
 fixable = ["UP"]
 ignore = ["UP014"]
+
+[tool.ruff.lint.per-file-ignores]
+"!mantidimaging/**.py" = ["INP"]
 
 [tool.pyright]
 typeCheckingMode = "basic"
