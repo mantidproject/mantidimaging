@@ -517,7 +517,7 @@ document.write(`
 <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">DEFAULT_IO_FILE_FORMAT</span> <span class="o">=</span> <span class="s1">&#39;tif&#39;</span>
-<span class="n">NEXUS_PROCESSED_DATA_PATH</span> <span class="o">=</span> <span class="s2">&quot;processed-data&quot;</span>
+<span class="n">NEXUS_PROCESSED_DATA_PATH</span> <span class="o">=</span> <span class="s1">&#39;processed-data&#39;</span>
 
 <span class="n">THRESHOLD_180</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
@@ -525,12 +525,18 @@ document.write(`
 <div class="viewcode-block" id="find_first_file_that_is_possibly_a_sample">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.utility.html#mantidimaging.core.io.utility.find_first_file_that_is_possibly_a_sample">[docs]</a>
 <span class="k">def</span> <span class="nf">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># Grab all .tif or .tiff files</span>
-    <span class="n">possible_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;**/*.tif*&quot;</span><span class="p">),</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds the first file that is possibly a tif, .tiff, .fit or .fits sample file.</span>
+<span class="sd">    If files are found, the files are sorted and filtered based on name and returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tif&#39;</span><span class="p">,</span> <span class="s1">&#39;tiff&#39;</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;fits&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="n">file_types</span><span class="p">:</span>
+        <span class="n">possible_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;**/*.</span><span class="si">{</span><span class="n">file_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">possible_files</span><span class="p">:</span>
+            <span class="k">break</span>
     <span class="k">for</span> <span class="n">possible_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">possible_files</span><span class="p">):</span>
         <span class="n">lower_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">possible_file</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;flat&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lower_filename</span> <span class="ow">and</span> <span class="s2">&quot;dark&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lower_filename</span> <span class="ow">and</span> <span class="s2">&quot;180&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lower_filename</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;flat&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lower_filename</span> <span class="ow">and</span> <span class="s1">&#39;dark&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lower_filename</span> <span class="ow">and</span> <span class="s1">&#39;180&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lower_filename</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">possible_file</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
