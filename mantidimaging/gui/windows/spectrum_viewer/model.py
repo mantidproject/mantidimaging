@@ -128,7 +128,11 @@ class SpectrumViewerWindowModel:
         self.tof_range = (0, stack.data.shape[0] - 1)
         self.tof_range_full = self.tof_range
         self.tof_data = self.get_stack_time_of_flight()
-        self.set_new_roi(ROI_ALL)
+        height, width = self.get_image_shape()
+        self._roi_ranges[ROI_ALL] = SensibleROI.from_list([0, 0, width, height])
+
+    def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
+        self._normalise_stack = normalise_stack
 
     def set_new_roi(self, name: str) -> None:
         """
@@ -137,13 +141,7 @@ class SpectrumViewerWindowModel:
         @param name: The name of the new ROI
         """
         height, width = self.get_image_shape()
-        self.set_roi(name, SensibleROI.from_list([0, 0, width, height]))
-
-    def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
-        self._normalise_stack = normalise_stack
-
-    def set_roi(self, roi_name: str, roi: SensibleROI) -> None:
-        self._roi_ranges[roi_name] = roi
+        self._roi_ranges[name] = SensibleROI.from_list([0, 0, width, height])
 
     def get_averaged_image(self) -> np.ndarray | None:
         """

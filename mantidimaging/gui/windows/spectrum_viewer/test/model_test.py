@@ -228,7 +228,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
         self.model.set_new_roi("rits_roi")
-        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 10, 11]))
+        self.model._roi_ranges["rits_roi"] = SensibleROI.from_list([0, 0, 10, 11])
         self.model.set_normalise_stack(norm)
 
         self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 10, 11])
@@ -475,7 +475,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
         self.model.set_new_roi("rits_roi")
-        self.model.set_roi("rits_roi", SensibleROI.from_list([0, 0, 5, 5]))
+        self.model._roi_ranges["rits_roi"] = SensibleROI.from_list([0, 0, 5, 5])
         self.model.set_normalise_stack(norm)
         self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 5, 5])
 
@@ -490,7 +490,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         for i in range(10):
             stack.data[:, :, i] *= i
         self.model.set_new_roi("rits_roi")
-        self.model.set_roi("rits_roi", SensibleROI.from_list([1, 0, 6, 4]))
+        self.model._roi_ranges["rits_roi"] = SensibleROI.from_list([1, 0, 6, 4])
         self.model.set_normalise_stack(norm)
         mock_path = mock.create_autospec(Path, instance=True)
 
