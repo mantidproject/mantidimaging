@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,28 +507,28 @@ document.write(`
   <h1>Source code for mantidimaging.gui.dialogs.async_task.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">PlotWidget</span><span class="p">,</span> <span class="n">ImageView</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotWidget</span><span class="p">,</span> <span class="n">ImageView</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
-<span class="kn">from</span> <span class="nn">.presenter</span> <span class="kn">import</span> <span class="n">AsyncTaskDialogPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncTaskDialogPresenter</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMainWindow</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMainWindow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTimer</span>
 
 
 <div class="viewcode-block" id="AsyncTaskDialogView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView">[docs]</a>
-<span class="k">class</span> <span class="nc">AsyncTaskDialogView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncTaskDialogView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
     <span class="n">_presenter</span><span class="p">:</span> <span class="n">AsyncTaskDialogPresenter</span> <span class="o">|</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QMainWindow</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QMainWindow</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/async_task_dialog.ui&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span> <span class="o">=</span> <span class="n">AsyncTaskDialogPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -545,14 +545,14 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">presenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncTaskDialogPresenter</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">presenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncTaskDialogPresenter</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Presenter accessed after handle_completion&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span>
 
 <div class="viewcode-block" id="AsyncTaskDialogView.handle_completion">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.handle_completion">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">successful</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">successful</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the UI after the task has been completed.</span>
 
@@ -575,7 +575,7 @@ document.write(`
 
 <div class="viewcode-block" id="AsyncTaskDialogView.set_progress">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.set_progress">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Set status message</span>
         <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">infoText</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -586,7 +586,7 @@ document.write(`
 
 <div class="viewcode-block" id="AsyncTaskDialogView.set_progress_plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.set_progress_plot">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_progress_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_progress_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span> <span class="o">=</span> <span class="n">PlotWidget</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">PlotVerticalLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_plot</span><span class="p">)</span>
@@ -599,7 +599,7 @@ document.write(`
 
 <div class="viewcode-block" id="AsyncTaskDialogView.set_progress_residual_plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.set_progress_residual_plot">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_progress_residual_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residual_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_progress_residual_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residual_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_image_view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">residual_image_view</span> <span class="o">=</span> <span class="n">ImageView</span><span class="p">()</span>
             <span class="n">residual_image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiBtn</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
@@ -615,14 +615,14 @@ document.write(`
 
 <div class="viewcode-block" id="AsyncTaskDialogView.show_delayed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.show_delayed">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_delayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_delayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_timer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_from_timer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="AsyncTaskDialogView.show_from_timer">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.show_from_timer">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_from_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_from_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Might not run until after handle_completion</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">task_is_running</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
@@ -630,7 +630,7 @@ document.write(`
 
 <div class="viewcode-block" id="AsyncTaskDialogView.show_cancel_button">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.show_cancel_button">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_cancel_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancelable</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_cancel_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cancelable</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">cancelable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -641,7 +641,7 @@ document.write(`
 
 <div class="viewcode-block" id="start_async_task_view">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.start_async_task_view">[docs]</a>
-<span class="k">def</span> <span class="nf">start_async_task_view</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">QMainWindow</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_async_task_view</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">QMainWindow</span><span class="p">,</span>
                           <span class="n">task</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
                           <span class="n">on_complete</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
                           <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

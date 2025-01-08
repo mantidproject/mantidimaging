@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,17 +507,17 @@ document.write(`
   <h1>Source code for mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">ABC</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">ABC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ViewBox</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">ViewBox</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">_metaclass_sip_abc</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.indicator_icon.view</span> <span class="kn">import</span> <span class="n">IndicatorIconView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">_metaclass_sip_abc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.indicator_icon.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">IndicatorIconView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
 
 <span class="n">OVERLAY_COLOUR_NAN</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
 <span class="n">OVERLAY_COLOUR_NONPOSITVE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">255</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
@@ -526,11 +526,11 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataCheck">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck">[docs]</a>
-<span class="k">class</span> <span class="nc">BadDataCheck</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BadDataCheck</span><span class="p">:</span>
     <span class="n">check_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
     <span class="n">indicator</span><span class="p">:</span> <span class="n">IndicatorIconView</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_function</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_function</span><span class="p">,</span> <span class="n">indicator</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_function</span> <span class="o">=</span> <span class="n">check_function</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span> <span class="o">=</span> <span class="n">indicator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span> <span class="o">=</span> <span class="n">overlay</span>
@@ -540,7 +540,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataCheck.do_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.do_check">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">bad_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="n">any_bad</span> <span class="o">=</span> <span class="n">bad_data</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
         <span class="c1"># cast any_bad to python bool to prevent DeprecationWarning</span>
@@ -551,7 +551,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataCheck.setup_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.setup_overlay">[docs]</a>
-    <span class="k">def</span> <span class="nf">setup_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ubyte</span><span class="p">)</span>
         <span class="n">color_map</span> <span class="o">=</span> <span class="n">ColorMap</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -563,7 +563,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataCheck.remove">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.remove">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">getViewBox</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">getViewBox</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
@@ -571,7 +571,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataCheck.clear">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataCheck.clear">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">indicator</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlay</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 </div>
@@ -580,12 +580,12 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay">[docs]</a>
-<span class="k">class</span> <span class="nc">BadDataOverlay</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_metaclass_sip_abc</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BadDataOverlay</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_metaclass_sip_abc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mixin class to be used with MIImageView and MIMiniImageView</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BadDataCheck</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -596,17 +596,17 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">image_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageItem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageItem</span><span class="p">:</span>
         <span class="o">...</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">viewbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ViewBox</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">viewbox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ViewBox</span><span class="p">:</span>
         <span class="o">...</span>
 
 <div class="viewcode-block" id="BadDataOverlay.enable_nan_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_nan_check">[docs]</a>
-    <span class="k">def</span> <span class="nf">enable_nan_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_nan_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">enable_check</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="n">OVERLAY_COLOUR_NAN</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">,</span> <span class="s2">&quot;Invalid values: Not a number&quot;</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -615,10 +615,10 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay.enable_nonpositive_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_nonpositive_check">[docs]</a>
-    <span class="k">def</span> <span class="nf">enable_nonpositive_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_nonpositive_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">is_non_positive</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">is_non_positive</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">data</span> <span class="o">&lt;=</span> <span class="mi">0</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">enable_check</span><span class="p">(</span><span class="s2">&quot;nonpos&quot;</span><span class="p">,</span> <span class="n">OVERLAY_COLOUR_NONPOSITVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">is_non_positive</span><span class="p">,</span> <span class="s2">&quot;Non-positive values&quot;</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
@@ -628,7 +628,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay.enable_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_check">[docs]</a>
-    <span class="k">def</span> <span class="nf">enable_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                      <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">:</span>
             <span class="n">icon_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">+</span> <span class="s2">&quot;/gui/ui/images/exclamation-triangle-red.png&quot;</span>
@@ -645,19 +645,19 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay.disable_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.disable_check">[docs]</a>
-    <span class="k">def</span> <span class="nf">disable_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">disable_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_current_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_current_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">image</span>
         <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="BadDataOverlay.check_for_bad_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.check_for_bad_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_for_bad_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_for_bad_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">current_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_slice</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">current_slice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -666,14 +666,14 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay.clear_overlays">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.clear_overlays">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_overlays</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_overlays</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">enabled_checks</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">check</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BadDataOverlay.enable_message">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.enable_message">[docs]</a>
-    <span class="k">def</span> <span class="nf">enable_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
             <span class="n">icon_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">+</span> <span class="s2">&quot;/gui/ui/images/exclamation-triangle-red.png&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message_indicator</span> <span class="o">=</span> <span class="n">IndicatorIconView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viewbox</span><span class="p">,</span> <span class="n">icon_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">OVERLAY_COLOUR_MESSAGE</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -684,7 +684,7 @@ document.write(`
 
 <div class="viewcode-block" id="BadDataOverlay.show_message">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.html#mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay.BadDataOverlay.show_message">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_indicator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">message</span><span class="p">:</span>

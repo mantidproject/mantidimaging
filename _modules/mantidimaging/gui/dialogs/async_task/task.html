@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,19 +507,19 @@ document.write(`
   <h1>Source code for mantidimaging.gui.dialogs.async_task.task</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QThread</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QThread</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.func_call</span> <span class="kn">import</span> <span class="n">call_with_known_parameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.func_call</span><span class="w"> </span><span class="kn">import</span> <span class="n">call_with_known_parameters</span>
 
 
 <div class="viewcode-block" id="TaskWorkerThread">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.task.html#mantidimaging.gui.dialogs.async_task.task.TaskWorkerThread">[docs]</a>
-<span class="k">class</span> <span class="nc">TaskWorkerThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TaskWorkerThread</span><span class="p">(</span><span class="n">QThread</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thread for running tasks asynchronously to the GUI.</span>
 
@@ -539,7 +539,7 @@ document.write(`
     <span class="n">task_function</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">|</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">task_function</span> <span class="o">=</span> <span class="kc">None</span>
@@ -551,7 +551,7 @@ document.write(`
 
 <div class="viewcode-block" id="TaskWorkerThread.run">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.task.html#mantidimaging.gui.dialogs.async_task.task.TaskWorkerThread.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -568,7 +568,7 @@ document.write(`
 
 <div class="viewcode-block" id="TaskWorkerThread.was_successful">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.task.html#mantidimaging.gui.dialogs.async_task.task.TaskWorkerThread.was_successful">[docs]</a>
-    <span class="k">def</span> <span class="nf">was_successful</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">was_successful</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspects the result and error values of the async task.</span>
 

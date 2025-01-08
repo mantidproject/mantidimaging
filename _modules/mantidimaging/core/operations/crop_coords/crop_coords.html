@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,26 +507,26 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.crop_coords.crop_coords</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging</span> <span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.sensible_roi</span> <span class="kn">import</span> <span class="n">SensibleROI</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QLineEdit</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QLineEdit</span>
 
 
 <div class="viewcode-block" id="CropCoordinatesFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter">[docs]</a>
-<span class="k">class</span> <span class="nc">CropCoordinatesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CropCoordinatesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Crop a region of interest from the image.</span>
 
 <span class="sd">    Intended to be used on: A stack of projections, or reconstructed slices</span>
@@ -543,7 +543,7 @@ document.write(`
 <div class="viewcode-block" id="CropCoordinatesFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                     <span class="n">region_of_interest</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the Crop Coordinates by Region of Interest filter. This does</span>
@@ -588,8 +588,8 @@ document.write(`
 <div class="viewcode-block" id="CropCoordinatesFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">add_property_to_form</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
         <span class="n">label</span><span class="p">,</span> <span class="n">roi_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;ROI&quot;</span><span class="p">,</span>
                                                 <span class="n">Type</span><span class="o">.</span><span class="n">STR</span><span class="p">,</span>
                                                 <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
@@ -604,18 +604,18 @@ document.write(`
 <div class="viewcode-block" id="CropCoordinatesFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">roi_field</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)])</span>
             <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">CropCoordinatesFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">region_of_interest</span><span class="o">=</span><span class="n">roi</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The provided ROI string is invalid! Error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The provided ROI string is invalid! Error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 
 <div class="viewcode-block" id="CropCoordinatesFilter.group_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter.group_name">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">group_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FilterGroup</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FilterGroup</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">Basic</span></div>
 </div>
 
@@ -623,7 +623,7 @@ document.write(`
 
 <div class="viewcode-block" id="execute_single">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.execute_single">[docs]</a>
-<span class="k">def</span> <span class="nf">execute_single</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">execute_single</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Crop Coords&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">roi</span><span class="p">:</span>

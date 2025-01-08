@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,28 +507,28 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.main.nexus_save_dialog</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QRadioButton</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QRadioButton</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
 
 <span class="n">NXS_EXT</span> <span class="o">=</span> <span class="s2">&quot;.nxs&quot;</span>
 
 
 <div class="viewcode-block" id="NexusSaveDialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog">[docs]</a>
-<span class="k">class</span> <span class="nc">NexusSaveDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NexusSaveDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
 
     <span class="n">selected_dataset</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">floatRadioButton</span><span class="p">:</span> <span class="n">QRadioButton</span>
     <span class="n">intRadioButton</span><span class="p">:</span> <span class="n">QRadioButton</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dataset_list</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dataset_list</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/nexus_save_dialog.ui&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">browseButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_save_path</span><span class="p">)</span>
@@ -542,7 +542,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_dataset</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_create_dataset_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_list</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_dataset_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_list</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]):</span>
         <span class="k">if</span> <span class="n">dataset_list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dataset_uuids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">dataset_list</span><span class="p">]</span>
             <span class="n">dataset_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ds</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">dataset_list</span><span class="p">]</span>
@@ -550,7 +550,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusSaveDialog.accept">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.accept">[docs]</a>
-    <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_uuids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">datasetNames</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">execute_nexus_save</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
@@ -558,7 +558,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusSaveDialog.save_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.save_path">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: The directory of the path as a Python string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -567,29 +567,29 @@ document.write(`
 
 <div class="viewcode-block" id="NexusSaveDialog.sample_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.sample_name">[docs]</a>
-    <span class="k">def</span> <span class="nf">sample_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampleNameLineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="NexusSaveDialog.enable_save">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.nexus_save_dialog.html#mantidimaging.gui.windows.main.nexus_save_dialog.NexusSaveDialog.enable_save">[docs]</a>
-    <span class="k">def</span> <span class="nf">enable_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buttonBox</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">StandardButton</span><span class="o">.</span><span class="n">Save</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
                                                                                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_name</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_set_save_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_save_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Save NeXus file&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;NeXus (*</span><span class="si">{</span><span class="n">NXS_EXT</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">savePath</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_extension</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_check_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_path</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">NXS_EXT</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">savePath</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">NXS_EXT</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">save_as_float</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_as_float</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">floatRadioButton</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
 
 </pre></div>

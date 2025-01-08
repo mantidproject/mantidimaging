@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,15 +507,15 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.nexus_load_dialog.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QEventLoop</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> \
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QEventLoop</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> \
     <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> \
     <span class="n">QStackedWidget</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QSpinBox</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.nexus_load_dialog.presenter</span> <span class="kn">import</span> <span class="n">NexusLoadPresenter</span><span class="p">,</span> <span class="n">Notification</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.nexus_load_dialog.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusLoadPresenter</span><span class="p">,</span> <span class="n">Notification</span>
 
 <span class="n">NEXUS_CAPTION</span> <span class="o">=</span> <span class="s2">&quot;NeXus&quot;</span>
 <span class="n">NEXUS_FILTER</span> <span class="o">=</span> <span class="s2">&quot;NeXus (*.nxs *.hd5)&quot;</span>
@@ -531,7 +531,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog">[docs]</a>
-<span class="k">class</span> <span class="nc">NexusLoadDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NexusLoadDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
     <span class="n">tree</span><span class="p">:</span> <span class="n">QTreeWidget</span>
     <span class="n">chooseFileButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">filePathLineEdit</span><span class="p">:</span> <span class="n">QLineEdit</span>
@@ -544,7 +544,7 @@ document.write(`
     <span class="n">presenter</span><span class="p">:</span> <span class="n">NexusLoadPresenter</span>
     <span class="n">checkboxes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;gui/ui/nexus_load_dialog.ui&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span> <span class="o">=</span> <span class="n">parent</span>
@@ -593,7 +593,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.choose_nexus_file">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.choose_nexus_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">choose_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">choose_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select a NeXus file and attempt to load it. If a file is chosen, clear the information/widgets from the</span>
 <span class="sd">        QTreeWidget and enable the OK button.</span>
@@ -615,7 +615,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.clear_widgets">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.clear_widgets">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove text and checkbox widgets from the QTreeWidget when a new file has been selected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -634,7 +634,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.set_data_found">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_data_found">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_data_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Indicate on the QTreeWidget if the image key and data fields have been found or not.</span>
 <span class="sd">        :param position: The row position for the data.</span>
@@ -656,7 +656,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.set_images_found">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_images_found">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_images_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_images_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.</span>
 <span class="sd">        :param position: The row position for the image type.</span>
@@ -683,7 +683,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.set_projections_increment">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_projections_increment">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_projections_increment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_proj</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_projections_increment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_proj</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the properties of the indices spin boxes.</span>
 <span class="sd">        :param n_proj: The number of projections that have been found in the NeXus file.</span>
@@ -700,7 +700,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.show_exception">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.show_exception">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show an error about an exception.</span>
 <span class="sd">        :param msg: The error message.</span>
@@ -711,7 +711,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.show_data_error">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.show_data_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show an error about missing required data or an unreadable file.</span>
 <span class="sd">        :param msg: The error message.</span>
@@ -721,7 +721,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadDialog.disable_ok_button">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.disable_ok_button">[docs]</a>
-    <span class="k">def</span> <span class="nf">disable_ok_button</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">disable_ok_button</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Disable the OK button when the NeXus file isn&#39;t usable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -731,7 +731,7 @@ document.write(`
 <div class="viewcode-block" id="NexusLoadDialog.set_found_status">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_found_status">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_found_status</span><span class="p">(</span><span class="n">tree_widget_item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_found_status</span><span class="p">(</span><span class="n">tree_widget_item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">found</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a tick or cross to the found column in the QTreeWidget to indicate if certain data could be found in the</span>
 <span class="sd">        NeXus file.</span>
@@ -742,7 +742,7 @@ document.write(`
         <span class="n">tree_widget_item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">FOUND_COLUMN</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_set_preview_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_preview_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the spin boxes to load a preview of the projections.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -750,7 +750,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_widget</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_proj</span> <span class="o">//</span> <span class="mi">10</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_all_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_all_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the spin boxes to load all the projections.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

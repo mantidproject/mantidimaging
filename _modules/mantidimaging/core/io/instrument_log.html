@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,21 +507,21 @@ document.write(`
   <h1>Source code for mantidimaging.core.io.instrument_log</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">Counts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">Counts</span>
 
 
 <div class="viewcode-block" id="LogColumn">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.LogColumn">[docs]</a>
-<span class="k">class</span> <span class="nc">LogColumn</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogColumn</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">TIMESTAMP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">IMAGE_TYPE_IMAGE_COUNTER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">PROJECTION_NUMBER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -535,7 +535,7 @@ document.write(`
 
 <div class="viewcode-block" id="ShutterCountColumn">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCountColumn">[docs]</a>
-<span class="k">class</span> <span class="nc">ShutterCountColumn</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShutterCountColumn</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">PULSE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">SHUTTER_COUNT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
@@ -547,33 +547,33 @@ document.write(`
 
 <div class="viewcode-block" id="NoParserFound">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.NoParserFound">[docs]</a>
-<span class="k">class</span> <span class="nc">NoParserFound</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoParserFound</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="InvalidLog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InvalidLog">[docs]</a>
-<span class="k">class</span> <span class="nc">InvalidLog</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidLog</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="BaseParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseParser</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseParser</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for parsers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
 
 <div class="viewcode-block" id="BaseParser.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.match">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the name and content of the file is likely to be readable by this parser.&quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
@@ -581,14 +581,14 @@ document.write(`
 <div class="viewcode-block" id="BaseParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.parse">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the log file&quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
 
 <div class="viewcode-block" id="BaseParser.cleaned_lines">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines">[docs]</a>
-    <span class="k">def</span> <span class="nf">cleaned_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cleaned_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span></div>
 </div>
 
@@ -596,7 +596,7 @@ document.write(`
 
 <div class="viewcode-block" id="InstrumentLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentLogParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InstrumentLogParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base class for parsing instrument log files.</span>
 
@@ -611,14 +611,14 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically register subclasses&quot;&quot;&quot;</span>
         <span class="n">InstrumentLog</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the log file&quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 </div>
@@ -627,7 +627,7 @@ document.write(`
 
 <div class="viewcode-block" id="InstrumentShutterCountParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentShutterCountParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InstrumentShutterCountParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A parser for instrument shutter count logs.</span>
 
@@ -642,14 +642,14 @@ document.write(`
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically register subclasses&quot;&quot;&quot;</span>
         <span class="n">ShutterCount</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentShutterCountParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCountType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCountType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the log file and return the shutter count data&quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 </div>
@@ -658,7 +658,7 @@ document.write(`
 
 <div class="viewcode-block" id="InstrumentLog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentLog</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InstrumentLog</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiformat instrument log reader</span>
 
 <span class="sd">    New parsers can be implemented by subclassing InstrumentLogParser</span>
@@ -668,14 +668,14 @@ document.write(`
     <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span>
     <span class="n">length</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">source_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">source_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source_file</span> <span class="o">=</span> <span class="n">source_file</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_find_parser</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_find_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">parser</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_file</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
@@ -684,7 +684,7 @@ document.write(`
 
 <div class="viewcode-block" id="InstrumentLog.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
 
         <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
@@ -696,38 +696,38 @@ document.write(`
 <div class="viewcode-block" id="InstrumentLog.register_parser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.register_parser">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">InstrumentLogParser</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">InstrumentLogParser</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.get_column">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.get_column">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">LogColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">LogColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.projection_numbers">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.projection_numbers">[docs]</a>
-    <span class="k">def</span> <span class="nf">projection_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projection_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.has_projection_angles">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.has_projection_angles">[docs]</a>
-    <span class="k">def</span> <span class="nf">has_projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.projection_angles">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.projection_angles">[docs]</a>
-    <span class="k">def</span> <span class="nf">projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span><span class="p">:</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.raise_if_angle_missing">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.raise_if_angle_missing">[docs]</a>
-    <span class="k">def</span> <span class="nf">raise_if_angle_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raise_if_angle_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">image_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ifile</span><span class="p">[</span><span class="n">ifile</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="n">image_filenames</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_numbers</span><span class="p">):</span>
@@ -743,7 +743,7 @@ document.write(`
 
 <div class="viewcode-block" id="InstrumentLog.counts">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.counts">[docs]</a>
-    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counts</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counts</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">and</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_AFTER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Log does not have counts&quot;</span><span class="p">)</span>
 
@@ -757,7 +757,7 @@ document.write(`
 
 <div class="viewcode-block" id="ShutterCount">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount">[docs]</a>
-<span class="k">class</span> <span class="nc">ShutterCount</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShutterCount</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a shutter count log.</span>
 
@@ -783,14 +783,14 @@ document.write(`
     <span class="n">data</span><span class="p">:</span> <span class="n">ShutterCountType</span>
     <span class="n">length</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">source_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">source_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source_file</span> <span class="o">=</span> <span class="n">source_file</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_find_parser</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_find_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">parser</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsers</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_file</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
@@ -799,7 +799,7 @@ document.write(`
 
 <div class="viewcode-block" id="ShutterCount.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
 
         <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
@@ -811,26 +811,26 @@ document.write(`
 <div class="viewcode-block" id="ShutterCount.register_parser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.register_parser">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">InstrumentShutterCountParser</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">InstrumentShutterCountParser</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ShutterCount.get_column">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.get_column">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">ShutterCountColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">ShutterCountColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ShutterCount.pulse_per_shutter_range_numbers">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.pulse_per_shutter_range_numbers">[docs]</a>
-    <span class="k">def</span> <span class="nf">pulse_per_shutter_range_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pulse_per_shutter_range_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="n">column_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">SHUTTER_COUNT</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">column_data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ShutterCount.has_Pulse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount.has_Pulse">[docs]</a>
-    <span class="k">def</span> <span class="nf">has_Pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_Pulse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">PULSE</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 </div>
 

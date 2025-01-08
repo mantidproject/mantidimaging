@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,23 +507,23 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.rescale.rescale_test</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">testing</span> <span class="k">as</span> <span class="n">npt</span><span class="p">,</span> <span class="n">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">testing</span> <span class="k">as</span> <span class="n">npt</span><span class="p">,</span> <span class="n">copy</span>
 
-<span class="kn">import</span> <span class="nn">mantidimaging.test_helpers.unit_test_helper</span> <span class="k">as</span> <span class="nn">th</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.rescale</span> <span class="kn">import</span> <span class="n">RescaleFilter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.test_helpers.qt_mocks</span> <span class="kn">import</span> <span class="n">MockQSpinBox</span><span class="p">,</span> <span class="n">MockQComboBox</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mantidimaging.test_helpers.unit_test_helper</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">th</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.rescale</span><span class="w"> </span><span class="kn">import</span> <span class="n">RescaleFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.test_helpers.qt_mocks</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockQSpinBox</span><span class="p">,</span> <span class="n">MockQComboBox</span>
 
 
 <div class="viewcode-block" id="test_rescale">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale_test.html#mantidimaging.core.operations.rescale.rescale_test.test_rescale">[docs]</a>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">255.0</span><span class="p">,</span> <span class="mf">65535.0</span><span class="p">,</span> <span class="mf">2147483647.0</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">test_rescale</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_rescale</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="n">images</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
     <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
@@ -545,7 +545,7 @@ document.write(`
 
 <div class="viewcode-block" id="test_execute_wrapper_no_preset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale_test.html#mantidimaging.core.operations.rescale.rescale_test.test_execute_wrapper_no_preset">[docs]</a>
-<span class="k">def</span> <span class="nf">test_execute_wrapper_no_preset</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_execute_wrapper_no_preset</span><span class="p">():</span>
     <span class="n">min_input_value</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">max_input_value</span> <span class="o">=</span> <span class="mi">34</span>
 
@@ -567,7 +567,7 @@ document.write(`
     <span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">,</span> <span class="mi">65535</span><span class="p">),</span>
     <span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">,</span> <span class="mf">2147483647.0</span><span class="p">),</span>
 <span class="p">])</span>
-<span class="k">def</span> <span class="nf">test_execute_wrapper_with_preset</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_execute_wrapper_with_preset</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">expected_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
     <span class="n">min_input_value</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">max_input_value</span> <span class="o">=</span> <span class="mi">34</span>
 
@@ -585,7 +585,7 @@ document.write(`
 
 <div class="viewcode-block" id="test_scale_single_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale_test.html#mantidimaging.core.operations.rescale.rescale_test.test_scale_single_image">[docs]</a>
-<span class="k">def</span> <span class="nf">test_scale_single_image</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_scale_single_image</span><span class="p">():</span>
     <span class="n">images</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
     <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.0002</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -601,7 +601,7 @@ document.write(`
 
 <div class="viewcode-block" id="test_scale_single_image_bad_offset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale_test.html#mantidimaging.core.operations.rescale.rescale_test.test_scale_single_image_bad_offset">[docs]</a>
-<span class="k">def</span> <span class="nf">test_scale_single_image_bad_offset</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_scale_single_image_bad_offset</span><span class="p">():</span>
     <span class="n">images</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">RescaleFilter</span><span class="o">.</span><span class="n">filter_array</span><span class="p">(</span><span class="n">copy</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">min_input</span><span class="o">=-</span><span class="mi">5000</span><span class="p">,</span> <span class="n">max_input</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">max_output</span><span class="o">=</span><span class="mi">65535</span><span class="p">)</span>
@@ -615,7 +615,7 @@ document.write(`
 <div class="viewcode-block" id="test_rescale_ignores_nans">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale_test.html#mantidimaging.core.operations.rescale.rescale_test.test_rescale_ignores_nans">[docs]</a>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">255.0</span><span class="p">,</span> <span class="mf">65535.0</span><span class="p">,</span> <span class="mf">2147483647.0</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">test_rescale_ignores_nans</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_rescale_ignores_nans</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="n">images</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">generate_images</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 
     <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">100.0</span>
@@ -639,7 +639,7 @@ document.write(`
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">pytest</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
 
     <span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">([</span><span class="vm">__file__</span><span class="p">])</span>
 </pre></div>

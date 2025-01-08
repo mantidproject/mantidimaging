@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/custom.css?v=517e76a2" />
@@ -507,52 +507,52 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.welcome_screen.tests.presenter_test</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">mock</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">unittest</span><span class="w"> </span><span class="kn">import</span> <span class="n">mock</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSettings</span><span class="p">,</span> <span class="n">QCoreApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span><span class="p">,</span> <span class="n">QCoreApplication</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.welcome_screen.presenter</span> <span class="kn">import</span> <span class="n">WelcomeScreenPresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.test_helpers</span> <span class="kn">import</span> <span class="n">start_qapplication</span><span class="p">,</span> <span class="n">mock_versions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.welcome_screen.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WelcomeScreenPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.test_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_qapplication</span><span class="p">,</span> <span class="n">mock_versions</span>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest">[docs]</a>
 <span class="nd">@mock_versions</span>
 <span class="nd">@start_qapplication</span>
-<span class="k">class</span> <span class="nc">WelcomeScreenPresenterTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WelcomeScreenPresenterTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="n">QCoreApplication</span><span class="o">.</span><span class="n">setApplicationName</span><span class="p">(</span><span class="s2">&quot;test1&quot;</span><span class="p">)</span>
         <span class="n">QCoreApplication</span><span class="o">.</span><span class="n">setOrganizationName</span><span class="p">(</span><span class="s2">&quot;org1&quot;</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">settings_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
         <span class="n">QSettings</span><span class="o">.</span><span class="n">setDefaultFormat</span><span class="p">(</span><span class="n">QSettings</span><span class="o">.</span><span class="n">Format</span><span class="o">.</span><span class="n">IniFormat</span><span class="p">)</span>
         <span class="n">QSettings</span><span class="o">.</span><span class="n">setPath</span><span class="p">(</span><span class="n">QSettings</span><span class="o">.</span><span class="n">Format</span><span class="o">.</span><span class="n">IniFormat</span><span class="p">,</span> <span class="n">QSettings</span><span class="o">.</span><span class="n">Scope</span><span class="o">.</span><span class="n">UserScope</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings_dir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">get_show_at_start</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
         <span class="n">settings</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_init">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_init">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_set_up</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set_version_label</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show_at_start_init">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_init">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_show_at_start_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_show_at_start_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_at_start_enabled</span><span class="p">())</span>
 
         <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
@@ -565,7 +565,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show_today">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_today">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_show_today</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_show_today</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
         <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -586,7 +586,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show_at_start_change">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_change">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_show_at_start_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_show_at_start_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">get_show_at_start</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -600,14 +600,14 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_set_up_show_at_start">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_set_up_show_at_start">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_set_up_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_set_up_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">set_up_show_at_start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set_show_at_start</span><span class="o">.</span><span class="n">assert_called_with</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_add_link">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_add_link">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/&quot;</span>
         <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;https://example.com/&quot;&gt;test&lt;/a&gt;&#39;</span>
 
@@ -620,7 +620,7 @@ document.write(`
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show">[docs]</a>
-    <span class="k">def</span> <span class="nf">test_show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">show</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
 
@@ -629,7 +629,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_check_issues">[docs]</a>
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.versions&quot;</span><span class="p">)</span>
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.cuda_check&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">test_check_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuda_check_mock</span><span class="p">,</span> <span class="n">versions_mock</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_check_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuda_check_mock</span><span class="p">,</span> <span class="n">versions_mock</span><span class="p">):</span>
         <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">log_msgs</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -655,7 +655,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_no_issues_added">[docs]</a>
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.versions&quot;</span><span class="p">)</span>
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.cuda_check&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">test_no_issues_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuda_check_mock</span><span class="p">,</span> <span class="n">versions_mock</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_no_issues_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuda_check_mock</span><span class="p">,</span> <span class="n">versions_mock</span><span class="p">):</span>
         <span class="n">versions_mock</span><span class="o">.</span><span class="n">needs_update</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">cuda_check_mock</span><span class="o">.</span><span class="n">CudaChecker</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
 

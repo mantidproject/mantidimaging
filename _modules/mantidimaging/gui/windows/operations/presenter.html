@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,29 +507,29 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.operations.presenter</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QLineEdit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QLineEdit</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operation_history.const</span> <span class="kn">import</span> <span class="n">OPERATION_HISTORY</span><span class="p">,</span> <span class="n">OPERATION_DISPLAY_NAME</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">BlockQtSignals</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.common</span> <span class="kn">import</span> <span class="n">operation_in_progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.presenter</span> <span class="kn">import</span> <span class="n">StackChoicePresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operation_history.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATION_HISTORY</span><span class="p">,</span> <span class="n">OPERATION_DISPLAY_NAME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">operation_in_progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.stack_choice.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackChoicePresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
-<span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">FiltersWindowModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiltersWindowModel</span>
 
 <span class="n">APPLY_TO_180_MSG</span> <span class="o">=</span> <span class="s2">&quot;Operations applied to the sample are also automatically applied to the &quot;</span> \
       <span class="s2">&quot;180 degree projection. Please avoid applying an operation unless you&#39;re&quot;</span> \
@@ -543,16 +543,16 @@ document.write(`
 <span class="n">ROI_NORMALISATION</span> <span class="o">=</span> <span class="s2">&quot;ROI Normalisation&quot;</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main</span> <span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.operations</span> <span class="kn">import</span> <span class="n">FiltersWindowView</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiltersWindowView</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMiniImageView</span>
 
 <span class="n">REPEAT_FLAT_FIELDING_MSG</span> <span class="o">=</span> <span class="s2">&quot;Do you want to run flat-fielding again? This could cause you to lose data.&quot;</span>
 
 
 <div class="viewcode-block" id="Notification">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.Notification">[docs]</a>
-<span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">REGISTER_ACTIVE_FILTER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">APPLY_FILTER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">APPLY_FILTER_TO_ALL</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -562,7 +562,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_find_nan_change</span><span class="p">(</span><span class="n">before_image</span><span class="p">,</span> <span class="n">filtered_image_data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_nan_change</span><span class="p">(</span><span class="n">before_image</span><span class="p">,</span> <span class="n">filtered_image_data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a bool array of all the placed where a NaN has been removed.</span>
 <span class="sd">    :param before_image: The before image.</span>
@@ -577,7 +577,7 @@ document.write(`
 
 <div class="viewcode-block" id="sub">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.sub">[docs]</a>
-<span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Subtracts two tuples. Helper method for generating the negative slice list.</span>
 <span class="sd">    :param x: The int tuple.</span>
@@ -587,7 +587,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_group_consecutive_values</span><span class="p">(</span><span class="n">slices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_group_consecutive_values</span><span class="p">(</span><span class="n">slices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a list of slices with negative indices in a readable format.</span>
 <span class="sd">    :param slices: The list of indices of the slices that contain negative values.</span>
@@ -607,12 +607,12 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter">[docs]</a>
-<span class="k">class</span> <span class="nc">FiltersWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FiltersWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
     <span class="n">view</span><span class="p">:</span> <span class="n">FiltersWindowView</span>
     <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">divider</span> <span class="o">=</span> <span class="s2">&quot;------------------------------------&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">FiltersWindowView</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">FiltersWindowView</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">FiltersWindowModel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -626,12 +626,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">prev_apply_all_state</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">main_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MainWindowView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">main_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MainWindowView</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span>
 
 <div class="viewcode-block" id="FiltersWindowPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">REGISTER_ACTIVE_FILTER</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_register_active_filter</span><span class="p">()</span>
@@ -652,7 +652,7 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">max_preview_image_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_preview_image_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">operate_on_sinograms</span><span class="p">:</span>
@@ -662,7 +662,7 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.set_stack_uuid">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">uuid</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -671,7 +671,7 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.set_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="n">stack</span>
 
         <span class="c1"># Update the preview image index</span>
@@ -691,7 +691,7 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.set_preview_image_index">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_preview_image_index">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_preview_image_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_preview_image_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the current preview image index.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -711,7 +711,7 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.do_register_active_filter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_register_active_filter">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_register_active_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_register_active_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">filter_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_filter</span><span class="p">()</span>
 
         <span class="c1"># Get registration function for new filter</span>
@@ -744,14 +744,14 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.filter_uses_parameter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.filter_uses_parameter">[docs]</a>
-    <span class="k">def</span> <span class="nf">filter_uses_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_uses_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">params_needed_from_stack</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">params_needed_from_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowPresenter.do_apply_filter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_already_run_flat_fielding</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_confirmation</span><span class="p">(</span><span class="n">REPEAT_FLAT_FIELDING_MSG</span><span class="p">):</span>
                 <span class="k">return</span>
@@ -771,7 +771,7 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.do_apply_filter_to_all">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_all">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_apply_filter_to_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter_to_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_confirmation</span><span class="p">(</span><span class="s2">&quot;Are you sure you want to apply this filter to </span><span class="se">\n\n</span><span class="s2">ALL OPEN STACKS?&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">confirmed</span><span class="p">:</span>
             <span class="k">return</span>
@@ -787,7 +787,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_do_apply_filter</span><span class="p">(</span><span class="n">stacks</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_wait_for_stack_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wait_for_stack_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
         <span class="n">stack_choice</span> <span class="o">=</span> <span class="n">StackChoicePresenter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_images_stack</span><span class="p">[</span><span class="n">stack_uuid</span><span class="p">],</span> <span class="n">new_stack</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_images_stack</span><span class="p">[</span><span class="n">stack_uuid</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">show_negative_overlay</span><span class="p">():</span>
@@ -803,11 +803,11 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.is_a_proj180deg">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.is_a_proj180deg">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_a_proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_to_check</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_a_proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_to_check</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">stack_to_check</span> <span class="ow">is</span> <span class="n">stack</span> <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_all_180_projections</span><span class="p">())</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_post_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updated_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">],</span> <span class="n">task</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updated_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">],</span> <span class="n">task</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">use_new_data</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">negative_stacks</span> <span class="o">=</span> <span class="p">[]</span>
@@ -852,7 +852,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">filter_is_running</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_update_previews</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_is_running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># Record the previous button states</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prev_apply_single_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">applyButton</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">()</span>
@@ -861,12 +861,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_apply_buttons_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">do_apply_filter</span><span class="p">(</span><span class="n">apply_to</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_post_filter</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_do_apply_filter_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_apply_filter_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">do_apply_filter_sync</span><span class="p">(</span><span class="n">apply_to</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_post_filter</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">))</span>
 
 <div class="viewcode-block" id="FiltersWindowPresenter.do_update_previews">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_update_previews</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_update_previews</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_previews</span><span class="p">()</span>
             <span class="k">return</span>
@@ -952,13 +952,13 @@ document.write(`
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_update_preview_image</span><span class="p">(</span><span class="n">image_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_preview_image</span><span class="p">(</span><span class="n">image_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span><span class="p">):</span>
         <span class="n">image</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">image</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FiltersWindowPresenter.do_scroll_preview">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_scroll_preview">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_scroll_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_scroll_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_image_idx</span> <span class="o">+</span> <span class="n">offset</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_preview_image_idx</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_preview_image_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
@@ -966,17 +966,17 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.get_filter_module_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.get_filter_module_name">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_filter_module_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filter_module_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_idx</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_filter_module_name</span><span class="p">(</span><span class="n">filter_idx</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowPresenter.set_filter_by_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_filter_by_name">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_filter_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_menu_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_filter_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_menu_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterSelector</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">filter_menu_name</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_already_run_flat_fielding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_already_run_flat_fielding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: True if this is not the first time flat-fielding is being run, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -987,7 +987,7 @@ document.write(`
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">operation</span><span class="p">[</span><span class="n">OPERATION_DISPLAY_NAME</span><span class="p">]</span> <span class="o">==</span> <span class="n">FLAT_FIELDING</span>
                    <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">OPERATION_HISTORY</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_set_apply_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_single_enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">apply_all_enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_apply_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_single_enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">apply_all_enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changes the state of the apply buttons before/after an operation is run.</span>
 <span class="sd">        :param apply_single_enabled: The desired state for the apply button.</span>
@@ -998,7 +998,7 @@ document.write(`
 
 <div class="viewcode-block" id="FiltersWindowPresenter.init_roi_field">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_roi_field">[docs]</a>
-    <span class="k">def</span> <span class="nf">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the initial value of the crop coordinates line edit widget so that it doesn&#39;t contain values that are</span>
 <span class="sd">        larger than the image.</span>
@@ -1013,7 +1013,7 @@ document.write(`
         <span class="n">roi_field</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">crop_string</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_show_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">negative_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">negative_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shows information on the view and in the log about negative values in the output.</span>
 <span class="sd">        :param negative_stacks: A list of stacks with negative values in the data.</span>
@@ -1040,14 +1040,14 @@ document.write(`
             <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">slices_msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_error</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_show_preview_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_preview_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shows a message that the operation preview contains negative values.</span>
 <span class="sd">        :param slice_idx: The index of the preview slice.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Negative values found in result preview for slice </span><span class="si">{</span><span class="n">slice_idx</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_flat_fielding_is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flat_fielding_is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_filter</span><span class="p">()</span> <span class="o">==</span> <span class="n">FLAT_FIELDING</span></div>
 
 </pre></div>

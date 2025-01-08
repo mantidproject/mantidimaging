@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -510,22 +510,22 @@ document.write(`
   <h1>Source code for mantidimaging.core.reconstruct.astra_recon</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
 
-<span class="kn">import</span> <span class="nn">astra</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astra</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct.base_recon</span> <span class="kn">import</span> <span class="n">BaseRecon</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.cuda_check</span> <span class="kn">import</span> <span class="n">CudaChecker</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.reconstruct.base_recon</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRecon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.cuda_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">CudaChecker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">astra_mutex</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
@@ -536,14 +536,14 @@ document.write(`
 <span class="c1"># https://github.com/dkazanc/ToMoBAR/blob/5990aaa264e2f08bd9b0069c8847e5021fbf2ee2/src/Python/tomobar/supp/astraOP.py#L20-L70</span>
 <div class="viewcode-block" id="rotation_matrix2d">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.rotation_matrix2d">[docs]</a>
-<span class="k">def</span> <span class="nf">rotation_matrix2d</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rotation_matrix2d</span><span class="p">(</span><span class="n">theta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]])</span></div>
 
 
 
 <div class="viewcode-block" id="vec_geom_init2d">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.vec_geom_init2d">[docs]</a>
-<span class="k">def</span> <span class="nf">vec_geom_init2d</span><span class="p">(</span><span class="n">angles_rad</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">detector_spacing_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">center_rot_offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vec_geom_init2d</span><span class="p">(</span><span class="n">angles_rad</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">detector_spacing_x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">center_rot_offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="n">angles_value</span> <span class="o">=</span> <span class="n">angles_rad</span><span class="o">.</span><span class="n">value</span>
     <span class="n">s0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span>  <span class="c1"># source</span>
     <span class="n">u0</span> <span class="o">=</span> <span class="p">[</span><span class="n">detector_spacing_x</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>  <span class="c1"># detector coordinates</span>
@@ -558,7 +558,7 @@ document.write(`
 
 
 <span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">_managed_recon</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">proj_geom</span><span class="p">,</span> <span class="n">vol_geom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_managed_recon</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">proj_geom</span><span class="p">,</span> <span class="n">vol_geom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="n">proj_id</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">sino_id</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">rec_id</span> <span class="o">=</span> <span class="kc">None</span>
@@ -590,10 +590,10 @@ document.write(`
 
 <div class="viewcode-block" id="AstraRecon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon">[docs]</a>
-<span class="k">class</span> <span class="nc">AstraRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AstraRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_count_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_count_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="n">num_gpus</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">while</span> <span class="s2">&quot;Invalid device&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">:</span>
@@ -604,7 +604,7 @@ document.write(`
 <div class="viewcode-block" id="AstraRecon.find_cor">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon.find_cor">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                  <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find the best CoR for this slice by maximising the squared sum of the reconstructed slice.</span>
@@ -614,10 +614,10 @@ document.write(`
 
         <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">get_sumsq</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_sumsq</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">image</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
 
-        <span class="k">def</span> <span class="nf">minimizer_function</span><span class="p">(</span><span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">minimizer_function</span><span class="p">(</span><span class="n">cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
                 <span class="n">cor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cor</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">return</span> <span class="o">-</span><span class="n">get_sumsq</span><span class="p">(</span><span class="n">AstraRecon</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">sino</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">),</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="p">),</span> <span class="n">proj_angles</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">))</span>
@@ -628,7 +628,7 @@ document.write(`
 <div class="viewcode-block" id="AstraRecon.single_sino">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon.single_sino">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                     <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
                     <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span>
                     <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
@@ -655,7 +655,7 @@ document.write(`
 <div class="viewcode-block" id="AstraRecon.full">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon.full">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
              <span class="n">cors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">],</span>
              <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
              <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
@@ -675,7 +675,7 @@ document.write(`
 <div class="viewcode-block" id="AstraRecon.allowed_filters">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon.allowed_filters">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">allowed_filters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">allowed_filters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="c1"># removed from list: &#39;kaiser&#39; as it hard crashes ASTRA</span>
         <span class="c1">#                    &#39;projection&#39;, &#39;sinogram&#39;, &#39;rprojection&#39;, &#39;rsinogram&#39; as they error</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -688,7 +688,7 @@ document.write(`
 
 <div class="viewcode-block" id="allowed_recon_kwargs">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.allowed_recon_kwargs">[docs]</a>
-<span class="k">def</span> <span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;FBP_CUDA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;filter_name&#39;</span><span class="p">,</span> <span class="s1">&#39;filter_par&#39;</span><span class="p">],</span>
         <span class="s1">&#39;SIRT_CUDA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;num_iter&#39;</span><span class="p">,</span> <span class="s1">&#39;min_constraint&#39;</span><span class="p">,</span> <span class="s1">&#39;max_constraint&#39;</span><span class="p">,</span> <span class="s1">&#39;DetectorSuperSampling&#39;</span><span class="p">,</span> <span class="s1">&#39;PixelSuperSampling&#39;</span><span class="p">],</span>

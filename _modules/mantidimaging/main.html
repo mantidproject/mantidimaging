@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=517e76a2" />
@@ -508,23 +508,23 @@ document.write(`
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">darkdetect</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSettings</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span>
-<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QGuiApplication</span><span class="p">,</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QFontInfo</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">darkdetect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QGuiApplication</span><span class="p">,</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QFontInfo</span>
 
-<span class="kn">import</span> <span class="nn">mantidimaging.core.parallel.manager</span> <span class="k">as</span> <span class="nn">pm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel.manager</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging</span> <span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.command_line_arguments</span> <span class="kn">import</span> <span class="n">CommandLineArguments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.command_line_arguments</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommandLineArguments</span>
 
 <span class="n">formatwarning_orig</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">formatwarning_orig</span><span class="p">(</span>
@@ -535,7 +535,7 @@ document.write(`
 
 <div class="viewcode-block" id="parse_args">
 <a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.parse_args">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mantid Imaging GUI&quot;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -570,7 +570,7 @@ document.write(`
 
 <div class="viewcode-block" id="setup_application">
 <a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.setup_application">[docs]</a>
-<span class="k">def</span> <span class="nf">setup_application</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">QApplication</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_application</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">QApplication</span><span class="p">:</span>
     <span class="n">QGuiApplication</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AA_EnableHighDpiScaling</span><span class="p">)</span>
     <span class="n">q_application</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
 
@@ -606,11 +606,11 @@ document.write(`
 
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.main">[docs]</a>
-<span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">()</span>
     <span class="c1"># Print version number and exit</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">mantidimaging</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version_no</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version_no</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="n">version_no</span><span class="p">)</span>
         <span class="k">return</span>
@@ -631,7 +631,7 @@ document.write(`
     <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
     <span class="n">process_count</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;multiprocessing/process_count&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-    <span class="kn">from</span> <span class="nn">mantidimaging</span> <span class="kn">import</span> <span class="n">gui</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">gui</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pm</span><span class="o">.</span><span class="n">create_and_start_pool</span><span class="p">(</span><span class="n">process_count</span><span class="p">)</span>
         <span class="n">gui</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>

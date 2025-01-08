@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,26 +507,26 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">algotom.prep.removal</span> <span class="kn">import</span> <span class="n">remove_stripe_based_fitting</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">algotom.prep.removal</span><span class="w"> </span><span class="kn">import</span> <span class="n">remove_stripe_based_fitting</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data.imagestack</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QSpinBox</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndarray</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSpinBox</span>
 
 
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter">[docs]</a>
-<span class="k">class</span> <span class="nc">RemoveStripeSortingFittingFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RemoveStripeSortingFittingFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stripe and ring artifact removal. Combination of algorithm 3 and 1 in Vo et al.,</span>
 <span class="sd">    Optics Express 28396 (2018). Remove stripes using the sorting and fitting technique.</span>
 
@@ -547,7 +547,7 @@ document.write(`
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param order: The polynomial fit order. Check algotom docs for more</span>
 <span class="sd">                      information.</span>
@@ -571,22 +571,22 @@ document.write(`
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter.compute_function_sino">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter.compute_function_sino">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">compute_function_sino</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function_sino</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">remove_stripe_based_fitting</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter.compute_function">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter.compute_function">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">compute_function</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="n">array</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">remove_stripe_based_fitting</span><span class="p">(</span><span class="n">array</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">add_property_to_form</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
         <span class="n">label</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="n">BaseFilter</span><span class="o">.</span><span class="n">SINOGRAM_FILTER_INFO</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">LABEL</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Polynomial fit order&#39;</span><span class="p">,</span>
@@ -608,14 +608,14 @@ document.write(`
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">order</span><span class="p">:</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="n">QSpinBox</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">order</span><span class="p">:</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="n">QSpinBox</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">RemoveStripeSortingFittingFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">value</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="RemoveStripeSortingFittingFilter.group_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html#mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.RemoveStripeSortingFittingFilter.group_name">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">group_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FilterGroup</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FilterGroup</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">Advanced</span></div>
 </div>
 

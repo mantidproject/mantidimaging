@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,23 +507,23 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.image_load_dialog.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> \
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> \
     <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QWidget</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.loader.loader</span> <span class="kn">import</span> <span class="n">DEFAULT_PIXEL_SIZE</span><span class="p">,</span> <span class="n">DEFAULT_IS_SINOGRAM</span><span class="p">,</span> <span class="n">DEFAULT_PIXEL_DEPTH</span><span class="p">,</span> \
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PIXEL_SIZE</span><span class="p">,</span> <span class="n">DEFAULT_IS_SINOGRAM</span><span class="p">,</span> <span class="n">DEFAULT_PIXEL_DEPTH</span><span class="p">,</span> \
     <span class="n">LoadingParameters</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">FILE_TYPES</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.image_load_dialog.field</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">.presenter</span> <span class="kn">import</span> <span class="n">LoadPresenter</span>
-<span class="kn">from</span> <span class="nn">...mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">FILE_TYPES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.image_load_dialog.field</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
 
 
 <div class="viewcode-block" id="ImageLoadDialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog">[docs]</a>
-<span class="k">class</span> <span class="nc">ImageLoadDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageLoadDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
     <span class="n">tree</span><span class="p">:</span> <span class="n">QTreeWidget</span>
     <span class="n">pixel_bit_depth</span><span class="p">:</span> <span class="n">QComboBox</span>
     <span class="n">images_are_sinograms</span><span class="p">:</span> <span class="n">QCheckBox</span>
@@ -535,7 +535,7 @@ document.write(`
 
     <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/image_load_dialog.ui&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span> <span class="o">=</span> <span class="n">parent</span>
@@ -572,7 +572,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageLoadDialog.create_file_input">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.create_file_input">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_file_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">file_info</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Field</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_file_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">file_info</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Field</span><span class="p">:</span>
         <span class="n">section</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
 
         <span class="n">use</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -595,7 +595,7 @@ document.write(`
 <div class="viewcode-block" id="ImageLoadDialog.select_file">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">select_file</span><span class="p">(</span><span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_file</span><span class="p">(</span><span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param caption: Title of the file browser window that will be opened</span>
 <span class="sd">        :param image_file: Whether or not the file being looked for is an image</span>
@@ -616,21 +616,21 @@ document.write(`
             <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_set_all_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_all_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">set_preview</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_preview_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_preview_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">set_preview</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ImageLoadDialog.get_parameters">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.get_parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoadingParameters</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoadingParameters</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ImageLoadDialog.enable_preview_all_buttons">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.enable_preview_all_buttons">[docs]</a>
-    <span class="k">def</span> <span class="nf">enable_preview_all_buttons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_preview_all_buttons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_preview</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step_all</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 </div>

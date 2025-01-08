@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,38 +507,38 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.nexus_load_dialog.presenter</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">enum</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">auto</span><span class="p">,</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">auto</span><span class="p">,</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">h5py</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">NEXUS_PROCESSED_DATA_PATH</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">NEXUS_PROCESSED_DATA_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.nexus_load_dialog.view</span> <span class="kn">import</span> <span class="n">NexusLoadDialog</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.nexus_load_dialog.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusLoadDialog</span>  <span class="c1"># pragma: no cover</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Notification">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.Notification">[docs]</a>
-<span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">NEXUS_FILE_SELECTED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
 
 
 <div class="viewcode-block" id="ImageKeys">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.ImageKeys">[docs]</a>
-<span class="k">class</span> <span class="nc">ImageKeys</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageKeys</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">Projections</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">FlatField</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">DarkField</span> <span class="o">=</span> <span class="mi">2</span></div>
@@ -556,7 +556,7 @@ document.write(`
 <span class="n">NXTOMOPROC</span> <span class="o">=</span> <span class="s2">&quot;NXtomoproc&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">_missing_data_message</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_missing_data_message</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a message for logging when certain data is missing in the NeXus file.</span>
 <span class="sd">    :param data_string: The name of the missing data.</span>
@@ -567,10 +567,10 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadPresenter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter">[docs]</a>
-<span class="k">class</span> <span class="nc">NexusLoadPresenter</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NexusLoadPresenter</span><span class="p">:</span>
     <span class="n">view</span><span class="p">:</span> <span class="n">NexusLoadDialog</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">NexusLoadDialog</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">NexusLoadDialog</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span> <span class="o">=</span> <span class="kc">None</span>
@@ -589,7 +589,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">NEXUS_FILE_SELECTED</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scan_nexus_file</span><span class="p">()</span>
@@ -599,7 +599,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadPresenter.scan_nexus_file">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.scan_nexus_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">scan_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scan_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Try to open the NeXus file and display its contents on the view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -644,7 +644,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_read_rotation_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_rotation_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reads the rotation angles array and coverts them to radians if needed.</span>
 <span class="sd">        :param image_key: The image key for the angles to read.</span>
@@ -667,7 +667,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">rotation_angles</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">rotation_angles</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_missing_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_missing_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a missing data message and display it on the view.</span>
 <span class="sd">        :param field: The name of the field that couldn&#39;t be found in the NeXus file.</span>
@@ -681,7 +681,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_data_error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Looks for the data in the NeXus file and adds information about it to the view if it&#39;s found.</span>
 <span class="sd">        :param field: The name of the NeXus field.</span>
@@ -697,7 +697,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">field</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span>
 
-    <span class="k">def</span> <span class="nf">_look_for_image_data_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_image_data_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">position</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -715,7 +715,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_look_for_nxtomo_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_nxtomo_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Look for a tomo_entry field in the NeXus file. Generate an error and disable the view OK button if it can&#39;t be</span>
 <span class="sd">        found.</span>
@@ -734,7 +734,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_look_for_recon_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_recon_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tries to find recon entries in the NeXus file then stores the data in a list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -746,7 +746,7 @@ document.write(`
                     <span class="n">nexus_recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nexus_recon</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span>
 
-    <span class="k">def</span> <span class="nf">_look_for_tomo_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_tomo_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve data from the tomo entry field.</span>
 <span class="sd">        :param entry_path: The path in which the data is found.</span>
@@ -761,7 +761,7 @@ document.write(`
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_data_from_image_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_from_image_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Looks for the projection and dark/flat before/after images and update the information on the view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -785,7 +785,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_images</span><span class="p">(</span><span class="n">ImageKeys</span><span class="o">.</span><span class="n">DarkField</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_images_found</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_key_number</span><span class="p">:</span> <span class="n">ImageKeys</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_key_number</span><span class="p">:</span> <span class="n">ImageKeys</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve images from the data based on an image key number.</span>
 <span class="sd">        :param image_key_number: The image key number.</span>
@@ -806,7 +806,7 @@ document.write(`
         <span class="c1"># Shouldn&#39;t have to use numpy.where but h5py doesn&#39;t allow indexing with bool arrays currently</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">_find_data_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_data_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find the title field in the tomo_entry.</span>
 <span class="sd">        :return: The title if it was found, &quot;NeXus Data&quot; otherwise.</span>
@@ -820,7 +820,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadPresenter.get_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.get_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Dataset</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Dataset</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.</span>
 <span class="sd">        :return: A tuple containing the Dataset and the data title string.</span>
@@ -845,7 +845,7 @@ document.write(`
         <span class="k">return</span> <span class="n">ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_create_sample_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_sample_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates the sample ImageStack object.</span>
 <span class="sd">        :return: An ImageStack object containing projections. If given, projection angles, pixel size, and 180deg are</span>
@@ -867,7 +867,7 @@ document.write(`
                                                    <span class="n">view</span><span class="o">.</span><span class="n">step_widget</span><span class="o">.</span><span class="n">value</span><span class="p">()]))</span>
         <span class="k">return</span> <span class="n">sample_images</span>
 
-    <span class="k">def</span> <span class="nf">_create_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use a data array to create an ImageStack object.</span>
 <span class="sd">        :param data_array: The images array obtained from the NeXus file.</span>
@@ -878,7 +878,7 @@ document.write(`
         <span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">data_array</span>
         <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the ImageStack objects if the corresponding data was found in the NeXus file, and the user checked the</span>
 <span class="sd">        &quot;Use?&quot; checkbox.</span>
@@ -896,7 +896,7 @@ document.write(`
                 <span class="n">image_stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">projection_angles</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">image_stack</span>
 
-    <span class="k">def</span> <span class="nf">_add_recons_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_recons_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">recon_array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="p">:</span>
             <span class="n">ds</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">ImageStack</span><span class="p">(</span><span class="n">recon_array</span><span class="p">))</span></div>
 

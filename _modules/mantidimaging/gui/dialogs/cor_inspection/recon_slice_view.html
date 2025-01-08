@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,25 +507,25 @@ document.write(`
   <h1>Source code for mantidimaging.gui.dialogs.cor_inspection.recon_slice_view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">GraphicsLayoutWidget</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphicsLayoutWidget</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.types</span> <span class="kn">import</span> <span class="n">ImageType</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.cor_inspection.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMiniImageView</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection</span> <span class="kn">import</span> <span class="n">CORInspectionDialogView</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.cor_inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORInspectionDialogView</span>  <span class="c1"># pragma: no cover</span>
 
 
 <div class="viewcode-block" id="CompareSlicesView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.html#mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.CompareSlicesView">[docs]</a>
-<span class="k">class</span> <span class="nc">CompareSlicesView</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompareSlicesView</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">CORInspectionDialogView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">CORInspectionDialogView</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
 
@@ -558,7 +558,7 @@ document.write(`
 
 <div class="viewcode-block" id="CompareSlicesView.set_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.html#mantidimaging.gui.dialogs.cor_inspection.recon_slice_view.CompareSlicesView.set_image">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sumsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">recon_data</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">image_type</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">imageview_less</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>

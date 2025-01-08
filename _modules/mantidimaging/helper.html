@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=517e76a2" />
@@ -510,21 +510,21 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module for commonly used functions across the modules.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSettings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 
 <div class="viewcode-block" id="initialise_logging">
 <a class="viewcode-back" href="../../api/mantidimaging.helper.html#mantidimaging.helper.initialise_logging">[docs]</a>
-<span class="k">def</span> <span class="nf">initialise_logging</span><span class="p">(</span><span class="n">arg_level</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">initialise_logging</span><span class="p">(</span><span class="n">arg_level</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">log_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [</span><span class="si">%(name)s</span><span class="s2">:L</span><span class="si">%(lineno)d</span><span class="s2">] </span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
@@ -573,7 +573,7 @@ document.write(`
 
 <div class="viewcode-block" id="check_data_stack">
 <a class="viewcode-back" href="../../api/mantidimaging.helper.html#mantidimaging.helper.check_data_stack">[docs]</a>
-<span class="k">def</span> <span class="nf">check_data_stack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">expected_dims</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">expected_class</span><span class="o">=</span><span class="n">ImageStack</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_data_stack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">expected_dims</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">expected_class</span><span class="o">=</span><span class="n">ImageStack</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make sure the data has expected dimensions and class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

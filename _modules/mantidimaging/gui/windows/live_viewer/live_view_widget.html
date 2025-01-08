@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,20 +507,20 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.live_viewer.live_view_widget</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">GraphicsLayoutWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphicsLayoutWidget</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.zslider.zslider</span> <span class="kn">import</span> <span class="n">ZSlider</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMiniImageView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.zslider.zslider</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZSlider</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="LiveViewWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget">[docs]</a>
-<span class="k">class</span> <span class="nc">LiveViewWidget</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LiveViewWidget</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The widget containing the spectrum plot and the image projection.</span>
 
@@ -528,7 +528,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Projection&quot;</span><span class="p">)</span>
@@ -544,7 +544,7 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewWidget.show_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget.show_image">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show the image in the image view.</span>
 <span class="sd">        @param image: The image to show</span>
@@ -554,7 +554,7 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewWidget.handle_deleted">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget.handle_deleted">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle the deletion of the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -563,7 +563,7 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewWidget.show_error">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget.show_error">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
 </div>
 

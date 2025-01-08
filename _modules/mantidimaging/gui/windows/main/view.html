@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,53 +507,53 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.main.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">QPoint</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QDragEnterEvent</span><span class="p">,</span> <span class="n">QDropEvent</span><span class="p">,</span> <span class="n">QDesktopServices</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> \
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">QPoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QDragEnterEvent</span><span class="p">,</span> <span class="n">QDropEvent</span><span class="p">,</span> <span class="n">QDesktopServices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> \
     <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.command_line_arguments</span> <span class="kn">import</span> <span class="n">CommandLineArguments</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.projection_angle_parser</span> <span class="kn">import</span> <span class="n">ProjectionAngleFileParser</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.version_check</span> <span class="kn">import</span> <span class="n">versions</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.multiple_stack_select.view</span> <span class="kn">import</span> <span class="n">MultipleStackSelect</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">populate_menu</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog</span> <span class="kn">import</span> <span class="n">DatasetSelectorDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.add_images_to_dataset_dialog.view</span> <span class="kn">import</span> <span class="n">AddImagesToDatasetDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.image_load_dialog</span> <span class="kn">import</span> <span class="n">ImageLoadDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.nexus_save_dialog</span> <span class="kn">import</span> <span class="n">NexusSaveDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.presenter</span> <span class="kn">import</span> <span class="n">MainWindowPresenter</span><span class="p">,</span> <span class="n">Notification</span><span class="p">,</span> <span class="n">StackId</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.presenter</span> <span class="kn">import</span> <span class="n">Notification</span> <span class="k">as</span> <span class="n">PresNotification</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.image_save_dialog</span> <span class="kn">import</span> <span class="n">ImageSaveDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.move_stack_dialog.view</span> <span class="kn">import</span> <span class="n">MoveStackDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.nexus_load_dialog.view</span> <span class="kn">import</span> <span class="n">NexusLoadDialog</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.operations</span> <span class="kn">import</span> <span class="n">FiltersWindowView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.recon</span> <span class="kn">import</span> <span class="n">ReconstructWindowView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.settings.view</span> <span class="kn">import</span> <span class="n">SettingsWindowView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.spectrum_viewer.view</span> <span class="kn">import</span> <span class="n">SpectrumViewerWindowView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.live_viewer.view</span> <span class="kn">import</span> <span class="n">LiveViewerWindowView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_choice.compare_presenter</span> <span class="kn">import</span> <span class="n">StackComparePresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.stack_visualiser</span> <span class="kn">import</span> <span class="n">StackVisualiserView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.welcome_screen.presenter</span> <span class="kn">import</span> <span class="n">WelcomeScreenPresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.wizard.presenter</span> <span class="kn">import</span> <span class="n">WizardPresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.__main__</span> <span class="kn">import</span> <span class="n">process_start_time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.command_line_arguments</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommandLineArguments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.projection_angle_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngleFileParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.version_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">versions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.multiple_stack_select.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultipleStackSelect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">populate_menu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.add_images_to_dataset_dialog.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">AddImagesToDatasetDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.image_load_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageLoadDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main.nexus_save_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusSaveDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowPresenter</span><span class="p">,</span> <span class="n">Notification</span><span class="p">,</span> <span class="n">StackId</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Notification</span> <span class="k">as</span> <span class="n">PresNotification</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main.image_save_dialog</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageSaveDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.move_stack_dialog.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MoveStackDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.nexus_load_dialog.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusLoadDialog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiltersWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.recon</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.settings.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.live_viewer.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveViewerWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.stack_choice.compare_presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackComparePresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.stack_visualiser</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackVisualiserView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.welcome_screen.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WelcomeScreenPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.wizard.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WizardPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.__main__</span><span class="w"> </span><span class="kn">import</span> <span class="n">process_start_time</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
 
 <span class="n">RECON_GROUP_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Recons&quot;</span>
 <span class="n">SINO_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Sinograms&quot;</span>
@@ -564,21 +564,21 @@ document.write(`
 
 <div class="viewcode-block" id="QTreeDatasetWidgetItem">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.QTreeDatasetWidgetItem">[docs]</a>
-<span class="k">class</span> <span class="nc">QTreeDatasetWidgetItem</span><span class="p">(</span><span class="n">QTreeWidgetItem</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QTreeDatasetWidgetItem</span><span class="p">(</span><span class="n">QTreeWidgetItem</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">dataset_id</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span></div>
 
 
 
 <div class="viewcode-block" id="MainWindowView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView">[docs]</a>
-<span class="k">class</span> <span class="nc">MainWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MainWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
     <span class="n">NOT_THE_LATEST_VERSION</span> <span class="o">=</span> <span class="s2">&quot;This is not the latest version&quot;</span>
 
     <span class="c1"># Emitted when a new stack is created or an existing one deleted</span>
@@ -627,7 +627,7 @@ document.write(`
     <span class="n">welcome_window</span><span class="p">:</span> <span class="n">WelcomeScreenPresenter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">wizard</span><span class="p">:</span> <span class="n">WizardPresenter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_dialogs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_dialogs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;gui/ui/main_window.ui&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">)</span>
@@ -688,14 +688,14 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_UI</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_window_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_window_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">perf_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging ready in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">process_start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_window_ready</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MainWindowView.setup_shortcuts">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.setup_shortcuts">[docs]</a>
-    <span class="k">def</span> <span class="nf">setup_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadDataset</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_image_load_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadImages</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_image_stack</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadNeXusFile</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_nexus_load_dialog</span><span class="p">)</span>
@@ -725,7 +725,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.populate_image_menu">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.populate_image_menu">[docs]</a>
-    <span class="k">def</span> <span class="nf">populate_image_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_image_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menuImage</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">current_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_showing_stack</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">current_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -736,7 +736,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.current_showing_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.current_showing_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">current_showing_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_showing_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">StackVisualiserView</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">stack</span><span class="o">.</span><span class="n">visibleRegion</span><span class="p">()</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">stack</span>
@@ -745,7 +745,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.update_shortcuts">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.update_shortcuts">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">datasets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">datasets</span><span class="p">)</span>
         <span class="n">has_datasets</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
@@ -761,28 +761,28 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.open_online_documentation">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.open_online_documentation">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">open_online_documentation</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">open_online_documentation</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">QUrl</span><span class="p">(</span><span class="s2">&quot;https://mantidproject.github.io/mantidimaging/&quot;</span><span class="p">)</span>
         <span class="n">QDesktopServices</span><span class="o">.</span><span class="n">openUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_about">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_about">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_about</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_about</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_window</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_image_load_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_image_load_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_image_load_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_load_dialog</span> <span class="o">=</span> <span class="n">ImageLoadDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_load_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_image_load_dialog_with_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog_with_path">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_image_load_dialog_with_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_image_load_dialog_with_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Open the dataset loading dialog with a given file_path preset as the sample</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -798,21 +798,21 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_nexus_load_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_nexus_load_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_nexus_load_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_nexus_load_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nexus_load_dialog</span> <span class="o">=</span> <span class="n">NexusLoadDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nexus_load_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_wizard">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_wizard">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_wizard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_wizard</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wizard</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wizard</span> <span class="o">=</span> <span class="n">WizardPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wizard</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_file_name</span><span class="p">(</span><span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;All (*.*)&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_file_name</span><span class="p">(</span><span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;All (*.*)&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">file_filter</span> <span class="o">==</span> <span class="s2">&quot;All (*.*)&quot;</span><span class="p">:</span>
             <span class="n">full_filter</span> <span class="o">=</span> <span class="n">file_filter</span>
         <span class="k">else</span><span class="p">:</span>
@@ -822,7 +822,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.load_image_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_image_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_image_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_image_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Open file dialog</span>
         <span class="n">selected_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_name</span><span class="p">(</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;Image File (*.tif *.tiff)&quot;</span><span class="p">)</span>
 
@@ -835,7 +835,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.load_sample_log_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_sample_log_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_sample_log_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_sample_log_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack_selector</span> <span class="o">=</span> <span class="n">DatasetSelectorDialog</span><span class="p">(</span><span class="n">main_window</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                                                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Stack Selector&quot;</span><span class="p">,</span>
                                                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Which stack is the log being loaded for?&quot;</span><span class="p">,</span>
@@ -865,7 +865,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.load_shuttercounts_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_shuttercounts_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_shuttercounts_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_shuttercounts_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack_selector</span> <span class="o">=</span> <span class="n">DatasetSelectorDialog</span><span class="p">(</span><span class="n">main_window</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                                                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Stack Selector&quot;</span><span class="p">,</span>
                                                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Which stack is the shutter count file being loaded for?&quot;</span><span class="p">,</span>
@@ -900,7 +900,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.load_projection_angles">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.load_projection_angles">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack_selector</span> <span class="o">=</span> <span class="n">DatasetSelectorDialog</span><span class="p">(</span><span class="n">main_window</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                                                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Stack Selector&quot;</span><span class="p">,</span>
                                                <span class="n">message</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LOAD_PROJECTION_ANGLES_DIALOG_MESSAGE</span><span class="p">,</span>
@@ -929,37 +929,37 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.execute_image_file_save">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_image_file_save">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute_image_file_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_image_file_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">IMAGE_FILE_SAVE</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.execute_image_file_load">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_image_file_load">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute_image_file_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_image_file_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">IMAGE_FILE_LOAD</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.execute_nexus_load">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_load">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute_nexus_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_nexus_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">NEXUS_LOAD</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.execute_nexus_save">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_save">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute_nexus_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_nexus_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">NEXUS_SAVE</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.execute_add_to_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_add_to_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute_add_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_add_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">DATASET_ADD</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.execute_move_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_move_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute_move_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_move_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                            <span class="n">destination_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">MOVE_STACK</span><span class="p">,</span>
                               <span class="n">origin_dataset_id</span><span class="o">=</span><span class="n">origin_dataset_id</span><span class="p">,</span>
@@ -970,21 +970,21 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_image_save_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_save_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_image_save_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_image_save_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_save_dialog</span> <span class="o">=</span> <span class="n">ImageSaveDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_nexus_save_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_nexus_save_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_nexus_save_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_nexus_save_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nexus_save_dialog</span> <span class="o">=</span> <span class="n">NexusSaveDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nexus_save_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_settings_window">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_settings_window">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_settings_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_settings_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_window</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settings_window</span> <span class="o">=</span> <span class="n">SettingsWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settings_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -996,7 +996,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_recon_window">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_recon_window">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_recon_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_recon_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon</span> <span class="o">=</span> <span class="n">ReconstructWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1008,7 +1008,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_filters_window">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_filters_window">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_filters_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_filters_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">FiltersWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">filter_applied</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
@@ -1020,7 +1020,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_spectrum_viewer_window">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_spectrum_viewer_window">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_spectrum_viewer_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_spectrum_viewer_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span> <span class="o">=</span> <span class="n">SpectrumViewerWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1032,7 +1032,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.live_view_choose_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.live_view_choose_directory">[docs]</a>
-    <span class="k">def</span> <span class="nf">live_view_choose_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">live_view_choose_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;Choose live data directory&quot;</span>
         <span class="n">live_data_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                                                     <span class="n">caption</span><span class="o">=</span><span class="n">caption</span><span class="p">,</span>
@@ -1043,35 +1043,35 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_live_viewer">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_live_viewer">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_live_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_live_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">live_viewer</span> <span class="o">=</span> <span class="n">LiveViewerWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_data_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">live_viewer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stack_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">StackId</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stack_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">StackId</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stack_visualiser_list</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stack_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stack_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stack_visualiser_names</span>
 
 <div class="viewcode-block" id="MainWindowView.get_stack_visualiser">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack_visualiser">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_stack_visualiser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack_visualiser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_images_from_stack_uuid">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_images_from_stack_uuid">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_images_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_images_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
         <span class="n">stack_visualiser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack_visualiser</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">stack_visualiser</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No stack visualiser found for UUID: </span><span class="si">{</span><span class="n">stack_uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1083,49 +1083,49 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.get_dataset_id_from_stack_uuid">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_id_from_stack_uuid">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dataset_id_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_id_from_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_dataset_id_for_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_all_stacks">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_all_stacks">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_all_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_all_stacks</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_all_180_projections">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_all_180_projections">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_all_180_projections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_180_projections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_all_180_projections</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_stack_history">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack_history">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_stack_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_uuid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack_visualiser_history</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.create_new_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_new_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_new_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_new_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">create_single_tabbed_images_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.get_stack_with_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_stack_with_images">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_stack_with_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack_with_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_stack_with_images</span><span class="p">(</span><span class="n">images</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.create_stack_window">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_stack_window">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                             <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                             <span class="n">position</span><span class="p">:</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DockWidgetArea</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DockWidgetArea</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">,</span>
                             <span class="n">floating</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
@@ -1147,13 +1147,13 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.rename_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.rename_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">rename_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rename_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">RENAME_STACK</span><span class="p">,</span> <span class="n">current_name</span><span class="o">=</span><span class="n">current_name</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="n">new_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.closeEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.closeEvent">[docs]</a>
-    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles a request to quit the application from the user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1190,7 +1190,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.cleanup">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.cleanup">[docs]</a>
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Release shared memory from loaded stacks</span>
         <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_stacks</span><span class="p">():</span>
             <span class="n">stack</span><span class="o">.</span><span class="n">shared_array</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore # Only happens when cleaning up</span></div>
@@ -1198,16 +1198,16 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.uncaught_exception">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.uncaught_exception">[docs]</a>
-    <span class="k">def</span> <span class="nf">uncaught_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_error_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">log_error_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">uncaught_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_error_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">log_error_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">log_error_msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uncaught exception </span><span class="si">{</span><span class="n">user_error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-    <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 
 <div class="viewcode-block" id="MainWindowView.show_stack_select_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_stack_select_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_stack_select_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackComparePresenter</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_stack_select_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackComparePresenter</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">MultipleStackSelect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">DialogCode</span><span class="o">.</span><span class="n">Accepted</span><span class="p">:</span>
             <span class="n">stack_one_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">stack_one</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
@@ -1226,14 +1226,14 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.dragEnterEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.dragEnterEvent">[docs]</a>
-    <span class="k">def</span> <span class="nf">dragEnterEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QDragEnterEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dragEnterEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QDragEnterEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">mimeData</span><span class="p">()</span><span class="o">.</span><span class="n">hasUrls</span><span class="p">():</span>
             <span class="n">event</span><span class="o">.</span><span class="n">acceptProposedAction</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.dropEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.dropEvent">[docs]</a>
-    <span class="k">def</span> <span class="nf">dropEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QDropEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dropEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QDropEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">mimeData</span><span class="p">()</span><span class="o">.</span><span class="n">urls</span><span class="p">():</span>
             <span class="n">file_path</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">toLocalFile</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
@@ -1253,7 +1253,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.ask_to_use_closest_to_180">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.ask_to_use_closest_to_180">[docs]</a>
-    <span class="k">def</span> <span class="nf">ask_to_use_closest_to_180</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff_rad</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ask_to_use_closest_to_180</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff_rad</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Asks the user if they want to use the projection that is closest to 180 degrees as the 180deg.</span>
 <span class="sd">        :param diff_rad: The difference from the closest projection to 180 in radians.</span>
@@ -1268,20 +1268,20 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.clear_dataset_tree_widget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.clear_dataset_tree_widget">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.add_toplevel_item_to_dataset_tree_widget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_toplevel_item_to_dataset_tree_widget">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_toplevel_item_to_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_toplevel_item_to_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">item</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.add_item_to_dataset_tree_widget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_item_to_dataset_tree_widget">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_item_to_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_item_to_dataset_tree_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
                                         <span class="n">parent_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">parent_item</span><span class="p">)</span>
         <span class="n">parent_item</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -1291,7 +1291,7 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.new_dataset_tree_widget_item">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.new_dataset_tree_widget_item">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_dataset_tree_widget_item</span><span class="p">(</span><span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
                                      <span class="n">parent_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span> <span class="o">|</span> <span class="n">QTreeWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
         <span class="n">dataset_tree_item</span> <span class="o">=</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">(</span><span class="n">parent_item</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
         <span class="n">dataset_tree_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
@@ -1301,7 +1301,7 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.get_sinograms_item">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_sinograms_item">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_sinograms_item</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_sinograms_item</span><span class="p">(</span><span class="n">parent</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tries to look for a sinograms entry in a dataset tree view item.</span>
 <span class="sd">        :return: The sinograms entry if found, None otherwise.</span>
@@ -1313,7 +1313,7 @@ document.write(`
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_open_tree_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">QPoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_open_tree_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">QPoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens the tree view menu.</span>
 <span class="sd">        :param position: The position of the cursor when the menu was opened relative to the main window.</span>
@@ -1332,25 +1332,25 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">menuTreeView</span><span class="o">.</span><span class="n">exec_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">viewport</span><span class="p">()</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">position</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_delete_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_container</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sends the signal to the presenter to delete data corresponding with an item on the dataset tree view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">container_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">REMOVE_STACK</span><span class="p">,</span> <span class="n">container_id</span><span class="o">=</span><span class="n">container_id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_images_to_existing_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_images_to_existing_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Notifies presenter to add image stack of dataset of the selected item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">container_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">SHOW_ADD_STACK_DIALOG</span><span class="p">,</span> <span class="n">container_id</span><span class="o">=</span><span class="n">container_id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_move_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_move_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">SHOW_MOVE_STACK_DIALOG</span><span class="p">,</span> <span class="n">stack_id</span><span class="o">=</span><span class="n">stack_id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_bring_stack_tab_to_front</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bring_stack_tab_to_front</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sends the signal to the presenter to bring a make a stack tab visible and bring it to the front.</span>
 <span class="sd">        :param item: The QTreeDatasetWidgetItem that was clicked.</span>
@@ -1359,14 +1359,14 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.add_recon_to_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_recon_to_dataset">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_recon_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_recon_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresNotification</span><span class="o">.</span><span class="n">ADD_RECON</span><span class="p">,</span> <span class="n">recon_data</span><span class="o">=</span><span class="n">recon_data</span><span class="p">,</span> <span class="n">stack_id</span><span class="o">=</span><span class="n">stack_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.add_recon_group">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.add_recon_group">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">add_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">,</span> <span class="n">recon_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">,</span> <span class="n">recon_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a recon group to a dataset item in the tree view.</span>
 <span class="sd">        :param dataset_item: The dataset item.</span>
@@ -1382,7 +1382,7 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.get_recon_group">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_recon_group">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recon_group</span><span class="p">(</span><span class="n">dataset_item</span><span class="p">:</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Looks for an existing recon group in a dataset tree view item.</span>
 <span class="sd">        :param dataset_item: The dataset item to look for the recon group in.</span>
@@ -1396,7 +1396,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.get_dataset_tree_view_item">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_tree_view_item">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_dataset_tree_view_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_tree_view_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Looks for the dataset tree view item matching a given ID.</span>
 <span class="sd">        :param dataset_id: The dataset ID.</span>
@@ -1411,7 +1411,7 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sino_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sino_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: The sinogram entry text. Used to avoid circular imports.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1419,7 +1419,7 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_add_stack_to_existing_dataset_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_add_stack_to_existing_dataset_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_add_stack_to_existing_dataset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_add_stack_to_existing_dataset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Displays the dialog for adding an image stack to an existing dataset.</span>
 <span class="sd">        :param dataset_id: The ID of the dataset to update.</span>
@@ -1431,12 +1431,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">add_to_dataset_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_on_tab_bar_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_tab_bar_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">TAB_CLICKED</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="n">stack</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MainWindowView.show_move_stack_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_move_stack_dialog">[docs]</a>
-    <span class="k">def</span> <span class="nf">show_move_stack_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">origin_dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_move_stack_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">origin_dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                                <span class="n">stack_data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_stack_dialog</span> <span class="o">=</span> <span class="n">MoveStackDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin_dataset_id</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">,</span> <span class="n">origin_dataset_name</span><span class="p">,</span>
                                                  <span class="n">stack_data_type</span><span class="p">)</span>

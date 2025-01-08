@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,14 +507,14 @@ document.write(`
   <h1>Source code for mantidimaging.core.utility.unit_conversion</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="UnitConversion">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion">[docs]</a>
-<span class="k">class</span> <span class="nc">UnitConversion</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UnitConversion</span><span class="p">:</span>
     <span class="c1"># target_to_camera_dist = 56 m taken from https://scripts.iucr.org/cgi-bin/paper?S1600576719001730</span>
     <span class="n">neutron_mass</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.674927211e-27</span>  <span class="c1"># [kg]</span>
     <span class="n">planck_h</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">6.62606896e-34</span>  <span class="c1"># [JHz-1]</span>
@@ -525,14 +525,14 @@ document.write(`
     <span class="n">tof_data_to_convert</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="n">velocity</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_to_convert</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_to_convert</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">data_to_convert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_data_to_convert</span><span class="p">(</span><span class="n">data_to_convert</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">()</span>
 
 <div class="viewcode-block" id="UnitConversion.tof_seconds_to_wavelength_in_angstroms">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_wavelength_in_angstroms">[docs]</a>
-    <span class="k">def</span> <span class="nf">tof_seconds_to_wavelength_in_angstroms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tof_seconds_to_wavelength_in_angstroms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">()</span>
         <span class="n">wavelength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">planck_h</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neutron_mass</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
         <span class="n">wavelength_angstroms</span> <span class="o">=</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">angstrom</span>
@@ -541,7 +541,7 @@ document.write(`
 
 <div class="viewcode-block" id="UnitConversion.tof_seconds_to_energy">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_energy">[docs]</a>
-    <span class="k">def</span> <span class="nf">tof_seconds_to_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tof_seconds_to_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">()</span>
         <span class="n">energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neutron_mass</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">energy_evs</span> <span class="o">=</span> <span class="n">energy</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mega_electro_volt</span>
@@ -550,29 +550,29 @@ document.write(`
 
 <div class="viewcode-block" id="UnitConversion.tof_seconds_to_us">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.tof_seconds_to_us">[docs]</a>
-    <span class="k">def</span> <span class="nf">tof_seconds_to_us</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tof_seconds_to_us</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e6</span></div>
 
 
 <div class="viewcode-block" id="UnitConversion.set_data_to_convert">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_to_convert">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_data_to_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_to_convert</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_to_convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_to_convert</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="o">=</span> <span class="n">data_to_convert</span></div>
 
 
 <div class="viewcode-block" id="UnitConversion.check_data">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.check_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">check_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_to_camera_dist</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No data to convert&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No data to convert&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 
 <div class="viewcode-block" id="UnitConversion.set_data_offset">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion.set_data_offset">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_data_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span> <span class="o">=</span> <span class="n">data_offset</span> <span class="o">*</span> <span class="mf">1e-6</span></div>
 </div>
 

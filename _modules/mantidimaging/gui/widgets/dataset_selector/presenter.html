@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,24 +507,24 @@ document.write(`
   <h1>Source code for mantidimaging.gui.widgets.dataset_selector.presenter</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">BlockQtSignals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector.view</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
 
 <div class="viewcode-block" id="Notification">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.presenter.html#mantidimaging.gui.widgets.dataset_selector.presenter.Notification">[docs]</a>
-<span class="k">class</span> <span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Notification</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">RELOAD_DATASETS</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">SELECT_ELIGIBLE_STACK</span> <span class="o">=</span> <span class="mi">1</span></div>
 
@@ -532,11 +532,11 @@ document.write(`
 
 <div class="viewcode-block" id="DatasetSelectorWidgetPresenter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.presenter.html#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter">[docs]</a>
-<span class="k">class</span> <span class="nc">DatasetSelectorWidgetPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DatasetSelectorWidgetPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
     <span class="n">view</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span>
     <span class="n">show_stacks</span><span class="p">:</span> <span class="nb">bool</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">,</span> <span class="n">show_stacks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">,</span> <span class="n">show_stacks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">current_dataset</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -544,7 +544,7 @@ document.write(`
 
 <div class="viewcode-block" id="DatasetSelectorWidgetPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.presenter.html#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">Notification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">Notification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">RELOAD_DATASETS</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_reload_datasets</span><span class="p">()</span>
@@ -558,7 +558,7 @@ document.write(`
 
 <div class="viewcode-block" id="DatasetSelectorWidgetPresenter.do_reload_datasets">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.presenter.html#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_reload_datasets">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_reload_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_reload_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">old_selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
         <span class="c1"># Don&#39;t want signals emitted when changing the list of stacks</span>
         <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">]):</span>
@@ -585,7 +585,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_selection</span><span class="p">(</span><span class="n">new_selected_index</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_dataset_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_dataset_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">datasets</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_stacks</span><span class="p">:</span>
@@ -598,7 +598,7 @@ document.write(`
 
 <div class="viewcode-block" id="DatasetSelectorWidgetPresenter.handle_selection">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.presenter.html#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.handle_selection">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">itemData</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_stacks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stack_selected_uuid</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_dataset</span><span class="p">)</span>
@@ -608,7 +608,7 @@ document.write(`
 
 <div class="viewcode-block" id="DatasetSelectorWidgetPresenter.do_select_eligible_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.presenter.html#mantidimaging.gui.widgets.dataset_selector.presenter.DatasetSelectorWidgetPresenter.do_select_eligible_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">do_select_eligible_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_select_eligible_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">itemText</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="k">if</span> <span class="s2">&quot;dark&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;flat&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;180deg&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,26 +507,26 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.base_filter</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QWidget</span>  <span class="c1"># noqa: F401   # pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseMainWindowView</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QWidget</span>  <span class="c1"># noqa: F401   # pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
 
 <div class="viewcode-block" id="FilterGroup">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup">[docs]</a>
-<span class="k">class</span> <span class="nc">FilterGroup</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FilterGroup</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">NoGroup</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">Basic</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">Advanced</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
@@ -535,7 +535,7 @@ document.write(`
 
 <div class="viewcode-block" id="BaseFilter">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseFilter</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseFilter</span><span class="p">:</span>
     <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Unnamed Filter&quot;</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">show_negative_overlay</span> <span class="o">=</span> <span class="kc">True</span>
@@ -555,7 +555,7 @@ document.write(`
 <div class="viewcode-block" id="BaseFilter.filter_func">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Executes the filter algorithm on a given set of image data with the given parameters.</span>
 
@@ -570,7 +570,7 @@ document.write(`
 <div class="viewcode-block" id="BaseFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Should construct a partial call to _filter_func using values taken from the widgets passed to this function</span>
 <span class="sd">        as kwargs.</span>
@@ -584,7 +584,7 @@ document.write(`
 <div class="viewcode-block" id="BaseFilter.register_gui">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">BaseMainWindowView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">BaseMainWindowView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds any required input widgets to the given form and returns references to them.</span>
 
@@ -603,7 +603,7 @@ document.write(`
 <div class="viewcode-block" id="BaseFilter.sv_params">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.sv_params">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sv_params</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sv_params</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Any parameters required from the StackVisualizer ie. ROI</span>
 <span class="sd">        :return: a map of parameters names</span>
@@ -614,21 +614,21 @@ document.write(`
 <div class="viewcode-block" id="BaseFilter.validate_execute_kwargs">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.validate_execute_kwargs">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="BaseFilter.group_name">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.group_name">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">group_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FilterGroup</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">FilterGroup</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">FilterGroup</span><span class="o">.</span><span class="n">NoGroup</span></div>
 
 
 <div class="viewcode-block" id="BaseFilter.get_images_from_stack">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.get_images_from_stack">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_images_from_stack</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_images_from_stack</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack_uuid</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">stack_uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -636,7 +636,7 @@ document.write(`
             <span class="n">stack</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="c1"># Can happen if stack is closed while selected in the form</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="k">return</span> <span class="n">stack</span></div>
 </div>
 
@@ -644,7 +644,7 @@ document.write(`
 
 <div class="viewcode-block" id="raise_not_implemented">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.raise_not_implemented">[docs]</a>
-<span class="k">def</span> <span class="nf">raise_not_implemented</span><span class="p">(</span><span class="n">function_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">raise_not_implemented</span><span class="p">(</span><span class="n">function_name</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required method &#39;</span><span class="si">{</span><span class="n">function_name</span><span class="si">}</span><span class="s2">&#39; not implemented for filter&quot;</span><span class="p">)</span></div>
 
 </pre></div>

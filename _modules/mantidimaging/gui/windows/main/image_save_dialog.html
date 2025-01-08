@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,24 +507,24 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.main.image_save_dialog</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDialogButtonBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDialogButtonBox</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.filenames</span> <span class="kn">import</span> <span class="n">IMAGE_FORMAT_EXTENSIONS</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.utility</span> <span class="kn">import</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">select_directory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.filenames</span><span class="w"> </span><span class="kn">import</span> <span class="n">IMAGE_FORMAT_EXTENSIONS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_directory</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.main.presenter</span> <span class="kn">import</span> <span class="n">StackId</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackId</span>
 
 
 <div class="viewcode-block" id="sort_by_tomo_and_recon">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.sort_by_tomo_and_recon">[docs]</a>
-<span class="k">def</span> <span class="nf">sort_by_tomo_and_recon</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">StackId</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_by_tomo_and_recon</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">StackId</span><span class="p">):</span>
     <span class="k">if</span> <span class="s2">&quot;Recon&quot;</span> <span class="ow">in</span> <span class="n">stack_id</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">1</span>
     <span class="k">elif</span> <span class="s2">&quot;Tomo&quot;</span> <span class="ow">in</span> <span class="n">stack_id</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
@@ -536,10 +536,10 @@ document.write(`
 
 <div class="viewcode-block" id="ImageSaveDialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog">[docs]</a>
-<span class="k">class</span> <span class="nc">ImageSaveDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageSaveDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
     <span class="n">selected_stack</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">stack_list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">stack_list</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/image_save_dialog.ui&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">browseButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">select_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savePath</span><span class="p">,</span> <span class="s2">&quot;Browse&quot;</span><span class="p">))</span>
@@ -567,14 +567,14 @@ document.write(`
 
 <div class="viewcode-block" id="ImageSaveDialog.save_all">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.save_all">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_uuids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stackNames</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">execute_image_file_save</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ImageSaveDialog.save_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.save_path">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            :return: The directory of the path as a Python string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -583,7 +583,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageSaveDialog.name_prefix">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.name_prefix">[docs]</a>
-    <span class="k">def</span> <span class="nf">name_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            :return: The directory of the path as a Python string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -592,19 +592,19 @@ document.write(`
 
 <div class="viewcode-block" id="ImageSaveDialog.overwrite">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.overwrite">[docs]</a>
-    <span class="k">def</span> <span class="nf">overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwriteAll</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ImageSaveDialog.image_format">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.image_format">[docs]</a>
-    <span class="k">def</span> <span class="nf">image_format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="ImageSaveDialog.pixel_depth">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog.pixel_depth">[docs]</a>
-    <span class="k">def</span> <span class="nf">pixel_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pixel_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixelDepth</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span></div>
 </div>
 

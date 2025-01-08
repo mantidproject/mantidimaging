@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,26 +507,26 @@ document.write(`
   <h1>Source code for mantidimaging.gui.widgets.palette_changer.presenter</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">HistogramLUTItem</span>
-<span class="kn">from</span> <span class="nn">skimage</span> <span class="kn">import</span> <span class="n">filters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistogramLUTItem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">filters</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BasePresenter</span>
-<span class="kn">from</span> <span class="nn">jenkspy</span> <span class="kn">import</span> <span class="n">jenks_breaks</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jenkspy</span><span class="w"> </span><span class="kn">import</span> <span class="n">jenks_breaks</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span>
 
 <span class="n">SAMPLE_SIZE</span> <span class="o">=</span> <span class="mi">15000</span>  <span class="c1"># Chosen to avoid Jenks becoming slow</span>
 
 
 <div class="viewcode-block" id="PaletteChangerPresenter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.palette_changer.presenter.html#mantidimaging.gui.widgets.palette_changer.presenter.PaletteChangerPresenter">[docs]</a>
-<span class="k">class</span> <span class="nc">PaletteChangerPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PaletteChangerPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">other_hists</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">HistogramLUTItem</span><span class="p">],</span> <span class="n">main_hist</span><span class="p">:</span> <span class="n">HistogramLUTItem</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">other_hists</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">HistogramLUTItem</span><span class="p">],</span> <span class="n">main_hist</span><span class="p">:</span> <span class="n">HistogramLUTItem</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                  <span class="n">recon_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
@@ -542,13 +542,13 @@ document.write(`
 
 <div class="viewcode-block" id="PaletteChangerPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.palette_changer.presenter.html#mantidimaging.gui.widgets.palette_changer.presenter.PaletteChangerPresenter.notify">[docs]</a>
-    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="PaletteChangerPresenter.change_colour_palette">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.palette_changer.presenter.html#mantidimaging.gui.widgets.palette_changer.presenter.PaletteChangerPresenter.change_colour_palette">[docs]</a>
-    <span class="k">def</span> <span class="nf">change_colour_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_colour_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the colour palette and add ticks based on the output of the Jenks or Otsu algorithms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -563,7 +563,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ticks</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_record_old_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_record_old_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Records the default tick points for the recon histogram that are inserted when a new colour map is loaded.</span>
 <span class="sd">        This means they can be easily removed once the new ticks have been added to the histogram. This step is</span>
@@ -572,7 +572,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">old_ticks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">ticks</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_insert_new_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick_points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_new_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick_points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds new ticks to the recon histogram.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -581,7 +581,7 @@ document.write(`
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tick_points</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">addTick</span><span class="p">(</span><span class="n">tick_points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colours</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">finish</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_change_colour_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_change_colour_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changes the colour map of all three histograms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -589,21 +589,21 @@ document.write(`
         <span class="k">for</span> <span class="n">hist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_hists</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="p">]:</span>
             <span class="n">hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">loadPreset</span><span class="p">(</span><span class="n">preset</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_generate_otsu_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_otsu_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine the Otsu threshold tick point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">threshold_multiotsu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">num_materials</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_tick_values</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_generate_jenks_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_jenks_tick_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine the Jenks tick points.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">breaks</span> <span class="o">=</span> <span class="n">jenks_breaks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flattened_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">num_materials</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_tick_values</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">breaks</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_normalise_tick_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breaks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalise_tick_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breaks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Scale the collection of break values so that they range from 0 to 1. This is done because addTick expects an</span>
 <span class="sd">        x value in this range.</span>
@@ -614,14 +614,14 @@ document.write(`
         <span class="n">breaks</span> <span class="o">=</span> <span class="p">[</span><span class="n">min_val</span><span class="p">]</span> <span class="o">+</span> <span class="n">breaks</span> <span class="o">+</span> <span class="p">[</span><span class="n">max_val</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[(</span><span class="n">break_x</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">/</span> <span class="n">val_range</span> <span class="k">for</span> <span class="n">break_x</span> <span class="ow">in</span> <span class="n">breaks</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_remove_old_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_old_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove the default recon histogram ticks from the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_ticks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">removeTick</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">finish</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_update_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tell the recon histogram ticks to update at the end of a change.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -629,7 +629,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">updateGradient</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">sigGradientChangeFinished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_colours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_ticks</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_colours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_ticks</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine the colours that should be used for the new recon histogram ticks. Should ensure that there is a</span>
 <span class="sd">        suitable amount of contrast between the different materials, even if the ticks are quite close together on</span>
@@ -638,7 +638,7 @@ document.write(`
         <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_ticks</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">main_hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">getColor</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span> <span class="k">for</span> <span class="n">norm</span> <span class="ow">in</span> <span class="n">norms</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_sample_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_sample_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sample from a circle of the image to avoid recon artefacts at edges</span>
 <span class="sd">        &quot;&quot;&quot;</span>

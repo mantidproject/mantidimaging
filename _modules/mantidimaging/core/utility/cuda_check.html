@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,17 +507,17 @@ document.write(`
   <h1>Source code for mantidimaging.core.utility.cuda_check</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_import_cupy</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">cupy</span>  <span class="c1"># noqa: F401</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_import_cupy</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cupy</span>  <span class="c1"># noqa: F401</span>
 
 
-<span class="k">def</span> <span class="nf">_cuda_is_present</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cuda_is_present</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks if we can import CuPy to confirm that there&#39;s a CUDA installation on the device that we can work with</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -536,7 +536,7 @@ document.write(`
 
 <div class="viewcode-block" id="not_found_message">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.not_found_message">[docs]</a>
-<span class="k">def</span> <span class="nf">not_found_message</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">not_found_message</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a message that can be displayed if a working CUDA installation isn&#39;t found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -547,11 +547,11 @@ document.write(`
 
 <div class="viewcode-block" id="CudaChecker">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.CudaChecker">[docs]</a>
-<span class="k">class</span> <span class="nc">CudaChecker</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CudaChecker</span><span class="p">:</span>
     <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_cuda_is_present</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CudaChecker</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CudaChecker</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a singleton for storing the result of the Cuda check.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -563,7 +563,7 @@ document.write(`
 <div class="viewcode-block" id="CudaChecker.cuda_is_present">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.CudaChecker.cuda_is_present">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">cuda_is_present</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cuda_is_present</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the shared cuda check result.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -573,7 +573,7 @@ document.write(`
 <div class="viewcode-block" id="CudaChecker.clear_instance">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.CudaChecker.clear_instance">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">clear_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resets the instance. Used for making sure mocks don&#39;t leak in tests.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

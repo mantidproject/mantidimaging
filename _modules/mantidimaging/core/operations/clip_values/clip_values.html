@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,23 +507,23 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.clip_values.clip_values</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 
 <div class="viewcode-block" id="ClipValuesFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.clip_values.clip_values.html#mantidimaging.core.operations.clip_values.clip_values.ClipValuesFilter">[docs]</a>
-<span class="k">class</span> <span class="nc">ClipValuesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ClipValuesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clips grey values of the image based on the parameters. Can be used to remove outliers</span>
 <span class="sd">    and noise (e.g. negative values) from reconstructed images.</span>
 
@@ -539,7 +539,7 @@ document.write(`
 <div class="viewcode-block" id="ClipValuesFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.clip_values.clip_values.html#mantidimaging.core.operations.clip_values.clip_values.ClipValuesFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
                     <span class="n">clip_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">clip_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">clip_min_new_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -584,7 +584,7 @@ document.write(`
 <div class="viewcode-block" id="ClipValuesFilter.compute_function">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.clip_values.clip_values.html#mantidimaging.core.operations.clip_values.clip_values.ClipValuesFilter.compute_function">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="nb">slice</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">clip_min</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_min&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_min&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
         <span class="n">clip_max</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_max&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_max&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
@@ -599,8 +599,8 @@ document.write(`
 <div class="viewcode-block" id="ClipValuesFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.clip_values.clip_values.html#mantidimaging.core.operations.clip_values.clip_values.ClipValuesFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">add_property_to_form</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
         <span class="n">value_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">)</span>
 
@@ -643,7 +643,7 @@ document.write(`
 
         <span class="c1"># Ensures that the new_value fields are set to be clip_min</span>
         <span class="c1"># or clip_max, unless the user has explicitly changed them</span>
-        <span class="k">def</span> <span class="nf">update_field_on_value_changed</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">field_new_value</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">update_field_on_value_changed</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">field_new_value</span><span class="p">):</span>
             <span class="n">field_new_value</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
 
         <span class="c1"># using lambda we can pass in parameters</span>
@@ -663,7 +663,7 @@ document.write(`
 <div class="viewcode-block" id="ClipValuesFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.clip_values.clip_values.html#mantidimaging.core.operations.clip_values.clip_values.ClipValuesFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">clip_min_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">clip_min_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">clip_max_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">clip_min_new_value_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">clip_max_new_value_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

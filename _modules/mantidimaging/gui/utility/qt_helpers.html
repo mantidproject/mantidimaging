@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -510,21 +510,21 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module containing helper functions relating to PyQt.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">uic</span><span class="p">,</span> <span class="n">sip</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="p">(</span><span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">uic</span><span class="p">,</span> <span class="n">sip</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">Qt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span>
                              <span class="n">QMenu</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLayout</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility</span> <span class="kn">import</span> <span class="n">finder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
 
 <span class="n">MAX_SPIN_BOX</span> <span class="o">=</span> <span class="mi">2147483647</span>
 <span class="n">INPUT_DIALOG_FLAGS</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowSystemMenuHint</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowTitleHint</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowCloseButtonHint</span>
@@ -532,12 +532,12 @@ document.write(`
 
 <div class="viewcode-block" id="BlockQtSignals">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.BlockQtSignals">[docs]</a>
-<span class="k">class</span> <span class="nc">BlockQtSignals</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BlockQtSignals</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used to block Qt signals from a selection of QWidgets within a context.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q_objects</span><span class="p">:</span> <span class="n">QObject</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">QObject</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q_objects</span><span class="p">:</span> <span class="n">QObject</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">QObject</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q_objects</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">q_objects</span> <span class="o">=</span> <span class="p">[</span><span class="n">q_objects</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">q_objects</span><span class="p">:</span>
@@ -547,11 +547,11 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">q_objects</span> <span class="o">=</span> <span class="n">q_objects</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previous_values</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previous_values</span> <span class="o">=</span> \
             <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_objects</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">obj</span><span class="p">,</span> <span class="n">prev</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_objects</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_values</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="n">obj</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="n">prev</span><span class="p">)</span></div>
 
@@ -559,7 +559,7 @@ document.write(`
 
 <div class="viewcode-block" id="compile_ui">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.compile_ui">[docs]</a>
-<span class="k">def</span> <span class="nf">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qt_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qt_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
     <span class="n">base_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span>
     <span class="k">return</span> <span class="n">uic</span><span class="o">.</span><span class="n">loadUi</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">ui_file</span><span class="p">),</span> <span class="n">qt_obj</span><span class="p">)</span></div>
 
@@ -567,7 +567,7 @@ document.write(`
 
 <div class="viewcode-block" id="select_directory">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.select_directory">[docs]</a>
-<span class="k">def</span> <span class="nf">select_directory</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_directory</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">),</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The passed object is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="si">}</span><span class="s2">. This function only works with &quot;</span>
                                           <span class="s2">&quot;QLineEdit&quot;</span><span class="p">)</span>
 
@@ -578,7 +578,7 @@ document.write(`
 
 <div class="viewcode-block" id="get_value_from_qwidget">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.get_value_from_qwidget">[docs]</a>
-<span class="k">def</span> <span class="nf">get_value_from_qwidget</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_value_from_qwidget</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">):</span>
@@ -591,7 +591,7 @@ document.write(`
 
 <div class="viewcode-block" id="Type">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.Type">[docs]</a>
-<span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
     <span class="n">STR</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">TUPLE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">NONETYPE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -608,7 +608,7 @@ document.write(`
 
 <div class="viewcode-block" id="on_change_and_disable">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.on_change_and_disable">[docs]</a>
-<span class="k">def</span> <span class="nf">on_change_and_disable</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_change_and_disable</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes sure the widget is disabled while running the on_update method. This is required for spin boxes that</span>
 <span class="sd">    continue increasing when generating a preview image is computationally intensive.</span>
@@ -623,7 +623,7 @@ document.write(`
 
 <div class="viewcode-block" id="add_property_to_form">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.add_property_to_form">[docs]</a>
-<span class="k">def</span> <span class="nf">add_property_to_form</span><span class="p">(</span><span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_property_to_form</span><span class="p">(</span><span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                          <span class="n">dtype</span><span class="p">:</span> <span class="n">Type</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
                          <span class="n">default_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">valid_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -658,7 +658,7 @@ document.write(`
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">default_value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
         <span class="n">default_value</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">set_spin_box</span><span class="p">(</span><span class="n">box</span><span class="p">:</span> <span class="n">QSpinBox</span> <span class="o">|</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">cast_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_spin_box</span><span class="p">(</span><span class="n">box</span><span class="p">:</span> <span class="n">QSpinBox</span> <span class="o">|</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">cast_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Helper function to set default options on a spin box.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -725,7 +725,7 @@ document.write(`
             <span class="n">right_widget</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change</span><span class="p">())</span>
 
     <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;stack&#39;</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">Type</span><span class="o">.</span><span class="n">STACK</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.dataset_selector</span> <span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
         <span class="n">right_widget</span> <span class="o">=</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">(</span><span class="n">filters_view</span><span class="p">,</span> <span class="n">show_stacks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">right_widget</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">on_change</span><span class="p">())</span>
@@ -769,7 +769,7 @@ document.write(`
 
 <div class="viewcode-block" id="delete_all_widgets_from_layout">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.delete_all_widgets_from_layout">[docs]</a>
-<span class="k">def</span> <span class="nf">delete_all_widgets_from_layout</span><span class="p">(</span><span class="n">lo</span><span class="p">:</span> <span class="n">QLayout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_all_widgets_from_layout</span><span class="p">(</span><span class="n">lo</span><span class="p">:</span> <span class="n">QLayout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Removes and deletes all child widgets form a layout.</span>
 
@@ -792,7 +792,7 @@ document.write(`
 
 <div class="viewcode-block" id="populate_menu">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.populate_menu">[docs]</a>
-<span class="k">def</span> <span class="nf">populate_menu</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">actions_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QAction</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">populate_menu</span><span class="p">(</span><span class="n">menu</span><span class="p">:</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">actions_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QAction</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">menu_text</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span> <span class="ow">in</span> <span class="n">actions_list</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
@@ -803,7 +803,7 @@ document.write(`
 
 
 
-<span class="k">class</span> <span class="nc">_metaclass_sip_abc</span><span class="p">(</span><span class="n">sip</span><span class="o">.</span><span class="n">wrappertype</span><span class="p">,</span> <span class="n">ABCMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_metaclass_sip_abc</span><span class="p">(</span><span class="n">sip</span><span class="o">.</span><span class="n">wrappertype</span><span class="p">,</span> <span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Used for Mixins to avoid metaclass conflicts&quot;&quot;&quot;</span>
     <span class="o">...</span>
 </pre></div>

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,23 +507,23 @@ document.write(`
   <h1>Source code for mantidimaging.gui.widgets.roi_selector.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QPushButton</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QPushButton</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_image_view.view</span> <span class="kn">import</span> <span class="n">MIImageView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIImageView</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 
 <div class="viewcode-block" id="ROISelectorView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.roi_selector.view.html#mantidimaging.gui.widgets.roi_selector.view.ROISelectorView">[docs]</a>
-<span class="k">class</span> <span class="nc">ROISelectorView</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ROISelectorView</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">parent</span><span class="p">,</span>
                  <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                  <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -575,7 +575,7 @@ document.write(`
 
 <div class="viewcode-block" id="ROISelectorView.toggle_average_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.roi_selector.view.html#mantidimaging.gui.widgets.roi_selector.view.ROISelectorView.toggle_average_images">[docs]</a>
-    <span class="k">def</span> <span class="nf">toggle_average_images</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle_average_images</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_image</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_view_averaged</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">averaged_image</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view_averaged</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_view_averaged</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -584,7 +584,7 @@ document.write(`
 
 <div class="viewcode-block" id="ROISelectorView.closeEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.roi_selector.view.html#mantidimaging.gui.widgets.roi_selector.view.ROISelectorView.closeEvent">[docs]</a>
-    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
 </div>

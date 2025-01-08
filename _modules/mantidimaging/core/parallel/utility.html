@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,39 +507,39 @@ document.write(`
   <h1>Source code for mantidimaging.core.parallel.utility</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">shared_memory</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">shared_memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.memory_usage</span> <span class="kn">import</span> <span class="n">system_free_memory</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.size_calculator</span> <span class="kn">import</span> <span class="n">full_size_KB</span><span class="p">,</span> <span class="n">full_size_bytes</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">manager</span> <span class="k">as</span> <span class="n">pm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.memory_usage</span><span class="w"> </span><span class="kn">import</span> <span class="n">system_free_memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.size_calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">full_size_KB</span><span class="p">,</span> <span class="n">full_size_bytes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span> <span class="k">as</span> <span class="n">pm</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-    <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-    <span class="kn">from</span> <span class="nn">multiprocessing.shared_memory</span> <span class="kn">import</span> <span class="n">SharedMemory</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing.shared_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">SharedMemory</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="enough_memory">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.enough_memory">[docs]</a>
-<span class="k">def</span> <span class="nf">enough_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">enough_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">full_size_KB</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">system_free_memory</span><span class="p">()</span><span class="o">.</span><span class="n">kb</span><span class="p">()</span></div>
 
 
 
 <div class="viewcode-block" id="create_array">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.create_array">[docs]</a>
-<span class="k">def</span> <span class="nf">create_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an array in shared memory</span>
 
@@ -555,7 +555,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_create_shared_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_shared_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
     <span class="n">size</span> <span class="o">=</span> <span class="n">full_size_bytes</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
 
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Requested shared array with shape=</span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s1">, size=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">, dtype=</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -565,7 +565,7 @@ document.write(`
     <span class="k">return</span> <span class="n">_read_array_from_shared_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_read_array_from_shared_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span><span class="p">,</span> <span class="n">mem</span><span class="p">:</span> <span class="n">SharedMemory</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_array_from_shared_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span><span class="p">,</span> <span class="n">mem</span><span class="p">:</span> <span class="n">SharedMemory</span><span class="p">,</span>
                                    <span class="n">free_mem_on_delete</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="n">mem</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">SharedArray</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="n">free_mem_on_del</span><span class="o">=</span><span class="n">free_mem_on_delete</span><span class="p">)</span>
@@ -573,7 +573,7 @@ document.write(`
 
 <div class="viewcode-block" id="copy_into_shared_memory">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.copy_into_shared_memory">[docs]</a>
-<span class="k">def</span> <span class="nf">copy_into_shared_memory</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_into_shared_memory</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
     <span class="n">shared_array</span> <span class="o">=</span> <span class="n">create_array</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">shared_array</span><span class="o">.</span><span class="n">array</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:]</span>
     <span class="k">return</span> <span class="n">shared_array</span></div>
@@ -582,7 +582,7 @@ document.write(`
 
 <div class="viewcode-block" id="calculate_chunksize">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.calculate_chunksize">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_chunksize</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_chunksize</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TODO possible proper calculation of chunksize, although best performance has been with 1</span>
 <span class="sd">    From performance tests, the chunksize doesn&#39;t seem to make much of a</span>
@@ -605,7 +605,7 @@ document.write(`
 
 <div class="viewcode-block" id="multiprocessing_necessary">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.multiprocessing_necessary">[docs]</a>
-<span class="k">def</span> <span class="nf">multiprocessing_necessary</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">multiprocessing_necessary</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="c1"># This environment variable will be present when running PYDEVD from PyCharm</span>
     <span class="c1"># and that has the bug that multiprocessing Pools can never finish `.join()` ing</span>
     <span class="c1"># thus never actually finish their processing.</span>
@@ -627,7 +627,7 @@ document.write(`
 
 <div class="viewcode-block" id="execute_impl">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.execute_impl">[docs]</a>
-<span class="k">def</span> <span class="nf">execute_impl</span><span class="p">(</span><span class="n">img_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">partial_func</span><span class="p">:</span> <span class="n">partial</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">execute_impl</span><span class="p">(</span><span class="n">img_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">partial_func</span><span class="p">:</span> <span class="n">partial</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">img_num</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="n">task_name</span><span class="p">)</span>
     <span class="n">indices_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">img_num</span><span class="p">)</span>
@@ -651,7 +651,7 @@ document.write(`
 
 <div class="viewcode-block" id="run_compute_func_impl">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.run_compute_func_impl">[docs]</a>
-<span class="k">def</span> <span class="nf">run_compute_func_impl</span><span class="p">(</span><span class="n">worker_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_compute_func_impl</span><span class="p">(</span><span class="n">worker_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
                           <span class="n">num_operations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                           <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
                           <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -674,14 +674,14 @@ document.write(`
 
 <div class="viewcode-block" id="SharedArray">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArray">[docs]</a>
-<span class="k">class</span> <span class="nc">SharedArray</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SharedArray</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shared_memory</span><span class="p">:</span> <span class="n">SharedMemory</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">free_mem_on_del</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">shared_memory</span><span class="p">:</span> <span class="n">SharedMemory</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">free_mem_on_del</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">array</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span> <span class="o">=</span> <span class="n">shared_memory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_free_mem_on_del</span> <span class="o">=</span> <span class="n">free_mem_on_del</span>
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_shared_memory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_mem_on_del</span><span class="p">:</span>
@@ -692,11 +692,11 @@ document.write(`
                     <span class="k">pass</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">has_shared_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_shared_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">array_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArrayProxy</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">array_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArrayProxy</span><span class="p">:</span>
         <span class="n">mem_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_memory</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">SharedArrayProxy</span><span class="p">(</span><span class="n">mem_name</span><span class="o">=</span><span class="n">mem_name</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
@@ -704,16 +704,16 @@ document.write(`
 
 <div class="viewcode-block" id="SharedArrayProxy">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.SharedArrayProxy">[docs]</a>
-<span class="k">class</span> <span class="nc">SharedArrayProxy</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SharedArrayProxy</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mem_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mem_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mem_name</span> <span class="o">=</span> <span class="n">mem_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span><span class="p">:</span> <span class="n">SharedArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mem</span> <span class="o">=</span> <span class="n">shared_memory</span><span class="o">.</span><span class="n">SharedMemory</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mem_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">_read_array_from_shared_memory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">mem</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>

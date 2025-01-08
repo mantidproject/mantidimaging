@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,36 +507,36 @@ document.write(`
   <h1>Source code for mantidimaging.core.data.dataset</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data.reconlist</span> <span class="kn">import</span> <span class="n">ReconList</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">FILE_TYPES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.reconlist</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconList</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">FILE_TYPES</span>
 
 
-<span class="k">def</span> <span class="nf">_delete_stack_error_message</span><span class="p">(</span><span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_delete_stack_error_message</span><span class="p">(</span><span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Unable to delete stack: ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2"> not present in dataset.&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">_image_key_list</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_images</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_image_key_list</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_images</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_images</span><span class="p">)]</span>
 
 
 <div class="viewcode-block" id="remove_nones">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.remove_nones">[docs]</a>
-<span class="k">def</span> <span class="nf">remove_nones</span><span class="p">(</span><span class="n">image_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_nones</span><span class="p">(</span><span class="n">image_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">image_stack</span> <span class="k">for</span> <span class="n">image_stack</span> <span class="ow">in</span> <span class="n">image_stacks</span> <span class="k">if</span> <span class="n">image_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
 
 
 
 <div class="viewcode-block" id="Dataset">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset">[docs]</a>
-<span class="k">class</span> <span class="nc">Dataset</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Dataset</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -565,19 +565,19 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sinograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sinograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sinograms</span>
 
     <span class="nd">@sinograms</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sinograms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sino</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sinograms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sino</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sinograms</span> <span class="o">=</span> <span class="n">sino</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
         <span class="n">named_stacks</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_before</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_after</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_before</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sinograms</span>
@@ -586,7 +586,7 @@ document.write(`
 
 <div class="viewcode-block" id="Dataset.delete_stack">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.delete_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">delete_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">images_id</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flat_before</span><span class="p">,</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_before</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">images_id</span><span class="p">:</span>
@@ -614,62 +614,62 @@ document.write(`
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">_delete_stack_error_message</span><span class="p">(</span><span class="n">images_id</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">images_id</span> <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">all_image_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_image_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">image_stack</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">image_stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all</span> <span class="k">if</span> <span class="n">image_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReconList</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReconList</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recons</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stacks</span>
 
 <div class="viewcode-block" id="Dataset.add_recon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_recon">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recon</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Dataset.delete_recons">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.delete_recons">[docs]</a>
-    <span class="k">def</span> <span class="nf">delete_recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_recons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Dataset.add_stack">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@proj180deg</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t set a 180 projection without a sample&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span> <span class="o">=</span> <span class="n">proj180deg</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_nexus_stack_order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_nexus_stack_order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_before</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_before</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_after</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after</span><span class="p">]))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nexus_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nexus_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">image_stack</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">image_stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nexus_stack_order</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nexus_rotation_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nexus_rotation_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
         <span class="n">proj_angles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">image_stack</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nexus_stack_order</span><span class="p">:</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">real_projection_angles</span><span class="p">()</span>
@@ -677,7 +677,7 @@ document.write(`
         <span class="k">return</span> <span class="n">proj_angles</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="n">image_keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">image_keys</span> <span class="o">+=</span> <span class="n">_image_key_list</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_before</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -695,7 +695,7 @@ document.write(`
 
 <div class="viewcode-block" id="Dataset.set_stack">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">attr_name</span> <span class="o">=</span> <span class="n">file_type</span><span class="o">.</span><span class="n">fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">PROJ_180</span><span class="p">:</span>
             <span class="n">attr_name</span> <span class="o">=</span> <span class="s2">&quot;proj180deg&quot;</span>
@@ -707,7 +707,7 @@ document.write(`
 
 <div class="viewcode-block" id="Dataset.set_stack_by_type_name">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack_by_type_name">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_stack_by_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_stack_by_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">file_type_name</span> <span class="o">=</span> <span class="n">file_type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">&quot;RECON&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">image_stack</span><span class="p">)</span>
@@ -721,7 +721,7 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: True if any of the data has been processed, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -732,7 +732,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the data type as a string of a stack.</span>
 <span class="sd">    :param stack_id: The ID of the stack.</span>

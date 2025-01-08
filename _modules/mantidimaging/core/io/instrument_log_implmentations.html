@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,21 +507,21 @@ document.write(`
   <h1>Source code for mantidimaging.core.io.instrument_log_implmentations</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">csv</span>
-<span class="kn">import</span> <span class="nn">locale</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locale</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.io.instrument_log</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">,</span> <span class="n">InstrumentShutterCountParser</span><span class="p">,</span> <span class="n">LogColumn</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.instrument_log</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">,</span> <span class="n">InstrumentShutterCountParser</span><span class="p">,</span> <span class="n">LogColumn</span><span class="p">,</span>
                                                   <span class="n">ShutterCountColumn</span><span class="p">,</span> <span class="n">LogDataType</span><span class="p">,</span> <span class="n">ShutterCountType</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.imat_log_file_parser</span> <span class="kn">import</span> <span class="n">IMATLogFile</span><span class="p">,</span> <span class="n">IMATLogColumn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.imat_log_file_parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">IMATLogFile</span><span class="p">,</span> <span class="n">IMATLogColumn</span>
 
 
 <div class="viewcode-block" id="LegacySpectraLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser">[docs]</a>
-<span class="k">class</span> <span class="nc">LegacySpectraLogParser</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LegacySpectraLogParser</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parser for spectra files without a header</span>
 
@@ -533,7 +533,7 @@ document.write(`
 <div class="viewcode-block" id="LegacySpectraLogParser.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.match">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;spectra.txt&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
@@ -544,7 +544,7 @@ document.write(`
 
 <div class="viewcode-block" id="LegacySpectraLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span> <span class="o">=</span> <span class="p">{</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIME_OF_FLIGHT</span><span class="p">:</span> <span class="p">[],</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">SPECTRUM_COUNTS</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleaned_lines</span><span class="p">(),</span> <span class="n">delimiter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIME_OF_FLIGHT</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -556,7 +556,7 @@ document.write(`
 
 <div class="viewcode-block" id="LegacyShutterCountLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser">[docs]</a>
-<span class="k">class</span> <span class="nc">LegacyShutterCountLogParser</span><span class="p">(</span><span class="n">InstrumentShutterCountParser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LegacyShutterCountLogParser</span><span class="p">(</span><span class="n">InstrumentShutterCountParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parser for shutter count files without a header searching for files ending in &quot;ShutterCount.txt&quot;</span>
 <span class="sd">    Tab separated columns of Pulse number, Shutter count</span>
@@ -566,7 +566,7 @@ document.write(`
 <div class="viewcode-block" id="LegacyShutterCountLogParser.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.match">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;shuttercount.txt&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
@@ -578,7 +578,7 @@ document.write(`
 
 <div class="viewcode-block" id="LegacyShutterCountLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCountType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCountType</span><span class="p">:</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">ShutterCountType</span> <span class="o">=</span> <span class="p">{</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">PULSE</span><span class="p">:</span> <span class="p">[],</span> <span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">SHUTTER_COUNT</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleaned_lines</span><span class="p">(),</span> <span class="n">delimiter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delimiter</span><span class="p">):</span>
             <span class="n">data</span><span class="p">[</span><span class="n">ShutterCountColumn</span><span class="o">.</span><span class="n">PULSE</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -590,13 +590,13 @@ document.write(`
 
 <div class="viewcode-block" id="LegacyIMATLogFile">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile">[docs]</a>
-<span class="k">class</span> <span class="nc">LegacyIMATLogFile</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LegacyIMATLogFile</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap existing IMATLogFile class&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="LegacyIMATLogFile.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -612,7 +612,7 @@ document.write(`
 
 <div class="viewcode-block" id="LegacyIMATLogFile.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
         <span class="n">imat_log_file</span> <span class="o">=</span> <span class="n">IMATLogFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">))</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">]</span>
@@ -626,7 +626,7 @@ document.write(`
 <div class="viewcode-block" id="LegacyIMATLogFile.read_imat_date">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.read_imat_date">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_imat_date</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_imat_date</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
         <span class="n">lc</span> <span class="o">=</span> <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
@@ -636,7 +636,7 @@ document.write(`
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_has_imat_header</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_has_imat_header</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">HEADERS</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image&quot;</span><span class="p">,</span>
             <span class="s2">&quot;TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image&quot;</span><span class="p">,</span>
@@ -644,7 +644,7 @@ document.write(`
         <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">HEADERS</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_has_imat_data_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_has_imat_data_line</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">read_imat_date</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="mi">24</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>

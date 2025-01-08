@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,23 +507,23 @@ document.write(`
   <h1>Source code for mantidimaging.gui.widgets.palette_changer.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QComboBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QComboBox</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.palette_changer.presenter</span> <span class="kn">import</span> <span class="n">PaletteChangerPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.palette_changer.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">PaletteChangerPresenter</span>
 
 
 <div class="viewcode-block" id="PaletteChangerView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.palette_changer.view.html#mantidimaging.gui.widgets.palette_changer.view.PaletteChangerView">[docs]</a>
-<span class="k">class</span> <span class="nc">PaletteChangerView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PaletteChangerView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
 
     <span class="n">numMaterialsSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
     <span class="n">algorithmComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
     <span class="n">colourMapComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">main_hist</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">other_hists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recon_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">main_hist</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">other_hists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recon_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;gui/ui/palette_changer.ui&quot;</span><span class="p">)</span>
         <span class="n">other_hists</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">other_hists</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">other_hists</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">PaletteChangerPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_hists</span><span class="p">,</span> <span class="n">main_hist</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">recon_mode</span><span class="p">)</span>
@@ -531,15 +531,15 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">colourMapComboBox</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="s2">&quot;spectrum&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">num_materials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_materials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numMaterialsSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">algorithm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">algorithm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithmComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">colour_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">colour_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colourMapComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span></div>
 
 </pre></div>

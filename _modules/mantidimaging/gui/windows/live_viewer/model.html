@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,24 +507,24 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.live_viewer.model</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QFileSystemWatcher</span><span class="p">,</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QTimer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFileSystemWatcher</span><span class="p">,</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QTimer</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">stat_result</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.gui.windows.live_viewer.view</span> <span class="kn">import</span> <span class="n">LiveViewerWindowPresenter</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">stat_result</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.live_viewer.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveViewerWindowPresenter</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Image_Data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.Image_Data">[docs]</a>
-<span class="k">class</span> <span class="nc">Image_Data</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Image_Data</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Image Data Class to store represent image data.</span>
 
@@ -542,7 +542,7 @@ document.write(`
 <span class="sd">        last modified time of image file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for Image_Data class.</span>
 
@@ -556,16 +556,16 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_stat</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stat_result</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">stat_result</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_modified_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_modified_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the image modified time&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat</span><span class="o">.</span><span class="n">st_mtime</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_modified_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_modified_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the image modified time as a string&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_modified_time</span><span class="p">))</span></div>
 
@@ -573,22 +573,22 @@ document.write(`
 
 <div class="viewcode-block" id="SubDirectory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.SubDirectory">[docs]</a>
-<span class="k">class</span> <span class="nc">SubDirectory</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubDirectory</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stat</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stat</span><span class="o">.</span><span class="n">st_mtime</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">modification_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modification_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span></div>
 
 
 
 <div class="viewcode-block" id="LiveViewerWindowModel">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel">[docs]</a>
-<span class="k">class</span> <span class="nc">LiveViewerWindowModel</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LiveViewerWindowModel</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The model for the spectrum viewer window.</span>
 
@@ -604,7 +604,7 @@ document.write(`
 <span class="sd">        list of images in directory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="n">LiveViewerWindowPresenter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="n">LiveViewerWindowPresenter</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for LiveViewerWindowModel class.</span>
 
@@ -620,18 +620,18 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_path</span>
 
     <span class="nd">@path</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span> <span class="o">=</span> <span class="n">ImageWatcher</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="o">.</span><span class="n">image_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_image_changed_in_list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="o">.</span><span class="n">recent_image_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_image_modified</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="o">.</span><span class="n">_handle_notified_of_directry_change</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_handle_image_changed_in_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_image_changed_in_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle an image changed event. Update the image in the view.</span>
 <span class="sd">        This method is called when the image_watcher detects a change</span>
@@ -644,13 +644,13 @@ document.write(`
 
 <div class="viewcode-block" id="LiveViewerWindowModel.handle_image_modified">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.handle_image_modified">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_image_modified</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowModel.close">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.close">[docs]</a>
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the model.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="o">.</span><span class="n">remove_path</span><span class="p">()</span>
@@ -662,7 +662,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher">[docs]</a>
-<span class="k">class</span> <span class="nc">ImageWatcher</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageWatcher</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to watch a directory for new images.</span>
 
@@ -687,7 +687,7 @@ document.write(`
     <span class="n">image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># Signal emitted when an image is added or removed</span>
     <span class="n">recent_image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">Path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor for ImageWatcher class which inherits from QObject.</span>
 
@@ -714,7 +714,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.find_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.find_images">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find all the images in the directory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -732,7 +732,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.find_sub_directories">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.find_sub_directories">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># COMPAT python &lt; 3.12 - Can replace with Path.walk()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/*&quot;</span><span class="p">):</span>
@@ -744,7 +744,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.sort_sub_directory_by_modified_time">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.sort_sub_directory_by_modified_time">[docs]</a>
-    <span class="k">def</span> <span class="nf">sort_sub_directory_by_modified_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sort_sub_directory_by_modified_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">modification_time</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
 
@@ -752,7 +752,7 @@ document.write(`
 <div class="viewcode-block" id="ImageWatcher.sort_images_by_modified_time">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.sort_images_by_modified_time">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">sort_images_by_modified_time</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sort_images_by_modified_time</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sort the images by modified time.</span>
 
@@ -762,7 +762,7 @@ document.write(`
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">image_modified_time</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_handle_notified_of_directry_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_notified_of_directry_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Quickly handle the notification event for a change, and start the timer if needed. If files are arriving faster</span>
 <span class="sd">        than _handle_directory_change() can process them, we don&#39;t end up with a queue of work to do. The timeout is set</span>
@@ -772,7 +772,7 @@ document.write(`
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_change_timer</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_change_timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_handle_directory_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handle_directory_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle a directory change event. Update the list of images</span>
 <span class="sd">        to reflect directory changes and emit the image_changed signal</span>
@@ -808,7 +808,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">image_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_is_image_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_image_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if a file is an tiff or tif image file.</span>
 
@@ -820,7 +820,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.remove_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.remove_path">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove the currently set path</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -834,20 +834,20 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.update_recent_watcher">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_recent_watcher">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_recent_watcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_recent_watcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recent_file_watcher</span><span class="o">.</span><span class="n">removePaths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recent_file_watcher</span><span class="o">.</span><span class="n">files</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recent_file_watcher</span><span class="o">.</span><span class="n">addPaths</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span> <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="ImageWatcher.handle_image_modified">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.handle_image_modified">[docs]</a>
-    <span class="k">def</span> <span class="nf">handle_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recent_image_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ImageWatcher.add_sub_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.add_sub_directory">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">SubDirectory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">SubDirectory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sub_dir</span><span class="o">.</span><span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">addPath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sub_dir</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
 
@@ -856,7 +856,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.remove_sub_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.remove_sub_directory">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_sub_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">removePath</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">))</span>
 
@@ -865,7 +865,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageWatcher.clear_deleted_sub_directories">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.clear_deleted_sub_directories">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_deleted_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_deleted_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">sub_dir</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sub_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_sub_directory</span><span class="p">(</span><span class="n">sub_dir</span><span class="p">)</span></div>

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,19 +507,19 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.operations.filter_previews</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QPoint</span><span class="p">,</span> <span class="n">QRect</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="n">QGuiApplication</span><span class="p">,</span> <span class="n">QResizeEvent</span>
-<span class="kn">from</span> <span class="nn">pyqtgraph</span> <span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">LegendItem</span><span class="p">,</span> <span class="n">PlotItem</span>
-<span class="kn">from</span> <span class="nn">pyqtgraph.graphicsItems.GraphicsLayout</span> <span class="kn">import</span> <span class="n">GraphicsLayout</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPoint</span><span class="p">,</span> <span class="n">QRect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QGuiApplication</span><span class="p">,</span> <span class="n">QResizeEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColorMap</span><span class="p">,</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">LegendItem</span><span class="p">,</span> <span class="n">PlotItem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph.graphicsItems.GraphicsLayout</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphicsLayout</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.histogram</span> <span class="kn">import</span> <span class="n">set_histogram_log_scale</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span> <span class="kn">import</span> <span class="n">MIMiniImageView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.widgets.zslider.zslider</span> <span class="kn">import</span> <span class="n">ZSlider</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.histogram</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_histogram_log_scale</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMiniImageView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.zslider.zslider</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZSlider</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -532,17 +532,17 @@ document.write(`
 <span class="n">OVERLAY_COLOUR_DIFFERENCE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_data_valid_for_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_data_valid_for_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FilterPreviews">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews">[docs]</a>
-<span class="k">class</span> <span class="nc">FilterPreviews</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FilterPreviews</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
     <span class="n">histogram</span><span class="p">:</span> <span class="n">PlotItem</span>
     <span class="n">z_slider</span><span class="p">:</span> <span class="n">ZSlider</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">widget_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">QPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -594,7 +594,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.resizeEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.resizeEvent">[docs]</a>
-    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QResizeEvent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QResizeEvent</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ev</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">):</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ALLOWED_HEIGHT</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
@@ -603,7 +603,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.clear_items">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.clear_items">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">clear_before</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -613,7 +613,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.cleanup">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.cleanup">[docs]</a>
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -626,7 +626,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.init_histogram">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.init_histogram">[docs]</a>
-    <span class="k">def</span> <span class="nf">init_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlotItem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlotItem</span><span class="p">:</span>
         <span class="n">histogram</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addPlot</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">histogram_axes_labels</span><span class="p">,</span> <span class="n">lockAspect</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colspan</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
         <span class="n">legend</span> <span class="o">=</span> <span class="n">histogram</span><span class="o">.</span><span class="n">addLegend</span><span class="p">()</span>
@@ -637,7 +637,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.update_histogram_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.update_histogram_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_histogram_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_histogram_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Plot any histogram that has data, and add a legend if both exist</span>
         <span class="n">before_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">getHistogram</span><span class="p">()</span>
         <span class="n">after_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">getHistogram</span><span class="p">()</span>
@@ -651,26 +651,26 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">histogram_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LegendItem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">histogram_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LegendItem</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">legend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Histogram legend is not initialized&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">legend</span>
 
 <div class="viewcode-block" id="FilterPreviews.link_all_views">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.link_all_views">[docs]</a>
-    <span class="k">def</span> <span class="nf">link_all_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_all_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">link_sibling_axis</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.unlink_all_views">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.unlink_all_views">[docs]</a>
-    <span class="k">def</span> <span class="nf">unlink_all_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unlink_all_views</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">unlink_sibling_axis</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.add_difference_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_difference_overlay">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_difference_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">nan_change</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_difference_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">nan_change</span><span class="p">):</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
         <span class="n">diff</span><span class="p">[</span><span class="n">diff</span> <span class="o">&gt;</span> <span class="n">OVERLAY_THRESHOLD</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">diff</span><span class="p">[</span><span class="n">nan_change</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -685,32 +685,32 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.add_negative_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_negative_overlay">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.hide_difference_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_difference_overlay">[docs]</a>
-    <span class="k">def</span> <span class="nf">hide_difference_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hide_difference_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_diff_overlay</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.hide_negative_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_negative_overlay">[docs]</a>
-    <span class="k">def</span> <span class="nf">hide_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hide_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.auto_range">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.auto_range">[docs]</a>
-    <span class="k">def</span> <span class="nf">auto_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">auto_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">viewbox</span><span class="o">.</span><span class="n">autoRange</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.record_histogram_regions">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.record_histogram_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">record_histogram_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">record_histogram_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">before_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram_region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">diff_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">histogram_region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">after_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram_region</span></div>
@@ -718,7 +718,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.restore_histogram_regions">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.restore_histogram_regions">[docs]</a>
-    <span class="k">def</span> <span class="nf">restore_histogram_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_histogram_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">histogram_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diff_region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">before_region</span></div>
@@ -726,7 +726,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.link_before_after_histogram_scales">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.link_before_after_histogram_scales">[docs]</a>
-    <span class="k">def</span> <span class="nf">link_before_after_histogram_scales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_link</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_before_after_histogram_scales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create_link</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Connects or disconnects the scales of the before/after histograms.</span>
 <span class="sd">        :param create_link: Whether the link should be created or removed.</span>
@@ -739,7 +739,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.set_histogram_log_scale">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.set_histogram_log_scale">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_histogram_log_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the y-values of the before and after histogram plots to a log scale.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -749,7 +749,7 @@ document.write(`
 
 <div class="viewcode-block" id="FilterPreviews.autorange_histograms">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.autorange_histograms">[docs]</a>
-    <span class="k">def</span> <span class="nf">autorange_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">autorange_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_before</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageview_difference</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">autoHistogramRange</span><span class="p">()</span></div>

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,37 +507,37 @@ document.write(`
   <h1>Source code for mantidimaging.core.utility.imat_log_file_parser</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">csv</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">Counts</span><span class="p">,</span> <span class="n">ProjectionAngles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counts</span><span class="p">,</span> <span class="n">ProjectionAngles</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_projection_number</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_projection_number</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\D&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
 
 
-<span class="k">def</span> <span class="nf">_get_angle</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_angle</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="IMATLogColumn">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogColumn">[docs]</a>
-<span class="k">class</span> <span class="nc">IMATLogColumn</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IMATLogColumn</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">TIMESTAMP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="c1"># currently these 2 are the same column because</span>
     <span class="c1"># the log file formatting is inconsistent</span>
@@ -551,16 +551,16 @@ document.write(`
 
 <div class="viewcode-block" id="TextLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.TextLogParser">[docs]</a>
-<span class="k">class</span> <span class="nc">TextLogParser</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextLogParser</span><span class="p">:</span>
     <span class="n">EXPECTED_HEADER_FOR_IMAT_TEXT_LOG_FILE</span> <span class="o">=</span> \
             <span class="s1">&#39; TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image</span><span class="se">\n</span><span class="s1">&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;   &quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 
 <div class="viewcode-block" id="TextLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
         <span class="n">parsed_log</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">:</span> <span class="p">[],</span>
@@ -580,16 +580,16 @@ document.write(`
             <span class="k">return</span> <span class="n">parsed_log</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unable to parse value from log file to correct type for row: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">value_error</span>
+                <span class="sa">f</span><span class="s2">&quot;Unable to parse value from log file to correct type for row: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">value_error</span>
         <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">index_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unable to parse value from log file to correct type for row: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">index_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">index_error</span></div>
+                <span class="sa">f</span><span class="s2">&quot;Unable to parse value from log file to correct type for row: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">index_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">index_error</span></div>
 
 
 <div class="viewcode-block" id="TextLogParser.try_insert_header">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_insert_header">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">try_insert_header</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_insert_header</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Attempt to normalise data where no header is present by inserting one.</span>
 
@@ -610,7 +610,7 @@ document.write(`
 <div class="viewcode-block" id="TextLogParser.try_remove_invalid_lines">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.TextLogParser.try_remove_invalid_lines">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">try_remove_invalid_lines</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_remove_invalid_lines</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Attempt to normalise data where invalid lines are the incorrect number of columns are present.</span>
 
@@ -626,16 +626,16 @@ document.write(`
 
 <div class="viewcode-block" id="CSVLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser">[docs]</a>
-<span class="k">class</span> <span class="nc">CSVLogParser</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CSVLogParser</span><span class="p">:</span>
     <span class="n">EXPECTED_HEADER_FOR_IMAT_CSV_LOG_FILE</span> <span class="o">=</span> \
         <span class="s2">&quot;TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="CSVLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
         <span class="n">parsed_log</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">:</span> <span class="p">[],</span>
@@ -664,13 +664,13 @@ document.write(`
             <span class="k">return</span> <span class="n">parsed_log</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">value_error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unable to parse value from log file to correct type for row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">value_error</span></div>
+                <span class="sa">f</span><span class="s2">&quot;Unable to parse value from log file to correct type for row: </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">value_error</span></div>
 
 
 <div class="viewcode-block" id="CSVLogParser.try_insert_header">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_insert_header">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">try_insert_header</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_insert_header</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Attempt to normalise data where no header is present by inserting one.</span>
 
@@ -686,7 +686,7 @@ document.write(`
 <div class="viewcode-block" id="CSVLogParser.try_remove_invalid_lines">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.CSVLogParser.try_remove_invalid_lines">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">try_remove_invalid_lines</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">try_remove_invalid_lines</span><span class="p">(</span><span class="n">file_contents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Attempt to normalise data where invalid lines are the incorrect number of columns are present.</span>
 
@@ -701,9 +701,9 @@ document.write(`
 
 <div class="viewcode-block" id="IMATLogFile">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile">[docs]</a>
-<span class="k">class</span> <span class="nc">IMATLogFile</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IMATLogFile</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">source_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">source_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_source_file</span> <span class="o">=</span> <span class="n">source_file</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_parser</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -712,7 +712,7 @@ document.write(`
 <div class="viewcode-block" id="IMATLogFile.find_parser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.find_parser">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">find_parser</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_parser</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Try and determine the format of the log file by checking the first row. for the type of seperator used and then</span>
 <span class="sd">        attempting to normalise the data if needed before selecting the appropriate parser.</span>
@@ -731,7 +731,7 @@ document.write(`
 <div class="viewcode-block" id="IMATLogFile.get_seperator">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.get_seperator">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_seperator</span><span class="p">(</span><span class="n">first_row</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_seperator</span><span class="p">(</span><span class="n">first_row</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Try and determine the seperator used in the log file.</span>
 <span class="sd">        If neither a tab or comma is found, then return a RuntimeError</span>
@@ -750,12 +750,12 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">source_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_file</span>
 
 <div class="viewcode-block" id="IMATLogFile.projection_numbers">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_numbers">[docs]</a>
-    <span class="k">def</span> <span class="nf">projection_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projection_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">proj_nums</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
         <span class="n">proj_nums</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">proj_nums</span></div>
@@ -763,7 +763,7 @@ document.write(`
 
 <div class="viewcode-block" id="IMATLogFile.projection_angles">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.projection_angles">[docs]</a>
-    <span class="k">def</span> <span class="nf">projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span><span class="p">:</span>
         <span class="n">angles</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">]))</span>
         <span class="n">angles</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span></div>
@@ -771,7 +771,7 @@ document.write(`
 
 <div class="viewcode-block" id="IMATLogFile.counts">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.counts">[docs]</a>
-    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counts</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counts</span><span class="p">:</span>
         <span class="n">counts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span><span class="p">]))</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">[</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
                 <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">COUNTS_AFTER</span><span class="p">],</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
@@ -783,7 +783,7 @@ document.write(`
 
 <div class="viewcode-block" id="IMATLogFile.raise_if_angle_missing">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.raise_if_angle_missing">[docs]</a>
-    <span class="k">def</span> <span class="nf">raise_if_angle_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">raise_if_angle_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">image_filenames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -510,20 +510,20 @@ document.write(`
   <h1>Source code for mantidimaging.core.reconstruct.tomopy_recon</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct.base_recon</span> <span class="kn">import</span> <span class="n">BaseRecon</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.optional_imports</span> <span class="kn">import</span> <span class="n">safe_import</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.reconstruct.base_recon</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRecon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.optional_imports</span><span class="w"> </span><span class="kn">import</span> <span class="n">safe_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">tomopy</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">&#39;tomopy&#39;</span><span class="p">)</span>
@@ -531,12 +531,12 @@ document.write(`
 
 <div class="viewcode-block" id="TomopyRecon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon">[docs]</a>
-<span class="k">class</span> <span class="nc">TomopyRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TomopyRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
 
 <div class="viewcode-block" id="TomopyRecon.find_cor">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.find_cor">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="n">sino</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">sinograms</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">:</span><span class="n">slice_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">1e-6</span><span class="p">)</span>
         <span class="n">sino</span> <span class="o">=</span> <span class="n">BaseRecon</span><span class="o">.</span><span class="n">prepare_sinogram</span><span class="p">(</span><span class="n">sino</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tomopy</span><span class="o">.</span><span class="n">find_center</span><span class="p">(</span><span class="n">sino</span><span class="p">,</span>
@@ -549,7 +549,7 @@ document.write(`
 <div class="viewcode-block" id="TomopyRecon.single_sino">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.single_sino">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                     <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
                     <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span>
                     <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
@@ -568,7 +568,7 @@ document.write(`
 <div class="viewcode-block" id="TomopyRecon.full">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.full">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
              <span class="n">cors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">],</span>
              <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
              <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -584,7 +584,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;TomoPy reconstruction&#39;</span><span class="p">)</span>
 
-        <span class="kn">import</span> <span class="nn">multiprocessing</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
         <span class="n">ncores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
 
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
@@ -607,7 +607,7 @@ document.write(`
 <div class="viewcode-block" id="TomopyRecon.allowed_filters">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.allowed_filters">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">allowed_filters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">allowed_filters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;ramlak&quot;</span><span class="p">,</span> <span class="s1">&#39;shepp&#39;</span><span class="p">,</span> <span class="s1">&#39;cosine&#39;</span><span class="p">,</span> <span class="s1">&#39;hann&#39;</span><span class="p">,</span> <span class="s1">&#39;hamming&#39;</span><span class="p">,</span> <span class="s1">&#39;parzen&#39;</span><span class="p">,</span> <span class="s1">&#39;butterworth&#39;</span><span class="p">]</span></div>
 </div>
 
@@ -615,7 +615,7 @@ document.write(`
 
 <div class="viewcode-block" id="allowed_recon_kwargs">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.allowed_recon_kwargs">[docs]</a>
-<span class="k">def</span> <span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="c1"># only gridrec is used from tomopy</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;gridrec&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;num_gridx&#39;</span><span class="p">,</span> <span class="s1">&#39;num_gridy&#39;</span><span class="p">,</span> <span class="s1">&#39;filter_name&#39;</span><span class="p">,</span> <span class="s1">&#39;filter_par&#39;</span><span class="p">]}</span></div>
 

@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -510,23 +510,23 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module handles the loading of FIT, FITS, TIF, TIFF</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-    <span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-    <span class="kn">from</span> <span class="nn">...utility.data_containers</span> <span class="kn">import</span> <span class="n">Indices</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">...utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Indices</span>
 
 
 <div class="viewcode-block" id="execute">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.img_loader.html#mantidimaging.core.io.loader.img_loader.execute">[docs]</a>
-<span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">load_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">load_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
             <span class="n">sample_path</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
             <span class="n">img_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span><span class="p">,</span>
@@ -567,9 +567,9 @@ document.write(`
 
 <div class="viewcode-block" id="ImageLoader">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.img_loader.html#mantidimaging.core.io.loader.img_loader.ImageLoader">[docs]</a>
-<span class="k">class</span> <span class="nc">ImageLoader</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageLoader</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">load_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
                  <span class="n">img_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">img_shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
@@ -585,7 +585,7 @@ document.write(`
 
 <div class="viewcode-block" id="ImageLoader.load_sample_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.img_loader.html#mantidimaging.core.io.loader.img_loader.ImageLoader.load_sample_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_sample_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_sample_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
         <span class="c1"># determine what the loaded data was</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="c1"># the loaded file was a single image</span>
@@ -594,7 +594,7 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data loaded has invalid shape: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_files_load_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_files_load_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
@@ -606,15 +606,15 @@ document.write(`
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;An image has different width and/or height &quot;</span>
                                      <span class="s2">&quot;dimensions! All images must have the same &quot;</span>
                                      <span class="sa">f</span><span class="s2">&quot;dimensions. Expected dimensions: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="si">}</span><span class="s2"> Error &quot;</span>
-                                     <span class="sa">f</span><span class="s2">&quot;message: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                                     <span class="sa">f</span><span class="s2">&quot;message: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
                 <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load file </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. Error details: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load file </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. Error details: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
         <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="ImageLoader.load_files">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.img_loader.html#mantidimaging.core.io.loader.img_loader.ImageLoader.load_files">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
         <span class="c1"># Zeroing here to make sure that we can allocate the memory.</span>
         <span class="c1"># If it&#39;s not possible better crash here than later.</span>
         <span class="n">num_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>

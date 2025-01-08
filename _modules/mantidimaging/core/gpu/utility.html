@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -507,17 +507,17 @@ document.write(`
   <h1>Source code for mantidimaging.core.gpu.utility</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
 <span class="n">CUPY_NOT_IMPORTED</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">cupy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cp</span>
     <span class="n">mempool</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_default_memory_pool</span><span class="p">()</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="c1"># cupy not installed</span>
@@ -539,14 +539,14 @@ document.write(`
 <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">_cupy_on_system</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cupy_on_system</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :return: True if cupy is installed on the system, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="ow">not</span> <span class="n">CUPY_NOT_IMPORTED</span>
 
 
-<span class="k">def</span> <span class="nf">_cupy_installed_correctly</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cupy_installed_correctly</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :return: True if cupy is able to run on the system, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -573,7 +573,7 @@ document.write(`
 
 <div class="viewcode-block" id="gpu_available">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.gpu.utility.html#mantidimaging.core.gpu.utility.gpu_available">[docs]</a>
-<span class="k">def</span> <span class="nf">gpu_available</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gpu_available</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :return: True if cupy is installed AND working, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -581,7 +581,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_load_cuda_kernel</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_cuda_kernel</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads the CUDA kernel so that cupy can act as a mediator. Replaces instances of &#39;float&#39; with &#39;double&#39; if the dtype</span>
 <span class="sd">    is float64.</span>
@@ -596,7 +596,7 @@ document.write(`
     <span class="k">return</span> <span class="n">cuda_kernel</span>
 
 
-<span class="k">def</span> <span class="nf">_free_memory_pool</span><span class="p">(</span><span class="n">arrays</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_free_memory_pool</span><span class="p">(</span><span class="n">arrays</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Delete any given GPU arrays and instruct the memory pool to free unused blocks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -605,7 +605,7 @@ document.write(`
     <span class="n">mempool</span><span class="o">.</span><span class="n">free_all_blocks</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_create_pinned_memory</span><span class="p">(</span><span class="n">cpu_array</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_pinned_memory</span><span class="p">(</span><span class="n">cpu_array</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use pinned memory in order to store a numpy array on the GPU.</span>
 <span class="sd">    :param cpu_array: The numpy array to be transferred to the GPU.</span>
@@ -617,7 +617,7 @@ document.write(`
     <span class="k">return</span> <span class="n">src</span>
 
 
-<span class="k">def</span> <span class="nf">_send_single_array_to_gpu</span><span class="p">(</span><span class="n">cpu_array</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_send_single_array_to_gpu</span><span class="p">(</span><span class="n">cpu_array</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sends a single array to the GPU using pinned memory and a stream.</span>
 <span class="sd">    :param cpu_array: The numpy array to be transferred to the GPU.</span>
@@ -630,7 +630,7 @@ document.write(`
     <span class="k">return</span> <span class="n">gpu_array</span>
 
 
-<span class="k">def</span> <span class="nf">_send_arrays_to_gpu_with_pinned_memory</span><span class="p">(</span><span class="n">cpu_arrays</span><span class="p">,</span> <span class="n">streams</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_send_arrays_to_gpu_with_pinned_memory</span><span class="p">(</span><span class="n">cpu_arrays</span><span class="p">,</span> <span class="n">streams</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Transfer the arrays to the GPU using pinned memory. Raises an error if the GPU runs out of memory.</span>
 <span class="sd">    :param cpu_arrays: A list of numpy arrays to be transferred to the GPU.</span>
@@ -655,7 +655,7 @@ document.write(`
         <span class="k">return</span> <span class="p">[]</span>
 
 
-<span class="k">def</span> <span class="nf">_create_block_and_grid_args</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_block_and_grid_args</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create the block and grid arguments that are passed to the cupy. These determine how the array</span>
 <span class="sd">    is broken up.</span>
@@ -668,7 +668,7 @@ document.write(`
     <span class="k">return</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">grid_size</span>
 
 
-<span class="k">def</span> <span class="nf">_create_padded_array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">scipy_mode</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_padded_array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">scipy_mode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates the padded array on the CPU for the median filter.</span>
 <span class="sd">    :param data: The data array to be padded.</span>
@@ -681,7 +681,7 @@ document.write(`
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="p">((</span><span class="n">pad_size</span><span class="p">,</span> <span class="n">pad_size</span><span class="p">),</span> <span class="p">(</span><span class="n">pad_size</span><span class="p">,</span> <span class="n">pad_size</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="n">EQUIVALENT_PAD_MODE</span><span class="p">[</span><span class="n">scipy_mode</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">_replace_gpu_array_contents</span><span class="p">(</span><span class="n">gpu_array</span><span class="p">,</span> <span class="n">cpu_array</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_replace_gpu_array_contents</span><span class="p">(</span><span class="n">gpu_array</span><span class="p">,</span> <span class="n">cpu_array</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Overwrites the contents of an existing GPU array with a given CPU array.</span>
 <span class="sd">    :param gpu_array: The GPU array to be overwritten.</span>
@@ -691,7 +691,7 @@ document.write(`
     <span class="n">gpu_array</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">cpu_array</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_padding_value</span><span class="p">(</span><span class="n">filter_size</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_padding_value</span><span class="p">(</span><span class="n">filter_size</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine the padding value by using the filter size.</span>
 <span class="sd">    :param filter_size: The filter size.</span>
@@ -702,9 +702,9 @@ document.write(`
 
 <div class="viewcode-block" id="CudaExecuter">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.gpu.utility.html#mantidimaging.core.gpu.utility.CudaExecuter">[docs]</a>
-<span class="k">class</span> <span class="nc">CudaExecuter</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CudaExecuter</span><span class="p">:</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
 
         <span class="c1"># Load the CUDA kernel through cupy</span>
         <span class="n">loaded_from_source</span> <span class="o">=</span> <span class="n">_load_cuda_kernel</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
@@ -714,7 +714,7 @@ document.write(`
         <span class="c1"># Warm up the CUDA functions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_warm_up</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_warm_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_warm_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the median filter on a small test array in order to allow it to compile then deleted the GPU arrays.</span>
 <span class="sd">        :param dtype: The data type of the input array.</span>
@@ -731,7 +731,7 @@ document.write(`
         <span class="c1"># Clear the test arrays</span>
         <span class="n">_free_memory_pool</span><span class="p">([</span><span class="n">test_data</span><span class="p">,</span> <span class="n">test_padding</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_cuda_single_image_median_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">padded_data</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">block_size</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cuda_single_image_median_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">padded_data</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">block_size</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the median filter on a single 2D image using CUDA.</span>
 <span class="sd">        :param input_data: A 2D GPU data array.</span>
@@ -752,7 +752,7 @@ document.write(`
 
 <div class="viewcode-block" id="CudaExecuter.median_filter">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.gpu.utility.html#mantidimaging.core.gpu.utility.CudaExecuter.median_filter">[docs]</a>
-    <span class="k">def</span> <span class="nf">median_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">median_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the median filter on a stack of 2D images asynchronously.</span>
 

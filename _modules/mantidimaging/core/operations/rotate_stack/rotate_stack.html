@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,29 +507,29 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.rotate_stack.rotate_stack</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span> <span class="nn">skimage.transform</span> <span class="kn">import</span> <span class="n">rotate</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QComboBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">rotate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QComboBox</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging</span> <span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 
 <div class="viewcode-block" id="RotateFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#mantidimaging.core.operations.rotate_stack.rotate_stack.RotateFilter">[docs]</a>
-<span class="k">class</span> <span class="nc">RotateFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RotateFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotates the image data by an arbitrary degree counter-clockwise.</span>
 
 <span class="sd">    Intended to be used on: Projections</span>
@@ -546,7 +546,7 @@ document.write(`
 <div class="viewcode-block" id="RotateFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#mantidimaging.core.operations.rotate_stack.rotate_stack.RotateFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Rotates images by an arbitrary degree.</span>
 
@@ -566,8 +566,8 @@ document.write(`
 <div class="viewcode-block" id="RotateFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#mantidimaging.core.operations.rotate_stack.rotate_stack.RotateFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">add_property_to_form</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
         <span class="n">dropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="n">dropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;180&#39;</span><span class="p">,</span> <span class="s1">&#39;270&#39;</span><span class="p">,</span> <span class="s1">&#39;Custom&#39;</span><span class="p">])</span>
@@ -593,12 +593,12 @@ document.write(`
 <div class="viewcode-block" id="RotateFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#mantidimaging.core.operations.rotate_stack.rotate_stack.RotateFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">RotateFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="o">.</span><span class="n">value</span><span class="p">())</span></div>
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_update_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">dropdown</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">dropdown</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle Dropdown change event to set value is angle is not custom</span>
 
@@ -613,7 +613,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_get_cardinal_angle</span><span class="p">(</span><span class="n">general_angle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_cardinal_angle</span><span class="p">(</span><span class="n">general_angle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the cardinal angle based on the general input angle by rounding to</span>
 <span class="sd">    the nearest 90 degree and then mod 360. Ths is used to determine if the angle</span>
@@ -625,7 +625,7 @@ document.write(`
     <span class="k">return</span> <span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">general_angle</span> <span class="o">/</span> <span class="mi">90</span><span class="p">)</span> <span class="o">*</span> <span class="mi">90</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
 
 
-<span class="k">def</span> <span class="nf">_do_rotation</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_do_rotation</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handle rotation of image slice by angle. This includes rotation of aspect</span>
 <span class="sd">    ratio and in place rotation depending on angle.</span>
@@ -644,7 +644,7 @@ document.write(`
     <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="k">def</span> <span class="nf">_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform a cardinal rotation of the image stack by angle if angle is cardinal and additionally</span>
 <span class="sd">    in-place rotation if general angle.</span>
@@ -666,7 +666,7 @@ document.write(`
     <span class="k">return</span> <span class="n">new_data</span>
 
 
-<span class="k">def</span> <span class="nf">_inplace_rotation</span><span class="p">(</span><span class="n">number_of_slices</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_inplace_rotation</span><span class="p">(</span><span class="n">number_of_slices</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    In-place rotation of image slices by angle.</span>
 
@@ -681,7 +681,7 @@ document.write(`
     <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">array_index</span><span class="p">,</span> <span class="n">array_list</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">array_index</span><span class="p">,</span> <span class="n">array_list</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rotate array in increments of 90 degrees.</span>
 <span class="sd">    param: array_index: index of array in array_list</span>
@@ -692,7 +692,7 @@ document.write(`
     <span class="n">array_list</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">array_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">array_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">array_index</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">cardinal_rotation</span><span class="p">[</span><span class="n">angle</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">]])</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_rotation_per_slice_inplace</span><span class="p">(</span><span class="n">array_index</span><span class="p">,</span> <span class="n">array_list</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_rotation_per_slice_inplace</span><span class="p">(</span><span class="n">array_index</span><span class="p">,</span> <span class="n">array_list</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rotate array in-place so that aspect ratio is not changed</span>
 <span class="sd">    param: array_list: list of arrays - [array]</span>

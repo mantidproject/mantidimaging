@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,26 +507,26 @@ document.write(`
   <h1>Source code for mantidimaging.core.operations.rebin.rebin</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">skimage.transform</span> <span class="kn">import</span> <span class="n">resize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">resize</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.operations.base_filter</span> <span class="kn">import</span> <span class="n">BaseFilter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.parallel</span> <span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span><span class="p">,</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility</span> <span class="kn">import</span> <span class="n">add_property_to_form</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span><span class="p">,</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 
 <div class="viewcode-block" id="RebinFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter">[docs]</a>
-<span class="k">class</span> <span class="nc">RebinFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RebinFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rebin the image to reduce the resolution.</span>
 
 <span class="sd">    This filter temporarily increases memory usage, while the image is being rebinned.</span>
@@ -542,7 +542,7 @@ document.write(`
 <div class="viewcode-block" id="RebinFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">rebin_param</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">rebin_param</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param images: Sample data which is to be processed. Expects radiograms</span>
 <span class="sd">        :param rebin_param: int, float or tuple</span>
@@ -574,7 +574,7 @@ document.write(`
 <div class="viewcode-block" id="RebinFilter.compute_function">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter.compute_function">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">array</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">new_shape</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;new_shape&#39;</span><span class="p">]</span>
@@ -585,7 +585,7 @@ document.write(`
 <div class="viewcode-block" id="RebinFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="c1"># Rebin by uniform factor options</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Factor&#39;</span><span class="p">,</span>
                                          <span class="s1">&#39;float&#39;</span><span class="p">,</span>
@@ -601,7 +601,7 @@ document.write(`
         <span class="n">_</span><span class="p">,</span> <span class="n">shape_x</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">shape_range</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">shape_y</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">shape_range</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
 
-        <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QRadioButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QRadioButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span>
         <span class="n">shape_fields</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">shape_fields</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">shape_x</span><span class="p">)</span>
         <span class="n">shape_fields</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">shape_y</span><span class="p">)</span>
@@ -609,7 +609,7 @@ document.write(`
         <span class="c1"># Rebin dimension selection options</span>
         <span class="n">rebin_by_factor_radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="s2">&quot;Rebin by Factor&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">size_by_factor_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">size_by_factor_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">):</span>
             <span class="n">factor</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
             <span class="n">on_change</span><span class="p">()</span>
 
@@ -617,7 +617,7 @@ document.write(`
 
         <span class="n">rebin_to_dimensions_radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="s2">&quot;Rebin to Dimensions&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">size_by_dimensions_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">size_by_dimensions_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">):</span>
             <span class="n">shape_x</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
             <span class="n">shape_y</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
             <span class="n">on_change</span><span class="p">()</span>
@@ -650,7 +650,7 @@ document.write(`
 <div class="viewcode-block" id="RebinFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">rebin_to_dimensions_radio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">rebin_to_dimensions_radio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">shape_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">shape_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">rebin_by_factor_radio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -668,7 +668,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_create_reshaped_array</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">rebin_param</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_reshaped_array</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">rebin_param</span><span class="p">):</span>
     <span class="n">old_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">num_images</span> <span class="o">=</span> <span class="n">old_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -687,7 +687,7 @@ document.write(`
 
 <div class="viewcode-block" id="modes">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.modes">[docs]</a>
-<span class="k">def</span> <span class="nf">modes</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="s2">&quot;wrap&quot;</span><span class="p">,</span> <span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="s2">&quot;symmetric&quot;</span><span class="p">]</span></div>
 
 </pre></div>

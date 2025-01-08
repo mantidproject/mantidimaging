@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=517e76a2" />
@@ -510,35 +510,35 @@ document.write(`
   <h1>Source code for mantidimaging.core.reconstruct.cil_recon</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">DEBUG</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">ceil</span>
-<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">DEBUG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">ceil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">cil.framework</span> <span class="kn">import</span> <span class="p">(</span><span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">DataOrder</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">DataOrder</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span><span class="p">,</span>
                            <span class="n">BlockDataContainer</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">cil.optimisation.algorithms</span> <span class="kn">import</span> <span class="n">PDHG</span><span class="p">,</span> <span class="n">SPDHG</span><span class="p">,</span> <span class="n">Algorithm</span>
-<span class="kn">from</span> <span class="nn">cil.optimisation.operators</span> <span class="kn">import</span> <span class="n">GradientOperator</span><span class="p">,</span> <span class="n">BlockOperator</span>
-<span class="kn">from</span> <span class="nn">cil.optimisation.operators</span> <span class="kn">import</span> <span class="n">SymmetrisedGradientOperator</span><span class="p">,</span> <span class="n">ZeroOperator</span><span class="p">,</span> <span class="n">IdentityOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDHG</span><span class="p">,</span> <span class="n">SPDHG</span><span class="p">,</span> <span class="n">Algorithm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">GradientOperator</span><span class="p">,</span> <span class="n">BlockOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymmetrisedGradientOperator</span><span class="p">,</span> <span class="n">ZeroOperator</span><span class="p">,</span> <span class="n">IdentityOperator</span>
 
-<span class="kn">from</span> <span class="nn">cil.optimisation.functions</span> <span class="kn">import</span> <span class="n">MixedL21Norm</span><span class="p">,</span> <span class="n">L2NormSquared</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">ZeroFunction</span><span class="p">,</span> <span class="n">IndicatorBox</span><span class="p">,</span> <span class="n">Function</span>
-<span class="kn">from</span> <span class="nn">cil.optimisation.utilities.callbacks</span> <span class="kn">import</span> <span class="n">Callback</span>
-<span class="kn">from</span> <span class="nn">cil.plugins.astra.operators</span> <span class="kn">import</span> <span class="n">ProjectionOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MixedL21Norm</span><span class="p">,</span> <span class="n">L2NormSquared</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">ZeroFunction</span><span class="p">,</span> <span class="n">IndicatorBox</span><span class="p">,</span> <span class="n">Function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.utilities.callbacks</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.plugins.astra.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionOperator</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.reconstruct.base_recon</span> <span class="kn">import</span> <span class="n">BaseRecon</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.optional_imports</span> <span class="kn">import</span> <span class="n">safe_import</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.progress_reporting</span> <span class="kn">import</span> <span class="n">Progress</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.size_calculator</span> <span class="kn">import</span> <span class="n">full_size_KB</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.memory_usage</span> <span class="kn">import</span> <span class="n">system_free_memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.reconstruct.base_recon</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRecon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.optional_imports</span><span class="w"> </span><span class="kn">import</span> <span class="n">safe_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.size_calculator</span><span class="w"> </span><span class="kn">import</span> <span class="n">full_size_KB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.memory_usage</span><span class="w"> </span><span class="kn">import</span> <span class="n">system_free_memory</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">tomopy</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">&#39;tomopy&#39;</span><span class="p">)</span>
@@ -547,13 +547,13 @@ document.write(`
 
 <div class="viewcode-block" id="MIProgressCallback">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.MIProgressCallback">[docs]</a>
-<span class="k">class</span> <span class="nc">MIProgressCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MIProgressCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">:</span>
             <span class="n">extra_info</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">iterations</span> <span class="ow">and</span> <span class="n">algo</span><span class="o">.</span><span class="n">iterations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">algo</span><span class="o">.</span><span class="n">iteration</span><span class="p">:</span>
@@ -572,13 +572,13 @@ document.write(`
 
 <div class="viewcode-block" id="RecordResidualsCallback">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.RecordResidualsCallback">[docs]</a>
-<span class="k">class</span> <span class="nc">RecordResidualsCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecordResidualsCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">residual_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">residual_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residual_interval</span> <span class="o">=</span> <span class="n">residual_interval</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algo</span><span class="p">:</span> <span class="n">Algorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">algo</span><span class="o">.</span><span class="n">iteration</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">PDHG</span><span class="p">):</span>
                 <span class="n">forward_projection</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">operator</span><span class="o">.</span><span class="n">direct</span><span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">solution</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span>
@@ -595,12 +595,12 @@ document.write(`
 
 <div class="viewcode-block" id="CILRecon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon">[docs]</a>
-<span class="k">class</span> <span class="nc">CILRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CILRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
 
 <div class="viewcode-block" id="CILRecon.set_up_TV_regularisation">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.set_up_TV_regularisation">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_up_TV_regularisation</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_up_TV_regularisation</span><span class="p">(</span>
             <span class="n">image_geometry</span><span class="p">:</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="p">:</span> <span class="n">AcquisitionData</span><span class="p">,</span>
             <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BlockOperator</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">]:</span>
 
@@ -652,7 +652,7 @@ document.write(`
 <div class="viewcode-block" id="CILRecon.set_up_TGV_regularisation">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.set_up_TGV_regularisation">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_up_TGV_regularisation</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_up_TGV_regularisation</span><span class="p">(</span>
             <span class="n">image_geometry</span><span class="p">:</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="p">:</span> <span class="n">AcquisitionData</span><span class="p">,</span>
             <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">BlockOperator</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">Function</span><span class="p">]:</span>
 
@@ -716,7 +716,7 @@ document.write(`
 <div class="viewcode-block" id="CILRecon.set_approx_norm">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.set_approx_norm">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">set_approx_norm</span><span class="p">(</span><span class="n">A2d</span><span class="p">:</span> <span class="n">BlockOperator</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="p">:</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_approx_norm</span><span class="p">(</span><span class="n">A2d</span><span class="p">:</span> <span class="n">BlockOperator</span><span class="p">,</span> <span class="n">acquisition_data</span><span class="p">:</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span>
                         <span class="n">image_geometry</span><span class="p">:</span> <span class="n">ImageGeometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use an analytic approximation of the norm of the operator</span>
@@ -737,7 +737,7 @@ document.write(`
 <div class="viewcode-block" id="CILRecon.get_data">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.get_data">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ag</span><span class="p">:</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ag</span><span class="p">:</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
                  <span class="n">num_subsets</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockDataContainer</span> <span class="o">|</span> <span class="n">AcquisitionData</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">AcquisitionData</span><span class="p">(</span><span class="n">sino</span><span class="p">,</span> <span class="n">deep_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">ag</span><span class="p">,</span> <span class="n">suppress_warning</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -760,7 +760,7 @@ document.write(`
 <div class="viewcode-block" id="CILRecon.find_cor">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.find_cor">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">tomopy</span><span class="o">.</span><span class="n">find_center</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">sinograms</span><span class="p">,</span>
                                   <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                   <span class="n">ind</span><span class="o">=</span><span class="n">slice_idx</span><span class="p">,</span>
@@ -771,7 +771,7 @@ document.write(`
 <div class="viewcode-block" id="CILRecon.single_sino">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.single_sino">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                     <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
                     <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span>
                     <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
@@ -861,7 +861,7 @@ document.write(`
 <div class="viewcode-block" id="CILRecon.full">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.CILRecon.full">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
              <span class="n">cors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">],</span>
              <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
              <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
@@ -987,7 +987,7 @@ document.write(`
 
 <div class="viewcode-block" id="allowed_recon_kwargs">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.allowed_recon_kwargs">[docs]</a>
-<span class="k">def</span> <span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;CIL_PDHG-TV&#39;</span><span class="p">:</span>
         <span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;num_iter&#39;</span><span class="p">,</span> <span class="s1">&#39;non_negative&#39;</span><span class="p">,</span> <span class="s1">&#39;stochastic&#39;</span><span class="p">,</span> <span class="s1">&#39;projections_per_subset&#39;</span><span class="p">,</span> <span class="s1">&#39;regularisation_percent&#39;</span><span class="p">]</span>

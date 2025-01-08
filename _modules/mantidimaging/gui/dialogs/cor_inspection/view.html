@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=517e76a2" />
@@ -507,23 +507,23 @@ document.write(`
   <h1>Source code for mantidimaging.gui.dialogs.cor_inspection.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QStackedWidget</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QStackedWidget</span>
 
-<span class="kn">from</span> <span class="nn">mantidimaging.core.data</span> <span class="kn">import</span> <span class="n">ImageStack</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.core.utility.data_containers</span> <span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.presenter</span> <span class="kn">import</span> <span class="n">CORInspectionDialogPresenter</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.recon_slice_view</span> <span class="kn">import</span> <span class="n">CompareSlicesView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.dialogs.cor_inspection.types</span> <span class="kn">import</span> <span class="n">ImageType</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.mvp_base</span> <span class="kn">import</span> <span class="n">BaseDialogView</span>
-<span class="kn">from</span> <span class="nn">mantidimaging.gui.utility.qt_helpers</span> <span class="kn">import</span> <span class="n">BlockQtSignals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.cor_inspection.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORInspectionDialogPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.cor_inspection.recon_slice_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompareSlicesView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.cor_inspection.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
 
 
 <div class="viewcode-block" id="CORInspectionDialogView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView">[docs]</a>
-<span class="k">class</span> <span class="nc">CORInspectionDialogView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CORInspectionDialogView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
     <span class="n">lessButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">currentButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">moreButton</span><span class="p">:</span> <span class="n">QPushButton</span>
@@ -534,7 +534,7 @@ document.write(`
 
     <span class="n">spin_box</span><span class="p">:</span> <span class="n">QSpinBox</span> <span class="o">|</span> <span class="n">QDoubleSpinBox</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
                  <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">iters_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/cor_inspection_dialog.ui&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iters_mode</span> <span class="o">=</span> <span class="n">iters_mode</span>
@@ -565,13 +565,13 @@ document.write(`
 
 <div class="viewcode-block" id="CORInspectionDialogView.set_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.set_image">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_canvas</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="n">image_type</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CORInspectionDialogView.set_maximum_cor">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.set_maximum_cor">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_maximum_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_maximum_cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the maximum valid rotation centre.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -579,25 +579,25 @@ document.write(`
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@step_size</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="p">]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">optimal_rotation_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimal_rotation_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">optimal_rotation_centre</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">optimal_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimal_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">optimal_iterations</span>
 
 <div class="viewcode-block" id="CORInspectionDialogView.mark_best_recon">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.mark_best_recon">[docs]</a>
-    <span class="k">def</span> <span class="nf">mark_best_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_best_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">best</span> <span class="o">=</span> <span class="n">diffs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">diffs</span><span class="p">))</span>
         <span class="n">buttons</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QPushButton</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lessButton</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentButton</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">moreButton</span><span class="p">]</span>
 
