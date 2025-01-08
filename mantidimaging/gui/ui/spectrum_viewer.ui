@@ -21,6 +21,9 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QTabWidget" name="formTabs">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
        <widget class="QWidget" name="optionsLayout">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -460,6 +463,18 @@
           </spacer>
          </item>
         </layout>
+       </widget>
+       <widget class="QWidget" name="fittingFormLayout">
+        <attribute name="title">
+         <string>Fitting</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_9"/>
+       </widget>
+       <widget class="QWidget" name="exportFormLayout">
+        <attribute name="title">
+         <string>Export</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_8"/>
        </widget>
       </widget>
       <widget class="QWidget" name="rightWidget" native="true">
