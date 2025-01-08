@@ -134,15 +134,6 @@ class SpectrumViewerWindowModel:
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
 
-    def set_new_roi(self, name: str) -> None:
-        """
-        Sets a new ROI with the given name
-
-        @param name: The name of the new ROI
-        """
-        height, width = self.get_image_shape()
-        self._roi_ranges[name] = SensibleROI.from_list([0, 0, width, height])
-
     def get_averaged_image(self) -> np.ndarray | None:
         """
         Get the averaged image from the stack in the model returning as a numpy array

@@ -328,10 +328,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_name = self.model.roi_name_generator()
         if roi_name in self.view.spectrum_widget.roi_dict:
             raise ValueError(f"ROI name already exists: {roi_name}")
-        self.model.set_new_roi(roi_name)
-        roi = self.model._roi_ranges.get(roi_name)
-        if roi is None:
-            raise ValueError(f"ROI for {roi_name} is not valid.")
+        height, width = self.model.get_image_shape()
+        roi = SensibleROI.from_list([0, 0, width, height])
+        self.model._roi_ranges[roi_name] = roi
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)
@@ -351,8 +350,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def add_rits_roi(self) -> None:
-        self.model.set_new_roi(ROI_RITS)
-        roi = self.model._roi_ranges[ROI_RITS]
+        roi = self.model._roi_ranges.setdefault(ROI_RITS, SensibleROI.from_list([0, 0, *self.model.get_image_shape()]))
         self.view.spectrum_widget.add_roi(roi, ROI_RITS)
         self.view.set_spectrum(ROI_RITS,
                                self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
