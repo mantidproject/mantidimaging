@@ -202,7 +202,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         for name in self.view.spectrum_widget.roi_dict:
             current_roi = self.view.spectrum_widget.get_roi(name)
-            self.view.spectrum_widget.set_roi(name, current_roi)
             if force_new_spectrums:
                 spectrum = self.model.get_spectrum(
                     current_roi,
@@ -429,7 +428,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def do_adjust_roi(self) -> None:
         new_roi = self.convert_spinbox_roi_to_SensibleROI(self.view.roiPropertiesSpinBoxes)
-        self.view.spectrum_widget.set_roi(self.view.current_roi_name, new_roi)
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
 
     def handle_storing_current_roi_name_on_tab_change(self) -> None:

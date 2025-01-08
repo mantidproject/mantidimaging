@@ -244,16 +244,6 @@ class SpectrumWidget(QWidget):
         else:
             raise KeyError(f"ROI with name {roi_name} does not exist in self.roi_dict or and is not 'all'")
 
-    def set_roi(self, roi_name: str, new_roi: SensibleROI) -> None:
-        if roi_name not in self.roi_dict:
-            raise KeyError(f"ROI '{roi_name}' does not exist.")
-        roi = self.roi_dict[roi_name]
-
-        roi.blockSignals(True)
-        roi.setPos((new_roi.left, new_roi.top))
-        roi.setSize((new_roi.width, new_roi.height))
-        roi.blockSignals(False)
-
     def remove_roi(self, roi_name: str) -> None:
         """
         Remove a given ROI by name unless it is 'roi' or 'all'.

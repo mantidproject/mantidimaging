@@ -152,14 +152,6 @@ class SpectrumWidgetTest(unittest.TestCase):
         self.spectrum_widget.remove_roi("new_roi")
         self.assertListEqual(list(self.spectrum_widget.roi_dict.keys()), ["all", "roi"])
 
-    def test_set_roi_updates_position_and_size(self):
-        self.spectrum_widget.roi_dict["test_roi"] = SpectrumROI("test_roi", SensibleROI(10, 20, 30, 40))
-        new_roi = SensibleROI(50, 60, 120, 140)
-        self.spectrum_widget.set_roi("test_roi", new_roi)
-        roi = self.spectrum_widget.roi_dict["test_roi"]
-        self.assertEqual(roi.pos(), Point(50, 60))
-        self.assertEqual(roi.size(), Point(70, 80))
-
     def test_WHEN_remove_roi_called_with_default_roi_THEN_raise_runtime_error(self):
         self.spectrum_widget.roi_dict = {"all": mock.Mock(), "roi": mock.Mock()}
         with self.assertRaises(RuntimeError):
