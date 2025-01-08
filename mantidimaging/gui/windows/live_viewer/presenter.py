@@ -46,6 +46,8 @@ class LiveViewerWindowPresenter(BasePresenter):
     model: LiveViewerWindowModel
     op_func: Callable
     roi_moving: bool = False
+    thread: QThread
+    worker: Worker
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -212,6 +214,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.update_spectrum_with_mean)
+        self.thread.finished.connect(self.set_roi_enabled)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
@@ -225,3 +228,13 @@ class LiveViewerWindowPresenter(BasePresenter):
     def update_spectrum_with_mean(self):
         self.view.spectrum.clearPlots()
         self.view.spectrum.plot(self.model.mean)
+
+    def set_roi_enabled(self):
+        self.view.live_viewer.roi_object.roi.translatable = True
+        self.view.live_viewer.roi_object.roi.resizable = True
+        self.view.live_viewer.roi_object.roi.blockSignals(False)
+
+    def set_roi_disabled(self):
+        self.view.live_viewer.roi_object.roi.translatable = False
+        self.view.live_viewer.roi_object.roi.resizable = False
+        self.view.live_viewer.roi_object.roi.blockSignals(True)
