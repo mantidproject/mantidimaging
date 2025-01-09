@@ -122,10 +122,10 @@ class LiveViewerWindowView(BaseMainWindowView):
             self.filter_params["Rotate Stack"] = {"params": {"angle": image_rotation_angle}}
         self.presenter.update_image_operation()
 
-    def set_load_as_dataset_enabled(self, enabled: bool):
+    def set_load_as_dataset_enabled(self, enabled: bool) -> None:
         self.load_as_dataset_action.setEnabled(enabled)
 
-    def set_spectrum_visibility(self):
+    def set_spectrum_visibility(self) -> None:
         widget_height = self.frameGeometry().height()
         if self.spectrum_action.isChecked():
             if not self.live_viewer.roi_object:

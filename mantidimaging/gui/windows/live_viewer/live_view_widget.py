@@ -56,10 +56,10 @@ class LiveViewWidget(GraphicsLayoutWidget):
         """
         self.image.clear()
 
-    def show_error(self, message: str | None):
+    def show_error(self, message: str | None) -> None:
         self.image.show_message(message)
 
-    def add_roi(self):
+    def add_roi(self) -> None:
         if self.image_shape == (-1, -1):
             return
         height, width = self.image_shape
