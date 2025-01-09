@@ -330,7 +330,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             raise ValueError(f"ROI name already exists: {roi_name}")
         height, width = self.model.get_image_shape()
         roi = SensibleROI.from_list([0, 0, width, height])
-        self.model._roi_ranges[roi_name] = roi
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)

@@ -378,12 +378,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertEqual(self.model.roi_name_generator(), "roi_1")
         self.assertEqual(self.model.roi_name_generator(), "roi_2")
 
-    def test_when_new_roi_set_THEN_roi_name_added_to_list_of_roi_names(self):
-        self.model.set_stack(generate_images())
-        self.model._roi_ranges["new_roi"] = SensibleROI.from_list([0, 0, 10, 10])
-        self.assertIn("new_roi", self.model._roi_ranges)
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all", "new_roi"])
-
     @parameterized.expand([
         ("False", None, False),
         ("True", ImageStack(np.ones([10, 11, 12])), True),
@@ -479,10 +473,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
             self.model.save_single_rits_spectrum(mock_path, ErrorMode.STANDARD_DEVIATION)
-        mock_save_rits_roi.assert_called_once_with(
-            mock_path,
-            mock.ANY,
-            SensibleROI.from_list([0, 0, 5, 5]))
+        mock_save_rits_roi.assert_called_once_with(mock_path, mock.ANY, SensibleROI.from_list([0, 0, 5, 5]))
 
     @mock.patch.object(SpectrumViewerWindowModel, "export_spectrum_to_rits")
     def test_save_rits_correct_transmission(self, mock_save_rits_roi):
