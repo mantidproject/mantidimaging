@@ -667,18 +667,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="o">=</span> <span class="n">normalise_stack</span></div>
 
 
-<div class="viewcode-block" id="SpectrumViewerWindowModel.set_new_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_new_roi">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_new_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets a new ROI with the given name</span>
-
-<span class="sd">        @param name: The name of the new ROI</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">])</span></div>
-
-
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_averaged_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_averaged_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_averaged_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
