@@ -477,18 +477,25 @@
         <layout class="QVBoxLayout" name="verticalLayout_8"/>
        </widget>
       </widget>
-      <widget class="QWidget" name="rightWidget" native="true">
+      <widget class="QStackedWidget" name="imageTabs">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QVBoxLayout" name="imageLayout"/>
-        </item>
-       </layout>
+       <widget class="QWidget" name="imagePage">
+        <layout class="QVBoxLayout" name="imageLayout">
+        </layout>
+       </widget>
+       <widget class="QWidget" name="fittingPage">
+        <layout class="QVBoxLayout" name="fittingLayout">
+        </layout>
+       </widget>
+       <widget class="QWidget" name="exportPage">
+        <layout class="QVBoxLayout" name="exportLayout">
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
