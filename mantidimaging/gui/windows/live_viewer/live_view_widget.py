@@ -25,7 +25,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     image_shape: tuple = (-1, -1)
     roi_changed = pyqtSignal()
-    roi_changed_start = pyqtSignal(int)
+    roi_changing = pyqtSignal()
     roi_object: SpectrumROI | None = None
 
     def __init__(self) -> None:
@@ -68,7 +68,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.roi_object.colour = (255, 194, 10, 255)
         self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
         self.roi_object.roi.sigRegionChangeFinished.connect(self.roi_changed.emit)
-        self.roi_object.roi.sigRegionChangeStarted.connect(self.roi_changed_start.emit)
+        self.roi_object.roi.sigRegionChanged.connect(self.roi_changing.emit)
         self.image.vb.addItem(self.roi_object.roi)
 
     def set_image_shape(self, shape: tuple) -> None:
