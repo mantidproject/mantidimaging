@@ -41,8 +41,7 @@ class LiveViewerWindowView(BaseMainWindowView):
 
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-        self.live_viewer.roi_changed.connect(self.presenter.handle_roi_moved)
-        self.live_viewer.roi_changed_start.connect(self.presenter.handle_roi_moved_start)
+        self.live_viewer.roi_changing.connect(self.presenter.handle_notify_roi_moved)
 
         self.splitter.addWidget(self.live_viewer)
         self.splitter.addWidget(self.spectrum_plot_widget)

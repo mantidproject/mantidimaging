@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
-from PyQt5.QtCore import pyqtSignal, QObject, QThread
+from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
 
 from imagecodecs._deflate import DeflateError
 
@@ -31,7 +31,7 @@ class Worker(QObject):
         self.presenter = presenter
 
     def run(self):
-        self.presenter.model.calc_mean_all_chunks(100)
+        self.presenter.model.calc_mean_chunk(100)
         self.finished.emit()
 
 
@@ -57,6 +57,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
         self.filters = {f.filter_name: f for f in load_filter_packages()}
+
+        self.handle_roi_change_timer = QTimer()
+        self.handle_roi_change_timer.setSingleShot(True)
+        self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
 
     def close(self) -> None:
         """Close the window."""
@@ -213,17 +217,22 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.worker = Worker(self)
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.update_spectrum_with_mean)
-        self.thread.finished.connect(self.set_roi_enabled)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.thread_cleanup)
         self.thread.start()
 
-    def handle_roi_moved_start(self):
+    def thread_cleanup(self):
+        self.update_spectrum_with_mean()
+        self.set_roi_enabled()
+        self.try_next_mean_chunk()
+
+    def handle_notify_roi_moved(self):
         self.roi_moving = True
         self.model.clear_mean_partial()
-        self.update_spectrum(self.model.mean)
+        if not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(10)
 
     def update_spectrum_with_mean(self):
         self.view.spectrum.clearPlots()
@@ -238,3 +247,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.roi_object.roi.translatable = False
         self.view.live_viewer.roi_object.roi.resizable = False
         self.view.live_viewer.roi_object.roi.blockSignals(True)
+
+    def try_next_mean_chunk(self):
+        if np.isnan(self.model.mean).any():
+            if not self.handle_roi_change_timer.isActive():
+                self.handle_roi_change_timer.start(100)
