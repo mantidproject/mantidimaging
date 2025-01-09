@@ -189,7 +189,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     def handle_roi_moved(self, force_new_spectrums: bool = False):
         roi = self.view.live_viewer.get_roi()
         self.model.roi = roi
-        self.set_roi_disabled()
+        self.set_roi_enabled(False)
         self.run_mean_chunk_calc()
         self.roi_moving = False
 
@@ -206,7 +206,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def thread_cleanup(self):
         self.update_spectrum_with_mean()
-        self.set_roi_enabled()
+        self.set_roi_enabled(True)
         self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self):
@@ -219,15 +219,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.spectrum.clearPlots()
         self.view.spectrum.plot(self.model.mean)
 
-    def set_roi_enabled(self):
-        self.view.live_viewer.roi_object.roi.translatable = True
-        self.view.live_viewer.roi_object.roi.resizable = True
-        self.view.live_viewer.roi_object.roi.blockSignals(False)
-
-    def set_roi_disabled(self):
-        self.view.live_viewer.roi_object.roi.translatable = False
-        self.view.live_viewer.roi_object.roi.resizable = False
-        self.view.live_viewer.roi_object.roi.blockSignals(True)
+    def set_roi_enabled(self, enable: bool):
+        self.view.live_viewer.roi_object.roi.translatable = enable
+        self.view.live_viewer.roi_object.roi.resizable = enable
+        self.view.live_viewer.roi_object.roi.blockSignals(not enable)
 
     def try_next_mean_chunk(self):
         if np.isnan(self.model.mean).any():
