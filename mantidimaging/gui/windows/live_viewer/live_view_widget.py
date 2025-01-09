@@ -1,7 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import GraphicsLayoutWidget, mkPen
@@ -12,8 +11,7 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 from mantidimaging.gui.widgets.zslider.zslider import ZSlider
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
-if TYPE_CHECKING:
-    import numpy as np
+import numpy as np
 
 
 class LiveViewWidget(GraphicsLayoutWidget):
@@ -47,7 +45,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         Show the image in the image view.
         @param image: The image to show
         """
-        self.image_shape = image.shape
+        self.image_shape = (np.shape(image)[0], np.shape(image)[1])
         self.image.setImage(image)
 
     def handle_deleted(self) -> None:
@@ -56,10 +54,10 @@ class LiveViewWidget(GraphicsLayoutWidget):
         """
         self.image.clear()
 
-    def show_error(self, message: str | None):
+    def show_error(self, message: str | None) -> None:
         self.image.show_message(message)
 
-    def add_roi(self):
+    def add_roi(self) -> None:
         if self.image_shape == (-1, -1):
             return
         height, width = self.image_shape

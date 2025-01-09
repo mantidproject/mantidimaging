@@ -41,8 +41,7 @@ class ImageCache:
     """
     An ImageCache class to be used as a decorator on image read functions to store recent images in memory
     """
-    #cache_dict: dict[Image_Data, list[np.ndarray, float]]
-    cache_dict: dict[Image_Data, tuple[np.ndarray, float]]
+    cache_dict: dict[Image_Data, np.ndarray]
     max_cache_size: int | None = None
 
     def __init__(self, max_cache_size=None):
@@ -63,7 +62,14 @@ class ImageCache:
     def _remove_oldest_image(self) -> None:
         del self.cache_dict[self._get_oldest_image()]
 
+<<<<<<< HEAD
     def load_image(self, image: Image_Data) -> np.ndarray | None:
+=======
+    def use_loading_function(self, func: typing.Callable) -> None:
+        self.loading_func = func
+
+    def load_image(self, image: Image_Data) -> np.ndarray:
+>>>>>>> b65e2adfa (fixup! mypy type annotations)
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:
@@ -167,7 +173,6 @@ class LiveViewerWindowModel:
         self.mean_paths: set[Path] = set()
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=100)
-        self.calc_mean_all_chunks_thread = None
 
     @property
     def path(self) -> Path | None:
