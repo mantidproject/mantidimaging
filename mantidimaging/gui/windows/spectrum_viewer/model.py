@@ -301,7 +301,6 @@ class SpectrumViewerWindowModel:
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
         @param path: The path to save the CSV file to.
         @param normalized: Whether to save the normalized spectrum.
-
         """
         if self._stack is None:
             raise ValueError("No stack selected")
@@ -329,9 +328,10 @@ class SpectrumViewerWindowModel:
                 csv_output.add_column(f"{roi_name}_norm",
                                       self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
                                       "Counts")
+
         with path.open("w") as outfile:
             csv_output.write(outfile)
-            self.save_roi_coords(self.get_roi_coords_filename(path))
+            self.save_roi_coords(self.get_roi_coords_filename(path), rois)
 
     def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode, roi: SensibleROI) -> None:
         """
@@ -463,12 +463,6 @@ class SpectrumViewerWindowModel:
         return path.with_stem(f"{path.stem}_roi_coords")
 
     def save_roi_coords(self, path: Path, rois: dict[str, SensibleROI]) -> None:
-        """
-        Save the coordinates of the ROIs to a csv file (ROI name, x_min, x_max, y_min, y_max)
-        following Pascal VOC format.
-        @param path: The path to save the CSV file to.
-        @param rois: A dictionary of ROI names and their coordinates.
-        """
         with open(path, encoding='utf-8', mode='w') as f:
             csv_writer = csv.DictWriter(f, fieldnames=["ROI", "X Min", "X Max", "Y Min", "Y Max"])
             csv_writer.writeheader()
@@ -478,7 +472,7 @@ class SpectrumViewerWindowModel:
                     "X Min": coords.left,
                     "X Max": coords.right,
                     "Y Min": coords.top,
-                    "Y Max": coords.bottom
+                    "Y Max": coords.bottom,
                 })
 
     def export_spectrum_to_rits(self, path: Path, tof: np.ndarray, transmission: np.ndarray,
