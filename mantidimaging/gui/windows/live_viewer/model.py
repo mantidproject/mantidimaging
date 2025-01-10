@@ -234,7 +234,6 @@ class LiveViewerWindowModel:
                 self.add_mean(image, self.image_cache.load_image(image))
 
     def calc_mean_chunk(self, chunk_size: int) -> None:
-        print("\n ================ calc_mean_chunk running ====================\n")
         if self.images is not None:
             nanInds = np.argwhere(np.isnan(self.mean))
             if self.roi:

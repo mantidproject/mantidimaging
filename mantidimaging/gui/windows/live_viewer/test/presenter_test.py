@@ -7,13 +7,10 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtCore import QTimer, pyqtSignal
 from parameterized import parameterized
 
-from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.live_viewer import LiveViewerWindowView, LiveViewerWindowModel, LiveViewerWindowPresenter
 from mantidimaging.gui.windows.live_viewer.model import Image_Data
-from mantidimaging.gui.windows.live_viewer.presenter import Worker
 from mantidimaging.gui.windows.main import MainWindowView
 
 
@@ -81,7 +78,3 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_roi_change_timer.isActive.return_value = False
         self.presenter.try_next_mean_chunk()
         self.presenter.handle_roi_change_timer.start.assert_not_called()
-
-
-
-
