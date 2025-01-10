@@ -30,5 +30,9 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 
 If you require any support, please contact us via email at: [mantidimagingsupport@stfc365.onmicrosoft.com](mantidimagingsupport@stfc365.onmicrosoft.com)
 
+## Contributing
+
+If you would like to contribute to the Mantid Imaging project, please refer to our [developer conventions](https://mantidproject.github.io/mantidimaging/developer_guide/explanations/developer_conventions.html) and [developer guide](https://mantidproject.github.io/mantidimaging/developer_guide/index.html) to get started.
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4728059.svg)](https://doi.org/10.5281/zenodo.4728059)
 [![Coverage Status](https://coveralls.io/repos/github/mantidproject/mantidimaging/badge.svg?branch=main)](https://coveralls.io/github/mantidproject/mantidimaging?branch=main)
