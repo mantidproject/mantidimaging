@@ -6,10 +6,14 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+import numpy as np
+from PyQt5.QtCore import QTimer, pyqtSignal
 from parameterized import parameterized
 
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.live_viewer import LiveViewerWindowView, LiveViewerWindowModel, LiveViewerWindowPresenter
 from mantidimaging.gui.windows.live_viewer.model import Image_Data
+from mantidimaging.gui.windows.live_viewer.presenter import Worker
 from mantidimaging.gui.windows.main import MainWindowView
 
 
@@ -57,3 +61,27 @@ class MainWindowPresenterTest(unittest.TestCase):
             self.presenter.update_image_list(image_list)
 
         self.view.set_load_as_dataset_enabled.assert_called_once_with(action_enabled)
+
+    def test_WHEN_handle_notify_roi_moved_THEN_timer_started(self):
+        self.presenter.handle_roi_change_timer = mock.Mock()
+        self.presenter.handle_roi_change_timer.isActive.return_value = False
+        self.presenter.handle_notify_roi_moved()
+        self.presenter.handle_roi_change_timer.start.assert_called_once()
+
+    def test_WHEN_nans_in_mean_THEN_handle_roi_change_timer_start(self):
+        self.model.mean = np.array([1, 2, 3, np.nan])
+        self.presenter.handle_roi_change_timer = mock.Mock()
+        self.presenter.handle_roi_change_timer.isActive.return_value = False
+        self.presenter.try_next_mean_chunk()
+        self.presenter.handle_roi_change_timer.start.assert_called_once_with(100)
+
+    def test_WHEN_no_nans_in_mean_THEN_handle_roi_change_timer_not_started(self):
+        self.model.mean = np.array([1, 2, 3, 4])
+        self.presenter.handle_roi_change_timer = mock.Mock()
+        self.presenter.handle_roi_change_timer.isActive.return_value = False
+        self.presenter.try_next_mean_chunk()
+        self.presenter.handle_roi_change_timer.start.assert_not_called()
+
+
+
+
