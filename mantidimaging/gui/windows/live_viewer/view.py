@@ -133,7 +133,8 @@ class LiveViewerWindowView(BaseMainWindowView):
             self.live_viewer.set_roi_visibility_flags(True)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
             self.presenter.model.roi = self.live_viewer.get_roi()
-            self.presenter.model.calc_mean_fully()
+            self.presenter.model.mean = np.full(len(self.presenter.model.images), np.nan)
+            self.presenter.handle_roi_moved()
             self.presenter.update_spectrum(self.presenter.model.mean)
         else:
             self.live_viewer.set_roi_visibility_flags(False)

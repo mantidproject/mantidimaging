@@ -5,9 +5,8 @@ from __future__ import annotations
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
-from PyQt5.QtGui import QColor
+from numpy.testing import assert_raises
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
@@ -39,5 +38,17 @@ class TestGuiLiveViewer(GuiSystemBase):
     def test_open_intensity_profile(self):
         self.live_viewer_window.spectrum_action.trigger()
         QTest.qWait(SHORT_DELAY)
-        wait_until(lambda: self.live_viewer_window.presenter.model.mean is not np.empty(0), max_retry=600)
+        wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
         self.assertFalse(np.isnan(self.live_viewer_window.presenter.model.mean).any())
+
+    def test_roi_resized(self):
+        self.live_viewer_window.spectrum_action.trigger()
+        QTest.qWait(SHORT_DELAY)
+        wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
+        old_mean = self.live_viewer_window.presenter.model.mean
+        roi = self.live_viewer_window.live_viewer.roi_object.roi
+        handle_index = 0
+        new_position = (10, 20)
+        roi.movePoint(handle_index, new_position)
+        QTest.qWait(SHORT_DELAY)
+        assert_raises(AssertionError, np.testing.assert_array_equal, old_mean, self.live_viewer_window.presenter.model.mean)
