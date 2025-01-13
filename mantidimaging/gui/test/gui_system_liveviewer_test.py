@@ -8,7 +8,7 @@ import numpy as np
 from PyQt5.QtTest import QTest
 from numpy.testing import assert_raises
 
-from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
+from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
@@ -51,4 +51,5 @@ class TestGuiLiveViewer(GuiSystemBase):
         new_position = (10, 20)
         roi.movePoint(handle_index, new_position)
         QTest.qWait(SHORT_DELAY)
-        assert_raises(AssertionError, np.testing.assert_array_equal, old_mean, self.live_viewer_window.presenter.model.mean)
+        assert_raises(AssertionError, np.testing.assert_array_equal, old_mean,
+                      self.live_viewer_window.presenter.model.mean)
