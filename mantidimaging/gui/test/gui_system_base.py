@@ -22,7 +22,7 @@ LOAD_SAMPLE_FOLDER = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010
 LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
 git clone https://github.com/mantidproject/mantidimaging-data.git"""
 
-SHOW_DELAY = 10000  # Can be increased to watch tests
+SHOW_DELAY = 100  # Can be increased to watch tests
 SHORT_DELAY = 100
 
 
