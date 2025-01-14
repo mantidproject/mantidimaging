@@ -48,7 +48,6 @@ class TestGuiLiveViewer(GuiSystemBase):
         self.assertEqual(self.live_viewer_window.splitter.sizes()[1], 0)
         QTest.qWait(SHOW_DELAY)
 
-
     def test_roi_resized(self):
         self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
