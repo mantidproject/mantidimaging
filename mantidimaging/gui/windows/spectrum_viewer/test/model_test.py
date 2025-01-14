@@ -48,8 +48,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
             mock_shuttercounts.get_column.return_value = np.arange(5, 15)
             stack._shutter_count_file = mock_shuttercounts
         self.model.set_stack(stack)
-        height, width = stack.data.shape[1], stack.data.shape[2]
-        self.model._roi_ranges["roi"] = SensibleROI.from_list([0, 0, width, height])
         return stack, spectrum
 
     def _set_normalise_stack(self, with_shuttercount=False):
@@ -151,11 +149,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertEqual("", self.model.normalise_issue())
 
     def test_set_stack_sets_roi(self):
-        self._set_sample_stack()
-        roi_all = self.model._roi_ranges["all"]
-        roi = self.model._roi_ranges["roi"]
-
-        self.assertEqual(roi_all, roi)
+        stack, _ = self._set_sample_stack()
+        roi_all = SensibleROI.from_list([0, 0, stack.data.shape[2], stack.data.shape[1]])
         self.assertEqual(roi_all.top, 0)
         self.assertEqual(roi_all.left, 0)
         self.assertEqual(roi_all.right, 12)
@@ -228,14 +223,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
-
-        self.model._roi_ranges["rits_roi"] = SensibleROI.from_list([0, 0, 10, 11])
         self.model.set_normalise_stack(norm)
-        self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 10, 11])
+        roi = SensibleROI.from_list([0, 0, 10, 11])
         mock_stream, mock_path = self._make_mock_path_stream()
 
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, self.model._roi_ranges["ROI_RITS"])
+            self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, roi)
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
         self.assertIn("100000.0\t0.75\t0.25", mock_stream.captured[1])
@@ -253,11 +246,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack.data[:, :, :5] *= 2
         self.model.set_normalise_stack(norm)
 
-        self.model._roi_ranges["ROI_RITS"] = SensibleROI.from_list([0, 0, 10, 11])
+        roi = SensibleROI.from_list([0, 0, 10, 11])
         mock_stream, mock_path = self._make_mock_path_stream()
+
         with mock.patch.object(self.model, "save_roi_coords"):
             with mock.patch.object(self.model, "export_spectrum_to_rits") as mock_export:
-                self.model.save_rits_roi(mock_path, error_mode, self.model._roi_ranges["ROI_RITS"])
+                self.model.save_rits_roi(mock_path, error_mode, roi)
 
         calculated_errors = mock_export.call_args[0][3]
         np.testing.assert_allclose(expected_error, calculated_errors, atol=1e-4)
@@ -279,7 +273,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_inst_log = mock.create_autospec(InstrumentLog, source_file="", instance=True)
         stack.log_file = mock_inst_log
         roi = SensibleROI.from_list([0, 0, 12, 11])
-        self.model._roi_ranges["ROI_RITS"] = roi
 
         mock_stream, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
@@ -299,8 +292,9 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_save_csv_called_THEN_save_roi_coords_called_WITH_correct_args(self):
         path = Path("test_file.csv")
+        rois = {"roi1": SensibleROI.from_list([0, 0, 10, 10]), "roi2": SensibleROI.from_list([10, 10, 20, 20])}
         with mock.patch('builtins.open', mock.mock_open()) as mock_open:
-            self.model.save_roi_coords(path)
+            self.model.save_roi_coords(path, rois)
         mock_open.assert_called_once_with(path, encoding='utf-8', mode='w')
 
     def test_WHEN_get_roi_coords_filename_called_THEN_correct_filename_returned(self):
@@ -388,12 +382,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def test_WHEN_remove_all_rois_called_THEN_all_but_default_rois_removed(self):
         self.model.set_stack(generate_images())
-        rois = ["new_roi", "new_roi_2"]
-        for roi in rois:
-            self.model._roi_ranges[roi] = SensibleROI.from_list([0, 0, 10, 10])
-        self.assertListEqual(list(self.model._roi_ranges.keys()), ["all"] + rois)
         self.model.remove_all_roi()
-        self.assertListEqual(list(self.model._roi_ranges.keys()), [])
+        self.assertEqual(self.model._roi_id_counter, 0)
 
     def test_WHEN_no_stack_tof_THEN_time_of_flight_none(self):
         # No Stack
@@ -449,18 +439,16 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
-        roi_name = "rits_roi"
         roi = SensibleROI.from_list([0, 0, roi_size, roi_size])
-        self.model._roi_ranges[roi_name] = roi
         self.model.set_normalise_stack(norm)
-
         Mx, My = roi.width, roi.height
         x_iterations = min(math.ceil(Mx / step), math.ceil((Mx - bin_size) / step) + 1)
         y_iterations = min(math.ceil(My / step), math.ceil((My - bin_size) / step) + 1)
         expected_number_of_calls = x_iterations * y_iterations
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, bin_size, step)
+            self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, bin_size, step, roi)
+
         self.assertEqual(mock_save_rits_roi.call_count, expected_number_of_calls)
 
     @mock.patch.object(SpectrumViewerWindowModel, "save_rits_roi")
@@ -468,12 +456,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack, _ = self._set_sample_stack(with_tof=True)
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
-        self.model._roi_ranges["rits_roi"] = SensibleROI.from_list([0, 0, 5, 5])
         self.model.set_normalise_stack(norm)
+        roi = SensibleROI.from_list([0, 0, 5, 5])
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_single_rits_spectrum(mock_path, ErrorMode.STANDARD_DEVIATION)
-        mock_save_rits_roi.assert_called_once_with(mock_path, mock.ANY, SensibleROI.from_list([0, 0, 5, 5]))
+            self.model.save_single_rits_spectrum(mock_path, ErrorMode.STANDARD_DEVIATION, roi)
+        mock_save_rits_roi.assert_called_once_with(mock_path, mock.ANY, roi)
 
     @mock.patch.object(SpectrumViewerWindowModel, "export_spectrum_to_rits")
     def test_save_rits_correct_transmission(self, mock_save_rits_roi):
@@ -481,11 +469,10 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         norm = ImageStack(np.full([10, 11, 12], 2))
         for i in range(10):
             stack.data[:, :, i] *= i
-        self.model._roi_ranges["rits_roi"] = SensibleROI.from_list([1, 0, 6, 4])
         self.model.set_normalise_stack(norm)
         mock_path = mock.create_autospec(Path, instance=True)
-
-        self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, 3, 1)
+        roi = SensibleROI.from_list([1, 0, 6, 4])
+        self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, 3, 1, roi)
 
         self.assertEqual(6, len(mock_save_rits_roi.call_args_list))
         expected_means = [1, 1.5, 2, 1, 1.5, 2]  # running average of [1, 2, 3, 4, 5], divided by 2 for normalisation
@@ -540,7 +527,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         open_shutter_counts = normalise_stack.shutter_count_file.get_column(ShutterCountColumn.SHUTTER_COUNT)
         average_shutter_counts = sample_shutter_counts[0] / open_shutter_counts[0]
         roi = SensibleROI.from_list([0, 0, 5, 5])
-        self.model._roi_ranges["roi"] = roi
 
         left, top, right, bottom = roi
         sample = stack.data[:, top:bottom, left:right]
@@ -548,12 +534,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         expected = np.divide(sample, open, out=np.zeros_like(sample), where=open != 0) / average_shutter_counts
         expected = np.std(expected, axis=(1, 2))
 
-        with (mock.patch.object(self.model,
-                                "get_shuttercount_normalised_correction_parameter",
-                                return_value=average_shutter_counts) as
-              mock_get_shuttercount_normalised_correction_parameter):
+        with mock.patch.object(
+                self.model, "get_shuttercount_normalised_correction_parameter",
+                return_value=average_shutter_counts) as mock_get_shuttercount_normalised_correction_parameter:
             result = self.model.get_transmission_error_standard_dev(roi, normalise_with_shuttercount=True)
             mock_get_shuttercount_normalised_correction_parameter.assert_called_once()
+
         self.assertEqual(len(expected), len(result))
         np.testing.assert_allclose(expected, result)
 

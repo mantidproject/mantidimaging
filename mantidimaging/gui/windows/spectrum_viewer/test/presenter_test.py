@@ -218,18 +218,19 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
                                               normalise_with_shuttercount=False)
 
     @parameterized.expand(["/fake/path", "/fake/path.dat"])
-    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_roi")
-    def test_handle_rits_export(self, path_name: str, mock_save_rits_roi: mock.Mock):
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_single_rits_spectrum")
+    def test_handle_rits_export(self, path_name: str, mock_save_single_rits_spectrum: mock.Mock):
         self.view.get_rits_export_filename = mock.Mock(return_value=Path(path_name))
         self.view.transmission_error_mode = "Standard Deviation"
 
         mock_roi = SensibleROI.from_list([0, 0, 5, 5])
-        self.presenter.model._roi_ranges[ROI_RITS] = mock_roi
+        self.view.spectrum_widget.get_roi = mock.Mock(return_value=mock_roi)
         self.presenter.model.set_stack(generate_images())
         self.presenter.handle_rits_export()
 
         self.view.get_rits_export_filename.assert_called_once()
-        mock_save_rits_roi.assert_called_once_with(Path("/fake/path.dat"), ErrorMode.STANDARD_DEVIATION, mock_roi)
+        mock_save_single_rits_spectrum.assert_called_once_with(Path("/fake/path.dat"), ErrorMode.STANDARD_DEVIATION,
+                                                               mock_roi)
 
     def test_WHEN_do_add_roi_called_THEN_new_roi_added(self):
         self.view.spectrum_widget.roi_dict = {"all": mock.Mock()}
@@ -292,19 +293,15 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_invalid_ROI_renamed_THEN_error_raised(self):
         rois = ["all", "roi", "roi_1"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
-        self.presenter.model._roi_ranges = {roi: mock.Mock() for roi in rois}
         self.view.spectrum_widget.rename_roi = mock.Mock(side_effect=KeyError("Invalid ROI"))
-        self.view.spectrum_widget.rois = {roi: mock.Mock() for roi in rois}
         with self.assertRaises(KeyError):
             self.presenter.rename_roi("invalid_roi", "new_name")
 
     def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
         rois = ["all", "roi", "roi_1", "roi_2"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
-        self.presenter.model._roi_ranges = {roi: mock.Mock() for roi in rois}
         self.presenter.do_remove_roi()
         self.assertEqual(self.view.spectrum_widget.roi_dict, {})
-        self.assertEqual(self.presenter.model._roi_ranges, {})
 
     @parameterized.expand([("Image Index", ToFUnitMode.IMAGE_NUMBER), ("Wavelength", ToFUnitMode.WAVELENGTH),
                            ("Energy", ToFUnitMode.ENERGY), ("Time of Flight (\u03BCs)", ToFUnitMode.TOF_US)])
