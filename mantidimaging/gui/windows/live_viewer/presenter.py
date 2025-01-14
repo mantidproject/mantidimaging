@@ -209,8 +209,8 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_roi_change_timer.start(10)
 
     def update_intensity_with_mean(self) -> None:
-        self.view.intensity.clearPlots()
-        self.view.intensity.plot(self.model.mean)
+        self.view.intensity_profile.clearPlots()
+        self.view.intensity_profile.plot(self.model.mean)
 
     def set_roi_enabled(self, enable: bool) -> None:
         if self.view.live_viewer.roi_object is not None:

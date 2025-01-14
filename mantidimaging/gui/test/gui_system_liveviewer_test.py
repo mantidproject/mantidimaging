@@ -36,13 +36,13 @@ class TestGuiLiveViewer(GuiSystemBase):
         self.assertFalse(self.main_window.isVisible())
 
     def test_open_intensity_profile(self):
-        self.live_viewer_window.spectrum_action.trigger()
+        self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
         self.assertFalse(np.isnan(self.live_viewer_window.presenter.model.mean).any())
 
     def test_roi_resized(self):
-        self.live_viewer_window.spectrum_action.trigger()
+        self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
         old_mean = self.live_viewer_window.presenter.model.mean
