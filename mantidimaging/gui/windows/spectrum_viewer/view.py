@@ -34,6 +34,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     normaliseCheckBox: QCheckBox
     normalise_ShutterCount_CheckBox: QCheckBox
     imageLayout: QVBoxLayout
+    fittingLayout: QVBoxLayout
+    exportLayout: QVBoxLayout
     exportButton: QPushButton
     exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
@@ -79,6 +81,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
 
         self.imageLayout.addWidget(self.spectrum_widget)
+        self.fittingLayout.addWidget(QLabel("fitting"))
+        self.exportLayout.addWidget(QLabel("export"))
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
@@ -222,6 +226,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
+        self.formTabs.currentChanged.connect(self.handle_change_tab)
+
     def show(self) -> None:
         super().show()
         self.activateWindow()
@@ -230,6 +236,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
         self.main_window.spectrum_viewer = None
+
+    def handle_change_tab(self, tab_index: int):
+        self.imageTabs.setCurrentIndex(tab_index)
 
     def on_visibility_change(self) -> None:
         """
