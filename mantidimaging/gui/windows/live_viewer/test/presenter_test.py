@@ -56,7 +56,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.add_mean = mock.Mock()
         self.presenter.roi_moving = True
         self.view.live_viewer = mock.Mock()
-        self.view.spectrum = mock.Mock()
+        self.view.intensity_profile = mock.Mock()
         with mock.patch.object(self.presenter, "handle_deleted"):
             self.presenter.update_image_list(image_list)
 

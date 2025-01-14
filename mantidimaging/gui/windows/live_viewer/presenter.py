@@ -91,7 +91,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
-            if not self.view.live_viewer.roi_object and self.view.spectrum_action.isChecked():
+            if not self.view.live_viewer.roi_object and self.view.intensity_action.isChecked():
                 self.view.live_viewer.add_roi()
             self.model.roi = self.view.live_viewer.get_roi()
             self.model.images = images_list
@@ -102,7 +102,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 except (OSError, KeyError, ValueError, DeflateError) as error:
                     message = f"{type(error).__name__} reading image: {images_list[-1].image_path}: {error}"
                     logger.error(message)
-            self.update_spectrum(self.model.mean)
+            self.update_intensity(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -201,9 +201,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             image_dir = self.model.images[0].image_path.parent
             self.main_window.show_image_load_dialog_with_path(str(image_dir))
 
-    def update_spectrum(self, spec_data: list | np.ndarray) -> None:
-        self.view.spectrum.clearPlots()
-        self.view.spectrum.plot(spec_data)
+    def update_intensity(self, spec_data: list | np.ndarray) -> None:
+        self.view.intensity_profile.clearPlots()
+        self.view.intensity_profile.plot(spec_data)
 
     def handle_roi_moved(self) -> None:
         roi = self.view.live_viewer.get_roi()
@@ -225,7 +225,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.thread.start()
 
     def thread_cleanup(self) -> None:
-        self.update_spectrum_with_mean()
+        self.update_intensity_with_mean()
         self.set_roi_enabled(True)
         self.try_next_mean_chunk()
 
@@ -234,9 +234,9 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not self.handle_roi_change_timer.isActive():
             self.handle_roi_change_timer.start(10)
 
-    def update_spectrum_with_mean(self) -> None:
-        self.view.spectrum.clearPlots()
-        self.view.spectrum.plot(self.model.mean)
+    def update_intensity_with_mean(self) -> None:
+        self.view.intensity_profile.clearPlots()
+        self.view.intensity_profile.plot(self.model.mean)
 
     def set_roi_enabled(self, enable: bool):
         if self.view.live_viewer.roi_object is not None:

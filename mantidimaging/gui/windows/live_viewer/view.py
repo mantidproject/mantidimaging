@@ -40,7 +40,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
         self.spectrum_plot_widget = SpectrumPlotWidget()
-        self.spectrum = self.spectrum_plot_widget.spectrum
+        self.intensity_profile = self.spectrum_plot_widget.spectrum
         self.live_viewer.roi_changing.connect(self.presenter.handle_notify_roi_moved)
 
         self.splitter.addWidget(self.live_viewer)
@@ -66,10 +66,10 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.load_as_dataset_action = self.right_click_menu.addAction("Load as dataset")
         self.load_as_dataset_action.triggered.connect(self.presenter.load_as_dataset)
 
-        self.spectrum_action = QAction("Calculate Spectrum", self)
-        self.spectrum_action.setCheckable(True)
-        operations_menu.addAction(self.spectrum_action)
-        self.spectrum_action.triggered.connect(self.set_spectrum_visibility)
+        self.intensity_action = QAction("Calculate Intensity Profile", self)
+        self.intensity_action.setCheckable(True)
+        operations_menu.addAction(self.intensity_action)
+        self.intensity_action.triggered.connect(self.set_intensity_visibility)
         self.live_viewer.set_roi_visibility_flags(False)
 
     def show(self) -> None:
@@ -125,16 +125,17 @@ class LiveViewerWindowView(BaseMainWindowView):
     def set_load_as_dataset_enabled(self, enabled: bool) -> None:
         self.load_as_dataset_action.setEnabled(enabled)
 
-    def set_spectrum_visibility(self) -> None:
+    def set_intensity_visibility(self) -> None:
         widget_height = self.frameGeometry().height()
-        if self.spectrum_action.isChecked():
+        if self.intensity_action.isChecked():
             if not self.live_viewer.roi_object:
                 self.live_viewer.add_roi()
             self.live_viewer.set_roi_visibility_flags(True)
             self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
             self.presenter.model.roi = self.live_viewer.get_roi()
-            self.presenter.model.calc_mean_fully()
-            self.presenter.update_spectrum(self.presenter.model.mean)
+            self.presenter.model.mean = np.full(len(self.presenter.model.images), np.nan)
+            self.presenter.handle_roi_moved()
+            self.presenter.update_intensity(self.presenter.model.mean)
         else:
             self.live_viewer.set_roi_visibility_flags(False)
             self.splitter.setSizes([widget_height, 0])
