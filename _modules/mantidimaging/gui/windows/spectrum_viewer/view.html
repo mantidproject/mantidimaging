@@ -543,6 +543,8 @@ document.write(`
     <span class="n">normaliseCheckBox</span><span class="p">:</span> <span class="n">QCheckBox</span>
     <span class="n">normalise_ShutterCount_CheckBox</span><span class="p">:</span> <span class="n">QCheckBox</span>
     <span class="n">imageLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
+    <span class="n">fittingLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
+    <span class="n">exportLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
     <span class="n">exportButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">exportTabs</span><span class="p">:</span> <span class="n">QTabWidget</span>
     <span class="n">normaliseErrorIcon</span><span class="p">:</span> <span class="n">QLabel</span>
@@ -588,6 +590,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_plot_widget</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">imageLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fittingLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;fitting&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;export&quot;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">range_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_range_slide_moved</span><span class="p">)</span>
 
@@ -731,6 +735,8 @@ document.write(`
         <span class="n">header</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
         <span class="n">header</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">formTabs</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_change_tab</span><span class="p">)</span>
+
 <div class="viewcode-block" id="SpectrumViewerWindowView.show">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -744,6 +750,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">sampleStackSelector</span><span class="o">.</span><span class="n">unsubscribe_from_main_window</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normaliseStackSelector</span><span class="o">.</span><span class="n">unsubscribe_from_main_window</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">spectrum_viewer</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowView.handle_change_tab">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_change_tab">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_change_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageTabs</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.on_visibility_change">
