@@ -50,6 +50,8 @@ class TestGuiLiveViewer(GuiSystemBase):
         handle_index = 0
         new_position = (10, 20)
         roi.movePoint(handle_index, new_position)
+        self.live_viewer_window.presenter.model.clear_mean_partial()
+        wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
         QTest.qWait(SHORT_DELAY)
         assert_raises(AssertionError, np.testing.assert_array_equal, old_mean,
                       self.live_viewer_window.presenter.model.mean)
