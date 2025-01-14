@@ -8,7 +8,7 @@ import numpy as np
 from PyQt5.QtTest import QTest
 from numpy.testing import assert_raises
 
-from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY
+from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, SHOW_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
@@ -35,11 +35,19 @@ class TestGuiLiveViewer(GuiSystemBase):
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 
-    def test_open_intensity_profile(self):
+    def test_open_close_intensity_profile(self):
+        self.assertEqual(self.live_viewer_window.splitter.sizes()[1], 0)
         self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
+        QTest.qWait(SHOW_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
         self.assertFalse(np.isnan(self.live_viewer_window.presenter.model.mean).any())
+        self.assertNotEqual(self.live_viewer_window.splitter.sizes()[1], 0)
+        self.assertTrue(self.live_viewer_window.intensity_profile.isVisible())
+        self.live_viewer_window.intensity_action.trigger()
+        self.assertEqual(self.live_viewer_window.splitter.sizes()[1], 0)
+        QTest.qWait(SHOW_DELAY)
+
 
     def test_roi_resized(self):
         self.live_viewer_window.intensity_action.trigger()
