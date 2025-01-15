@@ -4,8 +4,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtCore import QSignalBlocker, Qt
+from PyQt5.QtWidgets import QVBoxLayout, QSplitter
 from PyQt5.Qt import QAction, QActionGroup
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -13,6 +13,8 @@ from .live_view_widget import LiveViewWidget
 from .presenter import LiveViewerWindowPresenter
 
 import numpy as np
+
+from ..spectrum_viewer.spectrum_widget import SpectrumPlotWidget
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -33,8 +35,18 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.setWindowTitle(f"Mantid Imaging - Live Viewer - {str(self.path)}")
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
-        self.imageLayout.addWidget(self.live_viewer)
+        self.splitter = QSplitter(Qt.Vertical)
+        self.imageLayout.addWidget(self.splitter)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
+
+        self.spectrum_plot_widget = SpectrumPlotWidget()
+        self.intensity_profile = self.spectrum_plot_widget.spectrum
+        self.live_viewer.roi_changing.connect(self.presenter.handle_notify_roi_moved)
+
+        self.splitter.addWidget(self.live_viewer)
+        self.splitter.addWidget(self.spectrum_plot_widget)
+        widget_height = self.frameGeometry().height()
+        self.splitter.setSizes([widget_height, 0])
 
         self.filter_params: dict[str, dict] = {}
         self.right_click_menu = self.live_viewer.image.vb.menu
@@ -53,6 +65,12 @@ class LiveViewerWindowView(BaseMainWindowView):
 
         self.load_as_dataset_action = self.right_click_menu.addAction("Load as dataset")
         self.load_as_dataset_action.triggered.connect(self.presenter.load_as_dataset)
+
+        self.intensity_action = QAction("Calculate Intensity Profile", self)
+        self.intensity_action.setCheckable(True)
+        operations_menu.addAction(self.intensity_action)
+        self.intensity_action.triggered.connect(self.set_intensity_visibility)
+        self.live_viewer.set_roi_visibility_flags(False)
 
     def show(self) -> None:
         """Show the window"""
@@ -104,5 +122,20 @@ class LiveViewerWindowView(BaseMainWindowView):
             self.filter_params["Rotate Stack"] = {"params": {"angle": image_rotation_angle}}
         self.presenter.update_image_operation()
 
-    def set_load_as_dataset_enabled(self, enabled: bool):
+    def set_load_as_dataset_enabled(self, enabled: bool) -> None:
         self.load_as_dataset_action.setEnabled(enabled)
+
+    def set_intensity_visibility(self) -> None:
+        widget_height = self.frameGeometry().height()
+        if self.intensity_action.isChecked():
+            if not self.live_viewer.roi_object:
+                self.live_viewer.add_roi()
+            self.live_viewer.set_roi_visibility_flags(True)
+            self.splitter.setSizes([int(0.7 * widget_height), int(0.3 * widget_height)])
+            self.presenter.model.roi = self.live_viewer.get_roi()
+            self.presenter.model.mean = np.full(len(self.presenter.model.images), np.nan)
+            self.presenter.handle_roi_moved()
+            self.presenter.update_intensity(self.presenter.model.mean)
+        else:
+            self.live_viewer.set_roi_visibility_flags(False)
+            self.splitter.setSizes([widget_height, 0])

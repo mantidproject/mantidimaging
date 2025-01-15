@@ -1,0 +1,1 @@
+#2448: Live Viewer Intensity is calculated asynchronously via QThreads
