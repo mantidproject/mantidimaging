@@ -437,9 +437,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.show_visible_spectrums()
 
     def show_visible_spectrums(self) -> None:
+        tof_data = self.presenter.model.tof_data
+        if tof_data is None or tof_data.size == 0:
+            spectrum_values = [v for v in self.spectrum_widget.spectrum_data_dict.values() if v is not None]
+            tof_data = np.arange(len(spectrum_values[0]) if spectrum_values else 0)
+
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
-                self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
+                self.spectrum_widget.spectrum.plot(tof_data,
                                                    value,
                                                    name=key,
                                                    pen=self.spectrum_widget.roi_dict[key].colour)
