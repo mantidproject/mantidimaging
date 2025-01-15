@@ -34,7 +34,6 @@ a slice of the data (a sinogram).
     :width: 47%
     :align: right
 
-
 The left image shows a misaligned COR causing artifacts and distortions,
 while the right image depicts a properly aligned COR ensuring accurate and artifact-free reconstruction.
 
@@ -51,13 +50,18 @@ What is Tilt?
 -------------
 
 **Tilt** describes the gradual change in the Center of Rotation (COR) along the axis perpendicular
-to the rotation plane (typically corresponding to the rows in a projection).Without considering tilt,
+to the rotation plane (typically corresponding to the rows in a projection). Without considering tilt,
 the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
 
 Key Points:
   - Tilt is measured in degrees.
   - A tilt value of zero means the rotation axis is vertical, and the COR is the same for every sinogram.
   - Using the COR of the first sinogram and the tilt value, the COR for each subsequent sinogram is interpolated or extrapolated.
+
+Order:
+  1. Determine the COR for the first sinogram (slice 0). This serves as the reference point for all subsequent slices.
+  2. Apply the Tilt value to calculate CORs for the remaining sinograms.
+  3. Refine COR and Tilt values as needed to improve accuracy.
 
 GUI:
   - The GUI also displays **Slope**, which represents how far the COR moves from one slice to the next.
@@ -112,6 +116,11 @@ using the data from the table rows.
 It is sometimes good enough to add a COR at the top of your data and the bottom.
 Once the best CORs for those are found, the resulting tilt should be accurate.
 To increase the accuracy further, add more COR rows.
+
+Tips for Refinement:
+  - Look for sharp images with no streaking or artifacts when selecting the best COR.
+  - Ensure alignment consistency across slices; misalignment often appears as blurring or distortions.
+  - Add CORs at multiple points in the dataset to improve Tilt accuracy, especially for datasets with complex or noisy data.
 
 To Reconstruction
 -----------------
