@@ -659,6 +659,9 @@ class MainWindowView(BaseMainWindowView):
             move_action = self.menuTreeView.addAction("Move Stack")
             move_action.triggered.connect(self._move_stack)
 
+        properties_action = self.menuTreeView.addAction("Stack Properties")
+        properties_action.triggered.connect(self._stack_properties)
+
         delete_action = self.menuTreeView.addAction("Delete")
         delete_action.triggered.connect(self._delete_container)
 
@@ -681,6 +684,10 @@ class MainWindowView(BaseMainWindowView):
     def _move_stack(self) -> None:
         stack_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_MOVE_STACK_DIALOG, stack_id=stack_id)
+
+    def _stack_properties(self):
+        stack_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.SHOW_PROPERTIES_DIALOG, stack_id=stack_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem) -> None:
         """
