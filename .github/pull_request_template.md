@@ -1,6 +1,6 @@
 ### Issue
 
-*Close or ref the associated ticket, e.g. Closes #84*
+*Close or ref the associated ticket, e.g. Closes #<ISSUE>
 
 ### Description
 
