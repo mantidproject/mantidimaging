@@ -37,10 +37,13 @@ class StackPropertiesDialog(BaseDialogView):
         elif origin_data_type == "Dark After":
             self.stack = origin_dataset.dark_after
 
-        self.directory = self.stack.filenames[0].replace(self.stack.filenames[0].split("\\")[-1], '')
-        self.stack_size_MB = sum(os.path.getsize(self.directory + f)
-                                 for f in os.listdir(self.directory)
-                                 if os.path.isfile(self.directory + f)) / 1024 / 1024
+        if self.stack is not None:
+            if self.stack.filenames is not None:
+                self.directory = self.stack.filenames[0].replace(self.stack.filenames[0].split("\\")[-1], '')
+            stack_shape = self.stack.data.shape
+        self.stack_size_MB = sum(
+            os.path.getsize(self.directory + f)
+            for f in os.listdir(self.directory) if os.path.isfile(self.directory + f)) / 1024 / 1024
 
         self.parent_view = parent
 
@@ -56,7 +59,7 @@ class StackPropertiesDialog(BaseDialogView):
         self.layout.addWidget(QLabel(f"{self.directory}"), 2, 2)
         self.layout.addWidget(QLabel(f"{origin_data_type}"), 3, 2)
         self.layout.addWidget(QLabel(f"{round(self.stack_size_MB, 4)} MB"), 4, 2)
-        self.layout.addWidget(QLabel(f"{self.stack.data.shape}"), 5, 2)
+        self.layout.addWidget(QLabel(f"{stack_shape}"), 5, 2)
 
         self.setLayout(self.layout)
 

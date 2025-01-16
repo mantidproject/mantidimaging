@@ -767,7 +767,7 @@ class MainWindowView(BaseMainWindowView):
         self.move_stack_dialog.show()
 
     def show_stack_properties_dialog(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset: Dataset,
-                               stack_data_type: str) -> None:
+                                     stack_data_type: str) -> None:
         self.stack_properties_dialog = StackPropertiesDialog(self, origin_dataset_id, stack_id, origin_dataset,
-                                                 stack_data_type)
+                                                             stack_data_type)
         self.stack_properties_dialog.show()
