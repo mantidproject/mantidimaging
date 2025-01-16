@@ -12,7 +12,7 @@ from collections.abc import Iterable
 import numpy as np
 from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QFont, QPalette, QColor
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QDialog
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
@@ -585,10 +585,8 @@ class MainWindowPresenter(BasePresenter):
         dataset = self.get_dataset(dataset_id)
         if dataset is None:
             raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
-        stack_properties_dialog = QDialog(None)
-        stack_properties_dialog.setWindowTitle(f"Stack Properties: {dataset_id=}")
-        stack_properties_dialog.show()
-
+        stack_data_type = _get_stack_data_type(stack_id, dataset)
+        self.view.show_stack_properties_dialog(dataset_id, stack_id, dataset, stack_data_type)
 
     def handle_add_images_to_existing_dataset_from_dialog(self) -> None:
         """

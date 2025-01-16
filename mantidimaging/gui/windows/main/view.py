@@ -40,6 +40,7 @@ from mantidimaging.gui.windows.settings.view import SettingsWindowView
 from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
 from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
+from mantidimaging.gui.windows.stack_properties_dialog.view import StackPropertiesDialog
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
@@ -109,6 +110,7 @@ class MainWindowView(BaseMainWindowView):
     nexus_save_dialog: NexusSaveDialog | None = None
     add_to_dataset_dialog: AddImagesToDatasetDialog | None = None
     move_stack_dialog: MoveStackDialog | None = None
+    stack_properties_dialog: StackPropertiesDialog | None = None
 
     default_theme_enabled: int = 1
 
@@ -763,3 +765,9 @@ class MainWindowView(BaseMainWindowView):
         self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
                                                  stack_data_type)
         self.move_stack_dialog.show()
+
+    def show_stack_properties_dialog(self, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset: Dataset,
+                               stack_data_type: str) -> None:
+        self.stack_properties_dialog = StackPropertiesDialog(self, origin_dataset_id, stack_id, origin_dataset,
+                                                 stack_data_type)
+        self.stack_properties_dialog.show()
