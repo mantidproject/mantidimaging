@@ -117,10 +117,13 @@ class LiveViewerWindowPresenter(BasePresenter):
         if image_path.suffix.lower() in [".tif", ".tiff"]:
             with tifffile.TiffFile(image_path) as tif:
                 image_data = tif.asarray()
+            return image_data
         elif image_path.suffix.lower() == ".fits":
-            with fits.open(image_path.__str__()) as fit:
-                image_data = fit[0].data
-        return image_data
+            with fits.open(image_path) as fits_hdul:
+                image_data = fits_hdul[0].data
+            return image_data
+        else:
+            raise ValueError(f"Unsupported file type: {image_path.suffix}")
 
     def update_image_modified(self, image_path: Path) -> None:
         """
