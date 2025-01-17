@@ -34,6 +34,9 @@ class StackPropertiesPresenter(BasePresenter):
                 self.view.directory = self.view.stack.filenames[0].replace(self.view.stack.filenames[0].split("\\")[-1],
                                                                            '')
             self.view.stack_shape = self.view.stack.data.shape
-        self.view.stack_size_MB = sum(
+        self.view.stack_size_MB = self.get_stack_size_MB()
+
+    def get_stack_size_MB(self):
+        return sum(
             os.path.getsize(self.view.directory + f)
             for f in os.listdir(self.view.directory) if os.path.isfile(self.view.directory + f)) / 1024 / 1024

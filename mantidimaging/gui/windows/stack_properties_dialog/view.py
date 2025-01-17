@@ -6,6 +6,7 @@ import uuid
 
 from PyQt5.QtWidgets import QLabel, QGridLayout
 
+from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -14,6 +15,8 @@ from mantidimaging.gui.windows.stack_properties_dialog.presenter import StackPro
 
 
 class StackPropertiesDialog(BaseDialogView):
+
+    stack: ImageStack
 
     def __init__(self, parent, stack_id: uuid.UUID, origin_dataset: Dataset, origin_data_type: str):
         super().__init__(parent)
