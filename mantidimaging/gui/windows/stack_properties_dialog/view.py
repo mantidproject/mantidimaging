@@ -34,12 +34,14 @@ class StackPropertiesDialog(BaseDialogView):
         self.layout.addWidget(QLabel("Data type: "), 3, 1)
         self.layout.addWidget(QLabel("Memory size: "), 4, 1)
         self.layout.addWidget(QLabel("Shape: "), 5, 1)
+        self.layout.addWidget(QLabel("Log file: "), 6, 1)
 
         self.layout.addWidget(QLabel(f"{origin_dataset.name}"), 1, 2)
         self.layout.addWidget(QLabel(f"{self.directory}"), 2, 2)
         self.layout.addWidget(QLabel(f"{origin_data_type}"), 3, 2)
         self.layout.addWidget(QLabel(f"{round(self.stack_size_MB, 4)} MB"), 4, 2)
         self.layout.addWidget(QLabel(f"{self.stack_shape}"), 5, 2)
+        self.layout.addWidget(QLabel(f"{self.stack.metadata['log_file']}"), 6, 2)
 
         self.setLayout(self.layout)
 
