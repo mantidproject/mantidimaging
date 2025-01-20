@@ -275,10 +275,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if path is None:
                 LOG.debug("No path selected, aborting export")
                 return
+            roi = self.view.spectrum_widget.get_roi(ROI_RITS)
             run_function = partial(
                 self.model.save_rits_images,
                 path,
                 error_mode,
+                roi,
                 self.view.bin_size,
                 self.view.bin_step,
                 normalise=self.view.shuttercount_norm_enabled(),
