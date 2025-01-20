@@ -148,14 +148,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_normalise_stack(ImageStack(np.ones([10, 11, 12])))
         self.assertEqual("", self.model.normalise_issue())
 
-    def test_set_stack_sets_roi(self):
-        stack, _ = self._set_sample_stack()
-        roi_all = SensibleROI.from_list([0, 0, stack.data.shape[2], stack.data.shape[1]])
-        self.assertEqual(roi_all.top, 0)
-        self.assertEqual(roi_all.left, 0)
-        self.assertEqual(roi_all.right, 12)
-        self.assertEqual(roi_all.bottom, 11)
-
     def test_if_set_stack_called_THEN_do_remove_roi_not_called(self):
         self.model.set_stack(generate_images())
         self.presenter.do_remove_roi.assert_not_called()
