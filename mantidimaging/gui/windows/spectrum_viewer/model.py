@@ -426,6 +426,10 @@ class SpectrumViewerWindowModel:
         """
         roi = self._roi_ranges[ROI_RITS]
         left, top, right, bottom = roi
+        if (right - left) % step != 0 or (bottom - top) % step != 0:
+            LOG.warning(f"Step size {step} does not evenly divide ROI dimensions "
+                        f"({right - left}x{bottom - top}). Some rows or columns may not be exported.")
+
         x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
         y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
