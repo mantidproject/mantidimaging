@@ -653,8 +653,8 @@ class MainWindowView(BaseMainWindowView):
         self.menuTreeView = QMenu()
 
         if self.dataset_tree_widget.itemAt(position) is not None:
-            if (self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids or
-                    self.dataset_tree_widget.itemAt(position).id in self.presenter.all_dataset_ids):
+            if (self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids
+                    or self.dataset_tree_widget.itemAt(position).id in self.presenter.all_dataset_ids):
                 add_action = self.menuTreeView.addAction("Add / Replace Stack")
                 add_action.triggered.connect(self._add_images_to_existing_dataset)
                 delete_action = self.menuTreeView.addAction("Delete")
