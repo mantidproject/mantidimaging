@@ -31,4 +31,3 @@ class StackPropertiesPresenterTest(unittest.TestCase):
 
         self.assertEqual(self.view.directory, "test\\filename\\")
         self.assertEqual(self.view.stack_shape, (3, 11, 12))
-
