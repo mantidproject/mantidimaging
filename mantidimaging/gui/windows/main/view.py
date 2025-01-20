@@ -652,17 +652,18 @@ class MainWindowView(BaseMainWindowView):
         """
         self.menuTreeView = QMenu()
 
-        add_action = self.menuTreeView.addAction("Add / Replace Stack")
-        add_action.triggered.connect(self._add_images_to_existing_dataset)
+        if self.dataset_tree_widget.itemAt(position) is not None:
+            if (self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids or
+                    self.dataset_tree_widget.itemAt(position).id in self.presenter.all_dataset_ids):
+                add_action = self.menuTreeView.addAction("Add / Replace Stack")
+                add_action.triggered.connect(self._add_images_to_existing_dataset)
+                delete_action = self.menuTreeView.addAction("Delete")
+                delete_action.triggered.connect(self._delete_container)
+            if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
+                move_action = self.menuTreeView.addAction("Move Stack")
+                move_action.triggered.connect(self._move_stack)
 
-        if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
-            move_action = self.menuTreeView.addAction("Move Stack")
-            move_action.triggered.connect(self._move_stack)
-
-        delete_action = self.menuTreeView.addAction("Delete")
-        delete_action.triggered.connect(self._delete_container)
-
-        self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
+            self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
     def _delete_container(self) -> None:
         """
