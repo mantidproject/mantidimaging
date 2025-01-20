@@ -6,7 +6,7 @@ The Spectrum Viewer is a tool for viewing the spectrum of each region of interes
 
 The spectrum viewer can be accessed from the main menu under "Workflow" > "Spectrum Viewer".
 
-To try out the spectrum viewer, you can find a basic example workflow to follow within `quick start <https://mantidproject.github.io/mantidimaging/user_guide/quick_start.html>`_
+To try out the spectrum viewer, you can find a basic example workflow to follow within `quick start <https://mantidproject.github.io/mantidimaging/user_guide/tutorials/quick_start.html>`_
 
 .. image:: ../../../_static/spectrum_viewer.png
     :alt: Spectrum Viewer ROI Mode
