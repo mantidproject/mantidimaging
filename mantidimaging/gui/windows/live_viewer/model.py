@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+import typing
 from operator import attrgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
@@ -10,9 +11,6 @@ from logging import getLogger
 
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
-
-from tifffile import tifffile
-from astropy.io import fits
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 
@@ -23,26 +21,13 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-def load_image_from_path(image_path: Path) -> np.ndarray:
-    """
-    Load a .Tif, .Tiff or .Fits file only if it exists
-    and returns as an ndarray
-    """
-    if image_path.suffix.lower() in [".tif", ".tiff"]:
-        with tifffile.TiffFile(image_path) as tif:
-            image_data = tif.asarray()
-    elif image_path.suffix.lower() == ".fits":
-        with fits.open(image_path.__str__()) as fit:
-            image_data = fit[0].data
-    return image_data
-
-
 class ImageCache:
     """
-    An ImageCache class to be used as a decorator on image read functions to store recent images in memory
+    An ImageCache class to be used to store recent images in memory
     """
     cache_dict: dict[Image_Data, np.ndarray]
     max_cache_size: int | None = None
+    loading_func: typing.Callable
 
     def __init__(self, max_cache_size=None):
         self.max_cache_size = max_cache_size
@@ -63,6 +48,12 @@ class ImageCache:
         del self.cache_dict[self._get_oldest_image()]
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    def use_loading_function(self, func: typing.Callable) -> None:
+        self.loading_func = func
+
+>>>>>>> 3adccbe19 (pass loading function from presenter to ImageCache)
     def load_image(self, image: Image_Data) -> np.ndarray | None:
 =======
     def use_loading_function(self, func: typing.Callable) -> None:
@@ -74,7 +65,7 @@ class ImageCache:
             return self.cache_dict[image]
         else:
             try:
-                image_array = load_image_from_path(image.image_path)
+                image_array = self.loading_func(image.image_path)
             except ValueError as error:
                 message = f"{type(error).__name__} reading image: {image.image_path}: {error}"
                 LOG.error(message)

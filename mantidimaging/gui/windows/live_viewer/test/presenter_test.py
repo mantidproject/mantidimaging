@@ -10,7 +10,7 @@ import numpy as np
 from parameterized import parameterized
 
 from mantidimaging.gui.windows.live_viewer import LiveViewerWindowView, LiveViewerWindowModel, LiveViewerWindowPresenter
-from mantidimaging.gui.windows.live_viewer.model import Image_Data
+from mantidimaging.gui.windows.live_viewer.model import Image_Data, ImageCache
 from mantidimaging.gui.windows.main import MainWindowView
 
 
@@ -20,6 +20,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.view = mock.create_autospec(LiveViewerWindowView, instance=True)
         self.main_window = mock.create_autospec(MainWindowView, instance=True)
         self.model = mock.create_autospec(LiveViewerWindowModel, instance=True)
+        self.model.image_cache = mock.create_autospec(ImageCache, instance=True)
 
         with mock.patch("mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowModel") as mock_model:
             mock_model.return_value = self.model

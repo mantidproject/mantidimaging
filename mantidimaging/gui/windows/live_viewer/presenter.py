@@ -63,6 +63,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
 
+        self.model.image_cache.use_loading_function(self.load_image_from_path)
+
     def close(self) -> None:
         """Close the window."""
         if self.model is not None:
@@ -141,7 +143,6 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    @ImageCache
     def load_image_from_path(image_path: Path) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists

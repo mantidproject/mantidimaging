@@ -194,19 +194,19 @@ class ImageCacheTest(unittest.TestCase):
         self.image_cache._remove_oldest_image()
         self.assertNotIn(self.image_data_list[min_index], self.image_cache.cache_dict)
 
-    @mock.patch("mantidimaging.gui.windows.live_viewer.model.load_image_from_path")
-    def test_WHEN_image_not_in_cache_when_loaded_THEN_image_added_to_cache(self, load_image_from_path_mock):
+    def test_WHEN_image_not_in_cache_when_loaded_THEN_image_added_to_cache(self):
         self.image_cache = ImageCache()
+        self.image_cache.loading_func = mock.Mock()
         self.image_cache.load_image(self.image_data_list[0])
-        load_image_from_path_mock.assert_called_once()
+        self.image_cache.loading_func.assert_called_once()
         self.assertIn(self.image_data_list[0], self.image_cache.cache_dict)
 
-    @mock.patch("mantidimaging.gui.windows.live_viewer.model.load_image_from_path")
-    def test_WHEN_image_in_cache_when_loaded_then_image_taken_from_cache(self, load_image_from_path_mock):
+    def test_WHEN_image_in_cache_when_loaded_then_image_taken_from_cache(self):
         self.image_cache = ImageCache()
+        self.image_cache.loading_func = mock.Mock()
         self.image_cache._add_to_cache(self.image_data_list[0], self.image_array_mock_list[0])
         image_array = self.image_cache.load_image(self.image_data_list[0])
-        load_image_from_path_mock.assert_not_called()
+        self.image_cache.loading_func.assert_not_called()
         np.testing.assert_array_equal(image_array, self.image_cache.cache_dict[self.image_data_list[0]])
 
     def test_WHEN_cache_full_THEN_loading_image_removes_oldest_image(self):
