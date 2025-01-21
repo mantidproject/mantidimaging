@@ -186,8 +186,6 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        # if dask_image_stack.image_list:
-        #     self.image_stack = dask_image_stack
         self.presenter.update_image_list(image_files)
 
     def handle_image_modified(self, image_path: Path) -> None:
@@ -215,15 +213,6 @@ class LiveViewerWindowModel:
         self.mean_paths.clear()
         self.mean = np.full(len(self.images), np.nan)
 
-    def clear_mean(self) -> None:
-        self.mean_paths.clear()
-        self.mean = np.delete(self.mean, np.arange(self.mean.size))
-
-    def calc_mean_fully(self) -> None:
-        if self.images is not None:
-            for image in self.images:
-                self.add_mean(image, self.image_cache.load_image(image))
-
     def calc_mean_chunk(self, chunk_size: int) -> None:
         if self.images is not None:
             nanInds = np.argwhere(np.isnan(self.mean))
@@ -237,10 +226,6 @@ class LiveViewerWindowModel:
                     if buffer_data is not None:
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
                         np.put(self.mean, ind, buffer_mean)
-
-    def calc_mean_all_chunks(self, chunk_size: int) -> None:
-        while np.isnan(self.mean).any():
-            self.calc_mean_chunk(chunk_size)
 
 
 class ImageWatcher(QObject):
