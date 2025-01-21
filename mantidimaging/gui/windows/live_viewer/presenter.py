@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
+import tifffile
 from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
 from astropy.io import fits
 
 from imagecodecs._deflate import DeflateError
-from tifffile import tifffile
 
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data, ImageCache
+from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
 
@@ -242,4 +242,4 @@ class LiveViewerWindowPresenter(BasePresenter):
     def try_next_mean_chunk(self) -> None:
         if np.isnan(self.model.mean).any():
             if not self.handle_roi_change_timer.isActive():
-                self.handle_roi_change_timer.start(100)
+                self.handle_roi_change_timer.start(10)

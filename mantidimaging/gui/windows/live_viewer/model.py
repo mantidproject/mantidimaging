@@ -47,20 +47,10 @@ class ImageCache:
     def _remove_oldest_image(self) -> None:
         del self.cache_dict[self._get_oldest_image()]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    def use_loading_function(self, func: typing.Callable) -> None:
-        self.loading_func = func
-
->>>>>>> 3adccbe19 (pass loading function from presenter to ImageCache)
-    def load_image(self, image: Image_Data) -> np.ndarray | None:
-=======
     def use_loading_function(self, func: typing.Callable) -> None:
         self.loading_func = func
 
     def load_image(self, image: Image_Data) -> np.ndarray:
->>>>>>> b65e2adfa (fixup! mypy type annotations)
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:

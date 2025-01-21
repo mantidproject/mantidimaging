@@ -173,7 +173,6 @@ class ImageCacheTest(unittest.TestCase):
         self.image_array_mock_list = [np.random.default_rng().random(5)] * 5
         for i in range(5):
             self.image_data_list.append(mock.create_autospec(Image_Data))
-            self.image_data_list[i] = mock.create_autospec(Image_Data)
             self.image_data_list[i].image_path = Path(f"abc_{i}.tif")
             self.image_data_list[i].image_modified_time = random.uniform(1000, 10000)
         self.image_cache = ImageCache()

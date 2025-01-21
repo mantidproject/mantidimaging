@@ -21,7 +21,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
     @param parent: The parent widget
     """
     image: MIMiniImageView
-    image_shape: tuple = (-1, -1)
+    image_shape: tuple[int, int] | None = None
     roi_changed = pyqtSignal()
     roi_changing = pyqtSignal()
     roi_object: SpectrumROI | None = None
@@ -58,7 +58,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.image.show_message(message)
 
     def add_roi(self) -> None:
-        if self.image_shape == (-1, -1):
+        if self.image_shape is None:
             return
         height, width = self.image_shape
         roi = SensibleROI.from_list([0, 0, width, height])
@@ -68,9 +68,6 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.roi_object.roi.sigRegionChangeFinished.connect(self.roi_changed.emit)
         self.roi_object.roi.sigRegionChanged.connect(self.roi_changing.emit)
         self.image.vb.addItem(self.roi_object.roi)
-
-    def set_image_shape(self, shape: tuple) -> None:
-        self.image_shape = shape
 
     def get_roi(self) -> SensibleROI | None:
         if not self.roi_object:

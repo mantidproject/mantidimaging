@@ -71,7 +71,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_roi_change_timer = mock.Mock()
         self.presenter.handle_roi_change_timer.isActive.return_value = False
         self.presenter.try_next_mean_chunk()
-        self.presenter.handle_roi_change_timer.start.assert_called_once_with(100)
+        self.presenter.handle_roi_change_timer.start.assert_called_once_with(10)
 
     def test_WHEN_no_nans_in_mean_THEN_handle_roi_change_timer_not_started(self):
         self.model.mean = np.array([1, 2, 3, 4])
