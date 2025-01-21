@@ -613,7 +613,6 @@ document.write(`
     <span class="n">_normalise_stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">tof_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">tof_plot_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">_roi_ranges</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SensibleROI</span><span class="p">]</span>
     <span class="n">tof_mode</span><span class="p">:</span> <span class="n">ToFUnitMode</span> <span class="o">=</span> <span class="n">ToFUnitMode</span><span class="o">.</span><span class="n">WAVELENGTH</span>
     <span class="n">tof_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">tof_range_full</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -621,7 +620,6 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">special_roi_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ROI_ALL</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">UnitConversion</span><span class="p">()</span>
@@ -656,9 +654,7 @@ document.write(`
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_range_full</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_range</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_time_of_flight</span><span class="p">()</span>
-        <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="p">[</span><span class="n">ROI_ALL</span><span class="p">]</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_time_of_flight</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.set_normalise_stack">
@@ -876,7 +872,6 @@ document.write(`
 <span class="sd">        Iterates over all ROIs and saves the spectrum for each one to a CSV file.</span>
 <span class="sd">        @param path: The path to save the CSV file to.</span>
 <span class="sd">        @param normalized: Whether to save the normalized spectrum.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No stack selected&quot;</span><span class="p">)</span>
@@ -904,21 +899,22 @@ document.write(`
                 <span class="n">csv_output</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">_norm&quot;</span><span class="p">,</span>
                                       <span class="bp">self</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">),</span>
                                       <span class="s2">&quot;Counts&quot;</span><span class="p">)</span>
+
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
             <span class="n">csv_output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_roi_coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_coords_filename</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_roi_coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_coords_filename</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">rois</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_single_rits_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_single_rits_spectrum">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_single_rits_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_single_rits_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the spectrum for the RITS ROI to a RITS file.</span>
 
 <span class="sd">        @param path: The path to save the CSV file to.</span>
 <span class="sd">        @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_rits_roi</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="p">[</span><span class="n">ROI_RITS</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_rits_roi</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_rits_roi">
@@ -984,6 +980,7 @@ document.write(`
                          <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">,</span>
                          <span class="n">bin_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                          <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                         <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
                          <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                          <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1003,11 +1000,13 @@ document.write(`
 <span class="sd">        error_mode (ErrorMode): The error mode to use when saving the images.</span>
 <span class="sd">        bin_size (int): The size of the sub-regions.</span>
 <span class="sd">        step (int): The step size to use when sliding the window across the ROI.</span>
+<span class="sd">        roi (SensibleROI): The parent ROI to be subdivided.</span>
+<span class="sd">        normalise (bool): If True, the images will be normalised.</span>
+<span class="sd">        progress (Progress | None): Optional progress reporter.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="p">[</span><span class="n">ROI_RITS</span><span class="p">]</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">roi</span>
         <span class="n">x_iterations</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ceil</span><span class="p">((</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">),</span> <span class="n">ceil</span><span class="p">((</span><span class="n">right</span> <span class="o">-</span> <span class="n">left</span> <span class="o">-</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">y_iterations</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ceil</span><span class="p">((</span><span class="n">bottom</span> <span class="o">-</span> <span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">),</span> <span class="n">ceil</span><span class="p">((</span><span class="n">bottom</span> <span class="o">-</span> <span class="n">top</span> <span class="o">-</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -1055,22 +1054,17 @@ document.write(`
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_roi_coords">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_roi_coords">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_roi_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save the coordinates of the ROIs to a csv file (ROI name, x_min, x_max, y_min, y_max)</span>
-<span class="sd">        following Pascal VOC format.</span>
-<span class="sd">        @param path: The path to save the CSV file to.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_roi_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">rois</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SensibleROI</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">csv_writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ROI&quot;</span><span class="p">,</span> <span class="s2">&quot;X Min&quot;</span><span class="p">,</span> <span class="s2">&quot;X Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Y Min&quot;</span><span class="p">,</span> <span class="s2">&quot;Y Max&quot;</span><span class="p">])</span>
             <span class="n">csv_writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="n">rois</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">csv_writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">({</span>
                     <span class="s2">&quot;ROI&quot;</span><span class="p">:</span> <span class="n">roi_name</span><span class="p">,</span>
                     <span class="s2">&quot;X Min&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="o">.</span><span class="n">left</span><span class="p">,</span>
                     <span class="s2">&quot;X Max&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
                     <span class="s2">&quot;Y Min&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="o">.</span><span class="n">top</span><span class="p">,</span>
-                    <span class="s2">&quot;Y Max&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="o">.</span><span class="n">bottom</span>
+                    <span class="s2">&quot;Y Max&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span>
                 <span class="p">})</span></div>
 
 
@@ -1091,8 +1085,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove all ROIs from the model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_ranges</span> <span class="o">=</span> <span class="p">{}</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_id_counter</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.set_relevant_tof_units">

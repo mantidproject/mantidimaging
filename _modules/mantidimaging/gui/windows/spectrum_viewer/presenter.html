@@ -831,15 +831,17 @@ document.write(`
             <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No path selected, aborting export&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
-            <span class="n">run_function</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_rits_images</span><span class="p">,</span>
-                                   <span class="n">path</span><span class="p">,</span>
-                                   <span class="n">error_mode</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_size</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_step</span><span class="p">,</span>
-                                   <span class="n">normalise</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">())</span>
-
+            <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">)</span>
+            <span class="n">run_function</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_rits_images</span><span class="p">,</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">error_mode</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_size</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">bin_step</span><span class="p">,</span>
+                <span class="n">roi</span><span class="p">,</span>
+                <span class="n">normalise</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">(),</span>
+            <span class="p">)</span>
             <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="n">run_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_save_done</span><span class="p">)</span>
-
         <span class="k">else</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_rits_export_filename</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -847,7 +849,8 @@ document.write(`
                 <span class="k">return</span>
             <span class="k">if</span> <span class="n">path</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.dat&quot;</span><span class="p">:</span>
                 <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.dat&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_single_rits_spectrum</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">)</span></div>
+            <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_single_rits_spectrum</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">error_mode</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_async_save_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -923,7 +926,10 @@ document.write(`
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.add_rits_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.add_rits_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_rits_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_roi_ranges</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()]))</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add the RITS ROI to the spectrum widget and initialize it with default dimensions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">add_roi</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span>
