@@ -89,7 +89,6 @@ class SpectrumViewerWindowModel:
     _normalise_stack: ImageStack | None = None
     tof_range: tuple[int, int] = (0, 0)
     tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
-    _roi_ranges: dict[str, SensibleROI]
     tof_mode: ToFUnitMode = ToFUnitMode.WAVELENGTH
     tof_data: np.ndarray | None = None
     tof_range_full: tuple[int, int] = (0, 0)
@@ -97,7 +96,6 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
-        self._roi_ranges = {}
         self.special_roi_list = [ROI_ALL]
 
         self.units = UnitConversion()
@@ -128,8 +126,6 @@ class SpectrumViewerWindowModel:
         self.tof_range = (0, stack.data.shape[0] - 1)
         self.tof_range_full = self.tof_range
         self.tof_data = self.get_stack_time_of_flight()
-        height, width = self.get_image_shape()
-        self._roi_ranges[ROI_ALL] = SensibleROI.from_list([0, 0, width, height])
 
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
@@ -305,7 +301,6 @@ class SpectrumViewerWindowModel:
         Iterates over all ROIs and saves the spectrum for each one to a CSV file.
         @param path: The path to save the CSV file to.
         @param normalized: Whether to save the normalized spectrum.
-
         """
         if self._stack is None:
             raise ValueError("No stack selected")
@@ -333,18 +328,19 @@ class SpectrumViewerWindowModel:
                 csv_output.add_column(f"{roi_name}_norm",
                                       self.get_spectrum(roi, SpecType.SAMPLE_NORMED, normalise_with_shuttercount),
                                       "Counts")
+
         with path.open("w") as outfile:
             csv_output.write(outfile)
-            self.save_roi_coords(self.get_roi_coords_filename(path))
+            self.save_roi_coords(self.get_roi_coords_filename(path), rois)
 
-    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode) -> None:
+    def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode, roi: SensibleROI) -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
 
         @param path: The path to save the CSV file to.
         @param error_mode: Which version (standard deviation or propagated) of the error to use in the RITS export.
         """
-        self.save_rits_roi(path, error_mode, self._roi_ranges[ROI_RITS])
+        self.save_rits_roi(path, error_mode, roi)
 
     def save_rits_roi(self, path: Path, error_mode: ErrorMode, roi: SensibleROI, normalise: bool = False) -> None:
         """
@@ -401,6 +397,7 @@ class SpectrumViewerWindowModel:
                          error_mode: ErrorMode,
                          bin_size: int,
                          step: int,
+                         roi: SensibleROI,
                          normalise: bool = False,
                          progress: Progress | None = None) -> None:
         """
@@ -420,11 +417,13 @@ class SpectrumViewerWindowModel:
         error_mode (ErrorMode): The error mode to use when saving the images.
         bin_size (int): The size of the sub-regions.
         step (int): The step size to use when sliding the window across the ROI.
+        roi (SensibleROI): The parent ROI to be subdivided.
+        normalise (bool): If True, the images will be normalised.
+        progress (Progress | None): Optional progress reporter.
 
         Returns:
         None
         """
-        roi = self._roi_ranges[ROI_RITS]
         left, top, right, bottom = roi
         x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
         y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
@@ -463,22 +462,17 @@ class SpectrumViewerWindowModel:
         """
         return path.with_stem(f"{path.stem}_roi_coords")
 
-    def save_roi_coords(self, path: Path) -> None:
-        """
-        Save the coordinates of the ROIs to a csv file (ROI name, x_min, x_max, y_min, y_max)
-        following Pascal VOC format.
-        @param path: The path to save the CSV file to.
-        """
+    def save_roi_coords(self, path: Path, rois: dict[str, SensibleROI]) -> None:
         with open(path, encoding='utf-8', mode='w') as f:
             csv_writer = csv.DictWriter(f, fieldnames=["ROI", "X Min", "X Max", "Y Min", "Y Max"])
             csv_writer.writeheader()
-            for roi_name, coords in self._roi_ranges.items():
+            for roi_name, coords in rois.items():
                 csv_writer.writerow({
                     "ROI": roi_name,
                     "X Min": coords.left,
                     "X Max": coords.right,
                     "Y Min": coords.top,
-                    "Y Max": coords.bottom
+                    "Y Max": coords.bottom,
                 })
 
     def export_spectrum_to_rits(self, path: Path, tof: np.ndarray, transmission: np.ndarray,
@@ -494,7 +488,6 @@ class SpectrumViewerWindowModel:
         Remove all ROIs from the model
         """
         self._roi_id_counter = 0
-        self._roi_ranges = {}
 
     def set_relevant_tof_units(self) -> None:
         if self._stack is not None:

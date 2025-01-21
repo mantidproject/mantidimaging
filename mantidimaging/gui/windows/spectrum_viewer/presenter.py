@@ -275,15 +275,17 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if path is None:
                 LOG.debug("No path selected, aborting export")
                 return
-            run_function = partial(self.model.save_rits_images,
-                                   path,
-                                   error_mode,
-                                   self.view.bin_size,
-                                   self.view.bin_step,
-                                   normalise=self.view.shuttercount_norm_enabled())
-
+            roi = self.view.spectrum_widget.get_roi(ROI_RITS)
+            run_function = partial(
+                self.model.save_rits_images,
+                path,
+                error_mode,
+                self.view.bin_size,
+                self.view.bin_step,
+                roi,
+                normalise=self.view.shuttercount_norm_enabled(),
+            )
             start_async_task_view(self.view, run_function, self._async_save_done)
-
         else:
             path = self.view.get_rits_export_filename()
             if path is None:
@@ -291,7 +293,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 return
             if path and path.suffix != ".dat":
                 path = path.with_suffix(".dat")
-            self.model.save_single_rits_spectrum(path, error_mode)
+            roi = self.view.spectrum_widget.get_roi(ROI_RITS)
+            self.model.save_single_rits_spectrum(path, error_mode, roi)
 
     def _async_save_done(self, task: TaskWorkerThread) -> None:
         if task.error is not None:
@@ -349,7 +352,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def add_rits_roi(self) -> None:
-        roi = self.model._roi_ranges.setdefault(ROI_RITS, SensibleROI.from_list([0, 0, *self.model.get_image_shape()]))
+        """
+        Add the RITS ROI to the spectrum widget and initialize it with default dimensions.
+        """
+        roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
         self.view.spectrum_widget.add_roi(roi, ROI_RITS)
         self.view.set_spectrum(ROI_RITS,
                                self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
