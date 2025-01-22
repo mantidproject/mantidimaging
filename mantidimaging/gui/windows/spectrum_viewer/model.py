@@ -387,7 +387,7 @@ class SpectrumViewerWindowModel:
         """
         if bin_size and step_size < 1:
             raise ValueError("Both bin size and step size must be greater than 0")
-        if bin_size <= step_size:
+        if bin_size < step_size:
             raise ValueError("Bin size must be larger than or equal to step size")
         if bin_size and step_size > min(roi.width, roi.height):
             raise ValueError("Both bin size and step size must be less than or equal to the ROI size")
