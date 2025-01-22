@@ -967,7 +967,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">bin_size</span> <span class="ow">and</span> <span class="n">step_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both bin size and step size must be greater than 0&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">bin_size</span> <span class="o">&lt;=</span> <span class="n">step_size</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bin_size</span> <span class="o">&lt;</span> <span class="n">step_size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bin size must be larger than or equal to step size&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">bin_size</span> <span class="ow">and</span> <span class="n">step_size</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both bin size and step size must be less than or equal to the ROI size&quot;</span><span class="p">)</span></div>
