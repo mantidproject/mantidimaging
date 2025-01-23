@@ -56,7 +56,7 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         self.imaging.show_live_viewer(self.live_directory)
         self.check_target(widget=self.imaging.live_viewer_list[-1])
 
-    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image')
+    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
     @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
     @mock.patch("time.time", return_value=4000.0)
     def test_live_view_opens_with_data(self, _mock_time, _mock_image_watcher, mock_load_image):
@@ -67,7 +67,7 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         self.imaging.live_viewer_list[-1].presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer_list[-1])
 
-    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image')
+    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
     @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
     @mock.patch("time.time", return_value=4000.0)
     def test_live_view_opens_with_bad_data(self, _mock_time, _mock_image_watcher, mock_load_image):
@@ -78,7 +78,7 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         self.imaging.live_viewer_list[-1].presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer_list[-1])
 
-    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image')
+    @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
     @mock.patch('mantidimaging.gui.windows.live_viewer.model.ImageWatcher')
     @mock.patch("time.time", return_value=4000.0)
     def test_rotate_operation_rotates_image(self, _mock_time, _mock_image_watcher, mock_load_image):
