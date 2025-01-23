@@ -18,6 +18,7 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers import start_qapplication, mock_versions
 
 LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
+LOAD_SAMPLE_FOLDER = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/"
 LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
 git clone https://github.com/mantidproject/mantidimaging-data.git"""
 
@@ -28,6 +29,7 @@ SHORT_DELAY = 100
 @mock_versions
 @pytest.mark.system
 @unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(os.path.exists(LOAD_SAMPLE_FOLDER), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication
@@ -133,6 +135,9 @@ class GuiSystemBase(unittest.TestCase):
 
     def _open_spectrum_viewer(self):
         self.main_window.actionSpectrumViewer.trigger()
+
+    def _open_live_viewer(self):
+        self.main_window.show_live_viewer(Path(LOAD_SAMPLE_FOLDER))
 
     def _close_image_stacks(self):
         while self.main_window.dataset_tree_widget.topLevelItemCount():

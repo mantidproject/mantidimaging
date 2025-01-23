@@ -7,10 +7,11 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
+import tifffile
+from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
+from astropy.io import fits
 
 from imagecodecs._deflate import DeflateError
-from tifffile import tifffile, TiffFileError
-from astropy.io import fits
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
@@ -24,6 +25,18 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
+class Worker(QObject):
+    finished = pyqtSignal()
+
+    def __init__(self, presenter: LiveViewerWindowPresenter):
+        super().__init__()
+        self.presenter = presenter
+
+    def run(self):
+        self.presenter.model.calc_mean_chunk(100)
+        self.finished.emit()
+
+
 class LiveViewerWindowPresenter(BasePresenter):
     """
     The presenter for the Live Viewer window.
@@ -34,6 +47,8 @@ class LiveViewerWindowPresenter(BasePresenter):
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
     op_func: Callable
+    thread: QThread
+    worker: Worker
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -43,6 +58,12 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
         self.filters = {f.filter_name: f for f in load_filter_packages()}
+
+        self.handle_roi_change_timer = QTimer()
+        self.handle_roi_change_timer.setSingleShot(True)
+        self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
+
+        self.model.image_cache.use_loading_function(self.load_image_from_path)
 
     def close(self) -> None:
         """Close the window."""
@@ -72,6 +93,18 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
+            if not self.view.live_viewer.roi_object and self.view.intensity_action.isChecked():
+                self.view.live_viewer.add_roi()
+            self.model.roi = self.view.live_viewer.get_roi()
+            self.model.images = images_list
+            if images_list[-1].image_path not in self.model.mean_paths:
+                try:
+                    image_data = self.model.image_cache.load_image(images_list[-1])
+                    self.model.add_mean(images_list[-1], image_data)
+                except (OSError, KeyError, ValueError, DeflateError) as error:
+                    message = f"{type(error).__name__} reading image: {images_list[-1].image_path}: {error}"
+                    logger.error(message)
+            self.update_intensity(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -80,12 +113,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         if not self.model.images:
             return
         self.selected_image = self.model.images[index]
+        if not self.selected_image:
+            return
         image_timestamp = self.selected_image.image_modified_time_stamp
         self.view.label_active_filename.setText(f"{self.selected_image.image_name} - {image_timestamp}")
 
-        self.display_image(self.selected_image.image_path)
+        self.display_image(self.selected_image)
 
-    def display_image(self, image_path: Path) -> None:
+    def display_image(self, image_data_obj: Image_Data) -> None:
         """
         Display image in the view after validating contents
         """
@@ -100,16 +135,15 @@ class LiveViewerWindowPresenter(BasePresenter):
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
             message = "reading image: {image_path}: Image has zero size"
-            logger.error("reading image: %s: Image has zero size", image_path)
+            logger.error("reading image: %s: Image has zero size", image_data_obj.image_path)
             self.view.remove_image()
             self.view.live_viewer.show_error(message)
             return
-
         self.view.show_most_recent_image(image_data)
         self.view.live_viewer.show_error(None)
 
     @staticmethod
-    def load_image(image_path: Path) -> np.ndarray:
+    def load_image_from_path(image_path: Path) -> np.ndarray:
         """
         Load a .Tif, .Tiff or .Fits file only if it exists
         and returns as an ndarray
@@ -130,14 +164,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         Update the displayed image when the file is modified
         """
         if self.selected_image and image_path == self.selected_image.image_path:
-            self.display_image(image_path)
+            self.display_image(self.selected_image)
 
     def update_image_operation(self) -> None:
         """
         Reload the current image if an operation has been performed on the current image
         """
         if self.selected_image is not None:
-            self.display_image(self.selected_image.image_path)
+            self.display_image(self.selected_image)
 
     def convert_image_to_imagestack(self, image_data) -> ImageStack:
         """
@@ -163,3 +197,49 @@ class LiveViewerWindowPresenter(BasePresenter):
         if self.model.images:
             image_dir = self.model.images[0].image_path.parent
             self.main_window.show_image_load_dialog_with_path(str(image_dir))
+
+    def update_intensity(self, spec_data: list | np.ndarray) -> None:
+        self.view.intensity_profile.clearPlots()
+        self.view.intensity_profile.plot(spec_data)
+
+    def handle_roi_moved(self) -> None:
+        roi = self.view.live_viewer.get_roi()
+        if roi != self.model.roi:
+            self.model.clear_mean_partial()
+        self.model.roi = roi
+        self.set_roi_enabled(False)
+        self.run_mean_chunk_calc()
+
+    def run_mean_chunk_calc(self) -> None:
+        self.thread = QThread()
+        self.worker = Worker(self)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.thread_cleanup)
+        self.thread.start()
+
+    def thread_cleanup(self) -> None:
+        self.update_intensity_with_mean()
+        self.set_roi_enabled(True)
+        self.try_next_mean_chunk()
+
+    def handle_notify_roi_moved(self) -> None:
+        self.model.clear_mean_partial()
+        if not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(10)
+
+    def update_intensity_with_mean(self) -> None:
+        self.view.intensity_profile.clearPlots()
+        self.view.intensity_profile.plot(self.model.mean)
+
+    def set_roi_enabled(self, enable: bool):
+        if self.view.live_viewer.roi_object is not None:
+            self.view.live_viewer.roi_object.roi.blockSignals(not enable)
+
+    def try_next_mean_chunk(self) -> None:
+        if np.isnan(self.model.mean).any():
+            if not self.handle_roi_change_timer.isActive():
+                self.handle_roi_change_timer.start(10)
