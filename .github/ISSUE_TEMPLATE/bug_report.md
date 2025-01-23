@@ -4,6 +4,7 @@ about: Report an issue that you've encountered.
 title: ''
 labels: 'Type: Bug'
 assignees: ''
+type: 'Bug'
 
 ---
 
@@ -15,13 +16,13 @@ assignees: ''
 
 <!--- Please provide detailed steps for reproducing this issue. -->
 
-### Expected Behaviour
-
-<!--- Explain how the program should behave once the issue has been resolved. -->
-
 ### Current Behaviour
 
 <!--- Please provide information about the undesired current behaviour. -->
+
+### Expected Behaviour
+
+<!--- Explain how the program should behave once the issue has been resolved. -->
 
 ### Context
 

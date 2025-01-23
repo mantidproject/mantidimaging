@@ -3,16 +3,65 @@
 from __future__ import annotations
 
 import time
+import typing
+from operator import attrgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
 from logging import getLogger
+
+import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
+
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
     from os import stat_result
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowPresenter
 
 LOG = getLogger(__name__)
+
+
+class ImageCache:
+    """
+    An ImageCache class to be used to store recent images in memory
+    """
+    cache_dict: dict[Image_Data, np.ndarray]
+    max_cache_size: int | None = None
+    loading_func: typing.Callable
+
+    def __init__(self, max_cache_size=None):
+        self.max_cache_size = max_cache_size
+        self.cache_dict = {}
+
+    def _add_to_cache(self, image: Image_Data, image_array: np.ndarray) -> None:
+        if image not in self.cache_dict.keys():
+            if self.max_cache_size is not None:
+                if self.max_cache_size <= len(self.cache_dict):
+                    self._remove_oldest_image()
+            self.cache_dict[image] = image_array
+
+    def _get_oldest_image(self) -> Image_Data:
+        time_ordered_cache = min(self.cache_dict.keys(), key=attrgetter('image_modified_time'))
+        return time_ordered_cache
+
+    def _remove_oldest_image(self) -> None:
+        del self.cache_dict[self._get_oldest_image()]
+
+    def use_loading_function(self, func: typing.Callable) -> None:
+        self.loading_func = func
+
+    def load_image(self, image: Image_Data) -> np.ndarray:
+        if image in self.cache_dict.keys():
+            return self.cache_dict[image]
+        else:
+            try:
+                image_array = self.loading_func(image.image_path)
+            except ValueError as error:
+                message = f"{type(error).__name__} reading image: {image.image_path}: {error}"
+                LOG.error(message)
+                raise ValueError from error
+            self._add_to_cache(image, image_array)
+            return image_array
 
 
 class Image_Data:
@@ -32,6 +81,8 @@ class Image_Data:
     image_modified_time : float
         last modified time of image file
     """
+    image_path: Path
+    image_name: str
 
     def __init__(self, image_path: Path):
         """
@@ -45,15 +96,11 @@ class Image_Data:
         self.image_path = image_path
         self.image_name = image_path.name
         self._stat = image_path.stat()
+        self.image_modified_time = self._stat.st_mtime
 
     @property
     def stat(self) -> stat_result:
         return self._stat
-
-    @property
-    def image_modified_time(self) -> float:
-        """Return the image modified time"""
-        return self._stat.st_mtime
 
     @property
     def image_modified_time_stamp(self) -> str:
@@ -103,6 +150,10 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
+        self.mean: np.ndarray = np.empty(0)
+        self.mean_paths: set[Path] = set()
+        self.roi: SensibleROI | None = None
+        self.image_cache = ImageCache(max_cache_size=100)
 
     @property
     def path(self) -> Path | None:
@@ -127,7 +178,7 @@ class LiveViewerWindowModel:
         self.images = image_files
         self.presenter.update_image_list(image_files)
 
-    def handle_image_modified(self, image_path: Path):
+    def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
 
     def close(self) -> None:
@@ -136,6 +187,35 @@ class LiveViewerWindowModel:
             self.image_watcher.remove_path()
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
+
+    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
+        if image_array is None:
+            mean_to_add = np.nan
+        elif self.roi is not None:
+            left, top, right, bottom = self.roi
+            mean_to_add = np.mean(image_array[top:bottom, left:right])
+        else:
+            mean_to_add = np.mean(image_array)
+        self.mean_paths.add(image_data_obj.image_path)
+        self.mean = np.append(self.mean, mean_to_add)
+
+    def clear_mean_partial(self) -> None:
+        self.mean_paths.clear()
+        self.mean = np.full(len(self.images), np.nan)
+
+    def calc_mean_chunk(self, chunk_size: int) -> None:
+        if self.images is not None:
+            nanInds = np.argwhere(np.isnan(self.mean))
+            if self.roi:
+                left, top, right, bottom = self.roi
+            else:
+                left, top, right, bottom = (0, 0, -1, -1)
+            if nanInds.size > 0:
+                for ind in nanInds[-1:-chunk_size:-1]:
+                    buffer_data = self.image_cache.load_image(self.images[ind[0]])
+                    if buffer_data is not None:
+                        buffer_mean = np.mean(buffer_data[top:bottom, left:right])
+                        np.put(self.mean, ind, buffer_mean)
 
 
 class ImageWatcher(QObject):
@@ -161,6 +241,7 @@ class ImageWatcher(QObject):
         Sort the images by modified time.
     """
     image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
+    update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
     recent_image_changed = pyqtSignal(Path)
 
     def __init__(self, directory: Path):
@@ -266,7 +347,6 @@ class ImageWatcher(QObject):
 
             if len(images) > 0:
                 break
-
         images = self.sort_images_by_modified_time(images)
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images)
