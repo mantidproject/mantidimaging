@@ -91,7 +91,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         try:
             image_data = self.load_image(image_path)
-        except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
+        except (OSError, KeyError, ValueError, TiffFileError, DeflateError, TypeError) as error:
             message = f"{type(error).__name__} reading image: {image_path}: {error}"
             logger.error(message)
             self.view.remove_image()
