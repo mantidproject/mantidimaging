@@ -573,6 +573,38 @@ document.write(`
   <section id="module-mantidimaging.gui.windows.live_viewer.model">
 <span id="mantidimaging-gui-windows-live-viewer-model-module"></span><h1>mantidimaging.gui.windows.live_viewer.model module<a class="headerlink" href="#module-mantidimaging.gui.windows.live_viewer.model" title="Link to this heading">#</a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.live_viewer.model.</span></span><span class="sig-name descname"><span class="pre">ImageCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_cache_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#ImageCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>An ImageCache class to be used to store recent images in memory</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageCache.cache_dict">
+<span class="sig-name descname"><span class="pre">cache_dict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data" title="mantidimaging.gui.windows.live_viewer.model.Image_Data"><span class="pre">Image_Data</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.cache_dict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageCache.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data" title="mantidimaging.gui.windows.live_viewer.model.Image_Data"><span class="pre">Image_Data</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#ImageCache.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.load_image" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageCache.loading_func">
+<span class="sig-name descname"><span class="pre">loading_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.loading_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageCache.max_cache_size">
+<span class="sig-name descname"><span class="pre">max_cache_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.max_cache_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageCache.use_loading_function">
+<span class="sig-name descname"><span class="pre">use_loading_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#ImageCache.use_loading_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.use_loading_function" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageWatcher">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.live_viewer.model.</span></span><span class="sig-name descname"><span class="pre">ImageWatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#ImageWatcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
@@ -688,6 +720,21 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <span class="sig-name descname"><span class="pre">update_recent_watcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data" title="mantidimaging.gui.windows.live_viewer.model.Image_Data"><span class="pre">Image_Data</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#ImageWatcher.update_recent_watcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_recent_watcher" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_spectrum">
+<span class="sig-name descname"><span class="pre">update_spectrum</span></span><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_spectrum" title="Link to this definition">#</a></dt>
+<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
 </section>
 </dd></dl>
 
@@ -697,8 +744,8 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Image Data Class to store represent image data.</p>
 <p>…</p>
-<section id="id5">
-<h2>Attributes<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>Attributes<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>image_path<span class="classifier">Path</span></dt><dd><p>path to image file</p>
 </dd>
@@ -710,16 +757,20 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 </dd>
 </dl>
 <dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.Image_Data.image_modified_time">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_modified_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_modified_time" title="Link to this definition">#</a></dt>
-<dd><p>Return the image modified time</p>
-</dd></dl>
-
-<dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.Image_Data.image_modified_time_stamp">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_modified_time_stamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_modified_time_stamp" title="Link to this definition">#</a></dt>
 <dd><p>Return the image modified time as a string</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.Image_Data.image_name">
+<span class="sig-name descname"><span class="pre">image_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.Image_Data.image_path">
+<span class="sig-name descname"><span class="pre">image_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.Image_Data.stat">
@@ -735,8 +786,8 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>The model for the spectrum viewer window.</p>
 <p>…</p>
-<section id="id6">
-<h2>Attributes<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h2>Attributes<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>presenter<span class="classifier">LiveViewerWindowPresenter</span></dt><dd><p>presenter for the spectrum viewer window</p>
 </dd>
@@ -746,6 +797,21 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.add_mean">
+<span class="sig-name descname"><span class="pre">add_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data" title="mantidimaging.gui.windows.live_viewer.model.Image_Data"><span class="pre">Image_Data</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#LiveViewerWindowModel.add_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.add_mean" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.calc_mean_chunk">
+<span class="sig-name descname"><span class="pre">calc_mean_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#LiveViewerWindowModel.calc_mean_chunk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.calc_mean_chunk" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.clear_mean_partial">
+<span class="sig-name descname"><span class="pre">clear_mean_partial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#LiveViewerWindowModel.clear_mean_partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.clear_mean_partial" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#LiveViewerWindowModel.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.close" title="Link to this definition">#</a></dt>
 <dd><p>Close the model.</p>
@@ -753,7 +819,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.handle_image_modified">
-<span class="sig-name descname"><span class="pre">handle_image_modified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#LiveViewerWindowModel.handle_image_modified"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.handle_image_modified" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">handle_image_modified</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/live_viewer/model.html#LiveViewerWindowModel.handle_image_modified"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.handle_image_modified" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -823,6 +889,14 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache"><code class="docutils literal notranslate"><span class="pre">ImageCache</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.cache_dict"><code class="docutils literal notranslate"><span class="pre">ImageCache.cache_dict</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.load_image"><code class="docutils literal notranslate"><span class="pre">ImageCache.load_image()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.loading_func"><code class="docutils literal notranslate"><span class="pre">ImageCache.loading_func</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.max_cache_size"><code class="docutils literal notranslate"><span class="pre">ImageCache.max_cache_size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageCache.use_loading_function"><code class="docutils literal notranslate"><span class="pre">ImageCache.use_loading_function()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher"><code class="docutils literal notranslate"><span class="pre">ImageWatcher</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.add_sub_directory"><code class="docutils literal notranslate"><span class="pre">ImageWatcher.add_sub_directory()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.clear_deleted_sub_directories"><code class="docutils literal notranslate"><span class="pre">ImageWatcher.clear_deleted_sub_directories()</span></code></a></li>
@@ -836,15 +910,20 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.sort_images_by_modified_time"><code class="docutils literal notranslate"><span class="pre">ImageWatcher.sort_images_by_modified_time()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.sort_sub_directory_by_modified_time"><code class="docutils literal notranslate"><span class="pre">ImageWatcher.sort_sub_directory_by_modified_time()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_recent_watcher"><code class="docutils literal notranslate"><span class="pre">ImageWatcher.update_recent_watcher()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_spectrum"><code class="docutils literal notranslate"><span class="pre">ImageWatcher.update_spectrum</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data"><code class="docutils literal notranslate"><span class="pre">Image_Data</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_modified_time"><code class="docutils literal notranslate"><span class="pre">Image_Data.image_modified_time</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_modified_time_stamp"><code class="docutils literal notranslate"><span class="pre">Image_Data.image_modified_time_stamp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_name"><code class="docutils literal notranslate"><span class="pre">Image_Data.image_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.image_path"><code class="docutils literal notranslate"><span class="pre">Image_Data.image_path</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.Image_Data.stat"><code class="docutils literal notranslate"><span class="pre">Image_Data.stat</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.add_mean"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel.add_mean()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.calc_mean_chunk"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel.calc_mean_chunk()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.clear_mean_partial"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel.clear_mean_partial()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.close"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel.close()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.handle_image_modified"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel.handle_image_modified()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.path"><code class="docutils literal notranslate"><span class="pre">LiveViewerWindowModel.path</span></code></a></li>
