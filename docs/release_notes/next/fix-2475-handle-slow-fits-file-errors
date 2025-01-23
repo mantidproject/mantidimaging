@@ -1,0 +1,1 @@
+#2469: handle TypeError which is raised when attempting to read an incomplete FITS file
