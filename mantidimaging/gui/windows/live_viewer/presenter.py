@@ -7,11 +7,12 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
-import tifffile
 from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
 from astropy.io import fits
 
 from imagecodecs._deflate import DeflateError
+from tifffile import tifffile
+from tifffile.tifffile import TiffFileError
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
@@ -101,7 +102,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 try:
                     image_data = self.model.image_cache.load_image(images_list[-1])
                     self.model.add_mean(images_list[-1], image_data)
-                except (OSError, KeyError, ValueError, DeflateError) as error:
+                except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
                     message = f"{type(error).__name__} reading image: {images_list[-1].image_path}: {error}"
                     logger.error(message)
             self.update_intensity(self.model.mean)
@@ -126,7 +127,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         try:
             image_data = self.model.image_cache.load_image(image_data_obj)
-        except (OSError, KeyError, ValueError, DeflateError, TypeError) as error:
+        except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
             message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
             logger.error(message)
             self.view.remove_image()
