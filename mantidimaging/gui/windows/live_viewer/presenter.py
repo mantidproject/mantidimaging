@@ -26,6 +26,20 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 
+class ImageLoadFailError(Exception):
+    """
+    Exception raised when an image is not loaded correctly
+    """
+
+    def __init__(self, image_path: Path, source_error, message: str = '') -> None:
+        error_name = type(source_error).__name__
+        if message == '':
+            self.message = f"{error_name} :Could not load image f{image_path}, Exception: {source_error} "
+        else:
+            self.message = message
+        super().__init__(message)
+
+
 class Worker(QObject):
     finished = pyqtSignal()
 
@@ -102,9 +116,8 @@ class LiveViewerWindowPresenter(BasePresenter):
                 try:
                     image_data = self.model.image_cache.load_image(images_list[-1])
                     self.model.add_mean(images_list[-1], image_data)
-                except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as error:
-                    message = f"{type(error).__name__} reading image: {images_list[-1].image_path}: {error}"
-                    logger.error(message)
+                except ImageLoadFailError as error:
+                    logger.error(error.message)
             self.update_intensity(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
@@ -127,11 +140,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         try:
             image_data = self.model.image_cache.load_image(image_data_obj)
-        except (OSError, KeyError, ValueError, TiffFileError, DeflateError, TypeError) as error:
-            message = f"{type(error).__name__} reading image: {image_data_obj.image_path}: {error}"
-            logger.error(message)
+        except ImageLoadFailError as error:
+            logger.error(error.message)
             self.view.remove_image()
-            self.view.live_viewer.show_error(message)
+            self.view.live_viewer.show_error(error.message)
             return
         image_data = self.perform_operations(image_data)
         if image_data.size == 0:
@@ -150,15 +162,23 @@ class LiveViewerWindowPresenter(BasePresenter):
         and returns as an ndarray
         """
         if image_path.suffix.lower() in [".tif", ".tiff"]:
-            with tifffile.TiffFile(image_path) as tif:
-                image_data = tif.asarray()
-            return image_data
+            try:
+                with tifffile.TiffFile(image_path) as tif:
+                    image_data = tif.asarray()
+                return image_data
+            except (OSError, KeyError, ValueError, TiffFileError, DeflateError) as err:
+                raise ImageLoadFailError(image_path, err) from err
         elif image_path.suffix.lower() == ".fits":
-            with fits.open(image_path) as fits_hdul:
-                image_data = fits_hdul[0].data
-            return image_data
+            try:
+                with fits.open(image_path) as fits_hdul:
+                    image_data = fits_hdul[0].data
+                return image_data
+            except (OSError, TypeError, ValueError) as err:
+                raise ImageLoadFailError(image_path, err) from err
         else:
-            raise ValueError(f"Unsupported file type: {image_path.suffix}")
+            raise ImageLoadFailError(image_path,
+                                     source_error=FileNotFoundError,
+                                     message=f"Unsupported file type: {image_path.suffix}")
 
     def update_image_modified(self, image_path: Path) -> None:
         """
