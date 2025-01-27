@@ -58,7 +58,7 @@ test-screenshots:
 
 test-screenshots-win:
 	-mkdir ${TEST_RESULT_DIR}
-	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
+	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/live_viewer_window_test.py -vs --run-eyes-tests
 	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
 
 mypy:

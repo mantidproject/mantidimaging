@@ -54,12 +54,7 @@ class ImageCache:
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:
-            try:
-                image_array = self.loading_func(image.image_path)
-            except ValueError as error:
-                message = f"{type(error).__name__} reading image: {image.image_path}: {error}"
-                LOG.error(message)
-                raise ValueError from error
+            image_array = self.loading_func(image.image_path)
             self._add_to_cache(image, image_array)
             return image_array
 
