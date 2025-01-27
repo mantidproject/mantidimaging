@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  test-docker-rocky:
     # It is hosted on Ubuntu but the docker image is built on Rocky
     runs-on: ubuntu-latest
 
