@@ -109,7 +109,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_stack(self.main_window.get_stack(uuid))
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
-
         self.handle_tof_unit_change()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
@@ -118,7 +117,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
-
         self.do_add_roi()
         self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
@@ -383,12 +381,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Remove a given ROI from the table by ROI name or all ROIs from
         the table if no name is passed as an argument
+
         @param roi_name: Name of the ROI to remove
         """
         if roi_name is None:
-            self.view.spectrum_widget.roi_dict.clear()
             for name in self.get_roi_names():
                 self.view.spectrum_widget.remove_roi(name)
+            self.view.spectrum_widget.roi_dict.clear()
+            self.view.roi_table_model.clear_table()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
