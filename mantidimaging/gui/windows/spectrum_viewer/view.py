@@ -34,15 +34,20 @@ class ROIPropertiesTableWidget(QWidget):
     the ROI properties table widget to its own class.
     """
 
+    roiPropertiesTableWidget: QTableWidget
+    roiPropertiesGroupBox: QGroupBox
+    roiPropertiesSpinBoxes: dict[str, QSpinBox]
+    roiPropertiesLabels: dict[str, QLabel]
+
     def __init__(self, parent=None, roiPropertiesTableWidget=QTableWidget, roiPropertiesGroupBox=QGroupBox):
         super().__init__(parent)
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
         self.roi_table_properties_secondary = ["Width", "Height"]
 
-        self.roiPropertiesTableWidget: QTableWidget = roiPropertiesTableWidget
-        self.roiPropertiesGroupBox: QGroupBox = roiPropertiesGroupBox
-        self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
-        self.roiPropertiesLabels: dict[str, QLabel] = {}
+        self.roiPropertiesTableWidget = roiPropertiesTableWidget
+        self.roiPropertiesGroupBox = roiPropertiesGroupBox
+        self.roiPropertiesSpinBoxes = {}
+        self.roiPropertiesLabels = {}
         self.initialize_roi_properties()
         self.initialize_roi_properties_labels()
 
