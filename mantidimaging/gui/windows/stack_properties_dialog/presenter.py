@@ -2,9 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import os
 from typing import TYPE_CHECKING
 
+from mantidimaging.core.utility.size_calculator import full_size_MB
 from mantidimaging.gui.mvp_base import BasePresenter
 
 if TYPE_CHECKING:
@@ -37,6 +37,4 @@ class StackPropertiesPresenter(BasePresenter):
         self.view.stack_size_MB = self.get_stack_size_MB()
 
     def get_stack_size_MB(self):
-        return sum(
-            os.path.getsize(self.view.directory + f)
-            for f in os.listdir(self.view.directory) if os.path.isfile(self.view.directory + f)) / 1024 / 1024
+        return full_size_MB(self.view.stack.data.shape, self.view.stack.data.dtype)
