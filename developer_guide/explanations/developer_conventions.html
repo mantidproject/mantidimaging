@@ -580,6 +580,114 @@ document.write(`
 </pre></div>
 </div>
 </section>
+<section id="version-control">
+<h2>Version Control<a class="headerlink" href="#version-control" title="Link to this heading">#</a></h2>
+<p>Mantid Imaging uses git for version control. The repository is hosted on GitHub at <a class="reference external" href="https://github.com/mantidproject/mantidimaging">Mantid Imaging</a>.</p>
+<p>Before you start contributing to Mantid Imaging, please ensure you have a GitHub account with <a class="reference external" href="https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication">2FA</a> enabled and have configured signed commits with a <a class="reference external" href="https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits">GPG key</a>. This is important to ensure that the codebase remains secure and that contributions can be attributed correctly.</p>
+<section id="issues">
+<h3>Issues<a class="headerlink" href="#issues" title="Link to this heading">#</a></h3>
+<p>As a general rule of thumb, for every issue you complete, you should try to also review someone elses pull request. This helps maintain code frequency, and prevents any one person from becoming a bottleneck due to issues not being reviewed.</p>
+<p>When you find a bug or have an idea for a new feature, please create an issue on the <a class="reference external" href="https://github.com/mantidproject/mantidimaging">Mantid Imaging GitHub repository</a> after first checking that the issue does not already exist and that you have agreed with the Mantid Imaging team that the issue is valid.</p>
+<p>When creating an issue, please provide as much information as possible, including:</p>
+<ul class="simple">
+<li><p>Steps to reproduce the issue if it is a bug.</p></li>
+<li><p>A clear description of the feature you would like to see if it is a feature request. - remember to include the use case and argue to importance of the feature.</p></li>
+<li><p>Any relevant screenshots or logs.</p></li>
+<li><p>Any other information that you think may be useful.</p></li>
+</ul>
+<p>When creating an issue, please ensure that you assign the issue to yourself if you are going to work on it or leave the assignment blank if not. This will prevent multiple people from working on the same issue at the same time.</p>
+<p>Please also ensure that any relevant labels are added to the issue. This will help the Mantid Imaging team to prioritise the issue and ensure that it is worked on in a timely manner.</p>
+<p>Once you have completed the above, you will also need to point the ticket with a number which will act as a rough estimate for the time it will take to complete the issue in whole days (round up to the nearest day), including any necessary research someone may need to do and the time to review and test.</p>
+<p>Please assign the newly created issue to the <a class="reference external" href="https://github.com/orgs/mantidproject/projects/13">Mantid Imaging work project board</a>, and set the status to “Todo”, We kindly ask that you do not point or associate the issue to a sprint. This will make the issue easier for the Mantid Imaging team to find and place into an appropriate sprint.
+During sprint planning the Mantid Imaging team will assign issues to be worked on in the next sprint to the sprint project board - <a class="reference external" href="https://github.com/orgs/mantidproject/projects/13/views/6">current sprint</a>.</p>
+<p>If you are unsure about any of the above, please ask a member of the Mantid Imaging team for help.</p>
+</section>
+<section id="branches">
+<h3>Branches<a class="headerlink" href="#branches" title="Link to this heading">#</a></h3>
+<p>Mantid Imaging treats the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch as the default branch. This branch should always be in a working state and should be used as the base for all new features and bug fixes.</p>
+<p>When working on a new feature or bug fix, you should create a new development branch from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch after you have first checked that your local <code class="docutils literal notranslate"><span class="pre">main</span></code> branch is up to date with the remote <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. This can be checked by running to following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="n">origin</span> <span class="n">main</span> <span class="o">&amp;&amp;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">main</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">origin</span> <span class="pre">main</span></code> will fetch the latest changes from the remote <code class="docutils literal notranslate"><span class="pre">main</span></code> branch of the origin repository, updating your local copy of the remote-tracking branch <code class="docutils literal notranslate"><span class="pre">origin/main</span></code> with the latest commits from the remote repository.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span> <span class="pre">origin</span> <span class="pre">main</span></code> will then pull the latest changes from the remote <code class="docutils literal notranslate"><span class="pre">main</span></code> branch of the origin repository into your local <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p></li>
+</ul>
+<p>In summary, this command updates your local branch with the latest changes from the remote <code class="docutils literal notranslate"><span class="pre">main</span></code> branch. <strong>You do not need to checkout the main branch to do this</strong>.</p>
+<p>The branch should be named in the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">issue_number</span><span class="o">&gt;</span><span class="n">_short_description</span>    <span class="c1"># e.g. 1234_add_new_feature</span>
+</pre></div>
+</div>
+<p>You can create a new branch by running the following command (replacing <code class="docutils literal notranslate"><span class="pre">&lt;issue_number&gt;_short_description</span></code> with the relevant information):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">switch</span> <span class="o">-</span><span class="n">c</span> <span class="o">&lt;</span><span class="n">issue_number</span><span class="o">&gt;</span><span class="n">_short_description</span>
+</pre></div>
+</div>
+<p>The short description is commonly similar if not the same as the issue title. The description should be in lowercase and use underscores instead of spaces.</p>
+</section>
+<section id="commit-format">
+<h3>Commit Format<a class="headerlink" href="#commit-format" title="Link to this heading">#</a></h3>
+<p>Commits act as a historical record of changes made to the codebase. They have the power to add context and clarity to the codebase, but only if they are written well.</p>
+<p>The best commits are those with a clear title and detailed description explaining the changes made. The title should be in the imperative mood (i.e. written as a command or instruction) and should be no longer than 50 characters. The description should be no longer than 72 characters per line and should be wrapped at 72 characters.</p>
+<p>Though commits can be made using only a summary, it is recommended to also write a description, even if you think it is unnecessary because from a reviewers perspective, it is always better to have more information than less.</p>
+<p>The order of commits can be just as important as the commits themselves. Commits should be ordered in a logical manner and help tell the reviewer or another developer in the future the story of changes made, which may be slightly different from the order you made them in.</p>
+<p>A good reference for writing commits is the GitHub blog post <a class="reference external" href="https://github.blog/developer-skills/github/write-better-commits-build-better-projects/">“Write Better Commits, Build Better Projects”</a> which will walk you through both how to write better commits, but also how to easily re-order commits using <a class="reference external" href="https://docs.github.com/en/get-started/using-git/about-git-rebase">interactive rebase</a>.</p>
+<p>Now is a good time to mention that it’s important not to make commits too big. Not only are small, concise commits easier to review and understand, they also make it easier to revert if necessary.</p>
+</section>
+<section id="pull-requests">
+<h3>Pull Requests<a class="headerlink" href="#pull-requests" title="Link to this heading">#</a></h3>
+<p>When you have completed your work on a new feature or bug fix, We ask that you check your work thoroughly to make sure it works functionally as you expect it too and that tests pass on your machine locally. Once you are happy with your branch, you should create a pull request (PR). There are two types of PR, a draft PR and a regular PR.</p>
+<p>A draft PR can be useful if you wish to start a conversation with collaborators as soon as your work has reached a point where you would like feedback. It’s important to note that once you make a draft PR, all changes pushed to the remote development branch will trigger Mantid Imagings <a class="reference external" href="https://github.com/mantidproject/mantidimaging/actions">GitHub workflows</a>, which will run static analysis checks, run all unit tests, screenshot tests, and finally build the documentation. This can be useful to see if your changes have broken anything, though running them is time consuming.
+Only make a draft PR when you are as close as possible to finishing your work if you haven’t already. This will save on compute time by not triggering the workflows on every push. This will also help avoid any confusion as to whether the PR is ready for review or not - though if your PR is a draft, it should be assumed that it is not yet ready for review.</p>
+<p>Once you are happy with your work, it passes tests and you are ready for it to be reviewed, you should convert the draft PR to a regular PR (skipping the draft PR stage is also fine). Make sure to assign yourself to the PR if you haven’t already under “Assignees” (not as the reviewer). Then move your issue to the “Review” column on the <a class="reference external" href="https://github.com/orgs/mantidproject/projects/13/views/6?">project board</a> your issue is associated with, which will let the Mantid Imaging team know that your PR is ready for review.</p>
+<p>When writing a PR, it is important to provide a clear title and description following the provided <a class="reference external" href="https://github.com/mantidproject/mantidimaging/blob/main/.github/pull_request_template.md">template</a>. The Template will ask you to reference the associated issue related to the proposed changes and to clearly describe exactly what you have done in the PR, be careful no to repeat the issue description.
+It is important that the description is written assuming no prior knowledge of the issue or work done and there is no assumed context. This will improve the accessibility of the PR, ensuring anyone within the Mantid Imaging team can review your proposed changes with a confident understanding of your approach to solving the issue.
+Additionally, it is important to describe how you tested your work and what you did to ensure that your changes work as expected. This could include describing that you created additional unit tests and/or that you manually tested the changes and how you tested them. This will help the reviewer understand the scope of your testing and how confident you are that your changes work as expected.
+To improve accessibility to your PR further, it is also important that you provide step by step instruction on how to test your PR including any necessary setup to follow your instructions - note that the reviewer can and should also try to test your PR in a different way to ensure that the changes work as expected in addition to following your instructions.</p>
+<p>Labelling your PR can provide a little more context by describing the category of the PR such as whether or not is is solving a bug, or if the PR is a release essential which may help the Mantid Imaging team to prioritize your PR.</p>
+<p><strong>PLEASE NOTE</strong>: the “rebuild_docker 🐋” label should only be added to your PR if you wish force rebuild the docker containers for your branch. Once added, the docker containers will be rebuilt. To do this again, simply remove the label and add it back again.</p>
+<p>If your PR changes only change a tiny part of the codebase and may not even have an associated issue, this could be considered as a flash PR. Please add “Flash PR” to the start of the PR title if this is the case and add to the project “<a class="reference external" href="https://github.com/orgs/mantidproject/projects/13/views/6">Mantid Imaging Work</a>”, making sure to also add to the correct column on the project board which will likely be “review”.</p>
+</section>
+<section id="reviewing-a-pull-request">
+<h3>Reviewing a Pull Request<a class="headerlink" href="#reviewing-a-pull-request" title="Link to this heading">#</a></h3>
+<p>When reviewing a pull request (PR), it is important to provide constructive feedback. Feedback should be clear, concise and actionable. It is important to remember that the goal of a review is to improve the codebase, and not to criticise the author. It is also important to understand that the author may not have the same context as you and may have made a mistake or oversight that you have not. It is important to be patient and understanding when reviewing a PR as the author may have a different perspective on the issue than you do or different experience level.</p>
+<p>When reviewing a PR, it is important to check the following:</p>
+<ol class="arabic simple">
+<li><p><strong>Linked Issue</strong>: The PR is linked to the correct issue. If the PR is a flash PR, then no linked issue is needed. If the PR if a flash PR, check that is has been added to the correct project board and column.</p></li>
+<li><p><strong>Description</strong>: The PR description is clear and concise, and the author has provided step by step instructions on how to test the PR. If the PR description is not clear, it is important to ask the author to clarify. If the author has not provided step by step instructions on how to test the PR, it is important to ask the author to provide them.</p></li>
+<li><p><strong>Code Quality</strong>: The code is well written and follows the style of other code in the Mantid Imaging codebase.</p></li>
+<li><p><strong>Testing</strong>: The code is well tested and that the tests pass. If new code has been added, it is important to check that the tests cover the new code and that the tests are well written. Please note that this may not always be possible. As a reviewer, it is your job to work with the PR author to maintin good coverage of the codebase and prevent coverage from dropping when new code is merged in.</p></li>
+<li><p><strong>Documentation</strong>: The code is well documented and that the documentation is clear and concise. If the code is not well documented, it is important to ask the author to add documentation if you feel that it is necessary. If you don’t understand the code, that in itself is a good argument for the code to be documented. If you are unsure about the documentation, please ask the author to clarify. Jumping on a video call can also be useful to ask the author to provide you with a code walk through to help you understand the code.</p></li>
+<li><p><strong>Optimization</strong>: The code is optimized, but not over optimized. It is important to ensure that the code is optimized for performance, but not at the expense of readability or maintainability. If you feel that the code is over optimized, it is important to ask the author to simplify the code.</p></li>
+<li><p><strong>Commits</strong>: Commits are well written and seem to be in a logical order. If the commits are not in a logical order, it is important to ask the author to re-order the commits. If the commits are not well written, it is important to ask the author to re-write the commits to help tell the story of the changes made as this will save future developers time when trying to understand the changes made.</p></li>
+<li><p><strong>Release Notes</strong>: If applicable, the PR author has added release notes and linked the path location in the PR. If the PR author has not added release notes, it is important to ask the author to add them if needed.</p></li>
+<li><p><strong>GUI Changes</strong>: If the PR makes changes to the GUI, which affects the test results from applitools, it is important for  the author of the POR to uncomment and follow the instruction in the PR template under the “Documentation and Additional Notes” section. Additionally, it is equally important that the reviewer checks that the author has followed the instructions correctly and actions the necessary steps required of the reviewer post-merge.</p></li>
+</ol>
+<p>When reviewing a PR, there are many things to consider and in turn miss which could lead to bugs being merged into the codebase. While bugs will indefinitely make there way into the production code, minimizing this is important. To help prevent you from missing things as part of your review and to make checking all the above more manageable, we recommend going through the code a number of times as part of your review, checking only one or two of the above points each time.</p>
+</section>
+<section id="pull-requests-which-include-gui-changes">
+<h3>Pull Requests which Include GUI Changes<a class="headerlink" href="#pull-requests-which-include-gui-changes" title="Link to this heading">#</a></h3>
+<p>If a PR includes changes to the GUI which either cause existing <a class="reference external" href="https://applitools.com/?utm_term=applitools&amp;utm_source=google&amp;utm_medium=paid-search&amp;utm_content=free-account&amp;utm_campaign=brand-primary&amp;gad_source=1&amp;gclid=Cj0KCQiAs5i8BhDmARIsAGE4xHyZndsp3CxcVYs5wPG6lw-ZiXpvWt3MDlnWfmCOzbMKWDkZExP7_5saAmmgEALw_wcB">Applitools</a> screenshot tests to fail or adds new screenshot tests, please ensure you follow the below instructions to merge the new screenshot tests into the default branch:</p>
+<p><strong>Before merge:</strong></p>
+<ul class="simple">
+<li><p>Resolve the change on applitools by, creating a new baseline for test (same as old workflow).</p></li>
+<li><p>Verify that tests should now pass.</p></li>
+</ul>
+<p><strong>After merge:</strong></p>
+<ul class="simple">
+<li><p>Go to <a class="reference external" href="https://eyes.applitools.com/app/merge/">https://eyes.applitools.com/app/merge/</a></p></li>
+<li><p>Set Target branch to default</p></li>
+<li><p>Set Source branch to the PR’s branch</p></li>
+<li><p>Click compare</p></li>
+<li><p>Select all changes</p></li>
+<li><p>Click merge</p></li>
+</ul>
+<p>If the screenshot tests for other PRs begin to fail or are still failing:</p>
+<ul class="simple">
+<li><p>Go to <a class="reference external" href="https://eyes.applitools.com/app/baselines">https://eyes.applitools.com/app/baselines</a></p></li>
+<li><p>Find the branch for the other</p></li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -629,6 +737,15 @@ document.write(`
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dependencies">Dependencies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-control">Version Control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#issues">Issues</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#branches">Branches</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commit-format">Commit Format</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-requests">Pull Requests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reviewing-a-pull-request">Reviewing a Pull Request</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-requests-which-include-gui-changes">Pull Requests which Include GUI Changes</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
