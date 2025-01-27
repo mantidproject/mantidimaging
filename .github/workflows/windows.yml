@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  test-windows:
     runs-on: windows-latest
     env:
       CONDA_OVERRIDE_CUDA: 11.8
