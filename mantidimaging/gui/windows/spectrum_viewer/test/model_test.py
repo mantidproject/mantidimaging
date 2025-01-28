@@ -6,6 +6,7 @@ from pathlib import Path, PurePath
 from unittest import mock
 import io
 import math
+from unittest.mock import MagicMock
 
 import numpy as np
 import numpy.testing as npt
@@ -93,6 +94,29 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         av_img = self.model.get_averaged_image()
         self.assertEqual(av_img.data.shape, (11, 12))
         self.assertEqual(av_img.data[0, 0], 6.5)
+
+    def _set_sample_and_normalize_stacks(self):
+        spectrum = np.arange(10, 20)
+        stack = ImageStack(np.ones([10, 11, 12]) * spectrum.reshape((10, 1, 1)))
+        normalise_spectrum = np.arange(15, 25)
+        normalise_stack = ImageStack(np.ones([10, 11, 12]) * normalise_spectrum.reshape((10, 1, 1)))
+        self.model.set_stack(stack)
+        self.model.set_normalise_stack(normalise_stack)
+
+    def test_get_normalized_averaged_image(self):
+        self._set_sample_and_normalize_stacks()
+        av_img = self.model.get_normalized_averaged_image()
+        self.assertEqual(av_img.shape, (11, 12))
+        expected_value = self.model._stack.data.mean() / self.model._normalise_stack.data.mean()
+        self.assertAlmostEqual(av_img[0, 0], expected_value, places=7)
+
+    def test_get_normalized_averaged_image_with_shutter_count(self):
+        self._set_sample_and_normalize_stacks()
+        self.model.get_shuttercount_normalised_correction_parameter = MagicMock(return_value=2.0)
+        av_img = self.model.get_normalized_averaged_image()
+        self.assertEqual(av_img.shape, (11, 12))
+        expected_value = (self.model._stack.data.mean() / self.model._normalise_stack.data.mean()) / 2.0
+        self.assertAlmostEqual(av_img[0, 0], expected_value, places=7)
 
     def test_get_spectrum(self):
         stack, spectrum = self._set_sample_stack()
