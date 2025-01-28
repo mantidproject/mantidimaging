@@ -169,9 +169,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Show the new sample in the view and update the spectrum and
         image view accordingly. Resets the ROIs.
         """
-
-        averaged_image = self.model.get_averaged_image()
+        if self.view.normalisation_enabled():
+            averaged_image = self.model.get_normalized_averaged_image()
+        else:
+            averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
+
         self.view.set_image(averaged_image)
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
