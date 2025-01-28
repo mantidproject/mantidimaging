@@ -310,17 +310,15 @@ class SpectrumViewerWindowModel:
         csv_output = CSVOutput()
         csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
 
-        self.tof_data = self.get_stack_time_of_flight()
-        if self.tof_data is not None:
-            self.units.set_data_to_convert(self.tof_data)
+        local_tof_data = self.get_stack_time_of_flight()
+        if local_tof_data is not None:
+            self.units.set_data_to_convert(local_tof_data)
             csv_output.add_column("Wavelength", self.units.tof_seconds_to_wavelength_in_angstroms(), "Angstrom")
             csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
             csv_output.add_column("Energy", self.units.tof_seconds_to_energy(), "MeV")
-
         for roi_name, roi in rois.items():
             csv_output.add_column(roi_name, self.get_spectrum(roi, SpecType.SAMPLE, normalise_with_shuttercount),
                                   "Counts")
-
             if normalise:
                 if self._normalise_stack is None:
                     raise RuntimeError("No normalisation stack selected")
