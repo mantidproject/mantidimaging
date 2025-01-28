@@ -8,6 +8,7 @@ import numpy as np
 import os
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.windows.live_viewer.model import Image_Data
+from mantidimaging.gui.windows.live_viewer.presenter import ImageLoadFailError
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 from pathlib import Path
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
@@ -73,7 +74,7 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
     def test_live_view_opens_with_bad_data(self, _mock_time, _mock_image_watcher, mock_load_image):
         file_list = self._make_simple_dir(self.live_directory)
         image_list = [Image_Data(path) for path in file_list]
-        mock_load_image.side_effect = ValueError
+        mock_load_image.side_effect = ImageLoadFailError(file_list[0], source_error=ValueError)
         self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer_list[-1].presenter.model._handle_image_changed_in_list(image_list)
         self.check_target(widget=self.imaging.live_viewer_list[-1])
