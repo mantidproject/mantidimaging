@@ -189,7 +189,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
-        self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum_widget.roi_changed.connect(lambda roi: self.presenter.handle_roi_moved(roi))
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
         self.spectrum_right_click_menu = self.spectrum.spectrum_viewbox.menu

@@ -138,7 +138,7 @@ class SpectrumWidget(QWidget):
 
     range_changed = pyqtSignal(object)
     roi_clicked = pyqtSignal(object)
-    roi_changed = pyqtSignal()
+    roi_changed = pyqtSignal(object)
     roiColorChangeRequested = pyqtSignal(str, tuple)
 
     spectrum_plot_widget: SpectrumPlotWidget
@@ -213,7 +213,7 @@ class SpectrumWidget(QWidget):
 
         self.roi_dict[name] = roi_object.roi
         self.max_roi_size = roi_object.size()
-        self.roi_dict[name].sigRegionChangeFinished.connect(self.roi_changed.emit)
+        self.roi_dict[name].sigRegionChangeFinished.connect(lambda: self.roi_changed.emit(self.roi_dict[name]))
         self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
