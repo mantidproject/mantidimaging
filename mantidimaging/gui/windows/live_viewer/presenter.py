@@ -9,6 +9,7 @@ from logging import getLogger
 import numpy as np
 from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
 from astropy.io import fits
+from astropy.utils.exceptions import AstropyUserWarning
 
 from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
@@ -160,7 +161,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 with fits.open(image_path) as fits_hdul:
                     image_data = fits_hdul[0].data
                 return image_data
-            except (OSError, TypeError, ValueError) as err:
+            except (OSError, TypeError, ValueError, AstropyUserWarning) as err:
                 raise ImageLoadFailError(image_path, err) from err
         else:
             raise ImageLoadFailError(image_path,
