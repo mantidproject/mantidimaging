@@ -18,26 +18,13 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.utility.custom_exceptions import ImageLoadFailError
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 logger = getLogger(__name__)
-
-
-class ImageLoadFailError(Exception):
-    """
-    Exception raised when an image is not loaded correctly
-    """
-
-    def __init__(self, image_path: Path, source_error, message: str = '') -> None:
-        error_name = type(source_error).__name__
-        if message == '':
-            self.message = f"{error_name} :Could not load image f{image_path}, Exception: {source_error} "
-        else:
-            self.message = message
-        super().__init__(message)
 
 
 class Worker(QObject):

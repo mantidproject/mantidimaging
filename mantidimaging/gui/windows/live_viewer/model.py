@@ -13,6 +13,7 @@ import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.custom_exceptions import ImageLoadFailError
 
 if TYPE_CHECKING:
     from os import stat_result
@@ -50,11 +51,14 @@ class ImageCache:
     def use_loading_function(self, func: typing.Callable) -> None:
         self.loading_func = func
 
-    def load_image(self, image: Image_Data) -> np.ndarray:
+    def load_image(self, image: Image_Data) -> np.ndarray | None:
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:
-            image_array = self.loading_func(image.image_path)
+            try:
+                image_array = self.loading_func(image.image_path)
+            except ImageLoadFailError as err:
+                raise ImageLoadFailError(image.image_path, err) from err
             self._add_to_cache(image, image_array)
             return image_array
 
@@ -171,10 +175,11 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        self.presenter.update_image_list(image_files)
+        self.presenter.update_image_list(self.images)
 
     def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
+        self.presenter.update_image_list(self.images)
 
     def close(self) -> None:
         """Close the model."""
@@ -207,7 +212,10 @@ class LiveViewerWindowModel:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
                 for ind in nanInds[-1:-chunk_size:-1]:
-                    buffer_data = self.image_cache.load_image(self.images[ind[0]])
+                    try:
+                        buffer_data = self.image_cache.load_image(self.images[ind[0]])
+                    except ImageLoadFailError:
+                        buffer_data = None
                     if buffer_data is not None:
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
                         np.put(self.mean, ind, buffer_mean)
