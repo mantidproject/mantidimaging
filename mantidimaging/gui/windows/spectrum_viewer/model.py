@@ -140,7 +140,10 @@ class SpectrumViewerWindowModel:
         tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
         sample_data = self._stack.data[tof_slice].mean(axis=0)
         norm_data = self._normalise_stack.data[tof_slice].mean(axis=0)
-        return np.divide(sample_data, norm_data, out=np.zeros_like(sample_data), where=norm_data != 0)
+        normalized_image = np.divide(sample_data, norm_data, out=np.zeros_like(sample_data), where=norm_data != 0)
+        shutter_correction = self.get_shuttercount_normalised_correction_parameter()
+        normalized_image /= shutter_correction
+        return normalized_image
 
     def get_averaged_image(self) -> np.ndarray | None:
         """
