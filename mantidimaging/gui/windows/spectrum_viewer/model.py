@@ -130,6 +130,21 @@ class SpectrumViewerWindowModel:
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
 
+    def get_normalized_averaged_image(self) -> np.ndarray | None:
+        """
+        Get the normalized averaged image if both sample and normalization stacks are available.
+        """
+        if self._stack is None or self._normalise_stack is None:
+            return None
+
+        tof_slice = slice(self.tof_range[0], self.tof_range[1] + 1)
+        sample_data = self._stack.data[tof_slice].mean(axis=0)
+        norm_data = self._normalise_stack.data[tof_slice].mean(axis=0)
+        normalized_image = np.divide(sample_data, norm_data, out=np.zeros_like(sample_data), where=norm_data != 0)
+        shutter_correction = self.get_shuttercount_normalised_correction_parameter()
+        normalized_image /= shutter_correction
+        return normalized_image
+
     def get_averaged_image(self) -> np.ndarray | None:
         """
         Get the averaged image from the stack in the model returning as a numpy array
