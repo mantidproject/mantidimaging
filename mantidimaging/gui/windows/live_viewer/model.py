@@ -51,7 +51,7 @@ class ImageCache:
     def use_loading_function(self, func: typing.Callable) -> None:
         self.loading_func = func
 
-    def load_image(self, image: Image_Data) -> np.ndarray | None:
+    def load_image(self, image: Image_Data) -> np.ndarray:
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:
