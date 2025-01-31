@@ -345,7 +345,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         if roi_name in self.view.spectrum_widget.roi_dict:
             self.view.spectrum_widget.roi_dict[roi_name].colour = new_colour
-        self.view.update_roi_color(roi_name, new_colour)
+        self.view.table_view.update_roi_color(roi_name, new_colour)
         self.view.on_visibility_change()
 
     def add_rits_roi(self) -> None:
@@ -428,7 +428,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
 
     def handle_storing_current_roi_name_on_tab_change(self) -> None:
-        old_table_names = self.view.old_table_names
+        old_table_names = self.view.table_view.old_table_names
         old_current_roi_name = self.view.current_roi_name
         old_last_clicked_roi = self.view.last_clicked_roi
         if self.export_mode == ExportMode.ROI_MODE:
