@@ -89,6 +89,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
+        self.spectrum_widget.warning_triggered.connect(self.display_warning)
 
         self.spectrum_right_click_menu = self.spectrum.spectrum_viewbox.menu
         self.units_menu = self.spectrum_right_click_menu.addMenu("Units")
@@ -236,6 +237,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
         self.main_window.spectrum_viewer = None
+
+    def display_warning(self, message: str) -> None:
+        """
+        Display the warning message in the GUI.
+        """
+        self.set_normalise_error(message)
+        self.display_normalise_error()
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
