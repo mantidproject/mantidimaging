@@ -37,6 +37,7 @@ class TestGuiLiveViewer(GuiSystemBase):
 
     def test_open_close_intensity_profile(self):
         self.assertEqual(self.live_viewer_window.splitter.sizes()[1], 0)
+        QTest.qWait(SHORT_DELAY * 4)
         self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
         QTest.qWait(SHOW_DELAY)
@@ -49,6 +50,7 @@ class TestGuiLiveViewer(GuiSystemBase):
         QTest.qWait(SHOW_DELAY)
 
     def test_roi_resized(self):
+        QTest.qWait(SHORT_DELAY * 4)
         self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
