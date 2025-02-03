@@ -40,6 +40,7 @@ from mantidimaging.gui.windows.settings.view import SettingsWindowView
 from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
 from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
+from mantidimaging.gui.windows.stack_properties_dialog.view import StackPropertiesDialog
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
@@ -109,6 +110,7 @@ class MainWindowView(BaseMainWindowView):
     nexus_save_dialog: NexusSaveDialog | None = None
     add_to_dataset_dialog: AddImagesToDatasetDialog | None = None
     move_stack_dialog: MoveStackDialog | None = None
+    stack_properties_dialog: StackPropertiesDialog | None = None
 
     default_theme_enabled: int = 1
 
@@ -657,6 +659,8 @@ class MainWindowView(BaseMainWindowView):
                     or self.dataset_tree_widget.itemAt(position).id in self.presenter.all_dataset_ids):
                 add_action = self.menuTreeView.addAction("Add / Replace Stack")
                 add_action.triggered.connect(self._add_images_to_existing_dataset)
+                properties_action = self.menuTreeView.addAction("Stack Properties")
+                properties_action.triggered.connect(self._stack_properties)
                 delete_action = self.menuTreeView.addAction("Delete")
                 delete_action.triggered.connect(self._delete_container)
             if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
@@ -682,6 +686,10 @@ class MainWindowView(BaseMainWindowView):
     def _move_stack(self) -> None:
         stack_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_MOVE_STACK_DIALOG, stack_id=stack_id)
+
+    def _stack_properties(self):
+        stack_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.SHOW_PROPERTIES_DIALOG, stack_id=stack_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem) -> None:
         """
@@ -757,3 +765,7 @@ class MainWindowView(BaseMainWindowView):
         self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
                                                  stack_data_type)
         self.move_stack_dialog.show()
+
+    def show_stack_properties_dialog(self, stack_id: uuid.UUID, origin_dataset: Dataset, stack_data_type: str) -> None:
+        self.stack_properties_dialog = StackPropertiesDialog(self, stack_id, origin_dataset, stack_data_type)
+        self.stack_properties_dialog.show()
