@@ -222,6 +222,26 @@ class ROITableWidget(RemovableRowTableView):
             old_table_names.remove('rits_roi')
 
 
+class ROIFormWidget(QGroupBox):
+    """
+    A class to represent the export tabs and ROI action buttons in the spectrum viewer window.
+    """
+
+    def __init__(self,
+                 exportTabs=None,
+                 add_btn: QPushButton = None,
+                 remove_btn: QPushButton = None,
+                 export_btn: QPushButton = None,
+                 export_button_rits: QPushButton = None,
+                 parent=None):
+        super().__init__(parent)
+        self.exportTabs = exportTabs
+        self.add_btn = add_btn
+        self.remove_btn = remove_btn
+        self.export_btn = export_btn
+        self.export_button_rits = export_button_rits
+
+
 class SpectrumViewerWindowView(BaseMainWindowView):
     roiTableView: RemovableRowTableView
     sampleStackSelector: DatasetSelectorWidgetView
@@ -311,13 +331,16 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.set_shuttercount_error)
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
-        self.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
-        self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
-        self.set_binning_visibility()
+        self.roi_action_buttons = ROIFormWidget(self.exportTabs, self.addBtn, self.removeBtn, self.exportButton,
+                                                self.exportButtonRITS, self)
 
-        # ROI action buttons
-        self.addBtn.clicked.connect(self.set_new_roi)
-        self.removeBtn.clicked.connect(self.remove_roi)
+        self.roi_action_buttons.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
+        self.roi_action_buttons.add_btn.clicked.connect(self.set_new_roi)
+        self.roi_action_buttons.remove_btn.clicked.connect(self.remove_roi)
+        self.roi_action_buttons.export_btn.clicked.connect(self.presenter.handle_export_csv)
+        self.roi_action_buttons.export_button_rits.clicked.connect(self.presenter.handle_rits_export)
+
+        self.set_binning_visibility()
 
         self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
@@ -325,9 +348,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.sampleStackSelector.select_eligible_stack()
         self.try_to_select_relevant_normalise_stack("Flat")
         self.presenter.handle_tof_unit_change()
-
-        self.exportButton.clicked.connect(self.presenter.handle_export_csv)
-        self.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
 
         self.table_view.clicked.connect(self.handle_table_click)
 
