@@ -52,6 +52,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     op_func: Callable
     thread: QThread
     worker: Worker
+    old_image_list_paths: list[Path] = []
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -101,16 +102,24 @@ class LiveViewerWindowPresenter(BasePresenter):
                     self.view.live_viewer.add_roi()
                 self.model.roi = self.view.live_viewer.get_roi()
                 self.model.images = images_list
-                try:
-                    image_data = self.model.image_cache.load_image(images_list[-1])
-                    self.model.add_mean(images_list[-1], image_data)
-                except ImageLoadFailError as error:
-                    logger.error(error.message)
-                    self.model.add_mean(images_list[-1], None)
-                self.update_intensity(self.model.mean)
+                images_list_paths = [image.image_path for image in images_list]
+                if self.old_image_list_paths == images_list_paths[:-1]:
+                    try:
+                        image_data = self.model.image_cache.load_image(images_list[-1])
+                        self.model.add_mean(images_list[-1], image_data)
+                        self.update_intensity_with_mean()
+                    except ImageLoadFailError as error:
+                        logger.error(error.message)
+                        self.model.add_mean(images_list[-1], None)
+                    self.update_intensity(self.model.mean)
+                    self.old_image_list_paths = images_list_paths
+                else:
+                    self.model.clear_mean_partial()
+                    self.run_mean_chunk_calc()
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
+
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
