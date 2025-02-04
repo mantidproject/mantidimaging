@@ -102,7 +102,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 self.view.live_viewer.add_roi()
             self.model.roi = self.view.live_viewer.get_roi()
             self.model.images = images_list
-            if (sorted(list(self.old_image_list_paths) + images_list_paths[-1:])) == images_list_paths:
+            if (sorted(self.old_image_list_paths + images_list_paths[-1:])) == images_list_paths:
                 try:
                     image_data = self.model.image_cache.load_image(images_list[-1])
                     self.model.add_mean(images_list[-1], image_data)
@@ -110,8 +110,9 @@ class LiveViewerWindowPresenter(BasePresenter):
                 except ImageLoadFailError as error:
                     logger.error(error.message)
             else:
-                self.model.clear_mean_partial()
-                self.run_mean_chunk_calc()
+                if self.view.intensity_action.isChecked():
+                    self.model.clear_mean_partial()
+                    self.run_mean_chunk_calc()
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
