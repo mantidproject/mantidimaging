@@ -14,7 +14,7 @@ from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .model import ROI_RITS, allowed_modes
+from .model import ROI_RITS, allowed_modes, SensibleROI
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
@@ -122,6 +122,25 @@ class ROIPropertiesTableWidget(QWidget):
         for _, label in self.roiPropertiesLabels.items():
             label.setText("0")
 
+    def refresh_roi_spinboxes(self, roi: SensibleROI, roi_name: str) -> None:
+        """ Refresh the spinboxes for the ROI properties """
+        self.roiPropertiesGroupBox.setTitle(f"Roi Properties: {roi_name}")
+        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
+        for row, pos in enumerate(roi):
+            with QSignalBlocker(self.roiPropertiesSpinBoxes[roi_iter_order[row]]):
+                self.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
+        self.set_roi_spinbox_ranges()
+
+    def update_roi_dimensions(self, width: int, height: int) -> None:
+        """ Update the width and height of the ROI """
+        self.roiPropertiesLabels["Width"].setText(str(width))
+        self.roiPropertiesLabels["Height"].setText(str(height))
+
+    def set_roi_spinboxes_enabled(self, enabled: bool = True) -> None:
+        """ Enable or disable the spinboxes for the ROI properties """
+        for spinbox in self.roiPropertiesSpinBoxes.values():
+            spinbox.setEnabled(enabled)
+
 
 class ROITableWidget(RemovableRowTableView):
     """
@@ -170,6 +189,9 @@ class ROITableWidget(RemovableRowTableView):
         """The model for the ROI table"""
         return self._roi_table_model
 
+    def get_roi_names(self) -> list[str]:
+        return self._roi_table_model.roi_names()
+
     def get_row_data(self, row: int) -> RowType:
         """
         Get the data for a specific row in the ROI table.
@@ -214,10 +236,11 @@ class ROITableWidget(RemovableRowTableView):
         """
         Updates the list of old table names by removing specific entries if they exist.
         """
-        if 'all' in old_table_names:
-            old_table_names.remove('all')
-        if 'rits_roi' in old_table_names:
-            old_table_names.remove('rits_roi')
+        self.old_table_names = old_table_names
+        if 'all' in self.old_table_names:
+            self.old_table_names.remove('all')
+        if 'rits_roi' in self.old_table_names:
+            self.old_table_names.remove('rits_roi')
 
     def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int]) -> None:
         """
@@ -234,8 +257,8 @@ class ROITableWidget(RemovableRowTableView):
         self._roi_table_model.appendNewRow(name, colour, True)
         self.selected_row = self._roi_table_model.rowCount() - 1
         self.selectRow(self.selected_row)
-        self.set_old_table_names(roi_names)
         self.current_roi_name = name
+        self.set_old_table_names(roi_names)
 
     def remove_row(self, row: int) -> None:
         """
@@ -311,8 +334,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
-
-        self.selected_row: int = 0
 
         self.table_view = ROITableWidget(self.roiTableView)
 
@@ -398,7 +419,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
             @param item: item in table
             """
-            self.selected_row = item.row()
+
+            self.table_view.selected_row = item.row()
             self.table_view.current_roi_name = self.table_view.get_roi_name_by_row(item.row())
             self.set_roi_properties()
 
@@ -410,18 +432,27 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             If the ROI name has changed, update the ROI name in the spectrum widget.
             If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
             """
-            entered_name = self.table_view.get_roi_name_by_row(self.selected_row).strip()
-            if not entered_name or entered_name.lower() in ["all"]:
-                self.table_view.set_roi_name_by_row(self.selected_row, self.table_view.current_roi_name)
+            entered_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row).strip()
+            if not entered_name:
+                self.table_view.set_roi_name_by_row(self.table_view.selected_row, self.table_view.current_roi_name)
+                self.table_view.last_clicked_roi = self.table_view.current_roi_name
+                self.table_view.set_old_table_names(self.presenter.get_roi_names())
                 return
-
-            if entered_name != self.table_view.current_roi_name:
+            if entered_name.lower() not in ["", " ", "all"] and entered_name != self.table_view.current_roi_name:
                 if entered_name in self.presenter.get_roi_names():
-                    self.table_view.set_roi_name_by_row(self.selected_row, self.table_view.current_roi_name)
+                    entered_name = self.table_view.old_table_names[self.table_view.selected_row]
+                    self.table_view.roi_table_model.set_element(
+                        self.table_view.selected_row, 0, self.table_view.old_table_names[self.table_view.selected_row])
+                    self.table_view.current_roi_name = entered_name
+                    self.table_view.last_clicked_roi = self.table_view.current_roi_name
                 else:
                     self.presenter.rename_roi(self.table_view.current_roi_name, entered_name)
                     self.table_view.current_roi_name = entered_name
+                    self.table_view.last_clicked_roi = self.table_view.current_roi_name
                     self.set_roi_properties()
+            else:
+                self.table_view.roi_table_model.set_element(
+                    self.table_view.selected_row, 0, self.table_view.old_table_names[self.table_view.selected_row])
 
             self.table_view.last_clicked_roi = self.table_view.current_roi_name
             self.table_view.set_old_table_names(self.presenter.get_roi_names())
@@ -475,7 +506,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.table_view.current_roi_name = ROI_RITS
 
             for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
-                spinbox.setEnabled(True)
+                spinbox.setEnabled(False)
             self.set_roi_properties()
 
     @property
@@ -583,9 +614,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-        for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
-            if not spinbox.isEnabled():
-                spinbox.setEnabled(True)
+        self.roi_properties_widget.set_roi_spinboxes_enabled(True)
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
@@ -634,22 +663,22 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         Clear the selected ROI in the table view
         """
-        roi_name, selected_row, _ = self.table_view.get_row_data(self.selected_row)
+        roi_name, selected_row, _ = self.table_view.get_row_data(self.table_view.selected_row)
         assert isinstance(roi_name, str)
         if selected_row:
-            self.table_view.remove_row(self.selected_row)
+            self.table_view.remove_row(self.table_view.selected_row)
             self.presenter.do_remove_roi(roi_name)
             self.spectrum_widget.spectrum_data_dict.pop(roi_name)
             self.spectrum_widget.spectrum.removeItem(roi_name)
             self.presenter.handle_roi_moved()
-            self.selected_row = 0
+            self.table_view.selected_row = 0
 
         if self.table_view.row_count() == 0:
             self.removeBtn.setEnabled(False)
             self.disable_roi_properties()
         else:
             self.table_view.set_old_table_names(self.presenter.get_roi_names())
-            self.table_view.current_roi_name = self.table_view.get_roi_name_by_row(self.selected_row)
+            self.table_view.current_roi_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row)
             self.set_roi_properties()
 
     def clear_all_rois(self) -> None:
@@ -696,17 +725,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 or not self.roi_properties_widget.roiPropertiesSpinBoxes):
             return
         current_roi = self.presenter.view.spectrum_widget.get_roi(self.table_view.current_roi_name)
-        self.roi_properties_widget.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.table_view.current_roi_name}")
-        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
-        for row, pos in enumerate(current_roi):
-            with QSignalBlocker(self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]]):
-                self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
-        self.roi_properties_widget.set_roi_spinbox_ranges()
+        self.roi_properties_widget.refresh_roi_spinboxes(current_roi, self.table_view.current_roi_name)
         self.presenter.redraw_spectrum(self.table_view.current_roi_name)
-        self.roi_properties_widget.roiPropertiesLabels["Width"].setText(str(current_roi.width))
-        self.roi_properties_widget.roiPropertiesLabels["Height"].setText(str(current_roi.height))
-        for spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.values():
-            spinbox.setEnabled(True)
+        self.roi_properties_widget.update_roi_dimensions(current_roi.width, current_roi.height)
+
+        self.roi_properties_widget.set_roi_spinboxes_enabled(True)
 
     def disable_roi_properties(self) -> None:
         self.table_view.last_clicked_roi = "roi"
