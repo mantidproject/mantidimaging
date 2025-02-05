@@ -85,9 +85,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Called when the stack has been changed in the stack selector.
         """
         if len(self.main_window.presenter.model.datasets) == 0:
-            self.view.roi_action_buttons.exportTabs.setDisabled(True)
+            self.view.roi_form_widget.exportTabs.setDisabled(True)
         else:
-            self.view.roi_action_buttons.exportTabs.setDisabled(False)
+            self.view.roi_form_widget.exportTabs.setDisabled(False)
         if uuid == self.current_stack_uuid:
             return
         else:
@@ -243,10 +243,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         normalisation_on = self.view.normalisation_enabled()
         normalisation_no_error = (normalisation_on and self.model.normalise_issue() == "") or not normalisation_on
 
-        self.view.roi_action_buttons.export_btn.setEnabled(has_stack and normalisation_no_error)
-        self.view.roi_action_buttons.export_button_rits.setEnabled(has_stack and normalisation_on
-                                                                   and normalisation_no_error)
-        self.view.roi_action_buttons.add_btn.setEnabled(has_stack)
+        self.view.roi_form_widget.export_btn.setEnabled(has_stack and normalisation_no_error)
+        self.view.roi_form_widget.export_button_rits.setEnabled(has_stack and normalisation_on
+                                                                and normalisation_no_error)
+        self.view.roi_form_widget.add_btn.setEnabled(has_stack)
         self.view.normalise_ShutterCount_CheckBox.setEnabled(has_stack and normalisation_on and normalisation_no_error)
         if not self.view.normalise_ShutterCount_CheckBox.isEnabled():
             self.view.normalise_ShutterCount_CheckBox.setChecked(False)

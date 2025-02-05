@@ -279,7 +279,13 @@ class ROIFormWidget(QGroupBox):
     A class to represent the export tabs and ROI action buttons in the spectrum viewer window.
     """
 
+    table_view: ROITableWidget
+    roi_properties_widget: ROIPropertiesTableWidget
+
     def __init__(self,
+                 table_view: RemovableRowTableView,
+                 roiPropertiesTableWidget: QTableWidget,
+                 roiPropertiesGroupBox: QGroupBox,
                  exportTabs=None,
                  add_btn: QPushButton = None,
                  remove_btn: QPushButton = None,
@@ -287,6 +293,12 @@ class ROIFormWidget(QGroupBox):
                  export_button_rits: QPushButton = None,
                  parent=None):
         super().__init__(parent)
+        if parent is not None:
+            layout = parent.layout()
+            if layout is not None:
+                layout.addWidget(self)
+        self.table_view = ROITableWidget(table_view)
+        self.roi_properties_widget = ROIPropertiesTableWidget(parent, roiPropertiesTableWidget, roiPropertiesGroupBox)
         self.exportTabs = exportTabs
         self.add_btn = add_btn
         self.remove_btn = remove_btn
@@ -335,10 +347,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
-        self.table_view = ROITableWidget(self.roiTableView)
+        self.roi_form_widget = ROIFormWidget(table_view=self.roiTableView,
+                                             roiPropertiesTableWidget=self.roiPropertiesTableWidget,
+                                             roiPropertiesGroupBox=self.roiPropertiesGroupBox,
+                                             exportTabs=self.exportTabs,
+                                             add_btn=self.addBtn,
+                                             remove_btn=self.removeBtn,
+                                             export_btn=self.exportButton,
+                                             export_button_rits=self.exportButtonRITS,
+                                             parent=self)
 
-        self.roi_properties_widget = ROIPropertiesTableWidget(self, self.roiPropertiesTableWidget,
-                                                              self.roiPropertiesGroupBox)
+        self.table_view = self.roi_form_widget.table_view
+        self.roi_properties_widget = self.roi_form_widget.roi_properties_widget
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -381,14 +401,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.set_shuttercount_error)
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
-        self.roi_action_buttons = ROIFormWidget(self.exportTabs, self.addBtn, self.removeBtn, self.exportButton,
-                                                self.exportButtonRITS, self)
-
-        self.roi_action_buttons.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
-        self.roi_action_buttons.add_btn.clicked.connect(self.set_new_roi)
-        self.roi_action_buttons.remove_btn.clicked.connect(self.remove_roi)
-        self.roi_action_buttons.export_btn.clicked.connect(self.presenter.handle_export_csv)
-        self.roi_action_buttons.export_button_rits.clicked.connect(self.presenter.handle_rits_export)
+        self.roi_form_widget.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
+        self.roi_form_widget.add_btn.clicked.connect(self.set_new_roi)
+        self.roi_form_widget.remove_btn.clicked.connect(self.remove_roi)
+        self.roi_form_widget.export_btn.clicked.connect(self.presenter.handle_export_csv)
+        self.roi_form_widget.export_button_rits.clicked.connect(self.presenter.handle_rits_export)
 
         self.set_binning_visibility()
 
