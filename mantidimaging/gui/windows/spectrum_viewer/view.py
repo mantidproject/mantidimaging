@@ -49,9 +49,6 @@ class ROIPropertiesTableWidget(QWidget):
         self.roiPropertiesSpinBoxes = {}
         self.roiPropertiesLabels = {}
         self.initialize_roi_properties()
-        self.initialize_roi_properties_labels()
-
-        self.initialise_roi_properties_table()
 
     def initialize_roi_properties(self) -> None:
         self.roiPropertiesSpinBoxes["Left"] = QSpinBox()
@@ -59,23 +56,22 @@ class ROIPropertiesTableWidget(QWidget):
         self.roiPropertiesSpinBoxes["Top"] = QSpinBox()
         self.roiPropertiesSpinBoxes["Bottom"] = QSpinBox()
 
-    def initialize_roi_properties_labels(self) -> None:
+        # set up the labels
         self.roiPropertiesLabels["Width"] = QLabel()
         self.roiPropertiesLabels["Height"] = QLabel()
 
-    def set_roi_spinbox_ranges(self) -> None:
+        # set spinbox ranges
         self.roiPropertiesSpinBoxes["Left"].setMaximum(self.roiPropertiesSpinBoxes["Right"].value() - 1)
         self.roiPropertiesSpinBoxes["Right"].setMinimum(self.roiPropertiesSpinBoxes["Left"].value() + 1)
         self.roiPropertiesSpinBoxes["Top"].setMaximum(self.roiPropertiesSpinBoxes["Bottom"].value() - 1)
         self.roiPropertiesSpinBoxes["Bottom"].setMinimum(self.roiPropertiesSpinBoxes["Top"].value() + 1)
 
-    def initialise_roi_properties_table(self) -> None:
+        # set up table
         self.roiPropertiesTableWidget.setColumnCount(3)
         self.roiPropertiesTableWidget.setRowCount(3)
         self.roiPropertiesTableWidget.setColumnWidth(0, 80)
         self.roiPropertiesTableWidget.setColumnWidth(1, 50)
         self.roiPropertiesTableWidget.setColumnWidth(2, 50)
-
         self.roiPropertiesTableWidget.horizontalHeader().hide()
         self.roiPropertiesTableWidget.verticalHeader().hide()
         self.roiPropertiesTableWidget.setShowGrid(False)
@@ -605,7 +601,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         for row, pos in enumerate(current_roi):
             with QSignalBlocker(self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]]):
                 self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
-        self.roi_properties_widget.set_roi_spinbox_ranges()
         self.presenter.redraw_spectrum(self.current_roi_name)
         self.roi_properties_widget.roiPropertiesLabels["Width"].setText(str(current_roi.width))
         self.roi_properties_widget.roiPropertiesLabels["Height"].setText(str(current_roi.height))
