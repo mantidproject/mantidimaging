@@ -454,7 +454,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 self.table_view.roi_table_model.set_element(
                     self.table_view.selected_row, 0, self.table_view.old_table_names[self.table_view.selected_row])
 
-            self.table_view.last_clicked_roi = self.table_view.current_roi_name
             self.table_view.set_old_table_names(self.presenter.get_roi_names())
             self.on_visibility_change()
             return
