@@ -106,6 +106,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                     self.model.add_mean(images_list[-1], image_data)
                 except ImageLoadFailError as error:
                     logger.error(error.message)
+                    self.model.add_mean(images_list[-1], None)
             self.update_intensity(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
@@ -233,7 +234,9 @@ class LiveViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self) -> None:
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
-        self.try_next_mean_chunk()
+        if not self.model.mean_calc_finished:
+            self.try_next_mean_chunk()
+        self.model.mean_calc_finished = False
 
     def handle_notify_roi_moved(self) -> None:
         self.model.clear_mean_partial()

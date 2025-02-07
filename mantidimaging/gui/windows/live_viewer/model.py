@@ -29,6 +29,7 @@ class ImageCache:
     cache_dict: dict[Image_Data, np.ndarray]
     max_cache_size: int | None = None
     loading_func: typing.Callable
+    faulty_file_paths: list[Path] = []
 
     def __init__(self, max_cache_size=None):
         self.max_cache_size = max_cache_size
@@ -58,6 +59,7 @@ class ImageCache:
             try:
                 image_array = self.loading_func(image.image_path)
             except ImageLoadFailError as err:
+                self.faulty_file_paths.append(image.image_path)
                 raise ImageLoadFailError(image.image_path, err) from err
             self._add_to_cache(image, image_array)
             return image_array
@@ -153,6 +155,7 @@ class LiveViewerWindowModel:
         self.mean_paths: set[Path] = set()
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=100)
+        self.mean_calc_finished = False
 
     @property
     def path(self) -> Path | None:
@@ -211,14 +214,19 @@ class LiveViewerWindowModel:
             else:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
+                faulty_files = []
                 for ind in nanInds[-1:-chunk_size:-1]:
+                    if self.images[ind[0]].image_path in self.image_cache.faulty_file_paths:
+                        faulty_files.append(self.images[ind[0]].image_path)
+                        continue
                     try:
                         buffer_data = self.image_cache.load_image(self.images[ind[0]])
-                    except ImageLoadFailError:
-                        buffer_data = None
-                    if buffer_data is not None:
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
-                        np.put(self.mean, ind, buffer_mean)
+                    except ImageLoadFailError:
+                        buffer_mean = None
+                    np.put(self.mean, ind, buffer_mean)
+                if faulty_files == self.image_cache.faulty_file_paths:
+                    self.mean_calc_finished = True
 
 
 class ImageWatcher(QObject):
