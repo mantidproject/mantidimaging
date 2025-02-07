@@ -130,7 +130,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         try:
             image_data = self.model.image_cache.load_image(image_data_obj)
         except ImageLoadFailError as error:
-            logger.error(error.message)
+            if not error.is_logged():
+                logger.error(error.message)
             self.view.remove_image()
             self.view.live_viewer.show_error(error.message)
             return
