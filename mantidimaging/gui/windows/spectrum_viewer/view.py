@@ -126,7 +126,7 @@ class ROIPropertiesTableWidget(QWidget):
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
-    tableView: RemovableRowTableView
+    roiTableView: RemovableRowTableView
     sampleStackSelector: DatasetSelectorWidgetView
     normaliseStackSelector: DatasetSelectorWidgetView
 
@@ -237,10 +237,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
 
         # Point table
-        self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.tableView.setAlternatingRowColors(True)
-        self.tableView.clicked.connect(self.handle_table_click)
+        self.roiTableView.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.roiTableView.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.roiTableView.setAlternatingRowColors(True)
+        self.roiTableView.clicked.connect(self.handle_table_click)
 
         # Roi Prop table
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
@@ -270,7 +270,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.current_roi_name = self.roi_table_model.get_element(item.row(), 0)
             self.set_roi_properties()
 
-        self.tableView.selectionModel().currentRowChanged.connect(on_row_change)
+        self.roiTableView.selectionModel().currentRowChanged.connect(on_row_change)
 
         def on_data_in_table_change() -> None:
             """
@@ -298,7 +298,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return
 
         self.roi_table_model.dataChanged.connect(on_data_in_table_change)
-        header = self.tableView.horizontalHeader()
+        header = self.roiTableView.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
@@ -351,10 +351,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def roi_table_model(self) -> TableModel:
-        if self.tableView.model() is None:
+        if self.roiTableView.model() is None:
             mdl = TableModel()
-            self.tableView.setModel(mdl)
-        return self.tableView.model()
+            self.roiTableView.setModel(mdl)
+        return self.roiTableView.model()
 
     @property
     def current_dataset_id(self) -> UUID | None:
@@ -530,7 +530,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.roi_table_model.appendNewRow(name, colour, True)
         self.selected_row = self.roi_table_model.rowCount() - 1
-        self.tableView.selectRow(self.selected_row)
+        self.roiTableView.selectRow(self.selected_row)
         self.current_roi_name = name
         self.removeBtn.setEnabled(True)
         self.set_old_table_names()
@@ -548,7 +548,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.spectrum_widget.spectrum_data_dict.pop(roi_name)
             self.presenter.handle_roi_moved(roi_object)
             self.selected_row = 0
-            self.tableView.selectRow(0)
+            self.roiTableView.selectRow(0)
+
         if self.roi_table_model.rowCount() == 0:
             self.removeBtn.setEnabled(False)
             self.disable_roi_properties()

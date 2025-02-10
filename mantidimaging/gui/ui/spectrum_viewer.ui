@@ -238,7 +238,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
-                 <widget class="RemovableRowTableView" name="tableView">
+                 <widget class="RemovableRowTableView" name="roiTableView">
                   <attribute name="horizontalHeaderHighlightSections">
                    <bool>true</bool>
                   </attribute>
