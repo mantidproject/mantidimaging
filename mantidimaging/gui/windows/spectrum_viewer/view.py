@@ -25,6 +25,40 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from uuid import UUID
 
+    class ROIFormWidget(QGroupBox):
+        """
+        A class to represent the export tabs and ROI action buttons in the spectrum viewer window.
+        """
+
+        # TODO: table_view: ROITableWidget - uncomment when ROITableWidget is implemented
+        # TODO: roi_properties_widget: ROIPropertiesTableWidget - uncomment when ROIPropertiesTableWidget is implemented
+
+        def __init__(self,
+                     table_view: RemovableRowTableView,
+                     roiPropertiesTableWidget: QTableWidget,
+                     roiPropertiesGroupBox: QGroupBox,
+                     exportTabs=None,
+                     add_btn: QPushButton = None,
+                     remove_btn: QPushButton = None,
+                     export_btn: QPushButton = None,
+                     export_button_rits: QPushButton = None,
+                     parent=None):
+            super().__init__(parent)
+            if parent is not None:
+                layout = parent.layout()
+                if layout is not None:
+                    layout.addWidget(self)
+            # TODO: Uncomment when ROITableWidget and ROIPropertiesTableWidget are implemented
+            # self.table_view = ROITableWidget(table_view)
+            # self.roi_properties_widget = ROIPropertiesTableWidget(parent,
+            #                                                       roiPropertiesTableWidget,
+            #                                                       roiPropertiesGroupBox)
+            self.exportTabs = exportTabs
+            self.add_btn = add_btn
+            self.remove_btn = remove_btn
+            self.export_btn = export_btn
+            self.export_button_rits = export_button_rits
+
 
 class SpectrumViewerWindowView(BaseMainWindowView):
     tableView: RemovableRowTableView
@@ -67,6 +101,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
+
+        # TODO: Uncomment when ROITableWidget and ROIPropertiesTableWidget are implemented
+        # self.roi_form_widget = ROIFormWidget(table_view=self.roiTableView,
+        #                                      roiPropertiesTableWidget=self.roiPropertiesTableWidget,
+        #                                      roiPropertiesGroupBox=self.roiPropertiesGroupBox,
+        #                                      exportTabs=self.exportTabs,
+        #                                      add_btn=self.addBtn,
+        #                                      remove_btn=self.removeBtn,
+        #                                      export_btn=self.exportButton,
+        #                                      export_button_rits=self.exportButtonRITS,
+        #                                      parent=self)
 
         self.selected_row: int = 0
         self.last_clicked_roi = ""
