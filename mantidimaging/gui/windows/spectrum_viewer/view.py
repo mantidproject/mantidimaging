@@ -189,7 +189,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
-        self.spectrum_widget.roi_changed.connect(lambda roi: self.presenter.handle_roi_moved(roi))
+        self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
         self.spectrum_right_click_menu = self.spectrum.spectrum_viewbox.menu
@@ -541,12 +541,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         selected_row = self.roi_table_model.row_data(self.selected_row)
         roi_name = self.roi_table_model.get_element(self.selected_row, 0)
+        roi_object = self.spectrum_widget.roi_dict.pop(roi_name)
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(roi_name)
             self.spectrum_widget.spectrum_data_dict.pop(roi_name)
             self.spectrum_widget.spectrum.removeItem(roi_name)
-            self.presenter.handle_roi_moved()
+            self.presenter.handle_roi_moved(roi_object)
             self.selected_row = 0
             self.tableView.selectRow(0)
 
