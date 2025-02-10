@@ -193,8 +193,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
-        averaged_image = self.model.get_averaged_image()
-        assert averaged_image is not None
+        averaged_image = (self.model.get_normalized_averaged_image()
+                          if self.view.normalisation_enabled() else self.model.get_averaged_image())
+        if averaged_image is None:
+            image_shape = self.model.get_image_shape()
+            averaged_image = np.zeros(image_shape, dtype=np.float32)
         self.view.set_image(averaged_image, autoLevels=False)
 
     def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
@@ -308,6 +311,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.spectrum_mode = SpecType.SAMPLE
         self.redraw_all_rois()
         self.view.display_normalise_error()
+        averaged_image = (self.model.get_normalized_averaged_image()
+                          if self.view.normalisation_enabled() else self.model.get_averaged_image())
+        if averaged_image is None:
+            image_shape = self.model.get_image_shape()
+            averaged_image = np.zeros(image_shape, dtype=np.float32)
+        self.view.set_image(averaged_image)
 
     def set_shuttercount_error(self, enabled: bool = False) -> None:
         """
