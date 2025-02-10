@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget, QWidget, QSpinBox
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
@@ -31,6 +31,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             self.main_window = MainWindowView()
         self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()
+        self.view.roi_properties_widget = mock.create_autospec(QWidget, instance=True)
+        self.view.roi_properties_widget.roiPropertiesSpinBoxes = {
+            "Top": mock.create_autospec(QSpinBox, instance=True),
+            "Bottom": mock.create_autospec(QSpinBox, instance=True),
+            "Left": mock.create_autospec(QSpinBox, instance=True),
+            "Right": mock.create_autospec(QSpinBox, instance=True)
+        }
         mock_spectrum_roi_dict = mock.create_autospec(dict, instance=True)
         self.view.spectrum_widget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict, instance=True)
         self.view.spectrum_widget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,
