@@ -96,18 +96,18 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
-            if not self.view.live_viewer.roi_object and self.view.intensity_action.isChecked():
-                self.view.live_viewer.add_roi()
-            self.model.roi = self.view.live_viewer.get_roi()
-            self.model.images = images_list
-            if images_list[-1].image_path not in self.model.mean_paths:
+            if self.view.intensity_action.isChecked():
+                if not self.view.live_viewer.roi_object:
+                    self.view.live_viewer.add_roi()
+                self.model.roi = self.view.live_viewer.get_roi()
+                self.model.images = images_list
                 try:
                     image_data = self.model.image_cache.load_image(images_list[-1])
                     self.model.add_mean(images_list[-1], image_data)
                 except ImageLoadFailError as error:
                     logger.error(error.message)
                     self.model.add_mean(images_list[-1], None)
-            self.update_intensity(self.model.mean)
+                self.update_intensity(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -235,9 +235,10 @@ class LiveViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self) -> None:
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
-        if not self.model.mean_calc_finished:
+        if np.isnan(self.model.mean).any() and self.model.mean_readable.all():
             self.try_next_mean_chunk()
-        self.model.mean_calc_finished = False
+        if not np.isnan(self.model.mean * self.model.mean_readable).any():
+            self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self) -> None:
         self.model.clear_mean_partial()

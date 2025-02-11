@@ -55,6 +55,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.roi_moving = True
         self.view.live_viewer = mock.Mock()
         self.view.intensity_profile = mock.Mock()
+        self.model.mean_readable = []
+        self.view.intensity_action = mock.Mock()
+        self.view.intensity_action.isChecked = mock.Mock()
+        self.view.intensity_action.isChecked.return_value = False
         with mock.patch.object(self.presenter, "handle_deleted"):
             self.presenter.update_image_list(image_list)
 

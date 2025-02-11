@@ -152,7 +152,8 @@ class LiveViewerWindowModel:
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
         self.mean: np.ndarray = np.empty(0)
-        self.mean_paths: set[Path] = set()
+        self.mean_readable: np.ndarray = np.empty(0)
+        self.mean_paths: dict[Path, tuple[float, int]] = {}
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=100)
         self.mean_calc_finished = False
@@ -194,17 +195,22 @@ class LiveViewerWindowModel:
     def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
         if image_array is None:
             mean_to_add = np.nan
+            mean_readable = 0
         elif self.roi is not None:
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
+            mean_readable = 1
         else:
             mean_to_add = np.mean(image_array)
-        self.mean_paths.add(image_data_obj.image_path)
-        self.mean = np.append(self.mean, mean_to_add)
+            mean_readable = 1
+        self.mean_paths[image_data_obj.image_path] = (mean_to_add, mean_readable)
+        self.mean = np.array(list(dict(sorted(self.mean_paths.items())).values()))[:, 0]
+        self.mean_readable = np.array(list(dict(sorted(self.mean_paths.items())).values()))[:, 1]
 
     def clear_mean_partial(self) -> None:
-        self.mean_paths.clear()
+        self.mean_paths = dict.fromkeys(self.mean_paths, (np.nan, 1))
         self.mean = np.full(len(self.images), np.nan)
+        self.mean_readable = np.full(len(self.images), 1)
 
     def calc_mean_chunk(self, chunk_size: int) -> None:
         if self.images is not None:
@@ -214,19 +220,17 @@ class LiveViewerWindowModel:
             else:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
-                faulty_files = []
                 for ind in nanInds[-1:-chunk_size:-1]:
-                    if self.images[ind[0]].image_path in self.image_cache.faulty_file_paths:
-                        faulty_files.append(self.images[ind[0]].image_path)
-                        continue
                     try:
                         buffer_data = self.image_cache.load_image(self.images[ind[0]])
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
+                        mean_readable = 1
                     except ImageLoadFailError:
-                        buffer_mean = None
+                        mean_readable = 0
+                        buffer_mean = np.nan
+                    self.mean_paths[self.images[ind[0]].image_path] = (buffer_mean, mean_readable)
                     np.put(self.mean, ind, buffer_mean)
-                if faulty_files == self.image_cache.faulty_file_paths:
-                    self.mean_calc_finished = True
+                    np.put(self.mean_readable, ind, mean_readable)
 
 
 class ImageWatcher(QObject):
