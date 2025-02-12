@@ -9,6 +9,7 @@ from logging import getLogger
 import numpy as np
 from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
 from astropy.io import fits
+from astropy.utils.exceptions import AstropyUserWarning
 
 from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
@@ -18,26 +19,13 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.utility.custom_exceptions import ImageLoadFailError
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
 
 logger = getLogger(__name__)
-
-
-class ImageLoadFailError(Exception):
-    """
-    Exception raised when an image is not loaded correctly
-    """
-
-    def __init__(self, image_path: Path, source_error, message: str = '') -> None:
-        error_name = type(source_error).__name__
-        if message == '':
-            self.message = f"{error_name} :Could not load image f{image_path}, Exception: {source_error} "
-        else:
-            self.message = message
-        super().__init__(message)
 
 
 class Worker(QObject):
@@ -108,17 +96,18 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
         else:
-            if not self.view.live_viewer.roi_object and self.view.intensity_action.isChecked():
-                self.view.live_viewer.add_roi()
-            self.model.roi = self.view.live_viewer.get_roi()
-            self.model.images = images_list
-            if images_list[-1].image_path not in self.model.mean_paths:
+            if self.view.intensity_action.isChecked():
+                if not self.view.live_viewer.roi_object:
+                    self.view.live_viewer.add_roi()
+                self.model.roi = self.view.live_viewer.get_roi()
+                self.model.images = images_list
                 try:
                     image_data = self.model.image_cache.load_image(images_list[-1])
                     self.model.add_mean(images_list[-1], image_data)
                 except ImageLoadFailError as error:
                     logger.error(error.message)
-            self.update_intensity(self.model.mean)
+                    self.model.add_mean(images_list[-1], None)
+                self.update_intensity(self.model.mean)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -141,7 +130,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         try:
             image_data = self.model.image_cache.load_image(image_data_obj)
         except ImageLoadFailError as error:
-            logger.error(error.message)
+            if not error.is_logged():
+                logger.error(error.message)
             self.view.remove_image()
             self.view.live_viewer.show_error(error.message)
             return
@@ -173,7 +163,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                 with fits.open(image_path) as fits_hdul:
                     image_data = fits_hdul[0].data
                 return image_data
-            except (OSError, TypeError, ValueError) as err:
+            except (OSError, TypeError, ValueError, AstropyUserWarning) as err:
                 raise ImageLoadFailError(image_path, err) from err
         else:
             raise ImageLoadFailError(image_path,
@@ -245,7 +235,10 @@ class LiveViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self) -> None:
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
-        self.try_next_mean_chunk()
+        if np.isnan(self.model.mean).any() and self.model.mean_readable.all():
+            self.try_next_mean_chunk()
+        if not np.isnan(self.model.mean * self.model.mean_readable).any():
+            self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self) -> None:
         self.model.clear_mean_partial()

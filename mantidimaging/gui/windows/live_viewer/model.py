@@ -13,6 +13,7 @@ import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.custom_exceptions import ImageLoadFailError
 
 if TYPE_CHECKING:
     from os import stat_result
@@ -28,6 +29,7 @@ class ImageCache:
     cache_dict: dict[Image_Data, np.ndarray]
     max_cache_size: int | None = None
     loading_func: typing.Callable
+    faulty_file_paths: list[Path] = []
 
     def __init__(self, max_cache_size=None):
         self.max_cache_size = max_cache_size
@@ -54,7 +56,11 @@ class ImageCache:
         if image in self.cache_dict.keys():
             return self.cache_dict[image]
         else:
-            image_array = self.loading_func(image.image_path)
+            try:
+                image_array = self.loading_func(image.image_path)
+            except ImageLoadFailError as err:
+                self.faulty_file_paths.append(image.image_path)
+                raise ImageLoadFailError(image.image_path, err) from err
             self._add_to_cache(image, image_array)
             return image_array
 
@@ -146,9 +152,11 @@ class LiveViewerWindowModel:
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
         self.mean: np.ndarray = np.empty(0)
-        self.mean_paths: set[Path] = set()
+        self.mean_readable: np.ndarray = np.empty(0)
+        self.mean_paths: dict[Path, tuple[float, int]] = {}
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=100)
+        self.mean_calc_finished = False
 
     @property
     def path(self) -> Path | None:
@@ -171,10 +179,11 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        self.presenter.update_image_list(image_files)
+        self.presenter.update_image_list(self.images)
 
     def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
+        self.presenter.update_image_list(self.images)
 
     def close(self) -> None:
         """Close the model."""
@@ -186,17 +195,22 @@ class LiveViewerWindowModel:
     def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
         if image_array is None:
             mean_to_add = np.nan
+            mean_readable = 0
         elif self.roi is not None:
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
+            mean_readable = 1
         else:
             mean_to_add = np.mean(image_array)
-        self.mean_paths.add(image_data_obj.image_path)
-        self.mean = np.append(self.mean, mean_to_add)
+            mean_readable = 1
+        self.mean_paths[image_data_obj.image_path] = (mean_to_add, mean_readable)
+        self.mean = np.array(list(dict(sorted(self.mean_paths.items())).values()))[:, 0]
+        self.mean_readable = np.array(list(dict(sorted(self.mean_paths.items())).values()))[:, 1]
 
     def clear_mean_partial(self) -> None:
-        self.mean_paths.clear()
+        self.mean_paths = dict.fromkeys(self.mean_paths, (np.nan, 1))
         self.mean = np.full(len(self.images), np.nan)
+        self.mean_readable = np.full(len(self.images), 1)
 
     def calc_mean_chunk(self, chunk_size: int) -> None:
         if self.images is not None:
@@ -207,10 +221,16 @@ class LiveViewerWindowModel:
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
                 for ind in nanInds[-1:-chunk_size:-1]:
-                    buffer_data = self.image_cache.load_image(self.images[ind[0]])
-                    if buffer_data is not None:
+                    try:
+                        buffer_data = self.image_cache.load_image(self.images[ind[0]])
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
-                        np.put(self.mean, ind, buffer_mean)
+                        mean_readable = 1
+                    except ImageLoadFailError:
+                        mean_readable = 0
+                        buffer_mean = np.nan
+                    self.mean_paths[self.images[ind[0]].image_path] = (buffer_mean, mean_readable)
+                    np.put(self.mean, ind, buffer_mean)
+                    np.put(self.mean_readable, ind, mean_readable)
 
 
 class ImageWatcher(QObject):
