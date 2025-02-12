@@ -14,9 +14,11 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.gui.windows.welcome_screen.presenter_new import WelcomeScreenPresenterNew
+from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -43,6 +45,7 @@ from mantidimaging.gui.windows.stack_choice.compare_presenter import StackCompar
 from mantidimaging.gui.windows.stack_properties_dialog.view import StackPropertiesDialog
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
+from mantidimaging.gui.windows.welcome_screen.view_new import WelcomeScreenViewNew
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.__main__ import process_start_time
 
@@ -112,8 +115,6 @@ class MainWindowView(BaseMainWindowView):
     move_stack_dialog: MoveStackDialog | None = None
 
     default_theme_enabled: int = 1
-
-    welcome_window: WelcomeScreenPresenter | None = None
     wizard: WizardPresenter | None = None
 
     def __init__(self, open_dialogs: bool = True):
@@ -123,13 +124,20 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
+        self.welcome_presenter = WelcomeScreenPresenterNew(self)
+        self.welcome_screen = self.welcome_presenter.view
+
+        self.welcome_dock = QDockWidget("", self)
+        self.welcome_dock.setWidget(self.welcome_screen)
+        self.welcome_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
         status_bar.addPermanentWidget(self.status_bar_label)
 
         self.setup_shortcuts()
         self.update_shortcuts()
-
         self.setAcceptDrops(True)
         base_path = finder.ROOT_PATH
 
@@ -143,10 +151,6 @@ class MainWindowView(BaseMainWindowView):
         else:
             bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         self.setWindowIcon(QIcon(bg_image))
-
-        self.welcome_window = None
-        if self.open_dialogs and WelcomeScreenPresenter.show_today():
-            self.show_about()
 
         self.wizard = None
 
@@ -177,6 +181,13 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.do_update_UI()
 
+    def toggle_welcome_screen(self):
+        """Show or hide the docked welcome screen."""
+        if self.welcome_dock.isVisible():
+            self.welcome_dock.hide()
+        else:
+            self.welcome_dock.show()
+
     def _window_ready(self) -> None:
         if perf_logger.isEnabledFor(1):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
@@ -196,7 +207,7 @@ class MainWindowView(BaseMainWindowView):
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
 
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
-        self.actionAbout.triggered.connect(self.show_about)
+       # self.actionAbout.triggered.connect(self.show_about)
         self.actionWizard.triggered.connect(self.show_wizard)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
@@ -240,10 +251,12 @@ class MainWindowView(BaseMainWindowView):
         url = QUrl("https://mantidproject.github.io/mantidimaging/")
         QDesktopServices.openUrl(url)
 
+    '''
     def show_about(self) -> None:
-        self.welcome_window = WelcomeScreenPresenter(self)
-        self.welcome_window.show()
-
+        """Ensure the docked welcome screen is shown"""
+        if not self.welcome_dock.isVisible():
+            self.welcome_dock.show()
+    '''
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
