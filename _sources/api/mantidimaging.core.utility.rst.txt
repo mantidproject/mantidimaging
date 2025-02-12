@@ -24,6 +24,7 @@ Submodules
    mantidimaging.core.utility.command_line_arguments
    mantidimaging.core.utility.cor_interpolate
    mantidimaging.core.utility.cuda_check
+   mantidimaging.core.utility.custom_exceptions
    mantidimaging.core.utility.data_containers
    mantidimaging.core.utility.execution_timer
    mantidimaging.core.utility.finder

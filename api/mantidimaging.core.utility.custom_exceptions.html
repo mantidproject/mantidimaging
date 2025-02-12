@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.core.utility.cuda_check module &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.core.utility.custom_exceptions module &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.utility.cuda_check';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.utility.custom_exceptions';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.core.utility.custom_exceptions module" href="mantidimaging.core.utility.custom_exceptions.html" />
-    <link rel="prev" title="mantidimaging.core.utility.cor_interpolate module" href="mantidimaging.core.utility.cor_interpolate.html" />
+    <link rel="next" title="mantidimaging.core.utility.data_containers module" href="mantidimaging.core.utility.data_containers.html" />
+    <link rel="prev" title="mantidimaging.core.utility.cuda_check module" href="mantidimaging.core.utility.cuda_check.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -570,30 +570,23 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.core.utility.cuda_check">
-<span id="mantidimaging-core-utility-cuda-check-module"></span><h1>mantidimaging.core.utility.cuda_check module<a class="headerlink" href="#module-mantidimaging.core.utility.cuda_check" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.core.utility.cuda_check.CudaChecker">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.cuda_check.</span></span><span class="sig-name descname"><span class="pre">CudaChecker</span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/cuda_check.html#CudaChecker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.cuda_check.CudaChecker" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.core.utility.cuda_check.CudaChecker.clear_instance">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear_instance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/cuda_check.html#CudaChecker.clear_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.cuda_check.CudaChecker.clear_instance" title="Link to this definition">#</a></dt>
-<dd><p>Resets the instance. Used for making sure mocks don’t leak in tests.</p>
-</dd></dl>
+  <section id="module-mantidimaging.core.utility.custom_exceptions">
+<span id="mantidimaging-core-utility-custom-exceptions-module"></span><h1>mantidimaging.core.utility.custom_exceptions module<a class="headerlink" href="#module-mantidimaging.core.utility.custom_exceptions" title="Link to this heading">#</a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.custom_exceptions.ImageLoadFailError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.custom_exceptions.</span></span><span class="sig-name descname"><span class="pre">ImageLoadFailError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/custom_exceptions.html#ImageLoadFailError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.custom_exceptions.ImageLoadFailError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Exception raised when an image is not loaded correctly</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.custom_exceptions.ImageLoadFailError.error_paths">
+<span class="sig-name descname"><span class="pre">error_paths</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#mantidimaging.core.utility.custom_exceptions.ImageLoadFailError.error_paths" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.core.utility.cuda_check.CudaChecker.cuda_is_present">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cuda_is_present</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/cuda_check.html#CudaChecker.cuda_is_present"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.cuda_check.CudaChecker.cuda_is_present" title="Link to this definition">#</a></dt>
-<dd><p>Returns the shared cuda check result.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="mantidimaging.core.utility.custom_exceptions.ImageLoadFailError.is_logged">
+<span class="sig-name descname"><span class="pre">is_logged</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/custom_exceptions.html#ImageLoadFailError.is_logged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.custom_exceptions.ImageLoadFailError.is_logged" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mantidimaging.core.utility.cuda_check.not_found_message">
-<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.cuda_check.</span></span><span class="sig-name descname"><span class="pre">not_found_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/cuda_check.html#not_found_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.cuda_check.not_found_message" title="Link to this definition">#</a></dt>
-<dd><p>Generates a message that can be displayed if a working CUDA installation isn’t found.</p>
 </dd></dl>
 
 </section>
@@ -609,20 +602,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.core.utility.cor_interpolate.html"
+       href="mantidimaging.core.utility.cuda_check.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.core.utility.cor_interpolate module</p>
+        <p class="prev-next-title">mantidimaging.core.utility.cuda_check module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.core.utility.custom_exceptions.html"
+       href="mantidimaging.core.utility.data_containers.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.core.utility.custom_exceptions module</p>
+        <p class="prev-next-title">mantidimaging.core.utility.data_containers module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -644,19 +637,18 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.cuda_check.CudaChecker"><code class="docutils literal notranslate"><span class="pre">CudaChecker</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.cuda_check.CudaChecker.clear_instance"><code class="docutils literal notranslate"><span class="pre">CudaChecker.clear_instance()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.cuda_check.CudaChecker.cuda_is_present"><code class="docutils literal notranslate"><span class="pre">CudaChecker.cuda_is_present()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.custom_exceptions.ImageLoadFailError"><code class="docutils literal notranslate"><span class="pre">ImageLoadFailError</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.custom_exceptions.ImageLoadFailError.error_paths"><code class="docutils literal notranslate"><span class="pre">ImageLoadFailError.error_paths</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.custom_exceptions.ImageLoadFailError.is_logged"><code class="docutils literal notranslate"><span class="pre">ImageLoadFailError.is_logged()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.cuda_check.not_found_message"><code class="docutils literal notranslate"><span class="pre">not_found_message()</span></code></a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/api/mantidimaging.core.utility.cuda_check.rst.txt">
+    <a href="../_sources/api/mantidimaging.core.utility.custom_exceptions.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

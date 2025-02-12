@@ -516,6 +516,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">QThread</span><span class="p">,</span> <span class="n">QTimer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AstropyUserWarning</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">imagecodecs._deflate</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeflateError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tifffile</span><span class="w"> </span><span class="kn">import</span> <span class="n">tifffile</span>
@@ -525,29 +526,13 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.live_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveViewerWindowModel</span><span class="p">,</span> <span class="n">Image_Data</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_filter_packages</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.custom_exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageLoadFailError</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.live_viewer.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiveViewerWindowView</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># pragma: no cover</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="ImageLoadFailError">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.ImageLoadFailError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ImageLoadFailError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exception raised when an image is not loaded correctly</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">source_error</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">error_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">source_error</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_name</span><span class="si">}</span><span class="s2"> :Could not load image f</span><span class="si">{</span><span class="n">image_path</span><span class="si">}</span><span class="s2">, Exception: </span><span class="si">{</span><span class="n">source_error</span><span class="si">}</span><span class="s2"> &quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
-
 
 
 <div class="viewcode-block" id="Worker">
@@ -640,17 +625,18 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_deleted</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_load_as_dataset_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">roi_object</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">intensity_action</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">add_roi</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">get_roi</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images_list</span>
-            <span class="k">if</span> <span class="n">images_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">image_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean_paths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">intensity_action</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">roi_object</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">add_roi</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">get_roi</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images_list</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image_cache</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">images_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_mean</span><span class="p">(</span><span class="n">images_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">image_data</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">ImageLoadFailError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_intensity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_mean</span><span class="p">(</span><span class="n">images_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_intensity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image_range</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image_index</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_load_as_dataset_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
@@ -679,7 +665,8 @@ document.write(`
         <span class="k">try</span><span class="p">:</span>
             <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image_cache</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">image_data_obj</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ImageLoadFailError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">error</span><span class="o">.</span><span class="n">is_logged</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">remove_image</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
             <span class="k">return</span>
@@ -714,7 +701,7 @@ document.write(`
                 <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fits_hdul</span><span class="p">:</span>
                     <span class="n">image_data</span> <span class="o">=</span> <span class="n">fits_hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
                 <span class="k">return</span> <span class="n">image_data</span>
-            <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">AstropyUserWarning</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ImageLoadFailError</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ImageLoadFailError</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span>
@@ -813,7 +800,10 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">thread_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_intensity_with_mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">try_next_mean_chunk</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean_readable</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">try_next_mean_chunk</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mean_readable</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">try_next_mean_chunk</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.handle_notify_roi_moved">
