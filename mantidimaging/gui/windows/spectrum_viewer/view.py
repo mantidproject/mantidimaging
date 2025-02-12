@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QL
 from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
 
 from mantidimaging.core.utility import finder
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .model import ROI_RITS, allowed_modes
@@ -117,6 +118,11 @@ class ROIPropertiesTableWidget(QWidget):
                 spinbox.setDisabled(True)
         for _, label in self.roiPropertiesLabels.items():
             label.setText("0")
+
+    def as_roi(self):
+        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
+        new_points = [self.roiPropertiesSpinBoxes[prop].value() for prop in roi_iter_order]
+        return SensibleROI.from_list(new_points)
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):

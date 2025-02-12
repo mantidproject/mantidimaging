@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
-    from PyQt5.QtWidgets import QAction, QSpinBox
+    from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
 
@@ -438,7 +438,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
-        new_roi = self.convert_spinbox_roi_to_SensibleROI(self.view.roiPropertiesSpinBoxes)
+        new_roi = self.view.roi_properties_widget.as_roi()
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
 
     def handle_storing_current_roi_name_on_tab_change(self) -> None:
@@ -458,8 +458,3 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
-
-    def convert_spinbox_roi_to_SensibleROI(self, spinboxes: dict[str, QSpinBox]) -> SensibleROI:
-        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
-        new_points = [spinboxes[prop].value() for prop in roi_iter_order]
-        return SensibleROI.from_list(new_points)
