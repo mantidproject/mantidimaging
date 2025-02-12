@@ -14,9 +14,10 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -122,6 +123,17 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
+        self.welcome_screen = WelcomeScreenView(self, self.presenter)
+
+        self.welcome_dock = QDockWidget("Welcome", self)
+        self.welcome_dock.setWidget(self.welcome_screen)
+        self.welcome_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+
+        self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+
+        if not WelcomeScreenPresenter.show_today():
+            self.welcome_dock.hide()
+
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
         status_bar.addPermanentWidget(self.status_bar_label)
@@ -175,6 +187,13 @@ class MainWindowView(BaseMainWindowView):
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
         self.presenter.do_update_UI()
+
+    def toggle_welcome_screen(self):
+        """Show or hide the docked welcome screen."""
+        if self.welcome_dock.isVisible():
+            self.welcome_dock.hide()
+        else:
+            self.welcome_dock.show()
 
     def _window_ready(self) -> None:
         if perf_logger.isEnabledFor(1):
@@ -240,8 +259,9 @@ class MainWindowView(BaseMainWindowView):
         QDesktopServices.openUrl(url)
 
     def show_about(self) -> None:
-        self.welcome_window = WelcomeScreenPresenter(self)
-        self.welcome_window.show()
+        """Ensure the docked welcome screen is shown"""
+        if not self.welcome_dock.isVisible():
+            self.welcome_dock.show()
 
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)

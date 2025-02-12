@@ -22,7 +22,7 @@ class WelcomeScreenView(BaseDialogView):
 
         self.issue_box.setVisible(False)
 
-        self.show_at_start.stateChanged.connect(presenter.show_at_start_changed)
+        # self.show_at_start.stateChanged.connect(presenter.show_at_start_changed)
         self.ok_button.clicked.connect(self.close)
 
     def get_show_at_start(self) -> None:
