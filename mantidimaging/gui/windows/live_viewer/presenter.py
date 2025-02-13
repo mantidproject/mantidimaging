@@ -67,6 +67,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
 
+        self.update_image_list_timer = QTimer()
+        self.update_image_list_timer.setSingleShot(True)
+        self.update_image_list_timer.timeout.connect(self.update_image_list)
+
         self.model.image_cache.use_loading_function(self.load_image_from_path)
 
     def close(self) -> None:
@@ -91,11 +95,14 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.z_slider.set_range(0, 1)
         self.view.live_viewer.show_error(None)
 
-    def update_image_list(self, images_list: list[Image_Data]) -> None:
+    def update_image_list(self) -> None:
         """Update the image in the view."""
+        images_list = self.model.images
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
+            self.model.clear_mean_partial()
+            self.update_intensity_with_mean()
         else:
             if self.view.intensity_action.isChecked():
                 if not self.view.live_viewer.roi_object:
@@ -120,6 +127,8 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
 
+    def notify_update_image_list(self) -> None:
+        self.update_image_list_timer.start(100)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:

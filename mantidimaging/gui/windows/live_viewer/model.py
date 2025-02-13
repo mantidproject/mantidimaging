@@ -179,11 +179,11 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        self.presenter.update_image_list(self.images)
+        self.presenter.notify_update_image_list()
 
     def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
-        self.presenter.update_image_list(self.images)
+        self.presenter.notify_update_image_list()
 
     def close(self) -> None:
         """Close the model."""
