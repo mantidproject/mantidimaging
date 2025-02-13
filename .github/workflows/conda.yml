@@ -138,6 +138,7 @@ jobs:
         timeout-minutes: 15
 
       - name: Coveralls
+        continue-on-error: true
         shell: bash -l {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
