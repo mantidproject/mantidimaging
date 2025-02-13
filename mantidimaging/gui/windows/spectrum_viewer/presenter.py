@@ -391,12 +391,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param roi_name: Name of the ROI to remove
         """
         if roi_name is None:
-            for name in self.get_roi_names():
+            for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
             self.view.spectrum_widget.roi_dict.clear()
             self.view.roi_table_model.clear_table()
             self.model.remove_all_roi()
         else:
+            if roi_name not in self.view.spectrum_widget.roi_dict:
+                return
             self.view.spectrum_widget.remove_roi(roi_name)
 
     def handle_export_tab_change(self, index: int) -> None:
