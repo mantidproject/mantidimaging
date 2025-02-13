@@ -149,6 +149,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.set_shuttercount_error()
         if self.view.normalisation_enabled():
             self.redraw_all_rois()
+            self.update_displayed_image(autoLevels=True)
 
     def auto_find_flat_stack(self, new_dataset_id: UUID) -> None:
         if self.view.current_dataset_id != new_dataset_id:
@@ -164,15 +165,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def get_dataset_id_for_stack(self, stack_id: UUID | None) -> UUID | None:
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)
 
+    def update_displayed_image(self, autoLevels: bool = True) -> None:
+        """Fetches the correct image (normalized or not) and updates the display."""
+        averaged_image = (self.model.get_normalized_averaged_image()
+                          if self.view.normalisation_enabled() else self.model.get_averaged_image())
+        if averaged_image is None:
+            image_shape = self.model.get_image_shape()
+            averaged_image = np.zeros(image_shape, dtype=np.float32)
+        self.view.set_image(averaged_image, autoLevels=autoLevels)
+
     def show_new_sample(self) -> None:
         """
         Show the new sample in the view and update the spectrum and
         image view accordingly. Resets the ROIs.
         """
-
         averaged_image = self.model.get_averaged_image()
         assert averaged_image is not None
-        self.view.set_image(averaged_image)
+        self.update_displayed_image(autoLevels=True)
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.auto_range_image()
@@ -184,15 +193,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
             self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
         else:
-            assert self.model.tof_data is not None  # otherwise tof_mode would be IMAGE_NUMBER
+            assert self.model.tof_data is not None
             image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
             image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
             self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
-        averaged_image = self.model.get_averaged_image()
-        assert averaged_image is not None
-        self.view.set_image(averaged_image, autoLevels=False)
+        self.update_displayed_image(autoLevels=False)
 
     def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
         """
@@ -305,6 +312,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.spectrum_mode = SpecType.SAMPLE
         self.redraw_all_rois()
         self.view.display_normalise_error()
+        self.update_displayed_image(autoLevels=True)
 
     def set_shuttercount_error(self, enabled: bool = False) -> None:
         """

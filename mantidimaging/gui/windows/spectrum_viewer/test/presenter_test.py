@@ -179,6 +179,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)
 
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
+        self.presenter.view.normalisation_enabled.return_value = False
         self.presenter.model.set_stack(generate_images([10, 5, 5]))
         self.presenter.model.tof_plot_range = (0, 9)
         self.presenter.show_new_sample()
