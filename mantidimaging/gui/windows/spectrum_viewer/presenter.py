@@ -213,6 +213,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.current_roi_name = roi.name
             self.view.last_clicked_roi = roi.name
             self.view.set_roi_properties()
+            self.view.set_selected_roi(roi.name)
+
+    def handle_roi_selection(self):
+        """ Handles user selection from the dropdown menu. """
+        selected_roi = self.view.roiDropdown.currentText()
+        if selected_roi:
+            self.view.current_roi_name = selected_roi
+            self.view.set_roi_properties()
+            self.redraw_spectrum(selected_roi)
+
+    def handle_roi_added_or_removed(self):
+        """ Update dropdown when an ROI is added or removed. """
+        self.view.update_roi_dropdown()
 
     def redraw_spectrum(self, name: str) -> None:
         """

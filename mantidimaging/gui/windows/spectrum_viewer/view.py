@@ -182,6 +182,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.flight_path = 56.4
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
+        self.roiDropdown = QComboBox(self)
+        self.roiDropdown.currentIndexChanged.connect(self.presenter.handle_roi_selection)
+
+        self.fittingLayout.addWidget(QLabel("Select ROI:"))
+        self.fittingLayout.addWidget(self.roiDropdown)
+        self.update_roi_dropdown()
+
         def on_row_change(item: QModelIndex, _: Any) -> None:
             """
             Handle cell change in table view and update selected ROI and
@@ -271,6 +278,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             for _, spinbox in self.roiPropertiesSpinBoxes.items():
                 spinbox.setEnabled(True)
             self.set_roi_properties()
+
+    def update_roi_dropdown(self):
+        """ Updates the ROI dropdown menu with the available ROIs. """
+        self.roiDropdown.clear()
+        roi_names = self.presenter.get_roi_names()
+        self.roiDropdown.addItems(roi_names)
+
+    def set_selected_roi(self, roi_name: str):
+        """ Sets the dropdown to the specified ROI name. """
+        index = self.roiDropdown.findText(roi_name)
+        if index != -1:
+            self.roiDropdown.setCurrentIndex(index)
 
     @property
     def roi_table_model(self) -> TableModel:
