@@ -446,6 +446,9 @@
            </layout>
           </widget>
          </item>
+         <!-- <item>
+          <widget class="QWidget" name="ExportTabsPlaceholder"/>
+         </item> -->
          <item>
           <widget class="QWidget" name="experimentSetupGroupBox" native="true"/>
          </item>
