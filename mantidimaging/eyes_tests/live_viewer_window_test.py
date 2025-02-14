@@ -6,9 +6,12 @@ from typing import TYPE_CHECKING
 from unittest import mock
 import numpy as np
 import os
+
+from PyQt5.QtTest import QTest
+
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.windows.live_viewer.model import Image_Data
-from mantidimaging.gui.windows.live_viewer.presenter import ImageLoadFailError
+from mantidimaging.gui.windows.live_viewer.presenter import ImageLoadFailError, IMAGE_lIST_UPDATE_TIME
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 from pathlib import Path
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
@@ -66,6 +69,7 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         mock_load_image.return_value = self._generate_image()
         self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer_list[-1].presenter.model._handle_image_changed_in_list(image_list)
+        QTest.qWait(int(IMAGE_lIST_UPDATE_TIME * 1.5))
         self.check_target(widget=self.imaging.live_viewer_list[-1])
 
     @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
@@ -88,5 +92,6 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         mock_load_image.return_value = self._generate_image()
         self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer_list[-1].presenter.model._handle_image_changed_in_list(image_list)
+        QTest.qWait(int(IMAGE_lIST_UPDATE_TIME * 1.5))
         self.imaging.live_viewer_list[-1].rotate_angles_group.actions()[1].trigger()
         self.check_target(widget=self.imaging.live_viewer_list[-1])

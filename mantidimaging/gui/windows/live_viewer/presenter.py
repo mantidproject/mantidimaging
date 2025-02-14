@@ -27,6 +27,8 @@ if TYPE_CHECKING:
 
 logger = getLogger(__name__)
 
+IMAGE_lIST_UPDATE_TIME = 100
+
 
 class Worker(QObject):
     finished = pyqtSignal()
@@ -128,7 +130,7 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.set_load_as_dataset_enabled(True)
 
     def notify_update_image_list(self) -> None:
-        self.update_image_list_timer.start(100)
+        self.update_image_list_timer.start(IMAGE_lIST_UPDATE_TIME)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
