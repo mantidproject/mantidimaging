@@ -397,8 +397,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.roi_table_model.clear_table()
             self.model.remove_all_roi()
         else:
-            if roi_name not in self.view.spectrum_widget.roi_dict:
-                return
             self.view.spectrum_widget.remove_roi(roi_name)
 
     def handle_export_tab_change(self, index: int) -> None:

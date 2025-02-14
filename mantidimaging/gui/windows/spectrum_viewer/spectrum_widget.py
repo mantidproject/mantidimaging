@@ -279,8 +279,7 @@ class SpectrumWidget(QWidget):
 
     def _emit_roi_changed(self):
         sender_roi = self.sender()
-        if sender_roi in self.roi_dict.values():
-            self.roi_changed.emit(sender_roi)
+        self.roi_changed.emit(sender_roi)
 
 
 class CustomViewBox(ViewBox):
