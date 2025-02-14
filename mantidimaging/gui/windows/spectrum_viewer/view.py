@@ -541,9 +541,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         selected_row = self.roi_table_model.row_data(self.selected_row)
         roi_name = self.roi_table_model.get_element(self.selected_row, 0)
-        roi_object = self.spectrum_widget.roi_dict.pop(roi_name, None)
-        if roi_object is None:
-            return
+        roi_object = self.spectrum_widget.roi_dict[roi_name]
         if selected_row:
             self.roi_table_model.remove_row(self.selected_row)
             self.presenter.do_remove_roi(roi_name)
