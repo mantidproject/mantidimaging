@@ -110,16 +110,9 @@ class LiveViewerWindowPresenter(BasePresenter):
                 if not self.view.live_viewer.roi_object:
                     self.view.live_viewer.add_roi()
                 self.model.roi = self.view.live_viewer.get_roi()
-                self.model.images = images_list
                 images_list_paths = [image.image_path for image in images_list]
                 if self.old_image_list_paths == images_list_paths[:-1]:
-                    try:
-                        image_data = self.model.image_cache.load_image(images_list[-1])
-                        self.model.add_mean(images_list[-1], image_data)
-                        self.update_intensity_with_mean()
-                    except ImageLoadFailError as error:
-                        logger.error(error.message)
-                        self.model.add_mean(images_list[-1], None)
+                    self.try_add_mean(images_list[-1])
                     self.update_intensity(self.model.mean)
                     self.old_image_list_paths = images_list_paths
                 else:
@@ -131,6 +124,15 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def notify_update_image_list(self) -> None:
         self.update_image_list_timer.start(IMAGE_lIST_UPDATE_TIME)
+
+    def try_add_mean(self, image: Image_Data) -> None:
+        try:
+            image_data = self.model.image_cache.load_image(image)
+            self.model.add_mean(image.image_path, image_data)
+            self.update_intensity_with_mean()
+        except ImageLoadFailError as error:
+            logger.error(error.message)
+            self.model.add_mean(image.image_path, None)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
@@ -196,6 +198,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         if self.selected_image and image_path == self.selected_image.image_path:
             self.display_image(self.selected_image)
+            self.try_add_mean(self.selected_image)
+            self.update_intensity_with_mean()
 
     def update_image_operation(self) -> None:
         """
