@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget, QWidget, QSpinBox
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
@@ -31,6 +31,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             self.main_window = MainWindowView()
         self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()
+        self.view.roi_properties_widget = mock.create_autospec(QWidget, instance=True)
+        self.view.roi_properties_widget.roiPropertiesSpinBoxes = {
+            "Top": mock.create_autospec(QSpinBox, instance=True),
+            "Bottom": mock.create_autospec(QSpinBox, instance=True),
+            "Left": mock.create_autospec(QSpinBox, instance=True),
+            "Right": mock.create_autospec(QSpinBox, instance=True)
+        }
         mock_spectrum_roi_dict = mock.create_autospec(dict, instance=True)
         self.view.spectrum_widget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict, instance=True)
         self.view.spectrum_widget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,
@@ -387,8 +394,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.check_action.assert_has_calls(calls)
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
-        self.presenter.view.roiPropertiesSpinBoxes = mock.Mock()
-        self.presenter.convert_spinbox_roi_to_SensibleROI = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
+        self.view.roi_properties_widget.as_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         self.view.current_roi_name = "roi_1"
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
