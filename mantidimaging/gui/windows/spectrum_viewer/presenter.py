@@ -201,19 +201,17 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
 
-    def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
+    def handle_roi_moved(self, roi: SpectrumROI) -> None:
         """
         Handle changes to any ROI position and size.
         """
-        for name in self.view.spectrum_widget.roi_dict:
-            current_roi = self.view.spectrum_widget.get_roi(name)
-            if force_new_spectrums:
-                spectrum = self.model.get_spectrum(
-                    current_roi,
-                    self.spectrum_mode,
-                    self.view.shuttercount_norm_enabled(),
-                )
-                self.view.set_spectrum(name, spectrum)
+        spectrum = self.model.get_spectrum(
+            roi.as_sensible_roi(),
+            self.spectrum_mode,
+            self.view.shuttercount_norm_enabled(),
+        )
+        self.view.set_spectrum(roi.name, spectrum)
+        self.view.spectrum_widget.spectrum.update()
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
@@ -393,7 +391,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param roi_name: Name of the ROI to remove
         """
         if roi_name is None:
-            for name in self.get_roi_names():
+            for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
             self.view.spectrum_widget.roi_dict.clear()
             self.view.roi_table_model.clear_table()
