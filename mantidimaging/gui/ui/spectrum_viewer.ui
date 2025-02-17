@@ -238,7 +238,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
-                 <widget class="RemovableRowTableView" name="roiTableView">
+                 <widget class="ROITableWidget" name="table_view">
                   <attribute name="horizontalHeaderHighlightSections">
                    <bool>true</bool>
                   </attribute>
@@ -545,9 +545,9 @@
    <header>mantidimaging.gui.widgets.dataset_selector</header>
   </customwidget>
   <customwidget>
-   <class>RemovableRowTableView</class>
+   <class>ROITableWidget</class>
    <extends>QTableView</extends>
-   <header>mantidimaging.gui.widgets</header>
+   <header>mantidimaging.gui.windows.spectrum_viewer.view</header>
   </customwidget>
  </customwidgets>
  <resources/>

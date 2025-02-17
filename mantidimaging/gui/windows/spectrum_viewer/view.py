@@ -138,10 +138,6 @@ class ROITableWidget(RemovableRowTableView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        if parent is not None:
-            layout = parent.layout()
-            if layout is not None:
-                layout.addWidget(self)
 
         self.old_table_names = []
         self.selected_row = 0
@@ -258,7 +254,7 @@ class ROITableWidget(RemovableRowTableView):
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
-    roiTableView: RemovableRowTableView
+    table_view: ROITableWidget
     sampleStackSelector: DatasetSelectorWidgetView
     normaliseStackSelector: DatasetSelectorWidgetView
 
@@ -306,7 +302,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                                                               self.roiPropertiesGroupBox)
 
         self.old_table_names: list[str] = []
-        self.table_view = ROITableWidget(self.roiTableView)
 
         self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
         self.roiPropertiesLabels: dict[str, QLabel] = {}
@@ -653,7 +648,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.do_remove_roi(roi_name)
             self.spectrum_widget.spectrum_data_dict.pop(roi_name)
             self.presenter.handle_roi_moved(roi_object)
-            self.roiTableView.selectRow(0)
+            self.table_view.selectRow(0)
 
         if self.table_view.roi_table_model.rowCount() == 0:
             self.removeBtn.setEnabled(False)
