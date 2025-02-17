@@ -407,44 +407,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="roiPropertiesGroupBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>200</height>
-            </size>
-           </property>
-           <property name="title">
-            <string>ROI Properties</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_7">
-            <item>
-             <widget class="QTableWidget" name="roiPropertiesTableWidget">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>200</height>
-               </size>
-              </property>
-              <property name="sizeAdjustPolicy">
-               <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <widget class="ROIPropertiesTableWidget" name="roi_properties_widget" native="true"/>
          </item>
          <item>
           <widget class="QWidget" name="experimentSetupGroupBox" native="true"/>
@@ -548,6 +511,12 @@
    <class>ROITableWidget</class>
    <extends>QTableView</extends>
    <header>mantidimaging.gui.windows.spectrum_viewer.view</header>
+  </customwidget>
+  <customwidget>
+   <class>ROIPropertiesTableWidget</class>
+   <extends>QWidget</extends>
+   <header>mantidimaging.gui.windows.spectrum_viewer.view</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

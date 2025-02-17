@@ -8,12 +8,12 @@ from collections.abc import Callable
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction, QWidget
-from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QGroupBox, QActionGroup, QAction
+from PyQt5.QtCore import QSignalBlocker, QModelIndex
 
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseWidget
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
@@ -28,98 +28,42 @@ if TYPE_CHECKING:
     from uuid import UUID
 
 
-class ROIPropertiesTableWidget(QWidget):
-    """
-    A class to represent the ROI properties table widget in the spectrum viewer window.
-    This class helps improve modularity of the spectrum viewer UI components by moving
-    the ROI properties table widget to its own class.
-    """
+class ROIPropertiesTableWidget(BaseWidget):
+    spin_left: QSpinBox
+    spin_right: QSpinBox
+    spin_top: QSpinBox
+    spin_bottom: QSpinBox
+    label_height: QLabel
+    label_width: QLabel
+    group_box: QGroupBox
 
-    roiPropertiesTableWidget: QTableWidget
-    roiPropertiesGroupBox: QGroupBox
-    roiPropertiesSpinBoxes: dict[str, QSpinBox]
-    roiPropertiesLabels: dict[str, QLabel]
+    def __init__(self, parent=None):
+        super().__init__(parent, ui_file='gui/ui/roi_properties_table_widget.ui')
 
-    def __init__(self, parent=None, roiPropertiesTableWidget=QTableWidget, roiPropertiesGroupBox=QGroupBox):
-        super().__init__(parent)
-        self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
-        self.roi_table_properties_secondary = ["Width", "Height"]
+        self.roiPropertiesSpinBoxes = {
+            'Left': self.spin_left,
+            'Right': self.spin_right,
+            'Top': self.spin_top,
+            'Bottom': self.spin_bottom,
+        }
+        self.roiPropertiesLabels = {
+            'Width': self.label_width,
+            'Height': self.label_height,
+        }
 
-        self.roiPropertiesTableWidget = roiPropertiesTableWidget
-        self.roiPropertiesGroupBox = roiPropertiesGroupBox
-        self.roiPropertiesSpinBoxes = {}
-        self.roiPropertiesLabels = {}
-        self.initialize_roi_properties()
-
-    def initialize_roi_properties(self) -> None:
-        self.roiPropertiesSpinBoxes["Left"] = QSpinBox()
-        self.roiPropertiesSpinBoxes["Right"] = QSpinBox()
-        self.roiPropertiesSpinBoxes["Top"] = QSpinBox()
-        self.roiPropertiesSpinBoxes["Bottom"] = QSpinBox()
-
-        # set up the labels
-        self.roiPropertiesLabels["Width"] = QLabel()
-        self.roiPropertiesLabels["Height"] = QLabel()
-
-        # set spinbox ranges
-        self.roiPropertiesSpinBoxes["Left"].setMaximum(self.roiPropertiesSpinBoxes["Right"].value() - 1)
-        self.roiPropertiesSpinBoxes["Right"].setMinimum(self.roiPropertiesSpinBoxes["Left"].value() + 1)
-        self.roiPropertiesSpinBoxes["Top"].setMaximum(self.roiPropertiesSpinBoxes["Bottom"].value() - 1)
-        self.roiPropertiesSpinBoxes["Bottom"].setMinimum(self.roiPropertiesSpinBoxes["Top"].value() + 1)
-
-        # set up table
-        self.roiPropertiesTableWidget.setColumnCount(3)
-        self.roiPropertiesTableWidget.setRowCount(3)
-        self.roiPropertiesTableWidget.setColumnWidth(0, 80)
-        self.roiPropertiesTableWidget.setColumnWidth(1, 50)
-        self.roiPropertiesTableWidget.setColumnWidth(2, 50)
-        self.roiPropertiesTableWidget.horizontalHeader().hide()
-        self.roiPropertiesTableWidget.verticalHeader().hide()
-        self.roiPropertiesTableWidget.setShowGrid(False)
-
-    def populate_roi_properties_table_text(self) -> None:
-        roiPropertiesTableText = ["x1, x2", "y1, y2", "Size"]
-        self.roiPropertiesTableTextDict = {}
-        for text in roiPropertiesTableText:
-            item = QTableWidgetItem(text)
-            item.setFlags(Qt.ItemIsSelectable)
-            self.roiPropertiesTableTextDict[text] = item
-
-        self.roiPropertiesTableWidget.setItem(0, 0, self.roiPropertiesTableTextDict["x1, x2"])
-        self.roiPropertiesTableWidget.setCellWidget(0, 1, self.roiPropertiesSpinBoxes["Left"])
-        self.roiPropertiesTableWidget.setCellWidget(0, 2, self.roiPropertiesSpinBoxes["Right"])
-        self.roiPropertiesTableWidget.setItem(1, 0, self.roiPropertiesTableTextDict["y1, y2"])
-        self.roiPropertiesTableWidget.setCellWidget(1, 1, self.roiPropertiesSpinBoxes["Top"])
-        self.roiPropertiesTableWidget.setCellWidget(1, 2, self.roiPropertiesSpinBoxes["Bottom"])
-        self.roiPropertiesTableWidget.setItem(2, 0, self.roiPropertiesTableTextDict["Size"])
-        self.roiPropertiesTableWidget.setCellWidget(2, 1, self.roiPropertiesLabels["Width"])
-        self.roiPropertiesTableWidget.setCellWidget(2, 2, self.roiPropertiesLabels["Height"])
+    def set_roi_name(self, name: str) -> None:
+        self.group_box.setTitle(f"Roi Properties: {name}")
 
     def setup_roi_properties_spinboxes(self, spectrum_widget: SpectrumWidget, do_adjust_roi: Callable) -> None:
         assert spectrum_widget.image.image_data is not None
-        for prop in self.roi_table_properties:
-            spin_box = QSpinBox()
+        for prop, spin_box in self.roiPropertiesSpinBoxes.items():
             if prop == "Top" or prop == "Bottom":
                 spin_box.setMaximum(spectrum_widget.image.image_data.shape[0])
             if prop == "Left" or prop == "Right":
                 spin_box.setMaximum(spectrum_widget.image.image_data.shape[1])
-            spin_box.valueChanged.connect(do_adjust_roi)  # THis will need moving out of presenter in
-            self.roiPropertiesSpinBoxes[prop] = spin_box
-        for prop in self.roi_table_properties_secondary:
-            label = QLabel()
-            self.roiPropertiesLabels[prop] = label
+            spin_box.valueChanged.connect(do_adjust_roi)
 
-    def disable_roi_properties(self) -> None:
-        self.roiPropertiesGroupBox.setTitle("Roi Properties: None selected")
-        for _, spinbox in self.roiPropertiesSpinBoxes.items():
-            with QSignalBlocker(spinbox):
-                spinbox.setMinimum(0)
-                spinbox.setValue(0)
-                spinbox.setDisabled(True)
-        for _, label in self.roiPropertiesLabels.items():
-            label.setText("0")
-
-    def as_roi(self):
+    def as_roi(self) -> SensibleROI:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         new_points = [self.roiPropertiesSpinBoxes[prop].value() for prop in roi_iter_order]
         return SensibleROI.from_list(new_points)
@@ -298,13 +242,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.last_clicked_roi = ""
         self.current_roi_name: str = ""
 
-        self.roi_properties_widget = ROIPropertiesTableWidget(self, self.roiPropertiesTableWidget,
-                                                              self.roiPropertiesGroupBox)
-
         self.old_table_names: list[str] = []
-
-        self.roiPropertiesSpinBoxes: dict[str, QSpinBox] = {}
-        self.roiPropertiesLabels: dict[str, QLabel] = {}
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -372,7 +310,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_table_properties_secondary = ["Width", "Height"]
 
         self.roi_properties_widget.setup_roi_properties_spinboxes(self.spectrum_widget, self.presenter.do_adjust_roi)
-        self.roi_properties_widget.populate_roi_properties_table_text()
+        #self.roi_properties_widget.populate_roi_properties_table_text()
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
@@ -474,7 +412,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.redraw_spectrum(ROI_RITS)
             self.table_view.current_roi_name = ROI_RITS
 
-            for _, spinbox in self.roiPropertiesSpinBoxes.items():
+            for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
                 spinbox.setEnabled(False)
 
             self.set_roi_properties()
@@ -702,7 +640,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 or not self.roi_properties_widget.roiPropertiesSpinBoxes):
             return
         current_roi = self.presenter.view.spectrum_widget.get_roi(self.table_view.current_roi_name)
-        self.roi_properties_widget.roiPropertiesGroupBox.setTitle(f"Roi Properties: {self.table_view.current_roi_name}")
+        self.roi_properties_widget.set_roi_name(self.table_view.current_roi_name)
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
         for row, pos in enumerate(current_roi):
             with QSignalBlocker(self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]]):
@@ -714,18 +652,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             spinbox.setEnabled(True)
 
     def disable_roi_properties(self) -> None:
-        self.roiPropertiesGroupBox.setTitle("Roi Properties: None selected")
+        self.roi_properties_widget.set_roi_name("None selected")
         self.table_view.last_clicked_roi = "roi"
-        for _, spinbox in self.roiPropertiesSpinBoxes.items():
+        for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
             with QSignalBlocker(spinbox):
                 spinbox.setMinimum(0)
                 spinbox.setValue(0)
                 spinbox.setDisabled(True)
-        for _, label in self.roiPropertiesLabels.items():
+        for _, label in self.roi_properties_widget.roiPropertiesLabels.items():
             label.setText("0")
 
     def get_roi_properties_spinboxes(self) -> dict[str, QSpinBox]:
-        return self.roiPropertiesSpinBoxes
+        return self.roi_properties_widget.roiPropertiesSpinBoxes
 
     def get_checked_menu_option(self) -> QAction:
         return self.tof_mode_select_group.checkedAction()
@@ -739,7 +677,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             if prop == "Left" or prop == "Right":
                 spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
             spin_box.valueChanged.connect(self.presenter.do_adjust_roi)
-            self.roiPropertiesSpinBoxes[prop] = spin_box
+            self.roi_properties_widget.roiPropertiesSpinBoxes[prop] = spin_box
         for prop in self.roi_table_properties_secondary:
             label = QLabel()
-            self.roiPropertiesLabels[prop] = label
+            self.roi_properties_widget.roiPropertiesLabels[prop] = label
