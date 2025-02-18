@@ -123,6 +123,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.set_shuttercount_error()
         self.show_new_sample()
         self.view.on_visibility_change()
+        self.view.setup_roi_properties_spinboxes()
 
     def reset_units_menu(self) -> None:
         if self.model.tof_data is None:

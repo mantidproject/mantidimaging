@@ -54,14 +54,15 @@ class ROIPropertiesTableWidget(BaseWidget):
     def set_roi_name(self, name: str) -> None:
         self.group_box.setTitle(f"Roi Properties: {name}")
 
-    def setup_roi_properties_spinboxes(self, spectrum_widget: SpectrumWidget, do_adjust_roi: Callable) -> None:
-        assert spectrum_widget.image.image_data is not None
-        for prop, spin_box in self.roiPropertiesSpinBoxes.items():
-            if prop == "Top" or prop == "Bottom":
-                spin_box.setMaximum(spectrum_widget.image.image_data.shape[0])
-            if prop == "Left" or prop == "Right":
-                spin_box.setMaximum(spectrum_widget.image.image_data.shape[1])
+    def setup_roi_properties_signals(self, do_adjust_roi: Callable) -> None:
+        for spin_box in self.roiPropertiesSpinBoxes.values():
             spin_box.valueChanged.connect(do_adjust_roi)
+
+    def set_roi_limits(self, shape: tuple[int, ...]) -> None:
+        self.spin_left.setMaximum(shape[1])
+        self.spin_right.setMaximum(shape[1])
+        self.spin_top.setMaximum(shape[0])
+        self.spin_bottom.setMaximum(shape[0])
 
     def as_roi(self) -> SensibleROI:
         roi_iter_order = ["Left", "Top", "Right", "Bottom"]
@@ -309,8 +310,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
         self.roi_table_properties_secondary = ["Width", "Height"]
 
-        self.roi_properties_widget.setup_roi_properties_spinboxes(self.spectrum_widget, self.presenter.do_adjust_roi)
-        #self.roi_properties_widget.populate_roi_properties_table_text()
+        self.roi_properties_widget.setup_roi_properties_signals(self.presenter.do_adjust_roi)
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
@@ -670,14 +670,4 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def setup_roi_properties_spinboxes(self) -> None:
         assert self.spectrum_widget.image.image_data is not None
-        for prop in self.roi_table_properties:
-            spin_box = QSpinBox()
-            if prop == "Top" or prop == "Bottom":
-                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[0])
-            if prop == "Left" or prop == "Right":
-                spin_box.setMaximum(self.spectrum_widget.image.image_data.shape[1])
-            spin_box.valueChanged.connect(self.presenter.do_adjust_roi)
-            self.roi_properties_widget.roiPropertiesSpinBoxes[prop] = spin_box
-        for prop in self.roi_table_properties_secondary:
-            label = QLabel()
-            self.roi_properties_widget.roiPropertiesLabels[prop] = label
+        self.roi_properties_widget.set_roi_limits(self.spectrum_widget.image.image_data.shape)
