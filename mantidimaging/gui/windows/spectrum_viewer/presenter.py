@@ -349,6 +349,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(roi_name, spectrum)
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
+        self.view.update_roi_dropdown()
 
     def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int]) -> None:
         """
@@ -405,6 +406,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
+        self.view.update_roi_dropdown()
 
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)

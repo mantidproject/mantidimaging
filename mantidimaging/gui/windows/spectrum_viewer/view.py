@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction, \
-    QHBoxLayout, QWidget, QFrame, QSplitter, QLineEdit
+    QTabWidget, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem, QGroupBox, QActionGroup, QAction
 from PyQt5.QtCore import QSignalBlocker, Qt, QModelIndex
 
 from mantidimaging.core.utility import finder
@@ -84,6 +83,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.spectrum_widget)
         self.fittingLayout.addWidget(QLabel("fitting"))
         self.exportLayout.addWidget(QLabel("export"))
+
+        self.roiDropdown = QComboBox(self)
+        self.roiDropdown.currentIndexChanged.connect(self.presenter.handle_roi_selection)
+        self.fittingFormLayout.layout().addWidget(self.roiDropdown)
+        self.update_roi_dropdown()
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
@@ -183,47 +187,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.flight_path = 56.4
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
-        self.fittingMainLayout = self.fittingPage.layout() or QHBoxLayout()
-        self.fittingPage.setLayout(self.fittingMainLayout)
-        self.fittingSplitter = QSplitter()
-        self.fittingSidebarWidget = QFrame()
-        self.fittingSidebarLayout = QVBoxLayout(self.fittingSidebarWidget)
-
-        self.fittingSidebarLayout.addWidget(QLabel("<b>Fitting</b>"))
-        self.roiDropdownLabel = QLabel("<b>Select ROI:<b>")
-        self.roiDropdown = QComboBox(self)
-        self.roiDropdown.currentIndexChanged.connect(self.presenter.handle_roi_selection)
-        self.fittingSidebarLayout.addWidget(self.roiDropdownLabel)
-        self.fittingSidebarLayout.addWidget(self.roiDropdown)
-
-        self.roiPropertiesTable = QTableWidget(5, 3)
-        self.roiPropertiesTable.setHorizontalHeaderLabels(["", "Initial", "Final"])
-        self.roiPropertiesTable.setVerticalHeaderLabels(["a", "b", "c", "d", "d"])
-        self.fittingSidebarLayout.addWidget(QLabel("<b>ROI Properties:</b>"))
-        self.fittingSidebarLayout.addWidget(self.roiPropertiesTable)
-
-        self.noBraggEdgesLabel = QLabel("<b>No Bragg Edges:</b>")
-        self.noBraggEdgesInput = QLineEdit()
-        self.fittingSidebarLayout.addWidget(self.noBraggEdgesLabel)
-        self.fittingSidebarLayout.addWidget(self.noBraggEdgesInput)
-
-        self.graphWidget = QLabel("Graph Here (PyQtGraph Widget)")
-        self.graphWidget.setStyleSheet("background-color: black; color: yellow; font-size: 14px;")
-        self.graphWidget.setAlignment(Qt.AlignCenter)
-
-        self.graphWidgetContainer = QWidget()
-        self.graphWidgetLayout = QVBoxLayout(self.graphWidgetContainer)
-        self.graphWidgetLayout.addWidget(self.graphWidget)
-
-        self.fittingSplitter.addWidget(self.fittingSidebarWidget)
-        self.fittingSplitter.addWidget(self.graphWidgetContainer)
-        self.fittingSidebarWidget.setFrameShape(QFrame.Panel)
-        self.fittingSidebarWidget.setFrameShadow(QFrame.Raised)
-        self.fittingSidebarWidget.setLineWidth(1)
-        self.fittingMainLayout.addWidget(self.fittingSplitter)
-
-        self.update_roi_dropdown()
-
         def on_row_change(item: QModelIndex, _: Any) -> None:
             """
             Handle cell change in table view and update selected ROI and
@@ -315,9 +278,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.set_roi_properties()
 
     def update_roi_dropdown(self):
-        """ Updates the ROI dropdown menu with the available ROIs. """
+        """ Updates the ROI dropdown menu with the available ROIs """
         self.roiDropdown.clear()
-        roi_names = self.presenter.get_roi_names()
+        roi_names = [name for name in self.presenter.get_roi_names() if name != ROI_RITS]
         self.roiDropdown.addItems(roi_names)
 
     def set_selected_roi(self, roi_name: str):
