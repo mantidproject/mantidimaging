@@ -58,6 +58,15 @@ class ROIPropertiesTableWidget(BaseWidget):
     def set_roi_name(self, name: str) -> None:
         self.group_box.setTitle(f"Roi Properties: {name}")
 
+    def set_roi_values(self, roi: SensibleROI) -> None:
+        with QSignalBlocker(self):
+            self.spin_left.setValue(roi.left)
+            self.spin_right.setValue(roi.right)
+            self.spin_top.setValue(roi.top)
+            self.spin_bottom.setValue(roi.bottom)
+            self.label_width.setText(str(roi.width))
+            self.label_height.setText(str(roi.height))
+
     def set_roi_limits(self, shape: tuple[int, ...]) -> None:
         self.spin_left.setMaximum(shape[1])
         self.spin_right.setMaximum(shape[1])
@@ -636,18 +645,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
             self.table_view.current_roi_name = ROI_RITS
-        if (self.table_view.current_roi_name not in self.presenter.view.spectrum_widget.roi_dict
-                or not self.roi_properties_widget.roiPropertiesSpinBoxes):
+        if self.table_view.current_roi_name not in self.presenter.view.spectrum_widget.roi_dict:
             return
         current_roi = self.presenter.view.spectrum_widget.get_roi(self.table_view.current_roi_name)
         self.roi_properties_widget.set_roi_name(self.table_view.current_roi_name)
-        roi_iter_order = ["Left", "Top", "Right", "Bottom"]
-        for row, pos in enumerate(current_roi):
-            with QSignalBlocker(self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]]):
-                self.roi_properties_widget.roiPropertiesSpinBoxes[roi_iter_order[row]].setValue(pos)
+        self.roi_properties_widget.set_roi_values(current_roi)
         self.presenter.redraw_spectrum(self.table_view.current_roi_name)
-        self.roi_properties_widget.roiPropertiesLabels["Width"].setText(str(current_roi.width))
-        self.roi_properties_widget.roiPropertiesLabels["Height"].setText(str(current_roi.height))
         for spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.values():
             spinbox.setEnabled(True)
 
