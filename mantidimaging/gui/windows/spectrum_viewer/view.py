@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
-from collections.abc import Callable
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
     QTabWidget, QComboBox, QSpinBox, QTableWidget, QGroupBox, QActionGroup, QAction
-from PyQt5.QtCore import QSignalBlocker, QModelIndex
+from PyQt5.QtCore import QSignalBlocker, QModelIndex, pyqtSignal
 
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -37,6 +36,8 @@ class ROIPropertiesTableWidget(BaseWidget):
     label_width: QLabel
     group_box: QGroupBox
 
+    roi_changed = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent, ui_file='gui/ui/roi_properties_table_widget.ui')
 
@@ -51,12 +52,11 @@ class ROIPropertiesTableWidget(BaseWidget):
             'Height': self.label_height,
         }
 
+        for spin_box in self.roiPropertiesSpinBoxes.values():
+            spin_box.valueChanged.connect(self.roi_changed.emit)
+
     def set_roi_name(self, name: str) -> None:
         self.group_box.setTitle(f"Roi Properties: {name}")
-
-    def setup_roi_properties_signals(self, do_adjust_roi: Callable) -> None:
-        for spin_box in self.roiPropertiesSpinBoxes.values():
-            spin_box.valueChanged.connect(do_adjust_roi)
 
     def set_roi_limits(self, shape: tuple[int, ...]) -> None:
         self.spin_left.setMaximum(shape[1])
@@ -310,7 +310,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_table_properties = ["Top", "Bottom", "Left", "Right"]
         self.roi_table_properties_secondary = ["Width", "Height"]
 
-        self.roi_properties_widget.setup_roi_properties_signals(self.presenter.do_adjust_roi)
+        self.roi_properties_widget.roi_changed.connect(self.presenter.do_adjust_roi)
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
