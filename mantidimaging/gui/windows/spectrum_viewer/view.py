@@ -78,6 +78,12 @@ class ROIPropertiesTableWidget(BaseWidget):
         new_points = [self.roiPropertiesSpinBoxes[prop].value() for prop in roi_iter_order]
         return SensibleROI.from_list(new_points)
 
+    def enable_widgets(self, enable: bool) -> None:
+        for spin_box in self.roiPropertiesSpinBoxes.values():
+            spin_box.setEnabled(enable)
+        if not enable:
+            self.set_roi_values(SensibleROI(0, 0, 0, 0))
+
 
 class ROITableWidget(RemovableRowTableView):
     """
@@ -421,9 +427,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.redraw_spectrum(ROI_RITS)
             self.table_view.current_roi_name = ROI_RITS
 
-            for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
-                spinbox.setEnabled(False)
-
             self.set_roi_properties()
 
     @property
@@ -533,9 +536,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-        for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
-            if not spinbox.isEnabled():
-                spinbox.setEnabled(True)
+        self.roi_properties_widget.enable_widgets(True)
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
@@ -651,19 +652,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_properties_widget.set_roi_name(self.table_view.current_roi_name)
         self.roi_properties_widget.set_roi_values(current_roi)
         self.presenter.redraw_spectrum(self.table_view.current_roi_name)
-        for spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.values():
-            spinbox.setEnabled(True)
+        self.roi_properties_widget.enable_widgets(True)
 
     def disable_roi_properties(self) -> None:
         self.roi_properties_widget.set_roi_name("None selected")
         self.table_view.last_clicked_roi = "roi"
-        for _, spinbox in self.roi_properties_widget.roiPropertiesSpinBoxes.items():
-            with QSignalBlocker(spinbox):
-                spinbox.setMinimum(0)
-                spinbox.setValue(0)
-                spinbox.setDisabled(True)
-        for _, label in self.roi_properties_widget.roiPropertiesLabels.items():
-            label.setText("0")
+        self.roi_properties_widget.enable_widgets(False)
 
     def get_roi_properties_spinboxes(self) -> dict[str, QSpinBox]:
         return self.roi_properties_widget.roiPropertiesSpinBoxes
