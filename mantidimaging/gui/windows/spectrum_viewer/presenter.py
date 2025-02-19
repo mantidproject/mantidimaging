@@ -217,7 +217,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_roi_selection(self):
         """ Handles user selection from the dropdown menu. """
-        selected_roi = self.view.roiDropdown.currentText()
+        selected_roi = self.view.roiSelectionWidget.roiDropdown.currentText()
         if selected_roi:
             self.view.current_roi_name = selected_roi
             self.view.set_roi_properties()

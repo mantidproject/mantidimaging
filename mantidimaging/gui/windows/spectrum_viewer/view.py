@@ -19,6 +19,7 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
+from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 import numpy as np
 
 if TYPE_CHECKING:
@@ -84,10 +85,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingLayout.addWidget(QLabel("fitting"))
         self.exportLayout.addWidget(QLabel("export"))
 
-        self.roiDropdown = QComboBox(self)
-        self.roiDropdown.currentIndexChanged.connect(self.presenter.handle_roi_selection)
-        self.fittingFormLayout.layout().addWidget(self.roiDropdown)
-        self.update_roi_dropdown()
+        self.roiSelectionWidget = ROISelectionWidget(self)
+        self.roiSelectionWidget.selectionChanged.connect(self.presenter.handle_roi_selection)
+        self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
@@ -278,16 +278,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.set_roi_properties()
 
     def update_roi_dropdown(self):
-        """ Updates the ROI dropdown menu with the available ROIs """
-        self.roiDropdown.clear()
-        roi_names = [name for name in self.presenter.get_roi_names() if name != ROI_RITS]
-        self.roiDropdown.addItems(roi_names)
+        """ Updates the ROI dropdown menu with the available ROIs. """
+        roi_names = self.presenter.get_roi_names()
+        self.roiSelectionWidget.update_roi_list(roi_names)
 
     def set_selected_roi(self, roi_name: str):
         """ Sets the dropdown to the specified ROI name. """
-        index = self.roiDropdown.findText(roi_name)
-        if index != -1:
-            self.roiDropdown.setCurrentIndex(index)
+        self.roiSelectionWidget.set_selected_roi(roi_name)
 
     @property
     def roi_table_model(self) -> TableModel:
