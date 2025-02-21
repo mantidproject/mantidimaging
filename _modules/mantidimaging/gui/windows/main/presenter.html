@@ -737,15 +737,14 @@ document.write(`
         <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_alternative_180_if_required</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_create_and_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">sample_dock</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_and_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new stack window with a given ImageStack object then makes sure it is placed on top of a</span>
 <span class="sd">        sample/original stack window.</span>
 <span class="sd">        :param images: The ImageStack object for the new stack window.</span>
-<span class="sd">        :param sample_dock: The existing stack window that the new one should be placed on top of.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stack_visualiser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">stack_visualiser</span><span class="p">,</span> <span class="n">sample_dock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">stack_visualiser</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MainWindowPresenter.get_active_stack_visualisers">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_active_stack_visualisers">[docs]</a>
@@ -786,19 +785,11 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowPresenter.create_dataset_stack_visualisers">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.create_dataset_stack_visualisers">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_dataset_stack_visualisers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates the StackVisualiserView widgets for a new dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">stacks</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">all</span>
-        <span class="n">first_stack_vis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_lone_stack_window</span><span class="p">(</span><span class="n">stacks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="n">first_stack_vis</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">stacks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">first_stack_vis</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_on_newest_stack_tab</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">first_stack_vis</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_dataset_stack_visualisers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates StackVisualiserView widgets for a new dataset and tabifies them.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_tabify_stack_window</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_focus_on_newest_stack_tab</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_focus_on_newest_stack_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -840,21 +831,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_vis</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">stack_vis</span>
         <span class="k">return</span> <span class="n">stack_vis</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                             <span class="n">stack_window</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">,</span>
-                             <span class="n">tabify_stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_window</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Places the newly created stack window into a tab.</span>
-<span class="sd">        :param stack_window: The new stack window.</span>
-<span class="sd">        :param tabify_stack: The optional existing stack tab that needs to be</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">current_stack_visualisers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_stack_visualisers</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">tabify_stack</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_stack_visualisers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">current_stack_visualisers</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">stack_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">stack</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tabifyDockWidget</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">stack_window</span><span class="p">)</span>
-                    <span class="k">return</span>
-        <span class="k">if</span> <span class="n">tabify_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tabify_stack</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tabify_stack</span> <span class="ow">and</span> <span class="n">stack_window</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">tabify_stack</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tabifyDockWidget</span><span class="p">(</span><span class="n">tabify_stack</span><span class="p">,</span> <span class="n">stack_window</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_tab_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">StackVisualiserView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
