@@ -201,24 +201,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
 
-    def handle_roi_moved(self, force_new_spectrums: bool = False) -> None:
+    def handle_roi_moved(self, roi: SpectrumROI) -> None:
         """
         Handle changes to any ROI position and size.
         """
-        for name in self.view.spectrum_widget.roi_dict:
-            current_roi = self.view.spectrum_widget.get_roi(name)
-            if force_new_spectrums:
-                spectrum = self.model.get_spectrum(
-                    current_roi,
-                    self.spectrum_mode,
-                    self.view.shuttercount_norm_enabled(),
-                )
-                self.view.set_spectrum(name, spectrum)
+        spectrum = self.model.get_spectrum(
+            roi.as_sensible_roi(),
+            self.spectrum_mode,
+            self.view.shuttercount_norm_enabled(),
+        )
+        self.view.set_spectrum(roi.name, spectrum)
+        self.view.spectrum_widget.spectrum.update()
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
-            self.view.current_roi_name = roi.name
-            self.view.last_clicked_roi = roi.name
+            self.view.table_view.current_roi_name = roi.name
+            self.view.table_view.last_clicked_roi = roi.name
             self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
@@ -354,7 +352,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         if roi_name in self.view.spectrum_widget.roi_dict:
             self.view.spectrum_widget.roi_dict[roi_name].colour = new_colour
-        self.view.update_roi_color(roi_name, new_colour)
+        self.view.table_view.update_roi_color(roi_name, new_colour)
         self.view.on_visibility_change()
 
     def add_rits_roi(self) -> None:
@@ -393,10 +391,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         @param roi_name: Name of the ROI to remove
         """
         if roi_name is None:
-            for name in self.get_roi_names():
+            for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
             self.view.spectrum_widget.roi_dict.clear()
-            self.view.roi_table_model.clear_table()
+            self.view.table_view.roi_table_model.clear_table()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
@@ -439,21 +437,21 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def do_adjust_roi(self) -> None:
         new_roi = self.view.roi_properties_widget.as_roi()
-        self.view.spectrum_widget.adjust_roi(new_roi, self.view.current_roi_name)
+        self.view.spectrum_widget.adjust_roi(new_roi, self.view.table_view.current_roi_name)
 
     def handle_storing_current_roi_name_on_tab_change(self) -> None:
-        old_table_names = self.view.old_table_names
-        old_current_roi_name = self.view.current_roi_name
-        old_last_clicked_roi = self.view.last_clicked_roi
+        old_table_names = self.view.table_view.old_table_names
+        old_current_roi_name = self.view.table_view.current_roi_name
+        old_last_clicked_roi = self.view.table_view.last_clicked_roi
         if self.export_mode == ExportMode.ROI_MODE:
             if old_current_roi_name == ROI_RITS and old_last_clicked_roi in old_table_names:
-                self.view.current_roi_name = old_last_clicked_roi
+                self.view.table_view.current_roi_name = old_last_clicked_roi
             else:
-                self.view.last_clicked_roi = old_current_roi_name
+                self.view.table_view.last_clicked_roi = old_current_roi_name
         elif self.export_mode == ExportMode.IMAGE_MODE:
             if (old_current_roi_name != ROI_RITS and old_current_roi_name in old_table_names
                     and old_last_clicked_roi != old_current_roi_name):
-                self.view.last_clicked_roi = old_current_roi_name
+                self.view.table_view.last_clicked_roi = old_current_roi_name
 
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
