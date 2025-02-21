@@ -222,4 +222,6 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: Dataset) -> str:
         return "Dark Before"
     if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
         return "Dark After"
+    if dataset.proj180deg is not None and stack_id == dataset.proj180deg.id:
+        return "180"
     raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")

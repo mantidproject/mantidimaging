@@ -40,6 +40,7 @@ from mantidimaging.gui.windows.settings.view import SettingsWindowView
 from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
 from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
+from mantidimaging.gui.windows.stack_properties_dialog.view import StackPropertiesDialog
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
@@ -660,6 +661,8 @@ class MainWindowView(BaseMainWindowView):
                 delete_action = self.menuTreeView.addAction("Delete")
                 delete_action.triggered.connect(self._delete_container)
             if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
+                properties_action = self.menuTreeView.addAction("Stack Properties")
+                properties_action.triggered.connect(self._stack_properties)
                 move_action = self.menuTreeView.addAction("Move Stack")
                 move_action.triggered.connect(self._move_stack)
 
@@ -682,6 +685,10 @@ class MainWindowView(BaseMainWindowView):
     def _move_stack(self) -> None:
         stack_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_MOVE_STACK_DIALOG, stack_id=stack_id)
+
+    def _stack_properties(self) -> None:
+        stack_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.SHOW_PROPERTIES_DIALOG, stack_id=stack_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem) -> None:
         """
@@ -757,3 +764,9 @@ class MainWindowView(BaseMainWindowView):
         self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
                                                  stack_data_type)
         self.move_stack_dialog.show()
+
+    def show_stack_properties_dialog(self, stack_id: uuid.UUID, origin_dataset: Dataset, stack_data_type: str) -> None:
+        stack = self.presenter.model.get_images_by_uuid(stack_id)
+        assert stack is not None
+        stack_properties_dialog = StackPropertiesDialog(self, stack, origin_dataset, stack_data_type)
+        stack_properties_dialog.show()
