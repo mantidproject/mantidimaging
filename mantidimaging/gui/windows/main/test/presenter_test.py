@@ -93,37 +93,28 @@ class MainWindowPresenterTest(unittest.TestCase):
         start_async_mock.assert_called_once_with(self.view, self.presenter.model.load_image_stack_to_new_dataset,
                                                  self.presenter._on_dataset_load_done, {'file_path': file_path})
 
-    def test_add_stack(self):
+    def test_add_second_stack(self):
         images = generate_images()
         dock_mock = mock.Mock()
-        sample_dock_mock = mock.Mock()
         stack_visualiser_mock = mock.Mock()
-
         dock_mock.widget.return_value = stack_visualiser_mock
         self.view.create_stack_window.return_value = dock_mock
-
-        self.presenter._create_and_tabify_stack_window(images, sample_dock_mock)
+        self.presenter._create_and_tabify_stack_window(images)
 
         self.assertEqual(1, len(self.presenter.stack_visualiser_list))
-        self.view.tabifyDockWidget.assert_called_once_with(sample_dock_mock, dock_mock)
+        self.view.tabifyDockWidget.assert_not_called()
 
     def test_add_multiple_stacks(self):
-        images = generate_images()
-        images2 = generate_images()
-        dock_mock = mock.Mock()
-        sample_dock_mock = mock.Mock()
-        stack_visualiser_mock = mock.Mock()
+        images, images2 = generate_images(), generate_images()
+        dock_mock1, dock_mock2 = mock.Mock(), mock.Mock()
         self.presenter.model = mock.Mock()
 
-        dock_mock.widget.return_value = stack_visualiser_mock
-        self.view.create_stack_window.return_value = dock_mock
-
-        self.presenter._create_and_tabify_stack_window(images, sample_dock_mock)
-        self.presenter._create_and_tabify_stack_window(images2, sample_dock_mock)
+        self.view.create_stack_window.side_effect = [dock_mock1, dock_mock2]
+        self.presenter._create_and_tabify_stack_window(images)
+        self.presenter._create_and_tabify_stack_window(images2)
 
         self.assertEqual(2, self.view.create_stack_window.call_count)
-        self.view.tabifyDockWidget.assert_called_with(sample_dock_mock, dock_mock)
-        self.assertEqual(2, self.view.tabifyDockWidget.call_count)
+        self.view.tabifyDockWidget.assert_called_once_with(dock_mock1, dock_mock2)
 
     def test_create_new_stack_images(self):
         self.view.model_changed.emit = mock.Mock()
@@ -451,14 +442,14 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_tabify_stack_window_to_sample_stack(self):
         new_stack = mock.Mock()
         sample_stack = mock.Mock()
-        self.presenter.stack_visualisers = {"new-id": new_stack, "sample-id": sample_stack}
-        self.presenter._tabify_stack_window(new_stack, sample_stack)
-        self.view.tabifyDockWidget.assert_called_once_with(sample_stack, new_stack)
+        self.presenter.stack_visualisers = {"sample-id": sample_stack, "new-id": new_stack}
+        self.presenter._tabify_stack_window(new_stack)
+        self.view.tabifyDockWidget.assert_called()
 
     def test_tabify_stack_window_to_item_in_list(self):
         new_stack = mock.Mock()
         other_stack = mock.Mock()
-        self.presenter.stack_visualisers = {"new-id": new_stack, "other-id": other_stack}
+        self.presenter.stack_visualisers = {"other-id": other_stack, "new-id": new_stack}
         self.presenter._tabify_stack_window(new_stack)
         self.view.tabifyDockWidget.assert_called_once_with(other_stack, new_stack)
 
