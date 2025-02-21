@@ -179,11 +179,10 @@ class LiveViewerWindowModel:
         :param image_files: list of image files
         """
         self.images = image_files
-        self.presenter.update_image_list(self.images)
+        self.presenter.notify_update_image_list()
 
     def handle_image_modified(self, image_path: Path) -> None:
         self.presenter.update_image_modified(image_path)
-        self.presenter.update_image_list(self.images)
 
     def close(self) -> None:
         """Close the model."""
@@ -192,7 +191,7 @@ class LiveViewerWindowModel:
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
-    def add_mean(self, image_data_obj: Image_Data, image_array: np.ndarray | None) -> None:
+    def add_mean(self, image_path: Path, image_array: np.ndarray | None) -> None:
         if image_array is None:
             mean_to_add = np.nan
             mean_readable = 0
@@ -203,9 +202,12 @@ class LiveViewerWindowModel:
         else:
             mean_to_add = np.mean(image_array)
             mean_readable = 1
-        self.mean_paths[image_data_obj.image_path] = (mean_to_add, mean_readable)
-        self.mean = np.array(list(dict(sorted(self.mean_paths.items())).values()))[:, 0]
-        self.mean_readable = np.array(list(dict(sorted(self.mean_paths.items())).values()))[:, 1]
+        self.update_mean_dict(image_path, mean_to_add, mean_readable)
+
+    def update_mean_dict(self, image_path: Path, mean_to_add: float, mean_readable: int) -> None:
+        self.mean_paths[image_path] = (mean_to_add, mean_readable)
+        self.mean = np.array(list(self.mean_paths.values()))[:, 0]
+        self.mean_readable = np.array(list(self.mean_paths.values()))[:, 1]
 
     def clear_mean_partial(self) -> None:
         self.mean_paths = dict.fromkeys(self.mean_paths, (np.nan, 1))

@@ -27,6 +27,8 @@ if TYPE_CHECKING:
 
 logger = getLogger(__name__)
 
+IMAGE_lIST_UPDATE_TIME = 100
+
 
 class Worker(QObject):
     finished = pyqtSignal()
@@ -52,6 +54,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     op_func: Callable
     thread: QThread
     worker: Worker
+    old_image_list_paths: list[Path] = []
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -65,6 +68,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
+
+        self.update_image_list_timer = QTimer()
+        self.update_image_list_timer.setSingleShot(True)
+        self.update_image_list_timer.timeout.connect(self.update_image_list)
 
         self.model.image_cache.use_loading_function(self.load_image_from_path)
 
@@ -90,27 +97,42 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.live_viewer.z_slider.set_range(0, 1)
         self.view.live_viewer.show_error(None)
 
-    def update_image_list(self, images_list: list[Image_Data]) -> None:
+    def update_image_list(self) -> None:
         """Update the image in the view."""
+        images_list = self.model.images
         if not images_list:
             self.handle_deleted()
             self.view.set_load_as_dataset_enabled(False)
+            self.model.clear_mean_partial()
+            self.update_intensity_with_mean()
         else:
             if self.view.intensity_action.isChecked():
                 if not self.view.live_viewer.roi_object:
                     self.view.live_viewer.add_roi()
                 self.model.roi = self.view.live_viewer.get_roi()
-                self.model.images = images_list
-                try:
-                    image_data = self.model.image_cache.load_image(images_list[-1])
-                    self.model.add_mean(images_list[-1], image_data)
-                except ImageLoadFailError as error:
-                    logger.error(error.message)
-                    self.model.add_mean(images_list[-1], None)
-                self.update_intensity(self.model.mean)
+                images_list_paths = [image.image_path for image in images_list]
+                if self.old_image_list_paths == images_list_paths[:-1]:
+                    self.try_add_mean(images_list[-1])
+                    self.update_intensity(self.model.mean)
+                    self.old_image_list_paths = images_list_paths
+                else:
+                    self.model.clear_mean_partial()
+                    self.run_mean_chunk_calc()
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
+
+    def notify_update_image_list(self) -> None:
+        self.update_image_list_timer.start(IMAGE_lIST_UPDATE_TIME)
+
+    def try_add_mean(self, image: Image_Data) -> None:
+        try:
+            image_data = self.model.image_cache.load_image(image)
+            self.model.add_mean(image.image_path, image_data)
+            self.update_intensity_with_mean()
+        except ImageLoadFailError as error:
+            logger.error(error.message)
+            self.model.add_mean(image.image_path, None)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
@@ -176,6 +198,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         """
         if self.selected_image and image_path == self.selected_image.image_path:
             self.display_image(self.selected_image)
+            self.try_add_mean(self.selected_image)
+            self.update_intensity_with_mean()
 
     def update_image_operation(self) -> None:
         """

@@ -40,36 +40,36 @@ class TestGuiSpectrumViewer(GuiSystemBase):
     def test_spectrum_window_opens_with_data_in_default_state(self) -> None:
         self.assertFalse(self.spectrum_window.normaliseCheckBox.isChecked())
         self.assertFalse(self.spectrum_window.normalise_ShutterCount_CheckBox.isEnabled())
-        self.assertEqual(self.spectrum_window.roi_table_model.rowCount(), 1)
-        self.assertEqual(self.spectrum_window.roi_table_model.columnCount(), 3)
+        self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 1)
+        self.assertEqual(self.spectrum_window.table_view.roi_table_model.columnCount(), 3)
         self.assertTrue(self.spectrum_window.addBtn.isEnabled())
         self.assertTrue(self.spectrum_window.removeBtn.isEnabled())
         self.assertTrue(self.spectrum_window.exportButton.isEnabled())
-        self.assertIn('roi', self.spectrum_window.roi_table_model.roi_names())
+        self.assertIn('roi', self.spectrum_window.table_view.roi_table_model.roi_names())
         self.assertIn('roi', self.spectrum_window.spectrum_widget.roi_dict)
         QTest.qWait(SHOW_DELAY)
 
     def test_add_roi(self) -> None:
         for i in range(1, 4):
-            initial_roi_count = self.spectrum_window.roi_table_model.rowCount()
+            initial_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
             QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
-            final_roi_count = self.spectrum_window.roi_table_model.rowCount()
+            final_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
             self.assertEqual(final_roi_count, initial_roi_count + 1)
-            self.assertIn(f'roi_{i}', self.spectrum_window.roi_table_model.roi_names())
+            self.assertIn(f'roi_{i}', self.spectrum_window.table_view.roi_table_model.roi_names())
             self.assertIn(f'roi_{i}', self.spectrum_window.spectrum_widget.roi_dict)
 
     def test_remove_roi(self) -> None:
         QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        initial_roi_count = self.spectrum_window.roi_table_model.rowCount()
+        initial_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
 
         QTest.mouseClick(self.spectrum_window.removeBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        final_roi_count = self.spectrum_window.roi_table_model.rowCount()
+        final_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
 
         self.assertEqual(final_roi_count, initial_roi_count - 1)
-        self.assertNotIn(f'roi_{initial_roi_count - 1}', self.spectrum_window.roi_table_model.roi_names())
+        self.assertNotIn(f'roi_{initial_roi_count - 1}', self.spectrum_window.table_view.roi_table_model.roi_names())
         self.assertNotIn(f'roi_{initial_roi_count - 1}', self.spectrum_window.spectrum_widget.roi_dict)
 
     def test_change_roi_color(self):
@@ -96,7 +96,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         old_name = 'roi_1'
         new_name = 'roi_renamed'
 
-        table_model = self.spectrum_window.roi_table_model
+        table_model = self.spectrum_window.table_view.roi_table_model
         row = table_model.roi_names().index(old_name)
 
         table_model.set_element(row, 0, new_name)

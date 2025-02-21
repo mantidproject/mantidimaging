@@ -138,7 +138,7 @@ class SpectrumWidget(QWidget):
 
     range_changed = pyqtSignal(object)
     roi_clicked = pyqtSignal(object)
-    roi_changed = pyqtSignal()
+    roi_changed = pyqtSignal(object)
     roiColorChangeRequested = pyqtSignal(str, tuple)
 
     spectrum_plot_widget: SpectrumPlotWidget
@@ -211,9 +211,9 @@ class SpectrumWidget(QWidget):
         roi_object.colour = self.colour_generator()
         roi_object.sig_colour_change.connect(lambda name, color: self.roiColorChangeRequested.emit(name, color))
 
-        self.roi_dict[name] = roi_object.roi
+        self.roi_dict[name] = roi_object
         self.max_roi_size = roi_object.size()
-        self.roi_dict[name].sigRegionChangeFinished.connect(self.roi_changed.emit)
+        self.roi_dict[name].sigRegionChangeFinished.connect(self._emit_roi_changed)
         self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
@@ -276,6 +276,10 @@ class SpectrumWidget(QWidget):
         self.roi_dict[new_name] = self.roi_dict.pop(old_name)
         self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
         self.roi_dict[new_name].rename_roi(new_name)
+
+    def _emit_roi_changed(self):
+        sender_roi = self.sender()
+        self.roi_changed.emit(sender_roi)
 
 
 class CustomViewBox(ViewBox):
