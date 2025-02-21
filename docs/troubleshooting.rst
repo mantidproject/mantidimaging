@@ -13,16 +13,16 @@ These algorithms have 2 requirements:
 
 
 Having a CUDA-compatible graphics card
-######################################
+--------------------------------------
 
-Please check that your GPU is on the list of compatible GPUs https://developer.nvidia.com/cuda-gpus
+Please check that your GPU is on the list of compatible GPUs: https://developer.nvidia.com/cuda-gpus
 
 Having the CUDA Runtime 10.2 libraries installed
-################################################
+------------------------------------------------
 
 Please install the CUDA Runtime version 10.2 binaries from https://developer.nvidia.com/cuda-10.2-download-archive
 
-Reinstalling CUDA on Linux can be quickly done with this script
+Reinstalling CUDA on Linux can be quickly done with this script:
 
 
 .. code-block:: bash
@@ -38,41 +38,44 @@ Reinstalling CUDA on Linux can be quickly done with this script
 
 
 Specific Errors
----------------
+===============
 
 
 SystemError: <built-in function connectSlotsByName> returned a result with an error set
 ---------------------------------------------------------------------------------------
 
-This means that the PyQt package is missing or an old version (it must be newer than PyQt5==5.13.2)
+This means that the PyQt package is missing or an old version (it must be newer than PyQt5==5.13.2).
 
 Suggested Fix
-#############
+^^^^^^^^^^^^^
 
-Install PyQt5 and pyqtgraph with :code:`pip install pyqt5==5.15 pyqtgraph==0.12`
+Install PyQt5 and pyqtgraph with :code:`pip install pyqt5==5.15 pyqtgraph==0.12`.
 
 
 
-qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
-----------------------------------------------------------------------------------------------
+qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found
+-----------------------------------------------------------------------------------------
 
-This might mean some system libraries are missing
+This might mean that some system libraries are missing.
 
 Suggested Fix
-#############
+^^^^^^^^^^^^^
 
-Try installing :code:`apt install libxcb-xinerama0`
+Try installing :code:`apt install libxcb-xinerama0`.
+
+
 
 qt.qpa.xcb: could not connect to display...
 -------------------------------------------
 
 Missing :code:`DISPLAY` variable. This means the application cannot find the display to show itself on.
 
-
 Suggested Fix
-#############
+^^^^^^^^^^^^^
 
 You can set this via :code:`export DISPLAY=:N` where :code:`:N` should be the number of your display.
+
+
 
 IDAaaS Terminal Error Messages
 ------------------------------
@@ -83,3 +86,14 @@ Errors from the terminal when Mantid Imaging is launched, such as:
 These are harmless and can be ignored.
 
 
+
+ImportError: DLL load failed while importing astra_c: The specified module could not be found
+---------------------------------------------------------------------------------------------
+
+This error can arise when the CUDA-version of :code:`astra-toolbox` is installed on a machine that doesn't have a GPU.
+By default, the CUDA-version of :code:`astra-toolbox` is installed during environment setup.
+
+Suggested Fix
+^^^^^^^^^^^^^
+
+Install the Python-version of :code:`astra-toolbox` with :code:`mamba install astra-toolbox=*=py*`.
