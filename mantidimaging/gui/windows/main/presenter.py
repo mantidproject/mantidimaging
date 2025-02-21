@@ -198,15 +198,14 @@ class MainWindowPresenter(BasePresenter):
         if dataset.sample:
             self.add_alternative_180_if_required(dataset)
 
-    def _create_and_tabify_stack_window(self, images: ImageStack, sample_dock: StackVisualiserView) -> None:
+    def _create_and_tabify_stack_window(self, images: ImageStack) -> None:
         """
         Creates a new stack window with a given ImageStack object then makes sure it is placed on top of a
         sample/original stack window.
         :param images: The ImageStack object for the new stack window.
-        :param sample_dock: The existing stack window that the new one should be placed on top of.
         """
         stack_visualiser = self._create_lone_stack_window(images)
-        self._tabify_stack_window(stack_visualiser, sample_dock)
+        self._tabify_stack_window(stack_visualiser)
 
     def get_active_stack_visualisers(self) -> list[StackVisualiserView]:
         return list(self.active_stacks.values())
@@ -233,19 +232,11 @@ class MainWindowPresenter(BasePresenter):
                 proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
                 self.add_images_to_existing_dataset(dataset.id, proj180deg, "proj_180")
 
-    def create_dataset_stack_visualisers(self, dataset: Dataset) -> StackVisualiserView:
-        """
-        Creates the StackVisualiserView widgets for a new dataset.
-        """
-        stacks = dataset.all
-        first_stack_vis = self._create_lone_stack_window(stacks[0])
-        self._tabify_stack_window(first_stack_vis)
-
-        for stack in stacks[1:]:
-            self._create_and_tabify_stack_window(stack, first_stack_vis)
-
+    def create_dataset_stack_visualisers(self, dataset: Dataset) -> None:
+        """Creates StackVisualiserView widgets for a new dataset and tabifies them."""
+        for stack in dataset.all:
+            self._create_and_tabify_stack_window(stack)
         self._focus_on_newest_stack_tab()
-        return first_stack_vis
 
     def _focus_on_newest_stack_tab(self) -> None:
         """
@@ -283,21 +274,12 @@ class MainWindowPresenter(BasePresenter):
         self.stack_visualisers[stack_vis.id] = stack_vis
         return stack_vis
 
-    def _tabify_stack_window(self,
-                             stack_window: StackVisualiserView,
-                             tabify_stack: StackVisualiserView | None = None) -> None:
+    def _tabify_stack_window(self, stack_window: StackVisualiserView) -> None:
         """
         Places the newly created stack window into a tab.
-        :param stack_window: The new stack window.
-        :param tabify_stack: The optional existing stack tab that needs to be
         """
-        current_stack_visualisers = self.get_active_stack_visualisers()
-        if tabify_stack is None and len(current_stack_visualisers) > 0:
-            for stack in current_stack_visualisers:
-                if stack_window is not stack:
-                    self.view.tabifyDockWidget(stack, stack_window)
-                    return
-        if tabify_stack is not None:
+        tabify_stack = next(iter(self.stack_visualisers.values()), None)
+        if tabify_stack and stack_window is not tabify_stack:
             self.view.tabifyDockWidget(tabify_stack, stack_window)
 
     def _on_tab_clicked(self, stack: StackVisualiserView) -> None:
