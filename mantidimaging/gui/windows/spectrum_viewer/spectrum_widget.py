@@ -43,7 +43,6 @@ class SpectrumROI(ROI):
         self.addScaleHandle([1, 0], [0, 1])
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
-        self._selected_row = None
         self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
 
         self.menu = QMenu()
@@ -90,10 +89,6 @@ class SpectrumROI(ROI):
         self.setVisible(visible)
         for handle in self.getHandles():
             handle.setVisible(visible)
-
-    @property
-    def selected_row(self) -> int | None:
-        return self._selected_row
 
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
         self.setPos((roi.left, roi.top))
