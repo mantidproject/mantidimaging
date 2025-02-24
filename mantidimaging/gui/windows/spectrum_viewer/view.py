@@ -113,8 +113,6 @@ class ROITableWidget(RemovableRowTableView):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        if self._roi_table_model.rowCount() > 0:
-            self.current_roi_name = self.last_clicked_roi = self._roi_table_model.roi_names()[0]
 
     @property
     def roi_table_model(self) -> TableModel:
