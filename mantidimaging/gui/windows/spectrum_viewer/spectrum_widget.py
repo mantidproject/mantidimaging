@@ -90,9 +90,6 @@ class SpectrumROI(ROI):
         self.setPos((roi.left, roi.top))
         self.setSize((roi.width, roi.height))
 
-    def rename_roi(self, new_name: str) -> None:
-        self._name = new_name
-
     def as_sensible_roi(self) -> SensibleROI:
         """
         Converts the SpectrumROI to a SensibleROI object.
@@ -258,7 +255,7 @@ class SpectrumWidget(QWidget):
 
         self.roi_dict[new_name] = self.roi_dict.pop(old_name)
         self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
-        self.roi_dict[new_name].rename_roi(new_name)
+        self.roi_dict[new_name].name = new_name
 
     def _emit_roi_changed(self):
         sender_roi = self.sender()
