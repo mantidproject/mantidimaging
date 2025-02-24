@@ -103,9 +103,8 @@ class ROITableWidget(RemovableRowTableView):
         self.setAlternatingRowColors(True)
 
         # Initialise model
-        mdl = TableModel()
-        self.setModel(mdl)
-        self._roi_table_model = mdl
+        self.roi_table_model = TableModel()
+        self.setModel(self.roi_table_model)
 
         # Configure up the table view
         self.setVisible(True)
@@ -114,38 +113,33 @@ class ROITableWidget(RemovableRowTableView):
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
-    @property
-    def roi_table_model(self) -> TableModel:
-        """The model for the ROI table"""
-        return self._roi_table_model
-
     def get_roi_names(self) -> list[str]:
-        return self._roi_table_model.roi_names()
+        return self.roi_table_model.roi_names()
 
     def get_roi_name_by_row(self, row: int) -> str:
         """
         Retrieve the name an ROI by its row index.
         """
-        return self._roi_table_model.get_element(row, 0)
+        return self.roi_table_model.get_element(row, 0)
 
     def get_roi_visibility_by_row(self, row: int) -> bool:
         """
         Retrieve the visibility status of an ROI by its row index.
         """
-        return self._roi_table_model.get_element(row, 2)
+        return self.roi_table_model.get_element(row, 2)
 
     def row_count(self) -> int:
         """
         Returns the number of rows in the ROI table model.
         """
-        return self._roi_table_model.rowCount()
+        return self.roi_table_model.rowCount()
 
     def find_row_for_roi(self, roi_name: str) -> int | None:
         """
         Returns row index for ROI name, or None if not found.
         """
-        for row in range(self._roi_table_model.rowCount()):
-            if self._roi_table_model.index(row, 0).data() == roi_name:
+        for row in range(self.roi_table_model.rowCount()):
+            if self.roi_table_model.index(row, 0).data() == roi_name:
                 return row
         return None
 
@@ -153,7 +147,7 @@ class ROITableWidget(RemovableRowTableView):
         """
         Set the name of the ROI for a given row in the ROI table.
         """
-        self._roi_table_model.set_element(row, 0, name)
+        self.roi_table_model.set_element(row, 0, name)
 
     def set_old_table_names(self, old_table_names) -> None:
         """
@@ -171,14 +165,14 @@ class ROITableWidget(RemovableRowTableView):
         """
         row = self.find_row_for_roi(roi_name)
         if row is not None:
-            self._roi_table_model.update_color(row, new_color)
+            self.roi_table_model.update_color(row, new_color)
 
     def add_row(self, name: str, colour: tuple[int, int, int, int], roi_names: list[str]) -> None:
         """
         Add a new row to the ROI table
         """
-        self._roi_table_model.appendNewRow(name, colour, True)
-        self.selected_row = self._roi_table_model.rowCount() - 1
+        self.roi_table_model.appendNewRow(name, colour, True)
+        self.selected_row = self.roi_table_model.rowCount() - 1
         self.selectRow(self.selected_row)
         self.current_roi_name = name
         self.set_old_table_names(roi_names)
@@ -187,14 +181,14 @@ class ROITableWidget(RemovableRowTableView):
         """
         Remove a row from the ROI table
         """
-        self._roi_table_model.remove_row(row)
+        self.roi_table_model.remove_row(row)
         self.selectRow(0)
 
     def clear_table(self) -> None:
         """
         Clears the ROI table in the spectrum viewer.
         """
-        self._roi_table_model.clear_table()
+        self.roi_table_model.clear_table()
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
