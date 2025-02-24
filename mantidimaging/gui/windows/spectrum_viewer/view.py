@@ -124,13 +124,6 @@ class ROITableWidget(RemovableRowTableView):
     def get_roi_names(self) -> list[str]:
         return self._roi_table_model.roi_names()
 
-    def get_row_data(self, row: int) -> RowType:
-        """
-        Get the data for a specific row in the ROI table.
-        """
-        name, data, visible = self._roi_table_model.row_data(row)
-        return [name, data, visible]
-
     def get_roi_name_by_row(self, row: int) -> str:
         """
         Retrieve the name an ROI by its row index.
