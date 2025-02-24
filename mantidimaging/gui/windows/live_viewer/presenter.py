@@ -275,7 +275,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def set_roi_enabled(self, enable: bool):
         if self.view.live_viewer.roi_object is not None:
-            self.view.live_viewer.roi_object.roi.blockSignals(not enable)
+            self.view.live_viewer.roi_object.blockSignals(not enable)
 
     def try_next_mean_chunk(self) -> None:
         if np.isnan(self.model.mean).any():

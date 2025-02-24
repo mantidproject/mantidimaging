@@ -43,7 +43,7 @@ class SpectrumROI(ROI):
         self.addScaleHandle([1, 0], [0, 1])
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
-        self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
+        self.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
 
         self.menu = QMenu()
         self.change_color_action = QAction("Change ROI Colour", self)
@@ -67,10 +67,6 @@ class SpectrumROI(ROI):
 
     def contextMenuEnabled(self) -> bool:
         return True
-
-    @property
-    def roi(self) -> ROI:
-        return self
 
     @property
     def colour(self) -> tuple[int, int, int, int]:
