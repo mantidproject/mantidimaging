@@ -514,7 +514,7 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QTimer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QWidget</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">compile_ui</span>
 
@@ -616,6 +616,18 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="BaseWidget">
+<a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseWidget">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ui_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
 
 </pre></div>
 
