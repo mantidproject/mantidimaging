@@ -90,6 +90,8 @@ class ROITableWidget(RemovableRowTableView):
     current_roi_name: str
 
     selection_changed = pyqtSignal()
+    name_changed = pyqtSignal(str, str)
+    visibility_changed = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -116,6 +118,9 @@ class ROITableWidget(RemovableRowTableView):
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
         self.selectionModel().currentRowChanged.connect(self.on_row_change)
+        self.roi_table_model.name_changed.connect(self.handle_name_changed)
+        self.roi_table_model.name_changed.connect(self.name_changed.emit)
+        self.roi_table_model.visibility_changed.connect(self.visibility_changed.emit)
 
     def on_row_change(self, item: QModelIndex, _: Any) -> None:
         self.selected_row = item.row()
@@ -198,6 +203,9 @@ class ROITableWidget(RemovableRowTableView):
         Clears the ROI table in the spectrum viewer.
         """
         self.roi_table_model.clear_table()
+
+    def handle_name_changed(self, _, new_name: str):
+        self.current_roi_name = new_name
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -320,40 +328,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
         self.table_view.selection_changed.connect(self.set_roi_properties)
-
-        def on_data_in_table_change() -> None:
-            """
-            Check if an ROI name has changed in the table or if the visibility of an ROI has changed.
-            If the ROI name has changed, update the ROI name in the spectrum widget.
-            If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.
-            """
-            entered_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row).strip()
-            if not entered_name:
-                self.table_view.set_roi_name_by_row(self.table_view.selected_row, self.table_view.current_roi_name)
-                self.table_view.last_clicked_roi = self.table_view.current_roi_name
-                self.table_view.set_old_table_names(self.presenter.get_roi_names())
-                return
-            if entered_name.lower() not in ["", " ", "all"] and entered_name != self.table_view.current_roi_name:
-                if entered_name in self.presenter.get_roi_names():
-                    entered_name = self.table_view.old_table_names[self.table_view.selected_row]
-                    self.table_view.roi_table_model.set_element(
-                        self.table_view.selected_row, 0, self.table_view.old_table_names[self.table_view.selected_row])
-                    self.table_view.current_roi_name = entered_name
-                    self.table_view.last_clicked_roi = self.table_view.current_roi_name
-                else:
-                    self.presenter.rename_roi(self.table_view.current_roi_name, entered_name)
-                    self.table_view.current_roi_name = entered_name
-                    self.table_view.last_clicked_roi = self.table_view.current_roi_name
-                    self.set_roi_properties()
-            else:
-                self.table_view.roi_table_model.set_element(
-                    self.table_view.selected_row, 0, self.table_view.old_table_names[self.table_view.selected_row])
-
-            self.table_view.set_old_table_names(self.presenter.get_roi_names())
-            self.on_visibility_change()
-            return
-
-        self.table_view.roi_table_model.dataChanged.connect(on_data_in_table_change)
+        self.table_view.name_changed.connect(self.spectrum_widget.rename_roi)
+        self.table_view.name_changed.connect(self.set_roi_properties)
+        self.table_view.visibility_changed.connect(self.on_visibility_change)
 
         self.formTabs.currentChanged.connect(self.handle_change_tab)
 

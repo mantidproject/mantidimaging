@@ -99,8 +99,10 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         table_model = self.spectrum_window.table_view.roi_table_model
         row = table_model.roi_names().index(old_name)
 
-        table_model.set_element(row, 0, new_name)
-        table_model.dataChanged.emit(table_model.index(row, 0), table_model.index(row, 0))
+        table_view = self.spectrum_window.table_view
+        table_view.edit(table_model.index(row, 0))
+        QTest.keyClicks(table_view.keyboardGrabber(), new_name)
+        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key_Enter)
 
         self.assertNotIn(old_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertIn(new_name, self.spectrum_window.spectrum_widget.roi_dict)
