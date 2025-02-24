@@ -7,7 +7,7 @@ from logging import getLogger
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication, QWidget
 
 from mantidimaging.gui.utility import compile_ui
 
@@ -83,3 +83,12 @@ class BaseDialogView(QDialog):
         :param msg: Error message string
         """
         QMessageBox.critical(self, "Error", str(msg))
+
+
+class BaseWidget(QWidget):
+
+    def __init__(self, parent, ui_file=None):
+        super().__init__(parent)
+
+        if ui_file is not None:
+            compile_ui(ui_file, self)
