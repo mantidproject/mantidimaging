@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.gui.windows.stack_visualiser package &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.gui.windows.stack_properties_dialog package &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.stack_visualiser';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.stack_properties_dialog';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.gui.windows.stack_visualiser.metadata_dialog module" href="mantidimaging.gui.windows.stack_visualiser.metadata_dialog.html" />
-    <link rel="prev" title="mantidimaging.gui.windows.stack_properties_dialog.view module" href="mantidimaging.gui.windows.stack_properties_dialog.view.html" />
+    <link rel="next" title="mantidimaging.gui.windows.stack_properties_dialog.presenter module" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.stack_choice.view module" href="mantidimaging.gui.windows.stack_choice.view.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -570,89 +570,26 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.gui.windows.stack_visualiser">
-<span id="mantidimaging-gui-windows-stack-visualiser-package"></span><h1>mantidimaging.gui.windows.stack_visualiser package<a class="headerlink" href="#module-mantidimaging.gui.windows.stack_visualiser" title="Link to this heading">#</a></h1>
+  <section id="module-mantidimaging.gui.windows.stack_properties_dialog">
+<span id="mantidimaging-gui-windows-stack-properties-dialog-package"></span><h1>mantidimaging.gui.windows.stack_properties_dialog package<a class="headerlink" href="#module-mantidimaging.gui.windows.stack_properties_dialog" title="Link to this heading">#</a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.metadata_dialog.html">mantidimaging.gui.windows.stack_visualiser.metadata_dialog module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.metadata_dialog.html#mantidimaging.gui.windows.stack_visualiser.metadata_dialog.MetadataDialog"><code class="docutils literal notranslate"><span class="pre">MetadataDialog</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.metadata_dialog.html#mantidimaging.gui.windows.stack_visualiser.metadata_dialog.MetadataDialog.build_metadata_tree"><code class="docutils literal notranslate"><span class="pre">MetadataDialog.build_metadata_tree()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.metadata_dialog.html#mantidimaging.gui.windows.stack_visualiser.metadata_dialog.MetadataDialog.copy_metadata_to_clipboard"><code class="docutils literal notranslate"><span class="pre">MetadataDialog.copy_metadata_to_clipboard()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html">mantidimaging.gui.windows.stack_properties_dialog.presenter module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter"><code class="docutils literal notranslate"><span class="pre">StackPropertiesPresenter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.get_log_filename"><code class="docutils literal notranslate"><span class="pre">StackPropertiesPresenter.get_log_filename()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.get_stack_size_MB"><code class="docutils literal notranslate"><span class="pre">StackPropertiesPresenter.get_stack_size_MB()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.set_stack_data"><code class="docutils literal notranslate"><span class="pre">StackPropertiesPresenter.set_stack_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.set_stack_directory"><code class="docutils literal notranslate"><span class="pre">StackPropertiesPresenter.set_stack_directory()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.model.html">mantidimaging.gui.windows.stack_visualiser.model module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.model.html#mantidimaging.gui.windows.stack_visualiser.model.SVModel"><code class="docutils literal notranslate"><span class="pre">SVModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.model.html#mantidimaging.gui.windows.stack_visualiser.model.SVModel.sum_images"><code class="docutils literal notranslate"><span class="pre">SVModel.sum_images()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.model.html#mantidimaging.gui.windows.stack_visualiser.model.SVModel.swap_axes"><code class="docutils literal notranslate"><span class="pre">SVModel.swap_axes()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html">mantidimaging.gui.windows.stack_visualiser.presenter module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVImageMode"><code class="docutils literal notranslate"><span class="pre">SVImageMode</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVImageMode.NORMAL"><code class="docutils literal notranslate"><span class="pre">SVImageMode.NORMAL</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVImageMode.SUMMED"><code class="docutils literal notranslate"><span class="pre">SVImageMode.SUMMED</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification"><code class="docutils literal notranslate"><span class="pre">SVNotification</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification.DUPE_STACK"><code class="docutils literal notranslate"><span class="pre">SVNotification.DUPE_STACK</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification.DUPE_STACK_ROI"><code class="docutils literal notranslate"><span class="pre">SVNotification.DUPE_STACK_ROI</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification.REFRESH_IMAGE"><code class="docutils literal notranslate"><span class="pre">SVNotification.REFRESH_IMAGE</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification.SWAP_AXES"><code class="docutils literal notranslate"><span class="pre">SVNotification.SWAP_AXES</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVNotification.TOGGLE_IMAGE_MODE"><code class="docutils literal notranslate"><span class="pre">SVNotification.TOGGLE_IMAGE_MODE</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVParameters"><code class="docutils literal notranslate"><span class="pre">SVParameters</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVParameters.ROI"><code class="docutils literal notranslate"><span class="pre">SVParameters.ROI</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.add_new_dataset_to_model_and_update_view"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.add_new_dataset_to_model_and_update_view()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.add_sinograms_to_model_and_update_view"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.add_sinograms_to_model_and_update_view()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.create_swapped_axis_stack"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.create_swapped_axis_stack()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.delete_data"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.delete_data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.dupe_stack"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.dupe_stack()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.dupe_stack_roi"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.dupe_stack_roi()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.find_image_from_angle"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.find_image_from_angle()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_num_images"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.get_num_images()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_parameter_value"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.get_parameter_value()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.notify()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.refresh_image"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.refresh_image()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.toggle_image_mode"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.toggle_image_mode()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.view"><code class="docutils literal notranslate"><span class="pre">StackVisualiserPresenter.view</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html">mantidimaging.gui.windows.stack_visualiser.view module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.actions"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.actions</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.ask_confirmation"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.ask_confirmation()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.build_context_menu"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.build_context_menu()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.change_window_name_clicked"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.change_window_name_clicked()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.cleanup"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.cleanup()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.closeEvent"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.closeEvent()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.context_actions"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.context_actions</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.copy_roi_to_clipboard"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.copy_roi_to_clipboard()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.current_roi"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.current_roi</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_angle"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.goto_angle()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_projection"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.goto_projection()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.id"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.id</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.image</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.image_view"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.image_view</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.main_window"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.main_window</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.mark_as_sinograms"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.mark_as_sinograms()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.name"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.presenter"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.presenter</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_changed_callback"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.roi_changed_callback()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.roi_updated"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.roi_updated</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.set_image"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.set_image()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.set_roi"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.set_roi()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.show_image_metadata"><code class="docutils literal notranslate"><span class="pre">StackVisualiserView.show_image_metadata()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.view.html">mantidimaging.gui.windows.stack_properties_dialog.view module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.view.html#mantidimaging.gui.windows.stack_properties_dialog.view.StackPropertiesDialog"><code class="docutils literal notranslate"><span class="pre">StackPropertiesDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.view.html#mantidimaging.gui.windows.stack_properties_dialog.view.StackPropertiesDialog.accept"><code class="docutils literal notranslate"><span class="pre">StackPropertiesDialog.accept()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.gui.windows.stack_properties_dialog.view.html#mantidimaging.gui.windows.stack_properties_dialog.view.StackPropertiesDialog.stack"><code class="docutils literal notranslate"><span class="pre">StackPropertiesDialog.stack</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -673,20 +610,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.gui.windows.stack_properties_dialog.view.html"
+       href="mantidimaging.gui.windows.stack_choice.view.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.gui.windows.stack_properties_dialog.view module</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.stack_choice.view module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.gui.windows.stack_visualiser.metadata_dialog.html"
+       href="mantidimaging.gui.windows.stack_properties_dialog.presenter.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.gui.windows.stack_visualiser.metadata_dialog module</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.stack_properties_dialog.presenter module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -715,7 +652,7 @@ document.write(`
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/api/mantidimaging.gui.windows.stack_visualiser.rst.txt">
+    <a href="../_sources/api/mantidimaging.gui.windows.stack_properties_dialog.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

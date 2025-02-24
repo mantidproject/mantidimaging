@@ -568,7 +568,8 @@ document.write(`
     <span class="n">DATASET_ADD</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">TAB_CLICKED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">SHOW_MOVE_STACK_DIALOG</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">MOVE_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+    <span class="n">MOVE_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">SHOW_PROPERTIES_DIALOG</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
 
 
@@ -615,6 +616,8 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_show_move_stack_dialog</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">MOVE_STACK</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_move_stack</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">SHOW_PROPERTIES_DIALOG</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_show_stack_properties_dialog</span><span class="p">(</span><span class="o">**</span><span class="n">baggage</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
@@ -1163,6 +1166,14 @@ document.write(`
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">stack_data_type</span> <span class="o">=</span> <span class="n">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_move_stack_dialog</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">stack_data_type</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_stack_properties_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset_id_for_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">stack_data_type</span> <span class="o">=</span> <span class="n">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_stack_properties_dialog</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">stack_data_type</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MainWindowPresenter.handle_add_images_to_existing_dataset_from_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.handle_add_images_to_existing_dataset_from_dialog">[docs]</a>

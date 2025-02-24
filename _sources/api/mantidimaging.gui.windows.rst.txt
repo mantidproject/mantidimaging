@@ -23,6 +23,7 @@ Subpackages
    mantidimaging.gui.windows.settings
    mantidimaging.gui.windows.spectrum_viewer
    mantidimaging.gui.windows.stack_choice
+   mantidimaging.gui.windows.stack_properties_dialog
    mantidimaging.gui.windows.stack_visualiser
    mantidimaging.gui.windows.welcome_screen
    mantidimaging.gui.windows.wizard
