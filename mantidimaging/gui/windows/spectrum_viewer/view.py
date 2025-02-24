@@ -89,6 +89,8 @@ class ROITableWidget(RemovableRowTableView):
     last_clicked_roi: str
     current_roi_name: str
 
+    selection_changed = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -112,6 +114,13 @@ class ROITableWidget(RemovableRowTableView):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+
+        self.selectionModel().currentRowChanged.connect(self.on_row_change)
+
+    def on_row_change(self, item: QModelIndex, _: Any) -> None:
+        self.selected_row = item.row()
+        self.current_roi_name = self.get_roi_name_by_row(item.row())
+        self.selection_changed.emit()
 
     def get_roi_names(self) -> list[str]:
         return self.roi_table_model.roi_names()
@@ -310,18 +319,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.flight_path = 56.4
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
-        def on_row_change(item: QModelIndex, _: Any) -> None:
-            """
-            Handle cell change in table view and update selected ROI and
-            toggle visibility of action buttons
-
-            @param item: item in table
-            """
-            self.table_view.selected_row = item.row()
-            self.table_view.current_roi_name = self.table_view.get_roi_name_by_row(item.row())
-            self.set_roi_properties()
-
-        self.table_view.selectionModel().currentRowChanged.connect(on_row_change)
+        self.table_view.selection_changed.connect(self.set_roi_properties)
 
         def on_data_in_table_change() -> None:
             """
