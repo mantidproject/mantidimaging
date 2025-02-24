@@ -5,7 +5,6 @@ from __future__ import annotations
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import GraphicsLayoutWidget, mkPen
 
-from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 from mantidimaging.gui.widgets.zslider.zslider import ZSlider
@@ -72,10 +71,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
     def get_roi(self) -> SensibleROI | None:
         if not self.roi_object:
             return None
-        roi = self.roi_object
-        pos = CloseEnoughPoint(roi.pos())
-        size = CloseEnoughPoint(roi.size())
-        return SensibleROI.from_points(pos, size)
+        return self.roi_object.as_sensible_roi()
 
     def set_roi_visibility_flags(self, visible: bool) -> None:
         if not self.roi_object:

@@ -214,9 +214,7 @@ class SpectrumWidget(QWidget):
         @return: The ROI with the given name.
         """
         if roi_name in self.roi_dict.keys():
-            pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
-            size = CloseEnoughPoint(self.roi_dict[roi_name].size())
-            return SensibleROI.from_points(pos, size)
+            return self.roi_dict[roi_name].as_sensible_roi()
         elif roi_name == "all":
             pos = CloseEnoughPoint((0, 0))
             size = CloseEnoughPoint(self.max_roi_size)
