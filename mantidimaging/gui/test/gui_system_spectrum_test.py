@@ -7,6 +7,7 @@ from unittest import mock
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtGui import QColor
+from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, SensibleROI
@@ -106,6 +107,26 @@ class TestGuiSpectrumViewer(GuiSystemBase):
 
         self.assertNotIn(old_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertIn(new_name, self.spectrum_window.spectrum_widget.roi_dict)
+
+    @parameterized.expand([' ', 'roi_1', 'all'])
+    def test_no_rename_for_bad_roi_name(self, new_name: str):
+        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+
+        old_name = 'roi_2'
+        rois_before = list(self.spectrum_window.spectrum_widget.roi_dict.keys())
+
+        table_model = self.spectrum_window.table_view.roi_table_model
+        row = table_model.roi_names().index(old_name)
+
+        table_view = self.spectrum_window.table_view
+        table_view.edit(table_model.index(row, 0))
+        QTest.keyClicks(table_view.keyboardGrabber(), new_name)
+        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key_Enter)
+
+        rois_after = list(self.spectrum_window.spectrum_widget.roi_dict.keys())
+        self.assertListEqual(rois_before, rois_after)
 
     def test_adjust_roi(self):
         QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
