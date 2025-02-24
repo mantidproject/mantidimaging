@@ -374,15 +374,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_colour = self.view.spectrum_widget.roi_dict[roi_name].colour
         self.view.add_roi_table_row(roi_name, roi_colour)
 
-    def rename_roi(self, old_name: str, new_name: str) -> None:
-        """
-        Rename a given ROI from the table by ROI name
-
-        @param old_name: Name of the ROI to rename
-        @param new_name: New name of the ROI
-        """
-        self.view.spectrum_widget.rename_roi(old_name, new_name)
-
     def do_remove_roi(self, roi_name: str | None = None) -> None:
         """
         Remove a given ROI from the table by ROI name or all ROIs from

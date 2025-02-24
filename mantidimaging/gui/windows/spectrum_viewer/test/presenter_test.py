@@ -295,21 +295,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.view.table_view.last_clicked_roi, "NOT_RITS_ROI")
         self.view.set_roi_properties.assert_not_called()
 
-    def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
-        rois = ["all", "roi", "roi_1"]
-        self.view.spectrum_widget.rois = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi = mock.Mock()
-        self.presenter.rename_roi("roi_1", "new_name")
-
-        self.view.spectrum_widget.rename_roi.assert_called_once_with("roi_1", "new_name")
-
-    def test_WHEN_invalid_ROI_renamed_THEN_error_raised(self):
-        rois = ["all", "roi", "roi_1"]
-        self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi = mock.Mock(side_effect=KeyError("Invalid ROI"))
-        with self.assertRaises(KeyError):
-            self.presenter.rename_roi("invalid_roi", "new_name")
-
     def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
         rois = ["all", "roi", "roi_1", "roi_2"]
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
