@@ -53,17 +53,13 @@ class SpectrumROI(ROI):
     def onChangeColor(self) -> None:
         current_color = QColor(*self._colour)
         selected_color = self.openColorDialog(current_color)
-        color_valid = self.check_color_valid(selected_color)
-        if color_valid:
+        if selected_color.isValid():
             new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
             self._colour = new_color
             self.sig_colour_change.emit(self.name, new_color)
 
     def openColorDialog(self, current_color: QColor) -> QColor:
         return QColorDialog.getColor(current_color)
-
-    def check_color_valid(self, get_colour: QColor) -> bool:
-        return get_colour.isValid()
 
     def contextMenuEnabled(self) -> bool:
         return True
