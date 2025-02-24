@@ -36,7 +36,7 @@ class SpectrumROI(ROI):
         kwargs["pos"] = sensible_roi.left, sensible_roi.top
         kwargs["size"] = sensible_roi.width, sensible_roi.height
         super().__init__(*args, **kwargs)
-        self._name = name
+        self.name = name
         self._colour = (0, 0, 0, 255)
         self.maxBounds = self.parentBounds()
         self.addScaleHandle([1, 1], [0, 0])
@@ -58,7 +58,7 @@ class SpectrumROI(ROI):
         if color_valid:
             new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
             self._colour = new_color
-            self.sig_colour_change.emit(self._name, new_color)
+            self.sig_colour_change.emit(self.name, new_color)
 
     def openColorDialog(self, current_color: QColor) -> QColor:
         return QColorDialog.getColor(current_color)
@@ -68,14 +68,6 @@ class SpectrumROI(ROI):
 
     def contextMenuEnabled(self) -> bool:
         return True
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, name: str) -> None:
-        self._name = name
 
     @property
     def roi(self) -> ROI:
