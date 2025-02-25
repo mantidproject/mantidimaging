@@ -208,7 +208,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
     shuttercountErrorIcon: QLabel
-    _current_dataset_id: UUID | None
     normalise_error_issue: str = ""
     shuttercount_error_issue: str = ""
     image_output_mode_combobox: QComboBox
@@ -262,7 +261,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.model.tof_data is None:
             self.tof_mode_select_group.setEnabled(False)
 
-        self._current_dataset_id = None
+        self.current_dataset_id: UUID | None = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
         self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
@@ -350,14 +349,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.redraw_spectrum(ROI_RITS)
 
             self.set_roi_properties()
-
-    @property
-    def current_dataset_id(self) -> UUID | None:
-        return self._current_dataset_id
-
-    @current_dataset_id.setter
-    def current_dataset_id(self, uuid: UUID | None) -> None:
-        self._current_dataset_id = uuid
 
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
         selector.presenter.show_stacks = True
