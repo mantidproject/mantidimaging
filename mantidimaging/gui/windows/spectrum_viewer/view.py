@@ -221,9 +221,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     roi_properties_widget: ROIPropertiesTableWidget
 
     spectrum_widget: SpectrumWidget
-
-    number_roi_properties_procced: int = 0
-
     experimentSetupGroupBox: QGroupBox
     experimentSetupFormWidget: ExperimentSetupFormWidget
 
@@ -234,8 +231,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
-
-        self.selected_row: int = 0
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
