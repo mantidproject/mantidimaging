@@ -153,12 +153,6 @@ class ROITableWidget(RemovableRowTableView):
                 return row
         return None
 
-    def set_roi_name_by_row(self, row: int, name: str) -> None:
-        """
-        Set the name of the ROI for a given row in the ROI table.
-        """
-        self.roi_table_model.set_element(row, 0, name)
-
     def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int, int]) -> None:
         """
         Finds ROI by name in table and updates it's colour (R, G, B) format.
