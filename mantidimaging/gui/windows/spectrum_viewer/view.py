@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QGroupBox, QActionGroup, QAction
+    QTabWidget, QComboBox, QSpinBox, QGroupBox, QActionGroup, QAction
 from PyQt5.QtCore import QSignalBlocker, QModelIndex, pyqtSignal
 
 from mantidimaging.core.utility import finder
@@ -209,8 +209,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     bin_size_spinBox: QSpinBox
     bin_step_spinBox: QSpinBox
 
-    roiPropertiesTableWidget: QTableWidget
-    roiPropertiesGroupBox: QGroupBox
     roi_properties_widget: ROIPropertiesTableWidget
 
     spectrum_widget: SpectrumWidget
