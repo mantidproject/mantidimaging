@@ -548,9 +548,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_properties_widget.set_roi_name("None selected")
         self.roi_properties_widget.enable_widgets(False)
 
-    def get_checked_menu_option(self) -> QAction:
-        return self.tof_mode_select_group.checkedAction()
-
     def setup_roi_properties_spinboxes(self) -> None:
         assert self.spectrum_widget.image.image_data is not None
         self.roi_properties_widget.set_roi_limits(self.spectrum_widget.image.image_data.shape)
