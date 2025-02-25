@@ -85,7 +85,6 @@ class ROITableWidget(RemovableRowTableView):
     ElementType = str | tuple[int, int, int] | bool
     RowType = list[ElementType]
     selected_row: int
-    last_clicked_roi: str
     current_roi_name: str
 
     selection_changed = pyqtSignal()
@@ -96,7 +95,6 @@ class ROITableWidget(RemovableRowTableView):
         super().__init__(parent)
 
         self.selected_row = 0
-        self.last_clicked_roi = ""
         self.current_roi_name = ""
 
         # Point table
@@ -237,7 +235,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
         self.selected_row: int = 0
-        self.last_clicked_roi = ""
         self.current_roi_name: str = ""
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
@@ -305,7 +302,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
-        self.current_roi_name = self.last_clicked_roi = self.table_view.roi_table_model.roi_names()[0]
+        self.current_roi_name = self.table_view.roi_table_model.roi_names()[0]
         self.set_roi_properties()
 
         self.experimentSetupFormWidget = ExperimentSetupFormWidget(self.experimentSetupGroupBox)
@@ -584,7 +581,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def disable_roi_properties(self) -> None:
         self.roi_properties_widget.set_roi_name("None selected")
-        self.table_view.last_clicked_roi = "roi"
         self.roi_properties_widget.enable_widgets(False)
 
     def get_checked_menu_option(self) -> QAction:

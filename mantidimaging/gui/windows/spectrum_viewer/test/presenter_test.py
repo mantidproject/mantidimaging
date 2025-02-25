@@ -283,15 +283,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_roi_clicked_THEN_roi_updated(self):
         roi = SpectrumROI("themightyroi", SensibleROI())
         self.presenter.handle_roi_clicked(roi)
-        self.assertEqual(self.view.table_view.last_clicked_roi, "themightyroi")
         self.view.set_roi_properties.assert_called_once()
 
     def test_WHEN_rits_roi_clicked_THEN_rois_not_updated(self):
-        self.view.table_view.current_roi_name = self.view.table_view.last_clicked_roi = "NOT_RITS_ROI"
+        self.view.table_view.current_roi_name = "NOT_RITS_ROI"
         roi = SpectrumROI(ROI_RITS, SensibleROI())
         self.presenter.handle_roi_clicked(roi)
         self.assertEqual(self.view.table_view.current_roi_name, "NOT_RITS_ROI")
-        self.assertEqual(self.view.table_view.last_clicked_roi, "NOT_RITS_ROI")
         self.view.set_roi_properties.assert_not_called()
 
     def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
@@ -410,17 +408,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.set_spectrum.assert_has_calls([mock.call(roi, mock.ANY) for roi in rois], any_order=True)
 
     @parameterized.expand([("roi", "roi_clicked", "roi_clicked"), ("roi", ROI_RITS, "roi")])
-    def test_WHEN_roi_clicked_THEN_current_and_last_clicked_roi_updated_correctly(self, old_roi, clicked_roi,
-                                                                                  expected_roi):
+    def test_WHEN_roi_clicked_THEN_current_roi_updated_correctly(self, old_roi, clicked_roi, expected_roi):
         self.view.table_view.current_roi_name = old_roi
-        self.view.table_view.last_clicked_roi = old_roi
         self.presenter.handle_roi_clicked(SpectrumROI(clicked_roi, SensibleROI(), pos=(0, 0)))
         self.assertEqual(self.view.table_view.current_roi_name, expected_roi)
-        self.assertEqual(self.view.table_view.last_clicked_roi, expected_roi)
 
     def test_WHEN_roi_clicked_THEN_roi_properties_set(self):
         self.view.table_view.current_roi_name = ""
-        self.view.table_view.last_clicked_roi = ""
         self.presenter.handle_roi_clicked(SpectrumROI("roi_clicked", SensibleROI(), pos=(0, 0)))
         self.view.set_roi_properties.assert_called_once()
 
