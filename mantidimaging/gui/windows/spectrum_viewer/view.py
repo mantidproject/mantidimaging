@@ -512,16 +512,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             self.set_roi_properties()
 
-    def clear_all_rois(self) -> None:
-        """
-        Clear all ROIs from the table view
-        """
-        self.table_view.roi_table_model.clear_table()
-        self.spectrum_widget.spectrum_data_dict = {}
-        self.spectrum_widget.spectrum.clearPlots()
-        self.removeBtn.setEnabled(False)
-        self.disable_roi_properties()
-
     @property
     def transmission_error_mode(self) -> str:
         return self.transmission_error_mode_combobox.currentText()
