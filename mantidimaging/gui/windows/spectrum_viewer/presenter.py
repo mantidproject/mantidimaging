@@ -215,7 +215,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
-            self.view.table_view.current_roi_name = roi.name
+            self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
