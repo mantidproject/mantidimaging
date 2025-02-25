@@ -23,7 +23,6 @@ if TYPE_CHECKING:
 
 LOG = getLogger(__name__)
 
-ROI_ALL: Final = "all"
 ROI_RITS: Final = "rits_roi"
 
 
@@ -91,12 +90,10 @@ class SpectrumViewerWindowModel:
     tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
     tof_mode: ToFUnitMode = ToFUnitMode.WAVELENGTH
     tof_data: np.ndarray | None = None
-    tof_range_full: tuple[int, int] = (0, 0)
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
-        self.special_roi_list = [ROI_ALL]
 
         self.units = UnitConversion()
 
@@ -124,7 +121,6 @@ class SpectrumViewerWindowModel:
         if stack is None:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
-        self.tof_range_full = self.tof_range
         self.tof_data = self.get_stack_time_of_flight()
 
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
