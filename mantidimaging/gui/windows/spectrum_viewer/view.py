@@ -84,7 +84,6 @@ class ROITableWidget(RemovableRowTableView):
     """
     ElementType = str | tuple[int, int, int] | bool
     RowType = list[ElementType]
-    old_table_names: list[str]
     selected_row: int
     last_clicked_roi: str
     current_roi_name: str
@@ -96,7 +95,6 @@ class ROITableWidget(RemovableRowTableView):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.old_table_names = []
         self.selected_row = 0
         self.last_clicked_roi = ""
         self.current_roi_name = ""
@@ -163,16 +161,6 @@ class ROITableWidget(RemovableRowTableView):
         """
         self.roi_table_model.set_element(row, 0, name)
 
-    def set_old_table_names(self, old_table_names) -> None:
-        """
-        Updates the list of old table names by removing specific entries if they exist.
-        """
-        self.old_table_names = old_table_names
-        if 'all' in self.old_table_names:
-            self.old_table_names.remove('all')
-        if 'rits_roi' in self.old_table_names:
-            self.old_table_names.remove('rits_roi')
-
     def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int, int]) -> None:
         """
         Finds ROI by name in table and updates it's colour (R, G, B) format.
@@ -189,7 +177,6 @@ class ROITableWidget(RemovableRowTableView):
         self.selected_row = self.roi_table_model.rowCount() - 1
         self.selectRow(self.selected_row)
         self.current_roi_name = name
-        self.set_old_table_names(roi_names)
 
     def remove_row(self, row: int) -> None:
         """
@@ -252,8 +239,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.selected_row: int = 0
         self.last_clicked_roi = ""
         self.current_roi_name: str = ""
-
-        self.old_table_names: list[str] = []
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -351,7 +336,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget
         """
 
-        self.presenter.handle_storing_current_roi_name_on_tab_change()
         if self.presenter.export_mode == ExportMode.ROI_MODE:
             self.set_roi_visibility_flags(ROI_RITS, visible=False)
 
@@ -547,7 +531,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.removeBtn.setEnabled(False)
             self.disable_roi_properties()
         else:
-            self.table_view.set_old_table_names(self.presenter.get_roi_names())
             self.table_view.current_roi_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row)
             self.set_roi_properties()
 

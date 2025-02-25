@@ -18,7 +18,6 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
-from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
@@ -388,19 +387,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.table_view.current_roi_name = "roi_1"
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
-
-    @parameterized.expand([(["roi_1", "roi_2", "roi_3"], "roi_2", "roi_2", ExportMode.IMAGE_MODE, "roi_2"),
-                           (["roi_1", "roi_3"], "roi_3", "roi_2", ExportMode.IMAGE_MODE, "roi_3"),
-                           (["roi_1", "roi_2", "roi_3"], ROI_RITS, "roi_2", ExportMode.ROI_MODE, "roi_2")])
-    def test_WHEN_change_tab_THEN_current_roi_correct(self, old_table_names, current_roi_name, last_clicked_roi,
-                                                      export_mode, expected_roi):
-        self.view.table_view.old_table_names = old_table_names
-        self.view.table_view.current_roi_name = current_roi_name
-        self.view.table_view.last_clicked_roi = last_clicked_roi
-        self.presenter.export_mode = export_mode
-        self.presenter.handle_storing_current_roi_name_on_tab_change()
-        self.assertEqual(self.view.table_view.current_roi_name, expected_roi)
-        self.assertEqual(self.view.table_view.last_clicked_roi, expected_roi)
 
     def test_WHEN_refresh_spectrum_plot_THEN_spectrum_plot_refreshed(self):
         self.view.spectrum_widget.spectrum = mock.MagicMock()
