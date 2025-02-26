@@ -109,7 +109,6 @@ class SpectrumWidget(QWidget):
     spectrum: PlotItem
 
     range_control: LinearRegionItem
-    roi_dict: dict[str, ROI]
     last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
@@ -138,7 +137,7 @@ class SpectrumWidget(QWidget):
 
         self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
 
-        self.roi_dict: dict[str, ROI] = {}
+        self.roi_dict: dict[str, SpectrumROI] = {}
         self.colour_index = 0
 
     def cleanup(self) -> None:

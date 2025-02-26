@@ -343,7 +343,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
 
-    def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int]) -> None:
+    def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int, int]) -> None:
         """
         Change the colour of a given ROI in both the spectrum widget and the table.
 
