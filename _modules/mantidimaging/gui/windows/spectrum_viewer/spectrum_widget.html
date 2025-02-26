@@ -545,15 +545,14 @@ document.write(`
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">top</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">height</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxBounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parentBounds</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addScaleHandle</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_row</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">setAcceptedMouseButtons</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAcceptedMouseButtons</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">change_color_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Change ROI Colour&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -565,11 +564,10 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">onChangeColor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">current_color</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_colour</span><span class="p">)</span>
         <span class="n">selected_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">openColorDialog</span><span class="p">(</span><span class="n">current_color</span><span class="p">)</span>
-        <span class="n">color_valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_color_valid</span><span class="p">(</span><span class="n">selected_color</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">color_valid</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">selected_color</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
             <span class="n">new_color</span> <span class="o">=</span> <span class="p">(</span><span class="n">selected_color</span><span class="o">.</span><span class="n">red</span><span class="p">(),</span> <span class="n">selected_color</span><span class="o">.</span><span class="n">green</span><span class="p">(),</span> <span class="n">selected_color</span><span class="o">.</span><span class="n">blue</span><span class="p">(),</span> <span class="mi">255</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_colour</span> <span class="o">=</span> <span class="n">new_color</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sig_colour_change</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">new_color</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sig_colour_change</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">new_color</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumROI.openColorDialog">
@@ -578,29 +576,11 @@ document.write(`
         <span class="k">return</span> <span class="n">QColorDialog</span><span class="o">.</span><span class="n">getColor</span><span class="p">(</span><span class="n">current_color</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SpectrumROI.check_color_valid">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.check_color_valid">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">check_color_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_colour</span><span class="p">:</span> <span class="n">QColor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">get_colour</span><span class="o">.</span><span class="n">isValid</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="SpectrumROI.contextMenuEnabled">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.contextMenuEnabled">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">contextMenuEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-
-    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ROI</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">colour</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
@@ -623,21 +603,11 @@ document.write(`
             <span class="n">handle</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span></div>
 
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">selected_row</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selected_row</span>
-
 <div class="viewcode-block" id="SpectrumROI.adjust_spec_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.adjust_spec_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">adjust_spec_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setPos</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setSize</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="SpectrumROI.rename_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.rename_roi">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">rename_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">new_name</span></div>
 
 
 <div class="viewcode-block" id="SpectrumROI.as_sensible_roi">
@@ -669,7 +639,6 @@ document.write(`
     <span class="n">spectrum</span><span class="p">:</span> <span class="n">PlotItem</span>
 
     <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
-    <span class="n">roi_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ROI</span><span class="p">]</span>
     <span class="n">last_clicked_roi</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
@@ -698,7 +667,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ROI</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumROI</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">colour_index</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="SpectrumWidget.cleanup">
@@ -790,9 +759,7 @@ document.write(`
 <span class="sd">        @return: The ROI with the given name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-            <span class="k">return</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">as_sensible_roi</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">roi_name</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_roi_size</span><span class="p">)</span>
@@ -837,7 +804,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">new_name</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_emit_roi_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
