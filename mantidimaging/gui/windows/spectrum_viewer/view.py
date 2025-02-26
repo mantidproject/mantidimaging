@@ -20,6 +20,7 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
+from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 import numpy as np
 
 if TYPE_CHECKING:
@@ -263,6 +264,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportLayout.addWidget(QLabel("export"))
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
+
+        self.roiSelectionWidget = ROISelectionWidget(self)
+        self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
@@ -516,6 +520,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             self.shuttercountErrorIcon.setPixmap(QPixmap())
             self.shuttercountErrorIcon.setToolTip("")
+
+    def update_roi_dropdown(self) -> None:
+        """ Updates the ROI dropdown menu with the available ROIs. """
+        roi_names = self.presenter.get_roi_names()
+        self.roiSelectionWidget.update_roi_list(roi_names)
 
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()
