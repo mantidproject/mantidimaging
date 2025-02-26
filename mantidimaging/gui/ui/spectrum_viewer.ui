@@ -409,6 +409,9 @@
          <item>
           <widget class="ROIPropertiesTableWidget" name="roi_properties_widget" native="true"/>
          </item>
+         <!-- <item>
+          <widget class="QWidget" name="ExportTabsPlaceholder"/>
+         </item> -->
          <item>
           <widget class="QWidget" name="experimentSetupGroupBox" native="true"/>
          </item>
