@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.gui.windows.welcome_screen.presenter_new import WelcomeScreenPresenterNew
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
@@ -43,6 +44,7 @@ from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
+from mantidimaging.gui.windows.welcome_screen.view_new import WelcomeScreenViewNew
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.__main__ import process_start_time
 
@@ -112,8 +114,6 @@ class MainWindowView(BaseMainWindowView):
     move_stack_dialog: MoveStackDialog | None = None
 
     default_theme_enabled: int = 1
-
-    welcome_window: WelcomeScreenPresenter | None = None
     wizard: WizardPresenter | None = None
 
     def __init__(self, open_dialogs: bool = True):
@@ -123,16 +123,13 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
-        self.welcome_screen = WelcomeScreenView(self, self.presenter)
+        self.welcome_presenter = WelcomeScreenPresenterNew(self)
+        self.welcome_screen = self.welcome_presenter.view
 
-        self.welcome_dock = QDockWidget("Welcome", self)
+        self.welcome_dock = QDockWidget("", self)
         self.welcome_dock.setWidget(self.welcome_screen)
         self.welcome_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-
         self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
-
-        if not WelcomeScreenPresenter.show_today():
-            self.welcome_dock.hide()
 
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
@@ -140,7 +137,6 @@ class MainWindowView(BaseMainWindowView):
 
         self.setup_shortcuts()
         self.update_shortcuts()
-
         self.setAcceptDrops(True)
         base_path = finder.ROOT_PATH
 
@@ -154,10 +150,6 @@ class MainWindowView(BaseMainWindowView):
         else:
             bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         self.setWindowIcon(QIcon(bg_image))
-
-        self.welcome_window = None
-        if self.open_dialogs and WelcomeScreenPresenter.show_today():
-            self.show_about()
 
         self.wizard = None
 
@@ -214,7 +206,7 @@ class MainWindowView(BaseMainWindowView):
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
 
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
-        self.actionAbout.triggered.connect(self.show_about)
+       # self.actionAbout.triggered.connect(self.show_about)
         self.actionWizard.triggered.connect(self.show_wizard)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
@@ -258,11 +250,12 @@ class MainWindowView(BaseMainWindowView):
         url = QUrl("https://mantidproject.github.io/mantidimaging/")
         QDesktopServices.openUrl(url)
 
+    '''
     def show_about(self) -> None:
         """Ensure the docked welcome screen is shown"""
         if not self.welcome_dock.isVisible():
             self.welcome_dock.show()
-
+    '''
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
