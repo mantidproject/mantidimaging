@@ -55,7 +55,7 @@ class TestGuiLiveViewer(GuiSystemBase):
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean).any(), max_retry=600)
         old_mean = self.live_viewer_window.presenter.model.mean
-        roi = self.live_viewer_window.live_viewer.roi_object.roi
+        roi = self.live_viewer_window.live_viewer.roi_object
         handle_index = 0
         new_position = (10, 20)
         roi.movePoint(handle_index, new_position)

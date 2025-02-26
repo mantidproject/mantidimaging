@@ -36,15 +36,14 @@ class SpectrumROI(ROI):
         kwargs["pos"] = sensible_roi.left, sensible_roi.top
         kwargs["size"] = sensible_roi.width, sensible_roi.height
         super().__init__(*args, **kwargs)
-        self._name = name
+        self.name = name
         self._colour = (0, 0, 0, 255)
         self.maxBounds = self.parentBounds()
         self.addScaleHandle([1, 1], [0, 0])
         self.addScaleHandle([1, 0], [0, 1])
         self.addScaleHandle([0, 0], [1, 1])
         self.addScaleHandle([0, 1], [1, 0])
-        self._selected_row = None
-        self.roi.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
+        self.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
 
         self.menu = QMenu()
         self.change_color_action = QAction("Change ROI Colour", self)
@@ -54,32 +53,16 @@ class SpectrumROI(ROI):
     def onChangeColor(self) -> None:
         current_color = QColor(*self._colour)
         selected_color = self.openColorDialog(current_color)
-        color_valid = self.check_color_valid(selected_color)
-        if color_valid:
+        if selected_color.isValid():
             new_color = (selected_color.red(), selected_color.green(), selected_color.blue(), 255)
             self._colour = new_color
-            self.sig_colour_change.emit(self._name, new_color)
+            self.sig_colour_change.emit(self.name, new_color)
 
     def openColorDialog(self, current_color: QColor) -> QColor:
         return QColorDialog.getColor(current_color)
 
-    def check_color_valid(self, get_colour: QColor) -> bool:
-        return get_colour.isValid()
-
     def contextMenuEnabled(self) -> bool:
         return True
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, name: str) -> None:
-        self._name = name
-
-    @property
-    def roi(self) -> ROI:
-        return self
 
     @property
     def colour(self) -> tuple[int, int, int, int]:
@@ -99,16 +82,9 @@ class SpectrumROI(ROI):
         for handle in self.getHandles():
             handle.setVisible(visible)
 
-    @property
-    def selected_row(self) -> int | None:
-        return self._selected_row
-
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
         self.setPos((roi.left, roi.top))
         self.setSize((roi.width, roi.height))
-
-    def rename_roi(self, new_name: str) -> None:
-        self._name = new_name
 
     def as_sensible_roi(self) -> SensibleROI:
         """
@@ -133,7 +109,6 @@ class SpectrumWidget(QWidget):
     spectrum: PlotItem
 
     range_control: LinearRegionItem
-    roi_dict: dict[str, ROI]
     last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
@@ -162,7 +137,7 @@ class SpectrumWidget(QWidget):
 
         self.spectrum_data_dict: dict[str, np.ndarray | None] = {}
 
-        self.roi_dict: dict[str, ROI] = {}
+        self.roi_dict: dict[str, SpectrumROI] = {}
         self.colour_index = 0
 
     def cleanup(self) -> None:
@@ -234,9 +209,7 @@ class SpectrumWidget(QWidget):
         @return: The ROI with the given name.
         """
         if roi_name in self.roi_dict.keys():
-            pos = CloseEnoughPoint(self.roi_dict[roi_name].pos())
-            size = CloseEnoughPoint(self.roi_dict[roi_name].size())
-            return SensibleROI.from_points(pos, size)
+            return self.roi_dict[roi_name].as_sensible_roi()
         elif roi_name == "all":
             pos = CloseEnoughPoint((0, 0))
             size = CloseEnoughPoint(self.max_roi_size)
@@ -275,7 +248,7 @@ class SpectrumWidget(QWidget):
 
         self.roi_dict[new_name] = self.roi_dict.pop(old_name)
         self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
-        self.roi_dict[new_name].rename_roi(new_name)
+        self.roi_dict[new_name].name = new_name
 
     def _emit_roi_changed(self):
         sender_roi = self.sender()

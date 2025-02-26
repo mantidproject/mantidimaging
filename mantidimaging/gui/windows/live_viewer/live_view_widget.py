@@ -5,7 +5,6 @@ from __future__ import annotations
 from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import GraphicsLayoutWidget, mkPen
 
-from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 from mantidimaging.gui.widgets.zslider.zslider import ZSlider
@@ -65,17 +64,14 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.roi_object = SpectrumROI('roi', roi, rotatable=False, scaleSnap=True, translateSnap=True)
         self.roi_object.colour = (255, 194, 10, 255)
         self.roi_object.hoverPen = mkPen(self.roi_object.colour, width=3)
-        self.roi_object.roi.sigRegionChangeFinished.connect(self.roi_changed.emit)
-        self.roi_object.roi.sigRegionChanged.connect(self.roi_changing.emit)
-        self.image.vb.addItem(self.roi_object.roi)
+        self.roi_object.sigRegionChangeFinished.connect(self.roi_changed.emit)
+        self.roi_object.sigRegionChanged.connect(self.roi_changing.emit)
+        self.image.vb.addItem(self.roi_object)
 
     def get_roi(self) -> SensibleROI | None:
         if not self.roi_object:
             return None
-        roi = self.roi_object.roi
-        pos = CloseEnoughPoint(roi.pos())
-        size = CloseEnoughPoint(roi.size())
-        return SensibleROI.from_points(pos, size)
+        return self.roi_object.as_sensible_roi()
 
     def set_roi_visibility_flags(self, visible: bool) -> None:
         if not self.roi_object:

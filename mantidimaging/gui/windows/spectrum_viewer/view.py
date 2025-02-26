@@ -174,7 +174,7 @@ class ROITableWidget(RemovableRowTableView):
         if 'rits_roi' in self.old_table_names:
             self.old_table_names.remove('rits_roi')
 
-    def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int]) -> None:
+    def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int, int]) -> None:
         """
         Finds ROI by name in table and updates it's colour (R, G, B) format.
         """
@@ -182,7 +182,7 @@ class ROITableWidget(RemovableRowTableView):
         if row is not None:
             self._roi_table_model.update_color(row, new_color)
 
-    def add_row(self, name: str, colour: tuple[int, int, int], roi_names: list[str]) -> None:
+    def add_row(self, name: str, colour: tuple[int, int, int, int], roi_names: list[str]) -> None:
         """
         Add a new row to the ROI table
         """
@@ -560,7 +560,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                                                    name=key,
                                                    pen=self.spectrum_widget.roi_dict[key].colour)
 
-    def add_roi_table_row(self, name: str, colour: tuple[int, int, int]) -> None:
+    def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """
         Add a new row to the ROI table
 
