@@ -170,7 +170,6 @@ setup(
     license="GPL-3.0",
     description="Graphical toolkit for neutron imaging",
     long_description=open("README.md").read(),
-    test_suite="nose.collector",
     classifiers=[
         "Programming Language :: Python :: 3.10",
         "Natural Language :: English",
