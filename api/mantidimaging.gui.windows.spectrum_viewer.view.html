@@ -709,12 +709,6 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd><p>Retrieve the visibility status of an ROI by its row index.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_row_data">
-<span class="sig-name descname"><span class="pre">get_row_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RowType</span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#ROITableWidget.get_row_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_row_data" title="Link to this definition">#</a></dt>
-<dd><p>Get the data for a specific row in the ROI table.</p>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.last_clicked_roi">
 <span class="sig-name descname"><span class="pre">last_clicked_roi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.last_clicked_roi" title="Link to this definition">#</a></dt>
@@ -726,15 +720,14 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.on_row_change">
+<span class="sig-name descname"><span class="pre">on_row_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QModelIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#ROITableWidget.on_row_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.on_row_change" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.remove_row">
 <span class="sig-name descname"><span class="pre">remove_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/view.html#ROITableWidget.remove_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.remove_row" title="Link to this definition">#</a></dt>
 <dd><p>Remove a row from the ROI table</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.roi_table_model">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">roi_table_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel" title="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel"><span class="pre">TableModel</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.roi_table_model" title="Link to this definition">#</a></dt>
-<dd><p>The model for the ROI table</p>
 </dd></dl>
 
 <dl class="py method">
@@ -747,6 +740,21 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.selected_row">
 <span class="sig-name descname"><span class="pre">selected_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.selected_row" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.selection_changed">
+<span class="sig-name descname"><span class="pre">selection_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.selection_changed" title="Link to this definition">#</a></dt>
+<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.set_old_table_names">
@@ -1183,13 +1191,13 @@ roi may not exist in the spectrum widget yet depending on when method is called<
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_roi_name_by_row"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.get_roi_name_by_row()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_roi_names"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.get_roi_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_roi_visibility_by_row"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.get_roi_visibility_by_row()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_row_data"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.get_row_data()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.last_clicked_roi"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.last_clicked_roi</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.old_table_names"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.old_table_names</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.on_row_change"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.on_row_change()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.remove_row"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.remove_row()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.roi_table_model"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.roi_table_model</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.row_count"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.row_count()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.selected_row"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.selected_row</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.selection_changed"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.selection_changed</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.set_old_table_names"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.set_old_table_names()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.set_roi_name_by_row"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.set_roi_name_by_row()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.update_roi_color"><code class="docutils literal notranslate"><span class="pre">ROITableWidget.update_roi_color()</span></code></a></li>
