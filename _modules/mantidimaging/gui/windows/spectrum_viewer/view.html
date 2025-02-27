@@ -611,20 +611,16 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ElementType</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">bool</span>
     <span class="n">RowType</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]</span>
-    <span class="n">old_table_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">selected_row</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">last_clicked_roi</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">current_roi_name</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="n">selection_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">name_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="n">visibility_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="c1"># Point table</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
@@ -643,12 +639,13 @@ document.write(`
         <span class="n">header</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span><span class="o">.</span><span class="n">currentRowChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_row_change</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">name_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">visibility_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visibility_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ROITableWidget.on_row_change">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.on_row_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_row_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">QModelIndex</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">row</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">row</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
 
@@ -666,6 +663,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ROITableWidget.get_roi_visibility_by_row">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.get_roi_visibility_by_row">[docs]</a>
@@ -706,19 +707,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">set_element</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ROITableWidget.set_old_table_names">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.set_old_table_names">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_old_table_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_table_names</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Updates the list of old table names by removing specific entries if they exist.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span> <span class="o">=</span> <span class="n">old_table_names</span>
-        <span class="k">if</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;rits_roi&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;rits_roi&#39;</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="ROITableWidget.update_roi_color">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.update_roi_color">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -738,9 +726,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">appendNewRow</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_old_table_names</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.remove_row">
@@ -760,6 +746,14 @@ document.write(`
 <span class="sd">        Clears the ROI table in the spectrum viewer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ROITableWidget.select_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget.select_roi">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_row_for_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">selected_row</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="n">selected_row</span><span class="p">)</span></div>
 </div>
 
 
@@ -808,10 +802,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_icon_pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">icon_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">old_table_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
 
@@ -878,7 +868,6 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">roi_names</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupFormWidget</span> <span class="o">=</span> <span class="n">ExperimentSetupFormWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupGroupBox</span><span class="p">)</span>
@@ -886,40 +875,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">experimentSetupFormWidget</span><span class="o">.</span><span class="n">connect_value_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_experiment_setup_properties_change</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selection_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">)</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">on_data_in_table_change</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Check if an ROI name has changed in the table or if the visibility of an ROI has changed.</span>
-<span class="sd">            If the ROI name has changed, update the ROI name in the spectrum widget.</span>
-<span class="sd">            If the visibility of an ROI has changed, update the visibility of the ROI in the spectrum widget.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">entered_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">entered_name</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">set_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">set_old_table_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">())</span>
-                <span class="k">return</span>
-            <span class="k">if</span> <span class="n">entered_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">entered_name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">entered_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">():</span>
-                    <span class="n">entered_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">old_table_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">set_element</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">old_table_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">entered_name</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">,</span> <span class="n">entered_name</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">entered_name</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">set_element</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">old_table_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">])</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">set_old_table_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_visibility_change</span><span class="p">()</span>
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">dataChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_data_in_table_change</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">name_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">name_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">visibility_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_visibility_change</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">formTabs</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_change_tab</span><span class="p">)</span>
 
@@ -950,8 +908,6 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_storing_current_roi_name_on_tab_change</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -974,7 +930,6 @@ document.write(`
 
             <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">ROI_RITS</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span></div>
 
@@ -1194,7 +1149,6 @@ document.write(`
 <span class="sd">        @param colour: The colour of the ROI</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">removeBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 
@@ -1216,8 +1170,6 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">removeBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">disable_roi_properties</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">set_old_table_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span></div>
 
 
@@ -1268,13 +1220,15 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_properties">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_roi_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">IMAGE_MODE</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">ROI_RITS</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
+            <span class="n">roi_name</span> <span class="o">=</span> <span class="n">ROI_RITS</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">current_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">)</span>
+        <span class="n">current_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_name</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_values</span><span class="p">(</span><span class="n">current_roi</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">enable_widgets</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 
@@ -1282,7 +1236,6 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">disable_roi_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_name</span><span class="p">(</span><span class="s2">&quot;None selected&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="s2">&quot;roi&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">enable_widgets</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 

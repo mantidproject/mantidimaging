@@ -646,6 +646,21 @@ if index is equal to roi, item not editable</p>
 &#64;return: ROI or Colour</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.name_changed">
+<span class="sig-name descname"><span class="pre">name_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.name_changed" title="Link to this definition">#</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.remove_row">
 <span class="sig-name descname"><span class="pre">remove_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/roi_table_model.html#TableModel.remove_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.remove_row" title="Link to this definition">#</a></dt>
@@ -688,11 +703,10 @@ in table and is not default ‘roi’ ROI or duplicate</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.setData">
 <span class="sig-name descname"><span class="pre">setData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QModelIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ItemDataRole</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/roi_table_model.html#TableModel.setData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.setData" title="Link to this definition">#</a></dt>
-<dd><p>Set data in table</p>
+<dd><p>Set data in table. Called by Qt when value is changed from the GUI</p>
 <p>&#64;param index: index of selected row
 &#64;param value: new value
-&#64;param role: Qt.EditRole
-&#64;return: True</p>
+&#64;param role: Qt.EditRole</p>
 </dd></dl>
 
 <dl class="py method">
@@ -704,6 +718,21 @@ in table and is not default ‘roi’ ROI or duplicate</p>
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.update_color">
 <span class="sig-name descname"><span class="pre">update_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/roi_table_model.html#TableModel.update_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.update_color" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.visibility_changed">
+<span class="sig-name descname"><span class="pre">visibility_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.visibility_changed" title="Link to this definition">#</a></dt>
+<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -764,6 +793,7 @@ in table and is not default ‘roi’ ROI or duplicate</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.flags"><code class="docutils literal notranslate"><span class="pre">TableModel.flags()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.get_element"><code class="docutils literal notranslate"><span class="pre">TableModel.get_element()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.headerData"><code class="docutils literal notranslate"><span class="pre">TableModel.headerData()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.name_changed"><code class="docutils literal notranslate"><span class="pre">TableModel.name_changed</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.remove_row"><code class="docutils literal notranslate"><span class="pre">TableModel.remove_row()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.rename_row"><code class="docutils literal notranslate"><span class="pre">TableModel.rename_row()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.roi_names"><code class="docutils literal notranslate"><span class="pre">TableModel.roi_names()</span></code></a></li>
@@ -772,6 +802,7 @@ in table and is not default ‘roi’ ROI or duplicate</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.setData"><code class="docutils literal notranslate"><span class="pre">TableModel.setData()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.set_element"><code class="docutils literal notranslate"><span class="pre">TableModel.set_element()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.update_color"><code class="docutils literal notranslate"><span class="pre">TableModel.update_color()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.visibility_changed"><code class="docutils literal notranslate"><span class="pre">TableModel.visibility_changed</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -759,8 +759,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_roi_clicked">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_roi_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SpectrumROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">ROI_RITS</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">select_roi</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span></div>
 
 
@@ -955,18 +954,6 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_roi_table_row</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">roi_colour</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.rename_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.rename_roi">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">rename_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Rename a given ROI from the table by ROI name</span>
-
-<span class="sd">        @param old_name: Name of the ROI to rename</span>
-<span class="sd">        @param new_name: New name of the ROI</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.do_remove_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_remove_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_remove_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1045,23 +1032,6 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">do_adjust_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">new_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">as_roi</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">adjust_roi</span><span class="p">(</span><span class="n">new_roi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_storing_current_roi_name_on_tab_change">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_storing_current_roi_name_on_tab_change">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">handle_storing_current_roi_name_on_tab_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">old_table_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">old_table_names</span>
-        <span class="n">old_current_roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span>
-        <span class="n">old_last_clicked_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">old_current_roi_name</span> <span class="o">==</span> <span class="n">ROI_RITS</span> <span class="ow">and</span> <span class="n">old_last_clicked_roi</span> <span class="ow">in</span> <span class="n">old_table_names</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">=</span> <span class="n">old_last_clicked_roi</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="n">old_current_roi_name</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">IMAGE_MODE</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">old_current_roi_name</span> <span class="o">!=</span> <span class="n">ROI_RITS</span> <span class="ow">and</span> <span class="n">old_current_roi_name</span> <span class="ow">in</span> <span class="n">old_table_names</span>
-                    <span class="ow">and</span> <span class="n">old_last_clicked_roi</span> <span class="o">!=</span> <span class="n">old_current_roi_name</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">last_clicked_roi</span> <span class="o">=</span> <span class="n">old_current_roi_name</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.check_action">
