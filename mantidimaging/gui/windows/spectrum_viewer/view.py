@@ -89,6 +89,8 @@ class ROITableWidget(RemovableRowTableView):
     last_clicked_roi: str
     current_roi_name: str
 
+    selection_changed = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -103,9 +105,8 @@ class ROITableWidget(RemovableRowTableView):
         self.setAlternatingRowColors(True)
 
         # Initialise model
-        mdl = TableModel()
-        self.setModel(mdl)
-        self._roi_table_model = mdl
+        self.roi_table_model = TableModel()
+        self.setModel(self.roi_table_model)
 
         # Configure up the table view
         self.setVisible(True)
@@ -113,48 +114,41 @@ class ROITableWidget(RemovableRowTableView):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        if self._roi_table_model.rowCount() > 0:
-            self.current_roi_name = self.last_clicked_roi = self._roi_table_model.roi_names()[0]
 
-    @property
-    def roi_table_model(self) -> TableModel:
-        """The model for the ROI table"""
-        return self._roi_table_model
+        self.selectionModel().currentRowChanged.connect(self.on_row_change)
+
+    def on_row_change(self, item: QModelIndex, _: Any) -> None:
+        self.selected_row = item.row()
+        self.current_roi_name = self.get_roi_name_by_row(item.row())
+        self.selection_changed.emit()
 
     def get_roi_names(self) -> list[str]:
-        return self._roi_table_model.roi_names()
-
-    def get_row_data(self, row: int) -> RowType:
-        """
-        Get the data for a specific row in the ROI table.
-        """
-        name, data, visible = self._roi_table_model.row_data(row)
-        return [name, data, visible]
+        return self.roi_table_model.roi_names()
 
     def get_roi_name_by_row(self, row: int) -> str:
         """
         Retrieve the name an ROI by its row index.
         """
-        return self._roi_table_model.get_element(row, 0)
+        return self.roi_table_model.get_element(row, 0)
 
     def get_roi_visibility_by_row(self, row: int) -> bool:
         """
         Retrieve the visibility status of an ROI by its row index.
         """
-        return self._roi_table_model.get_element(row, 2)
+        return self.roi_table_model.get_element(row, 2)
 
     def row_count(self) -> int:
         """
         Returns the number of rows in the ROI table model.
         """
-        return self._roi_table_model.rowCount()
+        return self.roi_table_model.rowCount()
 
     def find_row_for_roi(self, roi_name: str) -> int | None:
         """
         Returns row index for ROI name, or None if not found.
         """
-        for row in range(self._roi_table_model.rowCount()):
-            if self._roi_table_model.index(row, 0).data() == roi_name:
+        for row in range(self.roi_table_model.rowCount()):
+            if self.roi_table_model.index(row, 0).data() == roi_name:
                 return row
         return None
 
@@ -162,7 +156,7 @@ class ROITableWidget(RemovableRowTableView):
         """
         Set the name of the ROI for a given row in the ROI table.
         """
-        self._roi_table_model.set_element(row, 0, name)
+        self.roi_table_model.set_element(row, 0, name)
 
     def set_old_table_names(self, old_table_names) -> None:
         """
@@ -180,14 +174,14 @@ class ROITableWidget(RemovableRowTableView):
         """
         row = self.find_row_for_roi(roi_name)
         if row is not None:
-            self._roi_table_model.update_color(row, new_color)
+            self.roi_table_model.update_color(row, new_color)
 
     def add_row(self, name: str, colour: tuple[int, int, int, int], roi_names: list[str]) -> None:
         """
         Add a new row to the ROI table
         """
-        self._roi_table_model.appendNewRow(name, colour, True)
-        self.selected_row = self._roi_table_model.rowCount() - 1
+        self.roi_table_model.appendNewRow(name, colour, True)
+        self.selected_row = self.roi_table_model.rowCount() - 1
         self.selectRow(self.selected_row)
         self.current_roi_name = name
         self.set_old_table_names(roi_names)
@@ -196,14 +190,14 @@ class ROITableWidget(RemovableRowTableView):
         """
         Remove a row from the ROI table
         """
-        self._roi_table_model.remove_row(row)
+        self.roi_table_model.remove_row(row)
         self.selectRow(0)
 
     def clear_table(self) -> None:
         """
         Clears the ROI table in the spectrum viewer.
         """
-        self._roi_table_model.clear_table()
+        self.roi_table_model.clear_table()
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -325,18 +319,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.flight_path = 56.4
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
-        def on_row_change(item: QModelIndex, _: Any) -> None:
-            """
-            Handle cell change in table view and update selected ROI and
-            toggle visibility of action buttons
-
-            @param item: item in table
-            """
-            self.table_view.selected_row = item.row()
-            self.table_view.current_roi_name = self.table_view.get_roi_name_by_row(item.row())
-            self.set_roi_properties()
-
-        self.table_view.selectionModel().currentRowChanged.connect(on_row_change)
+        self.table_view.selection_changed.connect(self.set_roi_properties)
 
         def on_data_in_table_change() -> None:
             """
@@ -575,17 +558,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         Clear the selected ROI in the table view
         """
-
-        roi_name, selected_row, _ = self.table_view.get_row_data(self.table_view.selected_row)
-        assert isinstance(roi_name, str)
+        roi_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row)
         roi_object = self.spectrum_widget.roi_dict[roi_name]
 
-        if selected_row:
-            self.table_view.remove_row(self.table_view.selected_row)
-            self.presenter.do_remove_roi(roi_name)
-            self.spectrum_widget.spectrum_data_dict.pop(roi_name)
-            self.presenter.handle_roi_moved(roi_object)
-            self.table_view.selectRow(0)
+        self.table_view.remove_row(self.table_view.selected_row)
+        self.presenter.do_remove_roi(roi_name)
+        self.spectrum_widget.spectrum_data_dict.pop(roi_name)
+        self.presenter.handle_roi_moved(roi_object)
 
         if self.table_view.roi_table_model.rowCount() == 0:
             self.removeBtn.setEnabled(False)
