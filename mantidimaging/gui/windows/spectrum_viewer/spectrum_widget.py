@@ -107,9 +107,7 @@ class SpectrumWidget(QWidget):
     """
     image: MIMiniImageView
     spectrum: PlotItem
-
     range_control: LinearRegionItem
-    last_clicked_roi: str
 
     range_changed = pyqtSignal(object)
     roi_clicked = pyqtSignal(object)

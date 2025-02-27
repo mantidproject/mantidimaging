@@ -215,8 +215,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
-            self.view.table_view.current_roi_name = roi.name
-            self.view.table_view.last_clicked_roi = roi.name
+            self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
 
     def redraw_spectrum(self, name: str) -> None:
@@ -374,15 +373,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_colour = self.view.spectrum_widget.roi_dict[roi_name].colour
         self.view.add_roi_table_row(roi_name, roi_colour)
 
-    def rename_roi(self, old_name: str, new_name: str) -> None:
-        """
-        Rename a given ROI from the table by ROI name
-
-        @param old_name: Name of the ROI to rename
-        @param new_name: New name of the ROI
-        """
-        self.view.spectrum_widget.rename_roi(old_name, new_name)
-
     def do_remove_roi(self, roi_name: str | None = None) -> None:
         """
         Remove a given ROI from the table by ROI name or all ROIs from
@@ -438,20 +428,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def do_adjust_roi(self) -> None:
         new_roi = self.view.roi_properties_widget.as_roi()
         self.view.spectrum_widget.adjust_roi(new_roi, self.view.table_view.current_roi_name)
-
-    def handle_storing_current_roi_name_on_tab_change(self) -> None:
-        old_table_names = self.view.table_view.old_table_names
-        old_current_roi_name = self.view.table_view.current_roi_name
-        old_last_clicked_roi = self.view.table_view.last_clicked_roi
-        if self.export_mode == ExportMode.ROI_MODE:
-            if old_current_roi_name == ROI_RITS and old_last_clicked_roi in old_table_names:
-                self.view.table_view.current_roi_name = old_last_clicked_roi
-            else:
-                self.view.table_view.last_clicked_roi = old_current_roi_name
-        elif self.export_mode == ExportMode.IMAGE_MODE:
-            if (old_current_roi_name != ROI_RITS and old_current_roi_name in old_table_names
-                    and old_last_clicked_roi != old_current_roi_name):
-                self.view.table_view.last_clicked_roi = old_current_roi_name
 
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:

@@ -12,15 +12,14 @@ from PyQt5.QtCore import QAbstractTableModel
 from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget, QWidget, QSpinBox
 from parameterized import parameterized
 
-from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
-from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
+from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -41,7 +40,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             "Left": mock.create_autospec(QSpinBox, instance=True),
             "Right": mock.create_autospec(QSpinBox, instance=True)
         }
-        self.view.table_view = mock.create_autospec(RemovableRowTableView, instance=True)
+        self.view.table_view = mock.create_autospec(ROITableWidget, instance=True)
+        self.view.table_view.find_row_for_roi.return_value = 0
+        type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi")
         self.view.table_view.roi_table_model = mock.create_autospec(QAbstractTableModel, instance=True)
         self.view.table_view.roi_table_model.clear_table = mock.Mock()
         mock_spectrum_roi_dict = mock.create_autospec(dict, instance=True)
@@ -284,31 +285,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_roi_clicked_THEN_roi_updated(self):
         roi = SpectrumROI("themightyroi", SensibleROI())
         self.presenter.handle_roi_clicked(roi)
-        self.assertEqual(self.view.table_view.last_clicked_roi, "themightyroi")
         self.view.set_roi_properties.assert_called_once()
 
     def test_WHEN_rits_roi_clicked_THEN_rois_not_updated(self):
-        self.view.table_view.current_roi_name = self.view.table_view.last_clicked_roi = "NOT_RITS_ROI"
         roi = SpectrumROI(ROI_RITS, SensibleROI())
         self.presenter.handle_roi_clicked(roi)
-        self.assertEqual(self.view.table_view.current_roi_name, "NOT_RITS_ROI")
-        self.assertEqual(self.view.table_view.last_clicked_roi, "NOT_RITS_ROI")
         self.view.set_roi_properties.assert_not_called()
-
-    def test_WHEN_ROI_renamed_THEN_roi_renamed(self):
-        rois = ["all", "roi", "roi_1"]
-        self.view.spectrum_widget.rois = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi = mock.Mock()
-        self.presenter.rename_roi("roi_1", "new_name")
-
-        self.view.spectrum_widget.rename_roi.assert_called_once_with("roi_1", "new_name")
-
-    def test_WHEN_invalid_ROI_renamed_THEN_error_raised(self):
-        rois = ["all", "roi", "roi_1"]
-        self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
-        self.view.spectrum_widget.rename_roi = mock.Mock(side_effect=KeyError("Invalid ROI"))
-        with self.assertRaises(KeyError):
-            self.presenter.rename_roi("invalid_roi", "new_name")
 
     def test_WHEN_do_remove_roi_called_with_no_arguments_THEN_all_rois_removed(self):
         rois = ["all", "roi", "roi_1", "roi_2"]
@@ -400,22 +382,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
         self.view.roi_properties_widget.as_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
-        self.view.table_view.current_roi_name = "roi_1"
+        type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
-
-    @parameterized.expand([(["roi_1", "roi_2", "roi_3"], "roi_2", "roi_2", ExportMode.IMAGE_MODE, "roi_2"),
-                           (["roi_1", "roi_3"], "roi_3", "roi_2", ExportMode.IMAGE_MODE, "roi_3"),
-                           (["roi_1", "roi_2", "roi_3"], ROI_RITS, "roi_2", ExportMode.ROI_MODE, "roi_2")])
-    def test_WHEN_change_tab_THEN_current_roi_correct(self, old_table_names, current_roi_name, last_clicked_roi,
-                                                      export_mode, expected_roi):
-        self.view.table_view.old_table_names = old_table_names
-        self.view.table_view.current_roi_name = current_roi_name
-        self.view.table_view.last_clicked_roi = last_clicked_roi
-        self.presenter.export_mode = export_mode
-        self.presenter.handle_storing_current_roi_name_on_tab_change()
-        self.assertEqual(self.view.table_view.current_roi_name, expected_roi)
-        self.assertEqual(self.view.table_view.last_clicked_roi, expected_roi)
 
     def test_WHEN_refresh_spectrum_plot_THEN_spectrum_plot_refreshed(self):
         self.view.spectrum_widget.spectrum = mock.MagicMock()
@@ -438,18 +407,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.get_roi.assert_has_calls([mock.call(roi) for roi in rois])
         self.view.set_spectrum.assert_has_calls([mock.call(roi, mock.ANY) for roi in rois], any_order=True)
 
-    @parameterized.expand([("roi", "roi_clicked", "roi_clicked"), ("roi", ROI_RITS, "roi")])
-    def test_WHEN_roi_clicked_THEN_current_and_last_clicked_roi_updated_correctly(self, old_roi, clicked_roi,
-                                                                                  expected_roi):
-        self.view.table_view.current_roi_name = old_roi
-        self.view.table_view.last_clicked_roi = old_roi
-        self.presenter.handle_roi_clicked(SpectrumROI(clicked_roi, SensibleROI(), pos=(0, 0)))
-        self.assertEqual(self.view.table_view.current_roi_name, expected_roi)
-        self.assertEqual(self.view.table_view.last_clicked_roi, expected_roi)
-
     def test_WHEN_roi_clicked_THEN_roi_properties_set(self):
-        self.view.table_view.current_roi_name = ""
-        self.view.table_view.last_clicked_roi = ""
         self.presenter.handle_roi_clicked(SpectrumROI("roi_clicked", SensibleROI(), pos=(0, 0)))
         self.view.set_roi_properties.assert_called_once()
 

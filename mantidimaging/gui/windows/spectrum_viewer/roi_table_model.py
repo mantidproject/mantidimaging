@@ -2,17 +2,22 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from logging import getLogger
 from typing import cast, overload, Literal
 
 # Contains ROI table model class which will be used to store ROI information
 # and display it in the spectrum viewer.
 
 # Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex
+from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, pyqtSignal
 from PyQt5.QtGui import QColor, QBrush
+
+from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
 
 ElementType = str | tuple[int, int, int] | bool
 RowType = list[ElementType]
+
+LOG = getLogger(__name__)
 
 
 class TableModel(QAbstractTableModel):
@@ -21,6 +26,8 @@ class TableModel(QAbstractTableModel):
     Model for table view of ROI names and colours in Spectrum Viewer window to allow
     user to select which ROIs to plot.
     """
+    name_changed = pyqtSignal(str, str)
+    visibility_changed = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -74,25 +81,34 @@ class TableModel(QAbstractTableModel):
 
     def setData(self, index: QModelIndex, value: ElementType, role: Qt.ItemDataRole) -> bool:
         """
-        Set data in table
+        Set data in table. Called by Qt when value is changed from the GUI
 
         @param index: index of selected row
         @param value: new value
         @param role: Qt.EditRole
-        @return: True
         """
-        if role == Qt.EditRole:
-            self._data[index.row()][index.column()] = value
-            self.dataChanged.emit(index, index)
-            return True
-        if role == Qt.CheckStateRole:
-            if index.column() == 2:
-                self._data[index.row()][index.column()] = value == Qt.Checked
-                self.dataChanged.emit(index, index)
-                return True
-            self.dataChanged.emit(index, index)
-            return False
-        return False
+
+        match (index.column(), index.row(), role):
+            case 0, row, Qt.EditRole:
+                assert isinstance(value, str)
+                old_name = self.get_element(row, 0)
+                new_name = value.strip()
+                try:
+                    self.rename_row(row, new_name)
+                except ValueError as e:
+                    LOG.warning(f"Can't rename to {new_name} : {e}")
+                    return False
+                self.name_changed.emit(old_name, new_name)
+
+            case 2, row, Qt.CheckStateRole:
+                self.set_element(row, 2, value)
+                self.visibility_changed.emit()
+
+            case _:
+                raise ValueError(f"Unexpected call to setData: {index.row()}:{index.column()}")
+
+        self.dataChanged.emit(index, index)
+        return True
 
     def row_data(self, row: int) -> RowType:
         """
@@ -191,9 +207,12 @@ class TableModel(QAbstractTableModel):
         """
         if new_name in self.roi_names():
             raise ValueError("ROI name already exists")
-        else:
-            self._data[row][0] = new_name
-            self.layoutChanged.emit()
+        if new_name in ["all", ROI_RITS]:
+            raise ValueError("ROI name is reserved")
+        if new_name.strip() == "":
+            raise ValueError("ROI name is empty")
+        self._data[row][0] = new_name
+        self.layoutChanged.emit()
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         """

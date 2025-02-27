@@ -7,6 +7,7 @@ from unittest import mock
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtGui import QColor
+from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, SensibleROI
@@ -37,6 +38,10 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
 
+    def _property_box_name(self):
+        box_title = self.spectrum_window.roi_properties_widget.group_box.title()
+        return box_title.rpartition(":")[2].strip()
+
     def test_spectrum_window_opens_with_data_in_default_state(self) -> None:
         self.assertFalse(self.spectrum_window.normaliseCheckBox.isChecked())
         self.assertFalse(self.spectrum_window.normalise_ShutterCount_CheckBox.isEnabled())
@@ -47,30 +52,37 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertTrue(self.spectrum_window.exportButton.isEnabled())
         self.assertIn('roi', self.spectrum_window.table_view.roi_table_model.roi_names())
         self.assertIn('roi', self.spectrum_window.spectrum_widget.roi_dict)
+        self.assertEqual('roi', self._property_box_name())
         QTest.qWait(SHOW_DELAY)
 
     def test_add_roi(self) -> None:
         for i in range(1, 4):
-            initial_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
             QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
             final_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
-            self.assertEqual(final_roi_count, initial_roi_count + 1)
-            self.assertIn(f'roi_{i}', self.spectrum_window.table_view.roi_table_model.roi_names())
-            self.assertIn(f'roi_{i}', self.spectrum_window.spectrum_widget.roi_dict)
+            expected_name = f'roi_{i}'
+            self.assertEqual(final_roi_count, i + 1)
+            self.assertIn(expected_name, self.spectrum_window.table_view.roi_table_model.roi_names())
+            self.assertIn(expected_name, self.spectrum_window.spectrum_widget.roi_dict)
+            self.assertEqual(expected_name, self._property_box_name())
 
     def test_remove_roi(self) -> None:
         QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        initial_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
+        expected_name = 'roi_1'
+
+        self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 2)
+        self.assertIn(expected_name, self.spectrum_window.table_view.roi_table_model.roi_names())
+        self.assertIn(expected_name, self.spectrum_window.spectrum_widget.roi_dict)
+        self.assertEqual(expected_name, self._property_box_name())
 
         QTest.mouseClick(self.spectrum_window.removeBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        final_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
 
-        self.assertEqual(final_roi_count, initial_roi_count - 1)
-        self.assertNotIn(f'roi_{initial_roi_count - 1}', self.spectrum_window.table_view.roi_table_model.roi_names())
-        self.assertNotIn(f'roi_{initial_roi_count - 1}', self.spectrum_window.spectrum_widget.roi_dict)
+        self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 1)
+        self.assertNotIn(expected_name, self.spectrum_window.table_view.roi_table_model.roi_names())
+        self.assertNotIn(expected_name, self.spectrum_window.spectrum_widget.roi_dict)
+        self.assertEqual('roi', self._property_box_name())
 
     def test_change_roi_color(self):
         QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
@@ -99,11 +111,35 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         table_model = self.spectrum_window.table_view.roi_table_model
         row = table_model.roi_names().index(old_name)
 
-        table_model.set_element(row, 0, new_name)
-        table_model.dataChanged.emit(table_model.index(row, 0), table_model.index(row, 0))
+        table_view = self.spectrum_window.table_view
+        table_view.edit(table_model.index(row, 0))
+        QTest.keyClicks(table_view.keyboardGrabber(), new_name)
+        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key_Enter)
 
         self.assertNotIn(old_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertIn(new_name, self.spectrum_window.spectrum_widget.roi_dict)
+        self.assertEqual(new_name, self._property_box_name())
+
+    @parameterized.expand([' ', 'roi_1', 'all'])
+    def test_no_rename_for_bad_roi_name(self, new_name: str):
+        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+
+        old_name = 'roi_2'
+        rois_before = list(self.spectrum_window.spectrum_widget.roi_dict.keys())
+
+        table_model = self.spectrum_window.table_view.roi_table_model
+        row = table_model.roi_names().index(old_name)
+
+        table_view = self.spectrum_window.table_view
+        table_view.edit(table_model.index(row, 0))
+        QTest.keyClicks(table_view.keyboardGrabber(), new_name)
+        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key_Enter)
+
+        rois_after = list(self.spectrum_window.spectrum_widget.roi_dict.keys())
+        self.assertListEqual(rois_before, rois_after)
+        self.assertEqual(old_name, self._property_box_name())
 
     def test_adjust_roi(self):
         QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
@@ -132,3 +168,14 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.spectrum_window.normaliseCheckBox.setCheckState(Qt.CheckState.Unchecked)
         QTest.qWait(SHORT_DELAY)
         assert self.spectrum_window.presenter.spectrum_mode == SpecType.SAMPLE
+
+    def test_switch_tabs_updates_property_box(self):
+        self.assertEqual('roi', self._property_box_name())
+
+        self.spectrum_window.exportTabs.setCurrentIndex(1)
+        QTest.qWait(SHORT_DELAY)
+        self.assertEqual('rits_roi', self._property_box_name())
+
+        self.spectrum_window.exportTabs.setCurrentIndex(0)
+        QTest.qWait(SHORT_DELAY)
+        self.assertEqual('roi', self._property_box_name())
