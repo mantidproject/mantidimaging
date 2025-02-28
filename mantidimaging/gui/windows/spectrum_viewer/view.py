@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QTableWidget, QGroupBox, QActionGroup, QAction
+    QTabWidget, QComboBox, QSpinBox, QGroupBox, QActionGroup, QAction
 from PyQt5.QtCore import QSignalBlocker, QModelIndex, pyqtSignal
 
 from mantidimaging.core.utility import finder
@@ -153,12 +153,6 @@ class ROITableWidget(RemovableRowTableView):
                 return row
         return None
 
-    def set_roi_name_by_row(self, row: int, name: str) -> None:
-        """
-        Set the name of the ROI for a given row in the ROI table.
-        """
-        self.roi_table_model.set_element(row, 0, name)
-
     def update_roi_color(self, roi_name: str, new_color: tuple[int, int, int, int]) -> None:
         """
         Finds ROI by name in table and updates it's colour (R, G, B) format.
@@ -208,7 +202,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
     shuttercountErrorIcon: QLabel
-    _current_dataset_id: UUID | None
     normalise_error_issue: str = ""
     shuttercount_error_issue: str = ""
     image_output_mode_combobox: QComboBox
@@ -216,14 +209,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     bin_size_spinBox: QSpinBox
     bin_step_spinBox: QSpinBox
 
-    roiPropertiesTableWidget: QTableWidget
-    roiPropertiesGroupBox: QGroupBox
     roi_properties_widget: ROIPropertiesTableWidget
 
     spectrum_widget: SpectrumWidget
-
-    number_roi_properties_procced: int = 0
-
     experimentSetupGroupBox: QGroupBox
     experimentSetupFormWidget: ExperimentSetupFormWidget
 
@@ -234,8 +222,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
-
-        self.selected_row: int = 0
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
 
@@ -267,7 +253,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.presenter.model.tof_data is None:
             self.tof_mode_select_group.setEnabled(False)
 
-        self._current_dataset_id = None
+        self.current_dataset_id: UUID | None = None
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_sample_change)
         self.sampleStackSelector.stack_selected_uuid.connect(self.presenter.handle_button_enabled)
         self.normaliseStackSelector.stack_selected_uuid.connect(self.presenter.handle_normalise_stack_change)
@@ -355,14 +341,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.redraw_spectrum(ROI_RITS)
 
             self.set_roi_properties()
-
-    @property
-    def current_dataset_id(self) -> UUID | None:
-        return self._current_dataset_id
-
-    @current_dataset_id.setter
-    def current_dataset_id(self, uuid: UUID | None) -> None:
-        self._current_dataset_id = uuid
 
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
         selector.presenter.show_stacks = True
@@ -526,16 +504,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             self.set_roi_properties()
 
-    def clear_all_rois(self) -> None:
-        """
-        Clear all ROIs from the table view
-        """
-        self.table_view.roi_table_model.clear_table()
-        self.spectrum_widget.spectrum_data_dict = {}
-        self.spectrum_widget.spectrum.clearPlots()
-        self.removeBtn.setEnabled(False)
-        self.disable_roi_properties()
-
     @property
     def transmission_error_mode(self) -> str:
         return self.transmission_error_mode_combobox.currentText()
@@ -579,9 +547,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def disable_roi_properties(self) -> None:
         self.roi_properties_widget.set_roi_name("None selected")
         self.roi_properties_widget.enable_widgets(False)
-
-    def get_checked_menu_option(self) -> QAction:
-        return self.tof_mode_select_group.checkedAction()
 
     def setup_roi_properties_spinboxes(self) -> None:
         assert self.spectrum_widget.image.image_data is not None

@@ -7,9 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-
-from PyQt5.QtCore import QAbstractTableModel
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget, QWidget, QSpinBox
+from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
@@ -19,7 +17,7 @@ from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, 
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
-from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget
+from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget, ROIPropertiesTableWidget
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -33,18 +31,10 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             self.main_window = MainWindowView()
         self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()
-        self.view.roi_properties_widget = mock.create_autospec(QWidget, instance=True)
-        self.view.roi_properties_widget.roiPropertiesSpinBoxes = {
-            "Top": mock.create_autospec(QSpinBox, instance=True),
-            "Bottom": mock.create_autospec(QSpinBox, instance=True),
-            "Left": mock.create_autospec(QSpinBox, instance=True),
-            "Right": mock.create_autospec(QSpinBox, instance=True)
-        }
+        self.view.roi_properties_widget = mock.create_autospec(ROIPropertiesTableWidget, instance=True)
         self.view.table_view = mock.create_autospec(ROITableWidget, instance=True)
         self.view.table_view.find_row_for_roi.return_value = 0
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi")
-        self.view.table_view.roi_table_model = mock.create_autospec(QAbstractTableModel, instance=True)
-        self.view.table_view.roi_table_model.clear_table = mock.Mock()
         mock_spectrum_roi_dict = mock.create_autospec(dict, instance=True)
         self.view.spectrum_widget = mock.create_autospec(SpectrumWidget, roi_dict=mock_spectrum_roi_dict, instance=True)
         self.view.spectrum_widget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,

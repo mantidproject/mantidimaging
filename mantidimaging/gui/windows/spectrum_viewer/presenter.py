@@ -384,7 +384,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
             self.view.spectrum_widget.roi_dict.clear()
-            self.view.table_view.roi_table_model.clear_table()
+            self.view.table_view.clear_table()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
