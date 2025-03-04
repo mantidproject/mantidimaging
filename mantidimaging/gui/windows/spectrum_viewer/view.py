@@ -541,7 +541,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         current_roi = self.presenter.view.spectrum_widget.get_roi(roi_name)
         self.roi_properties_widget.set_roi_name(roi_name)
         self.roi_properties_widget.set_roi_values(current_roi)
-        self.presenter.redraw_spectrum(roi_name)
         self.roi_properties_widget.enable_widgets(True)
 
     def disable_roi_properties(self) -> None:
