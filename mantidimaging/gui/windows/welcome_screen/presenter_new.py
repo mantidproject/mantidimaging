@@ -21,7 +21,6 @@ WELCOME_LINKS = [
 class WelcomeScreenPresenterNew():
     def __init__(self, parent=None):
         self.view = WelcomeScreenViewNew(parent, self)
-        print("Activated")
         self.settings = QSettings()
         self.link_count = 0
 
