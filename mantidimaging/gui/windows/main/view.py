@@ -302,6 +302,8 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.load_image_stack(selected_file)
 
+        self.close_welcome_screen()
+
     def load_sample_log_dialog(self) -> None:
         stack_selector = DatasetSelectorDialog(main_window=self,
                                                title="Stack Selector",
@@ -387,6 +389,13 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into "
                                 f"{stack_id}.")
 
+    def close_welcome_screen(self):
+        if self.welcome_dock:
+            self.removeDockWidget(self.welcome_dock)
+            self.welcome_dock.deleteLater()
+            self.welcome_dock = None
+            self.welcome_screen = None
+
     def execute_image_file_save(self) -> None:
         self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)
 
@@ -428,6 +437,8 @@ class MainWindowView(BaseMainWindowView):
             self.settings_window.show()
 
     def show_recon_window(self) -> None:
+        self.close_welcome_screen()
+
         if not self.recon:
             self.recon = ReconstructWindowView(self)
             self.recon.show()
