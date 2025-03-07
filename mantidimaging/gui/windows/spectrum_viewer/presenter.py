@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker
+from PyQt5.QtCore import QSignalBlocker, QTimer
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -48,6 +48,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     current_norm_stack_uuid: UUID | None = None
     export_mode: ExportMode
     initial_sample_change: bool = True
+    changed_roi: SpectrumROI
 
     def __init__(self, view: SpectrumViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -57,6 +58,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
         self.main_window.stack_changed.connect(self.handle_stack_modified)
+
+        self.handle_roi_change_timer = QTimer()
+        self.handle_roi_change_timer.setSingleShot(True)
+        self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
 
     def handle_stack_modified(self) -> None:
         """
@@ -212,16 +217,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
 
-    def handle_roi_moved(self, roi: SpectrumROI) -> None:
+    def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
+        self.changed_roi = roi
+        if not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(10)
+
+    def handle_roi_moved(self) -> None:
         """
         Handle changes to any ROI position and size.
         """
         spectrum = self.model.get_spectrum(
-            roi.as_sensible_roi(),
+            self.changed_roi.as_sensible_roi(),
             self.spectrum_mode,
             self.view.shuttercount_norm_enabled(),
         )
-        self.view.set_spectrum(roi.name, spectrum)
+        self.view.set_spectrum(self.changed_roi.name, spectrum)
+        self.view.spectrum_widget.spectrum.update()
 
         if self.view.roiSelectionWidget.current_roi_name == roi.name:
             self.update_fitting_spectrum(roi.name)
