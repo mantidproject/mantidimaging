@@ -11,7 +11,7 @@ from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
-from cil.framework import AcquisitionGeometry, ImageGeometry
+from cil.framework import AcquisitionGeometry
 
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
@@ -263,9 +263,9 @@ class ImageStack:
         return self.geometry
     
     @geometry.setter
-    def geometry(self, value: ImageStackGeometry | None) -> None:
-        if value is not None:
-            self.metadata[const.GEOMETRY] = str(value.source_file)
+    def geometry(self, value: ImageStackGeometry) -> None:
+        assert isinstance(value, ImageStack.ImageStackGeometry)
+        self._geometry = value
 
     @property
     def data(self) -> np.ndarray:
@@ -388,12 +388,21 @@ class ImageStack:
                 raise ValueError(f"Could not make unique name for: {name}")
 
     class ImageStackGeometry:
-        acq_geometry: AcquisitionGeometry | None = None
-        img_geometry: ImageGeometry | None = None
+        _acq_geometry: AcquisitionGeometry | None = None
+        _centre_of_rotation: dict | None = None
 
         def __init__(self):
             self.acq_geometry = AcquisitionGeometry.create_Parallel3D(detector_position=[0,10,0])
             self.acq_geometry.set_panel(num_pixels=[10,10])
             self.acq_geometry.set_angles(angles=range(0,180))
 
-            self.img_geometry = self.acq_geometry.get_ImageGeometry()
+            self.centre_of_rotation = self.acq_geometry.get_centre_of_rotation()
+
+        @property
+        def acq_geometry(self) -> AcquisitionGeometry | None:
+            return self.acq_geometry
+
+        @acq_geometry.setter
+        def acq_geometry(self, value: AcquisitionGeometry) -> None:
+            assert isinstance(value, AcquisitionGeometry)
+            self._acq_geometry = value
