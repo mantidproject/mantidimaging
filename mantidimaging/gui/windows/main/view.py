@@ -1,4 +1,4 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2025 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -17,8 +17,7 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.gui.windows.welcome_screen.presenter_new import WelcomeScreenPresenterNew
-from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
+from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -44,7 +43,7 @@ from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
 from mantidimaging.gui.windows.stack_choice.compare_presenter import StackComparePresenter
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
-from mantidimaging.gui.windows.welcome_screen.view_new import WelcomeScreenViewNew
+from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.__main__ import process_start_time
 
@@ -123,7 +122,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
-        self.welcome_presenter = WelcomeScreenPresenterNew(self)
+        self.welcome_presenter = WelcomeScreenPresenter(self)
         self.welcome_screen = self.welcome_presenter.view
 
         self.welcome_dock = QDockWidget("", self)
@@ -179,6 +178,14 @@ class MainWindowView(BaseMainWindowView):
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
         self.presenter.do_update_UI()
+
+    def refresh_welcome_links(self):
+        """
+        Called when the theme changes, so we can rebuild or re-color
+        the welcome screen’s links if it's still visible.
+        """
+        if self.welcome_presenter:
+            self.welcome_presenter.recolor_links()
 
     def toggle_welcome_screen(self):
         """Show or hide the docked welcome screen."""

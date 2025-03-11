@@ -13,6 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <!-- Top-level layout for the entire form -->
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
     <number>0</number>
@@ -29,6 +30,8 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+
+   <!-- The main container widget -->
    <item>
     <widget class="QWidget" name="widget_2" native="true">
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -47,6 +50,8 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+
+      <!-- 1) Banner Container -->
       <item>
        <widget class="QWidget" name="Banner_container" native="true">
         <property name="maximumSize">
@@ -58,6 +63,8 @@
         <layout class="QVBoxLayout" name="verticalLayout_2"/>
        </widget>
       </item>
+
+      <!-- 2) Link box with QGridLayout -->
       <item>
        <widget class="QWidget" name="link_box" native="true">
         <property name="maximumSize">
@@ -82,9 +89,18 @@
          <property name="spacing">
           <number>1</number>
          </property>
+         <!-- Add extra spacing between links: -->
+         <property name="horizontalSpacing">
+          <number>1</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>7</number>
+         </property>
         </layout>
        </widget>
       </item>
+
+      <!-- 3) Spacer pushing items down to the bottom -->
       <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
@@ -101,6 +117,20 @@
         </property>
        </spacer>
       </item>
+
+      <!-- 4) Horizontal layout for the version label -->
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_version">
+        <item>
+         <widget class="QLabel" name="version_label">
+          <property name="text">
+           <string>Version: (to be set in code)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
      </layout>
     </widget>
    </item>
