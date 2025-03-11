@@ -11,8 +11,6 @@ from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
-from cil.framework import AcquisitionGeometry
-
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
@@ -62,7 +60,6 @@ class ImageStack:
         self._log_file: InstrumentLog | None = None
         self._shutter_count_file: ShutterCount | None = None
         self._projection_angles: ProjectionAngles | None = None
-        self._geometry: ImageStack.ImageStackGeometry | None = None
 
         if name is None:
             if filenames is not None:
@@ -259,15 +256,6 @@ class ImageStack:
         return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
 
     @property
-    def geometry(self) -> ImageStackGeometry | None:
-        return self.geometry
-
-    @geometry.setter
-    def geometry(self, value: ImageStackGeometry) -> None:
-        assert isinstance(value, ImageStack.ImageStackGeometry)
-        self._geometry = value
-
-    @property
     def data(self) -> np.ndarray:
         return self._shared_array.array
 
@@ -386,23 +374,3 @@ class ImageStack:
 
             if num > 1000:
                 raise ValueError(f"Could not make unique name for: {name}")
-
-    class ImageStackGeometry:
-        _acq_geometry: AcquisitionGeometry | None = None
-        _centre_of_rotation: dict | None = None
-
-        def __init__(self):
-            self.acq_geometry = AcquisitionGeometry.create_Parallel3D(detector_position=[0, 10, 0])
-            self.acq_geometry.set_panel(num_pixels=[10, 10])
-            self.acq_geometry.set_angles(angles=range(0, 180))
-
-            self.centre_of_rotation = self.acq_geometry.get_centre_of_rotation()
-
-        @property
-        def acq_geometry(self) -> AcquisitionGeometry | None:
-            return self.acq_geometry
-
-        @acq_geometry.setter
-        def acq_geometry(self, value: AcquisitionGeometry) -> None:
-            assert isinstance(value, AcquisitionGeometry)
-            self._acq_geometry = value
