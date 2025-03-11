@@ -1,46 +1,58 @@
-# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
-# SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
+# welcome_screen/view.py
+
+# Copyright (C) 2025 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
+from PyQt5.QtGui import QPixmap
 
 from mantidimaging.core.utility import finder
-from PyQt5.QtWidgets import QLabel
-
-from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.utility import compile_ui
 
 
-class WelcomeScreenView(BaseDialogView):
-
+class WelcomeScreenView(QWidget):
     def __init__(self, parent, presenter):
-        super().__init__(parent, "gui/ui/welcome_screen_dialog.ui")
-
-        # The background image URL must use forward slashes on both Windows and Linux
-        bg_image = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_screen_background.png'
-        self.setStyleSheet("#WelcomeScreenDialog {"
-                           f"border-image:url({bg_image});"
-                           "min-width:30em; min-height:20em;max-width:30em; max-height:20em;}")
+        super().__init__(parent)
         self.presenter = presenter
 
-        self.issue_box.setVisible(False)
+        compile_ui("gui/ui/welcome_widget.ui", self)
 
-        # self.show_at_start.stateChanged.connect(presenter.show_at_start_changed)
-        self.ok_button.clicked.connect(self.close)
+        if not self.Banner_container.layout():
+            self.Banner_container.setLayout(QVBoxLayout())
 
-    def get_show_at_start(self) -> None:
-        return self.show_at_start.isChecked()
+        # Set the banner image
+        banner = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_banner.png'
+        self.banner_label = QLabel(self)
+        self.banner_label.setPixmap(QPixmap(banner))
+        self.banner_label.setScaledContents(True)
+        self.banner_label.setMinimumSize(self.Banner_container.size())
+        self.Banner_container.layout().addWidget(self.banner_label)
 
-    def set_show_at_start(self, checked: bool) -> None:
-        self.show_at_start.setChecked(checked)
+        self.version_label.setStyleSheet("QLabel { font-size: 10px; }")
 
-    def set_version_label(self, contents: str) -> None:
-        self.version_label.setText(contents)
+    def set_version_label(self, version_text: str):
+        self.version_label.setText(version_text)
+        self.version_label.setStyleSheet("QLabel { font-size: 18px; margin-left: 5px; }")
 
     def add_link(self, label: str, row: int) -> None:
-        link_label = QLabel(label)
+        link_label = QLabel()
+        link_label.setTextFormat(Qt.RichText)
+        link_label.setText(label)
         link_label.setOpenExternalLinks(True)
-        self.link_box_layout.addWidget(link_label, row, 0)
 
-    def add_issues(self, contents: str) -> None:
-        self.issue_box.setVisible(True)
-        issues_label = QLabel(contents)
-        issues_label.setOpenExternalLinks(True)
-        self.issue_box_layout.addWidget(issues_label)
+        link_label.setStyleSheet("QLabel { font-size: 18px; margin-left: 5px; }")
+        print("link row: ", row)
+        self.link_box_layout.addWidget(link_label, row, 0, Qt.AlignLeft)
+        self.link_box_layout.update()
+
+    def add_issues(self, issues_text: str) -> None:
+        issues_label = QLabel(issues_text)
+        issues_label.setWordWrap(True)
+        issues_label.setStyleSheet("QLabel { color: red; font-weight: bold; }")
+
+        next_row = self.link_box_layout.rowCount()
+        print("issue row: ", next_row)
+        self.link_box_layout.addWidget(issues_label, next_row + 1, 0, Qt.AlignLeft)
+
+        print(issues_text)

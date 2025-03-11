@@ -664,6 +664,9 @@ class MainWindowPresenter(BasePresenter):
         else:
             apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
 
+        if self.view and hasattr(self.view, "refresh_welcome_links"):
+            self.view.refresh_welcome_links()
+
     @staticmethod
     def use_fusion_dark_mode() -> None:
         palette = QPalette()
