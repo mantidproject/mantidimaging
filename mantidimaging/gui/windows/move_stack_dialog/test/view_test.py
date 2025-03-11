@@ -16,7 +16,7 @@ from mantidimaging.test_helpers import start_qapplication
 class MoveStackDialogTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+        with mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.show_welcome_screen"):
             self.main_window = MainWindowView()
         self.origin_dataset_id = uuid.uuid4()
         self.stack_id = uuid.uuid4()

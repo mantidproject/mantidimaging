@@ -103,6 +103,7 @@ class MainWindowView(BaseMainWindowView):
     spectrum_viewer: SpectrumViewerWindowView | None = None
     live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
+    welcome_presenter: WelcomeScreenPresenter | None = None
 
     image_load_dialog: ImageLoadDialog | None = None
     image_save_dialog: ImageSaveDialog | None = None
@@ -121,13 +122,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
-        self.welcome_presenter = WelcomeScreenPresenter(self)
-        self.welcome_screen = self.welcome_presenter.view
-
-        self.welcome_dock = QDockWidget("", self)
-        self.welcome_dock.setWidget(self.welcome_screen)
-        self.welcome_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-        self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+        self.show_welcome_screen()
 
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
@@ -177,6 +172,15 @@ class MainWindowView(BaseMainWindowView):
         self.tabifiedDockWidgetActivated.connect(self._on_tab_bar_clicked)
 
         self.presenter.do_update_UI()
+
+    def show_welcome_screen(self):
+        self.welcome_presenter = WelcomeScreenPresenter(self)
+        self.welcome_screen = self.welcome_presenter.view
+        self.welcome_dock = QDockWidget("", self)
+        self.welcome_dock.setWidget(self.welcome_screen)
+        self.welcome_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+
 
     def refresh_welcome_links(self):
         """
