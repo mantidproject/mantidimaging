@@ -10,7 +10,6 @@ from logging import getLogger
 
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker
-from pyqtgraph.graphicsItems import PlotDataItem
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -435,11 +434,3 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
-
-    def set_scatter_plot_style(self, name):
-        for item in self.view.spectrum_widget.spectrum.items:
-            if isinstance(item, PlotDataItem.PlotDataItem) and item.name() == name:
-                item.setSymbol('o')
-                item.setSymbolBrush(color=self.view.spectrum_widget.roi_dict[name].colour)
-                item.setSymbolPen(color=self.view.spectrum_widget.roi_dict[name].colour)
-                item.setSymbolSize(5)

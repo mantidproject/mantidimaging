@@ -479,15 +479,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def show_visible_spectrums(self) -> None:
         join_plot = True
+        self.spectrum_widget.spectrum.set_join_plot(join_plot)
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
-                self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
-                                                   value,
-                                                   name=key,
-                                                   pen=self.spectrum_widget.roi_dict[key].colour,
-                                                   connect=np.full(value.shape, join_plot))
-                if not join_plot:
-                    self.presenter.set_scatter_plot_style(key)
+                self.spectrum_widget.spectrum.plot_data(self.presenter.model.tof_data,
+                                                        value,
+                                                        name=key,
+                                                        pen=self.spectrum_widget.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """

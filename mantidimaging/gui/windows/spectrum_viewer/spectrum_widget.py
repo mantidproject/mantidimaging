@@ -10,15 +10,14 @@ from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QV
 
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
 
+import numpy as np
+
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
-
-if TYPE_CHECKING:
-    import numpy as np
 
 
 class SpectrumROI(ROI):
@@ -106,7 +105,7 @@ class SpectrumWidget(QWidget):
     @param parent: The parent widget
     """
     image: MIMiniImageView
-    spectrum: PlotItem
+    MIPlotItem: PlotItem
     range_control: LinearRegionItem
 
     range_changed = pyqtSignal(object)
@@ -298,7 +297,7 @@ class CustomViewBox(ViewBox):
 
 class SpectrumPlotWidget(GraphicsLayoutWidget):
 
-    spectrum: PlotItem
+    spectrum: MIPlotItem
     range_control: LinearRegionItem
     range_changed = pyqtSignal(object)
 
@@ -306,7 +305,8 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         super().__init__()
 
         self.spectrum_viewbox = CustomViewBox(enableMenu=True)
-        self.spectrum = self.addPlot(viewBox=self.spectrum_viewbox)
+        self.spectrum = MIPlotItem(viewBox=self.spectrum_viewbox)
+        self.addItem(self.spectrum)
         self.nextRow()
         self._tof_range_label = self.addLabel()
         self.nextRow()
@@ -353,3 +353,26 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
         nan_check_menu = [("Crop Coordinates", lambda: main_window.presenter.show_operation("Crop Coordinates")),
                           ("NaN Removal", lambda: main_window.presenter.show_operation("NaN Removal"))]
         self.image.enable_nan_check(actions=nan_check_menu)
+
+
+class MIPlotItem(PlotItem):
+    connect: str | np.ndarray = 'auto'
+    plot_opts: dict = {}
+
+    def __init__(self, join_plot=True, *args, **kwds) -> None:
+        super().__init__(*args, **kwds)
+        self.join_plot = join_plot
+
+    def plot_data(self, *args, **kwargs):
+        if self.join_plot:
+            self.connect = 'auto'
+        else:
+            self.connect = np.full(args[0].shape, False)
+            self.plot_opts['symbolBrush'] = kwargs['pen']
+            self.plot_opts['symbolPen'] = kwargs['pen']
+            self.plot_opts['symbol'] = 'o'
+            self.plot_opts['symbolSize'] = 5
+        return self.plot(*args, **kwargs, connect=self.connect, **self.plot_opts)
+
+    def set_join_plot(self, join_plot: bool) -> None:
+        self.join_plot = join_plot
