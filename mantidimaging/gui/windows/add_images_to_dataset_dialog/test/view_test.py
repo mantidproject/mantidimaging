@@ -18,7 +18,7 @@ from mantidimaging.test_helpers import start_qapplication
 class AddImagesToDatasetDialogTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+        with mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.show_welcome_screen"):
             self.main_window = MainWindowView()
         self.dataset_id = uuid.uuid4()
         self.dataset_name = "dataset-name"

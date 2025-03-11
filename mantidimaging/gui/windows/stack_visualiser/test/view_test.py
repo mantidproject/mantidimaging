@@ -19,7 +19,7 @@ class StackVisualiserViewTest(unittest.TestCase):
     window: MainWindowView
 
     def setUp(self):
-        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+        with mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.show_welcome_screen"):
             self.window = MainWindowView()
         self.view, self.test_data = self._add_stack_visualiser()
 
