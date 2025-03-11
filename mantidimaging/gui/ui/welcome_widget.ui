@@ -100,7 +100,22 @@
        </widget>
       </item>
 
-      <!-- 3) Spacer pushing items down to the bottom -->
+      <!-- 3) A QLabel for issues, separate from link box -->
+      <item>
+       <widget class="QLabel" name="issues_label">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">margin-top: 8px;</string>
+        </property>
+       </widget>
+      </item>
+
+      <!-- 4) Spacer pushing items down to the bottom -->
       <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
@@ -118,7 +133,7 @@
        </spacer>
       </item>
 
-      <!-- 4) Horizontal layout for the version label -->
+      <!-- 5) Horizontal layout for the version label -->
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_version">
         <item>
