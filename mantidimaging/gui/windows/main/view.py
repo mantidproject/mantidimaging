@@ -17,7 +17,6 @@ from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileD
     QTreeWidgetItem, QTreeWidget, QDockWidget
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -44,7 +43,6 @@ from mantidimaging.gui.windows.stack_choice.compare_presenter import StackCompar
 from mantidimaging.gui.windows.stack_properties_dialog.view import StackPropertiesDialog
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
-from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
 from mantidimaging.__main__ import process_start_time
 

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt5.QtGui import QPixmap
 
 from mantidimaging.core.utility import finder
@@ -42,17 +42,19 @@ class WelcomeScreenView(QWidget):
         link_label.setOpenExternalLinks(True)
 
         link_label.setStyleSheet("QLabel { font-size: 18px; margin-left: 5px; }")
-        print("link row: ", row)
         self.link_box_layout.addWidget(link_label, row, 0, Qt.AlignLeft)
         self.link_box_layout.update()
 
     def add_issues(self, issues_text: str) -> None:
-        issues_label = QLabel(issues_text)
-        issues_label.setWordWrap(True)
-        issues_label.setStyleSheet("QLabel { color: red; font-weight: bold; }")
+        self.issues_label.setWordWrap(True)
+        self.issues_label.setStyleSheet(
+            "QLabel { "
+            "  color: red; "
+            "  font-weight: bold; "
+            "  font-size: 18px; "
+            "  margin-left: 5px; "
+            "  margin-top: 5px; " 
+            "}"
+        )
+        self.issues_label.setText(issues_text)
 
-        next_row = self.link_box_layout.rowCount()
-        print("issue row: ", next_row)
-        self.link_box_layout.addWidget(issues_label, next_row + 1, 0, Qt.AlignLeft)
-
-        print(issues_text)
