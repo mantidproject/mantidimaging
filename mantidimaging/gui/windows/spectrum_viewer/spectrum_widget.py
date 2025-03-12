@@ -6,11 +6,12 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
 
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
 
 import numpy as np
+from pyqtgraph.graphicsItems import PlotDataItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -357,22 +358,61 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
 
 class MIPlotItem(PlotItem):
     connect: str | np.ndarray = 'auto'
-    plot_opts: dict = {}
+    scatter_opts: dict = {}
 
     def __init__(self, join_plot=True, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
         self.join_plot = join_plot
+        self.vb = self.getViewBox()
+        self.menu = self.vb.menu
+        self.plot_menu = self.menu.addMenu("Plotting Options")
+        self.join_choice_group = QActionGroup(self)
+
+        joined_action = QAction('Joined', self.join_choice_group)
+        joined_action.setCheckable(True)
+        joined_action.setObjectName('Joined')
+        joined_action.triggered.connect(self.set_join_plot)
+        joined_action.setChecked(True)
+        self.plot_menu.addAction(joined_action)
+
+        scatter_action = QAction('Scatter', self.join_choice_group)
+        scatter_action.setCheckable(True)
+        scatter_action.setObjectName('Scatter')
+        scatter_action.triggered.connect(self.set_join_plot)
+        self.plot_menu.addAction(scatter_action)
 
     def plot_data(self, *args, **kwargs):
         if self.join_plot:
-            self.connect = 'auto'
+            return self.plot(*args, **kwargs, connect='auto')
         else:
-            self.connect = np.full(args[0].shape, False)
-            self.plot_opts['symbolBrush'] = kwargs['pen']
-            self.plot_opts['symbolPen'] = kwargs['pen']
-            self.plot_opts['symbol'] = 'o'
-            self.plot_opts['symbolSize'] = 5
-        return self.plot(*args, **kwargs, connect=self.connect, **self.plot_opts)
+            connect_array = np.full(args[0].shape, False)
+            return self.plot(*args,
+                             **kwargs,
+                             connect=connect_array,
+                             symbolBrush=kwargs['pen'],
+                             symbolPen=kwargs['pen'],
+                             symbol='o',
+                             symbolSize=5)
 
-    def set_join_plot(self, join_plot: bool) -> None:
-        self.join_plot = join_plot
+    def set_join_plot(self) -> None:
+        join_plot = self.join_choice_group.checkedAction().text()
+        match join_plot:
+            case "Joined":
+                self.join_plot = True
+            case "Scatter":
+                self.join_plot = False
+        for item in self.items:
+            if isinstance(item, PlotDataItem.PlotDataItem):
+                item_data = item.getData()
+                if self.join_plot:
+                    item.opts['symbol'] = None
+                    item.setData(item_data[0], item_data[1], connect='auto')
+                else:
+                    connect_array = np.full(item.getData()[0].shape, False)
+                    item.setData(item_data[0],
+                                 item_data[1],
+                                 connect=connect_array,
+                                 symbolBrush=item.opts['pen'],
+                                 symbolPen=item.opts['pen'],
+                                 symbol='o',
+                                 symbolSize=5)

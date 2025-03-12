@@ -478,8 +478,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.show_visible_spectrums()
 
     def show_visible_spectrums(self) -> None:
-        join_plot = True
-        self.spectrum_widget.spectrum.set_join_plot(join_plot)
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
                 self.spectrum_widget.spectrum.plot_data(self.presenter.model.tof_data,
