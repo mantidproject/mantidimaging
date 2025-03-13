@@ -22,6 +22,8 @@ import mantidimaging.core.parallel.utility as pu
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
+import matplotlib.pyplot  # noqa: F401 - need to import before FakeFileSystem, see Issue #2480
+
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
 
