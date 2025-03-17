@@ -1,4 +1,4 @@
-# Copyright (C) 2025 ISIS Rutherford Appleton Laboratory UKRI
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QDockWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -122,7 +122,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
-        self.show_welcome_screen()
+        self.create_welcome_screen()
 
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
@@ -173,14 +173,16 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.do_update_UI()
 
-    def show_welcome_screen(self):
+    def create_welcome_screen(self):
         self.welcome_presenter = WelcomeScreenPresenter(self)
         self.welcome_screen = self.welcome_presenter.view
         self.welcome_dock = QDockWidget("", self)
         self.welcome_dock.setWidget(self.welcome_screen)
-        self.welcome_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.welcome_dock.setTitleBarWidget(QWidget())
+        self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
+        self.welcome_dock.setStyleSheet("QDockWidget::title { background: transparent; }")
+        self.welcome_dock.setAllowedAreas(Qt.RightDockWidgetArea)
         self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
-
 
     def refresh_welcome_links(self):
         """
@@ -190,17 +192,24 @@ class MainWindowView(BaseMainWindowView):
         if self.welcome_presenter:
             self.welcome_presenter.recolor_links()
 
-    def toggle_welcome_screen(self):
-        """Show or hide the docked welcome screen."""
-        if self.welcome_dock.isVisible():
-            self.welcome_dock.hide()
-        else:
-            self.welcome_dock.show()
+    def show_welcome_screen(self, show: bool = True):
+        if self.welcome_dock:
+            if show:
+                self.welcome_dock.show()
+                self.welcome_dock.repaint()
+            else:
+                self.welcome_dock.hide()
 
     def _window_ready(self) -> None:
         if perf_logger.isEnabledFor(1):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
         super()._window_ready()
+
+    def show_about(self) -> None:
+        if not self.presenter.have_active_stacks and self.welcome_dock is None:
+            self.create_welcome_screen()
+
+        self.show_welcome_screen(True)
 
     def setup_shortcuts(self) -> None:
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
@@ -216,7 +225,7 @@ class MainWindowView(BaseMainWindowView):
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
 
         self.actionOnlineDocumentation.triggered.connect(self.open_online_documentation)
-       # self.actionAbout.triggered.connect(self.show_about)
+        self.actionAbout.triggered.connect(self.show_about)
         self.actionWizard.triggered.connect(self.show_wizard)
 
         self.actionFilters.triggered.connect(self.show_filters_window)
@@ -266,6 +275,7 @@ class MainWindowView(BaseMainWindowView):
         if not self.welcome_dock.isVisible():
             self.welcome_dock.show()
     '''
+
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()

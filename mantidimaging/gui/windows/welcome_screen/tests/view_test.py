@@ -32,7 +32,7 @@ class WelcomeScreenViewTest(unittest.TestCase):
 
     def test_banner_is_set_correctly(self):
         self.assertIsInstance(self.view.banner_label, QLabel)
-        self.assertTrue(self.view.banner_label.pixmap().isNull() == False)
+        self.assertTrue(not self.view.banner_label.pixmap().isNull())
         self.assertTrue(self.view.banner_label.hasScaledContents())
         self.assertEqual(self.view.banner_label.minimumSize(), self.view.Banner_container.size())
 

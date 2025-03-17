@@ -5,7 +5,6 @@ from unittest import mock
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
-from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 
 
 class WelcomeWindowTest(BaseEyesTest):

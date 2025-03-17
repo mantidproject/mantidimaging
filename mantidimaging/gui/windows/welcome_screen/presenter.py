@@ -1,9 +1,11 @@
-# Copyright (C) 2025 ISIS Rutherford
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
 
 from PyQt5.QtCore import QSettings
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QApplication
 
 from mantidimaging.core.utility import cuda_check
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
@@ -11,14 +13,13 @@ from mantidimaging.core.utility.version_check import versions
 
 LOG = getLogger(__name__)
 
-WELCOME_LINKS = [
-    ["Homepage", "https://github.com/mantidproject/mantidimaging"],
-    ["Documentation", "https://mantidproject.github.io/mantidimaging/index.html"],
-    ["Troubleshooting", "https://mantidproject.github.io/mantidimaging/troubleshooting.html"]
-]
+WELCOME_LINKS = [["Homepage", "https://github.com/mantidproject/mantidimaging"],
+                 ["Documentation", "https://mantidproject.github.io/mantidimaging/index.html"],
+                 ["Troubleshooting", "https://mantidproject.github.io/mantidimaging/troubleshooting.html"]]
 
 
-class WelcomeScreenPresenter():
+class WelcomeScreenPresenter:
+
     def __init__(self, parent=None):
         self.view = WelcomeScreenView(parent, self)
         self.settings = QSettings()
@@ -35,19 +36,15 @@ class WelcomeScreenPresenter():
         self.view.show()
 
     def set_up_links(self) -> None:
-        use_dark_mode = self.settings.value('use_dark_mode', 'False')
-        for link_name, url in WELCOME_LINKS:
-            if use_dark_mode == 'True':
-                color = '#f7f0f7'
-            else:
-                color = '#00008B'
+        """Gets link colour from main/presenter.py"""
+        palette = QApplication.instance().palette()
+        text_color = palette.color(QPalette.WindowText).name()
 
-            rich_text = (
-                f'<a href="{url}" '
-                f'style="color: {color} !important; text-decoration: underline !important;">'
-                f'{link_name}'
-                '</a>'
-            )
+        for link_name, url in WELCOME_LINKS:
+            rich_text = (f'<a href="{url}" '
+                         f'style="color: {text_color} !important; text-decoration: underline !important;">'
+                         f'{link_name}'
+                         '</a>')
             self.add_link(rich_text)
 
     def add_link(self, rich_text: str) -> None:

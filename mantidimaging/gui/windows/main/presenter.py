@@ -148,6 +148,8 @@ class MainWindowPresenter(BasePresenter):
         self._add_dataset_to_view(dataset)
         self.view.model_changed.emit()
 
+        self.view.close_welcome_screen()
+
     def save_nexus_file(self) -> None:
         assert self.view.nexus_save_dialog is not None
         dataset_id = self.view.nexus_save_dialog.selected_dataset
@@ -187,6 +189,8 @@ class MainWindowPresenter(BasePresenter):
             self.view.model_changed.emit()
             task.result = None
             self._open_window_if_not_open()
+
+            self.view.close_welcome_screen()
         else:
             raise RuntimeError(self.LOAD_ERROR_STRING.format(task.error))
 
@@ -393,6 +397,8 @@ class MainWindowPresenter(BasePresenter):
 
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done,
                               {'parameters': loading_params})
+
+        self.view.close_welcome_screen()
         return True
 
     def wizard_action_load(self) -> None:
@@ -664,8 +670,7 @@ class MainWindowPresenter(BasePresenter):
         else:
             apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
 
-        if self.view and hasattr(self.view, "refresh_welcome_links"):
-            self.view.refresh_welcome_links()
+        self.view.refresh_welcome_links()
 
     @staticmethod
     def use_fusion_dark_mode() -> None:
