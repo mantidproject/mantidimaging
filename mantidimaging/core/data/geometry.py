@@ -4,14 +4,14 @@
 import numpy
 
 from cil.framework import AcquisitionGeometry
-from cil.framework.framework import SystemConfiguration, Parallel2D, Parallel3D, Cone2D, Cone3D
+from cil.framework.framework import Parallel2D, Parallel3D, Cone2D, Cone3D
 
 
 class Geometry(AcquisitionGeometry):
     centre_of_rotation: dict
 
     def __init__(self,
-                 configuration: SystemConfiguration | None = Parallel3D,
+                 configuration: Parallel2D | Parallel3D | Cone2D | Cone3D | None = Parallel3D,
                  source_position: list | tuple | numpy.ndarray | None = None,
                  ray_direction: list | tuple | numpy.ndarray | None = None,
                  detector_position: list | tuple | numpy.ndarray | None = None,
@@ -19,7 +19,7 @@ class Geometry(AcquisitionGeometry):
                  detector_direction_y: list | tuple | numpy.ndarray | None = None,
                  rotation_axis_position: list | tuple | numpy.ndarray | None = None,
                  rotation_axis_direction: list | tuple | numpy.ndarray | None = None,
-                 num_pixels: int | list | tuple | None = None,
+                 num_pixels: list | tuple | None = None,
                  angles: list | numpy.ndarray | range | None = None,
                  units: str | None = None):
         """
@@ -52,6 +52,8 @@ class Geometry(AcquisitionGeometry):
         :rtype: Geometry
         """
 
+        if source_position is None:
+            source_position = [0, 0, 0]
         if ray_direction is None:
             ray_direction = [0, 1, 0]
         if detector_position is None:
@@ -73,44 +75,44 @@ class Geometry(AcquisitionGeometry):
 
         if configuration is Parallel2D:
             self.__dict__ = super().create_Parallel2D().__dict__.copy()
-            self.config.system = Parallel2D(ray_direction, detector_position, detector_direction_x,
-                                            detector_direction_y, rotation_axis_position, rotation_axis_direction,
-                                            units)
+            self.config.system = Parallel2D(ray_direction[:2], detector_position[:2], detector_direction_x[:2],
+                                            rotation_axis_position[:2], units)
+            self.set_panel(num_pixels[:1])
+            self.set_angles(angles)
         elif configuration is Parallel3D:
             self.__dict__ = super().create_Parallel3D().__dict__.copy()
             self.config.system = Parallel3D(ray_direction, detector_position, detector_direction_x,
                                             detector_direction_y, rotation_axis_position, rotation_axis_direction,
                                             units)
+            self.set_panel(num_pixels)
+            self.set_angles(angles)
         elif configuration is Cone2D:
-            self.__dict__ = super().create_Cone2D().__dict__.copy()
-            self.config.system = Cone2D(source_position, detector_position, detector_direction_x,
-                                        rotation_axis_position, units)
+            self.__dict__ = super().create_Cone2D(source_position[:2], detector_position[:2]).__dict__.copy()
+            self.config.system = Cone2D(source_position[:2], detector_position[:2], detector_direction_x[:2],
+                                        rotation_axis_position[:2], units)
+            self.set_panel(num_pixels[:1])
+            self.set_angles(angles)
         elif configuration is Cone3D:
-            self.__dict__ = super().create_Cone3D().__dict__.copy()
+            self.__dict__ = super().create_Cone3D(source_position, detector_position).__dict__.copy()
             self.config.system = Cone3D(source_position, detector_position, detector_direction_x, detector_direction_y,
                                         rotation_axis_position, rotation_axis_direction, units)
-
-        self.set_panel(num_pixels)
-        self.set_angles(angles)
+            self.set_panel(num_pixels)
+            self.set_angles(angles)
 
         self.centre_of_rotation = self.get_centre_of_rotation()
 
-        print(self)
-
-    def get_acq_geometry(self) -> AcquisitionGeometry | None:
+    def get_geometry(self) -> AcquisitionGeometry | None:
         return self
 
-    def set_acq_geometry(self, geometry: AcquisitionGeometry) -> None:
-        assert isinstance(geometry, AcquisitionGeometry)
-        self._acq_geometry = geometry
+    def set_geometry(self, geometry: AcquisitionGeometry) -> None:
+        self.__dict__ = geometry.__dict__.copy()
 
-    def convert_centre_of_rotation(self, centre_of_rotation, tilt) -> dict | None:
+    def convert_cor_single(self, cor) -> dict | None:
         """
         Converts the MI centre of rotation (that uses MI conventions) to the CIL convention.
         """
         result = {}
-        centre_of_rotation = centre_of_rotation
-        tilt = tilt
+        cor = cor
         offset = 5.0
         angle = 5.0
 
@@ -118,3 +120,9 @@ class Geometry(AcquisitionGeometry):
         result["angle"] = (angle, 'radian')
 
         return result
+
+    def convert_cor_multiple(self, cors):
+        ...
+
+    def convert_tilt(self, tilt):
+        ...
