@@ -358,7 +358,8 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
 
 class MIPlotItem(PlotItem):
     connect: str | np.ndarray = 'auto'
-    scatter_opts: dict = {}
+    pen_dict: dict = {}
+    name_index: int = 0
 
     def __init__(self, join_plot=True, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
@@ -381,18 +382,14 @@ class MIPlotItem(PlotItem):
         scatter_action.triggered.connect(self.set_join_plot)
         self.plot_menu.addAction(scatter_action)
 
-    def plot_data(self, *args, **kwargs):
-        if self.join_plot:
-            return self.plot(*args, **kwargs, connect='auto')
-        else:
-            connect_array = np.full(args[0].shape, False)
-            return self.plot(*args,
-                             **kwargs,
-                             connect=connect_array,
-                             symbolBrush=kwargs['pen'],
-                             symbolPen=kwargs['pen'],
-                             symbol='o',
-                             symbolSize=5)
+    def plot(self, *args, **kwargs):
+        if 'pen' in kwargs:
+            if 'name' not in kwargs:
+                kwargs['name'] = 'plot_' + str(self.name_index)
+                self.name_index += 1
+            self.pen_dict[kwargs['name']] = kwargs['pen']
+        super().plot(*args, **kwargs)
+        self.set_join_plot()
 
     def set_join_plot(self) -> None:
         join_plot = self.join_choice_group.checkedAction().text()
@@ -403,16 +400,10 @@ class MIPlotItem(PlotItem):
                 self.join_plot = False
         for item in self.items:
             if isinstance(item, PlotDataItem.PlotDataItem):
-                item_data = item.getData()
                 if self.join_plot:
-                    item.opts['symbol'] = None
-                    item.setData(item_data[0], item_data[1], connect='auto')
+                    item.setSymbol(None)
+                    item.setPen(self.pen_dict[item.name()])
                 else:
-                    connect_array = np.full(item.getData()[0].shape, False)
-                    item.setData(item_data[0],
-                                 item_data[1],
-                                 connect=connect_array,
-                                 symbolBrush=item.opts['pen'],
-                                 symbolPen=item.opts['pen'],
-                                 symbol='o',
-                                 symbolSize=5)
+                    item.setPen(None)
+                    item.setSymbol('o')
+                    item.setSymbolBrush(self.pen_dict[item.name()])

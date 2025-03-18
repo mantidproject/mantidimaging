@@ -480,10 +480,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def show_visible_spectrums(self) -> None:
         for key, value in self.spectrum_widget.spectrum_data_dict.items():
             if value is not None and key in self.spectrum_widget.roi_dict:
-                self.spectrum_widget.spectrum.plot_data(self.presenter.model.tof_data,
-                                                        value,
-                                                        name=key,
-                                                        pen=self.spectrum_widget.roi_dict[key].colour)
+                self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
+                                                   value,
+                                                   name=key,
+                                                   pen=self.spectrum_widget.roi_dict[key].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """
