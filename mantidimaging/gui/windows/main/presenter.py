@@ -148,8 +148,6 @@ class MainWindowPresenter(BasePresenter):
         self._add_dataset_to_view(dataset)
         self.view.model_changed.emit()
 
-        self.view.close_welcome_screen()
-
     def save_nexus_file(self) -> None:
         assert self.view.nexus_save_dialog is not None
         dataset_id = self.view.nexus_save_dialog.selected_dataset
@@ -189,8 +187,6 @@ class MainWindowPresenter(BasePresenter):
             self.view.model_changed.emit()
             task.result = None
             self._open_window_if_not_open()
-
-            self.view.close_welcome_screen()
         else:
             raise RuntimeError(self.LOAD_ERROR_STRING.format(task.error))
 
@@ -397,8 +393,6 @@ class MainWindowPresenter(BasePresenter):
 
         start_async_task_view(self.view, self.model.do_load_dataset, self._on_dataset_load_done,
                               {'parameters': loading_params})
-
-        self.view.close_welcome_screen()
         return True
 
     def wizard_action_load(self) -> None:

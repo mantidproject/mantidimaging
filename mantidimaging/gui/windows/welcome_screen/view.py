@@ -46,15 +46,20 @@ class WelcomeScreenView(QWidget):
         banner = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_banner.png'
         self.banner_label = QLabel(self)
         self.banner_label.setPixmap(QPixmap(banner))
-        self.banner_label.setScaledContents(True)
+        self.banner_label.setScaledContents(False)
         self.banner_label.setMinimumSize(self.Banner_container.size())
         self.Banner_container.layout().addWidget(self.banner_label)
 
         self.close_button = CloseButton(self)
+
         self.close_button.clicked.connect(self.close_welcome_screen)
 
-        # Make sure the button appears in the top-right corner after rendering
-        QTimer.singleShot(0, self.position_close_button)
+        # Done to make sure the button appears in the top-right corner after rendering
+        QTimer.singleShot(1, self.position_close_button)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.position_close_button()
 
     def position_close_button(self):
         self.close_button.move(self.banner_label.width() - self.close_button.width() - 1, 10)

@@ -104,6 +104,7 @@ class MainWindowView(BaseMainWindowView):
     live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
     welcome_presenter: WelcomeScreenPresenter | None = None
+    welcome_dock: QDockWidget | None = None
 
     image_load_dialog: ImageLoadDialog | None = None
     image_save_dialog: ImageSaveDialog | None = None
@@ -122,7 +123,10 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
-        self.create_welcome_screen()
+        self.args = CommandLineArguments()
+
+        if not self.args.path():
+            self.create_welcome_screen()
 
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
@@ -148,8 +152,8 @@ class MainWindowView(BaseMainWindowView):
 
         # Recon and operation windows are launched from view using self.args
         # if passed as flags through cli once data is loaded
-        self.args = CommandLineArguments()
         if self.args.path():
+            # DON'T OPEN WELCOME WINDOW
             for filepath in list(self.args.path()):
                 self.presenter.load_stacks_from_folder(filepath)
         if self.args.live_viewer() != "":
@@ -176,12 +180,14 @@ class MainWindowView(BaseMainWindowView):
     def create_welcome_screen(self):
         self.welcome_presenter = WelcomeScreenPresenter(self)
         self.welcome_screen = self.welcome_presenter.view
-        self.welcome_dock = QDockWidget("", self)
+        self.welcome_dock = QDockWidget("About Mantid Imaging", self)
         self.welcome_dock.setWidget(self.welcome_screen)
         self.welcome_dock.setTitleBarWidget(QWidget())
         self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
         self.welcome_dock.setStyleSheet("QDockWidget::title { background: transparent; }")
         self.welcome_dock.setAllowedAreas(Qt.RightDockWidgetArea)
+
+        self.welcome_dock.id = "welcome_screen"
         self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
 
     def refresh_welcome_links(self):
@@ -206,10 +212,14 @@ class MainWindowView(BaseMainWindowView):
         super()._window_ready()
 
     def show_about(self) -> None:
-        if not self.presenter.have_active_stacks and self.welcome_dock is None:
+        if self.welcome_dock is None:
             self.create_welcome_screen()
 
-        self.show_welcome_screen(True)
+        if self.welcome_dock:
+            self.welcome_dock.setVisible(True)
+
+            if self.presenter.have_active_stacks:
+                self.presenter._tabify_stack_window(self.welcome_dock)
 
     def setup_shortcuts(self) -> None:
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
@@ -268,13 +278,6 @@ class MainWindowView(BaseMainWindowView):
     def open_online_documentation() -> None:
         url = QUrl("https://mantidproject.github.io/mantidimaging/")
         QDesktopServices.openUrl(url)
-
-    '''
-    def show_about(self) -> None:
-        """Ensure the docked welcome screen is shown"""
-        if not self.welcome_dock.isVisible():
-            self.welcome_dock.show()
-    '''
 
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
@@ -411,7 +414,7 @@ class MainWindowView(BaseMainWindowView):
     def close_welcome_screen(self):
         if self.welcome_dock:
             self.removeDockWidget(self.welcome_dock)
-            self.welcome_dock.deleteLater()
+            self.welcome_dock.setParent(None)
             self.welcome_dock = None
             self.welcome_screen = None
 
@@ -545,6 +548,7 @@ class MainWindowView(BaseMainWindowView):
                             stack: ImageStack,
                             position: Qt.DockWidgetArea = Qt.DockWidgetArea.RightDockWidgetArea,
                             floating: bool = False) -> StackVisualiserView:
+        self.close_welcome_screen()
         stack.make_name_unique(self.stack_names)
         stack_vis = StackVisualiserView(self, stack)
 

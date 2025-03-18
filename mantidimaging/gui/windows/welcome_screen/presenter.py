@@ -59,7 +59,7 @@ class WelcomeScreenPresenter:
         while layout.count():
             item = layout.takeAt(0)
             if item.widget():
-                item.widget().deleteLater()
+                item.widget().setParent(None)
 
         self.link_count = 0
         self.set_up_links()
