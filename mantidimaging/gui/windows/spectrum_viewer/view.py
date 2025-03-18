@@ -388,8 +388,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         roi may not exist in the spectrum widget yet depending on when method is called
         """
         self.spectrum_widget.spectrum_data_dict[name] = spectrum_data
-        self.spectrum_widget.spectrum.clearPlots()
-
         self.show_visible_spectrums()
 
     def clear(self) -> None:
@@ -460,21 +458,20 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param visible: Whether the ROI is visible.
         """
         self.spectrum_widget.set_roi_visibility_flags(roi_name, visible=visible)
-
-        if not visible:
-            self.spectrum_widget.spectrum_data_dict[roi_name] = None
-
-        self.spectrum_widget.spectrum.clearPlots()
-        self.spectrum_widget.spectrum.update()
         self.show_visible_spectrums()
 
     def show_visible_spectrums(self) -> None:
-        for key, value in self.spectrum_widget.spectrum_data_dict.items():
-            if value is not None and key in self.spectrum_widget.roi_dict:
-                self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
-                                                   value,
-                                                   name=key,
-                                                   pen=self.spectrum_widget.roi_dict[key].colour)
+        self.spectrum_widget.spectrum.clearPlots()
+
+        for roi_name, spectrum_data in self.spectrum_widget.spectrum_data_dict.items():
+            if roi_name not in self.spectrum_widget.roi_dict:
+                continue
+            if not self.spectrum_widget.roi_dict[roi_name].isVisible():
+                continue
+            self.spectrum_widget.spectrum.plot(self.presenter.model.tof_data,
+                                               spectrum_data,
+                                               name=roi_name,
+                                               pen=self.spectrum_widget.roi_dict[roi_name].colour)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """

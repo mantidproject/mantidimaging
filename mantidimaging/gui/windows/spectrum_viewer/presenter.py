@@ -404,8 +404,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_tof_unit_change()
 
     def refresh_spectrum_plot(self) -> None:
-        self.view.spectrum_widget.spectrum.clearPlots()
-        self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
