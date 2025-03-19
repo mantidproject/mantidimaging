@@ -211,7 +211,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.shuttercount_norm_enabled(),
         )
         self.view.set_spectrum(roi.name, spectrum)
-        self.view.spectrum_widget.spectrum.update()
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
@@ -406,8 +405,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_tof_unit_change()
 
     def refresh_spectrum_plot(self) -> None:
-        self.view.spectrum_widget.spectrum.clearPlots()
-        self.view.spectrum_widget.spectrum.update()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum_plot_widget.add_range(*self.model.tof_plot_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
@@ -429,7 +426,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def do_adjust_roi(self) -> None:
         new_roi = self.view.roi_properties_widget.as_roi()
-        self.view.spectrum_widget.adjust_roi(new_roi, self.view.table_view.current_roi_name)
+        roi_name = self.view.table_view.current_roi_name
+        self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
+        self.handle_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
