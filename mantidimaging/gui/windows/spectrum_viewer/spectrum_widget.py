@@ -106,7 +106,7 @@ class SpectrumWidget(QWidget):
     @param parent: The parent widget
     """
     image: MIMiniImageView
-    MIPlotItem: PlotItem
+    spectrum: MIPlotItem
     range_control: LinearRegionItem
 
     range_changed = pyqtSignal(object)
@@ -357,13 +357,9 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
 
 
 class MIPlotItem(PlotItem):
-    connect: str | np.ndarray = 'auto'
-    pen_dict: dict = {}
-    name_index: int = 0
 
-    def __init__(self, join_plot=True, *args, **kwds) -> None:
+    def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
-        self.join_plot = join_plot
         self.vb = self.getViewBox()
         self.menu = self.vb.menu
         self.plot_menu = self.menu.addMenu("Plotting Options")
@@ -383,26 +379,18 @@ class MIPlotItem(PlotItem):
         self.plot_menu.addAction(scatter_action)
 
     def plot(self, *args, **kwargs):
-        if 'name' not in kwargs:
-            kwargs['name'] = 'plot_' + str(self.name_index)
-            self.name_index += 1
-        super().plot(*args, **kwargs)
-        self.pen_dict[kwargs['name']] = self.items[-1].opts['pen']
+        new_plot = super().plot(*args, **kwargs)
+        new_plot.original_pen = new_plot.opts['pen']
         self.set_join_plot()
 
     def set_join_plot(self) -> None:
-        join_plot = self.join_choice_group.checkedAction().text()
-        match join_plot:
-            case "Joined":
-                self.join_plot = True
-            case "Scatter":
-                self.join_plot = False
+        join_plot = self.join_choice_group.checkedAction().text() == "Joined"
         for item in self.items:
             if isinstance(item, PlotDataItem.PlotDataItem):
-                if self.join_plot:
+                if join_plot:
                     item.setSymbol(None)
-                    item.setPen(self.pen_dict[item.name()])
+                    item.setPen(item.original_pen)
                 else:
                     item.setPen(None)
                     item.setSymbol('o')
-                    item.setSymbolBrush(self.pen_dict[item.name()])
+                    item.setSymbolBrush(item.original_pen)
