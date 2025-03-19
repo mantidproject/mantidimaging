@@ -383,12 +383,11 @@ class MIPlotItem(PlotItem):
         self.plot_menu.addAction(scatter_action)
 
     def plot(self, *args, **kwargs):
-        if 'pen' in kwargs:
-            if 'name' not in kwargs:
-                kwargs['name'] = 'plot_' + str(self.name_index)
-                self.name_index += 1
-            self.pen_dict[kwargs['name']] = kwargs['pen']
+        if 'name' not in kwargs:
+            kwargs['name'] = 'plot_' + str(self.name_index)
+            self.name_index += 1
         super().plot(*args, **kwargs)
+        self.pen_dict[kwargs['name']] = self.items[-1].opts['pen']
         self.set_join_plot()
 
     def set_join_plot(self) -> None:
