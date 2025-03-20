@@ -4,6 +4,7 @@ from __future__ import annotations
 from unittest import mock
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
+from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 
 
 class WelcomeWindowTest(BaseEyesTest):
@@ -19,9 +20,9 @@ class WelcomeWindowTest(BaseEyesTest):
         versions.get_conda_installed_version.return_value = None
         versions.needs_update.return_value = False
 
-        self.imaging.show_about()
+        welcome_presenter = WelcomeScreenPresenter()
 
-        self.check_target(widget=self.imaging.welcome_window.view)
+        self.check_target(widget=welcome_presenter.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
         versions.needs_update.assert_called_once()
 
@@ -34,9 +35,9 @@ class WelcomeWindowTest(BaseEyesTest):
         versions.get_conda_installed_version.return_value = None
         versions.needs_update.return_value = False
 
-        self.imaging.actionAbout.trigger()
+        welcome_presenter = WelcomeScreenPresenter()
 
-        self.check_target(widget=self.imaging.welcome_window.view)
+        self.check_target(widget=welcome_presenter.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
         versions.needs_update.assert_called_once()
 
@@ -47,9 +48,9 @@ class WelcomeWindowTest(BaseEyesTest):
         versions.get_version.return_value = "version_number"
         versions.get_conda_installed_version.return_value = None
 
-        self.imaging.actionAbout.trigger()
+        welcome_presenter = WelcomeScreenPresenter()
 
-        self.check_target(widget=self.imaging.welcome_window.view)
+        self.check_target(widget=welcome_presenter.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
         versions.needs_update.assert_called_once()
 
@@ -61,8 +62,8 @@ class WelcomeWindowTest(BaseEyesTest):
         versions.get_version.return_value = "version_number"
         versions.get_conda_installed_version.return_value = None
 
-        self.imaging.actionAbout.trigger()
+        welcome_presenter = WelcomeScreenPresenter()
 
-        self.check_target(widget=self.imaging.welcome_window.view)
+        self.check_target(widget=welcome_presenter.view)
         cuda_check.CudaChecker.return_value.cuda_is_present.assert_called_once()
         versions.needs_update.assert_called_once()

@@ -100,7 +100,7 @@ class GuiSystemBase(unittest.TestCase):
         raise RuntimeError("_click_InputDialog did not find QInputDialog")
 
     def _close_welcome(self):
-        self.main_window.welcome_window.view.close()
+        self.main_window.welcome_screen.close()
 
     @classmethod
     def _wait_for_widget_visible(cls, widget_type, delay=0.1, max_retry=100):

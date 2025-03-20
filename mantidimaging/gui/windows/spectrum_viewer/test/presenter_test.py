@@ -27,7 +27,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.WelcomeScreenPresenter"):
+        with mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.show_welcome_screen"):
             self.main_window = MainWindowView()
         self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()

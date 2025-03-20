@@ -1,46 +1,93 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
+from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton
+from PyQt5.QtGui import QPixmap, QIcon
 
 from mantidimaging.core.utility import finder
-from PyQt5.QtWidgets import QLabel
-
-from mantidimaging.gui.mvp_base import BaseDialogView
+from mantidimaging.gui.utility import compile_ui
 
 
-class WelcomeScreenView(BaseDialogView):
+class CloseButton(QPushButton):
+    """Custom Close Button with hover effect"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.default_icon = QIcon(finder.ROOT_PATH + "/gui/ui/images/x_button.png")
+        self.hover_icon = QIcon(finder.ROOT_PATH + "/gui/ui/images/x_button_hover.png")
+
+        self.setIcon(self.default_icon)
+        self.setIconSize(QSize(20, 20))
+        self.setFixedSize(25, 25)
+        self.setStyleSheet("background: transparent; border: none;")
+
+    def enterEvent(self, event):
+        """Change icon when hovering over the button"""
+        self.setIcon(self.hover_icon)
+
+    def leaveEvent(self, event):
+        """Revert icon when mouse leaves the button"""
+        self.setIcon(self.default_icon)
+
+
+class WelcomeScreenView(QWidget):
 
     def __init__(self, parent, presenter):
-        super().__init__(parent, "gui/ui/welcome_screen_dialog.ui")
-
-        # The background image URL must use forward slashes on both Windows and Linux
-        bg_image = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_screen_background.png'
-        self.setStyleSheet("#WelcomeScreenDialog {"
-                           f"border-image:url({bg_image});"
-                           "min-width:30em; min-height:20em;max-width:30em; max-height:20em;}")
+        super().__init__(parent)
         self.presenter = presenter
 
-        self.issue_box.setVisible(False)
+        compile_ui("gui/ui/welcome_widget.ui", self)
 
-        self.show_at_start.stateChanged.connect(presenter.show_at_start_changed)
-        self.ok_button.clicked.connect(self.close)
+        if not self.Banner_container.layout():
+            self.Banner_container.setLayout(QVBoxLayout())
 
-    def get_show_at_start(self) -> None:
-        return self.show_at_start.isChecked()
+        # Set the banner image
+        banner = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_banner.png'
+        self.banner_label = QLabel(self)
+        self.banner_label.setPixmap(QPixmap(banner))
+        self.banner_label.setScaledContents(False)
+        self.banner_label.setMinimumSize(self.Banner_container.size())
+        self.Banner_container.layout().addWidget(self.banner_label)
 
-    def set_show_at_start(self, checked: bool) -> None:
-        self.show_at_start.setChecked(checked)
+        self.close_button = CloseButton(self)
 
-    def set_version_label(self, contents: str) -> None:
-        self.version_label.setText(contents)
+        self.close_button.clicked.connect(self.close_welcome_screen)
+
+        # Done to make sure the button appears in the top-right corner after rendering
+        QTimer.singleShot(1, self.position_close_button)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.position_close_button()
+
+    def position_close_button(self):
+        self.close_button.move(self.banner_label.width() - self.close_button.width() - 1, 10)
+
+    def close_welcome_screen(self):
+        self.parent().close()
+
+    def set_version_label(self, version_text: str):
+        self.version_label.setText(version_text)
+        self.version_label.setStyleSheet("QLabel { font-size: 18px; margin-left: 5px; }")
 
     def add_link(self, label: str, row: int) -> None:
-        link_label = QLabel(label)
+        link_label = QLabel()
+        link_label.setTextFormat(Qt.RichText)
+        link_label.setText(label)
         link_label.setOpenExternalLinks(True)
-        self.link_box_layout.addWidget(link_label, row, 0)
 
-    def add_issues(self, contents: str) -> None:
-        self.issue_box.setVisible(True)
-        issues_label = QLabel(contents)
-        issues_label.setOpenExternalLinks(True)
-        self.issue_box_layout.addWidget(issues_label)
+        link_label.setStyleSheet("QLabel { font-size: 18px; margin-left: 5px; }")
+        self.link_box_layout.addWidget(link_label, row, 0, Qt.AlignLeft)
+        self.link_box_layout.update()
+
+    def add_issues(self, issues_text: str) -> None:
+        self.issues_label.setWordWrap(True)
+        self.issues_label.setStyleSheet("QLabel { "
+                                        "  color: red; "
+                                        "  font-weight: bold; "
+                                        "  font-size: 18px; "
+                                        "  margin-left: 5px; "
+                                        "  margin-top: 5px; "
+                                        "}")
+        self.issues_label.setText(issues_text)

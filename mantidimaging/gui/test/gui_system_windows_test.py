@@ -17,10 +17,10 @@ class TestGuiSystemWindows(GuiSystemBase):
 
     def test_main_window_shows(self):
         self.assertTrue(self.main_window.isVisible())
-        self.assertTrue(self.main_window.welcome_window.view.isVisible())
+        self.assertTrue(self.main_window.welcome_screen.isVisible())
         QTest.qWait(SHOW_DELAY)
         self._close_welcome()
-        self.assertFalse(self.main_window.welcome_window.view.isVisible())
+        self.assertFalse(self.main_window.welcome_screen.isVisible())
         QTest.qWait(SHOW_DELAY)
 
     def test_loaded_data(self):

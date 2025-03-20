@@ -14,7 +14,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -103,6 +103,8 @@ class MainWindowView(BaseMainWindowView):
     spectrum_viewer: SpectrumViewerWindowView | None = None
     live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
+    welcome_presenter: WelcomeScreenPresenter | None = None
+    welcome_dock: QDockWidget | None = None
 
     image_load_dialog: ImageLoadDialog | None = None
     image_save_dialog: ImageSaveDialog | None = None
@@ -112,8 +114,6 @@ class MainWindowView(BaseMainWindowView):
     move_stack_dialog: MoveStackDialog | None = None
 
     default_theme_enabled: int = 1
-
-    welcome_window: WelcomeScreenPresenter | None = None
     wizard: WizardPresenter | None = None
 
     def __init__(self, open_dialogs: bool = True):
@@ -123,13 +123,17 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter = MainWindowPresenter(self)
 
+        self.args = CommandLineArguments()
+
+        if not self.args.path():
+            self.create_welcome_screen()
+
         status_bar = self.statusBar()
         self.status_bar_label = QLabel("", self)
         status_bar.addPermanentWidget(self.status_bar_label)
 
         self.setup_shortcuts()
         self.update_shortcuts()
-
         self.setAcceptDrops(True)
         base_path = finder.ROOT_PATH
 
@@ -144,16 +148,12 @@ class MainWindowView(BaseMainWindowView):
             bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
         self.setWindowIcon(QIcon(bg_image))
 
-        self.welcome_window = None
-        if self.open_dialogs and WelcomeScreenPresenter.show_today():
-            self.show_about()
-
         self.wizard = None
 
         # Recon and operation windows are launched from view using self.args
         # if passed as flags through cli once data is loaded
-        self.args = CommandLineArguments()
         if self.args.path():
+            # DON'T OPEN WELCOME WINDOW
             for filepath in list(self.args.path()):
                 self.presenter.load_stacks_from_folder(filepath)
         if self.args.live_viewer() != "":
@@ -177,10 +177,49 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.do_update_UI()
 
+    def create_welcome_screen(self):
+        self.welcome_presenter = WelcomeScreenPresenter(self)
+        self.welcome_screen = self.welcome_presenter.view
+        self.welcome_dock = QDockWidget("About Mantid Imaging", self)
+        self.welcome_dock.setWidget(self.welcome_screen)
+        self.welcome_dock.setTitleBarWidget(QWidget())
+        self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
+        self.welcome_dock.setStyleSheet("QDockWidget::title { background: transparent; }")
+        self.welcome_dock.setAllowedAreas(Qt.RightDockWidgetArea)
+
+        self.welcome_dock.id = "welcome_screen"
+        self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+
+    def refresh_welcome_links(self):
+        """
+        Called when the theme changes, so we can rebuild or re-color
+        the welcome screen’s links if it's still visible.
+        """
+        if self.welcome_presenter:
+            self.welcome_presenter.recolor_links()
+
+    def show_welcome_screen(self, show: bool = True):
+        if self.welcome_dock:
+            if show:
+                self.welcome_dock.show()
+                self.welcome_dock.repaint()
+            else:
+                self.welcome_dock.hide()
+
     def _window_ready(self) -> None:
         if perf_logger.isEnabledFor(1):
             perf_logger.info(f"Mantid Imaging ready in {time.monotonic() - process_start_time}")
         super()._window_ready()
+
+    def show_about(self) -> None:
+        if self.welcome_dock is None:
+            self.create_welcome_screen()
+
+        if self.welcome_dock:
+            self.welcome_dock.setVisible(True)
+
+            if self.presenter.have_active_stacks:
+                self.presenter._tabify_stack_window(self.welcome_dock)
 
     def setup_shortcuts(self) -> None:
         self.actionLoadDataset.triggered.connect(self.show_image_load_dialog)
@@ -240,10 +279,6 @@ class MainWindowView(BaseMainWindowView):
         url = QUrl("https://mantidproject.github.io/mantidimaging/")
         QDesktopServices.openUrl(url)
 
-    def show_about(self) -> None:
-        self.welcome_window = WelcomeScreenPresenter(self)
-        self.welcome_window.show()
-
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
@@ -288,6 +323,8 @@ class MainWindowView(BaseMainWindowView):
             return
 
         self.presenter.load_image_stack(selected_file)
+
+        self.close_welcome_screen()
 
     def load_sample_log_dialog(self) -> None:
         stack_selector = DatasetSelectorDialog(main_window=self,
@@ -374,6 +411,13 @@ class MainWindowView(BaseMainWindowView):
         QMessageBox.information(self, "Load complete", f"Angles from {selected_file} were loaded into "
                                 f"{stack_id}.")
 
+    def close_welcome_screen(self):
+        if self.welcome_dock:
+            self.removeDockWidget(self.welcome_dock)
+            self.welcome_dock.setParent(None)
+            self.welcome_dock = None
+            self.welcome_screen = None
+
     def execute_image_file_save(self) -> None:
         self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)
 
@@ -415,6 +459,8 @@ class MainWindowView(BaseMainWindowView):
             self.settings_window.show()
 
     def show_recon_window(self) -> None:
+        self.close_welcome_screen()
+
         if not self.recon:
             self.recon = ReconstructWindowView(self)
             self.recon.show()
@@ -502,6 +548,7 @@ class MainWindowView(BaseMainWindowView):
                             stack: ImageStack,
                             position: Qt.DockWidgetArea = Qt.DockWidgetArea.RightDockWidgetArea,
                             floating: bool = False) -> StackVisualiserView:
+        self.close_welcome_screen()
         stack.make_name_unique(self.stack_names)
         stack_vis = StackVisualiserView(self, stack)
 
