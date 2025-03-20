@@ -228,7 +228,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum_widget = SpectrumWidget(main_window)
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
-
+        self.spectrum_widget.image.add_save_image_action()
         self.imageLayout.addWidget(self.spectrum_widget)
         self.fittingLayout.addWidget(QLabel("fitting"))
         self.exportLayout.addWidget(QLabel("export"))

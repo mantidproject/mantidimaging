@@ -6,10 +6,13 @@ from itertools import chain, tee
 from typing import TYPE_CHECKING
 from weakref import WeakSet
 
+from PyQt5.QtCore import QRectF
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
-
+from tifffile import tifffile
+from PyQt5.QtWidgets import QAction, QFileDialog, QMessageBox
+from PyQt5.QtGui import QPixmap, QPainter, QColor, qRed
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
@@ -50,6 +53,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.hist = HistogramLUTItem(self.im)
         graveyard.append(self.vb)
         graveyard.append(self.hist.vb)
+        self.add_save_image_action()
 
         # Sub-layout prevents resizing issues when details text changes
         image_layout = self.addLayout(colspan=2)
@@ -65,6 +69,60 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.histogram_siblings: WeakSet[MIMiniImageView] = WeakSet()
 
         self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
+
+    def add_save_image_action(self):
+        """Add 'Save as Image' options only once."""
+        if self.vb.menu and not any(action.text().startswith("Save") for action in self.vb.menu.actions()):
+            save_raw_action = QAction("Save Raw Image", self)
+            save_raw_action.triggered.connect(self.save_raw_image)
+            self.vb.menu.addAction(save_raw_action)
+
+            save_displayed_action = QAction("Save Displayed Image", self)
+            save_displayed_action.triggered.connect(self.save_displayed_image)
+            self.vb.menu.addAction(save_displayed_action)
+
+    def save_raw_image(self):
+        """Save the raw image data without any color scaling."""
+        if self.image_data is None:
+            return
+        parent_widget = self.window() if self.window() else None
+        file_path, _ = QFileDialog.getSaveFileName(parent_widget, "Save Raw Image", "", "TIFF Image (*.tif)")
+        if file_path:
+            tifffile.imwrite(file_path, self.image_data)
+
+    def save_displayed_image(self):
+        if self.image_data is None:
+            return
+        parent = self.window() if self.window() else None
+        choice = QMessageBox.question(parent, "Save Image", "Include threshold bar?",
+                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+        if choice == QMessageBox.Cancel:
+            return
+        file_path, _ = QFileDialog.getSaveFileName(parent, "Save Displayed Image", "", "TIFF Image (*.tif)")
+        if not file_path:
+            return
+        img = self.im.image
+        if img is None or not isinstance(img, np.ndarray):
+            return
+        img_scaled = np.clip(
+            ((img - img.min()) / (img.max() - img.min()) *
+             255), 0, 255).astype(np.uint8) if img.max() > img.min() else np.zeros_like(img, dtype=np.uint8)
+        if choice == QMessageBox.No:
+            tifffile.imwrite(file_path, img_scaled)
+            return
+        hist_pixmap = QPixmap(self.hist.boundingRect().size().toSize())
+        hist_pixmap.fill(QColor(255, 255, 255))
+        painter = QPainter(hist_pixmap)
+        self.hist.scene().render(painter, QRectF(hist_pixmap.rect()), self.hist.boundingRect())
+        painter.end()
+        hist_img = hist_pixmap.toImage()
+        hist_np = np.array([[qRed(hist_img.pixel(x, y)) for x in range(hist_img.width())]
+                            for y in range(hist_img.height())],
+                           dtype=np.uint8)
+        hist_resized = hist_np[np.linspace(0, hist_np.shape[0] - 1, img_scaled.shape[0]).astype(int)]
+        combined_image = np.pad(img_scaled, ((0, 0), (0, hist_resized.shape[1] + 20)), constant_values=255)
+        combined_image[:, img_scaled.shape[1] + 20:] = hist_resized
+        tifffile.imwrite(file_path, combined_image)
 
     @property
     def histogram(self) -> HistogramLUTItem:
