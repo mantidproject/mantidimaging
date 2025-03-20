@@ -8,6 +8,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtGui import QColor
 from parameterized import parameterized
+from pyqtgraph import mkPen
+from pyqtgraph.graphicsItems.PlotItem import PlotItem
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, SensibleROI
@@ -179,3 +181,26 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.spectrum_window.roi_form.exportTabs.setCurrentIndex(0)
         QTest.qWait(SHORT_DELAY)
         self.assertEqual('roi', self._property_box_name())
+
+    def test_switch_from_joined_to_scatter_plot(self):
+        assert self.spectrum_window.spectrum.spectrum.join_choice_group.checkedAction().text() == 'Line'
+        for action in self.spectrum_window.spectrum.spectrum.join_choice_group.actions():
+            if action.text() == 'Points':
+                action.trigger()
+        QTest.qWait(SHORT_DELAY)
+        self.assertEqual(self.spectrum_window.spectrum.spectrum.join_plot, False)
+        self.assertEqual(self.spectrum_window.spectrum.spectrum.items[-1].opts['symbol'], 'o')
+        self.assertEqual(self.spectrum_window.spectrum.spectrum.items[-1].opts['pen'].color().getRgb(),
+                         mkPen(None).color().getRgb())
+
+    def test_add_roi_with_scatter_plot(self):
+        for action in self.spectrum_window.spectrum.spectrum.join_choice_group.actions():
+            if action.text() == 'Points':
+                action.trigger()
+        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        self.assertEqual(self.spectrum_window.spectrum.spectrum.join_plot, False)
+        for item in self.spectrum_window.spectrum.spectrum.items:
+            if isinstance(item, PlotItem):
+                self.assertEqual(item.opts['symbol'], 'o')
+                self.assertEqual(item.opts['pen'].color().getRgb(), mkPen(None).color().getRgb())
+        self.assertEqual(len(self.spectrum_window.spectrum.spectrum.items), 3)
