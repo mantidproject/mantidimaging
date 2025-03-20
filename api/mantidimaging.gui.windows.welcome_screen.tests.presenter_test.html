@@ -603,47 +603,32 @@ document.write(`
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_add_link">
 <span class="sig-name descname"><span class="pre">test_add_link</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_add_link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_add_link" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Test that add_link(…) calls view.add_link(…) with correct HTML and increments link_count.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_check_issues">
 <span class="sig-name descname"><span class="pre">test_check_issues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cuda_check_mock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">versions_mock</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_check_issues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_check_issues" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>If there’s a needed update and no CUDA, we expect two lines of issues.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_init">
 <span class="sig-name descname"><span class="pre">test_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_init" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Ensure do_set_up() calls set_version_label(…), set_up_links(), and check_issues().</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_no_issues_added">
 <span class="sig-name descname"><span class="pre">test_no_issues_added</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cuda_check_mock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">versions_mock</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_no_issues_added"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_no_issues_added" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_set_up_show_at_start">
-<span class="sig-name descname"><span class="pre">test_set_up_show_at_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_set_up_show_at_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_set_up_show_at_start" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>If there’s no needed update and CUDA is present, no issues are reported to the view.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show">
 <span class="sig-name descname"><span class="pre">test_show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_change">
-<span class="sig-name descname"><span class="pre">test_show_at_start_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_show_at_start_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_change" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_init">
-<span class="sig-name descname"><span class="pre">test_show_at_start_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_show_at_start_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_init" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_today">
-<span class="sig-name descname"><span class="pre">test_show_today</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/welcome_screen/tests/presenter_test.html#WelcomeScreenPresenterTest.test_show_today"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_today" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Ensure the presenter’s show() method calls the view’s show().</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -704,11 +689,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_check_issues"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_check_issues()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_init"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_init()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_no_issues_added"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_no_issues_added()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_set_up_show_at_start"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_set_up_show_at_start()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_show()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_change"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_show_at_start_change()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_init"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_show_at_start_init()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_today"><code class="docutils literal notranslate"><span class="pre">WelcomeScreenPresenterTest.test_show_today()</span></code></a></li>
 </ul>
 </li>
 </ul>

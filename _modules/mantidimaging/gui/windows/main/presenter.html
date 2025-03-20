@@ -1275,7 +1275,9 @@ document.write(`
             <span class="n">app</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
             <span class="n">app</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">apply_stylesheet</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span> <span class="n">invert_secondary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">extra_style</span><span class="p">)</span></div>
+            <span class="n">apply_stylesheet</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span> <span class="n">invert_secondary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">extra_style</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">refresh_welcome_links</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.use_fusion_dark_mode">

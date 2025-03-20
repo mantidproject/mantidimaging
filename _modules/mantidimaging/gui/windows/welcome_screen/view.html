@@ -507,66 +507,125 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.welcome_screen.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QPushButton</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPixmap</span><span class="p">,</span> <span class="n">QIcon</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QLabel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">compile_ui</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseDialogView</span>
+
+<div class="viewcode-block" id="CloseButton">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.CloseButton">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CloseButton</span><span class="p">(</span><span class="n">QPushButton</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom Close Button with hover effect&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_icon</span> <span class="o">=</span> <span class="n">QIcon</span><span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">+</span> <span class="s2">&quot;/gui/ui/images/x_button.png&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hover_icon</span> <span class="o">=</span> <span class="n">QIcon</span><span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">+</span> <span class="s2">&quot;/gui/ui/images/x_button_hover.png&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_icon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QSize</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;background: transparent; border: none;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CloseButton.enterEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.CloseButton.enterEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enterEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change icon when hovering over the button&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hover_icon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CloseButton.leaveEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.CloseButton.leaveEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">leaveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Revert icon when mouse leaves the button&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_icon</span><span class="p">)</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="WelcomeScreenView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">WelcomeScreenView</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WelcomeScreenView</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">presenter</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;gui/ui/welcome_screen_dialog.ui&quot;</span><span class="p">)</span>
-
-        <span class="c1"># The background image URL must use forward slashes on both Windows and Linux</span>
-        <span class="n">bg_image</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/gui/ui/images/welcome_screen_background.png&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;#WelcomeScreenDialog {&quot;</span>
-                           <span class="sa">f</span><span class="s2">&quot;border-image:url(</span><span class="si">{</span><span class="n">bg_image</span><span class="si">}</span><span class="s2">);&quot;</span>
-                           <span class="s2">&quot;min-width:30em; min-height:20em;max-width:30em; max-height:20em;}&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">issue_box</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">compile_ui</span><span class="p">(</span><span class="s2">&quot;gui/ui/welcome_widget.ui&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_at_start_changed</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">Banner_container</span><span class="o">.</span><span class="n">layout</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Banner_container</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">QVBoxLayout</span><span class="p">())</span>
 
-<div class="viewcode-block" id="WelcomeScreenView.get_show_at_start">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.get_show_at_start">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div>
+        <span class="c1"># Set the banner image</span>
+        <span class="n">banner</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/gui/ui/images/welcome_banner.png&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">banner_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">banner_label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">(</span><span class="n">banner</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">banner_label</span><span class="o">.</span><span class="n">setScaledContents</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">banner_label</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Banner_container</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Banner_container</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">banner_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span> <span class="o">=</span> <span class="n">CloseButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close_welcome_screen</span><span class="p">)</span>
+
+        <span class="c1"># Done to make sure the button appears in the top-right corner after rendering</span>
+        <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_close_button</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WelcomeScreenView.resizeEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.resizeEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_close_button</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="WelcomeScreenView.set_show_at_start">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.set_show_at_start">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checked</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">show_at_start</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">checked</span><span class="p">)</span></div>
+<div class="viewcode-block" id="WelcomeScreenView.position_close_button">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.position_close_button">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">position_close_button</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">banner_label</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_button</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WelcomeScreenView.close_welcome_screen">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.close_welcome_screen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.set_version_label">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.set_version_label">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_version_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">version_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_version_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">version_text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QLabel { font-size: 18px; margin-left: 5px; }&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.add_link">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.add_link">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">link_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">link_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
+        <span class="n">link_label</span><span class="o">.</span><span class="n">setTextFormat</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RichText</span><span class="p">)</span>
+        <span class="n">link_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
         <span class="n">link_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">link_box_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">link_label</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+        <span class="n">link_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QLabel { font-size: 18px; margin-left: 5px; }&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_box_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">link_label</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignLeft</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">link_box_layout</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.add_issues">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.add_issues">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">issue_box</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">issues_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-        <span class="n">issues_label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">issue_box_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">issues_label</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">issues_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">issues_label</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">issues_label</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QLabel { &quot;</span>
+                                        <span class="s2">&quot;  color: red; &quot;</span>
+                                        <span class="s2">&quot;  font-weight: bold; &quot;</span>
+                                        <span class="s2">&quot;  font-size: 18px; &quot;</span>
+                                        <span class="s2">&quot;  margin-left: 5px; &quot;</span>
+                                        <span class="s2">&quot;  margin-top: 5px; &quot;</span>
+                                        <span class="s2">&quot;}&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">issues_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">issues_text</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

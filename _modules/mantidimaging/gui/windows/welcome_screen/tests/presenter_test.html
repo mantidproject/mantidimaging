@@ -534,10 +534,8 @@ document.write(`
         <span class="n">QSettings</span><span class="o">.</span><span class="n">setPath</span><span class="p">(</span><span class="n">QSettings</span><span class="o">.</span><span class="n">Format</span><span class="o">.</span><span class="n">IniFormat</span><span class="p">,</span> <span class="n">QSettings</span><span class="o">.</span><span class="n">Scope</span><span class="o">.</span><span class="n">UserScope</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings_dir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">get_show_at_start</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">MagicMock</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
@@ -546,83 +544,42 @@ document.write(`
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_init">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_init">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">do_set_up</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set_version_label</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show_at_start_init">
-<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_init">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_show_at_start_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_at_start_enabled</span><span class="p">())</span>
-
-        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_at_start_enabled</span><span class="p">())</span>
-
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_at_start_enabled</span><span class="p">())</span></div>
-
-
-<div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show_today">
-<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_today">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_show_today</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_today</span><span class="p">())</span>
-
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_today</span><span class="p">())</span>
-
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0.0&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_today</span><span class="p">())</span>
-
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;welcome_screen/last_run_version&quot;</span><span class="p">,</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_today</span><span class="p">())</span></div>
-
-
-<div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show_at_start_change">
-<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show_at_start_change">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_show_at_start_change</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">get_show_at_start</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">show_at_start_changed</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">get_show_at_start</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">Mock</span><span class="p">(</span><span class="n">return_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">show_at_start_changed</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;welcome_screen/show_at_start&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="WelcomeScreenPresenterTest.test_set_up_show_at_start">
-<a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_set_up_show_at_start">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">test_set_up_show_at_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">set_up_show_at_start</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">set_show_at_start</span><span class="o">.</span><span class="n">assert_called_with</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensure do_set_up() calls set_version_label(...), set_up_links(), and check_issues().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_set_up</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_version_label</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_add_link">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_add_link">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/&quot;</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;&lt;a href=&quot;https://example.com/&quot;&gt;test&lt;/a&gt;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test that add_link(...) calls view.add_link(...) with correct HTML and increments link_count.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">link_count</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">reset_mock</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">link_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">link_name</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">link_name</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">add_link</span><span class="o">.</span><span class="n">assert_has_calls</span><span class="p">([</span><span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span></div>
+        <span class="c1"># Suppose we add one link</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;some &lt;b&gt;rich&lt;/b&gt; text&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_link</span><span class="o">.</span><span class="n">assert_called_with</span><span class="p">(</span><span class="s2">&quot;some &lt;b&gt;rich&lt;/b&gt; text&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Suppose we add another</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;another link&quot;</span><span class="p">)</span>
+        <span class="n">calls</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;some &lt;b&gt;rich&lt;/b&gt; text&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">mock</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;another link&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_link</span><span class="o">.</span><span class="n">assert_has_calls</span><span class="p">(</span><span class="n">calls</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_show">
 <a class="viewcode-back" href="../../../../../../api/mantidimaging.gui.windows.welcome_screen.tests.presenter_test.html#mantidimaging.gui.windows.welcome_screen.tests.presenter_test.WelcomeScreenPresenterTest.test_show">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">show</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensure the presenter&#39;s show() method calls the view&#39;s show().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="o">.</span><span class="n">assert_called_once</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_check_issues">
@@ -630,25 +587,29 @@ document.write(`
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.versions&quot;</span><span class="p">)</span>
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.cuda_check&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_check_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuda_check_mock</span><span class="p">,</span> <span class="n">versions_mock</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If there&#39;s a needed update and no CUDA, we expect two lines of issues.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">log_msgs</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="n">num_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;issue&quot;</span> <span class="o">+</span> <span class="n">num_string</span><span class="p">)</span>
-            <span class="n">log_msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span> <span class="o">+</span> <span class="n">num_string</span><span class="p">)</span>
+        <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;issue1&quot;</span><span class="p">)</span>
+        <span class="n">log_msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;details1&quot;</span><span class="p">)</span>
+
+        <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;issue2&quot;</span><span class="p">)</span>
+        <span class="n">log_msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;details2&quot;</span><span class="p">)</span>
 
         <span class="n">versions_mock</span><span class="o">.</span><span class="n">needs_update</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">versions_mock</span><span class="o">.</span><span class="n">conda_update_message</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">issues</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">log_msgs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">cuda_check_mock</span><span class="o">.</span><span class="n">not_found_message</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">issues</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">log_msgs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">cuda_check_mock</span><span class="o">.</span><span class="n">CudaChecker</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">cuda_check_mock</span><span class="o">.</span><span class="n">not_found_message</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">issues</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">log_msgs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">presenter_log</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">check_issues</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">captured_logs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">check_issues</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">add_issues</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">log_msgs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">presenter_log</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_issues</span><span class="o">.</span><span class="n">assert_called_once_with</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">log_msgs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">captured_logs</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">log_msgs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">captured_logs</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenterTest.test_no_issues_added">
@@ -656,11 +617,14 @@ document.write(`
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.versions&quot;</span><span class="p">)</span>
     <span class="nd">@mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;mantidimaging.gui.windows.welcome_screen.presenter.cuda_check&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_no_issues_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cuda_check_mock</span><span class="p">,</span> <span class="n">versions_mock</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If there&#39;s no needed update and CUDA is present, no issues are reported to the view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">versions_mock</span><span class="o">.</span><span class="n">needs_update</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">cuda_check_mock</span><span class="o">.</span><span class="n">CudaChecker</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">check_issues</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">add_issues</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">check_issues</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_issues</span><span class="o">.</span><span class="n">assert_not_called</span><span class="p">()</span></div>
 </div>
 
 

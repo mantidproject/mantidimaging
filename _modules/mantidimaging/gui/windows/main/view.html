@@ -521,7 +521,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">QPoint</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QDragEnterEvent</span><span class="p">,</span> <span class="n">QDropEvent</span><span class="p">,</span> <span class="n">QDesktopServices</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> \
-    <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span>
+    <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QDockWidget</span><span class="p">,</span> <span class="n">QWidget</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
@@ -615,6 +615,8 @@ document.write(`
     <span class="n">spectrum_viewer</span><span class="p">:</span> <span class="n">SpectrumViewerWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">live_viewer_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LiveViewerWindowView</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">settings_window</span><span class="p">:</span> <span class="n">SettingsWindowView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">welcome_presenter</span><span class="p">:</span> <span class="n">WelcomeScreenPresenter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">welcome_dock</span><span class="p">:</span> <span class="n">QDockWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">image_load_dialog</span><span class="p">:</span> <span class="n">ImageLoadDialog</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">image_save_dialog</span><span class="p">:</span> <span class="n">ImageSaveDialog</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -624,8 +626,6 @@ document.write(`
     <span class="n">move_stack_dialog</span><span class="p">:</span> <span class="n">MoveStackDialog</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">default_theme_enabled</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-
-    <span class="n">welcome_window</span><span class="p">:</span> <span class="n">WelcomeScreenPresenter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">wizard</span><span class="p">:</span> <span class="n">WizardPresenter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_dialogs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
@@ -635,13 +635,17 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">MainWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">CommandLineArguments</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_welcome_screen</span><span class="p">()</span>
+
         <span class="n">status_bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_bar_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">status_bar</span><span class="o">.</span><span class="n">addPermanentWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_bar_label</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setup_shortcuts</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_shortcuts</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">setAcceptDrops</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">base_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span>
 
@@ -656,16 +660,12 @@ document.write(`
             <span class="n">bg_image</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="s2">&quot;gui/ui/images/mantid_imaging_64px.png&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">bg_image</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_window</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_dialogs</span> <span class="ow">and</span> <span class="n">WelcomeScreenPresenter</span><span class="o">.</span><span class="n">show_today</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">show_about</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">wizard</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Recon and operation windows are launched from view using self.args</span>
         <span class="c1"># if passed as flags through cli once data is loaded</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">CommandLineArguments</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">():</span>
+            <span class="c1"># DON&#39;T OPEN WELCOME WINDOW</span>
             <span class="k">for</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">()):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">load_stacks_from_folder</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">live_viewer</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
@@ -689,10 +689,61 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_UI</span><span class="p">()</span>
 
+<div class="viewcode-block" id="MainWindowView.create_welcome_screen">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_welcome_screen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span><span class="o">.</span><span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span> <span class="o">=</span> <span class="n">QDockWidget</span><span class="p">(</span><span class="s2">&quot;About Mantid Imaging&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setTitleBarWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setFeatures</span><span class="p">(</span><span class="n">QDockWidget</span><span class="o">.</span><span class="n">DockWidgetClosable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QDockWidget::title { background: transparent; }&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setAllowedAreas</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s2">&quot;welcome_screen&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.refresh_welcome_links">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.refresh_welcome_links">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh_welcome_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when the theme changes, so we can rebuild or re-color</span>
+<span class="sd">        the welcome screen’s links if it&#39;s still visible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span><span class="o">.</span><span class="n">recolor_links</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.show_welcome_screen">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_welcome_screen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_window_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">perf_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging ready in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">process_start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_window_ready</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MainWindowView.show_about">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_about">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_about</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_welcome_screen</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">have_active_stacks</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="MainWindowView.setup_shortcuts">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.setup_shortcuts">[docs]</a>
@@ -767,13 +818,6 @@ document.write(`
         <span class="n">QDesktopServices</span><span class="o">.</span><span class="n">openUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MainWindowView.show_about">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_about">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_about</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_window</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="MainWindowView.show_image_load_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_image_load_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -831,7 +875,9 @@ document.write(`
         <span class="k">if</span> <span class="n">selected_file</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">load_image_stack</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">load_image_stack</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_welcome_screen</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.load_sample_log_dialog">
@@ -928,6 +974,16 @@ document.write(`
                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="MainWindowView.close_welcome_screen">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.close_welcome_screen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">removeDockWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
 <div class="viewcode-block" id="MainWindowView.execute_image_file_save">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.execute_image_file_save">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_image_file_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -998,6 +1054,8 @@ document.write(`
 <div class="viewcode-block" id="MainWindowView.show_recon_window">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_recon_window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_recon_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_welcome_screen</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon</span> <span class="o">=</span> <span class="n">ReconstructWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1130,6 +1188,7 @@ document.write(`
                             <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                             <span class="n">position</span><span class="p">:</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DockWidgetArea</span> <span class="o">=</span> <span class="n">Qt</span><span class="o">.</span><span class="n">DockWidgetArea</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">,</span>
                             <span class="n">floating</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_welcome_screen</span><span class="p">()</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">make_name_unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_names</span><span class="p">)</span>
         <span class="n">stack_vis</span> <span class="o">=</span> <span class="n">StackVisualiserView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">)</span>
 
