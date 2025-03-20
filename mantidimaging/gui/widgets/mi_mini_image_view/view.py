@@ -6,10 +6,12 @@ from itertools import chain, tee
 from typing import TYPE_CHECKING
 from weakref import WeakSet
 
+from PyQt5.QtCore import QTimer
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
-
+from tifffile import tifffile
+from PyQt5.QtWidgets import QAction, QFileDialog
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
@@ -50,6 +52,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.hist = HistogramLUTItem(self.im)
         graveyard.append(self.vb)
         graveyard.append(self.hist.vb)
+        self.add_save_image_action()
 
         # Sub-layout prevents resizing issues when details text changes
         image_layout = self.addLayout(colspan=2)
@@ -65,6 +68,37 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.histogram_siblings: WeakSet[MIMiniImageView] = WeakSet()
 
         self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
+
+        QTimer.singleShot(0, self.remove_export_menu_item)
+
+    def add_save_image_action(self) -> None:
+        """Add 'Save as Image' options only once."""
+        if not self.vb.menu or any(a.text().startswith("Save") for a in self.vb.menu.actions()):
+            return
+        self.vb.menu.addAction(QAction("Save Raw Image", self, triggered=self.save_raw_image))
+        self.vb.menu.addAction(QAction("Save Displayed Image", self, triggered=self.save_displayed_image))
+
+    def remove_export_menu_item(self) -> None:
+        """Remove 'Export...' from context menu """
+        for s in (self.scene(), self.hist.scene()):
+            if getattr(s, "contextMenu", None):
+                s.contextMenu = [a for a in s.contextMenu if "export" not in a.text().lower()]
+
+    def save_raw_image(self) -> None:
+        """Save the raw image data"""
+        if self.image_data is None:
+            return
+        parent_widget = self.window() if self.window() else None
+        file_path, _ = QFileDialog.getSaveFileName(parent_widget, "Save Raw Image", "", "TIFF Image (*.tif)")
+        if file_path:
+            tifffile.imwrite(file_path, self.image_data)
+
+    def save_displayed_image(self) -> None:
+        """Save the displayed image """
+        parent = self.window() or None
+        path, _ = QFileDialog.getSaveFileName(parent, "Save Displayed Image", "", "PNG Image (*.png)")
+        if path:
+            self.im.save(path)
 
     @property
     def histogram(self) -> HistogramLUTItem:
