@@ -94,20 +94,11 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
             tifffile.imwrite(file_path, self.image_data)
 
     def save_displayed_image(self) -> None:
-        """Save the displayed image with LUT."""
-        if self.image_data is None:
-            return
-        parent_widget = self.window() if self.window() else None
-        file_path, _ = QFileDialog.getSaveFileName(parent_widget, "Save Displayed Image", "", "TIFF Image (*.tif)")
-        if not file_path:
-            return
-        img = self.im.image
-        if img is None or not isinstance(img, np.ndarray):
-            return
-        img_scaled = np.clip(
-            ((img - img.min()) / (img.max() - img.min()) *
-             255), 0, 255).astype(np.uint8) if img.max() > img.min() else np.zeros_like(img, dtype=np.uint8)
-        tifffile.imwrite(file_path, img_scaled)
+        """Save the displayed image """
+        parent = self.window() or None
+        path, _ = QFileDialog.getSaveFileName(parent, "Save Displayed Image", "", "PNG Image (*.png)")
+        if path:
+            self.im.save(path)
 
     @property
     def histogram(self) -> HistogramLUTItem:
