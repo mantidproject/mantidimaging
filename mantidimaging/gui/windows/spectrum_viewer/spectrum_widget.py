@@ -6,9 +6,12 @@ from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
 
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
+
+import numpy as np
+from pyqtgraph.graphicsItems import PlotDataItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -16,9 +19,6 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
-
-if TYPE_CHECKING:
-    import numpy as np
 
 
 class SpectrumROI(ROI):
@@ -106,7 +106,7 @@ class SpectrumWidget(QWidget):
     @param parent: The parent widget
     """
     image: MIMiniImageView
-    spectrum: PlotItem
+    spectrum: MIPlotItem
     range_control: LinearRegionItem
 
     range_changed = pyqtSignal(object)
@@ -298,7 +298,7 @@ class CustomViewBox(ViewBox):
 
 class SpectrumPlotWidget(GraphicsLayoutWidget):
 
-    spectrum: PlotItem
+    spectrum: MIPlotItem
     range_control: LinearRegionItem
     range_changed = pyqtSignal(object)
 
@@ -306,7 +306,8 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         super().__init__()
 
         self.spectrum_viewbox = CustomViewBox(enableMenu=True)
-        self.spectrum = self.addPlot(viewBox=self.spectrum_viewbox)
+        self.spectrum = MIPlotItem(viewBox=self.spectrum_viewbox)
+        self.addItem(self.spectrum)
         self.nextRow()
         self._tof_range_label = self.addLabel()
         self.nextRow()
@@ -353,3 +354,43 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
         nan_check_menu = [("Crop Coordinates", lambda: main_window.presenter.show_operation("Crop Coordinates")),
                           ("NaN Removal", lambda: main_window.presenter.show_operation("NaN Removal"))]
         self.image.enable_nan_check(actions=nan_check_menu)
+
+
+class MIPlotItem(PlotItem):
+
+    def __init__(self, *args, **kwds) -> None:
+        super().__init__(*args, **kwds)
+        self.vb = self.getViewBox()
+        self.menu = self.vb.menu
+        self.plot_menu = self.menu.addMenu("Plotting Options")
+        self.join_choice_group = QActionGroup(self)
+
+        joined_action = QAction('Joined', self.join_choice_group)
+        joined_action.setCheckable(True)
+        joined_action.setObjectName('Joined')
+        joined_action.triggered.connect(self.set_join_plot)
+        joined_action.setChecked(True)
+        self.plot_menu.addAction(joined_action)
+
+        scatter_action = QAction('Scatter', self.join_choice_group)
+        scatter_action.setCheckable(True)
+        scatter_action.setObjectName('Scatter')
+        scatter_action.triggered.connect(self.set_join_plot)
+        self.plot_menu.addAction(scatter_action)
+
+    def plot(self, *args, **kwargs):
+        new_plot = super().plot(*args, **kwargs)
+        new_plot.original_pen = new_plot.opts['pen']
+        self.set_join_plot()
+
+    def set_join_plot(self) -> None:
+        join_plot = self.join_choice_group.checkedAction().text() == "Joined"
+        for item in self.items:
+            if isinstance(item, PlotDataItem.PlotDataItem):
+                if join_plot:
+                    item.setSymbol(None)
+                    item.setPen(item.original_pen)
+                else:
+                    item.setPen(None)
+                    item.setSymbol('o')
+                    item.setSymbolBrush(item.original_pen)
