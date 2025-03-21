@@ -6,6 +6,7 @@ from itertools import chain, tee
 from typing import TYPE_CHECKING
 from weakref import WeakSet
 
+from PyQt5.QtCore import QTimer
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
@@ -68,16 +69,20 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
 
         self.add_auto_color_menu_action(parent, recon_mode=recon_mode, set_enabled=False)
 
+        QTimer.singleShot(0, self.remove_export_menu_item)
+
     def add_save_image_action(self) -> None:
         """Add 'Save as Image' options only once."""
-        if self.vb.menu and not any(action.text().startswith("Save") for action in self.vb.menu.actions()):
-            save_raw_action = QAction("Save Raw Image", self)
-            save_raw_action.triggered.connect(self.save_raw_image)
-            self.vb.menu.addAction(save_raw_action)
+        if not self.vb.menu or any(a.text().startswith("Save") for a in self.vb.menu.actions()):
+            return
+        self.vb.menu.addAction(QAction("Save Raw Image", self, triggered=self.save_raw_image))
+        self.vb.menu.addAction(QAction("Save Displayed Image", self, triggered=self.save_displayed_image))
 
-            save_displayed_action = QAction("Save Displayed Image", self)
-            save_displayed_action.triggered.connect(self.save_displayed_image)
-            self.vb.menu.addAction(save_displayed_action)
+    def remove_export_menu_item(self) -> None:
+        """Remove 'Export...' from context menu """
+        for s in (self.scene(), self.hist.scene()):
+            if getattr(s, "contextMenu", None):
+                s.contextMenu = [a for a in s.contextMenu if "export" not in a.text().lower()]
 
     def save_raw_image(self) -> None:
         """Save the raw image data"""
