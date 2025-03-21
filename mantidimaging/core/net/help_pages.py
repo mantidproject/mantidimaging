@@ -10,7 +10,7 @@ SECTION_USER_GUIDE = f"{DOCS_BASE}/user_guide/"
 
 
 def open_user_operation_docs(operation_name: str) -> None:
-    page_url = "operations/index"
+    page_url = "explanations/operations/index"
     section = operation_name.lower().replace(" ", "-")
     open_help_webpage(SECTION_USER_GUIDE, page_url, section)
 

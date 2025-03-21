@@ -14,7 +14,7 @@ class HelpPagesTest(unittest.TestCase):
     @mock.patch("mantidimaging.core.net.help_pages.open_help_webpage")
     def test_open_user_operation_docs(self, open_func: mock.Mock):
         open_user_operation_docs("Crop Coordinates")
-        open_func.assert_called_with(SECTION_USER_GUIDE, "operations/index", "crop-coordinates")
+        open_func.assert_called_with(SECTION_USER_GUIDE, "explanations/operations/index", "crop-coordinates")
 
     @mock.patch("mantidimaging.core.net.help_pages.QDesktopServices.openUrl")
     def test_open_help_webpage(self, open_url: mock.Mock):
