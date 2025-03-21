@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QAbstractItemView, QHeaderView, QComboBox,
                              QSpinBox, QGroupBox, QActionGroup, QAction)
@@ -21,6 +22,8 @@ from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
+from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
+
 import numpy as np
 
 if TYPE_CHECKING:
@@ -225,13 +228,16 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget = SpectrumWidget(main_window)
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
         self.imageLayout.addWidget(self.spectrum_widget)
-        self.fittingLayout.addWidget(QLabel("fitting"))
         self.exportLayout.addWidget(QLabel("export"))
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
         self.roiSelectionWidget = ROISelectionWidget(self)
         self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
+
+        self.fittingDisplayWidget = FittingDisplayWidget()
+        self.fittingLayout.addWidget(self.fittingDisplayWidget)
+        self.roiSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_spectrum)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
@@ -355,6 +361,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
+
+    def update_fitting_plot(self, roi_name: str, spectrum_data: np.ndarray) -> None:
+        """Updates the spectrum plot in the Fitting Window with a yellow line."""
+        self.fittingSpectrumPlot.spectrum.clear()
+
+        if spectrum_data is not None and len(spectrum_data) > 0:
+            yellow_pen = mkPen(color=(255, 255, 0), width=2)
+            self.fittingSpectrumPlot.spectrum.plot(self.presenter.model.tof_data,
+                                                   spectrum_data,
+                                                   pen=yellow_pen,
+                                                   name=roi_name)
 
     def get_rits_export_directory(self) -> Path | None:
         """
