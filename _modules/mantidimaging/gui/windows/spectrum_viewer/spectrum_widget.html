@@ -513,9 +513,12 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSignalBlocker</span><span class="p">,</span> <span class="n">QEvent</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QColor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QColorDialog</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QColorDialog</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QActionGroup</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI</span><span class="p">,</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">LinearRegionItem</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">,</span> <span class="n">mkPen</span><span class="p">,</span> <span class="n">ViewBox</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph.graphicsItems</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlotDataItem</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.close_enough_point</span><span class="w"> </span><span class="kn">import</span> <span class="n">CloseEnoughPoint</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
@@ -523,9 +526,6 @@ document.write(`
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># noqa:F401   # pragma: no cover</span>
-
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="SpectrumROI">
@@ -636,7 +636,7 @@ document.write(`
 <span class="sd">    @param parent: The parent widget</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span>
-    <span class="n">spectrum</span><span class="p">:</span> <span class="n">PlotItem</span>
+    <span class="n">spectrum</span><span class="p">:</span> <span class="n">MIPlotItem</span>
     <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
 
     <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
@@ -873,7 +873,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SpectrumPlotWidget</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
 
-    <span class="n">spectrum</span><span class="p">:</span> <span class="n">PlotItem</span>
+    <span class="n">spectrum</span><span class="p">:</span> <span class="n">MIPlotItem</span>
     <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
     <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 
@@ -881,7 +881,8 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewbox</span> <span class="o">=</span> <span class="n">CustomViewBox</span><span class="p">(</span><span class="n">enableMenu</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addPlot</span><span class="p">(</span><span class="n">viewBox</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewbox</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">MIPlotItem</span><span class="p">(</span><span class="n">viewBox</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewbox</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tof_range_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
@@ -946,6 +947,55 @@ document.write(`
         <span class="n">nan_check_menu</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;Crop Coordinates&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="s2">&quot;Crop Coordinates&quot;</span><span class="p">)),</span>
                           <span class="p">(</span><span class="s2">&quot;NaN Removal&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="s2">&quot;NaN Removal&quot;</span><span class="p">))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">(</span><span class="n">actions</span><span class="o">=</span><span class="n">nan_check_menu</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MIPlotItem">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MIPlotItem</span><span class="p">(</span><span class="n">PlotItem</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getViewBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Plotting Options&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">joined_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Joined&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="p">)</span>
+        <span class="n">joined_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">joined_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s1">&#39;Joined&#39;</span><span class="p">)</span>
+        <span class="n">joined_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_join_plot</span><span class="p">)</span>
+        <span class="n">joined_action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">joined_action</span><span class="p">)</span>
+
+        <span class="n">scatter_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Scatter&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="p">)</span>
+        <span class="n">scatter_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">scatter_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s1">&#39;Scatter&#39;</span><span class="p">)</span>
+        <span class="n">scatter_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_join_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">scatter_action</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MIPlotItem.plot">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">new_plot</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">new_plot</span><span class="o">.</span><span class="n">original_pen</span> <span class="o">=</span> <span class="n">new_plot</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;pen&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_join_plot</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MIPlotItem.set_join_plot">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.set_join_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_join_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">join_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Joined&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">PlotDataItem</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">join_plot</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">setSymbol</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">original_pen</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">setSymbol</span><span class="p">(</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">setSymbolBrush</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">original_pen</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 
