@@ -192,8 +192,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.stochasticCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.subsetsSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.regPercentSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
-        self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/index"))
-        self.corHelpButton.clicked.connect(lambda: self.open_help_webpage("reconstructions/center_of_rotation"))
+        self.reconHelpButton.clicked.connect(lambda: self.open_help_webpage("explanations/reconstructions/index"))
+        self.corHelpButton.clicked.connect(
+            lambda: self.open_help_webpage("explanations/reconstructions/center_of_rotation"))
 
         self.stochasticCheckBox.stateChanged.connect(self.subsetsSpinBox.setEnabled)
         self.stochasticCheckBox.stateChanged.connect(self.subsetsLabel.setEnabled)
