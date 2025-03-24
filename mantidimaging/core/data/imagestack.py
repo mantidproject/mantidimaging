@@ -34,6 +34,7 @@ class ImageStack:
                  indices: list[int] | Indices | None = None,
                  metadata: dict[str, Any] | None = None,
                  sinograms: bool = False,
+                 projection: bool = False,
                  name: str | None = None):
         """
         :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
@@ -41,6 +42,7 @@ class ImageStack:
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
         :param sinograms: Set data ordering, if false: [t,y,x] if true: [y,t,x]
+        :param projection: Determines whether to set a default Geometry, if true: sets default Geometry
         :param name: A name for the stack
         """
 
@@ -56,9 +58,10 @@ class ImageStack:
 
         self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
+        self._is_projections = projection
 
-        geometry = Geometry()
-        self.geometry: Geometry = geometry
+        if self._is_projections:
+            self.geometry: Geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
 
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
@@ -291,6 +294,10 @@ class ImageStack:
     @property
     def is_sinograms(self) -> bool:
         return self._is_sinograms
+
+    @property
+    def is_projections(self) -> bool:
+        return self._is_projections
 
     @property
     def log_file(self) -> InstrumentLog | None:
