@@ -2,10 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from cil.framework import AcquisitionGeometry
+from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
 class Geometry(AcquisitionGeometry):
-    centre_of_rotation: dict
+    cor: dict
+    cor_list: list[dict]
+    tilt: float
 
     def __init__(self, *args, **kwargs):
         """
@@ -22,28 +25,83 @@ class Geometry(AcquisitionGeometry):
         self.centre_of_rotation = self.get_centre_of_rotation()
 
     def get_geometry(self) -> AcquisitionGeometry | None:
+        """
+        Returns the Geometry object.
+        """
         return self
 
     def set_geometry(self, geometry: AcquisitionGeometry) -> None:
+        """
+        Sets the Geometry object's configuration to that of the object supplied.
+        """
         self.config = geometry.config
 
-    def convert_cor_single(self, cor) -> dict | None:
+    def get_cor(self, distance_units='default', angle_units='radian'):
         """
-        Converts the MI centre of rotation (that uses MI conventions) to the CIL convention.
+        Returns the Geometry object's centre of rotation attribute.
         """
+        cor = super().get_centre_of_rotation(distance_units, angle_units)
+        return cor
 
+    def set_cor(self, cor):
+        """
+        Sets the Geometry object's centre of rotation. If the centre of rotation
+        uses the MI convention, it is converted to the CIL convention.
+        """
+        if cor is ScalarCoR:
+            self.cor = self.convert_cor(cor)
+        else:
+            self.cor = cor
+
+    def get_cor_list(self):
+        """
+        Returns the Geometry object's list of per-slice centre of rotations attribute.
+        """
+        return self.cor_list
+
+    def set_cor_list(self, cor_list):
+        """
+        Sets the Geometry object's list of per-slice centre of rotations. If the list
+        uses the MI convention, it is converted to the CIL convention.
+        """
+        if cor_list is list[ScalarCoR]:
+            self.cor_list = self.convert_cor_list(cor_list)
+        else:
+            self.cor_list = cor_list
+
+    def get_tilt(self):
+        """
+        Returns the Geometry object's tilt attribute.
+        """
+        return self.tilt
+
+    def set_tilt(self, tilt):
+        """
+        Sets the Geometry object's tilt attribute.
+        """
+        self.tilt = tilt
+
+    def convert_cor(self, cor: ScalarCoR) -> dict:
+        """
+        Converts a centre of rotation (that uses MI conventions) to the CIL convention.
+        """
         result = {}
         cor = cor
-        offset = 5.0
-        angle = 5.0
+        cil_cor: dict = {}  # Convert the MI COR to a CIL COR
 
-        result["offset"] = (offset, 'units distance')
-        result["angle"] = (angle, 'radian')
+        result["offset"] = (cil_cor["offset"], 'units distance')
+        result["angle"] = (cil_cor["angle"], 'radian')
 
         return result
 
-    def convert_cor_multiple(self, cors):
-        ...
+    def convert_cor_list(self, cor_list: list[ScalarCoR]) -> list[dict]:
+        """
+        Converts a list of per-slice centre of rotations (that use MI conventions) to the CIL convention.
+        """
+        result = []
 
-    def convert_tilt(self, tilt):
-        ...
+        for cor in cor_list:
+            cil_cor = self.convert_cor(cor)
+            result.append(cil_cor)
+
+        return result

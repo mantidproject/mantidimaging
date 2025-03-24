@@ -384,20 +384,22 @@ class CILRecon(BaseRecon):
             pixel_size = 1.
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
-            rot_pos = [(cors[pixel_num_v // 2].value - pixel_num_h / 2) * pixel_size, 0, 0]
+            cil_cors = images.geometry.convert_cor_list(cors)
+            rot_pos = [(cil_cors[pixel_num_v // 2]["offset"] - pixel_num_h / 2) * pixel_size, 0, 0]
             slope = -np.tan(np.deg2rad(recon_params.tilt.value))
             rot_angle = [slope, 0, 1]
 
-            ag = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
-                                                       rotation_axis_direction=rot_angle)
-            ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
-            ag.set_angles(angles=angles, angle_unit='radian')
-            ag.set_labels(data_order)
+            images.geometry.set_geometry(
+                AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
+                                                      rotation_axis_direction=rot_angle))
+            images.geometry.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
+            images.geometry.set_angles(angles=angles, angle_unit='radian')
+            images.geometry.set_labels(data_order)
 
-            data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), ag, recon_params,
-                                     num_subsets)
+            data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
+                                     recon_params, num_subsets)
 
-            ig = ag.get_ImageGeometry()
+            ig = images.geometry.get_ImageGeometry()
 
             if recon_params.regulariser == 'TV':
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
