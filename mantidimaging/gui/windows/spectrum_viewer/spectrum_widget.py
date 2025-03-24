@@ -83,8 +83,9 @@ class SpectrumROI(ROI):
             handle.setVisible(visible)
 
     def adjust_spec_roi(self, roi: SensibleROI) -> None:
-        self.setPos((roi.left, roi.top))
-        self.setSize((roi.width, roi.height))
+        with QSignalBlocker(self):
+            self.setPos((roi.left, roi.top))
+            self.setSize((roi.width, roi.height))
 
     def as_sensible_roi(self) -> SensibleROI:
         """
