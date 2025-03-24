@@ -987,8 +987,6 @@ document.write(`
 <span class="sd">        roi may not exist in the spectrum widget yet depending on when method is called</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum_data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">show_visible_spectrums</span><span class="p">()</span></div>
 
 
@@ -1106,24 +1104,23 @@ document.write(`
 <span class="sd">        @param visible: Whether the ROI is visible.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="n">visible</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">visible</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_visible_spectrums</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.show_visible_spectrums">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_visible_spectrums">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_visible_spectrums</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="p">,</span>
-                                                   <span class="n">value</span><span class="p">,</span>
-                                                   <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-                                                   <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">spectrum_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="p">,</span>
+                                               <span class="n">spectrum_data</span><span class="p">,</span>
+                                               <span class="n">name</span><span class="o">=</span><span class="n">roi_name</span><span class="p">,</span>
+                                               <span class="n">pen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.add_roi_table_row">
@@ -1202,7 +1199,6 @@ document.write(`
         <span class="n">current_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_name</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_values</span><span class="p">(</span><span class="n">current_roi</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">enable_widgets</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
 
