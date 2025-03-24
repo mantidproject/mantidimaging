@@ -10,28 +10,20 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     Emits a signal when the selected time-of-flight range changes.
     """
 
-    range_changed = pyqtSignal(object)  # Emits (tof_min, tof_max)
+    range_changed = pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
 
-        # Create and configure the plot item
         self.spectrum: PlotItem = self.addPlot(title="Spectrum Plot")
         self.spectrum.setLabel('left', 'Intensity')
-        self.spectrum.setLabel('bottom', 'ToF', units='a.u.')  # Default axis label
+        self.spectrum.setLabel('bottom', 'ToF', units='a.u.')
         self.spectrum.showGrid(x=True, y=True)
 
-        # Create and add linear region control for ToF range selection
         self.range_control = LinearRegionItem()
         self.range_control.setZValue(10)
         self.range_control.sigRegionChangeFinished.connect(self._handle_range_changed)
         self.spectrum.addItem(self.range_control)
-
-        # Add labels for current range
-        self.nextRow()
-        self._tof_range_label = self.addLabel()
-        self.nextRow()
-        self._image_index_label = self.addLabel()
 
     def _handle_range_changed(self):
         r_min, r_max = self.range_control.getRegion()
