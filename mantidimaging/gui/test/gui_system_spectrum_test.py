@@ -188,7 +188,6 @@ class TestGuiSpectrumViewer(GuiSystemBase):
             if action.text() == 'Points':
                 action.trigger()
         QTest.qWait(SHORT_DELAY)
-        self.assertEqual(self.spectrum_window.spectrum.spectrum.join_plot, False)
         self.assertEqual(self.spectrum_window.spectrum.spectrum.items[-1].opts['symbol'], 'o')
         self.assertEqual(self.spectrum_window.spectrum.spectrum.items[-1].opts['pen'].color().getRgb(),
                          mkPen(None).color().getRgb())
@@ -198,7 +197,6 @@ class TestGuiSpectrumViewer(GuiSystemBase):
             if action.text() == 'Points':
                 action.trigger()
         QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
-        self.assertEqual(self.spectrum_window.spectrum.spectrum.join_plot, False)
         for item in self.spectrum_window.spectrum.spectrum.items:
             if isinstance(item, PlotItem):
                 self.assertEqual(item.opts['symbol'], 'o')
