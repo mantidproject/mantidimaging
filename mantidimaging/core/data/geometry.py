@@ -18,8 +18,8 @@ class Geometry(AcquisitionGeometry):
 
         temp = super().create_Parallel3D(*args, **kwargs)
         self.config = temp.config
-        self.set_panel(kwargs["num_pixels"])
-        self.set_angles(kwargs["angles"])
+        self.set_panel(num_pixels=[10, 10])
+        self.set_angles(angles=range(0, 180))
         print(self)
 
         self.centre_of_rotation = self.get_centre_of_rotation()
@@ -35,6 +35,9 @@ class Geometry(AcquisitionGeometry):
         Sets the Geometry object's configuration to that of the object supplied.
         """
         self.config = geometry.config
+        self.cor = geometry.cor
+        self.cor_list = geometry.cor_list
+        self.tilt = geometry.tilt
 
     def get_cor(self, distance_units='default', angle_units='radian'):
         """
@@ -85,23 +88,21 @@ class Geometry(AcquisitionGeometry):
         """
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.
         """
-        result = {}
-        cor = cor
         cil_cor: dict = {}  # Convert the MI COR to a CIL COR
 
-        result["offset"] = (cil_cor["offset"], 'units distance')
-        result["angle"] = (cil_cor["angle"], 'radian')
+        cil_cor["offset"] = (cor.value, 'units distance')
+        cil_cor["angle"] = (self.tilt, 'radian')
 
-        return result
+        return cil_cor
 
     def convert_cor_list(self, cor_list: list[ScalarCoR]) -> list[dict]:
         """
         Converts a list of per-slice centre of rotations (that use MI conventions) to the CIL convention.
         """
-        result = []
+        cil_cor_list: list = []
 
         for cor in cor_list:
             cil_cor = self.convert_cor(cor)
-            result.append(cil_cor)
+            cil_cor_list.append(cil_cor)
 
-        return result
+        return cil_cor_list

@@ -384,10 +384,14 @@ class CILRecon(BaseRecon):
             pixel_size = 1.
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
+            print(f"cors: {cors}")
             cil_cors = images.geometry.convert_cor_list(cors)
+            print(f"cil_cors: {cil_cors}")
             rot_pos = [(cil_cors[pixel_num_v // 2]["offset"] - pixel_num_h / 2) * pixel_size, 0, 0]
+            print(f"rot_pos: {rot_pos}")
             slope = -np.tan(np.deg2rad(recon_params.tilt.value))
             rot_angle = [slope, 0, 1]
+            print(f"rot_angle: {rot_angle}")
 
             images.geometry.set_geometry(
                 AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
