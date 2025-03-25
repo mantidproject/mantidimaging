@@ -20,9 +20,12 @@ class Geometry(AcquisitionGeometry):
         self.config = temp.config
         self.set_panel(num_pixels=[10, 10])
         self.set_angles(angles=range(0, 180))
-        print(self)
 
-        self.centre_of_rotation = self.get_centre_of_rotation()
+        self.cor = self.get_centre_of_rotation()
+        self.cor_list = []
+        self.tilt = 0.0
+
+        print(self)
 
     def get_geometry(self) -> AcquisitionGeometry | None:
         """
