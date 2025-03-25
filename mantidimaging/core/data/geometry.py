@@ -9,6 +9,8 @@ class Geometry(AcquisitionGeometry):
     cor: dict
     cor_list: list[dict]
     tilt: float
+    pixel_num_v: int
+    pixel_num_h: int
 
     def __init__(self, *args, **kwargs):
         """
@@ -22,8 +24,6 @@ class Geometry(AcquisitionGeometry):
         self.set_angles(angles=range(0, 180))
 
         self.cor = self.get_centre_of_rotation()
-        self.cor_list = []
-        self.tilt = 0.0
 
         print(self)
 
@@ -84,15 +84,28 @@ class Geometry(AcquisitionGeometry):
         """
         self.tilt = tilt
 
+    def set_pixel_num_v(self, pixel_num_v: int):
+        """
+        Sets the Geometry object's number of vertical pixels attribute.
+        This is the number of vertical pixels of the panel.
+        """
+        self.pixel_num_v = pixel_num_v
+
+    def set_pixel_num_h(self, pixel_num_h: int):
+        """
+        Sets the Geometry object's number of horizontal pixels attribute.
+        This is the number of horizontal pixels of the panel.
+        """
+        self.pixel_num_h = pixel_num_h
+
     def convert_cor(self, cor: ScalarCoR) -> dict:
         """
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.
         """
         cil_cor: dict = {}  # Convert the MI COR to a CIL COR
-
         cil_cor["offset"] = (cor.value, 'units distance')
         cil_cor["angle"] = (self.tilt, 'radian')
-
+        print(cil_cor)
         return cil_cor
 
     def convert_cor_list(self, cor_list: list[ScalarCoR]) -> list[dict]:
@@ -100,9 +113,8 @@ class Geometry(AcquisitionGeometry):
         Converts a list of per-slice centre of rotations (that use MI conventions) to the CIL convention.
         """
         cil_cor_list: list = []
-
         for cor in cor_list:
             cil_cor = self.convert_cor(cor)
             cil_cor_list.append(cil_cor)
-
+        print(cil_cor_list)
         return cil_cor_list
