@@ -84,10 +84,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Called when the stack has been changed in the stack selector.
         """
-        if len(self.main_window.presenter.model.datasets) == 0:
-            self.view.exportTabs.setDisabled(True)
-        else:
-            self.view.exportTabs.setDisabled(False)
+        self.view.roi_form.exportTabs.setDisabled(uuid is None)
+
         if uuid == self.current_stack_uuid:
             return
         else:
@@ -244,9 +242,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         normalisation_on = self.view.normalisation_enabled()
         normalisation_no_error = (normalisation_on and self.model.normalise_issue() == "") or not normalisation_on
 
-        self.view.exportButton.setEnabled(has_stack and normalisation_no_error)
-        self.view.exportButtonRITS.setEnabled(has_stack and normalisation_on and normalisation_no_error)
-        self.view.addBtn.setEnabled(has_stack)
+        self.view.roi_form.exportButton.setEnabled(has_stack and normalisation_no_error)
+        self.view.roi_form.exportButtonRITS.setEnabled(has_stack and normalisation_on and normalisation_no_error)
+        self.view.roi_form.addBtn.setEnabled(has_stack)
         self.view.normalise_ShutterCount_CheckBox.setEnabled(has_stack and normalisation_on and normalisation_no_error)
         if not self.view.normalise_ShutterCount_CheckBox.isEnabled():
             self.view.normalise_ShutterCount_CheckBox.setChecked(False)
@@ -425,7 +423,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
-        new_roi = self.view.roi_properties_widget.as_roi()
+        new_roi = self.view.roi_form.roi_properties_widget.as_roi()
         roi_name = self.view.table_view.current_roi_name
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
         self.handle_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])

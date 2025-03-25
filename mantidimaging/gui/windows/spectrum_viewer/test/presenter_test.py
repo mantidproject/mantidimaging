@@ -12,26 +12,26 @@ from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget, ROIPropertiesTableWidget
-from mantidimaging.test_helpers import mock_versions, start_qapplication
+from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
-@mock_versions
 @start_qapplication
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        with mock.patch("mantidimaging.gui.windows.main.view.MainWindowView.show_welcome_screen"):
-            self.main_window = MainWindowView()
+        self.main_window = mock.create_autospec(MainWindowView, instance=True, stack_changed=mock.Mock())
         self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()
-        self.view.roi_properties_widget = mock.create_autospec(ROIPropertiesTableWidget, instance=True)
+        self.view.roi_form = mock.create_autospec(ROIFormWidget, instance=True)
+        self.view.roi_form.roi_properties_widget = mock.create_autospec(ROIPropertiesTableWidget, instance=True)
         self.view.table_view = mock.create_autospec(ROITableWidget, instance=True)
         self.view.table_view.find_row_for_roi.return_value = 0
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi")
@@ -40,11 +40,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.spectrum_plot_widget = mock.create_autospec(SpectrumPlotWidget,
                                                                               roi_dict=mock_spectrum_roi_dict,
                                                                               instance=True)
-        self.view.exportButton = mock.create_autospec(QPushButton, instance=True)
-        self.view.exportButtonRITS = mock.create_autospec(QPushButton, instance=True)
+        self.view.roi_form.exportButton = mock.create_autospec(QPushButton, instance=True)
+        self.view.roi_form.exportButtonRITS = mock.create_autospec(QPushButton, instance=True)
         self.view.normalise_ShutterCount_CheckBox = mock.create_autospec(QCheckBox, instance=True)
-        self.view.addBtn = mock.create_autospec(QPushButton, instance=True)
-        self.view.exportTabs = mock.create_autospec(QTabWidget, instance=True)
+        self.view.roi_form.addBtn = mock.create_autospec(QPushButton, instance=True)
+        self.view.roi_form.exportTabs = mock.create_autospec(QTabWidget, instance=True)
         self.view.tof_mode_select_group = mock.create_autospec(QActionGroup, instance=True)
         self.view.experimentSetupGroupBox = mock.create_autospec(QGroupBox, instance=True)
         self.view.experimentSetupFormWidget = mock.Mock(spec=ExperimentSetupFormWidget)
@@ -141,9 +141,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_no_stack_THEN_buttons_disabled(self, has_stack):
         has_stack.return_value = False
         self.presenter.handle_button_enabled()
-        self.view.exportButton.setEnabled.assert_called_once_with(False)
-        self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)
-        self.view.addBtn.setEnabled.assert_called_once_with(False)
+        self.view.roi_form.exportButton.setEnabled.assert_called_once_with(False)
+        self.view.roi_form.exportButtonRITS.setEnabled.assert_called_once_with(False)
+        self.view.roi_form.addBtn.setEnabled.assert_called_once_with(False)
         self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
@@ -151,9 +151,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         has_stack.return_value = True
         self.view.normalisation_enabled.return_value = False
         self.presenter.handle_button_enabled()
-        self.view.exportButton.setEnabled.assert_called_once_with(True)
-        self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)  # RITS export needs norm
-        self.view.addBtn.setEnabled.assert_called_once_with(True)
+        self.view.roi_form.exportButton.setEnabled.assert_called_once_with(True)
+        self.view.roi_form.exportButtonRITS.setEnabled.assert_called_once_with(False)  # RITS export needs norm
+        self.view.roi_form.addBtn.setEnabled.assert_called_once_with(True)
         self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)  # Shuttercount needs norm
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
@@ -165,9 +165,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         shuttercount_issue.return_value = ""
         self.view.normalisation_enabled.return_value = True
         self.presenter.handle_button_enabled()
-        self.view.exportButton.setEnabled.assert_called_once_with(True)
-        self.view.exportButtonRITS.setEnabled.assert_called_once_with(True)
-        self.view.addBtn.setEnabled.assert_called_once_with(True)
+        self.view.roi_form.exportButton.setEnabled.assert_called_once_with(True)
+        self.view.roi_form.exportButtonRITS.setEnabled.assert_called_once_with(True)
+        self.view.roi_form.addBtn.setEnabled.assert_called_once_with(True)
         self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(True)
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.has_stack")
@@ -177,9 +177,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         normalise_issue.return_value = "Something wrong"
         self.view.normalisation_enabled.return_value = True
         self.presenter.handle_button_enabled()
-        self.view.exportButton.setEnabled.assert_called_once_with(False)
-        self.view.exportButtonRITS.setEnabled.assert_called_once_with(False)
-        self.view.addBtn.setEnabled.assert_called_once_with(True)
+        self.view.roi_form.exportButton.setEnabled.assert_called_once_with(False)
+        self.view.roi_form.exportButtonRITS.setEnabled.assert_called_once_with(False)
+        self.view.roi_form.addBtn.setEnabled.assert_called_once_with(True)
         self.view.normalise_ShutterCount_CheckBox.setEnabled.assert_called_once_with(False)
 
     def test_WHEN_show_sample_call_THEN_add_range_set(self):
@@ -371,7 +371,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.check_action.assert_has_calls(calls)
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
-        self.view.roi_properties_widget.as_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
+        self.view.roi_form.roi_properties_widget.as_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
