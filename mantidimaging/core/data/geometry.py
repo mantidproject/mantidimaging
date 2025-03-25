@@ -38,9 +38,6 @@ class Geometry(AcquisitionGeometry):
         Sets the Geometry object's configuration to that of the object supplied.
         """
         self.config = geometry.config
-        self.cor = geometry.cor
-        self.cor_list = geometry.cor_list
-        self.tilt = geometry.tilt
 
     def get_cor(self, distance_units='default', angle_units='radian'):
         """
