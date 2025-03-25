@@ -388,9 +388,9 @@ class CILRecon(BaseRecon):
             cil_cors = images.geometry.convert_cor_list(cors)
             images.geometry.set_tilt(recon_params.tilt.value)
             print(f"cil_cors: {cil_cors}")
-            rot_pos = [(cil_cors[pixel_num_v // 2]["offset"] - pixel_num_h / 2) * pixel_size, 0, 0]
+            rot_pos = [(cil_cors[pixel_num_v // 2]["offset"][0] - pixel_num_h / 2) * pixel_size, 0, 0]
             print(f"rot_pos: {rot_pos}")
-            slope = -np.tan(np.deg2rad(recon_params.tilt.value))
+            slope = -np.tan(np.deg2rad(images.geometry.get_tilt()))
             rot_angle = [slope, 0, 1]
             print(f"rot_angle: {rot_angle}")
 
