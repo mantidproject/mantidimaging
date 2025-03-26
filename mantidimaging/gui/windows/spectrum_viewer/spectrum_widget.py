@@ -362,22 +362,25 @@ class MIPlotItem(PlotItem):
     def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
         self.vb = self.getViewBox()
-        self.menu = self.vb.menu
-        self.plot_menu = self.menu.addMenu("Plotting Options")
+        self.base_menu = self.getMenu()
+
+        self.plot_menu = self.base_menu.addMenu("Plot Style")
         self.join_choice_group = QActionGroup(self)
 
-        joined_action = QAction('Joined', self.join_choice_group)
+        joined_action = QAction('Line', self.join_choice_group)
         joined_action.setCheckable(True)
-        joined_action.setObjectName('Joined')
+        joined_action.setObjectName('Line')
         joined_action.triggered.connect(self.set_join_plot)
         joined_action.setChecked(True)
         self.plot_menu.addAction(joined_action)
 
-        scatter_action = QAction('Scatter', self.join_choice_group)
+        scatter_action = QAction('Points', self.join_choice_group)
         scatter_action.setCheckable(True)
-        scatter_action.setObjectName('Scatter')
+        scatter_action.setObjectName('Points')
         scatter_action.triggered.connect(self.set_join_plot)
         self.plot_menu.addAction(scatter_action)
+
+        self.base_menu.addMenu(self.plot_menu)
 
     def plot(self, *args, **kwargs):
         new_plot = super().plot(*args, **kwargs)
@@ -385,7 +388,7 @@ class MIPlotItem(PlotItem):
         self.set_join_plot()
 
     def set_join_plot(self) -> None:
-        join_plot = self.join_choice_group.checkedAction().text() == "Joined"
+        join_plot = self.join_choice_group.checkedAction().text() == "Line"
         for item in self.items:
             if isinstance(item, PlotDataItem.PlotDataItem):
                 if join_plot:
