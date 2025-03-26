@@ -351,6 +351,7 @@ class SpectrumProjectionWidget(GraphicsLayoutWidget):
         self.image = MIMiniImageView(name="Projection", view_box_type=CustomViewBox)
         self.addItem(self.image, 0, 0)
         self.ci.layout.setRowStretchFactor(0, 3)
+        self.image.add_save_image_action()
 
         nan_check_menu = [("Crop Coordinates", lambda: main_window.presenter.show_operation("Crop Coordinates")),
                           ("NaN Removal", lambda: main_window.presenter.show_operation("NaN Removal"))]
