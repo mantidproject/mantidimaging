@@ -232,7 +232,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
 
         self.imageLayout.addWidget(self.spectrum_widget)
-        self.fittingLayout.addWidget(QLabel("fitting"))
         self.exportLayout.addWidget(QLabel("export"))
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
