@@ -18,7 +18,8 @@ class FittingDisplayWidget(QWidget):
 
     def update_plot(self, x_data, y_data, label="ROI"):
         self.spectrum_plot.spectrum.clear()
-        self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
+        if x_data is not None and hasattr(x_data, "__len__") and len(x_data) > 0:
+            self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
 
     def update_labels(self, tof_range, image_range, wavelength_range=None):
         self.spectrum_plot.set_tof_range_label(*tof_range)
