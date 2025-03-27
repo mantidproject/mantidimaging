@@ -218,13 +218,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
 
-    def update_fitting_spectrum(self, roi_name: str) -> None:
+    def update_fitting_spectrum(self, roi_name: str):
         """Fetches the spectrum data for the selected ROI and updates the view."""
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
+
         roi = self.view.spectrum_widget.get_roi(roi_name)
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
-        self.view.update_fitting_plot(roi_name, spectrum_data)
+        tof_data = self.model.tof_data
+        self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
+
+
+#      self.view.fittingDisplayWidget.update_labels(tof_range=self.model.tof_plot_range,
+#                                                  image_range=self.model.tof_range,
+#                                                 wavelength_range=(min(tof_data), max(tof_data)))
 
     def redraw_spectrum(self, name: str) -> None:
         """
