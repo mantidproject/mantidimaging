@@ -381,8 +381,8 @@ class CILRecon(BaseRecon):
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
 
-            images.geometry.set_cor_list(images.geometry.convert_cor_list(cors))
             images.geometry.set_tilt(recon_params.tilt.value)
+            images.geometry.set_cor_list(images.geometry.convert_cor_list(cors))
 
             cil_cors = images.geometry.cor_list
             rot_pos = [(cil_cors[pixel_num_v // 2]["offset"][0] - pixel_num_h / 2) * pixel_size, 0, 0]

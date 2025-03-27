@@ -26,9 +26,6 @@ class Geometry(AcquisitionGeometry):
         self.set_pixel_num_v(kwargs.get("pixel_num_v", 10))
         self.set_pixel_num_h(kwargs.get("pixel_num_h", 10))
 
-        self.set_panel(num_pixels=[self.pixel_num_h, self.pixel_num_v])
-        self.set_angles(angles=range(0, 180))
-
         self.set_cor(self.get_centre_of_rotation())
 
         print(self)
