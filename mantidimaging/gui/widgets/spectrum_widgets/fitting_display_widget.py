@@ -23,5 +23,5 @@ class FittingDisplayWidget(QWidget):
     def update_labels(self, tof_range, image_range, wavelength_range=None):
         self.spectrum_plot.set_tof_range_label(*tof_range)
         self.spectrum_plot.set_image_index_range_label(*image_range)
-        if wavelength_range:
+        if wavelength_range is not None:
             self.spectrum_plot.set_wavelength_range_label(*wavelength_range)
