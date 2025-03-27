@@ -39,7 +39,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertFalse(self.main_window.isVisible())
 
     def _property_box_name(self):
-        box_title = self.spectrum_window.roi_properties_widget.group_box.title()
+        box_title = self.spectrum_window.roi_form.roi_properties_widget.group_box.title()
         return box_title.rpartition(":")[2].strip()
 
     def test_spectrum_window_opens_with_data_in_default_state(self) -> None:
@@ -47,9 +47,9 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertFalse(self.spectrum_window.normalise_ShutterCount_CheckBox.isEnabled())
         self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 1)
         self.assertEqual(self.spectrum_window.table_view.roi_table_model.columnCount(), 3)
-        self.assertTrue(self.spectrum_window.addBtn.isEnabled())
-        self.assertTrue(self.spectrum_window.removeBtn.isEnabled())
-        self.assertTrue(self.spectrum_window.exportButton.isEnabled())
+        self.assertTrue(self.spectrum_window.roi_form.addBtn.isEnabled())
+        self.assertTrue(self.spectrum_window.roi_form.removeBtn.isEnabled())
+        self.assertTrue(self.spectrum_window.roi_form.exportButton.isEnabled())
         self.assertIn('roi', self.spectrum_window.table_view.roi_table_model.roi_names())
         self.assertIn('roi', self.spectrum_window.spectrum_widget.roi_dict)
         self.assertEqual('roi', self._property_box_name())
@@ -57,7 +57,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
 
     def test_add_roi(self) -> None:
         for i in range(1, 4):
-            QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+            QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
             final_roi_count = self.spectrum_window.table_view.roi_table_model.rowCount()
             expected_name = f'roi_{i}'
@@ -67,7 +67,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
             self.assertEqual(expected_name, self._property_box_name())
 
     def test_remove_roi(self) -> None:
-        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
         expected_name = 'roi_1'
 
@@ -76,7 +76,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertIn(expected_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertEqual(expected_name, self._property_box_name())
 
-        QTest.mouseClick(self.spectrum_window.removeBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.removeBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
 
         self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 1)
@@ -85,7 +85,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertEqual('roi', self._property_box_name())
 
     def test_change_roi_color(self):
-        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
 
         roi_name = 'roi_1'
@@ -102,7 +102,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertEqual(self.spectrum_window.spectrum_widget.roi_dict[roi_name].colour, new_color)
 
     def test_rename_roi(self):
-        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
 
         old_name = 'roi_1'
@@ -122,8 +122,8 @@ class TestGuiSpectrumViewer(GuiSystemBase):
 
     @parameterized.expand([' ', 'roi_1', 'all'])
     def test_no_rename_for_bad_roi_name(self, new_name: str):
-        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
-        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
 
         old_name = 'roi_2'
@@ -142,7 +142,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertEqual(old_name, self._property_box_name())
 
     def test_adjust_roi(self):
-        QTest.mouseClick(self.spectrum_window.addBtn, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
 
         roi_names = self.spectrum_window.presenter.get_roi_names()
@@ -172,10 +172,10 @@ class TestGuiSpectrumViewer(GuiSystemBase):
     def test_switch_tabs_updates_property_box(self):
         self.assertEqual('roi', self._property_box_name())
 
-        self.spectrum_window.exportTabs.setCurrentIndex(1)
+        self.spectrum_window.roi_form.exportTabs.setCurrentIndex(1)
         QTest.qWait(SHORT_DELAY)
         self.assertEqual('rits_roi', self._property_box_name())
 
-        self.spectrum_window.exportTabs.setCurrentIndex(0)
+        self.spectrum_window.roi_form.exportTabs.setCurrentIndex(0)
         QTest.qWait(SHORT_DELAY)
         self.assertEqual('roi', self._property_box_name())

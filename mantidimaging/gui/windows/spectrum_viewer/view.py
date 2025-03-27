@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QCheckBox, QVBoxLayout, QFileDialog, QPushButton, QLabel, QAbstractItemView, QHeaderView, \
-    QTabWidget, QComboBox, QSpinBox, QGroupBox, QActionGroup, QAction
+from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QAbstractItemView, QHeaderView, QComboBox,
+                             QSpinBox, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QSignalBlocker, QModelIndex, pyqtSignal
 
 from mantidimaging.core.utility import finder
@@ -25,6 +25,7 @@ import numpy as np
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
+    from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget
     from uuid import UUID
 
 
@@ -190,7 +191,6 @@ class ROITableWidget(RemovableRowTableView):
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
-    table_view: ROITableWidget
     sampleStackSelector: DatasetSelectorWidgetView
     normaliseStackSelector: DatasetSelectorWidgetView
 
@@ -199,22 +199,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     imageLayout: QVBoxLayout
     fittingLayout: QVBoxLayout
     exportLayout: QVBoxLayout
-    exportButton: QPushButton
-    exportTabs: QTabWidget
     normaliseErrorIcon: QLabel
     shuttercountErrorIcon: QLabel
     normalise_error_issue: str = ""
     shuttercount_error_issue: str = ""
-    image_output_mode_combobox: QComboBox
     transmission_error_mode_combobox: QComboBox
     bin_size_spinBox: QSpinBox
     bin_step_spinBox: QSpinBox
 
-    roi_properties_widget: ROIPropertiesTableWidget
-
     spectrum_widget: SpectrumWidget
     experimentSetupGroupBox: QGroupBox
     experimentSetupFormWidget: ExperimentSetupFormWidget
+    roi_form: ROIFormWidget
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
@@ -267,13 +263,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.set_shuttercount_error)
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
-        self.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
-        self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
-        self.set_binning_visibility()
+        self.roi_form.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
 
         # ROI action buttons
-        self.addBtn.clicked.connect(self.set_new_roi)
-        self.removeBtn.clicked.connect(self.remove_roi)
+        self.roi_form.addBtn.clicked.connect(self.set_new_roi)
+        self.roi_form.removeBtn.clicked.connect(self.remove_roi)
 
         self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
@@ -282,12 +276,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.try_to_select_relevant_normalise_stack("Flat")
         self.presenter.handle_tof_unit_change()
 
-        self.exportButton.clicked.connect(self.presenter.handle_export_csv)
-        self.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
+        self.roi_form.exportButton.clicked.connect(self.presenter.handle_export_csv)
+        self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
 
-        self.table_view.clicked.connect(self.handle_table_click)
+        self.roi_form.table_view.clicked.connect(self.handle_table_click)
 
-        self.roi_properties_widget.roi_changed.connect(self.presenter.do_adjust_roi)
+        self.roi_form.roi_properties_widget.roi_changed.connect(self.presenter.do_adjust_roi)
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
 
@@ -297,10 +291,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.flight_path = 56.4
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
-        self.table_view.selection_changed.connect(self.set_roi_properties)
-        self.table_view.name_changed.connect(self.spectrum_widget.rename_roi)
-        self.table_view.name_changed.connect(self.set_roi_properties)
-        self.table_view.visibility_changed.connect(self.on_visibility_change)
+        self.roi_form.table_view.selection_changed.connect(self.set_roi_properties)
+        self.roi_form.table_view.name_changed.connect(self.spectrum_widget.rename_roi)
+        self.roi_form.table_view.name_changed.connect(self.set_roi_properties)
+        self.roi_form.table_view.visibility_changed.connect(self.on_visibility_change)
 
         self.formTabs.currentChanged.connect(self.handle_change_tab)
 
@@ -447,7 +441,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-        self.roi_properties_widget.enable_widgets(True)
+        self.roi_form.roi_properties_widget.enable_widgets(True)
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
@@ -489,7 +483,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         @param colour: The colour of the ROI
         """
         self.table_view.add_row(name, colour, self.presenter.get_roi_names())
-        self.removeBtn.setEnabled(True)
+        self.roi_form.removeBtn.setEnabled(True)
 
     def remove_roi(self) -> None:
         """
@@ -515,7 +509,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def image_output_mode(self) -> str:
-        return self.image_output_mode_combobox.currentText()
+        return self.roi_form.image_output_mode
 
     @property
     def bin_size(self) -> int:
@@ -525,16 +519,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def bin_step(self) -> int:
         return self.bin_step_spinBox.value()
 
-    def set_binning_visibility(self) -> None:
-        hide_binning = self.image_output_mode != "2D Binned"
-        self.bin_size_label.setHidden(hide_binning)
-        self.bin_size_spinBox.setHidden(hide_binning)
-        self.bin_step_label.setHidden(hide_binning)
-        self.bin_step_spinBox.setHidden(hide_binning)
-
     @property
     def tof_units_mode(self) -> str:
         return self.tof_mode_select_group.checkedAction().text()
+
+    @property
+    def table_view(self) -> ROITableWidget:
+        return self.roi_form.table_view
 
     def set_roi_properties(self) -> None:
         if self.presenter.export_mode == ExportMode.IMAGE_MODE:
@@ -544,14 +535,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if roi_name not in self.presenter.view.spectrum_widget.roi_dict:
             return
         current_roi = self.presenter.view.spectrum_widget.get_roi(roi_name)
-        self.roi_properties_widget.set_roi_name(roi_name)
-        self.roi_properties_widget.set_roi_values(current_roi)
-        self.roi_properties_widget.enable_widgets(True)
+        self.roi_form.roi_properties_widget.set_roi_name(roi_name)
+        self.roi_form.roi_properties_widget.set_roi_values(current_roi)
+        self.roi_form.roi_properties_widget.enable_widgets(True)
 
     def disable_roi_properties(self) -> None:
-        self.roi_properties_widget.set_roi_name("None selected")
-        self.roi_properties_widget.enable_widgets(False)
+        self.roi_form.roi_properties_widget.set_roi_name("None selected")
+        self.roi_form.roi_properties_widget.enable_widgets(False)
 
     def setup_roi_properties_spinboxes(self) -> None:
         assert self.spectrum_widget.image.image_data is not None
-        self.roi_properties_widget.set_roi_limits(self.spectrum_widget.image.image_data.shape)
+        self.roi_form.roi_properties_widget.set_roi_limits(self.spectrum_widget.image.image_data.shape)
