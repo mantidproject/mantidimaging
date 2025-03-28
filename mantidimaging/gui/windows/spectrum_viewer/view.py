@@ -498,7 +498,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.presenter.handle_roi_moved(roi_object)
 
         if self.table_view.roi_table_model.rowCount() == 0:
-            self.removeBtn.setEnabled(False)
+            self.roi_form.removeBtn.setEnabled(False)
             self.disable_roi_properties()
         else:
             self.set_roi_properties()
