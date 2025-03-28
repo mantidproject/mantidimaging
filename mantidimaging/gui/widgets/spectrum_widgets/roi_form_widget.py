@@ -97,7 +97,7 @@ class ROIPropertiesTableWidget(BaseWidget):
                               bottom=self.spin_bottom.value())
         return new_roi
 
-    def enable_widgets(self, enable: bool) -> None:
+    def enable_roi_spinboxes(self, enable: bool) -> None:
         for spin_box in self.spin_boxes:
             spin_box.setEnabled(enable)
         if not enable:
