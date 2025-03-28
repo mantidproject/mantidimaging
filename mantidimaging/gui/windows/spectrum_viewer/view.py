@@ -177,6 +177,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
             self.set_roi_properties()
 
+    def get_fitting_region(self) -> tuple[float, float]:
+        return self.fittingDisplayWidget.get_selected_fit_region()
+
+    def set_fitting_region(self, region: tuple[float, float]) -> None:
+        self.fittingDisplayWidget.set_selected_fit_region(region)
+
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
         selector.presenter.show_stacks = True
         selector.subscribe_to_main_window(self.main_window)
@@ -290,7 +296,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-        self.roi_form.roi_properties_widget.enable_roi_spinboxes(True)
+        self.roi_form.roi_properties_widget.enable_widgets(True)
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
@@ -386,11 +392,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         current_roi = self.presenter.view.spectrum_widget.get_roi(roi_name)
         self.roi_form.roi_properties_widget.set_roi_name(roi_name)
         self.roi_form.roi_properties_widget.set_roi_values(current_roi)
-        self.roi_form.roi_properties_widget.enable_roi_spinboxes(True)
+        self.roi_form.roi_properties_widget.enable_widgets(True)
 
     def disable_roi_properties(self) -> None:
         self.roi_form.roi_properties_widget.set_roi_name("None selected")
-        self.roi_form.roi_properties_widget.enable_roi_spinboxes(False)
+        self.roi_form.roi_properties_widget.enable_widgets(False)
 
     def setup_roi_properties_spinboxes(self) -> None:
         assert self.spectrum_widget.image.image_data is not None
