@@ -47,6 +47,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         elif filtered_rois:
             self.roiDropdown.setCurrentIndex(0)
             self._on_selection_changed()
+            self._on_selection_changed()
         self.roiDropdown.blockSignals(False)
 
     def set_selected_roi(self, roi_name: str) -> None:
