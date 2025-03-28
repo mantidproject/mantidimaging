@@ -214,12 +214,12 @@
   <customwidget>
    <class>ROITableWidget</class>
    <extends>QTableView</extends>
-   <header>mantidimaging.gui.windows.spectrum_viewer.view</header>
+   <header>mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget</header>
   </customwidget>
   <customwidget>
    <class>ROIPropertiesTableWidget</class>
    <extends>QWidget</extends>
-   <header>mantidimaging.gui.windows.spectrum_viewer.view</header>
+   <header>mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

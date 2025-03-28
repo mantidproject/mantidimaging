@@ -12,13 +12,13 @@ from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget
+from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROIPropertiesTableWidget, \
+    ROITableWidget
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
-from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget, ROIPropertiesTableWidget
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -371,7 +371,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.check_action.assert_has_calls(calls)
 
     def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
-        self.view.roi_form.roi_properties_widget.as_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
+        self.view.roi_form.roi_properties_widget.to_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
