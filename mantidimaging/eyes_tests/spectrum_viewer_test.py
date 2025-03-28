@@ -40,3 +40,11 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         self.imaging.spectrum_viewer.spectrum_widget.roi_dict["roi_1"].setSize(2, 2)
         self.imaging.spectrum_viewer.spectrum_widget.roi_dict["roi_1"].setPos(5, 5)
         self.check_target(widget=self.imaging.spectrum_viewer)
+
+    def test_spectrum_viewer_scatter_plot(self):
+        self._generate_spectrum_dataset()
+        self.imaging.show_spectrum_viewer_window()
+        for action in self.imaging.spectrum_viewer.spectrum.spectrum.join_choice_group.actions():
+            if action.text() == 'Points':
+                action.trigger()
+        self.check_target(widget=self.imaging.spectrum_viewer)
