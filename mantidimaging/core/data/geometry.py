@@ -21,6 +21,8 @@ class Geometry(AcquisitionGeometry):
 
         temp = super().create_Parallel3D(*args, **kwargs)
         self.config = temp.config
+        self.set_panel(num_pixels=(10, 10))
+        self.set_angles(angles=range(0, 180))
 
         self.set_pixel_size(kwargs.get("pixel_size", 1.))
         self.set_pixel_num_v(kwargs.get("pixel_num_v", 10))
@@ -90,7 +92,7 @@ class Geometry(AcquisitionGeometry):
         cil_cor: dict = {}  # Convert the MI COR to a CIL COR
         offset = (cor.value - self.pixel_num_h / 2) * self.pixel_size
         cil_cor["offset"] = (offset, 'units distance')
-        cil_cor["angle"] = (self.tilt, 'radian')
+        cil_cor["angle"] = (self.tilt, 'degrees')
         print(cil_cor)
         return cil_cor
 
