@@ -11,6 +11,9 @@ from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
+from cil.framework import DataOrder
+
+from mantidimaging.core.data.geometry import Geometry
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
@@ -55,6 +58,16 @@ class ImageStack:
 
         self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
+
+        if self.is_sinograms:
+            self.data_order = DataOrder.ASTRA_AG_LABELS
+            pixel_num_h, pixel_num_v = self.data.shape[2], self.data.shape[0]
+        else:
+            self.data_order = DataOrder.TIGRE_AG_LABELS
+            pixel_num_h, pixel_num_v = self.data.shape[2], self.data.shape[1]
+
+        geometry = Geometry(num_pixels=(pixel_num_h, pixel_num_v))
+        self.geometry: Geometry = geometry
 
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
