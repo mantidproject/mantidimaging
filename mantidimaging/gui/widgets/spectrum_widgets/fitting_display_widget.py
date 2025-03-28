@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from collections.abc import Sequence
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget
@@ -18,10 +17,7 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot: SpectrumPlotWidget = SpectrumPlotWidget()
         self.layout.addWidget(self.spectrum_plot)
 
-    def update_plot(self,
-                    x_data: Sequence[float] | np.ndarray,
-                    y_data: Sequence[float] | np.ndarray,
-                    label: str = "ROI") -> None:
+    def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
 
