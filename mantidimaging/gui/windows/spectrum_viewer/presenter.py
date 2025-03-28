@@ -225,9 +225,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if tof_data is None:
             return
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
-        self.view.fittingDisplayWidget.update_labels(tof_range=self.model.tof_plot_range,
-                                                     image_range=self.model.tof_range,
-                                                     wavelength_range=(min(tof_data), max(tof_data)))
+        wavelength_range = None
+        if isinstance(tof_data, list | np.ndarray) and len(tof_data) > 0:
+            wavelength_range = (min(tof_data), max(tof_data))
+        self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
 
     def redraw_spectrum(self, name: str) -> None:
         """
