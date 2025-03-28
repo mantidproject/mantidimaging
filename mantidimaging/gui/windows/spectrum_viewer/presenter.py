@@ -225,7 +225,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi = self.view.spectrum_widget.get_roi(roi_name)
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
-        if not tof_data:
+        if tof_data is None:
             return
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
         self.view.fittingDisplayWidget.update_labels(tof_range=self.model.tof_plot_range,
