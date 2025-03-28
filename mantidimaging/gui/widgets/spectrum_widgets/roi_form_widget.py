@@ -17,6 +17,9 @@ if TYPE_CHECKING:
 
 
 class ROIFormWidget(BaseWidget):
+    """
+    Collection of widgets for adding, removing and adjusting ROIs in the spectrum viewer
+    """
     exportTabs: QTabWidget
     roi_properties_widget: ROIPropertiesTableWidget
     table_view: ROITableWidget
@@ -48,6 +51,9 @@ class ROIFormWidget(BaseWidget):
 
 
 class ROIPropertiesTableWidget(BaseWidget):
+    """
+    Widget for manually adjusting the current selected ROI
+    """
     spin_left: QSpinBox
     spin_right: QSpinBox
     spin_top: QSpinBox
