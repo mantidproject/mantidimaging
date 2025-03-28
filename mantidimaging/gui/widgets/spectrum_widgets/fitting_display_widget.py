@@ -1,6 +1,5 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from collections.abc import Sequence
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from pyqtgraph import RectROI, mkPen
@@ -22,10 +21,7 @@ class FittingDisplayWidget(QWidget):
 
         self.fitting_region: RectROI | None = None
 
-    def update_plot(self,
-                    x_data: Sequence[float] | np.ndarray,
-                    y_data: Sequence[float] | np.ndarray,
-                    label: str = "ROI") -> None:
+    def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
         """Update the spectrum plot and preserve the fitting ROI if it exists."""
         if x_data is None or len(x_data) == 0:
             return
@@ -49,7 +45,7 @@ class FittingDisplayWidget(QWidget):
         if wavelength_range and len(wavelength_range) == 2:
             self.spectrum_plot.set_wavelength_range_label(*wavelength_range)
 
-    def set_default_region(self, x_data: Sequence[float] | np.ndarray, y_data: Sequence[float] | np.ndarray) -> None:
+    def set_default_region(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
         """Position the ROI centrally over the plotted data."""
         x_min, x_max = float(np.min(x_data)), float(np.max(x_data))
         y_min, y_max = float(np.min(y_data)), float(np.max(y_data))

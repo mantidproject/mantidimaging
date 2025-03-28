@@ -5,7 +5,6 @@ from __future__ import annotations
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING
-from collections.abc import Sequence
 
 from logging import getLogger
 
@@ -243,7 +242,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             default_region = self.get_default_fitting_range(tof_data)
             self.view.set_fitting_region(default_region)
 
-    def get_default_fitting_range(self, x_data: Sequence[float] | np.ndarray) -> tuple[float, float]:
+    def get_default_fitting_range(self, x_data: np.ndarray) -> tuple[float, float]:
+
         if len(x_data) == 0:
             return (0.0, 1.0)
 
