@@ -12,13 +12,13 @@ from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget
+from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROIPropertiesTableWidget
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
-from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget, ROIPropertiesTableWidget
+from mantidimaging.gui.windows.spectrum_viewer.view import ROITableWidget
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 

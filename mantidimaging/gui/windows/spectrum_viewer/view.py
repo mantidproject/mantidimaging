@@ -8,11 +8,10 @@ from typing import TYPE_CHECKING, Any
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QAbstractItemView, QHeaderView, QComboBox,
                              QSpinBox, QGroupBox, QActionGroup, QAction)
-from PyQt5.QtCore import QSignalBlocker, QModelIndex, pyqtSignal
+from PyQt5.QtCore import QModelIndex, pyqtSignal
 
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.gui.mvp_base import BaseMainWindowView, BaseWidget
+from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
@@ -27,57 +26,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget
     from uuid import UUID
-
-
-class ROIPropertiesTableWidget(BaseWidget):
-    spin_left: QSpinBox
-    spin_right: QSpinBox
-    spin_top: QSpinBox
-    spin_bottom: QSpinBox
-    label_height: QLabel
-    label_width: QLabel
-    group_box: QGroupBox
-
-    roi_changed = pyqtSignal()
-
-    def __init__(self, parent=None):
-        super().__init__(parent, ui_file='gui/ui/roi_properties_table_widget.ui')
-
-        self.spin_boxes = [self.spin_left, self.spin_right, self.spin_top, self.spin_bottom]
-
-        for spin_box in self.spin_boxes:
-            spin_box.valueChanged.connect(self.roi_changed.emit)
-
-    def set_roi_name(self, name: str) -> None:
-        self.group_box.setTitle(f"Roi Properties: {name}")
-
-    def set_roi_values(self, roi: SensibleROI) -> None:
-        with QSignalBlocker(self):
-            self.spin_left.setValue(roi.left)
-            self.spin_right.setValue(roi.right)
-            self.spin_top.setValue(roi.top)
-            self.spin_bottom.setValue(roi.bottom)
-            self.label_width.setText(str(roi.width))
-            self.label_height.setText(str(roi.height))
-
-    def set_roi_limits(self, shape: tuple[int, ...]) -> None:
-        self.spin_left.setMaximum(shape[1])
-        self.spin_right.setMaximum(shape[1])
-        self.spin_top.setMaximum(shape[0])
-        self.spin_bottom.setMaximum(shape[0])
-
-    def as_roi(self) -> SensibleROI:
-        new_roi = SensibleROI(left=self.spin_left.value(),
-                              right=self.spin_right.value(),
-                              top=self.spin_top.value(),
-                              bottom=self.spin_bottom.value())
-        return new_roi
-
-    def enable_widgets(self, enable: bool) -> None:
-        for spin_box in self.spin_boxes:
-            spin_box.setEnabled(enable)
-        if not enable:
-            self.set_roi_values(SensibleROI(0, 0, 0, 0))
 
 
 class ROITableWidget(RemovableRowTableView):
