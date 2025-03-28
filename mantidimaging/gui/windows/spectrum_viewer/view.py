@@ -356,6 +356,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
             self.set_roi_properties()
 
+    def get_fitting_region(self) -> tuple[float, float]:
+        return self.fittingDisplayWidget.get_selected_fit_region()
+
+    def set_fitting_region(self, region: tuple[float, float]) -> None:
+        self.fittingDisplayWidget.set_selected_fit_region(region)
+
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
         selector.presenter.show_stacks = True
         selector.subscribe_to_main_window(self.main_window)

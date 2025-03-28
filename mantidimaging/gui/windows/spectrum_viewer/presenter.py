@@ -236,6 +236,21 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                      wavelength_range=(min(tof_data), max(tof_data)))
         self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
 
+        # Set default fit region
+        default_region = self.get_default_fitting_range(tof_data)
+        self.view.set_fitting_region(default_region)
+
+    def get_default_fitting_range(self, x_data: np.ndarray) -> tuple[float, float]:
+        if len(x_data) == 0:
+            return (0, 1)
+        min_x = float(np.min(x_data))
+        max_x = float(np.max(x_data))
+        span = (max_x - min_x) * 0.2
+        mid = (min_x + max_x) / 2
+        region = (mid - span / 2, mid + span / 2)
+        print(f"[FittingRegion] Setting region: {region}")
+        return region
+
     def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[str, str]]:
         """
         Fetch simulated fitting parameters for the selected ROI.
