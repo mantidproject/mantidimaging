@@ -222,15 +222,35 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """Fetches the spectrum data for the selected ROI and updates the view."""
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
+
         roi = self.view.spectrum_widget.get_roi(roi_name)
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
+
         if tof_data is None:
             return
+
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
         self.view.fittingDisplayWidget.update_labels(tof_range=self.model.tof_plot_range,
                                                      image_range=self.model.tof_range,
                                                      wavelength_range=(min(tof_data), max(tof_data)))
+        self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
+
+    def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[str, str]]:
+        """
+        Fetch simulated fitting parameters for the selected ROI.
+        Replace this with actual fit results later.
+        """
+        roi = self.view.spectrum_widget.get_roi(roi_name)
+        width = roi.width
+        height = roi.height
+
+        return {
+            "a": (f"{width:.2f}", f"{width * 0.99:.5f}"),
+            "b": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
+            "c": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
+            "d": ("-", "-")
+        }
 
     def redraw_spectrum(self, name: str) -> None:
         """

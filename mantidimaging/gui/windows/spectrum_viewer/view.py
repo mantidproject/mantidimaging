@@ -23,6 +23,7 @@ from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
+from mantidimaging.gui.widgets.spectrum_widgets.scalable_roi_properties_widget import ScalableROIPropertiesWidget
 
 import numpy as np
 
@@ -243,6 +244,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_spectrum)
+
+        self.scalable_roi_widget = ScalableROIPropertiesWidget()
+        self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
