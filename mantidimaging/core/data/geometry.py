@@ -36,9 +36,12 @@ class Geometry(AcquisitionGeometry):
         uses the MI convention, it is converted to the CIL convention.
         """
         if cor is ScalarCoR:
-            self.set_centre_of_rotation(self.convert_cor(cor))
-        else:
-            self.set_centre_of_rotation(cor)
+            cor = self.convert_cor(cor)
+
+        self.set_centre_of_rotation(offset=cor["offset"][0],
+                                    distance_units=cor["offset"][1],
+                                    angle=cor["angle"][0],
+                                    angle_units=cor["angle"][1])
 
     def set_cor_list(self, cor_list):
         """
