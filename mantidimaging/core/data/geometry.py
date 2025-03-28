@@ -38,10 +38,7 @@ class Geometry(AcquisitionGeometry):
         if cor is ScalarCoR:
             cor = self.convert_cor(cor)
 
-        self.set_centre_of_rotation(offset=cor["offset"][0],
-                                    distance_units=cor["offset"][1],
-                                    angle=cor["angle"][0],
-                                    angle_units=cor["angle"][1])
+        self.set_centre_of_rotation(offset=cor["offset"][0], angle=cor["angle"][0])
 
     def set_cor_list(self, cor_list):
         """
@@ -83,7 +80,7 @@ class Geometry(AcquisitionGeometry):
         cil_cor["offset"] = (offset, "pixels")
         cil_cor["angle"] = (tilt, "degree")
         self.set_cor(cil_cor)
-        print(cil_cor)
+        print(f"centre of rotation: {self.get_centre_of_rotation}")
         return cil_cor
 
     def convert_cor_list(self, cor_list: list[ScalarCoR], tilt: float) -> list[dict]:
@@ -96,5 +93,5 @@ class Geometry(AcquisitionGeometry):
             cil_cor_list.append(cil_cor)
         self.set_cor_list(cil_cor_list)
         self.set_cor(cil_cor_list[self.pixel_num_v // 2])
-        print(cil_cor_list)
+        print(f"cor_list: {self.cor_list}")
         return cil_cor_list
