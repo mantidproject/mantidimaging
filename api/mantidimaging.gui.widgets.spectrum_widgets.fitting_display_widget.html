@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget module &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget module &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html" />
-    <link rel="prev" title="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html" />
+    <link rel="next" title="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html" />
+    <link rel="prev" title="mantidimaging.gui.widgets.spectrum_widgets package" href="mantidimaging.gui.widgets.spectrum_widgets.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -570,60 +570,21 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget">
-<span id="mantidimaging-gui-widgets-spectrum-widgets-roi-form-widget-module"></span><h1>mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget module<a class="headerlink" href="#module-mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget" title="Link to this heading">#</a></h1>
+  <section id="module-mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget">
+<span id="mantidimaging-gui-widgets-spectrum-widgets-fitting-display-widget-module"></span><h1>mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget module<a class="headerlink" href="#module-mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.</span></span><span class="sig-name descname"><span class="pre">ROIFormWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/roi_form_widget.html#ROIFormWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseWidget" title="mantidimaging.gui.mvp_base.view.BaseWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseWidget</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.addBtn">
-<span class="sig-name descname"><span class="pre">addBtn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.addBtn" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportButton">
-<span class="sig-name descname"><span class="pre">exportButton</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportButton" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportButtonRITS">
-<span class="sig-name descname"><span class="pre">exportButtonRITS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportButtonRITS" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportTabs">
-<span class="sig-name descname"><span class="pre">exportTabs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QTabWidget</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportTabs" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.image_output_mode">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_output_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.image_output_mode" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.image_output_mode_combobox">
-<span class="sig-name descname"><span class="pre">image_output_mode_combobox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QComboBox</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.image_output_mode_combobox" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.removeBtn">
-<span class="sig-name descname"><span class="pre">removeBtn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QPushButton</span></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.removeBtn" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.roi_properties_widget">
-<span class="sig-name descname"><span class="pre">roi_properties_widget</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROIPropertiesTableWidget" title="mantidimaging.gui.windows.spectrum_viewer.view.ROIPropertiesTableWidget"><span class="pre">ROIPropertiesTableWidget</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.roi_properties_widget" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.</span></span><span class="sig-name descname"><span class="pre">FittingDisplayWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/fitting_display_widget.html#FittingDisplayWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_labels">
+<span class="sig-name descname"><span class="pre">update_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelength_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/fitting_display_widget.html#FittingDisplayWidget.update_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_labels" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.set_binning_visibility">
-<span class="sig-name descname"><span class="pre">set_binning_visibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/roi_form_widget.html#ROIFormWidget.set_binning_visibility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.set_binning_visibility" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.table_view">
-<span class="sig-name descname"><span class="pre">table_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget" title="mantidimaging.gui.windows.spectrum_viewer.view.ROITableWidget"><span class="pre">ROITableWidget</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.table_view" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot">
+<span class="sig-name descname"><span class="pre">update_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ROI'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/fitting_display_widget.html#FittingDisplayWidget.update_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -641,20 +602,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html"
+       href="mantidimaging.gui.widgets.spectrum_widgets.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget module</p>
+        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets package</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html"
+       href="mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget module</p>
+        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -676,17 +637,9 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.addBtn"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.addBtn</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportButton"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.exportButton</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportButtonRITS"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.exportButtonRITS</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.exportTabs"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.exportTabs</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.image_output_mode"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.image_output_mode</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.image_output_mode_combobox"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.image_output_mode_combobox</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.removeBtn"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.removeBtn</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.roi_properties_widget"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.roi_properties_widget</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.set_binning_visibility"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.set_binning_visibility()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.table_view"><code class="docutils literal notranslate"><span class="pre">ROIFormWidget.table_view</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget"><code class="docutils literal notranslate"><span class="pre">FittingDisplayWidget</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_labels"><code class="docutils literal notranslate"><span class="pre">FittingDisplayWidget.update_labels()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot"><code class="docutils literal notranslate"><span class="pre">FittingDisplayWidget.update_plot()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -695,7 +648,7 @@ document.write(`
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.rst.txt">
+    <a href="../_sources/api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

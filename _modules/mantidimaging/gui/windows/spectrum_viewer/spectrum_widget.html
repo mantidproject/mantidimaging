@@ -930,6 +930,15 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_tof_axis_label">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_tof_axis_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tof_axis_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">setLabel</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">tof_axis_label</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumPlotWidget.set_wavelength_range_label">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_wavelength_range_label">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_wavelength_range_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">range_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_wavelength_range_label&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_range_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Neutron Wavelength (Å)</span><span class="se">\n</span><span class="s2">Range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 

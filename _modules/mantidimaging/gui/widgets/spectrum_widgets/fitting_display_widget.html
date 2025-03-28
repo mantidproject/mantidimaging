@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mantidimaging/gui/widgets/spectrum_widgets/roi_selection_widget';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mantidimaging/gui/widgets/spectrum_widgets/fitting_display_widget';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -504,70 +504,40 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget</h1><div class="highlight"><pre>
+  <h1>Source code for mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumPlotWidget</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI_RITS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 
-
-<div class="viewcode-block" id="ROISelectionWidget">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ROISelectionWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">):</span>
+<div class="viewcode-block" id="FittingDisplayWidget">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FittingDisplayWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A custom Qt widget for selecting an ROI.</span>
-<span class="sd">    Attributes:</span>
-<span class="sd">        roiDropdown: A dropdown menu for selecting ROIs.</span>
-<span class="sd">        selectionChanged: Signal emitted when the ROI selection changes.</span>
+<span class="sd">    Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">selectionChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Select ROI&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">:</span> <span class="n">QVBoxLayout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="p">:</span> <span class="n">SpectrumPlotWidget</span> <span class="o">=</span> <span class="n">SpectrumPlotWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_selection_changed</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">previous_selection</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_selection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Handle dropdown selection change and emit signal. &quot;&quot;&quot;</span>
-        <span class="n">selected_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">selected_roi</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_selection</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">previous_selection</span> <span class="o">=</span> <span class="n">selected_roi</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">selected_roi</span><span class="p">)</span>
-
-<div class="viewcode-block" id="ROISelectionWidget.update_roi_list">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.update_roi_list">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Update the dropdown and trigger selection change if needed. &quot;&quot;&quot;</span>
-        <span class="n">current_selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="n">filtered_rois</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">roi_names</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">filtered_rois</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">current_selection</span> <span class="ow">in</span> <span class="n">filtered_rois</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">current_selection</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">filtered_rois</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_on_selection_changed</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+<div class="viewcode-block" id="FittingDisplayWidget.update_plot">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ROI&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="ROISelectionWidget.set_selected_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.set_selected_roi">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_selected_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the dropdown selection to the given ROI name. &quot;&quot;&quot;</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
+<div class="viewcode-block" id="FittingDisplayWidget.update_labels">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_labels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wavelength_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">wavelength_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">wavelength_range</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">set_wavelength_range_label</span><span class="p">(</span><span class="o">*</span><span class="n">wavelength_range</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
