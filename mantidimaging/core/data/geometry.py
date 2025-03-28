@@ -81,7 +81,7 @@ class Geometry(AcquisitionGeometry):
         cil_cor: dict = {}
         offset: float = (cor.value - self.pixel_num_h / 2) * self.config.panel.pixel_size
         cil_cor["offset"] = (offset, "pixels")
-        cil_cor["angle"] = (tilt, "degrees")
+        cil_cor["angle"] = (tilt, "degree")
         self.set_cor(cil_cor)
         print(cil_cor)
         return cil_cor
