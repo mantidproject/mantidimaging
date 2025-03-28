@@ -296,7 +296,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Set a new ROI on the image
         """
         self.presenter.do_add_roi()
-        self.roi_form.roi_properties_widget.enable_widgets(True)
+        self.roi_form.roi_properties_widget.enable_roi_spinboxes(True)
         self.set_roi_properties()
 
     def handle_table_click(self, index: QModelIndex) -> None:
@@ -392,11 +392,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         current_roi = self.presenter.view.spectrum_widget.get_roi(roi_name)
         self.roi_form.roi_properties_widget.set_roi_name(roi_name)
         self.roi_form.roi_properties_widget.set_roi_values(current_roi)
-        self.roi_form.roi_properties_widget.enable_widgets(True)
+        self.roi_form.roi_properties_widget.enable_roi_spinboxes(True)
 
     def disable_roi_properties(self) -> None:
         self.roi_form.roi_properties_widget.set_roi_name("None selected")
-        self.roi_form.roi_properties_widget.enable_widgets(False)
+        self.roi_form.roi_properties_widget.enable_roi_spinboxes(False)
 
     def setup_roi_properties_spinboxes(self) -> None:
         assert self.spectrum_widget.image.image_data is not None
