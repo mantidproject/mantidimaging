@@ -6,8 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QComboBox, QSpinBox, QGroupBox, QActionGroup,
-                             QAction)
+from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QModelIndex
 
 from mantidimaging.core.utility import finder
@@ -39,9 +38,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     shuttercountErrorIcon: QLabel
     normalise_error_issue: str = ""
     shuttercount_error_issue: str = ""
-    transmission_error_mode_combobox: QComboBox
-    bin_size_spinBox: QSpinBox
-    bin_step_spinBox: QSpinBox
 
     spectrum_widget: SpectrumWidget
     experimentSetupGroupBox: QGroupBox
@@ -341,7 +337,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def transmission_error_mode(self) -> str:
-        return self.transmission_error_mode_combobox.currentText()
+        return self.roi_form.transmission_error_mode_combobox.currentText()
 
     @property
     def image_output_mode(self) -> str:
@@ -349,11 +345,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     @property
     def bin_size(self) -> int:
-        return self.bin_size_spinBox.value()
+        return self.roi_form.bin_size_spinBox.value()
 
     @property
     def bin_step(self) -> int:
-        return self.bin_step_spinBox.value()
+        return self.roi_form.bin_step_spinBox.value()
 
     @property
     def tof_units_mode(self) -> str:

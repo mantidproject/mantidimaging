@@ -25,6 +25,9 @@ class ROIFormWidget(BaseWidget):
     removeBtn: QPushButton
     exportButton: QPushButton
     exportButtonRITS: QPushButton
+    transmission_error_mode_combobox: QComboBox
+    bin_size_spinBox: QSpinBox
+    bin_step_spinBox: QSpinBox
 
     def __init__(self, parent=None):
         super().__init__(parent, ui_file='gui/ui/roi_form_widget.ui')
