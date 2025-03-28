@@ -213,26 +213,35 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         )
         self.view.set_spectrum(roi.name, spectrum)
         self.view.spectrum_widget.spectrum.update()
+        self.update_fitting_spectrum(roi.name)
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
 
-    def update_fitting_spectrum(self, roi_name: str) -> None:
-        """Fetches the spectrum data for the selected ROI and updates the view."""
+    def update_fitting_spectrum(self, roi_name: str, reset_region: bool = False) -> None:
+        """
+        Fetches the spectrum data for the selected ROI and updates the fitting display plot.
+        """
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
+
         roi = self.view.spectrum_widget.get_roi(roi_name)
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
+
         if tof_data is None or len(tof_data) == 0:
             return
+
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
+
         wavelength_range = float(min(tof_data)), float(max(tof_data))
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
-        default_region = self.get_default_fitting_range(tof_data)
-        self.view.set_fitting_region(default_region)
+
+        if reset_region:
+            default_region = self.get_default_fitting_range(tof_data)
+            self.view.set_fitting_region(default_region)
 
     def get_default_fitting_range(self, x_data: Sequence[float] | np.ndarray) -> tuple[float, float]:
         if len(x_data) == 0:

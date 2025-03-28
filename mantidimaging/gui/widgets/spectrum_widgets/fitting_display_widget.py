@@ -26,14 +26,15 @@ class FittingDisplayWidget(QWidget):
                     x_data: Sequence[float] | np.ndarray,
                     y_data: Sequence[float] | np.ndarray,
                     label: str = "ROI") -> None:
-        """Update the spectrum plot and create a fitting ROI if not present."""
-        if len(x_data) == 0:
+        """Update the spectrum plot and preserve the fitting ROI if it exists."""
+        if x_data is None or len(x_data) == 0:
             return
-
+        existing_region = self.fitting_region
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
-
-        if self.fitting_region is None:
+        if existing_region is not None:
+            self.spectrum_plot.spectrum.addItem(existing_region)
+        else:
             self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
             self.fitting_region.setZValue(10)
             self.fitting_region.addScaleHandle([1, 1], [0, 0])
@@ -41,8 +42,7 @@ class FittingDisplayWidget(QWidget):
             self.fitting_region.addScaleHandle([0, 1], [1, 0])
             self.fitting_region.addScaleHandle([1, 0], [0, 1])
             self.spectrum_plot.spectrum.addItem(self.fitting_region)
-
-        self.set_default_region(x_data, y_data)
+            self.set_default_region(x_data, y_data)
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
         """Update wavelength range label below the plot, if available."""
