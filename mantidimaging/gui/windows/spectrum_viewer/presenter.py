@@ -5,6 +5,7 @@ from __future__ import annotations
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING
+from collections.abc import Sequence
 
 from logging import getLogger
 
@@ -222,33 +223,26 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """Fetches the spectrum data for the selected ROI and updates the view."""
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
-
         roi = self.view.spectrum_widget.get_roi(roi_name)
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
-
-        if tof_data is None:
+        if tof_data is None or len(tof_data) == 0:
             return
-
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
-        self.view.fittingDisplayWidget.update_labels(tof_range=self.model.tof_plot_range,
-                                                     image_range=self.model.tof_range,
-                                                     wavelength_range=(min(tof_data), max(tof_data)))
-        self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
-
-        # Set default fit region
+        wavelength_range = float(min(tof_data)), float(max(tof_data))
+        self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
         default_region = self.get_default_fitting_range(tof_data)
         self.view.set_fitting_region(default_region)
 
-    def get_default_fitting_range(self, x_data: np.ndarray) -> tuple[float, float]:
+    def get_default_fitting_range(self, x_data: Sequence[float] | np.ndarray) -> tuple[float, float]:
         if len(x_data) == 0:
-            return (0, 1)
+            return (0.0, 1.0)
+
         min_x = float(np.min(x_data))
         max_x = float(np.max(x_data))
-        span = (max_x - min_x) * 0.2
-        mid = (min_x + max_x) / 2
+        span = max((max_x - min_x) * 0.25, 20.0)
+        mid = (min_x + max_x) / 2.0
         region = (mid - span / 2, mid + span / 2)
-        print(f"[FittingRegion] Setting region: {region}")
         return region
 
     def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[str, str]]:
