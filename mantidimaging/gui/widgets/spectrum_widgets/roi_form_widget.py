@@ -90,7 +90,7 @@ class ROIPropertiesTableWidget(BaseWidget):
         self.spin_top.setMaximum(shape[0])
         self.spin_bottom.setMaximum(shape[0])
 
-    def as_roi(self) -> SensibleROI:
+    def to_roi(self) -> SensibleROI:
         new_roi = SensibleROI(left=self.spin_left.value(),
                               right=self.spin_right.value(),
                               top=self.spin_top.value(),
