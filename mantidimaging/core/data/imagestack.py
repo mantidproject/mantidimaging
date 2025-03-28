@@ -66,12 +66,8 @@ class ImageStack:
             self.data_order = DataOrder.TIGRE_AG_LABELS
             pixel_num_h, pixel_num_v = self.data.shape[2], self.data.shape[1]
 
-        geometry = Geometry()
+        geometry = Geometry(num_pixels=(pixel_num_h, pixel_num_v))
         self.geometry: Geometry = geometry
-        self.geometry.set_pixel_num_h(pixel_num_h)
-        self.geometry.set_pixel_num_v(pixel_num_v)
-        self.geometry.set_panel(num_pixels=(pixel_num_h, pixel_num_v))
-        self.geometry.set_angles(angles=range(0, 180))
 
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None

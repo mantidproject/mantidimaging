@@ -17,5 +17,5 @@ class GeometryTest(unittest.TestCase):
 
     def test_default_geometry(self):
         geo = Geometry()
-        self.assertTrue(geo.IsParallel)
-        self.assertEqual(geo.centre_of_rotation, 64)
+        self.assertTrue(geo.is_parallel)
+        self.assertEqual(geo.get_centre_of_rotation["offset"], 64)

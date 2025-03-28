@@ -346,9 +346,9 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_size = images.geometry.pixel_size
-        pixel_num_h = images.geometry.pixel_num_h
-        pixel_num_v = images.geometry.pixel_num_v
+        pixel_size = images.geometry.config.panel.pixel_size
+        pixel_num_h = images.geometry.config.panel.num_pixels[0]
+        pixel_num_v = images.geometry.config.panel.num_pixels[1]
 
         projection_size = full_size_KB(images.data.shape, images.dtype)
         recon_volume_shape = pixel_num_h, pixel_num_h, pixel_num_v
@@ -381,19 +381,18 @@ class CILRecon(BaseRecon):
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
 
-            images.geometry.set_tilt(recon_params.tilt.value)
-            images.geometry.set_cor_list(images.geometry.convert_cor_list(cors))
+            tilt = recon_params.tilt.value
+            cil_cors = images.geometry.convert_cor_list(cors, tilt)
 
-            cil_cors = images.geometry.cor_list
-            rot_pos = [(cil_cors[pixel_num_v // 2]["offset"][0] - pixel_num_h / 2) * pixel_size, 0, 0]
+            rot_pos = [(cil_cors[pixel_num_v // 2]["offset"][0]), 0, 0]
             print(f"rot_pos: {rot_pos}")
-            slope = -np.tan(np.deg2rad(images.geometry.tilt))
+            slope = -np.tan(np.deg2rad(images.geometry.centre_of_rotation["angle"]))
             rot_angle = [slope, 0, 1]
             print(f"rot_angle: {rot_angle}")
 
-            images.geometry.set_geometry(
-                AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
-                                                      rotation_axis_direction=rot_angle))
+            recon_geometry = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
+                                                                   rotation_axis_direction=rot_angle)
+            images.geometry.set_geometry(recon_geometry)
             images.geometry.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
             images.geometry.set_angles(angles=angles, angle_unit='radian')
             images.geometry.set_labels(images.data_order)

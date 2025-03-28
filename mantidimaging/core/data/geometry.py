@@ -6,29 +6,21 @@ from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
 class Geometry(AcquisitionGeometry):
-    cor: dict
     cor_list: list[dict]
-    tilt: float
-    pixel_size: float
-    pixel_num_v: int
-    pixel_num_h: int
+    is_parallel: bool
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, num_pixels=(10, 10), *args, **kwargs):
         """
         Uses CIL conventions to determine geometry and centre of rotation.
         By default, the Geometry object is instantiated using a Parallel3D configuration.
         """
 
         temp = super().create_Parallel3D(*args, **kwargs)
-        self.config = temp.config
-        self.set_panel(num_pixels=(10, 10))
+        self.set_geometry(temp)
+        self.is_parallel = True
+
+        self.set_panel(num_pixels=num_pixels, pixel_size=(1.))
         self.set_angles(angles=range(0, 180))
-
-        self.set_pixel_size(kwargs.get("pixel_size", 1.))
-        self.set_pixel_num_v(kwargs.get("pixel_num_v", 10))
-        self.set_pixel_num_h(kwargs.get("pixel_num_h", 10))
-
-        self.set_cor(self.get_centre_of_rotation())
 
         print(self)
 
@@ -44,9 +36,9 @@ class Geometry(AcquisitionGeometry):
         uses the MI convention, it is converted to the CIL convention.
         """
         if cor is ScalarCoR:
-            self.cor = self.convert_cor(cor)
+            self.set_centre_of_rotation(self.convert_cor(cor))
         else:
-            self.cor = cor
+            self.set_centre_of_rotation(cor)
 
     def set_cor_list(self, cor_list):
         """
@@ -58,51 +50,48 @@ class Geometry(AcquisitionGeometry):
         else:
             self.cor_list = cor_list
 
-    def set_tilt(self, tilt):
-        """
-        Sets the Geometry object's tilt attribute.
-        """
-        self.tilt = tilt
-
     def set_pixel_size(self, pixel_size: float):
         """
         Sets the Geometry object's pixel size attribute.
         This is the size of the pixels in the panel.
         """
-        self.pixel_size = pixel_size
-
-    def set_pixel_num_v(self, pixel_num_v: int):
-        """
-        Sets the Geometry object's number of vertical pixels attribute.
-        This is the number of vertical pixels of the panel.
-        """
-        self.pixel_num_v = pixel_num_v
+        self.config.panel.pixel_size = pixel_size
 
     def set_pixel_num_h(self, pixel_num_h: int):
         """
         Sets the Geometry object's number of horizontal pixels attribute.
         This is the number of horizontal pixels of the panel.
         """
-        self.pixel_num_h = pixel_num_h
+        self.config.panel.num_pixels[0] = pixel_num_h
 
-    def convert_cor(self, cor: ScalarCoR) -> dict:
+    def set_pixel_num_v(self, pixel_num_v: int):
+        """
+        Sets the Geometry object's number of vertical pixels attribute.
+        This is the number of vertical pixels of the panel.
+        """
+        self.config.panel.num_pixels[1] = pixel_num_v
+
+    def convert_cor(self, cor: ScalarCoR, tilt: float) -> dict:
         """
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.
         """
-        cil_cor: dict = {}  # Convert the MI COR to a CIL COR
-        offset = (cor.value - self.pixel_num_h / 2) * self.pixel_size
-        cil_cor["offset"] = (offset, 'units distance')
-        cil_cor["angle"] = (self.tilt, 'degrees')
+        cil_cor: dict = {}
+        offset: float = (cor.value - self.pixel_num_h / 2) * self.pixel_size
+        cil_cor["offset"] = (offset, "pixels")
+        cil_cor["angle"] = (tilt, "degrees")
+        self.set_cor(cil_cor)
         print(cil_cor)
         return cil_cor
 
-    def convert_cor_list(self, cor_list: list[ScalarCoR]) -> list[dict]:
+    def convert_cor_list(self, cor_list: list[ScalarCoR], tilt: float) -> list[dict]:
         """
         Converts a list of per-slice centre of rotations (that use MI conventions) to the CIL convention.
         """
         cil_cor_list: list = []
         for cor in cor_list:
-            cil_cor = self.convert_cor(cor)
+            cil_cor = self.convert_cor(cor, tilt)
             cil_cor_list.append(cil_cor)
+        self.set_cor_list(cil_cor_list)
+        self.set_cor(cil_cor_list[self.pixel_num_v // 2])
         print(cil_cor_list)
         return cil_cor_list
