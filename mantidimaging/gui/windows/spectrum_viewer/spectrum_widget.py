@@ -342,6 +342,12 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def set_tof_axis_label(self, tof_axis_label: str) -> None:
         self.spectrum.setLabel('bottom', text=tof_axis_label)
 
+    def set_wavelength_range_label(self, range_min: float, range_max: float) -> None:
+        if not hasattr(self, "_wavelength_range_label"):
+            self.nextRow()
+            self._wavelength_range_label = self.addLabel()
+        self._wavelength_range_label.setText(f"Neutron Wavelength (Å)\nRange: {range_min:.3f} - {range_max:.3f}")
+
 
 class SpectrumProjectionWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
