@@ -254,22 +254,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         region = (mid - span / 2, mid + span / 2)
         return region
 
-    def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[str, str]]:
-        """
-        Fetch simulated fitting parameters for the selected ROI.
-        Replace this with actual fit results later.
-        """
-        roi = self.view.spectrum_widget.get_roi(roi_name)
-        width = roi.width
-        height = roi.height
-
-        return {
-            "a": (f"{width:.2f}", f"{width * 0.99:.5f}"),
-            "b": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
-            "c": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
-            "d": ("-", "-")
-        }
-
     def redraw_spectrum(self, name: str) -> None:
         """
         Redraw the spectrum with the given name
