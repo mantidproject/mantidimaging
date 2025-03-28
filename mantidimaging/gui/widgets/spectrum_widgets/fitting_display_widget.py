@@ -14,30 +14,25 @@ class FittingDisplayWidget(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
-        self.layout: QVBoxLayout = QVBoxLayout(self)
-        self.spectrum_plot: SpectrumPlotWidget = SpectrumPlotWidget()
+        self.layout = QVBoxLayout(self)
+        self.spectrum_plot = SpectrumPlotWidget()
         self.layout.addWidget(self.spectrum_plot)
 
-        self.fitting_region: RectROI | None = None
+        self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
+        self.fitting_region.setZValue(10)
+        self.fitting_region.addScaleHandle([1, 1], [0, 0])
+        self.fitting_region.addScaleHandle([0, 0], [1, 1])
+        self.fitting_region.addScaleHandle([0, 1], [1, 0])
+        self.fitting_region.addScaleHandle([1, 0], [0, 1])
+        self.spectrum_plot.spectrum.addItem(self.fitting_region)
 
     def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
-        """Update the spectrum plot and preserve the fitting ROI if it exists."""
-        if x_data is None or len(x_data) == 0:
+        if x_data is None or x_data.size == 0:
             return
-        existing_region = self.fitting_region
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
-        if existing_region is not None:
-            self.spectrum_plot.spectrum.addItem(existing_region)
-        else:
-            self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
-            self.fitting_region.setZValue(10)
-            self.fitting_region.addScaleHandle([1, 1], [0, 0])
-            self.fitting_region.addScaleHandle([0, 0], [1, 1])
-            self.fitting_region.addScaleHandle([0, 1], [1, 0])
-            self.fitting_region.addScaleHandle([1, 0], [0, 1])
-            self.spectrum_plot.spectrum.addItem(self.fitting_region)
-            self.set_default_region(x_data, y_data)
+        self.spectrum_plot.spectrum.addItem(self.fitting_region)
+        self.set_default_region(x_data, y_data)
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
         """Update wavelength range label below the plot, if available."""
@@ -66,8 +61,6 @@ class FittingDisplayWidget(QWidget):
             self.fitting_region.setSize((width, self.fitting_region.size().y()))
 
     def get_selected_fit_region(self) -> tuple[float, float]:
-        if self.fitting_region:
-            pos = self.fitting_region.pos()
-            size = self.fitting_region.size()
-            return float(pos.x()), float(pos.x() + size.x())
-        return 0.0, 1.0
+        pos = self.fitting_region.pos()
+        size = self.fitting_region.size()
+        return float(pos.x()), float(pos.x() + size.x())
