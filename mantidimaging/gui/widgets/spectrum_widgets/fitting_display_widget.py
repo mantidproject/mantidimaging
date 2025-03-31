@@ -36,7 +36,7 @@ class FittingDisplayWidget(QWidget):
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
         """Update wavelength range label below the plot, if available."""
-        if wavelength_range and len(wavelength_range) == 2:
+        if wavelength_range is not None:
             self.spectrum_plot.set_wavelength_range_label(*wavelength_range)
 
     def set_default_region(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
@@ -45,20 +45,20 @@ class FittingDisplayWidget(QWidget):
         y_min, y_max = float(np.min(y_data)), float(np.max(y_data))
         x_span = max((x_max - x_min) * 0.25, 20.0)
         y_span = max((y_max - y_min) * 0.5, 10.0)
-        x_start = (x_max + x_min) / 2 - x_span / 2
-        y_start = (y_max + y_min) / 2 - y_span / 2
+        x_start = (x_min + x_max - x_span) / 2
+        y_start = max((y_min + y_max - y_span) / 2, 0.0)
 
-        if self.fitting_region is not None:
-            self.fitting_region.setPos((x_start, y_start))
-            self.fitting_region.setSize((x_span, y_span))
+        self.fitting_region.setPos((x_start, y_start))
+        self.fitting_region.setSize((x_span, y_span))
 
     def set_selected_fit_region(self, region: tuple[float, float]) -> None:
-        if self.fitting_region:
-            x_start = float(region[0])
-            width = float(region[1] - region[0])
-            current_pos = self.fitting_region.pos()
-            self.fitting_region.setPos((x_start, current_pos.y()))
-            self.fitting_region.setSize((width, self.fitting_region.size().y()))
+        """Set the horizontal (X-axis) range of the ROI."""
+        x_start, x_end = region
+        width = x_end - x_start
+        y_pos = self.fitting_region.pos().y()
+        height = self.fitting_region.size().y()
+        self.fitting_region.setPos((x_start, y_pos))
+        self.fitting_region.setSize((width, height))
 
     def get_selected_fit_region(self) -> tuple[float, float]:
         pos = self.fitting_region.pos()
