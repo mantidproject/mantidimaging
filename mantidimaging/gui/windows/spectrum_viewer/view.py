@@ -19,7 +19,7 @@ from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
-from mantidimaging.gui.widgets.spectrum_widgets.scalable_roi_properties_widget import ScalableROIPropertiesWidget
+from mantidimaging.gui.widgets.spectrum_widgets.FittingParamFormWidget import ScalableROIPropertiesWidget
 
 import numpy as np
 
