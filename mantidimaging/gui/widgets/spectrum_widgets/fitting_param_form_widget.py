@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy
 
 
-class ScalableROIPropertiesWidget(QWidget):
+class FittingParamFormWidget(QWidget):
     """
     Scalable widget to display ROI parameters with Initial and Final values.
     """
