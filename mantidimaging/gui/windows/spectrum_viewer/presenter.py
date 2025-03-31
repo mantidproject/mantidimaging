@@ -228,9 +228,26 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
         wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
+        self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, spectrum_data)
+
+    def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[str, str]]:
+        """
+        Fetch simulated fitting parameters for the selected ROI.
+        Replace this with actual fit results later.
+        """
+        roi = self.view.spectrum_widget.get_roi(roi_name)
+        width = roi.width
+        height = roi.height
+
+        return {
+            "a": (f"{width:.2f}", f"{width * 0.99:.5f}"),
+            "b": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
+            "c": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
+            "d": ("-", "-")
+        }
 
     def redraw_spectrum(self, name: str) -> None:
         """
