@@ -224,7 +224,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi = self.view.spectrum_widget.get_roi(roi_name)
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
-        if tof_data is None or tof_data.size == 0:
+        if tof_data is None:
             return
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
         wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))

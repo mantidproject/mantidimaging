@@ -27,8 +27,6 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
 
     def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
-        if x_data is None or x_data.size == 0:
-            return
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
