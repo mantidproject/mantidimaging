@@ -22,7 +22,10 @@ class Geometry(AcquisitionGeometry):
         self.set_panel(num_pixels=num_pixels, pixel_size=(1.))
         self.set_angles(angles=range(0, 180))
 
-        print(self)
+        cor = self.config.system.calculate_centre_of_rotation()
+        self.config.system.set_centre_of_rotation(cor[0], cor[1])
+        print(self.config.system.rotation_axis.position)
+        print(self.config.system.rotation_axis.direction)
 
     def set_geometry(self, geometry: AcquisitionGeometry) -> None:
         """
@@ -30,25 +33,17 @@ class Geometry(AcquisitionGeometry):
         """
         self.config = geometry.config
 
-    def set_cor(self, cor):
+    def set_cor(self, cor: dict):
         """
-        Sets the Geometry object's centre of rotation. If the centre of rotation
-        uses the MI convention, it is converted to the CIL convention.
+        Sets the Geometry object's centre of rotation.
         """
-        if cor is ScalarCoR:
-            cor = self.convert_cor(cor)
-
         self.set_centre_of_rotation(offset=cor["offset"][0], angle=cor["angle"][0])
 
-    def set_cor_list(self, cor_list):
+    def set_cor_list(self, cor_list: list[dict]):
         """
-        Sets the Geometry object's list of per-slice centre of rotations. If the list
-        uses the MI convention, it is converted to the CIL convention.
+        Sets the Geometry object's list of per-slice centre of rotations.
         """
-        if cor_list is list[ScalarCoR]:
-            self.cor_list = self.convert_cor_list(cor_list)
-        else:
-            self.cor_list = cor_list
+        self.cor_list = cor_list
 
     def set_pixel_size(self, pixel_size: float):
         """
@@ -79,8 +74,8 @@ class Geometry(AcquisitionGeometry):
         offset: float = (cor.value - self.pixel_num_h / 2) * self.config.panel.pixel_size
         cil_cor["offset"] = (offset, "pixels")
         cil_cor["angle"] = (tilt, "degree")
-        self.set_cor(cil_cor)
-        print(f"centre of rotation: {self.get_centre_of_rotation}")
+        self.set_centre_of_rotation(offset=cil_cor["offset"][0], angle=cil_cor["angle"][0])
+        print(f"centre of rotation: {self.get_centre_of_rotation()}")
         return cil_cor
 
     def convert_cor_list(self, cor_list: list[ScalarCoR], tilt: float) -> list[dict]:
@@ -91,7 +86,7 @@ class Geometry(AcquisitionGeometry):
         for cor in cor_list:
             cil_cor = self.convert_cor(cor, tilt)
             cil_cor_list.append(cil_cor)
-        self.set_cor_list(cil_cor_list)
         self.set_cor(cil_cor_list[self.pixel_num_v // 2])
+        self.set_cor_list(cil_cor_list)
         print(f"cor_list: {self.cor_list}")
         return cil_cor_list
