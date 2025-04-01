@@ -382,11 +382,11 @@ class CILRecon(BaseRecon):
                 raise ValueError("recon_params.tilt is not set")
 
             tilt = recon_params.tilt.value
-            cil_cors = images.geometry.convert_cor_list(cors, tilt)
+            cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
 
-            rot_pos = [(cil_cors[pixel_num_v // 2]["offset"][0]), 0, 0]
+            rot_pos = [cor["offset"][0], 0, 0]
             print(f"rot_pos: {rot_pos}")
-            slope = -np.tan(np.deg2rad(images.geometry.centre_of_rotation["angle"]))
+            slope = -np.tan(np.deg2rad(cor["angle"][0]))
             rot_angle = [slope, 0, 1]
             print(f"rot_angle: {rot_angle}")
 

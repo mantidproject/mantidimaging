@@ -22,10 +22,7 @@ class Geometry(AcquisitionGeometry):
         self.set_panel(num_pixels=num_pixels, pixel_size=(1.))
         self.set_angles(angles=range(0, 180))
 
-        cor = self.config.system.calculate_centre_of_rotation()
-        self.config.system.set_centre_of_rotation(cor[0], cor[1])
-        print(self.config.system.rotation_axis.position)
-        print(self.config.system.rotation_axis.direction)
+        self.set_cor(self.get_centre_of_rotation())
 
     def set_geometry(self, geometry: AcquisitionGeometry) -> None:
         """
@@ -37,7 +34,10 @@ class Geometry(AcquisitionGeometry):
         """
         Sets the Geometry object's centre of rotation.
         """
-        self.set_centre_of_rotation(offset=cor["offset"][0], angle=cor["angle"][0])
+        self.set_centre_of_rotation(offset=cor["offset"][0],
+                                    distance_units="default",
+                                    angle=cor["angle"][0],
+                                    angle_units=cor["angle"][1])
 
     def set_cor_list(self, cor_list: list[dict]):
         """
@@ -71,7 +71,7 @@ class Geometry(AcquisitionGeometry):
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.
         """
         cil_cor: dict = {}
-        offset: float = (cor.value - self.pixel_num_h / 2) * self.config.panel.pixel_size
+        offset: float = (cor.value - self.pixel_num_h / 2) * self.config.panel.pixel_size[0]
         cil_cor["offset"] = (offset, "pixels")
         cil_cor["angle"] = (tilt, "degree")
         self.set_centre_of_rotation(offset=cil_cor["offset"][0], angle=cil_cor["angle"][0])
