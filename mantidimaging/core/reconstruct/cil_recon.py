@@ -346,7 +346,8 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_size = images.geometry.config.panel.pixel_size
+        pixel_size_h = images.geometry.config.panel.pixel_size[0]
+        pixel_size_v = images.geometry.config.panel.pixel_size[1]
         pixel_num_h = images.geometry.config.panel.num_pixels[0]
         pixel_num_v = images.geometry.config.panel.num_pixels[1]
 
@@ -393,7 +394,7 @@ class CILRecon(BaseRecon):
             recon_geometry = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
                                                                    rotation_axis_direction=rot_angle)
             images.geometry.set_geometry(recon_geometry)
-            images.geometry.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
+            images.geometry.set_panel(num_pixels=[pixel_num_h, pixel_num_v], pixel_size=(pixel_size_h, pixel_size_v))
             images.geometry.set_angles(angles=angles, angle_unit='radian')
             images.geometry.set_labels(images.data_order)
 

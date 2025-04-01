@@ -19,7 +19,7 @@ class Geometry(AcquisitionGeometry):
         self.set_geometry(temp)
         self.is_parallel = True
 
-        self.set_panel(num_pixels=num_pixels, pixel_size=(1.))
+        self.set_panel(num_pixels=num_pixels, pixel_size=(1., 1.))
         self.set_angles(angles=range(0, 180))
 
         self.set_cor(self.get_centre_of_rotation())
