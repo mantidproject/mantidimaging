@@ -875,6 +875,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">set_cor_at_slice</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">,</span> <span class="n">new_cor</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">last_cor</span> <span class="o">=</span> <span class="n">new_cor</span>
             <span class="c1"># Update reconstruction preview with new COR</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_results</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_results</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_preview_slice_idx</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_do_refine_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
