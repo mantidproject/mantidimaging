@@ -22,7 +22,7 @@ class FittingParamFormWidget(QWidget):
         self.layout.addLayout(header)
         self._rows = []
 
-    def set_parameters(self, params: Mapping[str, tuple[str | float, str | float]]) -> None:
+    def set_parameters(self, params: Mapping[str, tuple[float, float]]) -> None:
         """
         Set parameters in the widget.
         :param params: Dict of label -> (initial, final)

@@ -233,20 +233,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, spectrum_data)
 
-    def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[str, str]]:
+    def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[float, float]]:
         """
-        Fetch simulated fitting parameters for the selected ROI.
-        Replace this with actual fit results later.
+        Return placeholder fitting parameters for the selected ROI.
+         Replace this with actual fit results later.
         """
-        roi = self.view.spectrum_widget.get_roi(roi_name)
-        width = roi.width
-        height = roi.height
-
+        # Placeholder values for now
         return {
-            "a": (f"{width:.2f}", f"{width * 0.99:.5f}"),
-            "b": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
-            "c": (f"{height * 0.01:.1f}", f"{height * 0.012345:.5f}"),
-            "d": ("-", "-")
+            "a": (1.0, 0.0),
+            "b": (1.0, 0.0),
+            "c": (1.0, 0.0),
         }
 
     def redraw_spectrum(self, name: str) -> None:
