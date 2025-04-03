@@ -27,7 +27,7 @@ class ReconImagesView(GraphicsLayoutWidget):
 
         self.slice_line = InfiniteLine(pos=1024, angle=0, movable=True)
         self.imageview_projection.viewbox.addItem(self.slice_line)
-        self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=True)
+        self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=False)
         self.recon_line_profile = LineProfilePlot(self.imageview_recon)
 
         self.addItem(self.imageview_projection, 0, 0)
