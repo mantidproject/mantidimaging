@@ -264,7 +264,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.rotation_centre = cor.value
         self.tilt = tilt.value
         self.slope = slope.value
-        self.image_view.set_tilt(tilt)
+        self.image_view.show_cor_line(tilt, cor.value)
 
     def preview_image_on_button_press(self, event) -> None:
         """
@@ -276,7 +276,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if event.button == 1 and event.ydata is not None:
             self.presenter.set_preview_slice_idx(int(event.ydata))
 
-    def update_projection(self, image_data, preview_slice_index: int, tilt_angle: Degrees | None) -> None:
+    def update_projection(self, image_data, preview_slice_index: int) -> None:
         """
         Updates the preview projection image and associated annotations.
 
@@ -293,7 +293,7 @@ class ReconstructWindowView(BaseMainWindowView):
         with QSignalBlocker(self.previewSliceIndex):
             self.previewSliceIndex.setValue(preview_slice_index)
 
-        self.image_view.update_projection(image_data, preview_slice_index, tilt_angle)
+        self.image_view.update_projection(image_data, preview_slice_index)
 
     def update_sinogram(self, image_data) -> None:
         self.image_view.update_sinogram(image_data)
@@ -483,7 +483,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return None
 
     def hide_tilt(self) -> None:
-        self.image_view.hide_tilt()
+        self.image_view.hide_cor_line()
 
     def set_filters_for_recon_tool(self, filters: list[str]) -> None:
         self.filterName.clear()

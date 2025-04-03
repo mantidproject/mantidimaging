@@ -184,7 +184,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.reset_projection_preview()
             return
         img_data = images.projection(self.model.preview_projection_idx)
-        self.view.update_projection(img_data, self.model.preview_slice_idx, self.model.tilt_angle)
+        self.view.update_projection(img_data, self.model.preview_slice_idx)
 
     def handle_stack_changed(self) -> None:
         if self.view.isVisible():
