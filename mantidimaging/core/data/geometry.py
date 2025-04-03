@@ -36,8 +36,11 @@ class Geometry(AcquisitionGeometry):
         """
         Sets the Geometry object's centre of rotation.
         """
+        if cor["offset"][1] == "units distance":
+            cor["offset"] = (cor["offset"][0], "default")
+
         self.set_centre_of_rotation(offset=cor["offset"][0],
-                                    distance_units="default",
+                                    distance_units=cor["offset"][1],
                                     angle=cor["angle"][0],
                                     angle_units=cor["angle"][1])
 
