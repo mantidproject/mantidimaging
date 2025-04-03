@@ -264,7 +264,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.rotation_centre = cor.value
         self.tilt = tilt.value
         self.slope = slope.value
-        self.image_view.set_tilt(tilt, cor.value)
+        self.image_view.show_cor_line(tilt, cor.value)
 
     def preview_image_on_button_press(self, event) -> None:
         """
@@ -483,7 +483,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return None
 
     def hide_tilt(self) -> None:
-        self.image_view.hide_tilt()
+        self.image_view.hide_cor_line()
 
     def set_filters_for_recon_tool(self, filters: list[str]) -> None:
         self.filterName.clear()

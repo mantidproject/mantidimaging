@@ -116,12 +116,12 @@ class ReconstructWindowViewTest(unittest.TestCase):
         tilt = Degrees(tilt_val)
         slope = Slope(slope_val)
 
-        with mock.patch.object(self.image_view, "set_tilt") as set_tilt:
+        with mock.patch.object(self.image_view, "show_cor_line") as show_cor_line:
             self.view.set_results(cor, tilt, slope)
             self.assertEqual(self.view.rotation_centre, cor_val)
             self.assertEqual(self.view.tilt, tilt_val)
             self.assertEqual(self.view.slope, slope_val)
-            set_tilt.assert_called_once_with(tilt, cor_val)
+            show_cor_line.assert_called_once_with(tilt, cor_val)
 
     def test_preview_image_on_button_press(self):
         event_mock = mock.Mock()
@@ -276,7 +276,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_hide_tilt(self):
         self.view.hide_tilt()
-        self.image_view.hide_tilt.assert_called_once()
+        self.image_view.hide_cor_line.assert_called_once()
 
     def test_set_filters_for_recon_tool(self):
         filters = ["abc" for _ in range(3)]

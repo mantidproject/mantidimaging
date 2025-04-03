@@ -111,9 +111,9 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def reset_slice_and_tilt(self, slice_index) -> None:
         self.slice_line.setPos(slice_index)
-        self.hide_tilt()
+        self.hide_cor_line()
 
-    def hide_tilt(self) -> None:
+    def hide_cor_line(self) -> None:
         """
         Hides the tilt line. This stops infinite zooming out loop that messes up the image view
         (the line likes to be unbound when the degree isn't a multiple o 90 - and the tilt never is)
@@ -122,7 +122,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         if self.tilt_line.scene() is not None:
             self.imageview_projection.viewbox.removeItem(self.tilt_line)
 
-    def set_tilt(self, tilt: Degrees, pos: float) -> None:
+    def show_cor_line(self, tilt: Degrees, pos: float) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
             self.tilt_line.setPos((pos, 0))
             self.tilt_line.setAngle(90 + tilt.value)
