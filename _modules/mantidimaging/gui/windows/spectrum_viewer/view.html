@@ -526,6 +526,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.tof_properties</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExperimentSetupFormWidget</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROISelectionWidget</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingDisplayWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingParamFormWidget</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -579,6 +580,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span> <span class="o">=</span> <span class="n">FittingDisplayWidget</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_fitting_spectrum</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scalable_roi_widget</span> <span class="o">=</span> <span class="n">FittingParamFormWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fittingFormLayout</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scalable_roi_widget</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_roi_clicked</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_roi_moved</span><span class="p">)</span>

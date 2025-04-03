@@ -775,9 +775,25 @@ document.write(`
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">tof_data</span><span class="p">,</span> <span class="n">spectrum_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="n">wavelength_range</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">tof_data</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tof_data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">scalable_roi_widget</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_fitting_params</span><span class="p">(</span><span class="n">roi_name</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">update_labels</span><span class="p">(</span><span class="n">wavelength_range</span><span class="o">=</span><span class="n">wavelength_range</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">reset_region</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">set_default_region</span><span class="p">(</span><span class="n">tof_data</span><span class="p">,</span> <span class="n">spectrum_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.get_roi_fitting_params">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_roi_fitting_params">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_roi_fitting_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return placeholder fitting parameters for the selected ROI.</span>
+<span class="sd">         Replace this with actual fit results later.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Placeholder values for now</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.redraw_spectrum">
