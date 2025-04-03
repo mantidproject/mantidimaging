@@ -346,8 +346,12 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_num_h = images.geometry.config.panel.num_pixels[0]
-        pixel_num_v = images.geometry.config.panel.num_pixels[1]
+        pixel_size = (
+            1.,
+            1.,
+        )
+        pixel_num_h = images.width
+        pixel_num_v = images.height
 
         projection_size = full_size_KB(images.data.shape, images.dtype)
         recon_volume_shape = pixel_num_h, pixel_num_h, pixel_num_v
@@ -377,7 +381,6 @@ class CILRecon(BaseRecon):
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
             angles = images.projection_angles(recon_params.max_projection_angle).value
-            images.geometry.set_angles(angles=angles, angle_unit='radian')
 
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
@@ -385,15 +388,14 @@ class CILRecon(BaseRecon):
             cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
 
             images.geometry.set_cor(cor)
-            rot_pos = [cor["offset"][0], 0, 0]
-            print(f"rot_pos: {rot_pos}")
-            rot_angle = [cor["angle"][0], 0, 1]
-            print(f"rot_angle: {rot_angle}")
 
             if images.is_sinograms:
                 data_order = DataOrder.ASTRA_AG_LABELS
             else:
                 data_order = DataOrder.TIGRE_AG_LABELS
+
+            images.geometry.set_panel(num_pixels=(pixel_num_h, pixel_num_v), pixel_size=pixel_size)
+            images.geometry.set_angles(angles=angles, angle_unit='radian')
             images.geometry.set_labels(data_order)
 
             print(images.geometry)

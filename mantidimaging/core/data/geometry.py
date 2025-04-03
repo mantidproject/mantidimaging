@@ -43,7 +43,7 @@ class Geometry(AcquisitionGeometry):
 
         print(f"rot_pos: {self.config.system.rotation_axis.position}")
         print(f"rot_angle: {self.config.system.rotation_axis.direction}")
-        print(f"cor: {self.get_centre_of_rotation}")
+        print(f"cor: {self.get_centre_of_rotation()}")
 
     def set_cor_list(self, cor_list: list[dict]):
         """
