@@ -11,8 +11,6 @@ from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
-from cil.framework import DataOrder
-
 from mantidimaging.core.data.geometry import Geometry
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
@@ -36,6 +34,7 @@ class ImageStack:
                  indices: list[int] | Indices | None = None,
                  metadata: dict[str, Any] | None = None,
                  sinograms: bool = False,
+                 projection: bool = False,
                  name: str | None = None):
         """
         :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
@@ -43,6 +42,7 @@ class ImageStack:
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
         :param sinograms: Set data ordering, if false: [t,y,x] if true: [y,t,x]
+        :param projection: Determines whether to set a default Geometry, if true: sets default Geometry
         :param name: A name for the stack
         """
 
@@ -58,16 +58,10 @@ class ImageStack:
 
         self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
+        self._is_projections = projection
 
-        if self.is_sinograms:
-            self.data_order = DataOrder.ASTRA_AG_LABELS
-            pixel_num_h, pixel_num_v = self.data.shape[2], self.data.shape[0]
-        else:
-            self.data_order = DataOrder.TIGRE_AG_LABELS
-            pixel_num_h, pixel_num_v = self.data.shape[2], self.data.shape[1]
-
-        geometry = Geometry(num_pixels=(pixel_num_h, pixel_num_v))
-        self.geometry: Geometry = geometry
+        if self._is_projections:
+            self.geometry: Geometry = Geometry(num_pixels=(self.width, self.height))
 
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
@@ -300,6 +294,10 @@ class ImageStack:
     @property
     def is_sinograms(self) -> bool:
         return self._is_sinograms
+
+    @property
+    def is_projections(self) -> bool:
+        return self._is_projections
 
     @property
     def log_file(self) -> InstrumentLog | None:

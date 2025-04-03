@@ -346,8 +346,6 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_size_h = images.geometry.config.panel.pixel_size[0]
-        pixel_size_v = images.geometry.config.panel.pixel_size[1]
         pixel_num_h = images.geometry.config.panel.num_pixels[0]
         pixel_num_v = images.geometry.config.panel.num_pixels[1]
 
@@ -379,24 +377,26 @@ class CILRecon(BaseRecon):
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
             angles = images.projection_angles(recon_params.max_projection_angle).value
+            images.geometry.set_angles(angles=angles, angle_unit='radian')
+
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
-
             tilt = recon_params.tilt.value
             cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
 
+            images.geometry.set_cor(cor)
             rot_pos = [cor["offset"][0], 0, 0]
             print(f"rot_pos: {rot_pos}")
-            slope = -np.tan(np.deg2rad(cor["angle"][0]))
-            rot_angle = [slope, 0, 1]
+            rot_angle = [cor["angle"][0], 0, 1]
             print(f"rot_angle: {rot_angle}")
 
-            recon_geometry = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
-                                                                   rotation_axis_direction=rot_angle)
-            images.geometry.set_geometry(recon_geometry)
-            images.geometry.set_panel(num_pixels=[pixel_num_h, pixel_num_v], pixel_size=(pixel_size_h, pixel_size_v))
-            images.geometry.set_angles(angles=angles, angle_unit='radian')
-            images.geometry.set_labels(images.data_order)
+            if images.is_sinograms:
+                data_order = DataOrder.ASTRA_AG_LABELS
+            else:
+                data_order = DataOrder.TIGRE_AG_LABELS
+            images.geometry.set_labels(data_order)
+
+            print(images.geometry)
 
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)

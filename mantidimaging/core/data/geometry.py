@@ -9,7 +9,7 @@ class Geometry(AcquisitionGeometry):
     cor_list: list[dict]
     is_parallel: bool
 
-    def __init__(self, num_pixels=(10, 10), *args, **kwargs):
+    def __init__(self, num_pixels=(10, 10), pixel_size=(1., 1.), *args, **kwargs):
         """
         Uses CIL conventions to determine geometry and centre of rotation.
         By default, the Geometry object is instantiated using a Parallel3D configuration.
@@ -19,10 +19,12 @@ class Geometry(AcquisitionGeometry):
         self.set_geometry(temp)
         self.is_parallel = True
 
-        self.set_panel(num_pixels=num_pixels, pixel_size=(1., 1.))
+        self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180))
 
         self.set_cor(self.get_centre_of_rotation())
+
+        print(self)
 
     def set_geometry(self, geometry: AcquisitionGeometry) -> None:
         """
@@ -39,32 +41,15 @@ class Geometry(AcquisitionGeometry):
                                     angle=cor["angle"][0],
                                     angle_units=cor["angle"][1])
 
+        print(f"rot_pos: {self.config.system.rotation_axis.position}")
+        print(f"rot_angle: {self.config.system.rotation_axis.direction}")
+        print(f"cor: {self.get_centre_of_rotation}")
+
     def set_cor_list(self, cor_list: list[dict]):
         """
         Sets the Geometry object's list of per-slice centre of rotations.
         """
         self.cor_list = cor_list
-
-    def set_pixel_size(self, pixel_size: float):
-        """
-        Sets the Geometry object's pixel size attribute.
-        This is the size of the pixels in the panel.
-        """
-        self.config.panel.pixel_size = pixel_size
-
-    def set_pixel_num_h(self, pixel_num_h: int):
-        """
-        Sets the Geometry object's number of horizontal pixels attribute.
-        This is the number of horizontal pixels of the panel.
-        """
-        self.config.panel.num_pixels[0] = pixel_num_h
-
-    def set_pixel_num_v(self, pixel_num_v: int):
-        """
-        Sets the Geometry object's number of vertical pixels attribute.
-        This is the number of vertical pixels of the panel.
-        """
-        self.config.panel.num_pixels[1] = pixel_num_v
 
     def convert_cor(self, cor: ScalarCoR, tilt: float) -> dict:
         """
@@ -73,9 +58,7 @@ class Geometry(AcquisitionGeometry):
         cil_cor: dict = {}
         offset: float = (cor.value - self.pixel_num_h / 2) * self.config.panel.pixel_size[0]
         cil_cor["offset"] = (offset, "pixels")
-        cil_cor["angle"] = (tilt, "degree")
-        self.set_centre_of_rotation(offset=cil_cor["offset"][0], angle=cil_cor["angle"][0])
-        print(f"centre of rotation: {self.get_centre_of_rotation()}")
+        cil_cor["angle"] = (-tilt, "degree")
         return cil_cor
 
     def convert_cor_list(self, cor_list: list[ScalarCoR], tilt: float) -> list[dict]:
