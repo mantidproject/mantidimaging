@@ -63,16 +63,12 @@ class ReconImagesView(GraphicsLayoutWidget):
     def slice_line_moved(self) -> None:
         self.slice_changed(int(self.slice_line.value()))
 
-    def update_projection(self, image_data: np.ndarray, preview_slice_index: int, tilt_angle: Degrees | None) -> None:
+    def update_projection(self, image_data: np.ndarray, preview_slice_index: int) -> None:
         self.imageview_projection.clear()
         self.imageview_projection.setImage(image_data)
         self.imageview_projection.histogram.imageChanged(autoLevel=True, autoRange=True)
         self.slice_line.setPos(preview_slice_index)
         self.slice_line.setBounds([0, int(self.imageview_projection.image_item.height()) - 1])
-        if tilt_angle:
-            self.set_tilt(tilt_angle, image_data.shape[1] // 2)
-        else:
-            self.hide_tilt()
         set_histogram_log_scale(self.imageview_projection.histogram)
 
     def update_sinogram(self, image) -> None:
@@ -126,11 +122,9 @@ class ReconImagesView(GraphicsLayoutWidget):
         if self.tilt_line.scene() is not None:
             self.imageview_projection.viewbox.removeItem(self.tilt_line)
 
-    def set_tilt(self, tilt: Degrees, pos: int | None = None) -> None:
+    def set_tilt(self, tilt: Degrees, pos: float) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
-            if pos is not None:
-                self.tilt_line.setAngle(90)
-                self.tilt_line.setPos(pos)
+            self.tilt_line.setPos((pos, 0))
             self.tilt_line.setAngle(90 + tilt.value)
         self.imageview_projection.viewbox.addItem(self.tilt_line)
 
