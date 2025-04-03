@@ -793,7 +793,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">rotation_centre</span> <span class="o">=</span> <span class="n">cor</span><span class="o">.</span><span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tilt</span> <span class="o">=</span> <span class="n">tilt</span><span class="o">.</span><span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">=</span> <span class="n">slope</span><span class="o">.</span><span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">set_tilt</span><span class="p">(</span><span class="n">tilt</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">show_cor_line</span><span class="p">(</span><span class="n">tilt</span><span class="p">,</span> <span class="n">cor</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.preview_image_on_button_press">
@@ -811,7 +811,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconstructWindowView.update_projection">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_projection">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tilt_angle</span><span class="p">:</span> <span class="n">Degrees</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the preview projection image and associated annotations.</span>
 
@@ -828,7 +828,7 @@ document.write(`
         <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndex</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndex</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">preview_slice_index</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">update_projection</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">,</span> <span class="n">tilt_angle</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">update_projection</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.update_sinogram">
@@ -1066,7 +1066,7 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowView.hide_tilt">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.hide_tilt">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">hide_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">hide_tilt</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">hide_cor_line</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.set_filters_for_recon_tool">
