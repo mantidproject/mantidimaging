@@ -377,7 +377,7 @@ class CILRecon(BaseRecon):
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
             angles = images.projection_angles(recon_params.max_projection_angle).value
-            images.geometry.set_angles(angles=angles, angle_unit="radian")
+            images.geometry.set_angles(angles=angles)
 
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
