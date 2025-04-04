@@ -61,7 +61,8 @@ class ImageStack:
         self._is_projections = projection
 
         if self._is_projections:
-            self.geometry: Geometry = Geometry(num_pixels=(self.width, self.height))
+            self.geometry: Geometry = Geometry(num_pixels=(self.width, self.height),
+                                               pixel_size=(self.pixel_size, self.pixel_size))
 
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None

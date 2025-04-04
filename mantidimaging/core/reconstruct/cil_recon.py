@@ -332,7 +332,6 @@ class CILRecon(BaseRecon):
 
         :param images: Array of sinogram images
         :param cors: Array of centre of rotation values
-        :param proj_angles: Array of projection angles in radians
         :param recon_params: Reconstruction Parameters
         :param progress: Optional progress reporter
         :return: 3D image data for reconstructed volume
@@ -346,10 +345,7 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_size = (
-            1.,
-            1.,
-        )
+        pixel_size = images.pixel_size
         pixel_num_h = images.width
         pixel_num_v = images.height
 
@@ -380,8 +376,6 @@ class CILRecon(BaseRecon):
                      f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
-            print(f"old geometry: {images.geometry}")
-
             angles = images.projection_angles(recon_params.max_projection_angle).value
             images.geometry.set_angles(angles=angles, angle_unit="radian")
 
@@ -398,8 +392,6 @@ class CILRecon(BaseRecon):
             else:
                 data_order = DataOrder.TIGRE_AG_LABELS
             images.geometry.set_labels(data_order)
-
-            print(f"new geometry: {images.geometry}")
 
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)
