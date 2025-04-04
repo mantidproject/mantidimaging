@@ -60,7 +60,7 @@ class Geometry(AcquisitionGeometry):
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.
         """
         cil_cor: dict = {}
-        offset: float = (cor.value - self.pixel_num_h / 2) * self.config.panel.pixel_size[0]
+        offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
         cil_cor["offset"] = (offset, "pixels")
         cil_cor["angle"] = (-tilt, "degree")
         return cil_cor
@@ -73,6 +73,6 @@ class Geometry(AcquisitionGeometry):
         for cor in cor_list:
             cil_cor = self.convert_cor(cor, tilt)
             cil_cor_list.append(cil_cor)
-        self.set_cor(cil_cor_list[self.pixel_num_v // 2])
+        self.set_cor(cil_cor_list[self.config.panel.num_pixels[1] // 2])
         self.set_cor_list(cil_cor_list)
         return cil_cor_list
