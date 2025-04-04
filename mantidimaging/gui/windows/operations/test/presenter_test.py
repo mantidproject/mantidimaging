@@ -27,6 +27,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     def setUp(self) -> None:
         self.main_window = mock.create_autospec(MainWindowView, instance=True)
         self.view = mock.MagicMock()
+        self.view.preview_image_after.histogram.getHistogramRange.return_value = (0, 1)
         self.presenter = FiltersWindowPresenter(self.view, self.main_window)
         self.presenter.model.filter_widget_kwargs = {"roi_field": None}
         self.view.presenter = self.presenter
