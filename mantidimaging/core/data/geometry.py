@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from cil.framework import AcquisitionGeometry
+
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
@@ -24,7 +25,7 @@ class Geometry(AcquisitionGeometry):
 
         self.set_cor(self.get_centre_of_rotation())
 
-        print(self)
+        print(f"default geometry: {self}")
 
     def set_geometry(self, geometry: AcquisitionGeometry) -> None:
         """
@@ -74,5 +75,4 @@ class Geometry(AcquisitionGeometry):
             cil_cor_list.append(cil_cor)
         self.set_cor(cil_cor_list[self.pixel_num_v // 2])
         self.set_cor_list(cil_cor_list)
-        print(f"cor_list: {self.cor_list}")
         return cil_cor_list
