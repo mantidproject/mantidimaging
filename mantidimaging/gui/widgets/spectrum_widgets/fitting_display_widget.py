@@ -3,9 +3,8 @@
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtWidgets import QGraphicsItem
-from pyqtgraph import RectROI, mkPen
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, CustomViewBox
-from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
+from pyqtgraph import RectROI, mkPen, ImageItem
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget
 
 
 class FittingDisplayWidget(QWidget):
@@ -28,14 +27,16 @@ class FittingDisplayWidget(QWidget):
         self.fitting_region.addScaleHandle([1, 0], [0, 1])
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
 
-        self.image_view = MIMiniImageView(name="FloatingSampleImage", view_box_type=CustomViewBox)
-        self.image_view.hist.hide()
-        self.image_view.details.hide()
-        self.image_view.setFlag(QGraphicsItem.ItemIsMovable, True)
-        self.image_view.setFlag(QGraphicsItem.ItemIsSelectable, True)
-        self.image_view.setParentItem(self.spectrum_plot.spectrum)
-        self.image_view.setZValue(20)
-        self.image_view.setPos(400, 10)
+        self.floating_image_item = ImageItem()
+        self.floating_image_item.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.floating_image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.floating_image_item.setZValue(20)
+        self.floating_image_item.setPos(400, 10)
+        self.spectrum_plot.spectrum.addItem(self.floating_image_item)
+
+    def update_image(self, image: np.ndarray | None) -> None:
+        if image is not None:
+            self.floating_image_item.setImage(image, autoLevels=True)
 
     def update_plot(self,
                     x_data: np.ndarray,
@@ -47,10 +48,6 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
         self.set_default_region(x_data, y_data)
         self.update_image(image)
-
-    def update_image(self, image: np.ndarray | None) -> None:
-        if image is not None:
-            self.image_view.setImage(image, autoLevels=True)
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
         """Update wavelength range label below the plot, if available."""
