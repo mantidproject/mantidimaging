@@ -31,6 +31,7 @@ class FittingDisplayWidget(QWidget):
         self.image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.image_item.setParentItem(self.spectrum_plot.spectrum)
         self.image_item.setZValue(20)
+        self.image_item.setScale(0.2)
         self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
 
     def update_plot(self,
