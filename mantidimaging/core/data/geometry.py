@@ -24,8 +24,6 @@ class Geometry(AcquisitionGeometry):
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
         self.set_cor(self.get_centre_of_rotation())
 
-        print(self)
-
     def set_geometry(self, geometry: AcquisitionGeometry) -> None:
         """
         Sets the Geometry object's configuration to that of the object supplied.
