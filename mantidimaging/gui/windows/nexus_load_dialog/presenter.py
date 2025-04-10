@@ -374,4 +374,4 @@ class NexusLoadPresenter:
 
     def _add_recons_to_dataset(self, ds: Dataset) -> None:
         for recon_array in self.recon_data:
-            ds.add_recon(ImageStack(recon_array, projection=True))
+            ds.add_recon(ImageStack(recon_array))
