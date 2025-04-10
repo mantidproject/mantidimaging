@@ -29,11 +29,9 @@ class FittingDisplayWidget(QWidget):
         self.image_item = ImageItem()
         self.image_item.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
-        self.image_item.setFlag(QGraphicsItem.ItemIgnoresTransformations, True)
-        self.image_item.setScale(0.2)
-        self.spectrum_plot.spectrum.vb.addItem(self.image_item)
+        self.image_item.setParentItem(self.spectrum_plot.spectrum)
         self.image_item.setZValue(20)
-        self.image_item.setPos(1000, 16500)
+        self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
 
     def update_plot(self,
                     x_data: np.ndarray,
