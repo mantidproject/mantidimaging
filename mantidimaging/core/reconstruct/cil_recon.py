@@ -393,6 +393,8 @@ class CILRecon(BaseRecon):
                 data_order = DataOrder.TIGRE_AG_LABELS
             images.geometry.set_labels(data_order)
 
+            print(images.geometry)
+
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)
 
