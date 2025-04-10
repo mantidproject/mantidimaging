@@ -843,6 +843,8 @@ document.write(`
                     <span class="bp">self</span><span class="o">.</span><span class="n">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
                 <span class="k">elif</span> <span class="n">selected_filter</span> <span class="o">==</span> <span class="n">FLAT_FIELDING</span> <span class="ow">and</span> <span class="n">negative_stacks</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_show_negative_values_error</span><span class="p">(</span><span class="n">negative_stacks</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">sync_histogram_levels</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_notification_dialog</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_operation_cancelled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">filter_name</span><span class="p">)</span>
@@ -851,6 +853,14 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_apply_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_apply_single_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_apply_all_state</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filter_is_running</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_update_previews</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FiltersWindowPresenter.sync_histogram_levels">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.sync_histogram_levels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_histogram_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">p_low</span><span class="p">,</span> <span class="n">p_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">preview_image_after</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getHistogramRange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">preview_image_before</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setHistogramRange</span><span class="p">(</span><span class="n">p_low</span><span class="p">,</span> <span class="n">p_high</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">preview_image_before</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="n">p_low</span><span class="p">,</span> <span class="n">p_high</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_to</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_is_running</span> <span class="o">=</span> <span class="kc">True</span>
