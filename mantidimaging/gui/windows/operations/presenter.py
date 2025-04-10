@@ -301,6 +301,8 @@ class FiltersWindowPresenter(BasePresenter):
                     self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
                 elif selected_filter == FLAT_FIELDING and negative_stacks:
                     self._show_negative_values_error(negative_stacks)
+
+                self.sync_histogram_levels()
             else:
                 self.view.clear_notification_dialog()
                 self.view.show_operation_cancelled(self.model.selected_filter.filter_name)
@@ -309,6 +311,11 @@ class FiltersWindowPresenter(BasePresenter):
             self._set_apply_buttons_enabled(self.prev_apply_single_state, self.prev_apply_all_state)
             self.filter_is_running = False
             self.do_update_previews()
+
+    def sync_histogram_levels(self):
+        p_low, p_high = self.view.preview_image_after.histogram.getHistogramRange()
+        self.view.preview_image_before.histogram.setHistogramRange(p_low, p_high)
+        self.view.preview_image_before.histogram.setLevels(p_low, p_high)
 
     def _do_apply_filter(self, apply_to: list[ImageStack]):
         self.filter_is_running = True
