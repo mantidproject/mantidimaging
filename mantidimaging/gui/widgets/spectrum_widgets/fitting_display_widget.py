@@ -1,8 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
-from pyqtgraph import RectROI, mkPen
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
+from pyqtgraph import RectROI, mkPen, ImageItem
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget
 
 
@@ -26,11 +26,28 @@ class FittingDisplayWidget(QWidget):
         self.fitting_region.addScaleHandle([1, 0], [0, 1])
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
 
-    def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
+        self.image_item = ImageItem()
+        self.image_item.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.image_item.setParentItem(self.spectrum_plot.spectrum)
+        self.image_item.setZValue(20)
+        self.image_item.setScale(0.2)
+        self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
+
+    def update_plot(self,
+                    x_data: np.ndarray,
+                    y_data: np.ndarray,
+                    label: str = "ROI",
+                    image: np.ndarray | None = None) -> None:
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
         self.set_default_region(x_data, y_data)
+        self.update_image(image)
+
+    def update_image(self, image: np.ndarray | None) -> None:
+        if image is not None:
+            self.image_item.setImage(image, autoLevels=True)
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
         """Update wavelength range label below the plot, if available."""

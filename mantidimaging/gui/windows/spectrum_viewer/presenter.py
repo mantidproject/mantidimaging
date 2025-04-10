@@ -226,7 +226,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         tof_data = self.model.tof_data
         if tof_data is None:
             return
-        self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name)
+
+        image = (self.model.get_normalized_averaged_image()
+                 if self.view.normalisation_enabled() else self.model.get_averaged_image())
+
+        self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name, image=image)
         wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
         self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
