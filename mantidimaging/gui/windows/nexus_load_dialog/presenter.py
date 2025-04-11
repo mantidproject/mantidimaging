@@ -352,7 +352,7 @@ class NexusLoadPresenter:
         """
         data = pu.create_array(data_array.shape, self.view.pixelDepthComboBox.currentText())
         data.array[:] = data_array
-        return ImageStack(data, [f"{name} {self.title}"])
+        return ImageStack(data, [f"{name} {self.title}"], projection=True)
 
     def _create_images_if_required(self, data_array: np.ndarray, name: str, image_key: int) -> ImageStack | None:
         """

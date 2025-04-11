@@ -52,7 +52,7 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    return ImageStack(sample_data, chosen_input_filenames, indices)
+    return ImageStack(sample_data, chosen_input_filenames, indices, projection=True)
 
 
 class ImageLoader:
