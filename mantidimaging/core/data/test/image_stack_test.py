@@ -11,6 +11,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 import unittest
 
 import numpy as np
+import numpy.testing as npt
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, generate_txt_logfile
@@ -327,3 +328,26 @@ class ImageStackTest(unittest.TestCase):
     def test_processed_is_false(self):
         images = generate_images()
         self.assertFalse(images.is_processed)
+
+    def test_default_geometry(self):
+        data = generate_images().data
+        images = ImageStack(data=data)
+        images.set_geometry()
+        num_pixels = images.width, images.height
+        pixel_size = (1., 1.)
+        npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
+        npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
+
+    def test_update_geometry(self):
+        data = generate_images().data
+        images = ImageStack(data=data)
+        images.set_geometry()
+        angles = range(0, 360)
+        angle_unit = "radian"
+        num_pixels = (512, 512)
+        pixel_size = (2., 2.)
+        images.update_geometry(angles=angles, angle_unit=angle_unit, num_pixels=num_pixels, pixel_size=pixel_size)
+        npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
+        npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
+        npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
+        self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)

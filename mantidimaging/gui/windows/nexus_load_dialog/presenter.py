@@ -304,6 +304,7 @@ class NexusLoadPresenter:
         """
         sample_images = self._create_sample_images()
         sample_images.name = self.title
+        sample_images.set_geometry()
         assert self.flat_before_array is not None and self.flat_after_array is not None
         assert self.dark_before_array is not None and self.dark_after_array is not None
         ds = Dataset(sample=sample_images,
@@ -352,7 +353,7 @@ class NexusLoadPresenter:
         """
         data = pu.create_array(data_array.shape, self.view.pixelDepthComboBox.currentText())
         data.array[:] = data_array
-        return ImageStack(data, [f"{name} {self.title}"], projection=True)
+        return ImageStack(data, [f"{name} {self.title}"])
 
     def _create_images_if_required(self, data_array: np.ndarray, name: str, image_key: int) -> ImageStack | None:
         """

@@ -376,16 +376,18 @@ class CILRecon(BaseRecon):
                      f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
-            angles = images.projection_angles(recon_params.max_projection_angle).value
-            images.geometry.set_angles(angles=angles, angle_unit="radian")
-
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
             tilt = recon_params.tilt.value
 
-            images.geometry.set_panel(num_pixels=(pixel_num_h, pixel_num_v), pixel_size=pixel_size)
-            cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
-            images.geometry.set_cor(cor)
+            if images.geometry is None:
+                raise ValueError("images.geometry is not set")
+            angles = images.projection_angles(recon_params.max_projection_angle).value
+            images.update_geometry(angles=angles,
+                                   angle_unit="radian",
+                                   num_pixels=(pixel_num_h, pixel_num_v),
+                                   pixel_size=pixel_size)
+            images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
 
             if images.is_sinograms:
                 data_order = DataOrder.ASTRA_AG_LABELS
@@ -393,12 +395,10 @@ class CILRecon(BaseRecon):
                 data_order = DataOrder.TIGRE_AG_LABELS
             images.geometry.set_labels(data_order)
 
-            print(images.geometry)
+            ig = images.geometry.get_ImageGeometry()
 
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)
-
-            ig = images.geometry.get_ImageGeometry()
 
             if recon_params.regulariser == 'TV':
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
