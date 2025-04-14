@@ -21,12 +21,24 @@ if TYPE_CHECKING:
 
 
 class OverlapCorrection(BaseFilter):
+    """
+    Overlap correction is a post-experimental data correction performed when the input fluxes are periodic,
+    accurately restoring the input flux up to a very large fraction of pixels (up to ~90%) occupied by the end of the
+    acquisition shutter which leads to large distortions of measured timing characteristics of the input flux.
+
+    Intended to be used on: Projections
+
+    When: As a pre-processing step, to correct the observed spectrum and clarify its characteristics.
+    """
     filter_name = "Overlap Correction"
     link_histograms = True
     allow_for_180_projection = False
 
     @staticmethod
     def filter_func(images: ImageStack, progress=None) -> ImageStack:
+        """
+        :return: The ImageStack object which has been corrected using the supplied shutter information.
+        """
         if images.shutter_count_file:
             shutters_dir = images.shutter_count_file.source_file.parent
             shutter_breaks = OverlapCorrection.get_shutters_breaks(shutters_dir)
