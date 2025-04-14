@@ -14,6 +14,7 @@ class Geometry(AcquisitionGeometry):
                  num_pixels: list | tuple = (10, 10),
                  pixel_size: list | tuple = (1., 1.),
                  angle_unit: str = "radian",
+                 units: str = "default",
                  *args,
                  **kwargs):
         """
@@ -26,9 +27,11 @@ class Geometry(AcquisitionGeometry):
         :type pixel_size: list, tuple
         :param angle_unit: The units of the stored angles, "degree" or "radian".
         :type angle_unit: str
+        :param units: The units of distance used for the configuration, consistent for geometry and panel.
+        :type units: str
         """
 
-        temp = super().create_Parallel3D(*args, **kwargs)
+        temp = super().create_Parallel3D(*args, units=units, **kwargs)
         self.set_geometry(temp)
         self.is_parallel = True
 
@@ -48,13 +51,11 @@ class Geometry(AcquisitionGeometry):
     def set_cor(self, cor: dict) -> None:
         """
         Sets the Geometry object's centre of rotation.
-        If "distance_units" has not been set, it will be set to "default".
+        Supplied distance and angle units will be converted to those set by the configuration.
 
         :param cor: Dictionary object defining the centre of rotation as an "offset" and an "angle".
         :type cor: dict
         """
-        if cor["offset"][1] == "units distance":
-            cor["offset"] = (cor["offset"][0], "default")
 
         self.set_centre_of_rotation(offset=cor["offset"][0],
                                     distance_units=cor["offset"][1],
