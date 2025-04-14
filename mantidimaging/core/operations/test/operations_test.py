@@ -59,6 +59,9 @@ class OperationsTest(unittest.TestCase):
             if filter_name == "Monitor Normalisation":
                 counts = Counts(numpy.ones(images.num_images))
                 images._log_file = mock.Mock(counts=lambda counts=counts: counts)
+            if filter_name == "Overlap Correction":
+                filter.get_shutters_breaks = mock.Mock(return_value=((0, 1), (1, 2)))
+                images._shutter_count_file = mock.Mock()
 
             returned = filter.filter_func(images, **filter_args)
             self.assertEqual(id(images), id(returned))
