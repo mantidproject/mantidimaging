@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from collections.abc import Mapping
+
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy
 
 
@@ -22,18 +22,18 @@ class FittingParamFormWidget(QWidget):
         self.layout.addLayout(header)
         self._rows = []
 
-    def set_parameters(self, params: Mapping[str, tuple[float, float]]) -> None:
+    def set_parameters(self, params: list[str]) -> None:
         """
         Set parameters in the widget.
         :param params: Dict of label -> (initial, final)
         """
         self.clear_rows()
 
-        for label, (initial, final) in params.items():
+        for label in params:
             row_layout = QHBoxLayout()
             row_label = QLabel(str(label))
-            initial_edit = QLineEdit(str(initial))
-            final_edit = QLineEdit(str(final))
+            initial_edit = QLineEdit(str(0.0))
+            final_edit = QLineEdit(str(0.0))
 
             for widget in (initial_edit, final_edit):
                 widget.setReadOnly(True)
