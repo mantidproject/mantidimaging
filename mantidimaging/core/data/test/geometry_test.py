@@ -18,7 +18,7 @@ class GeometryTest(unittest.TestCase):
 
     def test_default_geometry(self):
         """
-        Tests the instantiation of a default Geometry object using no arguments.
+        Tests the instantiation of a default Geometry object.
         """
         geo = Geometry()
 
@@ -63,7 +63,7 @@ class GeometryTest(unittest.TestCase):
     ])
     def test_custom_geometry(self, _, geo, expected_values):
         """
-        Tests the instantiation of a custom Geometry object using supplied arguments.
+        Tests the instantiation of a custom Geometry object.
         """
         self.assertTrue(np.array_equal(geo.config.panel.num_pixels, np.array(expected_values["num_pixels"])))
         self.assertTrue(np.array_equal(geo.config.panel.pixel_size, np.array(expected_values["pixel_size"])))
@@ -77,7 +77,7 @@ class GeometryTest(unittest.TestCase):
     ])
     def test_set_geometry(self, _, new_geo):
         """
-        Tests setting a Geometry object's configuration with a non-default Geometry object.
+        Tests setting a Geometry object's configuration.
         """
         geo = Geometry()
         geo.set_geometry(new_geo)
@@ -121,7 +121,7 @@ class GeometryTest(unittest.TestCase):
                            })])
     def test_set_cor(self, _, cor, expected_cor):
         """
-        Tests setting the AcquisitionGeometry centre of rotation values with offset/angle values (CIL convention).
+        Tests setting the AcquisitionGeometry centre of rotation value.
         """
         num_pixels = (512, 512)
         pixel_size = (1, 1)
@@ -135,7 +135,7 @@ class GeometryTest(unittest.TestCase):
 
     def test_set_cor_list(self):
         """
-        Tests setting the AcquisitionGeometry cor_list attribute with a list of offset/angle values (CIL convention).
+        Tests setting the AcquisitionGeometry cor_list attribute.
         """
         cor = {"offset": (10.0, "pixels"), "angle": (1.0, "degree")}
         cor_list = [cor] * 5

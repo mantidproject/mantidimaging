@@ -377,13 +377,12 @@ class CILRecon(BaseRecon):
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
             angles = images.projection_angles(recon_params.max_projection_angle).value
-            images.geometry.set_angles(angles=angles, angle_unit="radian")
+            images.update_geometry(angles=angles, num_pixels=(pixel_num_h, pixel_num_v), pixel_size=pixel_size)
 
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
             tilt = recon_params.tilt.value
 
-            images.geometry.set_panel(num_pixels=(pixel_num_h, pixel_num_v), pixel_size=pixel_size)
             cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
             images.geometry.set_cor(cor)
 
@@ -392,8 +391,6 @@ class CILRecon(BaseRecon):
             else:
                 data_order = DataOrder.TIGRE_AG_LABELS
             images.geometry.set_labels(data_order)
-
-            print(images.geometry)
 
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)

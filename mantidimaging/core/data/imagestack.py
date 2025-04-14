@@ -385,3 +385,10 @@ class ImageStack:
 
             if num > 1000:
                 raise ValueError(f"Could not make unique name for: {name}")
+
+    def update_geometry(self, angles: list | np.ndarray, num_pixels: list | tuple, pixel_size: list | tuple) -> None:
+        """
+        Updates the configuration of the ImageStack's Geometry object.
+        """
+        self.geometry.set_angles(angles=angles)
+        self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
