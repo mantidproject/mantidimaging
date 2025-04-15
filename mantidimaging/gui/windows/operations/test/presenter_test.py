@@ -77,22 +77,27 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         assert_called_once_with(apply_filter_mock, expected_apply_to,
                                 partial(self.presenter._post_filter, expected_apply_to))
 
-    @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
-    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
-    def test_apply_filter_to_all(self, apply_filter_mock: mock.Mock, _):
+    @mock.patch("mantidimaging.gui.utility.common.operation_in_progress")
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter")
+    def test_apply_filter_to_dataset(self, apply_filter_mock: mock.Mock, _):
         self.view.ask_confirmation.return_value = False
-        self.presenter.do_apply_filter_to_all()
-
+        self.presenter.stack = mock.Mock()
+        self.presenter.do_apply_filter_to_dataset()
         self.view.ask_confirmation.assert_called_once()
 
         self.view.ask_confirmation.reset_mock()
         self.view.ask_confirmation.return_value = True
-        mock_stacks = [mock.Mock(), mock.Mock()]
-        self.presenter._main_window = mock.Mock()
-        self.presenter._main_window.get_all_stacks = mock.Mock()
-        self.presenter._main_window.get_all_stacks.return_value = mock_stacks
 
-        self.presenter.do_apply_filter_to_all()
+        mock_stack = mock.Mock()
+        self.presenter.stack = mock_stack
+        self.presenter._main_window = mock.Mock()
+        self.presenter._main_window.get_dataset_id_from_stack_uuid.return_value = "dataset_id"
+        mock_dataset = mock.Mock()
+        mock_stacks = [mock.Mock(), mock.Mock()]
+        mock_dataset.all = mock_stacks
+        self.presenter._main_window.get_dataset.return_value = mock_dataset
+
+        self.presenter.do_apply_filter_to_dataset()
 
         assert_called_once_with(apply_filter_mock, mock_stacks, partial(self.presenter._post_filter, mock_stacks))
 
