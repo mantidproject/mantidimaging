@@ -30,9 +30,9 @@ class Geometry(AcquisitionGeometry):
         :param units: The units of distance used for the configuration, consistent for geometry and panel.
         :type units: str
         """
-
-        temp = super().create_Parallel3D(*args, units=units, **kwargs)
-        self.set_geometry(temp)
+        super().__init__()
+        config = self.create_Parallel3D(*args, units=units, **kwargs)
+        self.set_geometry(config)
         self.is_parallel = True
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
