@@ -34,7 +34,10 @@ class FittingDisplayWidget(QWidget):
         self.image_item.setScale(0.2)
         self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
 
-        self.image_preview_roi = RectROI([0, 0], [10, 10], pen=mkPen((0, 255, 0), width=2), movable=False)
+        self.image_preview_roi = RectROI([0, 0], [10, 10],
+                                         pen=mkPen((0, 255, 0), width=2),
+                                         movable=False,
+                                         rotatable=False)
         self.image_preview_roi.setZValue(21)
         self.image_preview_roi.setParentItem(self.image_item)
         self.image_preview_roi.hide()
@@ -91,9 +94,9 @@ class FittingDisplayWidget(QWidget):
         """
         pos = roi_widget.pos()
         size = roi_widget.size()
-        color = roi_widget.colour if hasattr(roi_widget, "colour") else (0, 255, 0, 255)
-        scale = 0.2
-        self.image_preview_roi.setPos((pos.x() * scale, pos.y() * scale))
-        self.image_preview_roi.setSize((size.x() * scale, size.y() * scale))
+        color = roi_widget.colour
+
+        self.image_preview_roi.setPos(pos)
+        self.image_preview_roi.setSize(size)
         self.image_preview_roi.setPen(mkPen(color, width=2))
         self.image_preview_roi.show()

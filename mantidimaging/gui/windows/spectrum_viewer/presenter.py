@@ -239,7 +239,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, spectrum_data)
 
-
     def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[float, float]]:
         """
         Return placeholder fitting parameters for the selected ROI.
