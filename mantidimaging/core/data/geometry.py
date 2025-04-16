@@ -37,6 +37,8 @@ class Geometry(AcquisitionGeometry):
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
 
+        print(self)
+
     def set_geometry_from_cor_tilt(self, cor: ScalarCoR, tilt: float) -> None:
         """
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.

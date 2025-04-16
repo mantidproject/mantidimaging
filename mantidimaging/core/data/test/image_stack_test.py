@@ -328,21 +328,10 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images()
         self.assertFalse(images.is_processed)
 
-    def test_projection_is_true(self):
-        data = generate_images().data
-        images = ImageStack(data=data, projection=True)
-        self.assertTrue(images._is_projections)
-        self.assertTrue(hasattr(images, "geometry"))
-        self.assertIsNotNone(images.geometry)
-
-    def test_projection_is_false(self):
-        images = generate_images()
-        self.assertFalse(images._is_projections)
-        self.assertFalse(hasattr(images, "geometry"))
-
     def test_default_geometry(self):
         data = generate_images().data
-        images = ImageStack(data=data, projection=True)
+        images = ImageStack(data=data)
+        images.set_geometry()
         num_pixels = images.width, images.height
         pixel_size = (1., 1.)
         self.assertTrue(np.array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels)))
@@ -350,7 +339,8 @@ class ImageStackTest(unittest.TestCase):
 
     def test_update_geometry(self):
         data = generate_images().data
-        images = ImageStack(data=data, projection=True)
+        images = ImageStack(data=data)
+        images.set_geometry()
         angles = range(0, 360)
         num_pixels = (512, 512)
         pixel_size = (2., 2.)
