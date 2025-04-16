@@ -345,7 +345,7 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_size = (recon_params.pixel_size, recon_params.pixel_size)
+        pixel_size = (1., 1.)
         pixel_num_h = images.width
         pixel_num_v = images.height
 
