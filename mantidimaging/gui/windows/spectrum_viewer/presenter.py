@@ -232,6 +232,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name, image=image)
         wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
+        roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
+        self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
         self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
         if reset_region:
