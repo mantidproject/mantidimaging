@@ -2,7 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
-from pyqtgraph import RectROI, mkPen, ImageItem
+from PyQt5 import QtCore
+from pyqtgraph import RectROI, mkPen, ImageItem, ROI
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
 
 
@@ -34,12 +35,10 @@ class FittingDisplayWidget(QWidget):
         self.image_item.setScale(0.2)
         self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
 
-        self.image_preview_roi = RectROI([0, 0], [10, 10],
-                                         pen=mkPen((0, 255, 0), width=2),
-                                         movable=False,
-                                         rotatable=False)
+        self.image_preview_roi = ROI([0, 0], [10, 10], pen=mkPen((0, 255, 0), width=2))
         self.image_preview_roi.setZValue(21)
         self.image_preview_roi.setParentItem(self.image_item)
+        self.image_preview_roi.setAcceptedMouseButtons(QtCore.Qt.NoButton)  # Optional: make non-interactive
         self.image_preview_roi.hide()
 
     def update_plot(self,
