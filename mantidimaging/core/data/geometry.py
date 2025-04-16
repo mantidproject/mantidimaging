@@ -7,7 +7,6 @@ from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
 class Geometry(AcquisitionGeometry):
-    cor_list: list[dict] | None = None
     is_parallel: bool = False
 
     def __init__(self,
@@ -38,7 +37,7 @@ class Geometry(AcquisitionGeometry):
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
 
-    def convert_cor(self, cor: ScalarCoR, tilt: float) -> dict:
+    def set_geometry_from_cor_tilt(self, cor: ScalarCoR, tilt: float) -> None:
         """
         Converts a centre of rotation (that uses MI conventions) to the CIL convention.
 
@@ -47,33 +46,6 @@ class Geometry(AcquisitionGeometry):
         :param tilt: A float value defining the tilt in degrees.
         :type tilt: float
         """
-        cil_cor: dict = {}
         offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
-        cil_cor["offset"] = (offset, "pixels")
-        cil_cor["angle"] = (-tilt, "degree")
 
-        return cil_cor
-
-    def convert_cor_list(self, cor_list: list[ScalarCoR], tilt: float) -> list[dict]:
-        """
-        Converts a list of per-slice centre of rotations (that use MI conventions) to the CIL convention.
-
-        :param cor_list: List of ScalarCoR objects defining the centre of rotation.
-        :type angles: list[ScalarCoR]
-        :param tilt: A float value defining the tilt in degrees.
-        :type angles: float
-        """
-        cil_cor_list: list = []
-
-        for cor in cor_list:
-            cil_cor = self.convert_cor(cor, tilt)
-            cil_cor_list.append(cil_cor)
-
-        cil_cor = cil_cor_list[self.config.panel.num_pixels[1] // 2]
-        self.set_centre_of_rotation(offset=cil_cor["offset"][0],
-                                    distance_units=cil_cor["offset"][1],
-                                    angle=cil_cor["angle"][0],
-                                    angle_units=cil_cor["angle"][1])
-        self.cor_list = cil_cor_list
-
-        return cil_cor_list
+        self.set_centre_of_rotation(offset=offset, angle=-tilt)

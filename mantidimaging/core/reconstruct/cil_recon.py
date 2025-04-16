@@ -383,11 +383,7 @@ class CILRecon(BaseRecon):
                 raise ValueError("recon_params.tilt is not set")
             tilt = recon_params.tilt.value
 
-            cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
-            images.geometry.set_centre_of_rotation(offset=cor["offset"][0],
-                                                   distance_units=cor["offset"][1],
-                                                   angle=cor["angle"][0],
-                                                   angle_units=cor["angle"][1])
+            images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
 
             if images.is_sinograms:
                 data_order = DataOrder.ASTRA_AG_LABELS
