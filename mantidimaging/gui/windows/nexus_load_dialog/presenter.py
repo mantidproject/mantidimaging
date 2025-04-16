@@ -304,6 +304,7 @@ class NexusLoadPresenter:
         """
         sample_images = self._create_sample_images()
         sample_images.name = self.title
+        sample_images.set_geometry()
         assert self.flat_before_array is not None and self.flat_after_array is not None
         assert self.dark_before_array is not None and self.dark_after_array is not None
         ds = Dataset(sample=sample_images,
