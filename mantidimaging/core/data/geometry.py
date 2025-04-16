@@ -31,45 +31,12 @@ class Geometry(AcquisitionGeometry):
         :type units: str
         """
         super().__init__()
-        config = self.create_Parallel3D(*args, units=units, **kwargs)
-        self.set_geometry(config)
+        parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
+        self.config = parallel_3d.config
         self.is_parallel = True
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
-        self.set_cor(self.get_centre_of_rotation())
-
-    def set_geometry(self, geo: AcquisitionGeometry) -> None:
-        """
-        Sets the Geometry object's configuration to that of the object supplied.
-
-        :param geo: Configuration will be set to this object's configuration.
-        :type geo: AcquisitonGeometry
-        """
-        self.config = geo.config
-
-    def set_cor(self, cor: dict) -> None:
-        """
-        Sets the Geometry object's centre of rotation.
-        Supplied distance and angle units will be converted to those set by the configuration.
-
-        :param cor: Dictionary object defining the centre of rotation as an "offset" and an "angle".
-        :type cor: dict
-        """
-
-        self.set_centre_of_rotation(offset=cor["offset"][0],
-                                    distance_units=cor["offset"][1],
-                                    angle=cor["angle"][0],
-                                    angle_units=cor["angle"][1])
-
-    def set_cor_list(self, cor_list: list[dict]) -> None:
-        """
-        Sets the Geometry object's list of per-slice centre of rotations.
-
-        :param cor_list: List of dictionary objects defining the centre of rotation as an "offset" and an "angle".
-        :type cor_list: list[dict]
-        """
-        self.cor_list = cor_list
 
     def convert_cor(self, cor: ScalarCoR, tilt: float) -> dict:
         """
@@ -101,7 +68,12 @@ class Geometry(AcquisitionGeometry):
         for cor in cor_list:
             cil_cor = self.convert_cor(cor, tilt)
             cil_cor_list.append(cil_cor)
-        self.set_cor(cil_cor_list[self.config.panel.num_pixels[1] // 2])
-        self.set_cor_list(cil_cor_list)
+
+        cil_cor = cil_cor_list[self.config.panel.num_pixels[1] // 2]
+        self.set_centre_of_rotation(offset=cil_cor["offset"][0],
+                                    distance_units=cil_cor["offset"][1],
+                                    angle=cil_cor["angle"][0],
+                                    angle_units=cil_cor["angle"][1])
+        self.cor_list = cil_cor_list
 
         return cil_cor_list

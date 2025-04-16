@@ -384,7 +384,10 @@ class CILRecon(BaseRecon):
             tilt = recon_params.tilt.value
 
             cor = images.geometry.convert_cor(cors[pixel_num_v // 2], tilt)
-            images.geometry.set_cor(cor)
+            images.geometry.set_centre_of_rotation(offset=cor["offset"][0],
+                                                   distance_units=cor["offset"][1],
+                                                   angle=cor["angle"][0],
+                                                   angle_units=cor["angle"][1])
 
             if images.is_sinograms:
                 data_order = DataOrder.ASTRA_AG_LABELS
