@@ -333,6 +333,7 @@ class NexusLoadPresenter:
         self.sample_array = self.sample_array[self.view.start_widget.value():self.view.stop_widget.value():self.view.
                                               step_widget.value()]
         sample_images = self._create_images(self.sample_array, "Projections")
+        sample_images.set_geometry()
 
         # Set attributes
         sample_images.pixel_size = int(self.view.pixelSizeSpinBox.value())
