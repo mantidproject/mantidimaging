@@ -56,6 +56,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
         self.main_window.stack_changed.connect(self.handle_stack_modified)
+        self.selected_export_format = "CSV"
+        self.selected_export_area = "All"
 
     def handle_stack_modified(self) -> None:
         """
@@ -330,6 +332,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 path = path.with_suffix(".dat")
             roi = self.view.spectrum_widget.get_roi(ROI_RITS)
             self.model.save_single_rits_spectrum(path, error_mode, roi)
+
+    def handle_export_format_change(self, fmt: str) -> None:
+        self.selected_export_format = fmt
+        LOG.debug(f"Selected export format changed to: {fmt}")
+
+    def handle_export_area_change(self, area: str) -> None:
+        self.selected_export_area = area
+        LOG.debug(f"Selected export area changed to: {area}")
 
     def _async_save_done(self, task: TaskWorkerThread) -> None:
         if task.error is not None:
