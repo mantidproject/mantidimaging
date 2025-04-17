@@ -2,7 +2,10 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 """
 This is a Utility script to unpack tiff files into a directory of images using lossless compression.
-This script is temporary while larger work is undertaken to improve how datasets are stored and accessed within Mantid.
+Paths used as arguments are relative to the location of the script.
+If a destination path does not exist, the script will create it.
+This script is temporary while larger work is undertaken to improve how datasets are loaded,
+stored and accessed within Mantid Imaging.
 
 Usage:
     python tiff_unpacker.py -s <path to tiff file> -d <path to output directory>
@@ -11,6 +14,9 @@ Usage:
         -d <path to output directory>
         -r <start> <stop>
         -n <naming convention>
+
+Example usage with all arguments to unpack images 10 to 20 with naming convention "tbin_<index>":
+    python tiff_unpacker.py -s /path/to/tiff/file.tiff -d /path/to/output/directory -r 10 20 -n tbin_
 """
 import argparse
 from tqdm import tqdm
@@ -36,12 +42,32 @@ def unpack_tiff(source: Path, destination: Path, img_range: tuple[int, int], nam
     with TiffFile(source) as tif:
         for i, img in enumerate(tqdm(tif.pages[img_range[0]:img_range[1]], desc="Unpacking tiff file")):
             imwrite(destination / f"{naming_convention}{i}.tiff",
-                    img.asarray(),
+                    img.asarray().astype('float32'),
                     compression="zlib",
                     predictor=True,
                     metadata={
                         'axes': img.axes,
                     })
+    validate_written_file_count(destination, img_range)
+
+
+def validate_written_file_count(destination: Path, img_range: tuple[int, int]) -> None:
+    """
+    Return a printed statement of the number of files written to the output directory and the expected number of files
+
+    Parameters:
+        destination: Path to output directory
+        img_range: Range of images to unpack
+
+    Returns:
+        None
+    """
+    expected_files = img_range[1] - img_range[0]
+    written_files = len(list(destination.glob("*.tiff")))
+    if expected_files != written_files:
+        logger.warning("Expected to write %s files but wrote %s files", expected_files, written_files)
+    else:
+        logger.info("Successfully wrote %s files to %s", expected_files, destination)
 
 
 def validate_input_range(data_length: int, start: int, stop: int) -> tuple[int, int]:
@@ -51,6 +77,15 @@ def validate_input_range(data_length: int, start: int, stop: int) -> tuple[int, 
     If start is greater than stop then raise ValueError
     If stop is greater than the number of images in the tiff file then raise ValueError
     If stop is 0 then set stop to the number of images in the tiff file
+
+    Parameters:
+        data_length: Number of images in the tiff file
+        start: Start index of the range
+        stop: Stop index of the range
+
+    Returns:
+        Start index of the range
+        Stop index of the range
     """
     if start > stop:
         raise ValueError(f"Start {start} must be less than stop {stop}")
@@ -79,7 +114,7 @@ def validate_paths(source: Path, destination: Path) -> None:
         logger.info("Created directory %s as it previously did not exist", destination)
 
 
-def input_parser():
+def input_parser() -> tuple[Path, Path, tuple[int, int], str]:
     """
     Input parser for the script
 
@@ -114,7 +149,7 @@ def input_parser():
     return args.source, args.destination, args.range, args.name
 
 
-def main():
+def main() -> None:
     """
     Main function to unpack tiff file into a directory of images
     """
