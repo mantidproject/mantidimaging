@@ -20,6 +20,7 @@ from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import Experiment
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
+from mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget import ExportDropdownWidget
 
 import numpy as np
 
@@ -61,7 +62,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum_widget = SpectrumWidget(main_window)
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
         self.imageLayout.addWidget(self.spectrum_widget)
-        self.exportLayout.addWidget(QLabel("export"))
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
@@ -74,6 +74,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.scalable_roi_widget = FittingParamFormWidget()
         self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
+
+        self.exportSettingsWidget = ExportDropdownWidget()
+        self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
+
+        self.exportSettingsWidget.formatDropdown.currentTextChanged.connect(self.presenter.handle_export_format_change)
+        self.exportSettingsWidget.areaDropdown.currentTextChanged.connect(self.presenter.handle_export_area_change)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
@@ -291,6 +297,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """ Updates the ROI dropdown menu with the available ROIs. """
         roi_names = self.presenter.get_roi_names()
         self.roiSelectionWidget.update_roi_list(roi_names)
+        self.exportSettingsWidget.set_roi_names(roi_names)
 
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()
