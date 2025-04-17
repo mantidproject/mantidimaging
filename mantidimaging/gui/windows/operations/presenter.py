@@ -121,7 +121,7 @@ class FiltersWindowPresenter(BasePresenter):
             elif signal == Notification.APPLY_FILTER:
                 self.do_apply_filter()
             elif signal == Notification.APPLY_FILTER_TO_ALL:
-                self.do_apply_filter_to_all()
+                self.do_apply_filter_to_dataset()
             elif signal == Notification.UPDATE_PREVIEWS:
                 self.do_update_previews()
             elif signal == Notification.SCROLL_PREVIEW_UP:
@@ -233,19 +233,39 @@ class FiltersWindowPresenter(BasePresenter):
 
         self._do_apply_filter(apply_to)
 
-    def do_apply_filter_to_all(self):
-        confirmed = self.view.ask_confirmation("Are you sure you want to apply this filter to \n\nALL OPEN STACKS?")
-        if not confirmed:
+    def do_apply_filter_to_dataset(self):
+        if not self.view.ask_confirmation(
+                "Apply this filter to the dataset of the SELECTED stack in the Operations window?"):
             return
-        stacks = self.main_window.get_all_stacks()
-        if self.view.safeApply.isChecked():
-            with operation_in_progress("Safe Apply: Copying Data", "-------------------------------------", self.view):
-                self.original_images_stack = {}
-                for stack in stacks:
-                    self.original_images_stack[stack.id] = stack.copy()
 
-        if len(stacks) > 0:
-            self.applying_to_all = True
+        selected_stack = self.stack
+
+        if selected_stack is None:
+            self.view.show_error_dialog("No stack is currently selected in the operations window.")
+            return
+
+        dataset_id = self.main_window.get_dataset_id_from_stack_uuid(selected_stack.id)
+        if dataset_id is None:
+            self.view.show_error_dialog("Could not find a dataset for the selected stack.")
+            return
+
+        current_dataset = self.main_window.get_dataset(dataset_id)
+        if current_dataset is None:
+            self.view.show_error_dialog(f"Dataset {dataset_id} not found.")
+            return
+
+        stacks = current_dataset.all
+
+        if not stacks:
+            self.view.show_error_dialog("No stacks found in that dataset.")
+            return
+
+        if self.view.safeApply.isChecked():
+            from mantidimaging.gui.utility.common import operation_in_progress
+            with operation_in_progress("Safe Apply: Copying Data", self.divider, self.view):
+                self.original_images_stack = {stk.id: stk.copy() for stk in stacks}
+
+        self.applying_to_all = True
         self._do_apply_filter(stacks)
 
     def _wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
@@ -297,7 +317,6 @@ class FiltersWindowPresenter(BasePresenter):
 
                 selected_filter = self.view.get_selected_filter()
                 if selected_filter == CROP_COORDINATES:
-                    # Reset the ROI field to ensure an appropriate value for the new image size
                     self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
                 elif selected_filter == FLAT_FIELDING and negative_stacks:
                     self._show_negative_values_error(negative_stacks)

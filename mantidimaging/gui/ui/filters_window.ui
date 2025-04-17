@@ -308,7 +308,7 @@
             <item>
              <widget class="QPushButton" name="applyToAllButton">
               <property name="text">
-               <string>Apply to ALL stacks</string>
+               <string>Apply to Dataset</string>
               </property>
              </widget>
             </item>
