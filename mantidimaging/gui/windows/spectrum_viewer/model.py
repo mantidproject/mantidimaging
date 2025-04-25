@@ -252,7 +252,7 @@ class SpectrumViewerWindowModel:
     def store_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool, spectrum: np.ndarray):
         params = (*roi, mode, normalise_with_shuttercount)
         if len(self.spectrum_cache) >= 5:
-            self.spectrum_cache.pop(next(iter(self.spectrum_cache.keys())))
+            self.spectrum_cache.pop(list(self.spectrum_cache.keys())[1])
         self.spectrum_cache[params] = spectrum
         # print(f"{self.spectrum_cache=}")
 

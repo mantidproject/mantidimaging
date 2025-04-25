@@ -74,6 +74,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.model.set_normalise_stack(norm_stack)
 
         self.model.set_tof_unit_mode_for_stack()
+        self.model.spectrum_cache.clear()
+        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
+                                self.spectrum_mode,
+                                self.view.shuttercount_norm_enabled())
         self.reset_units_menu()
 
         self.handle_tof_unit_change()
@@ -203,7 +207,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Handle changes to any ROI position and size.
         """
-        print("=============== handle_roi_moved ======================")
         spectrum = self.model.get_spectrum(
             roi.as_sensible_roi(),
             self.spectrum_mode,
@@ -223,7 +226,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
         roi = self.view.spectrum_widget.get_roi(roi_name)
-        print("============== update_fitting_spectrum =====================")
         spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
         if tof_data is None:
@@ -246,7 +248,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Redraw the spectrum with the given name
         """
         roi = self.view.spectrum_widget.get_roi(name)
-        print("================= redraw_spectrum ====================")
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(name, spectrum)
 
@@ -258,7 +259,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if not roi_widget.isVisible():
                 continue
             widget_roi = self.view.spectrum_widget.get_roi(roi_name)
-            print("========================= redraw_all_rois ===================================")
             spectrum = self.model.get_spectrum(widget_roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             self.view.set_spectrum(roi_name, spectrum)
 
@@ -356,7 +356,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Add a new ROI to the spectrum
         """
-        print("============== do_add_roi =====================")
         roi_name = self.model.roi_name_generator()
         if roi_name in self.view.spectrum_widget.roi_dict:
             raise ValueError(f"ROI name already exists: {roi_name}")

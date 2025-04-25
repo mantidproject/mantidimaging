@@ -28,9 +28,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROITableWidget
     from uuid import UUID
 
-from logging import getLogger
-LOG = getLogger(__name__)
-
 
 class SpectrumViewerWindowView(BaseMainWindowView):
     sampleStackSelector: DatasetSelectorWidgetView
