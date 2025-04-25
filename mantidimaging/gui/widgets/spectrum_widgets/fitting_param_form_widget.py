@@ -9,7 +9,7 @@ class FittingParamFormWidget(QWidget):
     Scalable widget to display ROI parameters with Initial and Final values.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
@@ -22,7 +22,7 @@ class FittingParamFormWidget(QWidget):
         header.addWidget(QLabel("Initial"), 2)
         header.addWidget(QLabel("Final"), 2)
         self.params_layout.addLayout(header)
-        self._rows = []
+        self._rows: dict[str, tuple[QWidget, ...]] = {}
 
         self.from_roi_button = QPushButton("From ROI")
         self.layout().addWidget(self.from_roi_button)
@@ -48,13 +48,18 @@ class FittingParamFormWidget(QWidget):
             row_layout.addWidget(final_edit, 2)
 
             self.params_layout.addLayout(row_layout)
-            self._rows.append((row_layout, row_label, initial_edit, final_edit))
+            self._rows[label] = (row_layout, row_label, initial_edit, final_edit)
+
+    def set_parameter_values(self, values: dict[str, float]) -> None:
+        for name, value in values.items():
+            row = self._rows[name]
+            row[2].setText(str(value))
 
     def clear_rows(self) -> None:
         """
         Remove all existing rows from the widget.
         """
-        for row_layout, *widgets in self._rows:
+        for row_layout, *widgets in self._rows.values():
             for widget in widgets:
                 widget.setParent(None)
             self.params_layout.layout().removeItem(row_layout)
