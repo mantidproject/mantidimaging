@@ -1,7 +1,12 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
+
+if TYPE_CHECKING:
+    from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
 
 
 class FittingParamFormWidget(QWidget):
@@ -9,8 +14,9 @@ class FittingParamFormWidget(QWidget):
     Scalable widget to display ROI parameters with Initial and Final values.
     """
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
+        self.presenter = presenter
         QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
@@ -26,6 +32,7 @@ class FittingParamFormWidget(QWidget):
 
         self.from_roi_button = QPushButton("From ROI")
         self.layout().addWidget(self.from_roi_button)
+        self.from_roi_button.clicked.connect(self.presenter.get_init_params_from_roi)
 
     def set_parameters(self, params: list[str]) -> None:
         """

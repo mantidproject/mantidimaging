@@ -82,10 +82,14 @@ class FittingDisplayWidget(QWidget):
         self.fitting_region.setPos((x_start, y_pos))
         self.fitting_region.setSize((width, height))
 
-    def get_selected_fit_region(self) -> tuple[float, float]:
+    def get_selected_fit_region(self) -> tuple[float, float, float, float]:
         pos = self.fitting_region.pos()
         size = self.fitting_region.size()
-        return float(pos.x()), float(pos.x() + size.x())
+        x1, x2 = pos.x(), pos.x() + size.x()
+        y1, y2 = pos.y(), pos.y() + size.y()
+        assert x1 < x2
+        assert y1 < y2
+        return x1, x2, y1, y2
 
     def show_roi_on_thumbnail_from_widget(self, roi_widget: SpectrumROI) -> None:
         """

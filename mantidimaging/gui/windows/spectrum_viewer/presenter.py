@@ -459,3 +459,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def setup_fitting_model(self) -> None:
         parameter_names = self.model.fitting_engine.get_parameter_names()
         self.view.scalable_roi_widget.set_parameters(parameter_names)
+
+    def get_init_params_from_roi(self):
+        fitting_region = self.view.get_fitting_region()
+        init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
+        self.view.scalable_roi_widget.set_parameter_values(init_params)

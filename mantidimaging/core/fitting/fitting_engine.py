@@ -2,12 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from typing_extensions import TYPE_CHECKING
-
 from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction
-
-if TYPE_CHECKING:
-    from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class FittingEngine:
@@ -18,5 +13,5 @@ class FittingEngine:
     def get_parameter_names(self) -> list[str]:
         return list(self.model.parameter_names)
 
-    def get_init_params_from_roi(self, roi: SensibleROI) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: tuple[float, float, float, float]) -> dict[str, float]:
         return {"mu": 2}
