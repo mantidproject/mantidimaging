@@ -210,12 +210,7 @@ class SpectrumViewerWindowModel:
         return ""
 
     def get_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool = False) -> np.ndarray:
-        #print("=-=-=-=-=-=-=-=-=-=-=-=- get_spectrum CALLED =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-        # print(*roi)
-        # print((*roi, mode, normalise_with_shuttercount))
-        # print(self.spectrum_cache.keys())
         if (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache.keys():
-            #print("=-=-=-=-=-=-=-=-=-=-=-=- found in spectrum_cache =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
             return self.spectrum_cache[(*roi, mode, normalise_with_shuttercount)]
 
         if self._stack is None:

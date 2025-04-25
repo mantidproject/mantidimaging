@@ -102,6 +102,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.current_dataset_id = None
 
         self.do_remove_roi()
+        self.model.spectrum_cache.clear()
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
@@ -109,6 +110,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
+        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
+                                self.spectrum_mode,
+                                self.view.shuttercount_norm_enabled())
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
         self.handle_tof_unit_change()
