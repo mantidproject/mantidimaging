@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
 
 
 class FittingParamFormWidget(QWidget):
@@ -11,16 +11,21 @@ class FittingParamFormWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.layout = QVBoxLayout(self)
+        QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+
+        self.params_layout = QVBoxLayout(self)
+        self.layout().addLayout(self.params_layout)
 
         header = QHBoxLayout()
         header.addWidget(QLabel(""), 1)
         header.addWidget(QLabel("Initial"), 2)
         header.addWidget(QLabel("Final"), 2)
-        self.layout.addLayout(header)
+        self.params_layout.addLayout(header)
         self._rows = []
+
+        self.from_roi_button = QPushButton("From ROI")
+        self.layout().addWidget(self.from_roi_button)
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -42,7 +47,7 @@ class FittingParamFormWidget(QWidget):
             row_layout.addWidget(initial_edit, 2)
             row_layout.addWidget(final_edit, 2)
 
-            self.layout.addLayout(row_layout)
+            self.params_layout.addLayout(row_layout)
             self._rows.append((row_layout, row_label, initial_edit, final_edit))
 
     def clear_rows(self) -> None:
@@ -52,5 +57,5 @@ class FittingParamFormWidget(QWidget):
         for row_layout, *widgets in self._rows:
             for widget in widgets:
                 widget.setParent(None)
-            self.layout.removeItem(row_layout)
+            self.params_layout.layout().removeItem(row_layout)
         self._rows.clear()
