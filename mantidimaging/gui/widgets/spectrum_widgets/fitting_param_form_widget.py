@@ -60,7 +60,7 @@ class FittingParamFormWidget(QWidget):
     def set_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
             row = self._rows[name]
-            row[2].setText(str(value))
+            row[2].setText(f"{value:f}")
 
     def clear_rows(self) -> None:
         """

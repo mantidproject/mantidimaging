@@ -14,4 +14,4 @@ class FittingEngine:
         return list(self.model.parameter_names)
 
     def get_init_params_from_roi(self, region: tuple[float, float, float, float]) -> dict[str, float]:
-        return {"mu": 2}
+        return self.model.get_init_params_from_roi(region)
