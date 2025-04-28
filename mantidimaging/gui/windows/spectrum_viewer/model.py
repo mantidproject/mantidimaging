@@ -216,6 +216,9 @@ class SpectrumViewerWindowModel:
         if self._stack is None:
             return np.array([])
 
+        if self.presenter.initial_sample_change:
+            return np.zeros(self._stack.data.shape[0])
+
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi)
             self.store_spectrum(roi, mode, normalise_with_shuttercount, sample_spectrum)

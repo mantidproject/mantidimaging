@@ -47,6 +47,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     current_stack_uuid: UUID | None = None
     current_norm_stack_uuid: UUID | None = None
     export_mode: ExportMode
+    initial_sample_change: bool = True
 
     def __init__(self, view: SpectrumViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -75,14 +76,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
-        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
-                                self.spectrum_mode,
+        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
                                 self.view.shuttercount_norm_enabled())
         self.reset_units_menu()
 
         self.handle_tof_unit_change()
         self.show_new_sample()
         self.redraw_all_rois()
+
+    def initial_roi_calc(self):
+        spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
+                                           self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        self.view.set_spectrum("roi", spectrum)
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
         """
@@ -110,8 +115,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
-        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
-                                self.spectrum_mode,
+        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
                                 self.view.shuttercount_norm_enabled())
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
