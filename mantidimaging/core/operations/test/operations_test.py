@@ -12,6 +12,7 @@ from mantidimaging.core.operations.loader import load_filter_packages
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.utility.data_containers import Counts
 from mantidimaging.core.gpu import utility as gpu
+from overlap_correction import ShutterInfo
 
 if TYPE_CHECKING:
     from mantidimaging.core.operations.loader import BaseFilterClass
@@ -60,7 +61,11 @@ class OperationsTest(unittest.TestCase):
                 counts = Counts(numpy.ones(images.num_images))
                 images._log_file = mock.Mock(counts=lambda counts=counts: counts)
             if filter_name == "Overlap Correction":
-                filter.get_shutters_breaks = mock.Mock(return_value=((0, 1), (1, 2)))
+                filter.get_shutters = mock.Mock()
+                filter.get_shutters.return_value = [
+                    ShutterInfo(0, 102, start_index=0, end_index=1),
+                    ShutterInfo(1, 230, start_index=1, end_index=2)
+                ]
                 images._shutter_count_file = mock.Mock()
 
             returned = filter.filter_func(images, **filter_args)

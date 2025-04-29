@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 import unittest
+from dataclasses import dataclass
 from functools import partial
 from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.overlap_correction import OverlapCorrection
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
+
+
+@dataclass
+class ShutterInfo:
+    number: int
+    count: int
+    start_time: float = 0
+    end_time: float = 0
+    start_index: int = 0
+    end_index: int = 0
 
 
 @start_multiprocessing_pool
@@ -26,9 +37,8 @@ class OverlapCorrectionTest(unittest.TestCase):
     def test_executed_seq(self):
         self.do_execute(False)
 
-    @mock.patch(
-        'mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.get_shutters_breaks')
-    def do_execute(self, in_parallel, get_shutters_breaks_mock):
+    @mock.patch('mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.get_shutters')
+    def do_execute(self, in_parallel, get_shutters_mock):
         # only works on square images
         if in_parallel:
             images = th.generate_images_for_parallel((15, 15, 15))
@@ -36,13 +46,17 @@ class OverlapCorrectionTest(unittest.TestCase):
             images = th.generate_images((10, 10, 10))
 
         images._shutter_count_file = mock.Mock()
-        # images.shutter_count_file.source_file.parent = mock.Mock(return_value='')
-        get_shutters_breaks_mock.return_value = ((0, 2, 102), (2, 4, 230), (4, 10, 235))
+        get_shutters_mock.return_value = [
+            ShutterInfo(0, 102, start_index=0, end_index=2),
+            ShutterInfo(1, 230, start_index=2, end_index=4),
+            ShutterInfo(2, 235, start_index=4, end_index=10)
+        ]
+        #get_shutters_mock.return_value = ((0, 2, 102), (2, 4, 230), (4, 10, 235))
 
         original = images.copy()
         images = OverlapCorrection.filter_func(images)
 
-        get_shutters_breaks_mock.assert_called_once()
+        get_shutters_mock.assert_called_once()
         th.assert_not_equals(original.data, images.data)
 
     def test_register_gui(self):

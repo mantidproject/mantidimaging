@@ -12,7 +12,8 @@ import numpy
 import numpy as np
 
 from mantidimaging.core.operations.base_filter import BaseFilter
-from mantidimaging.core.parallel import utility as pu, shared as ps
+from mantidimaging.core.parallel import utility as pu
+from mantidimaging.core.utility.progress_reporting import Progress
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -41,14 +42,12 @@ class OverlapCorrection(BaseFilter):
         """
         if images.shutter_count_file:
             shutters_dir = images.shutter_count_file.source_file.parent
-            shutter_breaks = OverlapCorrection.get_shutters_breaks(shutters_dir)
+            shutters = OverlapCorrection.get_shutters(shutters_dir)
         else:
             raise RuntimeError("No loaded Shutter Count file for this stack.")
 
-        params = {'shutter_breaks': shutter_breaks}
         output = pu.create_array(images.data.shape, images.dtype)
-        ps.run_compute_func(OverlapCorrection._compute_overlap_correction, images.data.shape[0],
-                            [images.shared_array, output], params, progress)
+        output.array = execute_single(images.data, shutters, progress)
         images.shared_array = output
         return images
 
@@ -78,7 +77,7 @@ class OverlapCorrection(BaseFilter):
         return True
 
     @staticmethod
-    def get_shutters_breaks(data_dir: Path) -> list[tuple]:
+    def get_shutters(data_dir: Path) -> list[ShutterInfo]:
         shuter_count_file = sorted(data_dir.glob("*ShutterCount.txt"))[0]
         shutter_times_file = sorted(data_dir.glob("*ShutterTimes.txt"))[0]
         spectra_file = sorted(data_dir.glob("*Spectra.txt"))[0]
@@ -87,16 +86,7 @@ class OverlapCorrection(BaseFilter):
         shutter_times = numpy.loadtxt(shutter_times_file)
         spectra = numpy.loadtxt(spectra_file)
 
-        @dataclass
-        class ShutterInfo:
-            number: int
-            count: int
-            start_time: float = 0
-            end_time: float = 0
-            start_index: int = 0
-            end_index: int = 0
-
-        shutter_breaks = []
+        shutters = []
         prev_time = 0.0
         for number, count in shuter_count:
             if count == 0:
@@ -111,7 +101,33 @@ class OverlapCorrection(BaseFilter):
             prev_time = this_shutter.end_time
             this_shutter.start_index = int(numpy.searchsorted(spectra[:, 0], this_shutter.start_time))
             this_shutter.end_index = int(numpy.searchsorted(spectra[:, 0], this_shutter.end_time))
-            shutter_breaks.append((this_shutter.start_index, this_shutter.end_index, this_shutter.count))
+            shutters.append(this_shutter)
             print(this_shutter)
 
-        return shutter_breaks
+        return shutters
+
+
+def execute_single(data, shutters, progress=None):
+    progress = Progress.ensure_instance(progress, task_name='Overlap Correction')
+    progress.set_estimated_steps(len(shutters) + 1)
+    prob_occupied = numpy.zeros_like(data, dtype=numpy.float32)
+
+    with progress:
+        for shutter in shutters:
+            progress.update(1, msg=f"Using shutter: {shutter.start_index} - {shutter.end_index}")
+            ss, se = shutter.start_index, shutter.end_index
+            prob_occupied[ss + 1:se] = numpy.cumsum(data[ss:se - 1], axis=0) / shutter.count
+
+        output = data / (1 - prob_occupied)
+
+    return output
+
+
+@dataclass
+class ShutterInfo:
+    number: int
+    count: int
+    start_time: float = 0
+    end_time: float = 0
+    start_index: int = 0
+    end_index: int = 0
