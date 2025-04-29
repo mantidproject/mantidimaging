@@ -464,3 +464,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         fitting_region = self.view.get_fitting_region()
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
         self.view.scalable_roi_widget.set_parameter_values(init_params)
+        self.show_initial_fit()
+
+    def show_initial_fit(self):
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        xvals = self.model.tof_data
+        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
+        self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)

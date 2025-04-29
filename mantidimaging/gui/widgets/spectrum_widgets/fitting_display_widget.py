@@ -3,7 +3,8 @@
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
 from PyQt5 import QtCore
-from pyqtgraph import RectROI, mkPen, ImageItem, ROI
+from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
+
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
 
 
@@ -11,6 +12,7 @@ class FittingDisplayWidget(QWidget):
     """
     Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.
     """
+    initial_fit_line: PlotDataItem | None = None
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -103,3 +105,8 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi.setSize(size)
         self.image_preview_roi.setPen(mkPen(color, width=2))
         self.image_preview_roi.show()
+
+    def show_init_fit(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
+        if self.initial_fit_line:
+            self.spectrum_plot.spectrum.removeItem(self.initial_fit_line)
+        self.initial_fit_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name="initial", pen=(128, 128, 128))
