@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.core.data.utility module &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.core.fitting.fitting_engine module &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.data.utility';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.fitting.fitting_engine';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.core.fitting package" href="mantidimaging.core.fitting.html" />
-    <link rel="prev" title="mantidimaging.core.data.reconlist module" href="mantidimaging.core.data.reconlist.html" />
+    <link rel="next" title="mantidimaging.core.fitting.fitting_functions module" href="mantidimaging.core.fitting.fitting_functions.html" />
+    <link rel="prev" title="mantidimaging.core.fitting package" href="mantidimaging.core.fitting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -551,7 +551,7 @@ document.write(`
     <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
     
     
-    <li class="breadcrumb-item"><a href="mantidimaging.core.data.html" class="nav-link">mantidimaging.core.data package</a></li>
+    <li class="breadcrumb-item"><a href="mantidimaging.core.fitting.html" class="nav-link">mantidimaging.core.fitting package</a></li>
     
     <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
   </ul>
@@ -570,12 +570,23 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.core.data.utility">
-<span id="mantidimaging-core-data-utility-module"></span><h1>mantidimaging.core.data.utility module<a class="headerlink" href="#module-mantidimaging.core.data.utility" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="mantidimaging.core.data.utility.mark_cropped">
-<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.data.utility.</span></span><span class="sig-name descname"><span class="pre">mark_cropped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/utility.html#mark_cropped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.utility.mark_cropped" title="Link to this definition">#</a></dt>
+  <section id="module-mantidimaging.core.fitting.fitting_engine">
+<span id="mantidimaging-core-fitting-fitting-engine-module"></span><h1>mantidimaging.core.fitting.fitting_engine module<a class="headerlink" href="#module-mantidimaging.core.fitting.fitting_engine" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.fitting.fitting_engine.FittingEngine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.fitting.fitting_engine.</span></span><span class="sig-name descname"><span class="pre">FittingEngine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction" title="mantidimaging.core.fitting.fitting_functions.BaseFittingFunction"><span class="pre">BaseFittingFunction</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/fitting/fitting_engine.html#FittingEngine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.fitting.fitting_engine.FittingEngine" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.fitting.fitting_engine.FittingEngine.get_init_params_from_roi">
+<span class="sig-name descname"><span class="pre">get_init_params_from_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/fitting/fitting_engine.html#FittingEngine.get_init_params_from_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_init_params_from_roi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.fitting.fitting_engine.FittingEngine.get_parameter_names">
+<span class="sig-name descname"><span class="pre">get_parameter_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/fitting/fitting_engine.html#FittingEngine.get_parameter_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_parameter_names" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </section>
 
@@ -590,20 +601,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.core.data.reconlist.html"
+       href="mantidimaging.core.fitting.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.core.data.reconlist module</p>
+        <p class="prev-next-title">mantidimaging.core.fitting package</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.core.fitting.html"
+       href="mantidimaging.core.fitting.fitting_functions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.core.fitting package</p>
+        <p class="prev-next-title">mantidimaging.core.fitting.fitting_functions module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -625,14 +636,18 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.utility.mark_cropped"><code class="docutils literal notranslate"><span class="pre">mark_cropped()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.fitting.fitting_engine.FittingEngine"><code class="docutils literal notranslate"><span class="pre">FittingEngine</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_init_params_from_roi"><code class="docutils literal notranslate"><span class="pre">FittingEngine.get_init_params_from_roi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_parameter_names"><code class="docutils literal notranslate"><span class="pre">FittingEngine.get_parameter_names()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/api/mantidimaging.core.data.utility.rst.txt">
+    <a href="../_sources/api/mantidimaging.core.fitting.fitting_engine.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

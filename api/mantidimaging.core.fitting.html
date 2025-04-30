@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.core.data.utility module &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.core.fitting package &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.data.utility';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.fitting';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.core.fitting package" href="mantidimaging.core.fitting.html" />
-    <link rel="prev" title="mantidimaging.core.data.reconlist module" href="mantidimaging.core.data.reconlist.html" />
+    <link rel="next" title="mantidimaging.core.fitting.fitting_engine module" href="mantidimaging.core.fitting.fitting_engine.html" />
+    <link rel="prev" title="mantidimaging.core.data.utility module" href="mantidimaging.core.data.utility.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -551,7 +551,7 @@ document.write(`
     <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
     
     
-    <li class="breadcrumb-item"><a href="mantidimaging.core.data.html" class="nav-link">mantidimaging.core.data package</a></li>
+    <li class="breadcrumb-item"><a href="mantidimaging.core.html" class="nav-link">mantidimaging.core package</a></li>
     
     <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
   </ul>
@@ -570,13 +570,39 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.core.data.utility">
-<span id="mantidimaging-core-data-utility-module"></span><h1>mantidimaging.core.data.utility module<a class="headerlink" href="#module-mantidimaging.core.data.utility" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="mantidimaging.core.data.utility.mark_cropped">
-<span class="sig-prename descclassname"><span class="pre">mantidimaging.core.data.utility.</span></span><span class="sig-name descname"><span class="pre">mark_cropped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/utility.html#mark_cropped"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.utility.mark_cropped" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+  <section id="module-mantidimaging.core.fitting">
+<span id="mantidimaging-core-fitting-package"></span><h1>mantidimaging.core.fitting package<a class="headerlink" href="#module-mantidimaging.core.fitting" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.fitting.fitting_engine.html">mantidimaging.core.fitting.fitting_engine module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.fitting.fitting_engine.html#mantidimaging.core.fitting.fitting_engine.FittingEngine"><code class="docutils literal notranslate"><span class="pre">FittingEngine</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_engine.html#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_init_params_from_roi"><code class="docutils literal notranslate"><span class="pre">FittingEngine.get_init_params_from_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_engine.html#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_parameter_names"><code class="docutils literal notranslate"><span class="pre">FittingEngine.get_parameter_names()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html">mantidimaging.core.fitting.fitting_functions module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction"><code class="docutils literal notranslate"><span class="pre">BaseFittingFunction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.evaluate"><code class="docutils literal notranslate"><span class="pre">BaseFittingFunction.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.get_init_params_from_roi"><code class="docutils literal notranslate"><span class="pre">BaseFittingFunction.get_init_params_from_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.get_parameter_names"><code class="docutils literal notranslate"><span class="pre">BaseFittingFunction.get_parameter_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.parameter_names"><code class="docutils literal notranslate"><span class="pre">BaseFittingFunction.parameter_names</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction"><code class="docutils literal notranslate"><span class="pre">ErfStepFunction</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction.evaluate"><code class="docutils literal notranslate"><span class="pre">ErfStepFunction.evaluate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction.get_init_params_from_roi"><code class="docutils literal notranslate"><span class="pre">ErfStepFunction.get_init_params_from_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction.parameter_names"><code class="docutils literal notranslate"><span class="pre">ErfStepFunction.parameter_names</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 
 
@@ -590,20 +616,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.core.data.reconlist.html"
+       href="mantidimaging.core.data.utility.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.core.data.reconlist module</p>
+        <p class="prev-next-title">mantidimaging.core.data.utility module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.core.fitting.html"
+       href="mantidimaging.core.fitting.fitting_engine.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.core.fitting package</p>
+        <p class="prev-next-title">mantidimaging.core.fitting.fitting_engine module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -625,14 +651,14 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.utility.mark_cropped"><code class="docutils literal notranslate"><span class="pre">mark_cropped()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/api/mantidimaging.core.data.utility.rst.txt">
+    <a href="../_sources/api/mantidimaging.core.fitting.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

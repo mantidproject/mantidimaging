@@ -1,0 +1,16 @@
+mantidimaging.core.fitting package
+==================================
+
+.. automodule:: mantidimaging.core.fitting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.fitting.fitting_engine
+   mantidimaging.core.fitting.fitting_functions

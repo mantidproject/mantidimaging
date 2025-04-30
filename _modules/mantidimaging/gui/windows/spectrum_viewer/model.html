@@ -518,6 +518,8 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingEngine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ErfStepFunction</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.csv_output</span><span class="w"> </span><span class="kn">import</span> <span class="n">CSVOutput</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">saver</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.instrument_log</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogColumn</span><span class="p">,</span> <span class="n">ShutterCountColumn</span>
@@ -620,6 +622,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">UnitConversion</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitting_engine</span> <span class="o">=</span> <span class="n">FittingEngine</span><span class="p">(</span><span class="n">ErfStepFunction</span><span class="p">())</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.roi_name_generator">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.roi_name_generator">[docs]</a>
