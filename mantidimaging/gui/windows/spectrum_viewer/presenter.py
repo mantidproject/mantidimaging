@@ -234,22 +234,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
-        self.view.scalable_roi_widget.set_parameters(self.get_roi_fitting_params(roi_name))
+        self.setup_fitting_model()
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, spectrum_data)
-
-    def get_roi_fitting_params(self, roi_name: str) -> dict[str, tuple[float, float]]:
-        """
-        Return placeholder fitting parameters for the selected ROI.
-         Replace this with actual fit results later.
-        """
-        # Placeholder values for now
-        return {
-            "a": (1.0, 0.0),
-            "b": (1.0, 0.0),
-            "c": (1.0, 0.0),
-        }
 
     def redraw_spectrum(self, name: str) -> None:
         """
@@ -467,3 +455,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
+
+    def setup_fitting_model(self) -> None:
+        parameter_names = self.model.fitting_engine.get_parameter_names()
+        self.view.scalable_roi_widget.set_parameters(parameter_names)
+
+    def get_init_params_from_roi(self):
+        fitting_region = self.view.get_fitting_region()
+        init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
+        self.view.scalable_roi_widget.set_parameter_values(init_params)
+        self.show_initial_fit()
+
+    def show_initial_fit(self):
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        xvals = self.model.tof_data
+        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
+        self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)

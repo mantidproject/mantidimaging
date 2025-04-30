@@ -8,10 +8,8 @@ from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
 
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox
-
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox, PlotDataItem
 import numpy as np
-from pyqtgraph.graphicsItems import PlotDataItem
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -389,15 +387,16 @@ class MIPlotItem(PlotItem):
 
         self.base_menu.addMenu(self.plot_menu)
 
-    def plot(self, *args, **kwargs):
+    def plot(self, *args, **kwargs) -> PlotDataItem:
         new_plot = super().plot(*args, **kwargs)
         new_plot.original_pen = new_plot.opts['pen']
         self.set_join_plot()
+        return new_plot
 
     def set_join_plot(self) -> None:
         join_plot = self.join_choice_group.checkedAction().text() == "Line"
         for item in self.items:
-            if isinstance(item, PlotDataItem.PlotDataItem):
+            if isinstance(item, PlotDataItem):
                 if join_plot:
                     item.setSymbol(None)
                     item.setPen(item.original_pen)

@@ -72,7 +72,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_spectrum)
 
-        self.scalable_roi_widget = FittingParamFormWidget()
+        self.scalable_roi_widget = FittingParamFormWidget(self.presenter)
         self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
@@ -181,7 +181,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
             self.set_roi_properties()
 
-    def get_fitting_region(self) -> tuple[float, float]:
+    def get_fitting_region(self) -> tuple[float, float, float, float]:
         return self.fittingDisplayWidget.get_selected_fit_region()
 
     def set_fitting_region(self, region: tuple[float, float]) -> None:

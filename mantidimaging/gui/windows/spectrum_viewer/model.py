@@ -11,6 +11,8 @@ from math import ceil
 
 from logging import getLogger
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.fitting.fitting_engine import FittingEngine
+from mantidimaging.core.fitting.fitting_functions import ErfStepFunction
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
@@ -96,6 +98,7 @@ class SpectrumViewerWindowModel:
         self._roi_id_counter = 0
 
         self.units = UnitConversion()
+        self.fitting_engine = FittingEngine(ErfStepFunction())
 
     def roi_name_generator(self) -> str:
         """
