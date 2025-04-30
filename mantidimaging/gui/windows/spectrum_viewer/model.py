@@ -102,13 +102,6 @@ class SpectrumViewerWindowModel:
 
         self.fitting_engine = FittingEngine(ErfStepFunction())
 
-        print("========================= Model Init ===============================")
-        # self.full_image_spectrum = self.get_spectrum(SensibleROI.from_list([0, 0, *self.get_image_shape()]),
-        #                                         self.presenter.spectrum_mode,
-        #                                         self.presenter.view.shuttercount_norm_enabled())
-
-
-
     def roi_name_generator(self) -> str:
         """
         Returns a new Unique ID for newly created ROIs
@@ -249,10 +242,14 @@ class SpectrumViewerWindowModel:
 
     def store_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool, spectrum: np.ndarray):
         params = (*roi, mode, normalise_with_shuttercount)
-        if len(self.spectrum_cache) >= 5:
-            self.spectrum_cache.pop(list(self.spectrum_cache.keys())[1])
+        if len(self.spectrum_cache) > 99:
+            full_width, full_height = self.get_image_shape()
+            full_size = (0, 0, full_width, full_height)
+            for param_to_evict in self.spectrum_cache.keys():
+                if param_to_evict[:4] != full_size:
+                    break
+            self.spectrum_cache.pop(param_to_evict)
         self.spectrum_cache[params] = spectrum
-        # print(f"{self.spectrum_cache=}")
 
     def get_shuttercount_normalised_correction_parameter(self) -> float:
         """
