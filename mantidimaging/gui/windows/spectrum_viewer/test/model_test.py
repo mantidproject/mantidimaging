@@ -36,6 +36,11 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
     def setUp(self) -> None:
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter, instance=True)
         self.model = SpectrumViewerWindowModel(self.presenter)
+        self.model.spectrum_cache = {}
+        self.presenter.initial_sample_change = False
+
+    def tearDown(self):
+        del self.model.spectrum_cache
 
     def _set_sample_stack(self, with_tof=False, with_shuttercount=False):
         spectrum = np.arange(0, 10)

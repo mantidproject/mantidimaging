@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from PyQt5 import QtWidgets
 from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
@@ -111,13 +112,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_form.addBtn.clicked.connect(self.set_new_roi)
         self.roi_form.removeBtn.clicked.connect(self.remove_roi)
 
-        self._configure_dropdown(self.sampleStackSelector)
-        self._configure_dropdown(self.normaliseStackSelector)
-
-        self.sampleStackSelector.select_eligible_stack()
-        self.try_to_select_relevant_normalise_stack("Flat")
-        self.presenter.handle_tof_unit_change()
-
         self.roi_form.exportButton.clicked.connect(self.presenter.handle_export_csv)
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
 
@@ -126,8 +120,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_form.roi_properties_widget.roi_changed.connect(self.presenter.do_adjust_roi)
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
-
-        self.set_roi_properties()
 
         self.experimentSetupFormWidget = ExperimentSetupFormWidget(self.experimentSetupGroupBox)
         self.experimentSetupFormWidget.flight_path = 56.4
@@ -143,11 +135,24 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def show(self) -> None:
         super().show()
         self.activateWindow()
+        self.initial_setup()
 
     def cleanup(self) -> None:
         self.sampleStackSelector.unsubscribe_from_main_window()
         self.normaliseStackSelector.unsubscribe_from_main_window()
         self.main_window.spectrum_viewer = None
+
+    def initial_setup(self) -> None:
+        QtWidgets.qApp.processEvents()
+        self._configure_dropdown(self.sampleStackSelector)
+        self._configure_dropdown(self.normaliseStackSelector)
+        QtWidgets.qApp.processEvents()
+        self.sampleStackSelector.select_eligible_stack()
+        self.try_to_select_relevant_normalise_stack("Flat")
+        self.presenter.handle_tof_unit_change()
+        self.set_roi_properties()
+        self.presenter.initial_sample_change = False
+        self.presenter.initial_roi_calc()
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)

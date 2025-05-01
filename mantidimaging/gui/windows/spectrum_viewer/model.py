@@ -92,12 +92,14 @@ class SpectrumViewerWindowModel:
     tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
     tof_mode: ToFUnitMode = ToFUnitMode.WAVELENGTH
     tof_data: np.ndarray | None = None
+    spectrum_cache: dict[tuple, np.ndarray] = {}
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
 
         self.units = UnitConversion()
+
         self.fitting_engine = FittingEngine(ErfStepFunction())
 
     def roi_name_generator(self) -> str:
@@ -201,17 +203,27 @@ class SpectrumViewerWindowModel:
         return ""
 
     def get_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool = False) -> np.ndarray:
+        if (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache.keys():
+            return self.spectrum_cache[(*roi, mode, normalise_with_shuttercount)]
+
         if self._stack is None:
             return np.array([])
 
+        if self.presenter.initial_sample_change:
+            return np.zeros(self._stack.data.shape[0])
+
         if mode == SpecType.SAMPLE:
-            return self.get_stack_spectrum(self._stack, roi)
+            sample_spectrum = self.get_stack_spectrum(self._stack, roi)
+            self.store_spectrum(roi, mode, normalise_with_shuttercount, sample_spectrum)
+            return sample_spectrum
 
         if self._normalise_stack is None:
             return np.array([])
 
         if mode == SpecType.OPEN:
-            return self.get_stack_spectrum(self._normalise_stack, roi)
+            open_spectrum = self.get_stack_spectrum(self._normalise_stack, roi)
+            self.store_spectrum(roi, mode, normalise_with_shuttercount, open_spectrum)
+            return open_spectrum
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
                 return np.array([])
@@ -224,7 +236,20 @@ class SpectrumViewerWindowModel:
         if normalise_with_shuttercount:
             average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
             spectrum = spectrum / average_shuttercount
+
+        self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum)
         return spectrum
+
+    def store_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool, spectrum: np.ndarray):
+        params = (*roi, mode, normalise_with_shuttercount)
+        if len(self.spectrum_cache) > 99:
+            full_width, full_height = self.get_image_shape()
+            full_size = (0, 0, full_width, full_height)
+            for param_to_evict in self.spectrum_cache.keys():
+                if param_to_evict[:4] != full_size:
+                    break
+            self.spectrum_cache.pop(param_to_evict)
+        self.spectrum_cache[params] = spectrum
 
     def get_shuttercount_normalised_correction_parameter(self) -> float:
         """
