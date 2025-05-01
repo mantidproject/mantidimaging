@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -68,7 +68,7 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
     return ScalarCoR(images.h_middle + -offset), theta
 
 
-def compute_correlation_error(index: int, arrays: list[Any], params: dict[str, Any]) -> None:
+def compute_correlation_error(index: int, arrays: list[np.ndarray], params: dict[str, int]) -> None:
     min_correlation_error = arrays[0]
     shared_projections = arrays[1]
     shared_search_range = arrays[2]
@@ -87,7 +87,7 @@ def _find_shift(images: ImageStack, search_range: range, min_correlation_error: 
     # just in case that happens - get the first minimum one, should be close enough
     for row in range(images.height):
         min_arg_positions = min_correlation_error[row].argmin()
-        min_arg = min_arg_positions if isinstance(min_arg_positions, np.int64) else min_arg_positions[0]
+        min_arg = int(min_arg_positions)
         # And we get which search range is at that index
         # that is the number that we then pass into polyfit
         shift[row] = search_range[min_arg]
