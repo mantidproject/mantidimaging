@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker, QTimer
+from PyQt5.QtCore import QSignalBlocker, QTimer, QObject, pyqtSignal, QThread
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -26,6 +26,22 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
+
+
+class Worker(QObject):
+    finished = pyqtSignal()
+
+    def __init__(self, presenter: SpectrumViewerWindowPresenter):
+        super().__init__()
+        self.presenter = presenter
+
+    def run(self):
+        self.presenter.model.get_spectrum(
+            self.presenter.changed_roi.as_sensible_roi(),
+            self.presenter.spectrum_mode,
+            self.presenter.view.shuttercount_norm_enabled(),
+        )
+        self.finished.emit()
 
 
 class ExportMode(Enum):
@@ -220,12 +236,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
         if not self.handle_roi_change_timer.isActive():
-            self.handle_roi_change_timer.start(10)
+            self.handle_roi_change_timer.start(1000)
 
     def handle_roi_moved(self) -> None:
         """
         Handle changes to any ROI position and size.
         """
+        self.thread = QThread()
+        self.worker = Worker(self)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.thread_cleanup)
+        self.thread.start()
+
+    def thread_cleanup(self) -> None:
         spectrum = self.model.get_spectrum(
             self.changed_roi.as_sensible_roi(),
             self.spectrum_mode,
@@ -478,7 +505,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         new_roi = self.view.roi_form.roi_properties_widget.to_roi()
         roi_name = self.view.table_view.current_roi_name
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
-        self.handle_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
+        self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
