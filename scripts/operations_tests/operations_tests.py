@@ -32,7 +32,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
-from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.io.instrument_log import InstrumentLog, ShutterCount
 from mantidimaging.core.utility.data_containers import FILE_TYPES
 
 script_dir = Path(__file__).resolve().parent
@@ -54,6 +54,7 @@ class ConfigManager:
 
     def __init__(self):
         self._base_data_dir = Path.home() / "mantidimaging-data"
+        print(f"{self._base_data_dir=}")
 
     @cached_property
     def save_dir(self):
@@ -137,7 +138,7 @@ class TestRunner:
             self.compare_mode()
 
         if self.args.graphs:
-            self.create_plots()
+            create_plots()
 
     def run_test(self, test_case):
         image_stack = self.load_image_stack()
@@ -150,6 +151,9 @@ class TestRunner:
         elif test_case.pre_run_step == 'load_monitor_log':
             log_data = self.load_monitor_log()
             image_stack.log_file = log_data
+        elif test_case.pre_run_step == 'load_shutter_counts':
+            shutter_data = self.load_shutter_counts()
+            image_stack.shutter_count_file = shutter_data
 
         test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
         file_name = config_manager.save_dir / f"{test_case.test_name}.npz"
@@ -200,6 +204,19 @@ class TestRunner:
         with open(log_file_path) as file:
             log_lines = file.readlines()
             return InstrumentLog(log_lines, Path(log_file_path))
+
+    def load_shutter_counts(self):
+        filename_group = FilenameGroup.from_file(config_manager.load_sample)
+        filename_group.find_shutter_count_file()
+        shutter_count_path = filename_group.shutter_count_path
+        print(f"{shutter_count_path=}")
+
+        if shutter_count_path is None:
+            raise ValueError("Shutter count file path could not be determined.")
+
+        with open(shutter_count_path) as file:
+            shutter_count_lines = file.readlines()
+            return ShutterCount(shutter_count_lines, Path(shutter_count_path))
 
     def add_nan(self, image_stack, fraction=0.001):
         data = image_stack.data
@@ -261,6 +278,8 @@ class TestRunner:
         print(f"{'=' * 42}END{'=' * 42}")
 
     def time_mode(self, runs):
+        # TODO: time_mode() does not run the re-processing steps like the compare mode does, i.e. load_monitor_log
+        #  is not run for the monitor normalisation operation so it fails
         durations = defaultdict(list)
         image_stack = self.load_image_stack()
         for operation, test_case_info in TEST_CASES.items():
