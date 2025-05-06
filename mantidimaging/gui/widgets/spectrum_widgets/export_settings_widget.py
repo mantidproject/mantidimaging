@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox
 
 
-class ExportDropdownWidget(QWidget):
+class FitExportFormWidget(QWidget):
     """
     Export Format and Export Area dropdowns.
     """
