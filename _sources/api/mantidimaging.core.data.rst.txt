@@ -13,6 +13,7 @@ Submodules
    :maxdepth: 3
 
    mantidimaging.core.data.dataset
+   mantidimaging.core.data.geometry
    mantidimaging.core.data.imagestack
    mantidimaging.core.data.reconlist
    mantidimaging.core.data.utility

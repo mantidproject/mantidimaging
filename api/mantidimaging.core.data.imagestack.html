@@ -55,7 +55,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="mantidimaging.core.data.reconlist module" href="mantidimaging.core.data.reconlist.html" />
-    <link rel="prev" title="mantidimaging.core.data.dataset module" href="mantidimaging.core.data.dataset.html" />
+    <link rel="prev" title="mantidimaging.core.data.geometry module" href="mantidimaging.core.data.geometry.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -621,6 +621,11 @@ document.write(`
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filenames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.filenames" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.geometry">
+<span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry" title="mantidimaging.core.data.geometry.Geometry"><span class="pre">Geometry</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.geometry" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.h_middle">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h_middle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.h_middle" title="Link to this definition">#</a></dt>
@@ -747,6 +752,12 @@ via a log or a file the argument will be ignored.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.set_geometry">
+<span class="sig-name descname"><span class="pre">set_geometry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.set_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.set_geometry" title="Link to this definition">#</a></dt>
+<dd><p>Creates an AcquisitionGeometry belonging to the ImageStack.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.set_projection_angles">
 <span class="sig-name descname"><span class="pre">set_projection_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles" title="mantidimaging.core.utility.data_containers.ProjectionAngles"><span class="pre">ProjectionAngles</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.set_projection_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.set_projection_angles" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -788,6 +799,12 @@ via a log or a file the argument will be ignored.</p>
 <dd><p>A slice, either projection or sinogram depending on current ordering</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.update_geometry">
+<span class="sig-name descname"><span class="pre">update_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pixels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/imagestack.html#ImageStack.update_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.update_geometry" title="Link to this definition">#</a></dt>
+<dd><p>Updates the configuration of the ImageStack’s Geometry object.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uses_shared_memory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory" title="Link to this definition">#</a></dt>
@@ -813,12 +830,12 @@ via a log or a file the argument will be ignored.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.core.data.dataset.html"
+       href="mantidimaging.core.data.geometry.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.core.data.dataset module</p>
+        <p class="prev-next-title">mantidimaging.core.data.geometry module</p>
       </div>
     </a>
     <a class="right-next"
@@ -858,6 +875,7 @@ via a log or a file the argument will be ignored.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.data"><code class="docutils literal notranslate"><span class="pre">ImageStack.data</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.dtype"><code class="docutils literal notranslate"><span class="pre">ImageStack.dtype</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.filenames"><code class="docutils literal notranslate"><span class="pre">ImageStack.filenames</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.geometry"><code class="docutils literal notranslate"><span class="pre">ImageStack.geometry</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.h_middle"><code class="docutils literal notranslate"><span class="pre">ImageStack.h_middle</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.has_proj180deg"><code class="docutils literal notranslate"><span class="pre">ImageStack.has_proj180deg()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.height"><code class="docutils literal notranslate"><span class="pre">ImageStack.height</span></code></a></li>
@@ -879,6 +897,7 @@ via a log or a file the argument will be ignored.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.real_projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.real_projection_angles()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.record_operation"><code class="docutils literal notranslate"><span class="pre">ImageStack.record_operation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.save_metadata"><code class="docutils literal notranslate"><span class="pre">ImageStack.save_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.set_geometry"><code class="docutils literal notranslate"><span class="pre">ImageStack.set_geometry()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.set_projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.set_projection_angles()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.shared_array"><code class="docutils literal notranslate"><span class="pre">ImageStack.shared_array</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.shutter_count_file"><code class="docutils literal notranslate"><span class="pre">ImageStack.shutter_count_file</span></code></a></li>
@@ -887,6 +906,7 @@ via a log or a file the argument will be ignored.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.sinograms"><code class="docutils literal notranslate"><span class="pre">ImageStack.sinograms</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.slice_as_array"><code class="docutils literal notranslate"><span class="pre">ImageStack.slice_as_array()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.slice_as_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.slice_as_image_stack()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.update_geometry"><code class="docutils literal notranslate"><span class="pre">ImageStack.update_geometry()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory"><code class="docutils literal notranslate"><span class="pre">ImageStack.uses_shared_memory</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.imagestack.ImageStack.width"><code class="docutils literal notranslate"><span class="pre">ImageStack.width</span></code></a></li>
 </ul>
