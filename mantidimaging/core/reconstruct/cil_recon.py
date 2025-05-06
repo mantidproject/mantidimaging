@@ -332,7 +332,6 @@ class CILRecon(BaseRecon):
 
         :param images: Array of sinogram images
         :param cors: Array of centre of rotation values
-        :param proj_angles: Array of projection angles in radians
         :param recon_params: Reconstruction Parameters
         :param progress: Optional progress reporter
         :return: 3D image data for reconstructed volume
@@ -345,13 +344,10 @@ class CILRecon(BaseRecon):
             num_iter *= num_subsets
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
-        shape = images.data.shape
-        if images.is_sinograms:
-            data_order = DataOrder.ASTRA_AG_LABELS
-            pixel_num_h, pixel_num_v = shape[2], shape[0]
-        else:
-            data_order = DataOrder.TIGRE_AG_LABELS
-            pixel_num_h, pixel_num_v = shape[2], shape[1]
+
+        pixel_size = (1., 1.)
+        pixel_num_h = images.width
+        pixel_num_v = images.height
 
         projection_size = full_size_KB(images.data.shape, images.dtype)
         recon_volume_shape = pixel_num_h, pixel_num_h, pixel_num_v
@@ -379,25 +375,30 @@ class CILRecon(BaseRecon):
                      f"Non-negative {recon_params.non_negative},"
                      f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
-            angles = images.projection_angles(recon_params.max_projection_angle).value
 
-            pixel_size = 1.
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
-            rot_pos = [(cors[pixel_num_v // 2].value - pixel_num_h / 2) * pixel_size, 0, 0]
-            slope = -np.tan(np.deg2rad(recon_params.tilt.value))
-            rot_angle = [slope, 0, 1]
+            tilt = recon_params.tilt.value
 
-            ag = AcquisitionGeometry.create_Parallel3D(rotation_axis_position=rot_pos,
-                                                       rotation_axis_direction=rot_angle)
-            ag.set_panel([pixel_num_h, pixel_num_v], pixel_size=(pixel_size, pixel_size))
-            ag.set_angles(angles=angles, angle_unit='radian')
-            ag.set_labels(data_order)
+            if images.geometry is None:
+                raise ValueError("images.geometry is not set")
+            angles = images.projection_angles(recon_params.max_projection_angle).value
+            images.update_geometry(angles=angles,
+                                   angle_unit="radian",
+                                   num_pixels=(pixel_num_h, pixel_num_v),
+                                   pixel_size=pixel_size)
+            images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
 
-            data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), ag, recon_params,
-                                     num_subsets)
+            if images.is_sinograms:
+                data_order = DataOrder.ASTRA_AG_LABELS
+            else:
+                data_order = DataOrder.TIGRE_AG_LABELS
+            images.geometry.set_labels(data_order)
 
-            ig = ag.get_ImageGeometry()
+            ig = images.geometry.get_ImageGeometry()
+
+            data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
+                                     recon_params, num_subsets)
 
             if recon_params.regulariser == 'TV':
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)

@@ -11,6 +11,7 @@ from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
 
+from mantidimaging.core.data.geometry import Geometry
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
@@ -25,6 +26,7 @@ if TYPE_CHECKING:
 
 class ImageStack:
     name: str
+    geometry: Geometry | None
     _shared_array: pu.SharedArray
 
     def __init__(self,
@@ -374,3 +376,19 @@ class ImageStack:
 
             if num > 1000:
                 raise ValueError(f"Could not make unique name for: {name}")
+
+    def set_geometry(self) -> None:
+        """
+        Creates an AcquisitionGeometry belonging to the ImageStack.
+        """
+        self.geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
+
+    def update_geometry(self, angles: list | np.ndarray, angle_unit: str, num_pixels: list | tuple,
+                        pixel_size: list | tuple) -> None:
+        """
+        Updates the configuration of the ImageStack's Geometry object.
+        """
+        if self.geometry is None:
+            raise ValueError("self.geometry is not set")
+        self.geometry.set_angles(angles=angles, angle_unit=angle_unit)
+        self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
