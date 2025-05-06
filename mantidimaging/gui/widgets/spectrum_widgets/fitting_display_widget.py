@@ -67,11 +67,10 @@ class FittingDisplayWidget(QWidget):
         """Position the ROI centrally over the plotted data."""
         x_min, x_max = float(np.nanmin(x_data)), float(np.nanmax(x_data))
         y_min, y_max = float(np.nanmin(y_data)), float(np.nanmax(y_data))
-        x_span = max((x_max - x_min) * 0.25, 20.0)
-        y_span = max((y_max - y_min) * 0.5, 10.0)
+        x_span = (x_max - x_min) * 0.25
+        y_span = (y_max - y_min) * 0.5
         x_start = (x_min + x_max - x_span) / 2
-        y_start = max((y_min + y_max - y_span) / 2, 0.0)
-
+        y_start = (y_min + y_max - y_span) / 2
         self.fitting_region.setPos((x_start, y_start))
         self.fitting_region.setSize((x_span, y_span))
 
