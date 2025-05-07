@@ -36,11 +36,29 @@ class Worker(QObject):
         self.presenter = presenter
 
     def run(self):
-        self.presenter.model.get_spectrum(
+        chunk_size = 100
+        if chunk_size > 0:
+            nanInds = np.argwhere(np.isnan(self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name]))
+            chunk_start = int(nanInds[0, 0])
+            if len(nanInds) > chunk_size:
+                chunk_end = int(nanInds[chunk_size, 0])
+            else:
+                chunk_end = int(nanInds[-1, 0]) + 1
+        else:
+            chunk_start, chunk_end = (0, -1)
+
+        spectrum = self.presenter.model.get_spectrum(
             self.presenter.changed_roi.as_sensible_roi(),
             self.presenter.spectrum_mode,
             self.presenter.view.shuttercount_norm_enabled(),
+            chunk_start,
+            chunk_end
         )
+
+        for i in range(len(spectrum)):
+            np.put(self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name],
+                   chunk_start + i,
+                   spectrum[i])
         self.finished.emit()
 
 
@@ -235,8 +253,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
+        self.model.clear_spectrum()
+        self.view.show_visible_spectrums()
+        self.view.spectrum_widget.spectrum.update()
         if not self.handle_roi_change_timer.isActive():
-            self.handle_roi_change_timer.start(1000)
+            self.handle_roi_change_timer.start(500)
 
     def handle_roi_moved(self) -> None:
         """
@@ -253,13 +274,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.thread.start()
 
     def thread_cleanup(self) -> None:
-        spectrum = self.model.get_spectrum(
-            self.changed_roi.as_sensible_roi(),
-            self.spectrum_mode,
-            self.view.shuttercount_norm_enabled(),
-        )
-        self.view.set_spectrum(self.changed_roi.name, spectrum)
+        self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
+        self.try_next_mean_chunk()
+
+    def try_next_mean_chunk(self) -> None:
+        spectrum = self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name]
+        if np.isnan(spectrum).any():
+            if not self.handle_roi_change_timer.isActive():
+                self.handle_roi_change_timer.start(10)
+        else:
+            self.model.store_spectrum(self.changed_roi.as_sensible_roi(),
+                                      self.spectrum_mode,
+                                      self.view.shuttercount_norm_enabled(),
+                                      spectrum)
 
         if self.view.roiSelectionWidget.current_roi_name == roi.name:
             self.update_fitting_spectrum(roi.name)
