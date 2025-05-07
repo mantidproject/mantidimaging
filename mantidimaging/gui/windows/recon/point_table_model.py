@@ -117,7 +117,7 @@ class CorTiltPointQtModel(QAbstractTableModel, CorTiltDataModel):
         self.beginInsertRows(parent if parent is not None else QModelIndex(), row, row + count - 1)
 
         for _ in range(count):
-            self.add_point(row, slice_idx, cor)
+            self.add_point(row, slice_idx if slice_idx is not None else 0, cor if cor is not None else 0.0)
 
         self.endInsertRows()
 
