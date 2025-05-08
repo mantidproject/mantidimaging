@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import unittest
 from unittest import mock
@@ -17,6 +18,16 @@ if TYPE_CHECKING:
     from mantidimaging.core.operations.loader import BaseFilterClass
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
+
+
+@dataclass
+class ShutterInfo:
+    number: int
+    count: int
+    start_time: float = 0
+    end_time: float = 0
+    start_index: int = 0
+    end_index: int = 0
 
 
 def get_filter_func_args():
@@ -59,6 +70,13 @@ class OperationsTest(unittest.TestCase):
             if filter_name == "Monitor Normalisation":
                 counts = Counts(numpy.ones(images.num_images))
                 images._log_file = mock.Mock(counts=lambda counts=counts: counts)
+            if filter_name == "Overlap Correction":
+                filter.get_shutters = mock.Mock()
+                filter.get_shutters.return_value = [
+                    ShutterInfo(0, 102, start_index=0, end_index=1),
+                    ShutterInfo(1, 230, start_index=1, end_index=2)
+                ]
+                images._shutter_count_file = mock.Mock()
 
             returned = filter.filter_func(images, **filter_args)
             self.assertEqual(id(images), id(returned))
