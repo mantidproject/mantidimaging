@@ -157,7 +157,10 @@ class SpectrumViewerWindowModel:
         return None
 
     @staticmethod
-    def get_stack_spectrum(stack: ImageStack | None, roi: SensibleROI, chunk_start: int = 0, chunk_end: int | None = None) -> np.ndarray:
+    def get_stack_spectrum(stack: ImageStack | None,
+                           roi: SensibleROI,
+                           chunk_start: int = 0,
+                           chunk_end: int | None = None) -> np.ndarray:
         """
         Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
         If the image stack is None, an empty numpy array is returned.
@@ -202,7 +205,12 @@ class SpectrumViewerWindowModel:
             return "Need 2 different ShutterCount stacks"
         return ""
 
-    def get_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool = False, chunk_start: int = 0, chunk_end: int | None = None) -> np.ndarray:
+    def get_spectrum(self,
+                     roi: SensibleROI,
+                     mode: SpecType,
+                     normalise_with_shuttercount: bool = False,
+                     chunk_start: int = 0,
+                     chunk_end: int | None = None) -> np.ndarray:
         if (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache.keys():
             return self.spectrum_cache[(*roi, mode, normalise_with_shuttercount)]
 
@@ -557,4 +565,5 @@ class SpectrumViewerWindowModel:
             self.presenter.change_selected_menu_option("Wavelength")
 
     def clear_spectrum(self):
-        self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name] = np.full(self._stack.data.shape[0], np.nan)
+        self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name] = (np.full(
+            self._stack.data.shape[0], np.nan))

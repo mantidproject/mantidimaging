@@ -17,7 +17,8 @@ from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWi
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI, \
+    MIPlotItem
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.test_helpers import start_qapplication
 from mantidimaging.test_helpers.unit_test_helper import generate_images
@@ -380,6 +381,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         roi_mock.name = "roi_1"
         roi_mock.as_sensible_roi.return_value = SensibleROI(10, 10, 20, 30)
         self.view.spectrum_widget.roi_dict = {"roi_1": roi_mock}
+        self.presenter.model.clear_spectrum = mock.Mock()
+        self.view.spectrum_widget.spectrum = MIPlotItem()
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
         mock_update_fit.assert_called_once_with("roi_1")
