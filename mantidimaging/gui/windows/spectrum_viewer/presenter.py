@@ -234,7 +234,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
         roi = self.view.spectrum_widget.get_roi(roi_name)
-        spectrum_data = self.model.get_spectrum(roi, self.spectrum_mode)
         tof_data = self.model.tof_data
         if tof_data is None:
             return
@@ -242,14 +241,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         image = (self.model.get_normalized_averaged_image()
                  if self.view.normalisation_enabled() else self.model.get_averaged_image())
 
-        self.view.fittingDisplayWidget.update_plot(tof_data, spectrum_data, label=roi_name, image=image)
+        self.fitting_spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
+        self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name, image=image)
         wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
         self.setup_fitting_model()
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
         if reset_region:
-            self.view.fittingDisplayWidget.set_default_region(tof_data, spectrum_data)
+            self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
 
     def redraw_spectrum(self, name: str) -> None:
         """
@@ -482,4 +482,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
+        self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
+
+    def run_region_fit(self) -> None:
+        assert self.model.tof_data is not None
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        fitting_region = self.view.get_fitting_region()
+        fitting_range = fitting_region[0], fitting_region[1]
+        fitting_slice = slice(*np.searchsorted(self.model.tof_data, fitting_range))
+        xvals = self.model.tof_data[fitting_slice]
+        yvals = self.fitting_spectrum[fitting_slice]
+
+        result = self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
+        self.view.scalable_roi_widget.set_fitted_parameter_values(result)
+        self.show_fit(list(result.values()))
+
+    def show_fit(self, params: list[float]) -> None:
+        assert self.model.tof_data is not None
+        xvals = self.model.tof_data
+        init_fit = self.model.fitting_engine.model.evaluate(xvals, params)
         self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
