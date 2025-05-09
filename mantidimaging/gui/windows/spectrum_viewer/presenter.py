@@ -276,7 +276,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def try_next_mean_chunk(self) -> None:
         spectrum = self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name]
-        if spectrum:
+        if spectrum is not None:
             if np.isnan(spectrum).any():
                 if not self.handle_roi_change_timer.isActive():
                     self.handle_roi_change_timer.start(10)
