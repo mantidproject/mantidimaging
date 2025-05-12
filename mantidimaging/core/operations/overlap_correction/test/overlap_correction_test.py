@@ -9,17 +9,8 @@ from unittest import mock
 
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.operations.overlap_correction import OverlapCorrection
+from mantidimaging.core.operations.overlap_correction.overlap_correction import ShutterInfo
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
-
-
-@dataclass
-class ShutterInfo:
-    number: int
-    count: int
-    start_time: float = 0
-    end_time: float = 0
-    start_index: int = 0
-    end_index: int = 0
 
 
 @start_multiprocessing_pool
@@ -51,7 +42,6 @@ class OverlapCorrectionTest(unittest.TestCase):
             ShutterInfo(1, 230, start_index=2, end_index=4),
             ShutterInfo(2, 235, start_index=4, end_index=10)
         ]
-        #get_shutters_mock.return_value = ((0, 2, 102), (2, 4, 230), (4, 10, 235))
 
         original = images.copy()
         images = OverlapCorrection.filter_func(images)

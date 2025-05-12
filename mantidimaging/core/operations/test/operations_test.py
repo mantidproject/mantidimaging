@@ -13,21 +13,12 @@ from mantidimaging.core.operations.loader import load_filter_packages
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.utility.data_containers import Counts
 from mantidimaging.core.gpu import utility as gpu
+from mantidimaging.core.operations.overlap_correction.overlap_correction import ShutterInfo
 
 if TYPE_CHECKING:
     from mantidimaging.core.operations.loader import BaseFilterClass
 
 GPU_NOT_AVAIL = not gpu.gpu_available()
-
-
-@dataclass
-class ShutterInfo:
-    number: int
-    count: int
-    start_time: float = 0
-    end_time: float = 0
-    start_index: int = 0
-    end_index: int = 0
 
 
 def get_filter_func_args():

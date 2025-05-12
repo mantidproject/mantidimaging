@@ -7,6 +7,7 @@ from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from collections.abc import Callable
+from logging import getLogger
 
 import numpy
 import numpy as np
@@ -20,14 +21,17 @@ if TYPE_CHECKING:
     from mantidimaging.gui.mvp_base import BaseMainWindowView
     from PyQt5.QtWidgets import QFormLayout, QWidget
 
+logger = getLogger(__name__)
+
 
 class OverlapCorrection(BaseFilter):
     """
     Overlap correction is a post-experimental data correction performed when the input fluxes are periodic,
     accurately restoring the input flux up to a very large fraction of pixels (up to ~90%) occupied by the end of the
-    acquisition shutter which leads to large distortions of measured timing characteristics of the input flux.
+    acquisition shutter which leads to large distortions of measured timing characteristics of the input flux. More
+    information is available here: https://dx.doi.org/10.1088/1748-0221/9/05/C05026
 
-    Intended to be used on: Projections
+    Intended to be used on: Time of Flight images
 
     When: As a pre-processing step, to correct the observed spectrum and clarify its characteristics.
     """
@@ -78,17 +82,20 @@ class OverlapCorrection(BaseFilter):
 
     @staticmethod
     def get_shutters(data_dir: Path) -> list[ShutterInfo]:
-        shuter_count_file = sorted(data_dir.glob("*ShutterCount.txt"))[0]
+        shutter_count_file = sorted(data_dir.glob("*ShutterCount.txt"))[0]
+        logger.debug(f'Loaded Shutter Count information from {shutter_count_file}')
         shutter_times_file = sorted(data_dir.glob("*ShutterTimes.txt"))[0]
+        logger.debug(f'Loaded Shutter Times information from {shutter_times_file}')
         spectra_file = sorted(data_dir.glob("*Spectra.txt"))[0]
+        logger.debug(f'Loaded Spectra information from {spectra_file}')
 
-        shuter_count = numpy.loadtxt(shuter_count_file, dtype=int)
+        shutter_count = numpy.loadtxt(shutter_count_file, dtype=int)
         shutter_times = numpy.loadtxt(shutter_times_file)
         spectra = numpy.loadtxt(spectra_file)
 
         shutters = []
         prev_time = 0.0
-        for number, count in shuter_count:
+        for number, count in shutter_count:
             if count == 0:
                 break
 
@@ -102,7 +109,6 @@ class OverlapCorrection(BaseFilter):
             this_shutter.start_index = int(numpy.searchsorted(spectra[:, 0], this_shutter.start_time))
             this_shutter.end_index = int(numpy.searchsorted(spectra[:, 0], this_shutter.end_time))
             shutters.append(this_shutter)
-            print(this_shutter)
 
         return shutters
 
