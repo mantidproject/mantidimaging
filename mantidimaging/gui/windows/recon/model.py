@@ -215,7 +215,7 @@ class ReconstructWindowModel:
     def is_current_stack(self, uuid: uuid.UUID) -> bool:
         return self.stack_id == uuid
 
-    def get_slice_indices(self, num_cors: int) -> tuple[int, np.ndarray | tuple[np.ndarray, float | None]]:
+    def get_slice_indices(self, num_cors: int) -> tuple[int, np.ndarray]:
         # used to crop off 20% off the top and bottom, which is usually noise/empty
         remove_a_bit = self.images.height * 0.2
         slices = np.linspace(remove_a_bit, self.images.height - remove_a_bit, num=num_cors, dtype=np.int32)
