@@ -24,22 +24,22 @@ class CorTiltDataModel:
     _cached_cor: float | None
     _points: list[Point]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._points = []
         self._cached_gradient = None
         self._cached_cor = None
 
-    def populate_slice_indices(self, begin, end, count, cor=0.0):
+    def populate_slice_indices(self, begin, end, count, cor=0.0) -> None:
         self.clear_results()
 
         self._points = [Point(int(idx), cor) for idx in np.linspace(begin, end, count, dtype=int)]
         LOG.debug(f'Populated slice indices: {self.slices}')
 
-    def linear_regression(self):
+    def linear_regression(self) -> None:
         LOG.debug(f'Running linear regression with {self.num_points} points')
         self._cached_gradient, self._cached_cor, *_ = sp.stats.linregress(self.slices, self.cors)
 
-    def add_point(self, idx=None, slice_idx=0, cor=0.0):
+    def add_point(self, idx: int | None = None, slice_idx: int = 0, cor: float = 0.0) -> None:
         self.clear_results()
 
         if idx is None:
@@ -47,7 +47,12 @@ class CorTiltDataModel:
         else:
             self._points.insert(idx, Point(slice_idx, cor))
 
-    def set_point(self, idx, slice_idx: int | None = None, cor: float | None = None, reset_results=True):
+    def set_point(self,
+                  idx: int,
+                  slice_idx: int | None = None,
+                  cor: float | None = None,
+                  reset_results: bool = True) -> None:
+
         if reset_results:
             self.clear_results()
 
@@ -58,39 +63,39 @@ class CorTiltDataModel:
             if cor is not None:
                 self._points[idx] = Point(self._points[idx].slice_index, float(cor))
 
-    def _get_data_idx_from_slice_idx(self, slice_idx) -> int:
+    def _get_data_idx_from_slice_idx(self, slice_idx: int) -> int:
         for i, p in enumerate(self._points):
             if p.slice_index == slice_idx:
                 return i
         raise ValueError(f"Slice {slice_idx} that is not in COR table")
 
-    def set_cor_at_slice(self, slice_idx: int, cor: float):
+    def set_cor_at_slice(self, slice_idx: int, cor: float) -> None:
         data_idx = self._get_data_idx_from_slice_idx(slice_idx)
         self.set_point(data_idx, cor=cor)
 
-    def remove_point(self, idx):
+    def remove_point(self, idx: int) -> None:
         self.clear_results()
         del self._points[idx]
 
-    def clear_points(self):
+    def clear_points(self) -> None:
         self._points = []
         self.clear_results()
 
-    def clear_results(self):
+    def clear_results(self) -> None:
         self._cached_gradient = None
         self._cached_cor = None
 
-    def point(self, idx):
+    def point(self, idx: int) -> Point | None:
         return self._points[idx] if idx < self.num_points else None
 
-    def sort_points(self):
+    def sort_points(self) -> None:
         self._points.sort(key=lambda p: p.slice_index)
 
-    def get_cor_from_regression(self, slice_idx) -> float:
+    def get_cor_from_regression(self, slice_idx: int) -> float:
         cor = (self.gradient.value * slice_idx) + self.cor.value
         return cor
 
-    def get_all_cors_from_regression(self, image_height) -> list[ScalarCoR]:
+    def get_all_cors_from_regression(self, image_height: int) -> list[ScalarCoR]:
         """
 
         :param image_height: How many cors will be generated,
@@ -104,11 +109,11 @@ class CorTiltDataModel:
         return cors
 
     @property
-    def slices(self):
+    def slices(self) -> list[int]:
         return [p.slice_index for p in self._points]
 
     @property
-    def cors(self):
+    def cors(self) -> list[float]:
         return [float(p.cor) for p in self._points]
 
     @property
@@ -152,7 +157,7 @@ class CorTiltDataModel:
             const.COR_TILT_ROTATION_CENTRES: self.cors
         }
 
-    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees):
+    def set_precalculated(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self._cached_cor = cor.value
         # reverse the tilt calculation to get the slope of the regression back
         self._cached_gradient = -np.tan(np.deg2rad(tilt.value))
