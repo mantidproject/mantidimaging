@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import unittest
-from dataclasses import dataclass
 from functools import partial
 from unittest import mock
 

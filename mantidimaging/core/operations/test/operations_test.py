@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import unittest
 from unittest import mock
