@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.core package &#8212; MantidImaging 2.9.0a1 documentation</title>
+    <title>mantidimaging.core.operations.overlap_correction package &#8212; MantidImaging 2.9.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.operations.overlap_correction';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.core.data package" href="mantidimaging.core.data.html" />
-    <link rel="prev" title="mantidimaging package" href="mantidimaging.html" />
+    <link rel="next" title="mantidimaging.core.operations.overlap_correction.overlap_correction module" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html" />
+    <link rel="prev" title="mantidimaging.core.operations.outliers.outliers module" href="mantidimaging.core.operations.outliers.outliers.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -493,7 +493,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="../support.html">Support</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../api.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="mantidimaging.html">mantidimaging package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4 current active"><a class="current reference internal" href="#">mantidimaging.core package</a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="mantidimaging.core.html">mantidimaging.core package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.html">mantidimaging.gui package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mantidimaging.helper.html">mantidimaging.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mantidimaging.ipython.html">mantidimaging.ipython module</a></li>
@@ -551,7 +551,7 @@ document.write(`
     <li class="breadcrumb-item"><i class="fa-solid fa-ellipsis"></i></li>
     
     
-    <li class="breadcrumb-item"><a href="mantidimaging.html" class="nav-link">mantidimaging package</a></li>
+    <li class="breadcrumb-item"><a href="mantidimaging.core.operations.html" class="nav-link">mantidimaging.core.operations package</a></li>
     
     <li class="breadcrumb-item active" aria-current="page">mantidimagin...</li>
   </ul>
@@ -570,158 +570,34 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.core">
-<span id="mantidimaging-core-package"></span><h1>mantidimaging.core package<a class="headerlink" href="#module-mantidimaging.core" title="Link to this heading">#</a></h1>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+  <section id="module-mantidimaging.core.operations.overlap_correction">
+<span id="mantidimaging-core-operations-overlap-correction-package"></span><h1>mantidimaging.core.operations.overlap_correction package<a class="headerlink" href="#module-mantidimaging.core.operations.overlap_correction" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.data.html">mantidimaging.core.data package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html">mantidimaging.core.data.dataset module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html">mantidimaging.core.data.geometry module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html">mantidimaging.core.data.imagestack module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.reconlist.html">mantidimaging.core.data.reconlist module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.utility.html">mantidimaging.core.data.utility module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html">mantidimaging.core.operations.overlap_correction.overlap_correction module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.allow_for_180_projection"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.allow_for_180_projection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.execute_wrapper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.filter_func"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.filter_func()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.filter_name"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.filter_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.get_shutters"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.get_shutters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.link_histograms"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.link_histograms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.register_gui"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.register_gui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.OverlapCorrection.validate_execute_kwargs"><code class="docutils literal notranslate"><span class="pre">OverlapCorrection.validate_execute_kwargs()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo"><code class="docutils literal notranslate"><span class="pre">ShutterInfo</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo.count"><code class="docutils literal notranslate"><span class="pre">ShutterInfo.count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo.end_index"><code class="docutils literal notranslate"><span class="pre">ShutterInfo.end_index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo.end_time"><code class="docutils literal notranslate"><span class="pre">ShutterInfo.end_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo.number"><code class="docutils literal notranslate"><span class="pre">ShutterInfo.number</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo.start_index"><code class="docutils literal notranslate"><span class="pre">ShutterInfo.start_index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.ShutterInfo.start_time"><code class="docutils literal notranslate"><span class="pre">ShutterInfo.start_time</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.fitting.html">mantidimaging.core.fitting package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.fitting.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_engine.html">mantidimaging.core.fitting.fitting_engine module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.fitting.fitting_functions.html">mantidimaging.core.fitting.fitting_functions module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.gpu.html">mantidimaging.core.gpu package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.gpu.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.gpu.utility.html">mantidimaging.core.gpu.utility module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.io.html">mantidimaging.core.io package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.loader.html">mantidimaging.core.io.loader package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.io.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.csv_output.html">mantidimaging.core.io.csv_output module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.filenames.html">mantidimaging.core.io.filenames module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log.html">mantidimaging.core.io.instrument_log module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.instrument_log_implmentations.html">mantidimaging.core.io.instrument_log_implmentations module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.saver.html">mantidimaging.core.io.saver module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.io.utility.html">mantidimaging.core.io.utility module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.net.html">mantidimaging.core.net package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.net.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.net.help_pages.html">mantidimaging.core.net.help_pages module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operation_history.html">mantidimaging.core.operation_history package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operation_history.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operation_history.const.html">mantidimaging.core.operation_history.const module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operation_history.operations.html">mantidimaging.core.operation_history.operations module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.html">mantidimaging.core.operations package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.arithmetic.html">mantidimaging.core.operations.arithmetic package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.circular_mask.html">mantidimaging.core.operations.circular_mask package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.clip_values.html">mantidimaging.core.operations.clip_values package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.crop_coords.html">mantidimaging.core.operations.crop_coords package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.divide.html">mantidimaging.core.operations.divide package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.flat_fielding.html">mantidimaging.core.operations.flat_fielding package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.gaussian.html">mantidimaging.core.operations.gaussian package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.median_filter.html">mantidimaging.core.operations.median_filter package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.monitor_normalisation.html">mantidimaging.core.operations.monitor_normalisation package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.nan_removal.html">mantidimaging.core.operations.nan_removal package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.outliers.html">mantidimaging.core.operations.outliers package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.html">mantidimaging.core.operations.overlap_correction package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.rebin.html">mantidimaging.core.operations.rebin package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_all_stripe.html">mantidimaging.core.operations.remove_all_stripe package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_dead_stripe.html">mantidimaging.core.operations.remove_dead_stripe package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_large_stripe.html">mantidimaging.core.operations.remove_large_stripe package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_filtering.html">mantidimaging.core.operations.remove_stripe_filtering package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_sorting_fitting.html">mantidimaging.core.operations.remove_stripe_sorting_fitting package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.rescale.html">mantidimaging.core.operations.rescale package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.ring_removal.html">mantidimaging.core.operations.ring_removal package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.roi_normalisation.html">mantidimaging.core.operations.roi_normalisation package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.rotate_stack.html">mantidimaging.core.operations.rotate_stack package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html">mantidimaging.core.operations.base_filter module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.loader.html">mantidimaging.core.operations.loader module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.parallel.html">mantidimaging.core.parallel package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.parallel.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.parallel.manager.html">mantidimaging.core.parallel.manager module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.parallel.shared.html">mantidimaging.core.parallel.shared module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.parallel.utility.html">mantidimaging.core.parallel.utility module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.reconstruct.html">mantidimaging.core.reconstruct package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.reconstruct.html#mantidimaging.core.reconstruct.get_reconstructor_for"><code class="docutils literal notranslate"><span class="pre">get_reconstructor_for()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.reconstruct.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.reconstruct.astra_recon.html">mantidimaging.core.reconstruct.astra_recon module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.reconstruct.base_recon.html">mantidimaging.core.reconstruct.base_recon module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.reconstruct.cil_recon.html">mantidimaging.core.reconstruct.cil_recon module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.reconstruct.tomopy_recon.html">mantidimaging.core.reconstruct.tomopy_recon module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.rotation.html">mantidimaging.core.rotation package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.rotation.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.rotation.data_model.html">mantidimaging.core.rotation.data_model module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.rotation.polyfit_correlation.html">mantidimaging.core.rotation.polyfit_correlation module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.utility.html">mantidimaging.core.utility package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.utility.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.html">mantidimaging.core.utility.progress_reporting package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.utility.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.close_enough_point.html">mantidimaging.core.utility.close_enough_point module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.command_line_arguments.html">mantidimaging.core.utility.command_line_arguments module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.cor_interpolate.html">mantidimaging.core.utility.cor_interpolate module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.cuda_check.html">mantidimaging.core.utility.cuda_check module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.custom_exceptions.html">mantidimaging.core.utility.custom_exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html">mantidimaging.core.utility.data_containers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.execution_timer.html">mantidimaging.core.utility.execution_timer module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.finder.html">mantidimaging.core.utility.finder module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.func_call.html">mantidimaging.core.utility.func_call module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.histogram.html">mantidimaging.core.utility.histogram module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.imat_log_file_parser.html">mantidimaging.core.utility.imat_log_file_parser module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.leak_tracker.html">mantidimaging.core.utility.leak_tracker module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.memory_usage.html">mantidimaging.core.utility.memory_usage module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.optional_imports.html">mantidimaging.core.utility.optional_imports module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.projection_angle_parser.html">mantidimaging.core.utility.projection_angle_parser module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.projection_angles.html">mantidimaging.core.utility.projection_angles module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html">mantidimaging.core.utility.sensible_roi module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.size_calculator.html">mantidimaging.core.utility.size_calculator module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.unit_conversion.html">mantidimaging.core.utility.unit_conversion module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.utility.version_check.html">mantidimaging.core.utility.version_check module</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html#mantidimaging.core.operations.overlap_correction.overlap_correction.execute_single"><code class="docutils literal notranslate"><span class="pre">execute_single()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -740,20 +616,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.html"
+       href="mantidimaging.core.operations.outliers.outliers.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging package</p>
+        <p class="prev-next-title">mantidimaging.core.operations.outliers.outliers module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.core.data.html"
+       href="mantidimaging.core.operations.overlap_correction.overlap_correction.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.core.data package</p>
+        <p class="prev-next-title">mantidimaging.core.operations.overlap_correction.overlap_correction module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -775,14 +651,14 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/api/mantidimaging.core.rst.txt">
+    <a href="../_sources/api/mantidimaging.core.operations.overlap_correction.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

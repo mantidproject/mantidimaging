@@ -23,6 +23,7 @@ Subpackages
    mantidimaging.core.operations.monitor_normalisation
    mantidimaging.core.operations.nan_removal
    mantidimaging.core.operations.outliers
+   mantidimaging.core.operations.overlap_correction
    mantidimaging.core.operations.rebin
    mantidimaging.core.operations.remove_all_stripe
    mantidimaging.core.operations.remove_dead_stripe

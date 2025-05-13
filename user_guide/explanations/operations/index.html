@@ -781,6 +781,13 @@ document.write(`
 </dl>
 <p><a class="reference internal" href="../../../api/mantidimaging.core.operations.outliers.outliers.html#module-mantidimaging.core.operations.outliers.outliers" title="mantidimaging.core.operations.outliers.outliers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Remove</span> <span class="pre">Outliers</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
 </section>
+<section id="overlap-correction">
+<h3>Overlap Correction<a class="headerlink" href="#overlap-correction" title="Link to this heading">#</a></h3>
+<p>Overlap correction is a post-experimental data correction performed when the input fluxes are periodic, accurately restoring the input flux up to a very large fraction of pixels (up to ~90%) occupied by the end of the acquisition shutter which leads to large distortions of measured timing characteristics of the input flux. More information is available here: <a class="reference external" href="https://dx.doi.org/10.1088/1748-0221/9/05/C05026">https://dx.doi.org/10.1088/1748-0221/9/05/C05026</a></p>
+<p>Intended to be used on: Time of Flight images</p>
+<p>When: As a pre-processing step, to correct the observed spectrum and clarify its characteristics.</p>
+<p><a class="reference internal" href="../../../api/mantidimaging.core.operations.overlap_correction.overlap_correction.html#module-mantidimaging.core.operations.overlap_correction.overlap_correction" title="mantidimaging.core.operations.overlap_correction.overlap_correction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Overlap</span> <span class="pre">Correction</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
+</section>
 <section id="rebin">
 <h3>Rebin<a class="headerlink" href="#rebin" title="Link to this heading">#</a></h3>
 <p>Rebin the image to reduce the resolution.</p>
@@ -1029,6 +1036,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-normalisation">Monitor Normalisation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nan-removal">NaN Removal</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remove-outliers">Remove Outliers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-correction">Overlap Correction</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rebin">Rebin</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remove-all-stripes">Remove all stripes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remove-dead-stripes">Remove dead stripes</a></li>
