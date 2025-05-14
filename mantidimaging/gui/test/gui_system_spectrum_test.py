@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtGui import QColor
 from parameterized import parameterized
+from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, SensibleROI
@@ -179,3 +180,26 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.spectrum_window.roi_form.exportTabs.setCurrentIndex(0)
         QTest.qWait(SHORT_DELAY)
         self.assertEqual('roi', self._property_box_name())
+
+    def test_switch_from_joined_to_scatter_plot(self):
+        assert self.spectrum_window.spectrum.spectrum.join_choice_group.checkedAction().text() == 'Line'
+        for action in self.spectrum_window.spectrum.spectrum.join_choice_group.actions():
+            if action.text() == 'Points':
+                action.trigger()
+        QTest.qWait(SHORT_DELAY)
+        for item in self.spectrum_window.spectrum.spectrum.items:
+            if isinstance(item, PlotDataItem):
+                self.assertEqual(item.opts['symbol'], 'o')
+                self.assertEqual(item.opts['pen'].color().getRgb(), (200, 200, 200, 255))
+
+    def test_add_roi_with_scatter_plot(self):
+        for action in self.spectrum_window.spectrum.spectrum.join_choice_group.actions():
+            if action.text() == 'Points':
+                action.trigger()
+        initial_items = len(self.spectrum_window.spectrum.spectrum.items)
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
+        for item in self.spectrum_window.spectrum.spectrum.items:
+            if isinstance(item, PlotDataItem):
+                self.assertEqual(item.opts['symbol'], 'o')
+                self.assertEqual(item.opts['pen'].color().getRgb(), (200, 200, 200, 255))
+        self.assertEqual(len(self.spectrum_window.spectrum.spectrum.items), initial_items + 1)
