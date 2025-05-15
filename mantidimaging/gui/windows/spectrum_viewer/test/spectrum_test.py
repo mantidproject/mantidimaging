@@ -13,7 +13,7 @@ from pyqtgraph import Point
 
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, MIPlotItem
 from mantidimaging.test_helpers import mock_versions, start_qapplication
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
@@ -175,3 +175,27 @@ class SpectrumWidgetTest(unittest.TestCase):
 
         with self.assertRaises(KeyError):
             self.spectrum_widget.rename_roi("roi_1", "roi_2")
+
+
+class MIPlotItemTest(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.spectrum_plot = MIPlotItem()
+        self.x_data = np.random.default_rng().random(10)
+        self.y_data = np.random.default_rng().random(10)
+        self.colour = (10, 50, 200, 255)
+
+    def test_WHEN_plotting_original_pen_set(self):
+        self.spectrum_plot.plot(self.x_data, self.y_data, pen=self.colour)
+        self.assertEqual(self.spectrum_plot.items[-1].original_pen, self.colour)
+
+    @parameterized.expand([("Line", (10, 50, 200, 255), None), ("Points", None, 'o')])
+    def test_WHEN_plot_mode_set_THEN_data_plotted_correctly(self, joined_choice, pen_expected, symbol_expected):
+        self.spectrum_plot.join_choice_group.checkedAction().text = mock.Mock()
+        self.spectrum_plot.join_choice_group.checkedAction().text.return_value = joined_choice
+        self.spectrum_plot.plot(self.x_data, self.y_data, pen=self.colour)
+        self.spectrum_plot.items[-1].setPen = mock.Mock()
+        self.spectrum_plot.items[-1].setSymbol = mock.Mock()
+        self.spectrum_plot.set_join_plot()
+        self.spectrum_plot.items[-1].setPen.assert_called_once_with(pen_expected)
+        self.spectrum_plot.items[-1].setSymbol.assert_called_once_with(symbol_expected)
