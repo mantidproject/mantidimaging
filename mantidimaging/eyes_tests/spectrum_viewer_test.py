@@ -1,8 +1,11 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+
+import numpy as np
 from PyQt5.QtWidgets import QApplication
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
@@ -22,6 +25,8 @@ class SpectrumViewerWindowTest(BaseEyesTest):
     def test_spectrum_viewer_opens_with_data(self):
         self._generate_spectrum_dataset()
         self.imaging.show_spectrum_viewer_window()
+        wait_until(lambda: not np.isnan(self.imaging.spectrum_viewer.spectrum_widget.spectrum_data_dict["roi"]).any(),
+                   max_retry=600)
         self.check_target(widget=self.imaging.spectrum_viewer)
 
     def test_spectrum_viewer_opens_with_data_and_normalisation(self):
@@ -29,6 +34,8 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         self.imaging.show_spectrum_viewer_window()
         self.imaging.spectrum_viewer.normaliseCheckBox.setChecked(True)
         self.imaging.spectrum_viewer.normaliseStackSelector.try_to_select_relevant_stack("Open Beam Stack")
+        wait_until(lambda: not np.isnan(self.imaging.spectrum_viewer.spectrum_widget.spectrum_data_dict["roi"]).any(),
+                   max_retry=600)
         self.check_target(widget=self.imaging.spectrum_viewer)
 
     def test_spectrum_viewer_add_new_roi(self):
@@ -39,6 +46,8 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         self.imaging.spectrum_viewer.set_new_roi()
         self.imaging.spectrum_viewer.spectrum_widget.roi_dict["roi_1"].setSize(2, 2)
         self.imaging.spectrum_viewer.spectrum_widget.roi_dict["roi_1"].setPos(5, 5)
+        wait_until(lambda: not np.isnan(self.imaging.spectrum_viewer.spectrum_widget.spectrum_data_dict["roi_1"]).any(),
+                   max_retry=600)
         self.check_target(widget=self.imaging.spectrum_viewer)
 
     def test_spectrum_viewer_scatter_plot(self):

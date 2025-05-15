@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from unittest import mock
 
+import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtGui import QColor
@@ -33,6 +34,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertTrue(self.spectrum_window.isVisible())
 
         wait_until(lambda: self.spectrum_window.presenter.model._stack is not None, max_retry=600)
+        wait_until(lambda: self.spectrum_window.spectrum_widget.spectrum_data_dict["roi"] is not None, max_retry=600)
 
     def tearDown(self) -> None:
         self._close_image_stacks()
@@ -160,6 +162,8 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertEqual(updated_roi.bottom, new_position[1])
         self.assertEqual(updated_roi.top, 0)
         self.assertEqual(updated_roi.left, 0)
+        wait_until(lambda: not np.isnan(self.spectrum_window.spectrum_widget.spectrum_data_dict["roi"]).any(),
+                   max_retry=600)
 
     def test_normalisation_toggle(self):
         self.spectrum_window.normaliseCheckBox.setCheckState(Qt.CheckState.Checked)
