@@ -1,5 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
+
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView)
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
