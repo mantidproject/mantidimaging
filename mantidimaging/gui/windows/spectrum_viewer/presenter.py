@@ -477,6 +477,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
         self.view.scalable_roi_widget.set_parameter_values(init_params)
         self.show_initial_fit()
+        mu_val = init_params.get("mu", 0.0)
+        sigma_val = init_params.get("sigma", 0.0)
+        roi_name = self.view.table_view.current_roi_name
+        self.view.update_export_table(roi_name=roi_name, mu=mu_val, sigma=sigma_val, status="Initial")
 
     def show_initial_fit(self):
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
@@ -496,6 +500,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         result = self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.show_fit(list(result.values()))
+        mu_val = result.get("mu", 0.0)
+        sigma_val = result.get("sigma", 0.0)
+        roi_name = self.view.table_view.current_roi_name
+        self.view.update_export_table(roi_name=roi_name, mu=mu_val, sigma=sigma_val, status="Fitted")
 
     def show_fit(self, params: list[float]) -> None:
         assert self.model.tof_data is not None

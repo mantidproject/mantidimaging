@@ -22,6 +22,7 @@ from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROIS
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget import FitExportFormWidget
+from mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget import ExportDataTableWidget
 
 import numpy as np
 
@@ -117,6 +118,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.roi_form.exportButton.clicked.connect(self.presenter.handle_export_csv)
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
+        self.exportDataTableWidget = ExportDataTableWidget()
+        self.exportLayout.addWidget(self.exportDataTableWidget)
 
         self.roi_form.table_view.clicked.connect(self.handle_table_click)
 
@@ -242,6 +245,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
+
+    def update_export_table(self, roi_name: str, mu: float, sigma: float, status: str = "Ready") -> None:
+        self.exportDataTableWidget.update_roi_data(roi_name, {"mu": mu, "sigma": sigma}, status)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
