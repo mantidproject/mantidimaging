@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
-)
+# Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
+# SPDX - License - Identifier: GPL-3.0-or-later
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView)
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
 
@@ -36,7 +36,8 @@ class ExportDataTableWidget(QWidget):
             QStandardItem(roi_name),
             QStandardItem(f"{params.get('mu', 0):.3f}"),
             QStandardItem(f"{params.get('sigma', 0):.3f}"),
-            QStandardItem(status),]
+            QStandardItem(status),
+        ]
         for item in items:
             item.setTextAlignment(Qt.AlignCenter)
 
