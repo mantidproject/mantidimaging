@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 3
 
+   mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget
    mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget
    mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget
    mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget
