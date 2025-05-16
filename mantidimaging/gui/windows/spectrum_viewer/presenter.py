@@ -88,6 +88,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
                                            self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
+        self.update_fitting_spectrum("roi", reset_region=True)
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
         """
@@ -397,6 +398,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(ROI_RITS,
                                self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
         self.view.set_roi_visibility_flags(ROI_RITS, visible=False)
+        self.update_fitting_spectrum(ROI_RITS, reset_region=True)
 
     def do_add_roi_to_table(self, roi_name: str) -> None:
         """
