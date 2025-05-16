@@ -8,6 +8,7 @@ import logging
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from collections import defaultdict
 from dataclasses import dataclass
@@ -205,18 +206,48 @@ class TestRunner:
             log_lines = file.readlines()
             return InstrumentLog(log_lines, Path(log_file_path))
 
+    def create_fake_shutter_files(self):
+        shutter_count_data = np.array([[0, 74421], [1, 74420], [2, 74420], [3, 74420], [4, 74420], [5, 74418]])
+        shutter_times_data = np.array([[0, 0.01, 0.0001007], [1, 0.00032416, 0.00001], [2, 0.00031424, 0.00002],
+                                       [3, 0.00031424, 0.00003], [4, 0.00032256, 0.00002], [5, 0.00033472, 0.00004]])
+        spectra_file_data = np.column_stack((np.linspace(0.01, 0.0120275,
+                                                         num=100), np.linspace(1917858, 6389242, num=100, dtype=int)))
+
+        self.shutter_count_temp = tempfile.NamedTemporaryFile(suffix='_ShutterCount.txt', delete=False)
+        self.shutter_times_temp = tempfile.NamedTemporaryFile(suffix='_ShutterTimes.txt', delete=False)
+        self.spectra_file_temp = tempfile.NamedTemporaryFile(suffix='_Spectra.txt', delete=False)
+
+        np.savetxt(self.shutter_count_temp.name, shutter_count_data, fmt='%.0f', delimiter='\t')
+        np.savetxt(self.shutter_times_temp.name, shutter_times_data, fmt='%.8f', delimiter='\t')
+        np.savetxt(self.spectra_file_temp.name, spectra_file_data, fmt='%7.7f', delimiter='\t')
+
+        self.shutter_count_temp.seek(0)
+        self.shutter_times_temp.seek(0)
+        self.spectra_file_temp.seek(0)
+
+    def delete_fake_shutter_files(self):
+        self.shutter_count_temp.close()
+        self.shutter_times_temp.close()
+        self.spectra_file_temp.close()
+        os.unlink(self.shutter_count_temp.name)
+        os.unlink(self.shutter_times_temp.name)
+        os.unlink(self.spectra_file_temp.name)
+        assert not os.path.exists(self.shutter_count_temp.name)
+        assert not os.path.exists(self.shutter_times_temp.name)
+        assert not os.path.exists(self.spectra_file_temp.name)
+
     def load_shutter_counts(self):
-        filename_group = FilenameGroup.from_file(config_manager.load_sample)
-        filename_group.find_shutter_count_file()
-        shutter_count_path = filename_group.shutter_count_path
-        print(f"{shutter_count_path=}")
+        self.create_fake_shutter_files()
+        shutter_count_path = self.shutter_count_temp.name
 
         if shutter_count_path is None:
             raise ValueError("Shutter count file path could not be determined.")
 
-        with open(shutter_count_path) as file:
-            shutter_count_lines = file.readlines()
-            return ShutterCount(shutter_count_lines, Path(shutter_count_path))
+        shutter_count_lines = self.shutter_count_temp.readlines()
+        self.shutter_count_temp.seek(0)
+        shutter_count_lines = [line.decode("utf-8") for line in shutter_count_lines]
+
+        return ShutterCount(shutter_count_lines, Path(shutter_count_path))
 
     def add_nan(self, image_stack, fraction=0.001):
         data = image_stack.data
@@ -435,6 +466,7 @@ def main():
     runner = TestRunner()
     runner.configure()
     runner.run_tests()
+    runner.delete_fake_shutter_files()
 
 
 if __name__ == "__main__":
