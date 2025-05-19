@@ -370,11 +370,14 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         calls = [mock.call(menu_options[a], b) for a, b in [(0, False), (1, True), (2, False), (3, False)]]
         self.presenter.check_action.assert_has_calls(calls)
 
-    def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self):
+    @mock.patch.object(SpectrumViewerWindowPresenter, 'update_fitting_spectrum')
+    def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self, mock_update_fit):
         self.view.roi_form.roi_properties_widget.to_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
+        self.view.roiSelectionWidget.current_roi_name = "roi_1"
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
+        mock_update_fit.assert_called_once_with("roi_1")
 
     def test_WHEN_refresh_spectrum_plot_THEN_spectrum_plot_refreshed(self):
         self.view.spectrum_widget.spectrum = mock.MagicMock()
