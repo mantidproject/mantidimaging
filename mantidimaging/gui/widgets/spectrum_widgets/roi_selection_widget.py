@@ -59,4 +59,4 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     @property
     def current_roi_name(self) -> str:
         """Returns the currently selected ROI name from the dropdown."""
-        return self.roi_combo.currentText()
+        return self.roiDropdown.currentText()
