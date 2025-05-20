@@ -23,6 +23,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         layout.setContentsMargins(10, 5, 10, 5)
         layout.setSpacing(2)
 
+        self.current_roi_name = None
         self.roiDropdown = QtWidgets.QComboBox(self)
         self.roiDropdown.currentIndexChanged.connect(self._on_selection_changed)
         layout.addWidget(self.roiDropdown)
