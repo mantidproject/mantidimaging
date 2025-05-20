@@ -177,6 +177,7 @@ class SpectrumWidgetTest(unittest.TestCase):
             self.spectrum_widget.rename_roi("roi_1", "roi_2")
 
 
+@start_qapplication
 class MIPlotItemTest(unittest.TestCase):
 
     def setUp(self) -> None:
