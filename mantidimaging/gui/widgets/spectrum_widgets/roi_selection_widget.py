@@ -55,3 +55,8 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         index = self.roiDropdown.findText(roi_name)
         if index != -1:
             self.roiDropdown.setCurrentIndex(index)
+
+    @property
+    def current_roi_name(self) -> str:
+        """Returns the currently selected ROI name from the dropdown."""
+        return self.roiDropdown.currentText()
