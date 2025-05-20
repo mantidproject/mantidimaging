@@ -81,3 +81,9 @@ class ExportDataTableWidget(QWidget):
         Remove all rows from the table.
         """
         self.model.removeRows(0, self.model.rowCount())
+
+    def select_roi_row(self, roi_name: str) -> None:
+        for row in range(self.model.rowCount()):
+            if self.model.item(row, 0).text() == roi_name:
+                self.table_view.selectRow(row)
+                break

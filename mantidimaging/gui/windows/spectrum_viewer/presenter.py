@@ -226,9 +226,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(roi.name, spectrum)
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
-        if not roi.name == ROI_RITS:
+        if roi.name != ROI_RITS:
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
+            self.view.exportDataTableWidget.select_roi_row(roi.name)
 
     def update_fitting_spectrum(self, roi_name: str, reset_region: bool = False) -> None:
         """

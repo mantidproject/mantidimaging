@@ -326,6 +326,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if index.isValid() and index.column() == 1:
             roi_name = self.table_view.get_roi_name_by_row(index.row())
             self.set_spectum_roi_color(roi_name)
+            self.exportDataTableWidget.select_roi_row(roi_name)
 
     def set_spectum_roi_color(self, roi_name: str) -> None:
         spectrum_roi = self.spectrum_widget.roi_dict[roi_name]
