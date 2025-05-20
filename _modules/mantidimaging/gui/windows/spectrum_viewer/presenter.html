@@ -604,7 +604,8 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">initial_roi_calc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()]),</span>
                                            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="s2">&quot;roi&quot;</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="s2">&quot;roi&quot;</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_fitting_spectrum</span><span class="p">(</span><span class="s2">&quot;roi&quot;</span><span class="p">,</span> <span class="n">reset_region</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_sample_change">
@@ -764,7 +765,10 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">(),</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">current_roi_name</span> <span class="o">==</span> <span class="n">roi</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_fitting_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_roi_clicked">
@@ -979,7 +983,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">add_roi</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_fitting_spectrum</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">reset_region</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.do_add_roi_to_table">

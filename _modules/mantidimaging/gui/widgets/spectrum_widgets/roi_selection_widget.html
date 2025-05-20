@@ -569,7 +569,12 @@ document.write(`
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
-</div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the currently selected ROI name from the dropdown.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span></div>
 
 </pre></div>
 
