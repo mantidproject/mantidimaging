@@ -2,14 +2,18 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import csv
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING
 
 from logging import getLogger
 
+import h5py
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker
+from PyQt5.QtWidgets import QFileDialog, QAction
+
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -23,7 +27,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
-    from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
 
@@ -505,3 +508,49 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, params)
         self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
+
+    def handle_export_table(self) -> None:
+        format_type = self.view.exportSettingsWidget.selected_format()
+        area = self.view.exportSettingsWidget.selected_area()
+
+        filename, _ = QFileDialog.getSaveFileName(
+            self.view,
+            f"Save Exported Table as {format_type}",
+            "",
+            f"{format_type} files (*.{format_type.lower()});;All files (*)"
+        )
+        if not filename:
+            return
+
+        if not filename.endswith(f".{format_type.lower()}"):
+            filename += f".{format_type.lower()}"
+
+        data = self.view.exportDataTableWidget.get_export_data(area)
+
+        if format_type == "CSV":
+            self._export_to_csv(filename, data)
+        elif format_type == "Nexus":
+            self._export_to_nexus(filename, data)
+        elif format_type == "RITS":
+            self._export_to_rits(filename, data)
+
+    def _export_to_csv(self, path: str, data: list[list[str]]) -> None:
+        with open(path, mode="w", newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(data)
+
+    def _export_to_nexus(self, path: str, data: list[list[str]]) -> None:
+        with h5py.File(path, 'w') as f:
+            for col_idx, header in enumerate(data[0]):
+                values = [row[col_idx] for row in data[1:]]
+                try:
+                    values = list(map(float, values))
+                except ValueError:
+                    values = [str(v).encode() for v in values]
+                f.create_dataset(header, data=values)
+
+    def _export_to_rits(self, path: str, data: list[list[str]]) -> None:
+        with open(path, "w") as f:
+            for row in data:
+                f.write("\t".join(map(str, row)) + "\n")
+

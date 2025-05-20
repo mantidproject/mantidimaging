@@ -120,6 +120,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
         self.exportDataTableWidget = ExportDataTableWidget()
         self.exportLayout.addWidget(self.exportDataTableWidget)
+        self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
 
         self.export_table_button = QPushButton("Export Table")
         self.exportLayout.addWidget(self.export_table_button)
