@@ -23,7 +23,6 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         layout.setContentsMargins(10, 5, 10, 5)
         layout.setSpacing(2)
 
-        self.current_roi_name = None
         self.roiDropdown = QtWidgets.QComboBox(self)
         self.roiDropdown.currentIndexChanged.connect(self._on_selection_changed)
         layout.addWidget(self.roiDropdown)
@@ -56,3 +55,9 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         index = self.roiDropdown.findText(roi_name)
         if index != -1:
             self.roiDropdown.setCurrentIndex(index)
+
+    @property
+    def current_roi_name(self) -> str:
+        """Returns the currently selected ROI name from the dropdown."""
+        return self.roi_combo.currentText()
+
