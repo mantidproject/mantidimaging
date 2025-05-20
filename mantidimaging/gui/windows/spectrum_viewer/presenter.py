@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import csv
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING
@@ -9,7 +10,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker
+from PyQt5.QtCore import QSignalBlocker, Qt
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -474,18 +475,17 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         action.setChecked(param)
 
     def setup_fitting_model(self) -> None:
-        parameter_names = self.model.fitting_engine.get_parameter_names()
-        self.view.scalable_roi_widget.set_parameters(parameter_names)
+        param_names = self.model.fitting_engine.get_parameter_names()
+        self.view.scalable_roi_widget.set_parameters(param_names)
+        self.view.exportDataTableWidget.set_parameters(param_names)
 
     def get_init_params_from_roi(self):
         fitting_region = self.view.get_fitting_region()
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
         self.view.scalable_roi_widget.set_parameter_values(init_params)
         self.show_initial_fit()
-        mu_val = init_params.get("mu", 0.0)
-        sigma_val = init_params.get("sigma", 0.0)
         roi_name = self.view.table_view.current_roi_name
-        self.view.update_export_table(roi_name=roi_name, mu=mu_val, sigma=sigma_val, status="Initial")
+        self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
 
     def show_initial_fit(self):
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
@@ -497,21 +497,35 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         assert self.model.tof_data is not None
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         fitting_region = self.view.get_fitting_region()
-        fitting_range = fitting_region[0], fitting_region[1]
-        fitting_slice = slice(*np.searchsorted(self.model.tof_data, fitting_range))
+        fitting_slice = slice(*np.searchsorted(self.model.tof_data, (fitting_region[0], fitting_region[1])))
         xvals = self.model.tof_data[fitting_slice]
         yvals = self.fitting_spectrum[fitting_slice]
 
         result = self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.show_fit(list(result.values()))
-        mu_val = result.get("mu", 0.0)
-        sigma_val = result.get("sigma", 0.0)
         roi_name = self.view.table_view.current_roi_name
-        self.view.update_export_table(roi_name=roi_name, mu=mu_val, sigma=sigma_val, status="Fitted")
+        self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
 
     def show_fit(self, params: list[float]) -> None:
         assert self.model.tof_data is not None
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, params)
         self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
+
+    def handle_export_table(self) -> None:
+        """
+        Handle logic for exporting the table (e.g., saving to CSV).
+        """
+        path = self.view.get_csv_filename()
+        if not path:
+            return
+        path = path.with_suffix(".csv") if path.suffix != ".csv" else path
+        model = self.view.exportDataTableWidget.model
+        with open(path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            headers = [model.headerData(i, Qt.Horizontal) for i in range(model.columnCount())]
+            writer.writerow(headers)
+            for row in range(model.rowCount()):
+                row_data = [model.item(row, col).text() for col in range(model.columnCount())]
+                writer.writerow(row_data)

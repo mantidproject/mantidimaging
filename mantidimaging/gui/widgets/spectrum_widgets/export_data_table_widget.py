@@ -2,25 +2,27 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView)
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
 
 
 class ExportDataTableWidget(QWidget):
     """
-    A scalable table widget to display export-relevant data for each ROI.
-    Intended for integration with the fitting/export tab in the spectrum viewer.
+    Table widget for displaying export-related data per ROI, including parameter values and status.
+    Dynamically adjusts columns based on provided parameter names.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
+
         self.table_view = QTableView(self)
-        self.model = QStandardItemModel(0, 4, self)
-        self.model.setHorizontalHeaderLabels(["ROI Name", "μ (mu)", "σ (sigma)", "Export Status"])
+        self.model = QStandardItemModel(self)
         self.table_view.setModel(self.model)
+
         self.table_view.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_view.horizontalHeader().setStretchLastSection(True)
@@ -29,31 +31,53 @@ class ExportDataTableWidget(QWidget):
 
         layout.addWidget(self.table_view)
 
+        self.parameter_names: list[str] = []
+
+    def set_parameters(self, parameter_names: list[str]) -> None:
+        """
+        Set the column headers dynamically based on the given parameter names.
+        Clears any existing data in the table.
+        """
+        self.parameter_names = parameter_names
+        headers = ["ROI Name"] + parameter_names + ["Export Status"]
+        self.model.setColumnCount(len(headers))
+        self.model.setHorizontalHeaderLabels(headers)
+        self.clear_table()
+
     def update_roi_data(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
         """
-        Add or update a row for the given ROI.
+        Add or update a row for the specified ROI, populating parameter values and status.
         """
-        existing_row = self._find_row_by_roi_name(roi_name)
-        items = [
-            QStandardItem(roi_name),
-            QStandardItem(f"{params.get('mu', 0):.3f}"),
-            QStandardItem(f"{params.get('sigma', 0):.3f}"),
-            QStandardItem(status),
-        ]
-        for item in items:
-            item.setTextAlignment(Qt.AlignCenter)
+        row_index = self._find_row_by_roi_name(roi_name)
+        items = [QStandardItem(roi_name)]
 
-        if existing_row is not None:
+        for param in self.parameter_names:
+            value = params.get(param, 0.0)
+            cell = QStandardItem(f"{value:.3f}")
+            cell.setTextAlignment(Qt.AlignCenter)
+            items.append(cell)
+
+        status_item = QStandardItem(status)
+        status_item.setTextAlignment(Qt.AlignCenter)
+        items.append(status_item)
+
+        if row_index is not None:
             for col, item in enumerate(items):
-                self.model.setItem(existing_row, col, item)
+                self.model.setItem(row_index, col, item)
         else:
             self.model.appendRow(items)
 
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:
+        """
+        Find the row index for a given ROI name. Returns None if not found.
+        """
         for row in range(self.model.rowCount()):
             if self.model.item(row, 0).text() == roi_name:
                 return row
         return None
 
     def clear_table(self) -> None:
+        """
+        Remove all rows from the table.
+        """
         self.model.removeRows(0, self.model.rowCount())

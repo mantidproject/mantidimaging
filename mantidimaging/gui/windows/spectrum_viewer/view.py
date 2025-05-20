@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import QtWidgets
 from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
+from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction, QPushButton)
 from PyQt5.QtCore import QModelIndex
 
 from mantidimaging.core.utility import finder
@@ -120,6 +120,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
         self.exportDataTableWidget = ExportDataTableWidget()
         self.exportLayout.addWidget(self.exportDataTableWidget)
+
+        self.export_table_button = QPushButton("Export Table")
+        self.exportLayout.addWidget(self.export_table_button)
+        self.export_table_button.clicked.connect(self.presenter.handle_export_table)
 
         self.roi_form.table_view.clicked.connect(self.handle_table_click)
 
@@ -246,8 +250,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def update_export_table(self, roi_name: str, mu: float, sigma: float, status: str = "Ready") -> None:
-        self.exportDataTableWidget.update_roi_data(roi_name, {"mu": mu, "sigma": sigma}, status)
+    def update_export_table(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
+        self.exportDataTableWidget.update_roi_data(roi_name, params, status)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
