@@ -375,7 +375,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.roi_form.roi_properties_widget.to_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
         self.presenter.model.clear_spectrum = mock.Mock()
+        self.presenter.changed_roi = mock.Mock()
+        self.presenter.changed_roi.name = "roi_1"
+        self.view.spectrum_widget.roi_dict = {"roi_1": SpectrumROI("roi_1", SensibleROI(10, 10, 20, 30))}
         self.view.spectrum_widget.spectrum = MIPlotItem()
+        self.view.spectrum_widget.spectrum_data_dict = {"roi_1": np.arange(10)}
         self.presenter.do_adjust_roi()
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
 
