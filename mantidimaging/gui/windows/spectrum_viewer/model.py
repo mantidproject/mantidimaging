@@ -222,7 +222,6 @@ class SpectrumViewerWindowModel:
 
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
-            #self.store_spectrum(roi, mode, normalise_with_shuttercount, sample_spectrum)
             return sample_spectrum
 
         if self._normalise_stack is None:
@@ -230,7 +229,6 @@ class SpectrumViewerWindowModel:
 
         if mode == SpecType.OPEN:
             open_spectrum = self.get_stack_spectrum(self._normalise_stack, roi, chunk_start, chunk_end)
-            #self.store_spectrum(roi, mode, normalise_with_shuttercount, open_spectrum)
             return open_spectrum
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
@@ -245,7 +243,6 @@ class SpectrumViewerWindowModel:
             average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
             spectrum = spectrum / average_shuttercount
 
-        #self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum)
         return spectrum
 
     def store_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool, spectrum: np.ndarray):

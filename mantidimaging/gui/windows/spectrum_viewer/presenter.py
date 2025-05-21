@@ -38,8 +38,7 @@ class Worker(QObject):
     def run(self):
         chunk_size = 100
         if chunk_size > 0:
-            nanInds = np.argwhere(
-                np.isnan(self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name]))
+            nanInds = np.argwhere(np.isnan(self.presenter.image_nan_mask_dict[self.presenter.changed_roi.name]))
             chunk_start = int(nanInds[0, 0])
             if len(nanInds) > chunk_size:
                 chunk_end = int(nanInds[chunk_size, 0])
@@ -56,6 +55,11 @@ class Worker(QObject):
         for i in range(len(spectrum)):
             np.put(self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name],
                    chunk_start + i, spectrum[i])
+            if np.isnan(spectrum[i]):
+                self.presenter.image_nan_mask_dict[self.presenter.changed_roi.name][chunk_start + i] = np.ma.masked
+            else:
+                np.put(self.presenter.image_nan_mask_dict[self.presenter.changed_roi.name], chunk_start + i,
+                       spectrum[i])
         self.finished.emit()
 
 
@@ -80,6 +84,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     export_mode: ExportMode
     initial_sample_change: bool = True
     changed_roi: SpectrumROI
+    stop_next_chunk = False
+    image_nan_mask_dict: dict[str, np.ma.MaskedArray] = {}
 
     def __init__(self, view: SpectrumViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -250,6 +256,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
+        spectrum = self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name]
+        if spectrum is not None:
+            self.image_nan_mask_dict[self.changed_roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
         self.model.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
@@ -273,12 +282,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self) -> None:
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
-        self.try_next_mean_chunk()
+        if np.isnan(self.image_nan_mask_dict[self.changed_roi.name]).any():
+            self.try_next_mean_chunk()
 
     def try_next_mean_chunk(self) -> None:
         if self.changed_roi.name not in self.view.spectrum_widget.spectrum_data_dict.keys():
             return
-        spectrum = self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name]
+        spectrum = self.image_nan_mask_dict[self.changed_roi.name]
         if spectrum is not None:
             if np.isnan(spectrum).any():
                 if not self.handle_roi_change_timer.isActive():
