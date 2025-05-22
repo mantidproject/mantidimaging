@@ -36,9 +36,11 @@ class Worker(QObject):
         self.presenter = presenter
 
     def run(self):
+        roi_name = list(self.presenter.roi_to_process_queue.keys())[0]
+        roi = self.presenter.roi_to_process_queue[roi_name]
         chunk_size = 100
         if chunk_size > 0:
-            nanInds = np.argwhere(np.isnan(self.presenter.image_nan_mask_dict[self.presenter.changed_roi.name]))
+            nanInds = np.argwhere(np.isnan(self.presenter.image_nan_mask_dict[roi_name]))
             chunk_start = int(nanInds[0, 0])
             if len(nanInds) > chunk_size:
                 chunk_end = int(nanInds[chunk_size, 0])
@@ -47,19 +49,16 @@ class Worker(QObject):
         else:
             chunk_start, chunk_end = (0, -1)
 
-        spectrum = self.presenter.model.get_spectrum(self.presenter.changed_roi.as_sensible_roi(),
-                                                     self.presenter.spectrum_mode,
+        spectrum = self.presenter.model.get_spectrum(roi.as_sensible_roi(), self.presenter.spectrum_mode,
                                                      self.presenter.view.shuttercount_norm_enabled(), chunk_start,
                                                      chunk_end)
 
         for i in range(len(spectrum)):
-            np.put(self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name],
-                   chunk_start + i, spectrum[i])
+            np.put(self.presenter.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
             if np.isnan(spectrum[i]):
-                self.presenter.image_nan_mask_dict[self.presenter.changed_roi.name][chunk_start + i] = np.ma.masked
+                self.presenter.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
             else:
-                np.put(self.presenter.image_nan_mask_dict[self.presenter.changed_roi.name], chunk_start + i,
-                       spectrum[i])
+                np.put(self.presenter.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
         self.finished.emit()
 
 
@@ -86,6 +85,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     changed_roi: SpectrumROI
     stop_next_chunk = False
     image_nan_mask_dict: dict[str, np.ma.MaskedArray] = {}
+    roi_to_process_queue: dict[str, SpectrumROI] = {}
 
     def __init__(self, view: SpectrumViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -256,9 +256,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
-        spectrum = self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name]
+        if self.changed_roi.name not in self.roi_to_process_queue.keys():
+            self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
+        spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
         if spectrum is not None:
-            self.image_nan_mask_dict[self.changed_roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
+            self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
         self.model.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
@@ -282,13 +284,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self) -> None:
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
-        if np.isnan(self.image_nan_mask_dict[self.changed_roi.name]).any():
+        if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
             self.try_next_mean_chunk()
+        else:
+            self.roi_to_process_queue.pop(list(self.roi_to_process_queue.keys())[0])
+        if len(self.roi_to_process_queue) > 0:
+            self.try_next_mean_chunk()
+        else:
+            self.view.show_visible_spectrums()
+            self.view.spectrum_widget.spectrum.update()
 
     def try_next_mean_chunk(self) -> None:
-        if self.changed_roi.name not in self.view.spectrum_widget.spectrum_data_dict.keys():
+        if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():
             return
-        spectrum = self.image_nan_mask_dict[self.changed_roi.name]
+        spectrum = self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]
         if spectrum is not None:
             if np.isnan(spectrum).any():
                 if not self.handle_roi_change_timer.isActive():
