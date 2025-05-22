@@ -42,7 +42,6 @@ class ExportDataTableWidget(QWidget):
         headers = ["ROI Name"] + parameter_names + ["Export Status"]
         self.model.setColumnCount(len(headers))
         self.model.setHorizontalHeaderLabels(headers)
-        self.clear_table()
 
     def update_roi_data(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
         """
@@ -81,3 +80,4 @@ class ExportDataTableWidget(QWidget):
         Remove all rows from the table.
         """
         self.model.removeRows(0, self.model.rowCount())
+

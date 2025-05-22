@@ -424,7 +424,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
             self.view.spectrum_widget.roi_dict.clear()
-            self.view.table_view.clear_table()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
@@ -484,7 +483,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
         self.view.scalable_roi_widget.set_parameter_values(init_params)
         self.show_initial_fit()
-        roi_name = self.view.table_view.current_roi_name
+        roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
 
     def show_initial_fit(self):
@@ -504,7 +503,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         result = self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.show_fit(list(result.values()))
-        roi_name = self.view.table_view.current_roi_name
+        roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
 
     def show_fit(self, params: list[float]) -> None:
