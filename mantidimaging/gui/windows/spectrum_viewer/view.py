@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import QtWidgets
 from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction, QPushButton)
+from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QModelIndex
 
 from mantidimaging.core.utility import finder
@@ -79,6 +79,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
+        self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
@@ -120,10 +121,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
         self.exportDataTableWidget = ExportDataTableWidget()
         self.exportLayout.addWidget(self.exportDataTableWidget)
-
-        self.export_table_button = QPushButton("Export Table")
-        self.exportLayout.addWidget(self.export_table_button)
-        self.export_table_button.clicked.connect(self.presenter.handle_export_table)
 
         self.roi_form.table_view.clicked.connect(self.handle_table_click)
 

@@ -9,8 +9,8 @@ from PyQt5.QtCore import Qt
 
 class ExportDataTableWidget(QWidget):
     """
-    Table widget for displaying export-related data per ROI, including parameter values and status.
-    Dynamically adjusts columns based on provided parameter names.
+    A scalable table widget to display export-relevant data for each ROI.
+    For integration with the fitting/export tab in the spectrum viewer.
     """
 
     def __init__(self, parent=None):
@@ -51,7 +51,7 @@ class ExportDataTableWidget(QWidget):
         items = [QStandardItem(roi_name)]
 
         for param in self.parameter_names:
-            value = params.get(param, 0.0)
+            value = params[param]
             cell = QStandardItem(f"{value:.3f}")
             cell.setTextAlignment(Qt.AlignCenter)
             items.append(cell)
@@ -80,4 +80,3 @@ class ExportDataTableWidget(QWidget):
         Remove all rows from the table.
         """
         self.model.removeRows(0, self.model.rowCount())
-

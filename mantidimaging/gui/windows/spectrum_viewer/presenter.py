@@ -514,17 +514,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_export_table(self) -> None:
         """
-        Handle logic for exporting the table (e.g., saving to CSV).
+        Export the ROI fitting results table to CSV.
         """
         path = self.view.get_csv_filename()
         if not path:
             return
         path = path.with_suffix(".csv") if path.suffix != ".csv" else path
+        selected_roi = self.view.exportSettingsWidget.selected_area()
         model = self.view.exportDataTableWidget.model
+
         with open(path, 'w', newline='') as file:
             writer = csv.writer(file)
             headers = [model.headerData(i, Qt.Horizontal) for i in range(model.columnCount())]
             writer.writerow(headers)
             for row in range(model.rowCount()):
+                roi_name = model.item(row, 0).text()
+                if selected_roi != "All" and roi_name != selected_roi:
+                    continue
                 row_data = [model.item(row, col).text() for col in range(model.columnCount())]
                 writer.writerow(row_data)
