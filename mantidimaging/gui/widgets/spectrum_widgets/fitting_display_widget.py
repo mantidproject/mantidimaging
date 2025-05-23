@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
+from PyQt5.QtGui import QTransform
 from PyQt5 import QtCore
 from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 
@@ -32,9 +33,9 @@ class FittingDisplayWidget(QWidget):
         self.image_item = ImageItem()
         self.image_item.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.image_item.setImage(np.zeros((150, 150)), autoLevels=True)
         self.image_item.setParentItem(self.spectrum_plot.spectrum)
         self.image_item.setZValue(20)
-        self.image_item.setScale(0.2)
         self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
 
         self.image_preview_roi = ROI([0, 0], [10, 10], pen=mkPen((0, 255, 0), width=2))
@@ -57,6 +58,9 @@ class FittingDisplayWidget(QWidget):
     def update_image(self, image: np.ndarray | None) -> None:
         if image is not None:
             self.image_item.setImage(image, autoLevels=True)
+            height, width = image.shape
+            scale = 150 / max(width, height)
+            self.image_item.setTransform(QTransform().scale(scale, scale))
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
         """Update wavelength range label below the plot, if available."""
