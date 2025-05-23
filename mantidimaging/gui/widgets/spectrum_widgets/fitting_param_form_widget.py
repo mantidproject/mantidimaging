@@ -17,11 +17,11 @@ class FittingParamFormWidget(QWidget):
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
         self.presenter = presenter
-        QVBoxLayout(self)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
 
-        self.params_layout = QVBoxLayout(self)
-        self.layout().addLayout(self.params_layout)
+        main_layout = QVBoxLayout(self)
+        self.params_layout = QVBoxLayout()
+        main_layout.addLayout(self.params_layout)
 
         header = QHBoxLayout()
         header.addWidget(QLabel(""), 1)

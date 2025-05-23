@@ -79,6 +79,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
+        self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
@@ -246,8 +247,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def update_export_table(self, roi_name: str, mu: float, sigma: float, status: str = "Ready") -> None:
-        self.exportDataTableWidget.update_roi_data(roi_name, {"mu": mu, "sigma": sigma}, status)
+    def update_export_table(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
+        self.exportDataTableWidget.update_roi_data(roi_name, params, status)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)

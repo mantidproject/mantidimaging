@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
 
 
 class FitExportFormWidget(QWidget):
@@ -14,7 +14,7 @@ class FitExportFormWidget(QWidget):
 
         layout = QVBoxLayout(self)
         self.formatDropdown = QComboBox()
-        self.formatDropdown.addItems(["CSV", "Nexus", "RITS"])
+        self.formatDropdown.addItems(["CSV"])
         self.areaDropdown = QComboBox()
         self.areaDropdown.addItem("All")
 
@@ -22,6 +22,10 @@ class FitExportFormWidget(QWidget):
         layout.addWidget(self.formatDropdown)
         layout.addWidget(QLabel("Export Area"))
         layout.addWidget(self.areaDropdown)
+
+        self.exportButton = QPushButton("Export")
+        layout.addWidget(self.exportButton)
+
         layout.addStretch()
 
     def set_roi_names(self, roi_names: list[str]) -> None:
