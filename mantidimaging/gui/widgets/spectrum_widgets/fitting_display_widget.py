@@ -33,7 +33,7 @@ class FittingDisplayWidget(QWidget):
         self.image_item = ImageItem()
         self.image_item.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
-        self.image_item.setImage(np.zeros((200, 200)), autoLevels=True)
+        self.image_item.setImage(np.zeros((150, 150)), autoLevels=True)
         self.image_item.setParentItem(self.spectrum_plot.spectrum)
         self.image_item.setZValue(20)
         self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
@@ -59,8 +59,8 @@ class FittingDisplayWidget(QWidget):
         if image is not None:
             self.image_item.setImage(image, autoLevels=True)
             height, width = image.shape
-            scale_x = 200 / width
-            scale_y = 200 / height
+            scale_x = 150 / width
+            scale_y = 150 / height
             self.image_item.setTransform(QTransform().scale(scale_x, scale_y))
 
     def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
