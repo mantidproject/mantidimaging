@@ -213,39 +213,26 @@ class TestRunner:
         spectra_file_data = np.column_stack((np.linspace(0.01, 0.0120275,
                                                          num=100), np.linspace(1917858, 6389242, num=100, dtype=int)))
 
-        self.shutter_count_temp = tempfile.NamedTemporaryFile(suffix='_ShutterCount.txt', delete=False)
-        self.shutter_times_temp = tempfile.NamedTemporaryFile(suffix='_ShutterTimes.txt', delete=False)
-        self.spectra_file_temp = tempfile.NamedTemporaryFile(suffix='_Spectra.txt', delete=False)
+        self.shutter_log_dir = tempfile.TemporaryDirectory()
 
-        np.savetxt(self.shutter_count_temp.name, shutter_count_data, fmt='%.0f', delimiter='\t')
-        np.savetxt(self.shutter_times_temp.name, shutter_times_data, fmt='%.8f', delimiter='\t')
-        np.savetxt(self.spectra_file_temp.name, spectra_file_data, fmt='%7.7f', delimiter='\t')
-
-        self.shutter_count_temp.seek(0)
-        self.shutter_times_temp.seek(0)
-        self.spectra_file_temp.seek(0)
-
-    def delete_fake_shutter_files(self):
-        self.shutter_count_temp.close()
-        self.shutter_times_temp.close()
-        self.spectra_file_temp.close()
-        os.unlink(self.shutter_count_temp.name)
-        os.unlink(self.shutter_times_temp.name)
-        os.unlink(self.spectra_file_temp.name)
-        assert not os.path.exists(self.shutter_count_temp.name)
-        assert not os.path.exists(self.shutter_times_temp.name)
-        assert not os.path.exists(self.spectra_file_temp.name)
+        np.savetxt(Path(self.shutter_log_dir.name) / "test_ShutterCount.txt",
+                   shutter_count_data,
+                   fmt='%.0f',
+                   delimiter='\t')
+        np.savetxt(Path(self.shutter_log_dir.name) / "test_ShutterTimes.txt",
+                   shutter_times_data,
+                   fmt='%.8f',
+                   delimiter='\t')
+        np.savetxt(Path(self.shutter_log_dir.name) / "test_Spectra.txt", spectra_file_data, fmt='%7.7f', delimiter='\t')
 
     def load_shutter_counts(self):
         self.create_fake_shutter_files()
-        shutter_count_path = self.shutter_count_temp.name
-
+        shutter_count_path = Path(self.shutter_log_dir.name) / "test_ShutterCount.txt"
         if shutter_count_path is None:
             raise ValueError("Shutter count file path could not be determined.")
 
-        shutter_count_lines = self.shutter_count_temp.readlines()
-        self.shutter_count_temp.seek(0)
-        shutter_count_lines = [line.decode("utf-8") for line in shutter_count_lines]
+        with open(shutter_count_path) as file:
+            shutter_count_lines = file.readlines()
 
         return ShutterCount(shutter_count_lines, Path(shutter_count_path))
 
@@ -466,7 +453,6 @@ def main():
     runner = TestRunner()
     runner.configure()
     runner.run_tests()
-    runner.delete_fake_shutter_files()
 
 
 if __name__ == "__main__":
