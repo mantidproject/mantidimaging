@@ -509,7 +509,7 @@ document.write(`
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QTableView</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QAbstractItemView</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QTableView</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QAbstractItemView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QStandardItemModel</span><span class="p">,</span> <span class="n">QStandardItem</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
 
@@ -519,17 +519,19 @@ document.write(`
 <span class="k">class</span><span class="w"> </span><span class="nc">ExportDataTableWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A scalable table widget to display export-relevant data for each ROI.</span>
-<span class="sd">    Intended for integration with the fitting/export tab in the spectrum viewer.</span>
+<span class="sd">    For integration with the fitting/export tab in the spectrum viewer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span> <span class="o">=</span> <span class="n">QTableView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">([</span><span class="s2">&quot;ROI Name&quot;</span><span class="p">,</span> <span class="s2">&quot;μ (mu)&quot;</span><span class="p">,</span> <span class="s2">&quot;σ (sigma)&quot;</span><span class="p">,</span> <span class="s2">&quot;Export Status&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">setEditTriggers</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">NoEditTriggers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -538,30 +540,51 @@ document.write(`
 
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ExportDataTableWidget.set_parameters">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.ExportDataTableWidget.set_parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the column headers dynamically based on the given parameter names.</span>
+<span class="sd">        Clears any existing data in the table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_names</span> <span class="o">=</span> <span class="n">parameter_names</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ROI Name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">parameter_names</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;Export Status&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ExportDataTableWidget.update_roi_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.ExportDataTableWidget.update_roi_data">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Ready&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add or update a row for the given ROI.</span>
+<span class="sd">        Add or update a row for the specified ROI, populating parameter values and status.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">existing_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_row_by_roi_name</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">QStandardItem</span><span class="p">(</span><span class="n">roi_name</span><span class="p">),</span>
-            <span class="n">QStandardItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mu&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
-            <span class="n">QStandardItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
-            <span class="n">QStandardItem</span><span class="p">(</span><span class="n">status</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="n">row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_row_by_roi_name</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">QStandardItem</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)]</span>
 
-        <span class="k">if</span> <span class="n">existing_row</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_names</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="n">status_item</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">status_item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status_item</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">row_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">existing_row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_row_by_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the row index for a given ROI name. Returns None if not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="n">roi_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">row</span>
@@ -570,6 +593,9 @@ document.write(`
 <div class="viewcode-block" id="ExportDataTableWidget.clear_table">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.ExportDataTableWidget.clear_table">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove all rows from the table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">removeRows</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">())</span></div>
 </div>
 
