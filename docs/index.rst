@@ -30,6 +30,13 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 
         Documentation for contributing to Mantid Imaging development.
 
+.. button-ref:: installation
+   :color: primary
+   :expand:
+
+   🚀 Install MantidImaging
+
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
@@ -37,11 +44,12 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 
    overview
    installation
-   user_guide/index
-   developer_guide/index
-   api
-   release_notes/index
-   troubleshooting
+   User Doc <user_guide/index>
+   Developer Doc <developer_guide/index>
+   API <api>
+   Release Notes <release_notes/index>
+   Troubleshooting <troubleshooting>
+
 
 .. toctree::
    :caption: Links:
