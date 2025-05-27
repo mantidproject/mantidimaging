@@ -287,6 +287,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
             self.try_next_mean_chunk()
         else:
+            if self.view.roiSelectionWidget.current_roi_name == list(self.roi_to_process_queue.keys())[0]:
+                self.update_fitting_spectrum(list(self.roi_to_process_queue.keys())[0])
             self.roi_to_process_queue.pop(list(self.roi_to_process_queue.keys())[0])
         if len(self.roi_to_process_queue) > 0:
             self.try_next_mean_chunk()
@@ -305,9 +307,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             else:
                 self.model.store_spectrum(self.changed_roi.as_sensible_roi(), self.spectrum_mode,
                                           self.view.shuttercount_norm_enabled(), spectrum)
-
-        if self.view.roiSelectionWidget.current_roi_name == roi.name:
-            self.update_fitting_spectrum(roi.name)
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:

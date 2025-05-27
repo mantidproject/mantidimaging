@@ -16,11 +16,13 @@ from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWi
     ROITableWidget
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
-from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType
+from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType, \
+    SpectrumViewerWindowModel
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI, \
     MIPlotItem
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.test_helpers import start_qapplication
+from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -371,8 +373,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         calls = [mock.call(menu_options[a], b) for a, b in [(0, False), (1, True), (2, False), (3, False)]]
         self.presenter.check_action.assert_has_calls(calls)
 
+    @mock.patch.object(SpectrumViewerWindowModel, 'get_spectrum')
     @mock.patch.object(SpectrumViewerWindowPresenter, 'update_fitting_spectrum')
-    def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self, mock_update_fit):
+    def test_WHEN_roi_changed_via_spinboxes_THEN_roi_adjusted(self, mock_update_fit, mock_get_spectrum):
         self.view.roi_form.roi_properties_widget.to_roi = mock.Mock(return_value=SensibleROI(10, 10, 20, 30))
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
         self.view.roiSelectionWidget = mock.Mock()
@@ -387,7 +390,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.roi_dict = {"roi_1": SpectrumROI("roi_1", SensibleROI(10, 10, 20, 30))}
         self.view.spectrum_widget.spectrum = MIPlotItem()
         self.view.spectrum_widget.spectrum_data_dict = {"roi_1": np.arange(10)}
+        mock_get_spectrum.return_value = np.arange(10)
         self.presenter.do_adjust_roi()
+        wait_until(lambda: len(self.presenter.roi_to_process_queue) == 0, max_retry=1000)
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
         mock_update_fit.assert_called_once_with("roi_1")
 
