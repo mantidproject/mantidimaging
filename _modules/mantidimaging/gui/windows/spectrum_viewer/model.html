@@ -698,7 +698,10 @@ document.write(`
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_stack_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_spectrum">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack_spectrum</span><span class="p">(</span><span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack_spectrum</span><span class="p">(</span><span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                           <span class="n">chunk_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                           <span class="n">chunk_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the mean spectrum of the given image stack within the specified region of interest (ROI).</span>
 <span class="sd">        If the image stack is None, an empty numpy array is returned.</span>
@@ -714,7 +717,7 @@ document.write(`
         <span class="k">if</span> <span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">roi</span>
-        <span class="n">roi_data</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="n">top</span><span class="p">:</span><span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
+        <span class="n">roi_data</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">chunk_start</span><span class="p">:</span><span class="n">chunk_end</span><span class="p">,</span> <span class="n">top</span><span class="p">:</span><span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">roi_data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
 
 
@@ -725,6 +728,15 @@ document.write(`
         <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">roi</span>
         <span class="n">roi_data</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="n">top</span><span class="p">:</span><span class="n">bottom</span><span class="p">,</span> <span class="n">left</span><span class="p">:</span><span class="n">right</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">roi_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.get_number_of_images_in_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_number_of_images_in_stack">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_number_of_images_in_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.normalise_issue">
@@ -755,7 +767,12 @@ document.write(`
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_spectrum">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">SpecType</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                     <span class="n">mode</span><span class="p">:</span> <span class="n">SpecType</span><span class="p">,</span>
+                     <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="n">chunk_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="n">chunk_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="p">[(</span><span class="o">*</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">)]</span>
 
@@ -766,22 +783,20 @@ document.write(`
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span>
-            <span class="n">sample_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">,</span> <span class="n">sample_spectrum</span><span class="p">)</span>
+            <span class="n">sample_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">sample_spectrum</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">OPEN</span><span class="p">:</span>
-            <span class="n">open_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">,</span> <span class="n">open_spectrum</span><span class="p">)</span>
+            <span class="n">open_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">open_spectrum</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalise_issue</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-            <span class="n">roi_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
-            <span class="n">roi_norm_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">)</span>
+            <span class="n">roi_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
+            <span class="n">roi_norm_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
         <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">,</span>
                              <span class="n">roi_norm_spectrum</span><span class="p">,</span>
                              <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">),</span>
@@ -790,7 +805,6 @@ document.write(`
             <span class="n">average_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shuttercount_normalised_correction_parameter</span><span class="p">()</span>
             <span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum</span> <span class="o">/</span> <span class="n">average_shuttercount</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">spectrum</span></div>
 
 

@@ -641,6 +641,7 @@ document.write(`
     <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">roi_clicked</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">roi_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">roi_changing</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">roiColorChangeRequested</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
 
     <span class="n">spectrum_plot_widget</span><span class="p">:</span> <span class="n">SpectrumPlotWidget</span>
@@ -730,6 +731,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">roi_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_roi_size</span> <span class="o">=</span> <span class="n">roi_object</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sigRegionChangeFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_emit_roi_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_emit_roi_changing</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sigClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_clicked</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">hoverPen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
@@ -806,7 +808,11 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_emit_roi_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sender_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">sender_roi</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">sender_roi</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_emit_roi_changing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sender_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_changing</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">sender_roi</span><span class="p">)</span></div>
 
 
 
