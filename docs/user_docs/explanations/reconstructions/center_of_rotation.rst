@@ -49,19 +49,14 @@ How COR is Used:
 What is Tilt?
 -------------
 
-**Tilt** describes the gradual change in the Center of Rotation (COR) along the axis perpendicular
-to the rotation plane (typically corresponding to the rows in a projection). Without considering tilt,
-the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
+**Tilt** describes how much the rotation axis is tiled from the vertical
+axis of the image. This results in the position of the COR varying across
+the slices. Without considering tilt, the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
 
 Key Points:
   - Tilt is measured in degrees.
   - A tilt value of zero means the rotation axis is vertical, and the COR is the same for every sinogram.
   - Using the COR of the first sinogram and the tilt value, the COR for each subsequent sinogram is interpolated or extrapolated.
-
-Order:
-  1. Determine the COR for the first sinogram (slice 0). This serves as the reference point for all subsequent slices.
-  2. Apply the Tilt value to calculate CORs for the remaining sinograms.
-  3. Refine COR and Tilt values as needed to improve accuracy.
 
 GUI:
   - The GUI also displays **Slope**, which represents how far the COR moves from one slice to the next.
