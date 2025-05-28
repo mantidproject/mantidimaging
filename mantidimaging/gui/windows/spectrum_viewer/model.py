@@ -185,6 +185,12 @@ class SpectrumViewerWindowModel:
         roi_data = stack.data[:, top:bottom, left:right]
         return roi_data.sum(axis=(1, 2))
 
+    def get_number_of_images_in_stack(self) -> int:
+        if self._stack is not None:
+            return self._stack.data.shape[0]
+        else:
+            return 0
+
     def normalise_issue(self) -> str:
         if self._stack is None or self._normalise_stack is None:
             return "Need 2 selected stacks"
@@ -560,7 +566,3 @@ class SpectrumViewerWindowModel:
         else:
             self.tof_mode = ToFUnitMode.WAVELENGTH
             self.presenter.change_selected_menu_option("Wavelength")
-
-    def clear_spectrum(self):
-        self.presenter.view.spectrum_widget.spectrum_data_dict[self.presenter.changed_roi.name] = (np.full(
-            self._stack.data.shape[0], np.nan))

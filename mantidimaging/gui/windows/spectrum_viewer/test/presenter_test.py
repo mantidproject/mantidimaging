@@ -384,7 +384,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         roi_mock.name = "roi_1"
         roi_mock.as_sensible_roi.return_value = SensibleROI(10, 10, 20, 30)
         self.view.spectrum_widget.roi_dict = {"roi_1": roi_mock}
-        self.presenter.model.clear_spectrum = mock.Mock()
+        self.presenter.clear_spectrum = mock.Mock()
         self.presenter.changed_roi = mock.Mock()
         self.presenter.changed_roi.name = "roi_1"
         self.view.spectrum_widget.roi_dict = {"roi_1": SpectrumROI("roi_1", SensibleROI(10, 10, 20, 30))}

@@ -262,7 +262,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
         if spectrum is not None:
             self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
-        self.model.clear_spectrum()
+        self.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
         if not self.handle_roi_change_timer.isActive():
@@ -313,6 +313,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if not roi.name == ROI_RITS:
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
+
+    def clear_spectrum(self):
+        self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
+            self.model.get_number_of_images_in_stack(), np.nan))
 
     def update_fitting_spectrum(self, roi_name: str, reset_region: bool = False) -> None:
         """
