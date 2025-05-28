@@ -34,7 +34,6 @@ a slice of the data (a sinogram).
     :width: 47%
     :align: right
 
-
 The left image shows a misaligned COR causing artifacts and distortions,
 while the right image depicts a properly aligned COR ensuring accurate and artifact-free reconstruction.
 
@@ -50,9 +49,9 @@ How COR is Used:
 What is Tilt?
 -------------
 
-**Tilt** describes the gradual change in the Center of Rotation (COR) along the axis perpendicular
-to the rotation plane (typically corresponding to the rows in a projection).Without considering tilt,
-the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
+**Tilt** describes how much the rotation axis is tiled from the vertical
+axis of the image. This results in the position of the COR varying across
+the slices. Without considering tilt, the reconstructed slices may not align correctly, causing distortions or streaking artifacts.
 
 Key Points:
   - Tilt is measured in degrees.
@@ -112,6 +111,11 @@ using the data from the table rows.
 It is sometimes good enough to add a COR at the top of your data and the bottom.
 Once the best CORs for those are found, the resulting tilt should be accurate.
 To increase the accuracy further, add more COR rows.
+
+Tips for Refinement:
+  - Look for sharp images with no streaking or artifacts when selecting the best COR.
+  - Ensure alignment consistency across slices; misalignment often appears as blurring or distortions.
+  - Add CORs at multiple points in the dataset to improve Tilt accuracy, especially for datasets with complex or noisy data.
 
 To Reconstruction
 -----------------
