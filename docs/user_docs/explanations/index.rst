@@ -9,6 +9,7 @@ In-depth conceptual explanations about the key components of the software and th
    :maxdepth: 1
    :caption: Explanations:
 
+   overview
    gui/index
    operations/index
    reconstructions/index

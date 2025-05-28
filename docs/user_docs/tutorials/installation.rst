@@ -11,7 +11,7 @@ There are several options for installing:
 
 - :ref:`installing-idaaas` - For ISIS users
 
-- For installation from source see the :ref:`developer_guide`
+- For installation from source see the :ref:`developer_docs`
 
 Requirements
 ------------
@@ -37,7 +37,7 @@ Once downloaded, double click the setup file to run the installer. The installer
 
 Select a directory to install to e.g. :code:`c:\Program Files\Mantid Imaging` and click Install.
 
-.. image:: _static/nsis_installer.png
+.. image:: ../../_static/nsis_installer.png
     :alt: Installer destination selection screen
     :width: 60%
     :align: center
@@ -149,7 +149,7 @@ Mantid Imaging is preinstalled in the IMAT Tomography workspaces.
 It can be launched from the menu :code:`Applications > Software > Manntid Imaging`.
 
 
-.. image:: _static/launch_on_idaaas.png
+.. image:: ../../_static/launch_on_idaaas.png
     :alt: Launching Mantid Imaging on IDAaaS
     :width: 40%
     :align: center

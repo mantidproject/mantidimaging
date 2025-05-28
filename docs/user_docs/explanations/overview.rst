@@ -1,7 +1,9 @@
+.. _overview:
+
 Overview
 ========
 
-.. image:: _static/main_window.png
+.. image:: ../../_static/main_window.png
     :alt: Mantid Imaging User interface showing lego man dataset
     :width: 60%
     :align: center
@@ -15,7 +17,7 @@ Mantid Imaging makes use of a range of algorithms, some from external tools incl
 
 Mantid Imaging is written in Python and requires a CUDA capable GPU for full functionality. It runs on Linux and Windows. See :ref:`Installation` for more details.
 
-See the :ref:`user-guide` for an example taking data from a set of images to full reconstruction.
+See the :ref:`user-docs` for an example taking data from a set of images to full reconstruction.
 
 Features
 --------
@@ -49,7 +51,7 @@ The Operations Window provides a selection of tools and filters to process and e
 * Remove stripes with filtering
 * Remove stripes with sorting and fitting
 
-More details on using these are available in the :ref:`api-reference` and :ref:`user-guide`.
+More details on using these are available in the :ref:`api-reference` and :ref:`user-docs`.
 
 
 Reconstruction

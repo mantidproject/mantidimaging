@@ -1,4 +1,4 @@
-.. _user-guide:
+.. _user-docs:
 
 User Documentation
 ===================
