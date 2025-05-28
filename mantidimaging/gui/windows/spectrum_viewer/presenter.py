@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker, Qt
+from PyQt5.QtCore import QSignalBlocker, QTimer, QObject, pyqtSignal, QThread, Qt
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -27,6 +27,40 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
+
+
+class SpectrumCalulcationWorker(QObject):
+    finished = pyqtSignal()
+
+    def __init__(self, presenter: SpectrumViewerWindowPresenter):
+        super().__init__()
+        self.presenter = presenter
+
+    def run(self):
+        roi_name = list(self.presenter.roi_to_process_queue.keys())[0]
+        roi = self.presenter.roi_to_process_queue[roi_name]
+        chunk_size = 100
+        if chunk_size > 0:
+            nanInds = np.argwhere(np.isnan(self.presenter.image_nan_mask_dict[roi_name]))
+            chunk_start = int(nanInds[0, 0])
+            if len(nanInds) > chunk_size:
+                chunk_end = int(nanInds[chunk_size, 0])
+            else:
+                chunk_end = int(nanInds[-1, 0]) + 1
+        else:
+            chunk_start, chunk_end = (0, -1)
+
+        spectrum = self.presenter.model.get_spectrum(roi.as_sensible_roi(), self.presenter.spectrum_mode,
+                                                     self.presenter.view.shuttercount_norm_enabled(), chunk_start,
+                                                     chunk_end)
+
+        for i in range(len(spectrum)):
+            np.put(self.presenter.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
+            if np.isnan(spectrum[i]):
+                self.presenter.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
+            else:
+                np.put(self.presenter.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
+        self.finished.emit()
 
 
 class ExportMode(Enum):
@@ -49,6 +83,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     current_norm_stack_uuid: UUID | None = None
     export_mode: ExportMode
     initial_sample_change: bool = True
+    changed_roi: SpectrumROI
+    stop_next_chunk = False
+    image_nan_mask_dict: dict[str, np.ma.MaskedArray] = {}
+    roi_to_process_queue: dict[str, SpectrumROI] = {}
 
     def __init__(self, view: SpectrumViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -58,6 +96,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
         self.main_window.stack_changed.connect(self.handle_stack_modified)
+
+        self.handle_roi_change_timer = QTimer()
+        self.handle_roi_change_timer.setSingleShot(True)
+        self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
 
     def handle_stack_modified(self) -> None:
         """
@@ -213,24 +255,68 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
 
-    def handle_roi_moved(self, roi: SpectrumROI) -> None:
+    def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
+        self.changed_roi = roi
+        if self.changed_roi.name not in self.roi_to_process_queue.keys():
+            self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
+        spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
+        if spectrum is not None:
+            self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
+        self.clear_spectrum()
+        self.view.show_visible_spectrums()
+        self.view.spectrum_widget.spectrum.update()
+        if not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(500)
+
+    def handle_roi_moved(self) -> None:
         """
         Handle changes to any ROI position and size.
         """
-        spectrum = self.model.get_spectrum(
-            roi.as_sensible_roi(),
-            self.spectrum_mode,
-            self.view.shuttercount_norm_enabled(),
-        )
-        self.view.set_spectrum(roi.name, spectrum)
+        self.thread = QThread()
+        self.worker = SpectrumCalulcationWorker(self)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.thread_cleanup)
+        self.thread.start()
 
-        if self.view.roiSelectionWidget.current_roi_name == roi.name:
-            self.update_fitting_spectrum(roi.name)
+    def thread_cleanup(self) -> None:
+        self.view.show_visible_spectrums()
+        self.view.spectrum_widget.spectrum.update()
+        if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
+            self.try_next_mean_chunk()
+        else:
+            if self.view.roiSelectionWidget.current_roi_name == list(self.roi_to_process_queue.keys())[0]:
+                self.update_fitting_spectrum(list(self.roi_to_process_queue.keys())[0])
+            self.roi_to_process_queue.pop(list(self.roi_to_process_queue.keys())[0])
+        if len(self.roi_to_process_queue) > 0:
+            self.try_next_mean_chunk()
+        else:
+            self.view.show_visible_spectrums()
+            self.view.spectrum_widget.spectrum.update()
+
+    def try_next_mean_chunk(self) -> None:
+        if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():
+            return
+        spectrum = self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]
+        if spectrum is not None:
+            if np.isnan(spectrum).any():
+                if not self.handle_roi_change_timer.isActive():
+                    self.handle_roi_change_timer.start(10)
+            else:
+                self.model.store_spectrum(self.changed_roi.as_sensible_roi(), self.spectrum_mode,
+                                          self.view.shuttercount_norm_enabled(), spectrum)
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
+
+    def clear_spectrum(self):
+        self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
+            self.model.get_number_of_images_in_stack(), np.nan))
 
     def update_fitting_spectrum(self, roi_name: str, reset_region: bool = False) -> None:
         """
@@ -467,7 +553,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         new_roi = self.view.roi_form.roi_properties_widget.to_roi()
         roi_name = self.view.table_view.current_roi_name
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
-        self.handle_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
+        self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:

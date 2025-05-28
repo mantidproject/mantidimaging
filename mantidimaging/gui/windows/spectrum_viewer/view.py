@@ -82,7 +82,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
-        self.spectrum_widget.roi_changed.connect(self.presenter.handle_roi_moved)
+        self.spectrum_widget.roi_changing.connect(self.presenter.handle_notify_roi_moved)
         self.spectrum_widget.roiColorChangeRequested.connect(self.presenter.change_roi_colour)
 
         self.spectrum_right_click_menu = self.spectrum.spectrum_viewbox.menu
@@ -365,12 +365,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Clear the selected ROI in the table view
         """
         roi_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row)
-        roi_object = self.spectrum_widget.roi_dict[roi_name]
 
         self.table_view.remove_row(self.table_view.selected_row)
         self.presenter.do_remove_roi(roi_name)
         self.spectrum_widget.spectrum_data_dict.pop(roi_name)
-        self.presenter.handle_roi_moved(roi_object)
+        self.set_spectrum(roi_name, np.empty(0))
 
         if self.table_view.roi_table_model.rowCount() == 0:
             self.roi_form.removeBtn.setEnabled(False)
