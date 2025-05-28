@@ -29,7 +29,7 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-class Worker(QObject):
+class SpectrumCalulcationWorker(QObject):
     finished = pyqtSignal()
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
@@ -273,7 +273,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Handle changes to any ROI position and size.
         """
         self.thread = QThread()
-        self.worker = Worker(self)
+        self.worker = SpectrumCalulcationWorker(self)
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.thread.quit)
