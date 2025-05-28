@@ -691,6 +691,18 @@
       }
     ]
   },
+  "Overlap Correction": {
+    "params": {},
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "overlap",
+        "pre_run_step": "load_shutter_counts",
+        "params": {
+        }
+      }
+    ]
+  },
   "Flat-fielding": {
     "params": {
       "use_dark": true,

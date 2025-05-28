@@ -8,6 +8,7 @@ import logging
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from collections import defaultdict
 from dataclasses import dataclass
@@ -32,7 +33,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 from mantidimaging.core.io.filenames import FilenameGroup  # noqa: E402
 from mantidimaging.core.io.loader import loader  # noqa: E402
 from mantidimaging.core.operations.loader import load_filter_packages  # noqa: E402
-from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.io.instrument_log import InstrumentLog, ShutterCount
 from mantidimaging.core.utility.data_containers import FILE_TYPES
 
 script_dir = Path(__file__).resolve().parent
@@ -54,6 +55,7 @@ class ConfigManager:
 
     def __init__(self):
         self._base_data_dir = Path.home() / "mantidimaging-data"
+        print(f"{self._base_data_dir=}")
 
     @cached_property
     def save_dir(self):
@@ -137,7 +139,7 @@ class TestRunner:
             self.compare_mode()
 
         if self.args.graphs:
-            self.create_plots()
+            create_plots()
 
     def run_test(self, test_case):
         image_stack = self.load_image_stack()
@@ -150,6 +152,9 @@ class TestRunner:
         elif test_case.pre_run_step == 'load_monitor_log':
             log_data = self.load_monitor_log()
             image_stack.log_file = log_data
+        elif test_case.pre_run_step == 'load_shutter_counts':
+            shutter_data = self.load_shutter_counts()
+            image_stack.shutter_count_file = shutter_data
 
         test_case.duration, new_image_stack = self.time_operation(image_stack, test_case.op_func, test_case.params)
         file_name = config_manager.save_dir / f"{test_case.test_name}.npz"
@@ -200,6 +205,36 @@ class TestRunner:
         with open(log_file_path) as file:
             log_lines = file.readlines()
             return InstrumentLog(log_lines, Path(log_file_path))
+
+    def create_fake_shutter_files(self):
+        shutter_count_data = np.array([[0, 74421], [1, 74420], [2, 74420], [3, 74420], [4, 74420], [5, 74418]])
+        shutter_times_data = np.array([[0, 0.01, 0.0001007], [1, 0.00032416, 0.00001], [2, 0.00031424, 0.00002],
+                                       [3, 0.00031424, 0.00003], [4, 0.00032256, 0.00002], [5, 0.00033472, 0.00004]])
+        spectra_file_data = np.column_stack((np.linspace(0.01, 0.0120275,
+                                                         num=100), np.linspace(1917858, 6389242, num=100, dtype=int)))
+
+        self.shutter_log_dir = tempfile.TemporaryDirectory()
+
+        np.savetxt(Path(self.shutter_log_dir.name) / "test_ShutterCount.txt",
+                   shutter_count_data,
+                   fmt='%.0f',
+                   delimiter='\t')
+        np.savetxt(Path(self.shutter_log_dir.name) / "test_ShutterTimes.txt",
+                   shutter_times_data,
+                   fmt='%.8f',
+                   delimiter='\t')
+        np.savetxt(Path(self.shutter_log_dir.name) / "test_Spectra.txt", spectra_file_data, fmt='%7.7f', delimiter='\t')
+
+    def load_shutter_counts(self):
+        self.create_fake_shutter_files()
+        shutter_count_path = Path(self.shutter_log_dir.name) / "test_ShutterCount.txt"
+        if shutter_count_path is None:
+            raise ValueError("Shutter count file path could not be determined.")
+
+        with open(shutter_count_path) as file:
+            shutter_count_lines = file.readlines()
+
+        return ShutterCount(shutter_count_lines, Path(shutter_count_path))
 
     def add_nan(self, image_stack, fraction=0.001):
         data = image_stack.data
@@ -261,6 +296,8 @@ class TestRunner:
         print(f"{'=' * 42}END{'=' * 42}")
 
     def time_mode(self, runs):
+        # TODO: time_mode() does not run the re-processing steps like the compare mode does, i.e. load_monitor_log
+        #  is not run for the monitor normalisation operation so it fails
         durations = defaultdict(list)
         image_stack = self.load_image_stack()
         for operation, test_case_info in TEST_CASES.items():
