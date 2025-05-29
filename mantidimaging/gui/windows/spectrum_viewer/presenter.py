@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
+    from mantidimaging.core.fitting.fitting_functions import FittingRegionType
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
     from PyQt5.QtWidgets import QAction
@@ -588,8 +589,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
 
-    def fit_single_region(self, spectrum: np.ndarray, fitting_region: tuple[float, float, float, float],
-                          tof_data: np.ndarray, init_params: list[float]) -> dict[str, float]:
+    def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegionType, tof_data: np.ndarray,
+                          init_params: list[float]) -> dict[str, float]:
         fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
         xvals = tof_data[fitting_slice]
         yvals = spectrum[fitting_slice]

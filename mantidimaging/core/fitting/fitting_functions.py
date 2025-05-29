@@ -8,6 +8,8 @@ from math import sqrt
 import numpy as np
 from scipy.special import erf
 
+FittingRegionType = tuple[float, float, float, float]
+
 
 class BaseFittingFunction(ABC):
     parameter_names: list[str]
@@ -16,7 +18,7 @@ class BaseFittingFunction(ABC):
         return list(self.parameter_names)
 
     @abstractmethod
-    def get_init_params_from_roi(self, region: tuple[float, float, float, float]) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: FittingRegionType) -> dict[str, float]:
         ...
 
     @abstractmethod
@@ -32,7 +34,7 @@ class ErfStepFunction(BaseFittingFunction):
         y = h * 0.5 * (1 + erf((xdata - mu) / (sigma * sqrt(2)))) + a
         return y
 
-    def get_init_params_from_roi(self, region: tuple[float, float, float, float]) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: FittingRegionType) -> dict[str, float]:
         x1, x2, y1, y2 = region
         init_params = {
             "mu": (x1 + x2) / 2,
