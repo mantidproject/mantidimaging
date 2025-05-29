@@ -6,7 +6,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 
 DOCS_BASE = "https://mantidproject.github.io/mantidimaging"
-SECTION_USER_GUIDE = f"{DOCS_BASE}/user_guide/"
+SECTION_USER_GUIDE = f"{DOCS_BASE}/user_docs/"
 
 
 def open_user_operation_docs(operation_name: str) -> None:

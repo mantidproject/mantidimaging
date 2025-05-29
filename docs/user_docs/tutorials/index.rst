@@ -12,4 +12,7 @@ Follow these step-by-step guides to get started using MantidImaging effectively.
    :maxdepth: 1
    :caption: Tutorials:
 
+   installation
    quick_start
+
+🚧 **Note:** This section is currently under development. More tutorials will be added soon.

@@ -1,9 +1,9 @@
-.. _user-guide:
+.. _user-docs:
 
-User Guide
-==========
+User Documentation
+===================
 
-Welcome to the user guide. This guide is organized based on the Diátaxis framework, with sections for tutorials, how-to guides, explanations, and reference documentation to help users navigate and use the application effectively.
+Welcome to the user documentation. This documentation is organized based on the Diátaxis framework, with sections for tutorials, how-to guides, explanations, and references to help users navigate and use the application effectively.
 
 .. grid:: 1 1 2 2
     :gutter: 4
@@ -15,7 +15,7 @@ Welcome to the user guide. This guide is organized based on the Diátaxis framew
 
         **Tutorials**
 
-        Step-by-step guides to get started with MantidImaging.
+        Step-by-step tutorials to get started with MantidImaging.
 
     .. grid-item-card:: 🧪
         :link: user_how-to-guides

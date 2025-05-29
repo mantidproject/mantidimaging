@@ -3,6 +3,8 @@ MantidImaging
 
 Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutron tomography data. It provides an easy-to-use graphical interface to a wide range of pre/post-processing operations, tilt correction, and reconstruction algorithms, accommodating for tomography users with varying data complexity and image analysis background knowledge. It utilizes a flexible plugin system that allows easy integration of external software, and has allowed us to re-use software widely known in the neutron tomography community.
 
+For more information, see the :ref:`overview`.
+
 .. figure:: _static/main_window.png
    :alt: Main Window
    :align: center
@@ -13,7 +15,7 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
     :gutter: 4
 
     .. grid-item-card:: 👩‍🔬
-        :link: user_guide/index
+        :link: user_docs/index
         :link-type: doc
         :text-align: center
 
@@ -22,7 +24,7 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
         Documentation for using Mantid Imaging.
 
     .. grid-item-card:: 👨‍💻
-        :link: developer_guide/index
+        :link: developer_docs/index
         :link-type: doc
         :text-align: center
 
@@ -30,18 +32,26 @@ Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutro
 
         Documentation for contributing to Mantid Imaging development.
 
+.. button-ref:: installation
+   :color: primary
+   :expand:
+
+   🚀 Install MantidImaging
+
+
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
    :hidden:
 
-   overview
-   installation
-   user_guide/index
-   developer_guide/index
-   api
-   release_notes/index
-   troubleshooting
+   Overview <user_docs/explanations/overview>
+   Installation <user_docs/tutorials/installation>
+   User Doc <user_docs/index>
+   Developer Doc <developer_docs/index>
+   API <api>
+   Release Notes <release_notes/index>
+   Troubleshooting <troubleshooting>
+
 
 .. toctree::
    :caption: Links:

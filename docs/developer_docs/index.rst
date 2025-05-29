@@ -1,7 +1,9 @@
-Developer Guide
-===============
+.. _developer_docs:
 
-Welcome to the developer guide. This guide is divided into several sections based on the purpose of the documentation.
+Developer Documentation
+=======================
+
+Welcome to the developer documentation. This documentation is divided into several sections based on purpose.
 
 .. grid:: 1 1 2 2
     :gutter: 4

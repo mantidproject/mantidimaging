@@ -115,10 +115,6 @@ html_favicon = "_static/mantid_imaging_64px.ico"
 html_theme_options = {
     "navigation_depth":
     4,  # Adjust how deep the sidebar navigation goes
-    "external_links": [{
-        "name": "GitHub",
-        "url": "https://github.com/mantidproject/mantidimaging"
-    }],
     "icon_links": [{
         "name": "GitHub",
         "url": "https://github.com/mantidproject/mantidimaging",
