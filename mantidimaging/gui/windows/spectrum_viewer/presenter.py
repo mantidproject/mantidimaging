@@ -580,17 +580,21 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def run_region_fit(self) -> None:
         assert self.model.tof_data is not None
-        init_params = self.view.scalable_roi_widget.get_initial_param_values()
-        fitting_region = self.view.get_fitting_region()
-        fitting_slice = slice(*np.searchsorted(self.model.tof_data, (fitting_region[0], fitting_region[1])))
-        xvals = self.model.tof_data[fitting_slice]
-        yvals = self.fitting_spectrum[fitting_slice]
+        result = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(), self.model.tof_data,
+                                        self.view.scalable_roi_widget.get_initial_param_values())
 
-        result = self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+
+    def fit_single_region(self, spectrum: np.ndarray, fitting_region: tuple[float, float, float, float],
+                          tof_data: np.ndarray, init_params: list[float]) -> dict[str, float]:
+        fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
+        xvals = tof_data[fitting_slice]
+        yvals = spectrum[fitting_slice]
+
+        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
 
     def show_fit(self, params: list[float]) -> None:
         assert self.model.tof_data is not None
