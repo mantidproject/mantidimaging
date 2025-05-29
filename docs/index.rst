@@ -15,7 +15,7 @@ For more information, see the :ref:`overview`.
     :gutter: 4
 
     .. grid-item-card:: 👩‍🔬
-        :link: user_guide/index
+        :link: user_docs/index
         :link-type: doc
         :text-align: center
 
@@ -24,7 +24,7 @@ For more information, see the :ref:`overview`.
         Documentation for using Mantid Imaging.
 
     .. grid-item-card:: 👨‍💻
-        :link: developer_guide/index
+        :link: developer_docs/index
         :link-type: doc
         :text-align: center
 

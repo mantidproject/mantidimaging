@@ -20,14 +20,14 @@ class HelpPagesTest(unittest.TestCase):
     def test_open_help_webpage(self, open_url: mock.Mock):
         open_help_webpage(SECTION_USER_GUIDE, "reconstructions/center_of_rotation")
         expected = QUrl(
-            "https://mantidproject.github.io/mantidimaging/user_guide/reconstructions/center_of_rotation.html")
+            "https://mantidproject.github.io/mantidimaging/user_docs/reconstructions/center_of_rotation.html")
         open_url.assert_called_with(expected)
 
     @mock.patch("mantidimaging.core.net.help_pages.QDesktopServices.openUrl")
     def test_open_help_webpage_with_section(self, open_url: mock.Mock):
         open_help_webpage(SECTION_USER_GUIDE, "operations/index", "crop-coordinates")
         expected = QUrl(
-            "https://mantidproject.github.io/mantidimaging/user_guide/operations/index.html#crop-coordinates")
+            "https://mantidproject.github.io/mantidimaging/user_docs/operations/index.html#crop-coordinates")
         open_url.assert_called_with(expected)
 
     @mock.patch("mantidimaging.core.net.help_pages.QDesktopServices.openUrl")
