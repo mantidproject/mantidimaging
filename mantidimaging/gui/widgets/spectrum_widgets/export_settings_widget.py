@@ -13,6 +13,10 @@ class FitExportFormWidget(QWidget):
         super().__init__(parent)
 
         layout = QVBoxLayout(self)
+
+        self.fitAllButton = QPushButton("Fit All")
+        layout.addWidget(self.fitAllButton)
+
         self.formatDropdown = QComboBox()
         self.formatDropdown.addItems(["CSV"])
         self.areaDropdown = QComboBox()
