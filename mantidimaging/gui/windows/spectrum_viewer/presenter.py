@@ -597,6 +597,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
 
+    def fit_all_regions(self):
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
+            if roi_name == "rits_roi":
+                continue
+            roi = roi_widget.as_sensible_roi()
+            spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+            fitting_region = self.view.get_fitting_region()
+
+            result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
+            self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+
     def show_fit(self, params: list[float]) -> None:
         assert self.model.tof_data is not None
         xvals = self.model.tof_data
