@@ -67,6 +67,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
+        self.ritsWarningIcon.setPixmap(QPixmap())
+        self.ritsWarningIcon.setVisible(False)
 
         self.selected_row: int = 0
         self.last_clicked_roi = ""
@@ -240,10 +242,24 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def display_warning(self, message: str) -> None:
         """
-        Display the warning message in the GUI.
+        Display the warning message in the GUI for the appropriate icon.
         """
-        self.set_normalise_error(message)
-        self.display_normalise_error()
+        if "Step size" in message or "bin size" in message:
+            self.set_rits_warning(message)
+        else:
+            self.set_normalise_error(message)
+            self.display_normalise_error()
+
+    def set_rits_warning(self, message: str) -> None:
+        print("Setting RITS warning:", message)
+        if message:
+            self.ritsWarningIcon.setPixmap(self.normalise_error_icon_pixmap)
+            self.ritsWarningIcon.setToolTip(message)
+            self.ritsWarningIcon.setVisible(True)
+        else:
+            self.ritsWarningIcon.setPixmap(QPixmap())
+            self.ritsWarningIcon.setToolTip("")
+            self.ritsWarningIcon.setVisible(False)
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
