@@ -1,7 +1,7 @@
 ---
 name: Feature / Improvement Request
 about: Request an improvement or a new feature.
-title: ''
+title: '[Window]: <short description of the feature>'
 labels: 'Type: Improvement'
 assignees: ''
 type: 'Feature'

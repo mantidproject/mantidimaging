@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Report an issue that you've encountered.
-title: ''
+title: '[Window]: <short description of the bug>'
 labels: 'Type: Bug'
 assignees: ''
 type: 'Bug'
