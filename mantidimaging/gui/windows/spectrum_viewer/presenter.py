@@ -151,6 +151,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.current_dataset_id = None
 
         self.do_remove_roi()
+        self.view.table_view.clear_table()
         self.model.spectrum_cache.clear()
         if uuid is None:
             self.model.set_stack(None)
