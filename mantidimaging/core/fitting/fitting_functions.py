@@ -4,11 +4,17 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from math import sqrt
+from typing import NamedTuple
 
 import numpy as np
 from scipy.special import erf
 
-FittingRegionType = tuple[float, float, float, float]
+
+class FittingRegion(NamedTuple):
+    x_min: float
+    x_max: float
+    y_min: float
+    y_max: float
 
 
 class BaseFittingFunction(ABC):
@@ -18,7 +24,7 @@ class BaseFittingFunction(ABC):
         return list(self.parameter_names)
 
     @abstractmethod
-    def get_init_params_from_roi(self, region: FittingRegionType) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         ...
 
     @abstractmethod
@@ -34,7 +40,7 @@ class ErfStepFunction(BaseFittingFunction):
         y = h * 0.5 * (1 + erf((xdata - mu) / (sigma * sqrt(2)))) + a
         return y
 
-    def get_init_params_from_roi(self, region: FittingRegionType) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         x1, x2, y1, y2 = region
         init_params = {
             "mu": (x1 + x2) / 2,

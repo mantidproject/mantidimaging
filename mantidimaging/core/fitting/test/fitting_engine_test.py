@@ -6,13 +6,13 @@ import unittest
 
 import numpy as np
 
-from ..fitting_engine import FittingEngine, BaseFittingFunction, FittingRegionType
+from ..fitting_engine import FittingEngine, BaseFittingFunction, FittingRegion
 
 
 class MockFittingFunction(BaseFittingFunction):
     parameter_names = ['a', 'b']
 
-    def get_init_params_from_roi(self, region: FittingRegionType) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return {'a': 1, 'b': 2}
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:

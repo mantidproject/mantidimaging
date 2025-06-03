@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.optimize import minimize
 
-from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction, FittingRegionType
+from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction, FittingRegion
 
 
 class FittingEngine:
@@ -16,7 +16,7 @@ class FittingEngine:
     def get_parameter_names(self) -> list[str]:
         return list(self.model.parameter_names)
 
-    def get_init_params_from_roi(self, region: FittingRegionType) -> dict[str, float]:
+    def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return self.model.get_init_params_from_roi(region)
 
     def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray, initial_params: list[float]) -> dict[str, float]:
