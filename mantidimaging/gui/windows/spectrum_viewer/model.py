@@ -447,7 +447,7 @@ class SpectrumViewerWindowModel:
                          step: int,
                          roi: SensibleROI,
                          normalise: bool = False,
-                         progress: Progress | None = None) -> None | str:
+                         progress: Progress | None = None) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
 
@@ -470,13 +470,9 @@ class SpectrumViewerWindowModel:
         progress (Progress | None): Optional progress reporter.
 
         Returns:
-        None | str: Returns a string with an error message if the step size does not evenly divide the ROI dimensions.
-        Otherwise, returns None.
+        None
         """
         left, top, right, bottom = roi
-        if (right - left) % step != 0 or (bottom - top) % step != 0:
-            return (f"Step size {step} does not evenly divide ROI dimensions "
-                    f"({right - left}x{bottom - top}). Some rows or columns may not be exported.")
         x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
         y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
@@ -496,7 +492,6 @@ class SpectrumViewerWindowModel:
                     break
             if sub_bottom == bottom:
                 break
-        return None
 
     def get_stack_time_of_flight(self) -> np.ndarray | None:
         if self._stack is None or self._stack.log_file is None:

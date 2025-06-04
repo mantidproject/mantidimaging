@@ -39,9 +39,9 @@ class ROIFormWidget(BaseWidget):
 
         self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
         self.set_binning_visibility()
+
         self.bin_step_spinBox.valueChanged.connect(self._check_rits_step_validity)
         self.bin_size_spinBox.valueChanged.connect(self._check_rits_step_validity)
-
         icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
         self.rits_warning_icon_pixmap = QPixmap(icon_path)
 
@@ -50,7 +50,6 @@ class ROIFormWidget(BaseWidget):
         self.ritsWarningIcon.setVisible(False)
         self.ritsWarningIcon.setToolTip("")
         self.layout().addWidget(self.ritsWarningIcon)
-
 
     @property
     def image_output_mode(self) -> str:
@@ -77,18 +76,23 @@ class ROIFormWidget(BaseWidget):
     def _check_rits_step_validity(self) -> None:
         roi = self.roi_properties_widget.to_roi()
         step = self.bin_step_spinBox.value()
+        bin_size = self.bin_size_spinBox.value()
 
         roi_width = roi.right - roi.left
         roi_height = roi.bottom - roi.top
 
-        if roi_width % step != 0 or roi_height % step != 0:
-            warning = (
-                f"Step size {step} does not evenly divide ROI dimensions "
-                f"({roi_width}x{roi_height}). Some rows or columns may not be exported."
-            )
+        tiles_width = max(1, (roi_width - bin_size) // step + 1)
+        tiles_height = max(1, (roi_height - bin_size) // step + 1)
+        excess_width = roi_width - ((tiles_width - 1) * step + bin_size)
+        excess_height = roi_height - ((tiles_height - 1) * step + bin_size)
+
+        if excess_width > 0 or excess_height > 0:
+            warning = (f"Step size {step} and bin size {bin_size} do not evenly divide ROI dimensions "
+                       f"({roi_width}x{roi_height}). Some rows or columns may not be exported.")
             self.show_rits_warning(warning)
         else:
             self.show_rits_warning(None)
+
 
 class ROIPropertiesTableWidget(BaseWidget):
     """
@@ -142,7 +146,6 @@ class ROIPropertiesTableWidget(BaseWidget):
             spin_box.setEnabled(enable)
         if not enable:
             self.set_roi_values(SensibleROI(0, 0, 0, 0))
-
 
 
 class ROITableWidget(RemovableRowTableView):
