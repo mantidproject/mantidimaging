@@ -39,7 +39,7 @@ class FittingDisplayWidget(QWidget):
         self.image_item.setImage(np.zeros((150, 150)), autoLevels=True)
         self.image_item.setParentItem(self.spectrum_plot.spectrum)
         self.image_item.setZValue(20)
-        self.image_item.setPos(self.spectrum_plot.width() - 150, 10)
+        self.spectrum_plot.spectrum.set_right_anchored_child(self.image_item, (160, 10))
 
         self.image_preview_roi = ROI([0, 0], [10, 10], pen=mkPen((0, 255, 0), width=2))
         self.image_preview_roi.setZValue(21)
