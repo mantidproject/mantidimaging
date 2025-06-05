@@ -498,10 +498,10 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSignalBlocker</span><span class="p">,</span> <span class="n">QEvent</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QColor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QColor</span><span class="p">,</span> <span class="n">QResizeEvent</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QColorDialog</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QActionGroup</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI</span><span class="p">,</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">LinearRegionItem</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">,</span> <span class="n">mkPen</span><span class="p">,</span> <span class="n">ViewBox</span><span class="p">,</span> <span class="n">PlotDataItem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI</span><span class="p">,</span> <span class="n">GraphicsLayoutWidget</span><span class="p">,</span> <span class="n">LinearRegionItem</span><span class="p">,</span> <span class="n">PlotItem</span><span class="p">,</span> <span class="n">mkPen</span><span class="p">,</span> <span class="n">ViewBox</span><span class="p">,</span> <span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">GraphicsItem</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.close_enough_point</span><span class="w"> </span><span class="kn">import</span> <span class="n">CloseEnoughPoint</span>
@@ -978,6 +978,9 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">base_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchored_child</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">GraphicsItem</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchored_offset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="MIPlotItem.plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.plot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlotDataItem</span><span class="p">:</span>
@@ -1000,6 +1003,36 @@ document.write(`
                     <span class="n">item</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
                     <span class="n">item</span><span class="o">.</span><span class="n">setSymbol</span><span class="p">(</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
                     <span class="n">item</span><span class="o">.</span><span class="n">setSymbolBrush</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">original_pen</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MIPlotItem.set_right_anchored_child">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.set_right_anchored_child">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_right_anchored_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">GraphicsItem</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Anchor a child object to the top right of this item</span>
+
+<span class="sd">        @param child: child object</span>
+<span class="sd">        @param offset: tuple (x,y) offset from the top right</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchored_child</span> <span class="o">=</span> <span class="n">child</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchored_offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_anchor</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MIPlotItem.resizeEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.resizeEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QResizeEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_anchor</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MIPlotItem.update_anchor">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.update_anchor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchored_child</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchored_offset</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">anchored_child</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchored_offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchored_offset</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 </div>
 
 </pre></div>
