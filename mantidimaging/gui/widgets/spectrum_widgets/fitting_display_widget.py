@@ -13,7 +13,6 @@ class FittingDisplayWidget(QWidget):
     """
     Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.
     """
-    initial_fit_line: PlotDataItem | None = None
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -21,6 +20,7 @@ class FittingDisplayWidget(QWidget):
         self.layout = QVBoxLayout(self)
         self.spectrum_plot = SpectrumPlotWidget()
         self.layout.addWidget(self.spectrum_plot)
+        self._current_fit_line: PlotDataItem | None = None
 
         self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
         self.fitting_region.setZValue(10)
@@ -43,6 +43,11 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi.setParentItem(self.image_item)
         self.image_preview_roi.setAcceptedMouseButtons(QtCore.Qt.NoButton)  # Optional: make non-interactive
         self.image_preview_roi.hide()
+
+        self._showing_initial_fit = False
+
+    def set_plot_mode(self, mode: str) -> None:
+        self._showing_initial_fit = (mode == "initial")
 
     def update_plot(self,
                     x_data: np.ndarray,
@@ -109,7 +114,23 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi.setPen(mkPen(color, width=2))
         self.image_preview_roi.show()
 
-    def show_init_fit(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
-        if self.initial_fit_line:
-            self.spectrum_plot.spectrum.removeItem(self.initial_fit_line)
-        self.initial_fit_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name="initial", pen=(128, 128, 128))
+    def show_fit_line(self, x_data: np.ndarray, y_data: np.ndarray, *, color: tuple[int, int, int], label: str,
+                      initial: bool) -> None:
+        """
+        Plot a single fit line (initial or fitted) on the spectrum plot, removing any previous fit line.
+
+        Args:
+            x_data: The x-axis data for the fit line.
+            y_data: The y-axis data for the fit line.
+            color: The RGB color tuple for the line.
+            label: The legend label for the line.
+            initial: True if this is the initial fit, False if fitted curve.
+        """
+        if self._current_fit_line:
+            self.spectrum_plot.spectrum.removeItem(self._current_fit_line)
+            self._current_fit_line = None
+        self._current_fit_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=color)
+        self._showing_initial_fit = initial
+
+    def is_initial_fit_visible(self) -> bool:
+        return self._showing_initial_fit
