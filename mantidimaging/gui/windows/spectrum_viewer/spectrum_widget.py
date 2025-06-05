@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QResizeEvent
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
 
 from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox, PlotDataItem, GraphicsItem
@@ -393,7 +393,7 @@ class MIPlotItem(PlotItem):
 
         self.base_menu.addMenu(self.plot_menu)
 
-        self.anchored_child = None
+        self.anchored_child: None | GraphicsItem = None
         self.anchored_offset: None | tuple[int, int] = None
 
     def plot(self, *args, **kwargs) -> PlotDataItem:
@@ -425,7 +425,7 @@ class MIPlotItem(PlotItem):
         self.anchored_offset = offset
         self.update_anchor()
 
-    def resizeEvent(self, event) -> None:
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self.update_anchor()
 
