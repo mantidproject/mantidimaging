@@ -508,6 +508,10 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitAllButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Fit All&quot;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitAllButton</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">formatDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">formatDropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;CSV&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
