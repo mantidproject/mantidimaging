@@ -8,7 +8,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
 
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox, PlotDataItem
+from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox, PlotDataItem, GraphicsItem
 import numpy as np
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -393,6 +393,9 @@ class MIPlotItem(PlotItem):
 
         self.base_menu.addMenu(self.plot_menu)
 
+        self.anchored_child = None
+        self.anchored_offset: None | tuple[int, int] = None
+
     def plot(self, *args, **kwargs) -> PlotDataItem:
         new_plot = super().plot(*args, **kwargs)
         new_plot.original_pen = new_plot.opts['pen']
@@ -410,3 +413,24 @@ class MIPlotItem(PlotItem):
                     item.setPen(None)
                     item.setSymbol('o')
                     item.setSymbolBrush(item.original_pen)
+
+    def set_right_anchored_child(self, child: None | GraphicsItem, offset: tuple[int, int]) -> None:
+        """
+        Anchor a child object to the top right of this item
+
+        @param child: child object
+        @param offset: tuple (x,y) offset from the top right
+        """
+        self.anchored_child = child
+        self.anchored_offset = offset
+        self.update_anchor()
+
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        self.update_anchor()
+
+    def update_anchor(self) -> None:
+        if not self.anchored_child or not self.anchored_offset:
+            return
+
+        self.anchored_child.setPos(self.width() - (self.anchored_offset[0]), self.anchored_offset[1])
