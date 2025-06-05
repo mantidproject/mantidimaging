@@ -1,5 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
+
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
 from PyQt5.QtGui import QTransform
@@ -7,6 +9,7 @@ from PyQt5 import QtCore
 from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
+from mantidimaging.core.fitting.fitting_functions import FittingRegion
 
 
 class FittingDisplayWidget(QWidget):
@@ -87,14 +90,14 @@ class FittingDisplayWidget(QWidget):
         self.fitting_region.setPos((x_start, y_pos))
         self.fitting_region.setSize((width, height))
 
-    def get_selected_fit_region(self) -> tuple[float, float, float, float]:
+    def get_selected_fit_region(self) -> FittingRegion:
         pos = self.fitting_region.pos()
         size = self.fitting_region.size()
         x1, x2 = pos.x(), pos.x() + size.x()
         y1, y2 = pos.y(), pos.y() + size.y()
         assert x1 < x2
         assert y1 < y2
-        return x1, x2, y1, y2
+        return FittingRegion(x1, x2, y1, y2)
 
     def show_roi_on_thumbnail_from_widget(self, roi_widget: SpectrumROI) -> None:
         """

@@ -9,6 +9,7 @@ import numpy as np
 from parameterized import parameterized
 
 from mantidimaging.core.fitting import fitting_functions
+from mantidimaging.core.fitting.fitting_functions import FittingRegion
 
 # Collect all fitting functions from module
 FUNCTIONS = [(name, obj) for name, obj in inspect.getmembers(fitting_functions)
@@ -39,7 +40,7 @@ class TestFittingFunction(unittest.TestCase):
     def test_get_init_params(self, _, fit_class: type[fitting_functions.BaseFittingFunction]):
         fit_func = fit_class()
         param_names = fit_func.get_parameter_names()
-        init_params = fit_func.get_init_params_from_roi((1, 2, 3, 4))
+        init_params = fit_func.get_init_params_from_roi(FittingRegion(1, 2, 3, 4))
 
         self.assertEqual(len(param_names), len(init_params))
         for param_name in param_names:

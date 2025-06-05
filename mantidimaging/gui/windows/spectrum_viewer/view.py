@@ -29,6 +29,7 @@ import numpy as np
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROITableWidget
+    from mantidimaging.core.fitting.fitting_functions import FittingRegion
     from uuid import UUID
 
 
@@ -80,6 +81,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
         self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
+        self.exportSettingsWidget.fitAllButton.clicked.connect(self.presenter.fit_all_regions)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changing.connect(self.presenter.handle_notify_roi_moved)
@@ -193,7 +195,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
             self.set_roi_properties()
 
-    def get_fitting_region(self) -> tuple[float, float, float, float]:
+    def get_fitting_region(self) -> FittingRegion:
         return self.fittingDisplayWidget.get_selected_fit_region()
 
     def set_fitting_region(self, region: tuple[float, float]) -> None:

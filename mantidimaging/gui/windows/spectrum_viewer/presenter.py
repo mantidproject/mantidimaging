@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
+    from mantidimaging.core.fitting.fitting_functions import FittingRegion
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
     from PyQt5.QtWidgets import QAction
@@ -581,17 +582,33 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def run_region_fit(self) -> None:
         assert self.model.tof_data is not None
-        init_params = self.view.scalable_roi_widget.get_initial_param_values()
-        fitting_region = self.view.get_fitting_region()
-        fitting_slice = slice(*np.searchsorted(self.model.tof_data, (fitting_region[0], fitting_region[1])))
-        xvals = self.model.tof_data[fitting_slice]
-        yvals = self.fitting_spectrum[fitting_slice]
+        result = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(), self.model.tof_data,
+                                        self.view.scalable_roi_widget.get_initial_param_values())
 
-        result = self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+
+    def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
+                          init_params: list[float]) -> dict[str, float]:
+        fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
+        xvals = tof_data[fitting_slice]
+        yvals = spectrum[fitting_slice]
+
+        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
+
+    def fit_all_regions(self):
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
+            if roi_name == "rits_roi":
+                continue
+            roi = roi_widget.as_sensible_roi()
+            spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+            fitting_region = self.view.get_fitting_region()
+
+            result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
+            self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
 
     def show_fit(self, params: list[float]) -> None:
         assert self.model.tof_data is not None
