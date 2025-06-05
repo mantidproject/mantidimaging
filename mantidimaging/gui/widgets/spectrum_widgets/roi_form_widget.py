@@ -5,15 +5,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QLabel
 
+from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseWidget
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QLabel, QGroupBox
+    from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox
 
 
 class ROIFormWidget(BaseWidget):
@@ -38,6 +40,17 @@ class ROIFormWidget(BaseWidget):
         self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
         self.set_binning_visibility()
 
+        self.bin_step_spinBox.valueChanged.connect(self._check_rits_step_validity)
+        self.bin_size_spinBox.valueChanged.connect(self._check_rits_step_validity)
+        icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+        self.rits_warning_icon_pixmap = QPixmap(icon_path)
+
+        self.ritsWarningIcon = QLabel(self)
+        self.ritsWarningIcon.setPixmap(QPixmap())
+        self.ritsWarningIcon.setVisible(False)
+        self.ritsWarningIcon.setToolTip("")
+        self.layout().addWidget(self.ritsWarningIcon)
+
     @property
     def image_output_mode(self) -> str:
         return self.image_output_mode_combobox.currentText()
@@ -48,6 +61,37 @@ class ROIFormWidget(BaseWidget):
         self.bin_size_spinBox.setHidden(hide_binning)
         self.bin_step_label.setHidden(hide_binning)
         self.bin_step_spinBox.setHidden(hide_binning)
+
+    def show_rits_warning(self, message: str | None) -> None:
+        if message:
+            if self.ritsWarningIcon.pixmap().isNull():
+                self.ritsWarningIcon.setPixmap(self.rits_warning_icon_pixmap)
+            self.ritsWarningIcon.setToolTip(message)
+            self.ritsWarningIcon.setVisible(True)
+        else:
+            self.ritsWarningIcon.clear()
+            self.ritsWarningIcon.setToolTip("")
+            self.ritsWarningIcon.setVisible(False)
+
+    def _check_rits_step_validity(self) -> None:
+        roi = self.roi_properties_widget.to_roi()
+        step = self.bin_step_spinBox.value()
+        bin_size = self.bin_size_spinBox.value()
+
+        roi_width = roi.right - roi.left
+        roi_height = roi.bottom - roi.top
+
+        tiles_width = max(1, (roi_width - bin_size) // step + 1)
+        tiles_height = max(1, (roi_height - bin_size) // step + 1)
+        excess_width = roi_width - ((tiles_width - 1) * step + bin_size)
+        excess_height = roi_height - ((tiles_height - 1) * step + bin_size)
+
+        if excess_width > 0 or excess_height > 0:
+            warning = (f"Step size {step} and bin size {bin_size} do not evenly divide ROI dimensions "
+                       f"({roi_width}x{roi_height}). Some rows or columns may not be exported.")
+            self.show_rits_warning(warning)
+        else:
+            self.show_rits_warning(None)
 
 
 class ROIPropertiesTableWidget(BaseWidget):

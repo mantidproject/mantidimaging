@@ -427,6 +427,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def _async_save_done(self, task: TaskWorkerThread) -> None:
         if task.error is not None:
             self.view.show_error_dialog(f"Operation failed: {task.error}")
+        if task.result:
+            self.view.spectrum_widget.warning_triggered.emit(task.result)
+        else:
+            self.view.roi_form.show_rits_warning(None)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:

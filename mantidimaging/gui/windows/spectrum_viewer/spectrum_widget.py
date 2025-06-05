@@ -113,6 +113,7 @@ class SpectrumWidget(QWidget):
     roi_changed = pyqtSignal(object)
     roi_changing = pyqtSignal(object)
     roiColorChangeRequested = pyqtSignal(str, tuple)
+    warning_triggered = pyqtSignal(str)
 
     spectrum_plot_widget: SpectrumPlotWidget
     image_widget: SpectrumProjectionWidget

@@ -77,6 +77,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.scalable_roi_widget = FittingParamFormWidget(self.presenter)
         self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
+        self.spectrum_widget.warning_triggered.connect(self.display_warning)
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
@@ -378,6 +379,16 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.disable_roi_properties()
         else:
             self.set_roi_properties()
+
+    def display_warning(self, message: str) -> None:
+        """
+        Display the warning message triggered by spectrum widget (e.g., RITS export binning issue).
+        """
+        if "Step size" in message or "bin size" in message:
+            self.roi_form.show_rits_warning(message)
+        else:
+            self.set_normalise_error(message)
+            self.display_normalise_error()
 
     @property
     def transmission_error_mode(self) -> str:
