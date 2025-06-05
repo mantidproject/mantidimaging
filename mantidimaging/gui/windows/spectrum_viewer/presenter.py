@@ -565,19 +565,61 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.scalable_roi_widget.set_parameters(param_names)
         self.view.exportDataTableWidget.set_parameters(param_names)
 
-    def get_init_params_from_roi(self):
+    def get_init_params_from_roi(self) -> None:
         fitting_region = self.view.get_fitting_region()
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
         self.view.scalable_roi_widget.set_parameter_values(init_params)
+
+        self.view.fittingDisplayWidget.set_plot_mode("initial")
+
         self.show_initial_fit()
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
 
-    def show_initial_fit(self):
+    def _plot_initial_fit(self) -> None:
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
-        self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
+        self.view.fittingDisplayWidget.show_fit_line(xvals,
+                                                     init_fit,
+                                                     color=(128, 128, 128),
+                                                     label="initial",
+                                                     initial=True)
+
+    def on_initial_params_edited(self) -> None:
+        """
+        Handles updates when the initial fitting parameters are edited.
+
+        If the initial fit is visible, updates the plot with the new initial fit.
+        Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,
+        and displays the new fit result.
+        """
+        if self.view.fittingDisplayWidget.is_initial_fit_visible():
+            self._plot_initial_fit()
+        else:
+            init_params = self.view.scalable_roi_widget.get_initial_param_values()
+            roi_name = self.view.roiSelectionWidget.current_roi_name
+            roi = self.view.spectrum_widget.get_roi(roi_name)
+            spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
+            xvals = self.model.tof_data
+            result = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params)
+            self.view.scalable_roi_widget.set_fitted_parameter_values(result)
+            self.show_fit(list(result.values()))
+
+    def show_initial_fit(self) -> None:
+        """
+        Displays the initial fit curve on the fitting display widget.
+        Retrieves current TOF data and the initial parameter values from the view
+        and evaluates the fitting model using these parameters to generate the initial fit curve.
+        """
+        xvals = self.model.tof_data
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
+        self.view.fittingDisplayWidget.show_fit_line(xvals,
+                                                     init_fit,
+                                                     color=(128, 128, 128),
+                                                     label="initial",
+                                                     initial=True)
 
     def run_region_fit(self) -> None:
         assert self.model.tof_data is not None
@@ -596,8 +638,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def show_fit(self, params: list[float]) -> None:
         assert self.model.tof_data is not None
         xvals = self.model.tof_data
-        init_fit = self.model.fitting_engine.model.evaluate(xvals, params)
-        self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
+        fit = self.model.fitting_engine.model.evaluate(xvals, params)
+        self.view.fittingDisplayWidget.show_fit_line(xvals, fit, color=(0, 128, 255), label="fit", initial=False)
 
     def handle_export_table(self) -> None:
         """
