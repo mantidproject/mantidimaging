@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 class ImageStack:
     name: str
-    geometry: Geometry | None
+    geometry: Geometry | None = None
     _shared_array: pu.SharedArray
 
     def __init__(self,
@@ -263,7 +263,20 @@ class ImageStack:
 
     @data.setter
     def data(self, other: np.ndarray) -> None:
+        """
+        Set data array and update geometry data
+
+        :param other: numpy array
+        """
+
         self._shared_array.array = other
+
+        if self.geometry is not None:
+            pixel_size = (1.0, 1.0)
+            pixel_num_h = self.width
+            pixel_num_v = self.height
+            num_pixels = (pixel_num_h, pixel_num_v)
+            self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
 
     @property
     def shared_array(self) -> pu.SharedArray:
@@ -327,9 +340,8 @@ class ImageStack:
 
         self._projection_angles = angles
 
-        if self.geometry is None:
-            raise ValueError("self.geometry is not set")
-        self.geometry.set_angles(angles=angles.value, angle_unit="radian")
+        if self.geometry is not None:
+            self.geometry.set_angles(angles=angles.value, angle_unit="radian")
 
     def real_projection_angles(self) -> ProjectionAngles | None:
         """
