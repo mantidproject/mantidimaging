@@ -577,12 +577,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
 
     def _plot_initial_fit(self) -> None:
+        assert self.model.tof_data is not None
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
         self.view.fittingDisplayWidget.show_init_fit(xvals, init_fit)
 
     def _plot_fitted_curve(self) -> None:
+        assert self.model.tof_data is not None
         fitted_params = self.view.scalable_roi_widget.get_fitted_param_values()
         xvals = self.model.tof_data
         fit = self.model.fitting_engine.model.evaluate(xvals, fitted_params)
@@ -596,6 +598,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,
         and displays the new fit result.
         """
+        assert self.model.tof_data is not None
         if self.view.fittingDisplayWidget.is_initial_fit_visible():
             self._plot_initial_fit()
         else:
