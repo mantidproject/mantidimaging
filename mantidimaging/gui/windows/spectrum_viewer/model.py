@@ -91,7 +91,7 @@ class SpectrumViewerWindowModel:
     tof_range: tuple[int, int] = (0, 0)
     tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
     tof_mode: ToFUnitMode = ToFUnitMode.WAVELENGTH
-    tof_data: np.ndarray | None = None
+    tof_data: np.ndarray | None = np.array([])
     spectrum_cache: dict[tuple, np.ndarray] = {}
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
