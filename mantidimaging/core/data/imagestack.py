@@ -330,11 +330,21 @@ class ImageStack:
         self._shutter_count_file = value
 
     def set_projection_angles(self, angles: ProjectionAngles) -> None:
+        """
+        Set the projection angles and update geometry data
+
+        :param angles: ProjectionAngles object
+        """
+
         if len(angles.value) != self.num_images:
             raise RuntimeError("The number of angles does not match the number of images. "
                                f"Num angles {len(angles.value)} and num images {self.num_images}")
 
         self._projection_angles = angles
+
+        if self.geometry is None:
+            raise ValueError("self.geometry is not set")
+        self.geometry.set_angles(angles=angles.value, angle_unit="radian")
 
     def real_projection_angles(self) -> ProjectionAngles | None:
         """
