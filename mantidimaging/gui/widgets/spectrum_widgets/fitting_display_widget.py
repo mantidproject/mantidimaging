@@ -25,6 +25,8 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot = SpectrumPlotWidget()
         self.layout.addWidget(self.spectrum_plot)
 
+        self._showing_initial_fit = False
+
         self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
         self.fitting_region.setZValue(10)
         self.fitting_region.addScaleHandle([1, 1], [0, 0])
@@ -46,6 +48,13 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi.setParentItem(self.image_item)
         self.image_preview_roi.setAcceptedMouseButtons(QtCore.Qt.NoButton)  # Optional: make non-interactive
         self.image_preview_roi.hide()
+
+        self.initial_fit_line: PlotDataItem | None = None
+        self.fitted_line: PlotDataItem | None = None
+        self._showing_initial_fit = False
+
+    def set_plot_mode(self, mode: str) -> None:
+        self._showing_initial_fit = (mode == "initial")
 
     def update_plot(self,
                     x_data: np.ndarray,
@@ -112,7 +121,35 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi.setPen(mkPen(color, width=2))
         self.image_preview_roi.show()
 
+    def _show_line(self, x_data: np.ndarray, y_data: np.ndarray, line_attr: str, pen, name: str,
+                   other_line_attr: str) -> None:
+        other_line = getattr(self, other_line_attr)
+        if other_line:
+            self.spectrum_plot.spectrum.removeItem(other_line)
+            setattr(self, other_line_attr, None)
+        line = getattr(self, line_attr)
+        if line:
+            self.spectrum_plot.spectrum.removeItem(line)
+        new_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name=name, pen=pen)
+        setattr(self, line_attr, new_line)
+
     def show_init_fit(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
-        if self.initial_fit_line:
-            self.spectrum_plot.spectrum.removeItem(self.initial_fit_line)
-        self.initial_fit_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name="initial", pen=(128, 128, 128))
+        self._show_line(x_data,
+                        y_data,
+                        line_attr="initial_fit_line",
+                        pen=(128, 128, 128),
+                        name="initial",
+                        other_line_attr="fitted_line")
+        self._showing_initial_fit = True
+
+    def show_fit(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
+        self._show_line(x_data,
+                        y_data,
+                        line_attr="fitted_line",
+                        pen=(0, 128, 255),
+                        name="fit",
+                        other_line_attr="initial_fit_line")
+        self._showing_initial_fit = False
+
+    def is_initial_fit_visible(self) -> bool:
+        return self._showing_initial_fit

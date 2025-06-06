@@ -52,6 +52,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.experimentSetupGroupBox = mock.create_autospec(QGroupBox, instance=True)
         self.view.experimentSetupFormWidget = mock.Mock(spec=ExperimentSetupFormWidget)
         self.view.experimentSetupFormWidget.time_delay = 0.0
+        self.view.fittingDisplayWidget = mock.Mock()
+        self.view.scalable_roi_widget = mock.Mock()
+        self.view.roiSelectionWidget = mock.Mock()
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
@@ -427,3 +430,67 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_enable_normalised(norm_enabled)
         self.assertEqual(self.presenter.spectrum_mode, spec_type)
         self.view.display_normalise_error.assert_called_once()
+
+    @parameterized.expand([
+        (True, True, False),  # (is_initial_fit_visible, expect_plot_initial, expect_plot_fitted)
+        (False, False, True),
+    ])
+    def test_show_initial_fit_calls_correct_plot_method(self, is_initial_fit_visible, expect_plot_initial,
+                                                        expect_plot_fitted):
+        self.view.fittingDisplayWidget.is_initial_fit_visible.return_value = is_initial_fit_visible
+        self.presenter._plot_initial_fit = mock.Mock()
+        self.presenter._plot_fitted_curve = mock.Mock()
+
+        self.presenter.show_initial_fit()
+
+        if expect_plot_initial:
+            self.presenter._plot_initial_fit.assert_called_once()
+            self.presenter._plot_fitted_curve.assert_not_called()
+        else:
+            self.presenter._plot_fitted_curve.assert_called_once()
+            self.presenter._plot_initial_fit.assert_not_called()
+
+    @parameterized.expand([
+        (True, True, False),  # (is_initial_fit_visible, expect_plot_initial, expect_show_fit)
+        (False, False, True),
+    ])
+    def test_on_initial_params_edited_updates_plot_correctly(self, is_initial_fit_visible, expect_plot_initial,
+                                                             expect_show_fit):
+        # Mock dependencies
+        self.presenter._plot_initial_fit = mock.Mock()
+        self.presenter.show_fit = mock.Mock()
+        self.view.scalable_roi_widget.get_initial_param_values = mock.Mock(return_value=[1.0, 2.0])
+        self.view.roiSelectionWidget.current_roi_name = "roi"
+        self.view.spectrum_widget.get_roi = mock.Mock(return_value="mock_roi")
+        self.presenter.model.get_spectrum = mock.Mock(return_value=np.array([1, 2, 3]))
+        self.presenter.model.tof_data = np.array([1, 2, 3])
+        self.presenter.model.fitting_engine.find_best_fit = mock.Mock(return_value={"a": 1.0, "b": 2.0})
+        self.view.scalable_roi_widget.set_fitted_parameter_values = mock.Mock()
+        self.view.fittingDisplayWidget.is_initial_fit_visible.return_value = is_initial_fit_visible
+
+        self.presenter.on_initial_params_edited()
+
+        if expect_plot_initial:
+            self.presenter._plot_initial_fit.assert_called_once()
+            self.presenter.show_fit.assert_not_called()
+            self.view.scalable_roi_widget.set_fitted_parameter_values.assert_not_called()
+        if expect_show_fit:
+            self.presenter._plot_initial_fit.assert_not_called()
+            self.presenter.show_fit.assert_called_once_with([1.0, 2.0])
+            self.view.scalable_roi_widget.set_fitted_parameter_values.assert_called_once_with({"a": 1.0, "b": 2.0})
+
+    @parameterized.expand([
+        # (fitted_params, xvals, fit)
+        ([1.0, 2.0], [10, 20, 30], [100, 200, 300]),
+        ([0.5, 1.5], [5, 15, 25], [50, 150, 250]),
+    ])
+    def test_plot_fitted_curve_calls_show_fit_with_expected_args(self, fitted_params, xvals, fit):
+        self.view.scalable_roi_widget.get_fitted_param_values = mock.Mock(return_value=fitted_params)
+        self.presenter.model.tof_data = xvals
+        self.presenter.model.fitting_engine.model.evaluate = mock.Mock(return_value=fit)
+        self.view.fittingDisplayWidget.show_fit = mock.Mock()
+
+        self.presenter._plot_fitted_curve()
+
+        self.presenter.model.fitting_engine.model.evaluate.assert_called_once_with(xvals, fitted_params)
+        self.view.fittingDisplayWidget.show_fit.assert_called_once_with(xvals, fit)
