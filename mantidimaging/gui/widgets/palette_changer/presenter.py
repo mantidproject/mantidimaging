@@ -78,14 +78,16 @@ class PaletteChangerPresenter(BasePresenter):
         """
         Determine the Otsu threshold tick point.
         """
-        vals = filters.threshold_multiotsu(self.image, classes=self.view.num_materials)
+        data = np.where(np.isnan(self.flattened_image), 0, self.flattened_image)
+        vals = filters.threshold_multiotsu(data, classes=self.view.num_materials)
         return self._normalise_tick_values(vals.tolist())
 
     def _generate_jenks_tick_points(self) -> list[float]:
         """
         Determine the Jenks tick points.
         """
-        breaks = jenks_breaks(self.flattened_image, self.view.num_materials)
+        data = np.where(np.isnan(self.flattened_image), 0, self.flattened_image)
+        breaks = jenks_breaks(data, self.view.num_materials)
         return self._normalise_tick_values(list(breaks)[1:-1])
 
     def _normalise_tick_values(self, breaks: list[float]) -> list[float]:
@@ -93,9 +95,9 @@ class PaletteChangerPresenter(BasePresenter):
         Scale the collection of break values so that they range from 0 to 1. This is done because addTick expects an
         x value in this range.
         """
-        min_val = self.image.min()
-        max_val = self.image.max()
-        val_range = np.ptp(self.image)
+        min_val = np.nanmin(self.image)
+        max_val = np.nanmax(self.image)
+        val_range = max_val - min_val
         breaks = [min_val] + breaks + [max_val]
         return [(break_x - min_val) / val_range for break_x in breaks]
 
