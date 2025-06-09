@@ -419,13 +419,3 @@ class ImageStack:
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
         self.geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
-
-    def update_geometry(self, angles: list | np.ndarray, angle_unit: str, num_pixels: list | tuple,
-                        pixel_size: list | tuple) -> None:
-        """
-        Updates the configuration of the ImageStack's Geometry object.
-        """
-        if self.geometry is None:
-            raise ValueError("self.geometry is not set")
-        self.geometry.set_angles(angles=angles, angle_unit=angle_unit)
-        self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
