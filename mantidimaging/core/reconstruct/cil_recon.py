@@ -345,7 +345,6 @@ class CILRecon(BaseRecon):
 
         progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
 
-        pixel_size = (1., 1.)
         pixel_num_h = images.width
         pixel_num_v = images.height
 
@@ -382,11 +381,6 @@ class CILRecon(BaseRecon):
 
             if images.geometry is None:
                 raise ValueError("images.geometry is not set")
-            angles = images.projection_angles(recon_params.max_projection_angle).value
-            images.update_geometry(angles=angles,
-                                   angle_unit="radian",
-                                   num_pixels=(pixel_num_h, pixel_num_v),
-                                   pixel_size=pixel_size)
             images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
 
             if images.is_sinograms:
