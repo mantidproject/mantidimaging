@@ -184,6 +184,17 @@ class ImageStackTest(unittest.TestCase):
         images.clear_proj180deg()
         self.assertIsNone(images._proj180deg)
 
+    def test_data_set(self):
+        data = generate_images().data
+        images = ImageStack(data=data)
+        images.set_geometry()
+
+        num_pixels = (512, 512)
+        pixel_size = (2., 2.)
+        images.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+        npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
+        npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
+
     def test_data_get(self):
         images = generate_images((10, 100, 350))
         self.assertIsNotNone(images.data)
@@ -225,12 +236,18 @@ class ImageStackTest(unittest.TestCase):
 
     def test_set_projection_angles(self):
         images = generate_images()
-        pangles = ProjectionAngles(list(range(0, 10)))
+        angles = range(0, 10)
+        pangles = ProjectionAngles(list(angles))
+        angle_unit = "radian"
         images.set_projection_angles(pangles)
 
         actual = images.projection_angles()
         self.assertEqual(10, len(actual.value))
         self.assertAlmostEqual(images.projection_angles().value, pangles.value, places=4)
+
+        if images.geometry is not None:
+            self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
+            npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
 
     def test_image_eq_method(self):
         data_array = np.arange(64, dtype=float).reshape([4, 4, 4])
@@ -242,7 +259,6 @@ class ImageStackTest(unittest.TestCase):
 
         data_array[1, 1, 1] *= 2
         self.assertNotEqual(data_images, data_array)
-
         self.assertRaises(ValueError, lambda a, b: a == b, data_images, 1.0)
 
     def test_cant_change_id(self):
@@ -339,23 +355,6 @@ class ImageStackTest(unittest.TestCase):
         npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
         npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
 
-    def test_update_geometry(self):
-        data = generate_images().data
-        images = ImageStack(data=data)
-        images.set_geometry()
-        angles = range(0, 360)
-        angle_unit = "radian"
-        num_pixels = (512, 512)
-        pixel_size = (2., 2.)
-
-        images.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
-        images.geometry.set_angles(angles=angles, angle_unit=angle_unit)
-
-        npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
-        npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
-        npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
-        self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
-
     @parameterized.expand([("shapes_match", 10, 10, 10, 10, True), ("shapes_do_not_match", 10, 10, 20, 10, False)])
     def test_proj_180_degree_shape_matches_images(self, _, height, width, proj180_height, proj180_width, expected):
         data = generate_images().data
@@ -382,5 +381,6 @@ class ImageStackTest(unittest.TestCase):
         images = ImageStack(data=data)
         images.set_geometry()
         images.has_proj180deg = mock.MagicMock(return_value=False)
+
 
         self.assertFalse(images.proj_180_degree_shape_matches_images())
