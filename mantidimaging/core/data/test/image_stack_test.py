@@ -237,16 +237,23 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images()
         angles = range(0, 10)
         pangles = ProjectionAngles(list(angles))
-        angle_unit = "radian"
         images.set_projection_angles(pangles)
 
         actual = images.projection_angles()
         self.assertEqual(10, len(actual.value))
         self.assertAlmostEqual(images.projection_angles().value, pangles.value, places=4)
 
-        if images.geometry is not None:
-            self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
-            npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
+    def test_set_angles_geometry(self):
+        images = generate_images()
+        images.set_geometry()
+        angles = range(0, 10)
+        angle_unit = "radian"
+        pangles = ProjectionAngles(list(angles))
+        images.set_projection_angles(pangles)
+
+        self.assertIsNotNone(images.geometry)
+        self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
+        npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
 
     def test_image_eq_method(self):
         data_array = np.arange(64, dtype=float).reshape([4, 4, 4])
