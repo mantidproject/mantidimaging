@@ -72,6 +72,11 @@ class FittingDisplayWidget(QWidget):
 
     def set_default_region(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
         """Position the ROI centrally over the plotted data."""
+        if y_data.size == 0 or x_data.size == 0:
+            # Fallback default region
+            self.fitting_region.setPos((0, 0))
+            self.fitting_region.setSize((1, 1))
+            return
         x_min, x_max = float(np.nanmin(x_data)), float(np.nanmax(x_data))
         y_min, y_max = float(np.nanmin(y_data)), float(np.nanmax(y_data))
         x_span = (x_max - x_min) * 0.25
