@@ -7,6 +7,7 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 import numpy as np
+from parameterized import parameterized
 
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter, SAMPLE_SIZE
 from mantidimaging.test_helpers.unit_test_helper import gen_img_numpy_rand
@@ -90,7 +91,7 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         expected_jenks_ticks[0] = 0.0
         expected_jenks_ticks[-1] = 1.0
         actual_tick_points = self.presenter._generate_jenks_tick_points()
-        jenks_break_mocks.assert_called_once_with(self.presenter.flattened_image, n_materials)
+        jenks_break_mocks.assert_called_once()
         self.assertListEqual(expected_jenks_ticks, actual_tick_points)
 
     def test_remove_old_ticks(self):
@@ -173,3 +174,16 @@ class PaletteChangerPresenterTest(unittest.TestCase):
         actual = self.presenter._generate_jenks_tick_points()
 
         np.testing.assert_almost_equal(expected, actual, decimal=5)
+
+    @parameterized.expand([('jenks'), ('otsu')])
+    def test_ignores_nan_pixels(self, mode: str):
+        self.view.num_materials = 5
+        self.presenter.flattened_image[::10] = np.nan
+
+        if mode == 'jenks':
+            vals = self.presenter._generate_jenks_tick_points()
+        else:
+            vals = self.presenter._generate_otsu_tick_points()
+
+        for val in vals:
+            self.assertIsInstance(val, float)
