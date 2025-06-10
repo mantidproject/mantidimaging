@@ -132,6 +132,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
                                            self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
+        self.update_fitting_function(self.view.fitSelectionWidget.initial_fit_function)
         self.update_fitting_spectrum("roi", reset_region=True)
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
@@ -343,6 +344,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
+
+    def update_fitting_function(self, fitting_obj) -> None:
+        fitting_func = fitting_obj()
+        self.model.fitting_engine.set_fitting_model(fitting_func)
+        self.setup_fitting_model()
 
     def redraw_spectrum(self, name: str) -> None:
         """
