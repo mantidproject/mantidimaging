@@ -384,10 +384,12 @@ class CILRecon(BaseRecon):
             else:
                 data_order = DataOrder.TIGRE_AG_LABELS
 
-            if images.geometry is not None:
-                images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
-                images.geometry.set_labels(data_order)
-                ig = images.geometry.get_ImageGeometry()
+            if images.geometry is None:
+                raise ValueError("images.geometry is not set")
+
+            images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
+            images.geometry.set_labels(data_order)
+            ig = images.geometry.get_ImageGeometry()
 
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)
