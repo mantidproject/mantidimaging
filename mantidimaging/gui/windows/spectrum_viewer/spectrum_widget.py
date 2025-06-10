@@ -334,7 +334,8 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         with QSignalBlocker(self.range_control):
             self.range_control.setBounds((range_min, range_max))
             self.range_control.setRegion((range_min, range_max))
-        self.spectrum.addItem(self.range_control)
+        if self.range_control not in self.spectrum.items:
+            self.spectrum.addItem(self.range_control)
         self.set_tof_range_label(range_min, range_max)
 
     def set_tof_range_label(self, range_min: float, range_max: float) -> None:
