@@ -404,3 +404,20 @@ class ImageStack:
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
         self.geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
+        self.set_geometry_angles()
+        self.set_geometry_panels()
+
+    def set_geometry_panels(self):
+        """
+        Updates the geometry's panel data based on its parent ImageStack's array data
+        """
+        if self.geometry is not None:
+            pixel_size = (1.0, 1.0)
+            pixel_num_h = self.width
+            pixel_num_v = self.height
+            num_pixels = (pixel_num_h, pixel_num_v)
+            self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+
+    def set_geometry_angles(self):
+        if self.geometry is not None and self._projection_angles is not None:
+            self.geometry.set_angles(angles=self._projection_angles.value, angle_unit="radian")
