@@ -335,11 +335,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.fitting_spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
         self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name, image=image)
-        wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
         self.setup_fitting_model()
-        self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
+
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
 
@@ -521,13 +520,35 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.on_visibility_change()
 
     def handle_tof_unit_change(self) -> None:
+        unit_name = self.view.tof_units_mode
+        self.view.sync_unit_menus(unit_name)
+
         self.model.set_relevant_tof_units()
         tof_axis_label = allowed_modes[self.view.tof_units_mode]["label"]
-        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
-        self.refresh_spectrum_plot()
 
-    def handle_tof_unit_change_via_menu(self) -> None:
-        self.model.tof_mode = allowed_modes[self.view.tof_units_mode]["mode"]
+        self._update_axis_labels(tof_axis_label)
+        self.refresh_spectrum_plot()
+        self._update_all_fitting_spectra()
+        self._update_fitting_display_label(tof_axis_label)
+
+    def _update_axis_labels(self, label: str) -> None:
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(label)
+        self.view.fittingDisplayWidget.spectrum_plot.spectrum.setLabel('bottom', text=label)
+
+    def _update_all_fitting_spectra(self) -> None:
+        for roi_name in self.view.spectrum_widget.roi_dict:
+            self.update_fitting_spectrum(roi_name)
+
+    def _update_fitting_display_label(self, label: str) -> None:
+        tof_data = self.model.tof_data
+        if tof_data is not None and len(tof_data) > 0:
+            unit_range = (float(np.min(tof_data)), float(np.max(tof_data)))
+            self.view.fittingDisplayWidget.update_labels(value_range=unit_range, unit_label=label)
+
+    def handle_tof_unit_change_via_menu(self, unit_name: str) -> None:
+        self.view.sync_unit_menus(unit_name)
+        self.view.tof_units_mode = unit_name
+        self.model.tof_mode = allowed_modes[unit_name]["mode"]
         self.handle_tof_unit_change()
 
     def refresh_spectrum_plot(self) -> None:
