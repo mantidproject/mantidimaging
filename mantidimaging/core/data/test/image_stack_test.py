@@ -389,5 +389,4 @@ class ImageStackTest(unittest.TestCase):
         images.set_geometry()
         images.has_proj180deg = mock.MagicMock(return_value=False)
 
-
         self.assertFalse(images.proj_180_degree_shape_matches_images())
