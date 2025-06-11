@@ -7,7 +7,7 @@ from math import sqrt
 from typing import NamedTuple
 
 import numpy as np
-from scipy.special import erf
+from scipy.special import erf, erfc
 
 
 class FittingRegion(NamedTuple):
@@ -54,19 +54,27 @@ class ErfStepFunction(BaseFittingFunction):
 
 
 class SantistebanFunction(BaseFittingFunction):
-    parameter_names = ["t_hkl", "sigma", "tau"]
+    parameter_names = ["t_hkl", "sigma", "tau", "h", "a"]
     function_name = "Santisteban"
 
+    def calculate_line_profile(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
+        t_hkl, sigma, tau, h, a = params
+        B = 0.5 * (erfc(-(xdata - t_hkl) / (sqrt(2) * sigma)) - np.exp(-((xdata - t_hkl) / tau) + (sigma ** 2 / (2 * tau ** 2))) * erfc(-((xdata - t_hkl) / (sqrt(2) * sigma)) + (sigma / tau)))
+        return B
+
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
-        t_hkl, sigma, tau = params
-        y = xdata
+        t_hkl, sigma, tau, h, a = params
+        B = self.calculate_line_profile(xdata, params)
+        y = h + (a * B)
         return y
 
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         x1, x2, y1, y2 = region
         init_params = {
-            "t_hkl": 0.00,
-            "sigma": 0.00,
-            "tau": 0.00,
+            "t_hkl": (x1 + x2) / 2,
+            "sigma": (x2 - x1) / 4,
+            "tau": (x2 - x1) / 8,
+            "h": y2 - y1,
+            "a": y1,
         }
         return init_params
