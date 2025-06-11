@@ -287,13 +287,7 @@ class ImageStack:
         """
 
         self._shared_array.array = other
-
-        if self.geometry is not None:
-            pixel_size = (1.0, 1.0)
-            pixel_num_h = self.width
-            pixel_num_v = self.height
-            num_pixels = (pixel_num_h, pixel_num_v)
-            self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+        self.set_geometry_panels()
 
     @property
     def shared_array(self) -> pu.SharedArray:
@@ -302,6 +296,7 @@ class ImageStack:
     @shared_array.setter
     def shared_array(self, shared_array: pu.SharedArray) -> None:
         self._shared_array = shared_array
+        self.set_geometry_panels()
 
     @property
     def uses_shared_memory(self) -> bool:
