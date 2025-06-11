@@ -13,7 +13,7 @@ class ExportDataTableWidget(QWidget):
     For integration with the fitting/export tab in the spectrum viewer.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
         layout = QVBoxLayout(self)
