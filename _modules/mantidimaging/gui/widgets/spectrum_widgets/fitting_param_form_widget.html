@@ -497,6 +497,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QPushButton</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDoubleValidator</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowPresenter</span>
@@ -547,16 +548,18 @@ document.write(`
             <span class="n">row_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
             <span class="n">initial_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
             <span class="n">final_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
-
-            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="p">(</span><span class="n">initial_edit</span><span class="p">,</span> <span class="n">final_edit</span><span class="p">):</span>
-                <span class="n">widget</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">initial_edit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">final_edit</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">initial_edit</span><span class="o">.</span><span class="n">setValidator</span><span class="p">(</span><span class="n">QDoubleValidator</span><span class="p">())</span>
 
             <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">row_label</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">initial_edit</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">final_edit</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">params_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">row_layout</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">row_layout</span><span class="p">,</span> <span class="n">row_label</span><span class="p">,</span> <span class="n">initial_edit</span><span class="p">,</span> <span class="n">final_edit</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">row_layout</span><span class="p">,</span> <span class="n">row_label</span><span class="p">,</span> <span class="n">initial_edit</span><span class="p">,</span> <span class="n">final_edit</span><span class="p">)</span>
+
+            <span class="n">initial_edit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_initial_params_edited</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FittingParamFormWidget.set_parameter_values">
@@ -579,6 +582,13 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.get_initial_param_values">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_initial_param_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">())</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">params</span></div>
+
+
+<div class="viewcode-block" id="FittingParamFormWidget.get_fitted_param_values">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.get_fitted_param_values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fitted_param_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">())</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
         <span class="k">return</span> <span class="n">params</span></div>
 
 

@@ -511,7 +511,6 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">initial_fit_line</span><span class="p">:</span> <span class="n">PlotDataItem</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -519,6 +518,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span> <span class="o">=</span> <span class="n">SpectrumPlotWidget</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span><span class="p">:</span> <span class="n">PlotDataItem</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span> <span class="o">=</span> <span class="n">RectROI</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pen</span><span class="o">=</span><span class="n">mkPen</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">movable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">setZValue</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -541,6 +541,14 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setParentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setAcceptedMouseButtons</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoButton</span><span class="p">)</span>  <span class="c1"># Optional: make non-interactive</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="FittingDisplayWidget.set_plot_mode">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.set_plot_mode">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;initial&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="FittingDisplayWidget.update_plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot">[docs]</a>
@@ -633,12 +641,31 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="FittingDisplayWidget.show_init_fit">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.show_init_fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_init_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_fit_line</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_fit_line</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">initial_fit_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span></div>
+<div class="viewcode-block" id="FittingDisplayWidget.show_fit_line">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.show_fit_line">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_fit_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="n">initial</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot a single fit line (initial or fitted) on the spectrum plot, removing any previous fit line.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_data: The x-axis data for the fit line.</span>
+<span class="sd">            y_data: The y-axis data for the fit line.</span>
+<span class="sd">            color: The RGB color tuple for the line.</span>
+<span class="sd">            label: The legend label for the line.</span>
+<span class="sd">            initial: True if this is the initial fit, False if fitted curve.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="n">initial</span></div>
+
+
+<div class="viewcode-block" id="FittingDisplayWidget.is_initial_fit_visible">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.is_initial_fit_visible">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_initial_fit_visible</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span></div>
 </div>
 
 </pre></div>

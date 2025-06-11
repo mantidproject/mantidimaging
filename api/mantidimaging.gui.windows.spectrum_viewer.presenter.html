@@ -706,7 +706,7 @@ the table if no name is passed as an argument</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_init_params_from_roi">
-<span class="sig-name descname"><span class="pre">get_init_params_from_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.get_init_params_from_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_init_params_from_roi" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_init_params_from_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.get_init_params_from_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_init_params_from_roi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -822,6 +822,15 @@ the table if no name is passed as an argument</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.on_initial_params_edited">
+<span class="sig-name descname"><span class="pre">on_initial_params_edited</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.on_initial_params_edited"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.on_initial_params_edited" title="Link to this definition">#</a></dt>
+<dd><p>Handles updates when the initial fitting parameters are edited.</p>
+<p>If the initial fit is visible, updates the plot with the new initial fit.
+Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,
+and displays the new fit result.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_all_rois">
 <span class="sig-name descname"><span class="pre">redraw_all_rois</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.redraw_all_rois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_all_rois" title="Link to this definition">#</a></dt>
 <dd><p>Redraw all ROIs and spectrum plots</p>
@@ -873,8 +882,11 @@ is updated when ShutterCount correction is toggled between enabled and disabled 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_initial_fit">
-<span class="sig-name descname"><span class="pre">show_initial_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.show_initial_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_initial_fit" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">show_initial_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.show_initial_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_initial_fit" title="Link to this definition">#</a></dt>
+<dd><p>Displays the initial fit curve on the fitting display widget.
+Retrieves current TOF data and the initial parameter values from the view
+and evaluates the fitting model using these parameters to generate the initial fit curve.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_new_sample">
@@ -1020,6 +1032,7 @@ image view accordingly. Resets the ROIs.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.initial_roi_calc"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.initial_roi_calc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.initial_sample_change"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.initial_sample_change</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.model"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.model</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.on_initial_params_edited"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.on_initial_params_edited()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_all_rois"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.redraw_all_rois()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_spectrum"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.redraw_spectrum()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.refresh_spectrum_plot"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.refresh_spectrum_plot()</span></code></a></li>
