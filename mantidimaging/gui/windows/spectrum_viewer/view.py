@@ -96,8 +96,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             action.setCheckable(True)
             action.setObjectName(mode)
             self.units_menu.addAction(action)
-            action.triggered.connect(self.presenter.handle_tof_unit_change_via_menu)
-            if mode == "Image Index":
+            action.triggered.connect(partial(self.presenter.handle_tof_unit_change_via_menu, mode))
+            if mode == "Wavelength":
                 action.setChecked(True)
         if self.presenter.model.tof_data.size == 0:
             self.tof_mode_select_group.setEnabled(False)
