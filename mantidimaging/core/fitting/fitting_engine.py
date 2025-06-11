@@ -19,13 +19,23 @@ class FittingEngine:
     def get_parameter_names(self) -> list[str]:
         return list(self.model.parameter_names)
 
+    def get_additional_parameter_names(self) -> list[str]:
+        return list(self.model.additional_parameter_names)
+
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return self.model.get_init_params_from_roi(region)
 
+    def get_additional_params(self) -> dict[str, float]:
+        return self.model.get_additional_params()
+
     def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray, initial_params: list[float]) -> dict[str, float]:
+        self.model.fitting_setup(xdata, ydata, initial_params)
 
         def f(params):
             return ((self.model.evaluate(xdata, params) - ydata)**2).sum()
 
         result = minimize(f, initial_params, method="Nelder-Mead")
-        return dict(zip(self.model.get_parameter_names(), result.x, strict=True))
+
+        all_param_names = self.model.get_parameter_names() + self.model.get_additional_parameter_names()
+        all_params = list(result.x) + self.model.additional_params
+        return dict(zip(all_param_names, all_params, strict=True))
