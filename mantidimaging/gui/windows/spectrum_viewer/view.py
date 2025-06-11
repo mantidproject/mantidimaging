@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from functools import partial
 from typing import TYPE_CHECKING
 
 from PyQt5 import QtWidgets
@@ -72,6 +73,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
 
         self.fittingDisplayWidget = FittingDisplayWidget()
+        self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_spectrum)
 
@@ -165,6 +167,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
+        self.presenter.handle_tof_unit_change()
+
+    def sync_unit_menus(self, unit_name: str) -> None:
+        """Sync the checked unit in both the image and fitting tab unit menus."""
+        for group in (self.tof_mode_select_group, self.fittingDisplayWidget.tof_mode_select_group):
+            for action in group.actions():
+                action.setChecked(action.text() == unit_name)
 
     def on_visibility_change(self) -> None:
         """
@@ -398,6 +407,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     @property
     def tof_units_mode(self) -> str:
         return self.tof_mode_select_group.checkedAction().text()
+
+    @tof_units_mode.setter
+    def tof_units_mode(self, value: str) -> None:
+        for action in self.tof_mode_select_group.actions():
+            if action.text() == value:
+                action.setChecked(True)
+                break
 
     @property
     def table_view(self) -> ROITableWidget:
