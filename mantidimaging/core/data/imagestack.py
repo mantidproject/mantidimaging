@@ -24,6 +24,8 @@ if TYPE_CHECKING:
     from mantidimaging.core.io.instrument_log import InstrumentLog, ShutterCount
     import numpy.typing as npt
 
+LOG = logging.getLogger(__name__)
+
 
 class StackNotFoundError(RuntimeError):
 
@@ -355,7 +357,7 @@ class ImageStack:
 
         self._projection_angles = angles
 
-        if self.geometry is not None:
+        if self.geometry:
             self.geometry.set_angles(angles=angles.value, angle_unit="radian")
 
     def real_projection_angles(self) -> ProjectionAngles | None:
@@ -419,3 +421,39 @@ class ImageStack:
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
         self.geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
+        self.set_geometry_angles()
+        self.set_geometry_panels()
+
+    def set_geometry_panels(self):
+        """
+        Updates the geometry's panel data based on its parent ImageStack's array data if both geometry
+        and array data are present.
+
+        Set the number of pixels and the pixel size for the geometry panel based on the
+        current width and heigh of the image stack.
+
+        :side effects: Modifies self.geometry by updating its panel configuration.
+        """
+        if not self.geometry or not self._shared_array:
+            LOG.warning(f"Cannot update geometry panels:"
+                        f"geometry is {self.geometry}, shared_array is {self._shared_array}")
+            return
+
+        num_pixels = (self.width, self.height)
+        pixel_size = (1.0, 1.0)
+        self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+
+    def set_geometry_angles(self) -> None:
+        """
+        Updates the geometry's angle data based on its parent ImageStack's projection angles if both geometry
+        and projection angles are present.
+
+        :side effects: Modifies self.geometry by updating its angle configuration.
+        """
+        if not self.geometry or not self._projection_angles:
+            LOG.warning(f"Cannot update geometry angles:"
+                        f"geometry is {self.geometry}, projection angles is {self._projection_angles}")
+            return
+
+        self.geometry.set_angles(angles=self._projection_angles.value, angle_unit="radian")
+
