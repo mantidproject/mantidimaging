@@ -7,6 +7,7 @@ from math import sqrt
 from typing import NamedTuple
 
 import numpy as np
+from scipy.optimize import curve_fit
 from scipy.special import erf, erfc
 
 
@@ -32,10 +33,24 @@ class BaseFittingFunction(ABC):
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         ...
 
+    @abstractmethod
+    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> np.ndarray:
+        ...
+
+    @abstractmethod
+    def fitting_setup_reset(self) -> None:
+        ...
+
 
 class ErfStepFunction(BaseFittingFunction):
     parameter_names = ["mu", "sigma", "h", "a"]
     function_name = "Error function"
+
+    def fitting_setup(self, _, __, ___) -> np.ndarray:
+        pass
+
+    def fitting_setup_reset(self) -> None:
+        pass
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         mu, sigma, h, a = params
@@ -56,16 +71,36 @@ class ErfStepFunction(BaseFittingFunction):
 class SantistebanFunction(BaseFittingFunction):
     parameter_names = ["t_hkl", "sigma", "tau", "h", "a"]
     function_name = "Santisteban"
+    additional_params = [0, 0, 0, 0]
+    x_B_eq_zero_tolerance = 1.1
+    x_B_eq_one_tolerance = 0.9
 
     def calculate_line_profile(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a = params
         B = 0.5 * (erfc(-(xdata - t_hkl) / (sqrt(2) * sigma)) - np.exp(-((xdata - t_hkl) / tau) + (sigma ** 2 / (2 * tau ** 2))) * erfc(-((xdata - t_hkl) / (sqrt(2) * sigma)) + (sigma / tau)))
         return B
 
+    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> tuple[float, float, float, float]:
+        B = self.calculate_line_profile(xdata, params)
+
+        x_B_eq_zero_ind = np.argwhere(B <= self.x_B_eq_zero_tolerance * np.min(B))[-1][0]
+        x_B_eq_one_ind = np.argwhere(B >= self.x_B_eq_one_tolerance * np.max(B))[0][0]
+
+        a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
+        a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
+        self.additional_params = [a_0, b_0, a_hkl, b_hkl]
+
+    def fitting_setup_reset(self) -> None:
+        self.additional_params = [0, 0, 0, 0]
+
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a = params
+        a_0, b_0, a_hkl, b_hkl = self.additional_params
         B = self.calculate_line_profile(xdata, params)
-        y = h + (a * B)
+        if self.additional_params == [0, 0, 0, 0]:
+            y = h + (a * B)
+        else:
+            y = np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) + (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B)
         return y
 
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
@@ -78,3 +113,18 @@ class SantistebanFunction(BaseFittingFunction):
             "a": y1,
         }
         return init_params
+
+    def right_side_fitting(self, xdata, ydata):
+
+        def f(t, a_0, b_0):
+            return np.exp(-(a_0 + b_0 * t))
+
+        popt, pcov = curve_fit(f, xdata, ydata)
+        return popt
+
+    def left_side_fitting(self, xdata, ydata, a_0, b_0):
+        def f(t, a_hkl, b_hkl):
+            return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
+
+        popt, pcov = curve_fit(f, xdata, ydata)
+        return popt

@@ -23,6 +23,7 @@ class FittingEngine:
         return self.model.get_init_params_from_roi(region)
 
     def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray, initial_params: list[float]) -> dict[str, float]:
+        self.model.fitting_setup(xdata, ydata, initial_params)
         def f(params):
             return ((self.model.evaluate(xdata, params) - ydata)**2).sum()
 

@@ -587,6 +587,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         assert self.model.tof_data is not None
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         xvals = self.model.tof_data
+        self.model.fitting_engine.model.fitting_setup_reset()
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
         self.view.fittingDisplayWidget.show_fit_line(xvals,
                                                      init_fit,
