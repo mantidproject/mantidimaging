@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from cil.framework import AcquisitionGeometry
-
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
