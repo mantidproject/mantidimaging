@@ -55,6 +55,9 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.fittingDisplayWidget = mock.Mock()
         self.view.scalable_roi_widget = mock.Mock()
         self.view.roiSelectionWidget = mock.Mock()
+        self.view.fittingDisplayWidget.spectrum_plot = mock.Mock()
+        self.view.fittingDisplayWidget.spectrum_plot.spectrum = mock.Mock()
+        self.view.fittingDisplayWidget.update_labels = mock.Mock()
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
@@ -299,7 +302,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     def test_WHEN_tof_unit_selected_THEN_model_mode_changes(self, mode_text, expected_mode):
         self.view.tof_units_mode = mode_text
         self.presenter.refresh_spectrum_plot = mock.Mock()
-        self.presenter.handle_tof_unit_change_via_menu()
+        self.presenter.handle_tof_unit_change_via_menu(mode_text)
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
     @parameterized.expand([
