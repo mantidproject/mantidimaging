@@ -20,10 +20,19 @@ class FittingRegion(NamedTuple):
 
 class BaseFittingFunction(ABC):
     parameter_names: list[str]
+    additional_parameter_names: list[str]
+    additional_params: list[float]
     function_name: str
 
     def get_parameter_names(self) -> list[str]:
         return list(self.parameter_names)
+
+    def get_additional_parameter_names(self) -> list[str]:
+        return list(self.additional_parameter_names)
+
+    @abstractmethod
+    def get_additional_params(self) -> dict[str, float]:
+        ...
 
     @abstractmethod
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
@@ -42,15 +51,22 @@ class BaseFittingFunction(ABC):
         ...
 
 
+
+
 class ErfStepFunction(BaseFittingFunction):
     parameter_names = ["mu", "sigma", "h", "a"]
     function_name = "Error function"
+    additional_params = []
+    additional_parameter_names = []
 
     def fitting_setup(self, _, __, ___) -> np.ndarray:
         pass
 
     def fitting_setup_reset(self) -> None:
         pass
+
+    def get_additional_params(self) -> dict[str, float]:
+        return {}
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         mu, sigma, h, a = params
@@ -70,6 +86,7 @@ class ErfStepFunction(BaseFittingFunction):
 
 class SantistebanFunction(BaseFittingFunction):
     parameter_names = ["t_hkl", "sigma", "tau", "h", "a"]
+    additional_parameter_names = ["a_0", "b_0", "a_hkl", "b_hkl"]
     function_name = "Santisteban"
     additional_params = [0, 0, 0, 0]
     x_B_eq_zero_tolerance = 1.1
@@ -113,6 +130,15 @@ class SantistebanFunction(BaseFittingFunction):
             "a": y1,
         }
         return init_params
+
+    def get_additional_params(self) -> dict[str, float]:
+        add_params = {
+            "a_0": self.additional_params[0],
+            "b_0": self.additional_params[1],
+            "a_hkl": self.additional_params[2],
+            "b_hkl": self.additional_params[3]
+        }
+        return add_params
 
     def right_side_fitting(self, xdata, ydata):
 

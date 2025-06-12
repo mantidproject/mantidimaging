@@ -569,12 +569,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def setup_fitting_model(self) -> None:
         param_names = self.model.fitting_engine.get_parameter_names()
-        self.view.scalable_roi_widget.set_parameters(param_names)
-        self.view.exportDataTableWidget.set_parameters(param_names)
+        additional_param_names = self.model.fitting_engine.get_additional_parameter_names()
+        self.view.scalable_roi_widget.set_parameters(param_names + additional_param_names)
+        self.view.exportDataTableWidget.set_parameters(param_names + additional_param_names)
 
-    def get_init_params_from_roi(self) -> None:
+    def get_init_params_from_roi(self):
+        self.model.fitting_engine.model.fitting_setup_reset()
         fitting_region = self.view.get_fitting_region()
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
+        additional_params = self.model.fitting_engine.get_additional_params()
+        init_params.update(additional_params)
         self.view.scalable_roi_widget.set_parameter_values(init_params)
 
         self.view.fittingDisplayWidget.set_plot_mode("initial")
@@ -583,11 +587,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
 
-    def _plot_initial_fit(self) -> None:
-        assert self.model.tof_data is not None
-        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+    def show_initial_fit(self):
+        num_params_to_fit = len(self.model.fitting_engine.get_parameter_names())
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()[:num_params_to_fit]
         xvals = self.model.tof_data
-        self.model.fitting_engine.model.fitting_setup_reset()
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
         self.view.fittingDisplayWidget.show_fit_line(xvals,
                                                      init_fit,
@@ -634,11 +637,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def run_region_fit(self) -> None:
         assert self.model.tof_data is not None
+        num_params_to_fit = len(self.model.fitting_engine.get_parameter_names())
         result = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(), self.model.tof_data,
-                                        self.view.scalable_roi_widget.get_initial_param_values())
+                                        self.view.scalable_roi_widget.get_initial_param_values()[:num_params_to_fit])
 
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
-        self.show_fit(list(result.values()))
+        self.show_fit(list(result.values())[:num_params_to_fit])
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
 
