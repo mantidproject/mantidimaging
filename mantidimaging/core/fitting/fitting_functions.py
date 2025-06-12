@@ -43,14 +43,12 @@ class BaseFittingFunction(ABC):
         ...
 
     @abstractmethod
-    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> np.ndarray:
+    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> None:
         ...
 
     @abstractmethod
     def fitting_setup_reset(self) -> None:
         ...
-
-
 
 
 class ErfStepFunction(BaseFittingFunction):
@@ -59,11 +57,11 @@ class ErfStepFunction(BaseFittingFunction):
     additional_params = []
     additional_parameter_names = []
 
-    def fitting_setup(self, _, __, ___) -> np.ndarray:
-        pass
+    def fitting_setup(self, _, __, ___) -> None:
+        return
 
     def fitting_setup_reset(self) -> None:
-        pass
+        return
 
     def get_additional_params(self) -> dict[str, float]:
         return {}
@@ -94,18 +92,27 @@ class SantistebanFunction(BaseFittingFunction):
 
     def calculate_line_profile(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a = params
-        B = 0.5 * (erfc(-(xdata - t_hkl) / (sqrt(2) * sigma)) - np.exp(-((xdata - t_hkl) / tau) + (sigma ** 2 / (2 * tau ** 2))) * erfc(-((xdata - t_hkl) / (sqrt(2) * sigma)) + (sigma / tau)))
+        B = 0.5 * (erfc(-(xdata - t_hkl) / (sqrt(2) * sigma)) - np.exp(-((xdata - t_hkl) / tau) +
+                                                                       (sigma**2 /
+                                                                        (2 * tau**2))) * erfc(-((xdata - t_hkl) /
+                                                                                                (sqrt(2) * sigma)) +
+                                                                                              (sigma / tau)))
         return B
 
-    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> tuple[float, float, float, float]:
+    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> None:
         B = self.calculate_line_profile(xdata, params)
 
         x_B_eq_zero_ind = np.argwhere(B <= self.x_B_eq_zero_tolerance * np.min(B))[-1][0]
         x_B_eq_one_ind = np.argwhere(B >= self.x_B_eq_one_tolerance * np.max(B))[0][0]
 
-        a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
-        a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
-        self.additional_params = [a_0, b_0, a_hkl, b_hkl]
+        try:
+            a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
+            a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
+            self.additional_params = [a_0, b_0, a_hkl, b_hkl]
+        except TypeError:
+            self.x_B_eq_one_tolerance -= 0.1
+            self.x_B_eq_zero_tolerance += 0.1
+            self.fitting_setup(xdata, ydata, params)
 
     def fitting_setup_reset(self) -> None:
         self.additional_params = [0, 0, 0, 0]
@@ -117,7 +124,8 @@ class SantistebanFunction(BaseFittingFunction):
         if self.additional_params == [0, 0, 0, 0]:
             y = h + (a * B)
         else:
-            y = np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) + (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B)
+            y = (np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) +
+                                                 (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B))
         return y
 
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
@@ -149,6 +157,7 @@ class SantistebanFunction(BaseFittingFunction):
         return popt
 
     def left_side_fitting(self, xdata, ydata, a_0, b_0):
+
         def f(t, a_hkl, b_hkl):
             return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
 
