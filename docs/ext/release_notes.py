@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from collections.abc import Iterable
+import re
 
 from docutils import nodes
 from docutils.statemachine import StringList
@@ -23,6 +24,23 @@ Use one of:
 class ReleaseNotes(Directive):
     has_content = True
 
+    @staticmethod
+    def format_release_note_line(line: str) -> str:
+        """
+        Format a release note line, converting "<ISSUE_NUMBER>: <description>" or "#<ISSUE_NUMBER>: <description>"
+        into a reST link to the associated GitHub issue/pull request.
+        Github auto redirect handles converted issues if they are PRs.
+        """
+        # Accept "#1234: description", "1234: description", "#1234 : description", "1234 : description"
+        match = re.match(r"#?\s*(\d+)\s*:\s*(.*)", line)
+        if match:
+            issue_number, desc = match.groups()
+            url = f"https://github.com/mantidproject/mantidimaging/issues/{issue_number}"
+            formatted = f'- `#{issue_number} <{url}>`_: {desc}'
+            return formatted
+        else:
+            return f"- {line}"
+
     @classmethod
     def make_rst(cls, note_type: str) -> StringList:
         note_paths: Iterable[Path] = (Path() / 'docs' / 'release_notes' / 'next').glob(note_type + '*')
@@ -38,7 +56,8 @@ class ReleaseNotes(Directive):
             if len(note_content) != 1:
                 raise cls.severe(f'Release note file should have 1 line: {note_path}.')
 
-            rst.append(f"- {note_content[0]}", "generated.rst", n)
+            formatted_line = cls.format_release_note_line(note_content[0])
+            rst.append(formatted_line, "generated.rst", n)
 
         return rst
 
