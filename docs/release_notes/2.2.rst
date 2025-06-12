@@ -8,70 +8,70 @@ The key new features of 2.2 are NeXuS import and a new reconstruction algorithm,
 New features
 ------------
 
-- #927 : ROI norm: use averaged view in ROI selector
-- #925 : Jenks / Otsu everywhere
-- #926 : Manual arithmetic filter
-- #988 : Use averaged view in ROI selector for crop
-- #964 : Open NeXus files
-- #1010 : Write slope and offset into int tiffs
-- #987 : Allow Flat-fielding without dark subtraction
-- #1011 : Pixel size should allow setting decimal places
-- #1013 : NeXus Loading Window
-- #904 : Default to using image center for ring removal COR
-- #1025 : Add the Total Variation (TV) with Primal-Dual Hybrid Gradient (PDHG) from CIL
-- #1027 : Flat field warning if output has negative values
-- #1027 : NeXus Loader: Message when loading large files
-- #1026 : Recon warn if input has NaNs
-- #816 : NaN Removal Filter
-- #1035 : NeXus Loader: Select every Nth image
-- #1035 : List of bad slices in error message could be compressed
+- `#927 <https://github.com/mantidproject/mantidimaging/issues/927>`_: ROI norm: use averaged view in ROI selector
+- `#925 <https://github.com/mantidproject/mantidimaging/issues/925>`_: Jenks / Otsu everywhere
+- `#926 <https://github.com/mantidproject/mantidimaging/issues/926>`_: Manual arithmetic filter
+- `#988 <https://github.com/mantidproject/mantidimaging/issues/988>`_: Use averaged view in ROI selector for crop
+- `#964 <https://github.com/mantidproject/mantidimaging/issues/964>`_: Open NeXus files
+- `#1010 <https://github.com/mantidproject/mantidimaging/issues/1010>`_: Write slope and offset into int tiffs
+- `#987 <https://github.com/mantidproject/mantidimaging/issues/987>`_: Allow Flat-fielding without dark subtraction
+- `#1011 <https://github.com/mantidproject/mantidimaging/issues/1011>`_: Pixel size should allow setting decimal places
+- `#1013 <https://github.com/mantidproject/mantidimaging/issues/1013>`_: NeXus Loading Window
+- `#904 <https://github.com/mantidproject/mantidimaging/issues/904>`_: Default to using image center for ring removal COR
+- `#1025 <https://github.com/mantidproject/mantidimaging/issues/1025>`_: Add the Total Variation (TV) with Primal-Dual Hybrid Gradient (PDHG) from CIL
+- `#1027 <https://github.com/mantidproject/mantidimaging/issues/1027>`_: Flat field warning if output has negative values
+- `#1027 <https://github.com/mantidproject/mantidimaging/issues/1027>`_: NeXus Loader: Message when loading large files
+- `#1026 <https://github.com/mantidproject/mantidimaging/issues/1026>`_: Recon warn if input has NaNs
+- `#816 <https://github.com/mantidproject/mantidimaging/issues/816>`_: NaN Removal Filter
+- `#1035 <https://github.com/mantidproject/mantidimaging/issues/1035>`_: NeXus Loader: Select every Nth image
+- `#1035 <https://github.com/mantidproject/mantidimaging/issues/1035>`_: List of bad slices in error message could be compressed
 
 Fixes
 -----
 
-- #939 : median: NameError: name 'cp' is not defined
-- #957 : Crop Coordinates ROI not changing
-- #961 : Test failure: ImportError: libcuda.so.1
-- #959 : Median GPU does not work with even values
-- #990 : Remove combine histogram checkbox
-- #989 : Remove legend checkbox
-- #1001 : Exception when selecting Log in Load Dataset dialog
-- #991 : Handle longer running previews better
-- #1021 : Prevent simultaneous Astra calls
-- #1036 : Exception in ReconstructWindowView.show_recon_volume prevents recon closing
-- #1046 : Can't rotate NeXus images
-- #1048 : NeXus Loader: ValueError: Illegal slicing argument for scalar dataspace
-- #1055: Arithmetic operation breaks flat-fielding
-- #898: Improve user documentation for operations
-- #1059: Crash in recon Minimise Error with CIL
-- #1032: Crash in RingRemovalFilter
-- #1057: Fix crash when refining COR
-- #1056: Cannot set range [nan, nan] in ROI normalisation
-- #1019: ERROR: Presenter error: Error applying filter for preview - when closing stacks
-- #1068: Don't show misleading success message when operation cancelled
-- #1082: CIL show memory warning
-- #1014: KeyError when closing stacks
-- #1029: Segmentation fault in image_in_vb
-- #1081: Error if pressing preview button before selecting a dataset
-- #940: Ops window, pixel value not updating for part of image
-- #1093: TIFF output blank if NaN in stack
-- #1095: AttributeError loading 180 deg projection
-- #1110: Segmentation fault COR table refine
-- #1115: Copy everything from metadata dialog
-- #1112: Minimise Error, number of slices input should have minimum of 2
-- #1067: Failed to load stack "log file is not recognised"
-- #1121: FF when negative values in output, no completed message
+- `#939 <https://github.com/mantidproject/mantidimaging/issues/939>`_: median: NameError: name 'cp' is not defined
+- `#957 <https://github.com/mantidproject/mantidimaging/issues/957>`_: Crop Coordinates ROI not changing
+- `#961 <https://github.com/mantidproject/mantidimaging/issues/961>`_: Test failure: ImportError: libcuda.so.1
+- `#959 <https://github.com/mantidproject/mantidimaging/issues/959>`_: Median GPU does not work with even values
+- `#990 <https://github.com/mantidproject/mantidimaging/issues/990>`_: Remove combine histogram checkbox
+- `#989 <https://github.com/mantidproject/mantidimaging/issues/989>`_: Remove legend checkbox
+- `#1001 <https://github.com/mantidproject/mantidimaging/issues/1001>`_: Exception when selecting Log in Load Dataset dialog
+- `#991 <https://github.com/mantidproject/mantidimaging/issues/991>`_: Handle longer running previews better
+- `#1021 <https://github.com/mantidproject/mantidimaging/issues/1021>`_: Prevent simultaneous Astra calls
+- `#1036 <https://github.com/mantidproject/mantidimaging/issues/1036>`_: Exception in ReconstructWindowView.show_recon_volume prevents recon closing
+- `#1046 <https://github.com/mantidproject/mantidimaging/issues/1046>`_: Can't rotate NeXus images
+- `#1048 <https://github.com/mantidproject/mantidimaging/issues/1048>`_: NeXus Loader: ValueError: Illegal slicing argument for scalar dataspace
+- `#1055 <https://github.com/mantidproject/mantidimaging/issues/1055>`_: Arithmetic operation breaks flat-fielding
+- `#898 <https://github.com/mantidproject/mantidimaging/issues/898>`_: Improve user documentation for operations
+- `#1059 <https://github.com/mantidproject/mantidimaging/issues/1059>`_: Crash in recon Minimise Error with CIL
+- `#1032 <https://github.com/mantidproject/mantidimaging/issues/1032>`_: Crash in RingRemovalFilter
+- `#1057 <https://github.com/mantidproject/mantidimaging/issues/1057>`_: Fix crash when refining COR
+- `#1056 <https://github.com/mantidproject/mantidimaging/issues/1056>`_: Cannot set range [nan, nan] in ROI normalisation
+- `#1019 <https://github.com/mantidproject/mantidimaging/issues/1019>`_: ERROR: Presenter error: Error applying filter for preview - when closing stacks
+- `#1068 <https://github.com/mantidproject/mantidimaging/issues/1068>`_: Don't show misleading success message when operation cancelled
+- `#1082 <https://github.com/mantidproject/mantidimaging/issues/1082>`_: CIL show memory warning
+- `#1014 <https://github.com/mantidproject/mantidimaging/issues/1014>`_: KeyError when closing stacks
+- `#1029 <https://github.com/mantidproject/mantidimaging/issues/1029>`_: Segmentation fault in image_in_vb
+- `#1081 <https://github.com/mantidproject/mantidimaging/issues/1081>`_: Error if pressing preview button before selecting a dataset
+- `#940 <https://github.com/mantidproject/mantidimaging/issues/940>`_: Ops window, pixel value not updating for part of image
+- `#1093 <https://github.com/mantidproject/mantidimaging/issues/1093>`_: TIFF output blank if NaN in stack
+- `#1095 <https://github.com/mantidproject/mantidimaging/issues/1095>`_: AttributeError loading 180 deg projection
+- `#1110 <https://github.com/mantidproject/mantidimaging/issues/1110>`_: Segmentation fault COR table refine
+- `#1115 <https://github.com/mantidproject/mantidimaging/issues/1115>`_: Copy everything from metadata dialog
+- `#1112 <https://github.com/mantidproject/mantidimaging/issues/1112>`_: Minimise Error, number of slices input should have minimum of 2
+- `#1067 <https://github.com/mantidproject/mantidimaging/issues/1067>`_: Failed to load stack "log file is not recognised"
+- `#1121 <https://github.com/mantidproject/mantidimaging/issues/1121>`_: FF when negative values in output, no completed message
 
 Developer Changes
 -----------------
 
-- #917 : Intermittent failure of StripeRemovalTest.test_memory_executed_wf
-- #980 : Use pre-commit
-- #978 : Update Qt API usage
-- #998 : setup.py command to install current developer requirements
-- #969 : Improve mypy coverage in core.io
-- #1007 : Change applitools check level to content
-- #1086 : GUI system tests
+- `#917 <https://github.com/mantidproject/mantidimaging/issues/917>`_: Intermittent failure of StripeRemovalTest.test_memory_executed_wf
+- `#980 <https://github.com/mantidproject/mantidimaging/issues/980>`_: Use pre-commit
+- `#978 <https://github.com/mantidproject/mantidimaging/issues/978>`_: Update Qt API usage
+- `#998 <https://github.com/mantidproject/mantidimaging/issues/998>`_: setup.py command to install current developer requirements
+- `#969 <https://github.com/mantidproject/mantidimaging/issues/969>`_: Improve mypy coverage in core.io
+- `#1007 <https://github.com/mantidproject/mantidimaging/issues/1007>`_: Change applitools check level to content
+- `#1086 <https://github.com/mantidproject/mantidimaging/issues/1086>`_: GUI system tests
 
 Dependency updates
 ------------------
