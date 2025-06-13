@@ -50,3 +50,12 @@ class Geometry(AcquisitionGeometry):
         offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt)
+
+    def get_cor_tilt_from_geometry(self):
+        pass
+
+    def get_astra_geometry(self):
+        pass
+
+    def get_tomopy_geometry(self):
+        pass
