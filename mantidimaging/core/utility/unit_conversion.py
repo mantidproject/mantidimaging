@@ -42,7 +42,11 @@ class UnitConversion:
 
     def check_data(self) -> None:
         try:
-            self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
+            tof_with_offset = self.tof_data_to_convert + self.data_offset
+            self.velocity = np.divide(self.target_to_camera_dist,
+                                      tof_with_offset,
+                                      out=np.full_like(tof_with_offset, np.inf, dtype=np.float64),
+                                      where=tof_with_offset != 0)
         except AttributeError as exc:
             raise TypeError("No data to convert") from exc
 

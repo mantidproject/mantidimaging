@@ -303,7 +303,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.tof_mode, expected_mode)
 
     @parameterized.expand([
-        (None, ToFUnitMode.IMAGE_NUMBER),
+        (np.array([]), ToFUnitMode.IMAGE_NUMBER),
         (np.arange(1, 10), ToFUnitMode.WAVELENGTH),
     ])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_stack_time_of_flight")
@@ -318,9 +318,10 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.model.tof_mode, expected_tof_mode)
 
     @parameterized.expand([
-        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, np.arange(1, 10), [False, True], ToFUnitMode.WAVELENGTH),
-        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, None, [True, False], ToFUnitMode.IMAGE_NUMBER),
-        (None, "Image Index", ToFUnitMode.IMAGE_NUMBER, None, [False, False], ToFUnitMode.IMAGE_NUMBER),
+        (np.array([]), "Image Index", ToFUnitMode.IMAGE_NUMBER, np.arange(1, 10), [False,
+                                                                                   True], ToFUnitMode.WAVELENGTH),
+        (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, np.array([]), [True, False], ToFUnitMode.IMAGE_NUMBER),
+        (np.array([]), "Image Index", ToFUnitMode.IMAGE_NUMBER, np.array([]), [False, False], ToFUnitMode.IMAGE_NUMBER),
         (np.arange(1, 10), "Wavelength", ToFUnitMode.WAVELENGTH, np.arange(2, 20), [True,
                                                                                     True], ToFUnitMode.WAVELENGTH),
         (np.arange(1, 10), "Energy", ToFUnitMode.ENERGY, np.arange(2, 20), [True, True], ToFUnitMode.ENERGY),

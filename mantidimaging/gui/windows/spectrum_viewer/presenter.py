@@ -182,7 +182,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.setup_roi_properties_spinboxes()
 
     def reset_units_menu(self) -> None:
-        if self.model.tof_data is None:
+        if self.model.tof_data.size == 0:
             self.view.tof_mode_select_group.setEnabled(False)
             self.view.experimentSetupGroupBox.setEnabled(False)
             self.model.tof_mode = ToFUnitMode.IMAGE_NUMBER
@@ -249,7 +249,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
             self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
         else:
-            assert self.model.tof_data is not None
             image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
             image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
             self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
@@ -328,7 +327,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
         roi = self.view.spectrum_widget.get_roi(roi_name)
         tof_data = self.model.tof_data
-        if tof_data is None:
+        if tof_data.size == 0:
             return
 
         image = (self.model.get_normalized_averaged_image()
@@ -578,7 +577,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
 
     def _plot_initial_fit(self) -> None:
-        assert self.model.tof_data is not None
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
@@ -596,7 +594,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,
         and displays the new fit result.
         """
-        assert self.model.tof_data is not None
         if self.view.fittingDisplayWidget.is_initial_fit_visible():
             self._plot_initial_fit()
         else:
@@ -615,7 +612,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Retrieves current TOF data and the initial parameter values from the view
         and evaluates the fitting model using these parameters to generate the initial fit curve.
         """
-        assert self.model.tof_data is not None
         xvals = self.model.tof_data
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
@@ -626,7 +622,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                      initial=True)
 
     def run_region_fit(self) -> None:
-        assert self.model.tof_data is not None
         result = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(), self.model.tof_data,
                                         self.view.scalable_roi_widget.get_initial_param_values())
 
@@ -656,7 +651,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
 
     def show_fit(self, params: list[float]) -> None:
-        assert self.model.tof_data is not None
         xvals = self.model.tof_data
         fit = self.model.fitting_engine.model.evaluate(xvals, params)
         self.view.fittingDisplayWidget.show_fit_line(xvals, fit, color=(0, 128, 255), label="fit", initial=False)

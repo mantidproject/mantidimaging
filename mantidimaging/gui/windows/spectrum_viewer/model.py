@@ -91,7 +91,7 @@ class SpectrumViewerWindowModel:
     tof_range: tuple[int, int] = (0, 0)
     tof_plot_range: tuple[float, float] | tuple[int, int] = (0, 0)
     tof_mode: ToFUnitMode = ToFUnitMode.WAVELENGTH
-    tof_data: np.ndarray | None = np.array([])
+    tof_data: np.ndarray = np.array([])
     spectrum_cache: dict[tuple, np.ndarray] = {}
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
@@ -361,7 +361,7 @@ class SpectrumViewerWindowModel:
         csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
 
         local_tof_data = self.get_stack_time_of_flight()
-        if local_tof_data is not None:
+        if local_tof_data.size != 0:
             self.units.set_data_to_convert(local_tof_data)
             csv_output.add_column("Wavelength", self.units.tof_seconds_to_wavelength_in_angstroms(), "Angstrom")
             csv_output.add_column("ToF", self.units.tof_seconds_to_us(), "Microseconds")
@@ -403,7 +403,7 @@ class SpectrumViewerWindowModel:
         if self._normalise_stack is None:
             raise ValueError("A normalise stack must be selected")
         tof = self.get_stack_time_of_flight()
-        if tof is None:
+        if tof.size == 0:
             raise ValueError("No Time of Flights for sample. Make sure spectra log has been loaded")
 
         tof *= 1e6  # RITS expects ToF in μs
@@ -493,13 +493,13 @@ class SpectrumViewerWindowModel:
             if sub_bottom == bottom:
                 break
 
-    def get_stack_time_of_flight(self) -> np.ndarray | None:
+    def get_stack_time_of_flight(self) -> np.ndarray:
         if self._stack is None or self._stack.log_file is None:
-            return None
+            return np.array([])
         try:
             time_of_flights = self._stack.log_file.get_column(LogColumn.TIME_OF_FLIGHT)
         except KeyError:
-            return None
+            return np.array([])
         return np.array(time_of_flights)
 
     def get_roi_coords_filename(self, path: Path) -> Path:
@@ -540,7 +540,7 @@ class SpectrumViewerWindowModel:
     def set_relevant_tof_units(self) -> None:
         if self._stack is not None:
             self.tof_data = self.get_stack_time_of_flight()
-            if self.tof_mode == ToFUnitMode.IMAGE_NUMBER or self.tof_data is None:
+            if self.tof_mode == ToFUnitMode.IMAGE_NUMBER or self.tof_data.size == 0:
                 self.tof_plot_range = (0, self._stack.data.shape[0] - 1)
                 self.tof_range = (0, self._stack.data.shape[0] - 1)
                 self.tof_data = np.arange(self.tof_range[0], self.tof_range[1] + 1)
@@ -556,7 +556,7 @@ class SpectrumViewerWindowModel:
                 self.tof_range = (0, self.tof_data.size)
 
     def set_tof_unit_mode_for_stack(self) -> None:
-        if self.get_stack_time_of_flight() is None or self.tof_data is None:
+        if self.get_stack_time_of_flight().size == 0 or self.tof_data.size == 0:
             self.tof_mode = ToFUnitMode.IMAGE_NUMBER
             self.presenter.change_selected_menu_option("Image Index")
         elif self.tof_mode == ToFUnitMode.ENERGY:

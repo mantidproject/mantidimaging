@@ -99,7 +99,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             action.triggered.connect(self.presenter.handle_tof_unit_change_via_menu)
             if mode == "Image Index":
                 action.setChecked(True)
-        if self.presenter.model.tof_data is None:
+        if self.presenter.model.tof_data.size == 0:
             self.tof_mode_select_group.setEnabled(False)
 
         self.current_dataset_id: UUID | None = None
