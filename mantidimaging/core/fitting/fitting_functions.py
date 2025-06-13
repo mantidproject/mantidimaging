@@ -115,7 +115,7 @@ class SantistebanFunction(BaseFittingFunction):
             self.fitting_setup(xdata, ydata, params)
 
     def fitting_setup_reset(self) -> None:
-        self.additional_params = [0, 0, 0, 0]
+        self.additional_params = [0] * len(self.additional_params)
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a = params
