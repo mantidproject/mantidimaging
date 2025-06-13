@@ -406,7 +406,7 @@ class ImageStack:
         """
         Updates the geometry's panel data based on its parent ImageStack's array data
         """
-        if self.geometry is not None:
+        if self.geometry is not None and self._shared_array is not None:
             pixel_size = (1.0, 1.0)
             pixel_num_h = self.width
             pixel_num_v = self.height
