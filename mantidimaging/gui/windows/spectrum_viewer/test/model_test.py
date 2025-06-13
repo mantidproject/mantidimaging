@@ -406,20 +406,26 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.remove_all_roi()
         self.assertEqual(self.model._roi_id_counter, 0)
 
-    def test_WHEN_no_stack_tof_THEN_time_of_flight_none(self):
+    def test_WHEN_no_stack_tof_THEN_time_of_flight_empty(self):
         # No Stack
         self.model.set_stack(None)
-        self.assertIsNone(self.model.get_stack_time_of_flight())
+        result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.size, 0)
 
         # No Log
         stack, _ = self._set_sample_stack()
-        self.assertIsNone(self.model.get_stack_time_of_flight())
+        result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.size, 0)
 
         # Log but not tof
         mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt", instance=True)
         mock_log.get_column.side_effect = KeyError()
         stack.log_file = mock_log
-        self.assertIsNone(self.model.get_stack_time_of_flight())
+        result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.size, 0)
 
     def test_WHEN_stack_tof_THEN_tof_correct(self):
         stack, _ = self._set_sample_stack(with_tof=True)
