@@ -89,6 +89,9 @@ class SantistebanFunction(BaseFittingFunction):
     additional_params = [0, 0, 0, 0]
     x_B_eq_zero_tolerance = 1.1
     x_B_eq_one_tolerance = 0.9
+    # TODO: try to reduce the number of attributes stored in the class
+    #  It might be easier to store the additional parameters in the parameter_names list and then either keep the
+    #  additional_parameter_names list so they can be filtered out or store the number of additional parameters
 
     def calculate_line_profile(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a = params
@@ -105,6 +108,9 @@ class SantistebanFunction(BaseFittingFunction):
         x_B_eq_zero_ind = np.argwhere(B <= self.x_B_eq_zero_tolerance * np.min(B))[-1][0]
         x_B_eq_one_ind = np.argwhere(B >= self.x_B_eq_one_tolerance * np.max(B))[0][0]
 
+        # TODO: change how the additional parameters are found so that they are local variables which are calculated
+        #  within a loop instead of making the method self recursive. This would be a good way to ensure that
+        #  xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:] are never empty arrays
         try:
             a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
             a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
@@ -115,7 +121,7 @@ class SantistebanFunction(BaseFittingFunction):
             self.fitting_setup(xdata, ydata, params)
 
     def fitting_setup_reset(self) -> None:
-        self.additional_params = [0, 0, 0, 0]
+        self.additional_params = [0] * len(self.additional_params)
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a = params

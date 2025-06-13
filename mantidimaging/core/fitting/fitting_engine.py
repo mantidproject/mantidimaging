@@ -29,6 +29,12 @@ class FittingEngine:
         return self.model.get_additional_params()
 
     def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray, initial_params: list[float]) -> dict[str, float]:
+        # TODO: let find_best_fit take in all parameters and then pass to a "pre-fitting" method which returns
+        #  the prefits of the additional parameters (e.g. a_0, b_0, a_hkl, b_hkl) so that they can be filtered
+        #  out of the initial_params for the minimize function. Another choice is to not filter out the addtional
+        #  params but to restrict them in minimize using bounds (if possible?) so that the minimize function
+        #  doesnt change them
+        #
         self.model.fitting_setup(xdata, ydata, initial_params)
 
         def f(params):

@@ -45,3 +45,24 @@ class TestFittingFunction(unittest.TestCase):
         self.assertEqual(len(param_names), len(init_params))
         for param_name in param_names:
             self.assertIn(param_name, init_params)
+
+    @parameterized.expand(FUNCTIONS)
+    def test_get_additional_params(self, _, fit_class: type[fitting_functions.BaseFittingFunction]):
+        fit_func = fit_class()
+        if fit_func.additional_parameter_names:
+            additional_params_names = fit_func.get_additional_parameter_names()
+            additional_param = fit_func.get_additional_params()
+
+            self.assertEqual(len(additional_params_names), len(additional_param))
+            for additional_params_name in additional_params_names:
+                self.assertIn(additional_params_name, additional_param)
+
+    @parameterized.expand(FUNCTIONS)
+    def test_reset_additional_params(self, _, fit_class: type[fitting_functions.BaseFittingFunction]):
+        fit_func = fit_class()
+        if fit_func.additional_parameter_names:
+            fit_func.additional_params = np.linspace(0, 10, num=len(fit_func.additional_parameter_names),
+                                                     dtype=float).tolist()
+            fit_func.fitting_setup_reset()
+            self.assertEqual(list(fit_func.get_additional_params().values()),
+                             [0] * len(fit_func.additional_parameter_names))
