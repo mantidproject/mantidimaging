@@ -10,7 +10,10 @@ from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction, Fi
 
 class FittingEngine:
 
-    def __init__(self, model: BaseFittingFunction):
+    def __init__(self, model: BaseFittingFunction) -> None:
+        self.model = model
+
+    def set_fitting_model(self, model: BaseFittingFunction) -> None:
         self.model = model
 
     def get_parameter_names(self) -> list[str]:

@@ -118,10 +118,14 @@ def execute_single(data, shutters, progress=None):
     progress.set_estimated_steps(len(shutters) + 1)
     prob_occupied = numpy.zeros_like(data, dtype=numpy.float32)
 
+    for prev_shutter, shutter in zip(shutters[:-1], shutters[1:], strict=True):
+        if not prev_shutter.end_index == shutter.start_index:
+            shutter.start_index -= 1
+
     with progress:
         for shutter in shutters:
-            progress.update(1, msg=f"Using shutter: {shutter.start_index} - {shutter.end_index}")
             ss, se = shutter.start_index, shutter.end_index
+            progress.update(1, msg=f"Using shutter: {ss} - {se}")
             prob_occupied[ss + 1:se] = numpy.cumsum(data[ss:se - 1], axis=0) / shutter.count
 
         output = data / (1 - prob_occupied)

@@ -19,6 +19,7 @@ class FittingRegion(NamedTuple):
 
 class BaseFittingFunction(ABC):
     parameter_names: list[str]
+    function_name: str
 
     def get_parameter_names(self) -> list[str]:
         return list(self.parameter_names)
@@ -34,6 +35,7 @@ class BaseFittingFunction(ABC):
 
 class ErfStepFunction(BaseFittingFunction):
     parameter_names = ["mu", "sigma", "h", "a"]
+    function_name = "Error function"
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         mu, sigma, h, a = params
@@ -47,5 +49,24 @@ class ErfStepFunction(BaseFittingFunction):
             "sigma": (x2 - x1) / 4,
             "h": y2 - y1,
             "a": y1,
+        }
+        return init_params
+
+
+class SantistebanFunction(BaseFittingFunction):
+    parameter_names = ["t_hkl", "sigma", "tau"]
+    function_name = "Santisteban"
+
+    def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
+        t_hkl, sigma, tau = params
+        y = xdata
+        return y
+
+    def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
+        x1, x2, y1, y2 = region
+        init_params = {
+            "t_hkl": 0.00,
+            "sigma": 0.00,
+            "tau": 0.00,
         }
         return init_params
