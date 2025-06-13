@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
+from PyQt5.QtGui import QDoubleValidator
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
@@ -50,9 +51,9 @@ class FittingParamFormWidget(QWidget):
             row_label = QLabel(str(label))
             initial_edit = QLineEdit(str(0.0))
             final_edit = QLineEdit(str(0.0))
-
-            for widget in (initial_edit, final_edit):
-                widget.setReadOnly(True)
+            initial_edit.setReadOnly(False)
+            final_edit.setReadOnly(True)
+            initial_edit.setValidator(QDoubleValidator())
 
             row_layout.addWidget(row_label, 1)
             row_layout.addWidget(initial_edit, 2)
@@ -60,6 +61,8 @@ class FittingParamFormWidget(QWidget):
 
             self.params_layout.addLayout(row_layout)
             self._rows[label] = (row_layout, row_label, initial_edit, final_edit)
+
+            initial_edit.editingFinished.connect(self.presenter.on_initial_params_edited)
 
     def set_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
@@ -73,6 +76,10 @@ class FittingParamFormWidget(QWidget):
 
     def get_initial_param_values(self) -> list[float]:
         params = [float(row[2].text()) for row in self._rows.values()]
+        return params
+
+    def get_fitted_param_values(self) -> list[float]:
+        params = [float(row[3].text()) for row in self._rows.values()]
         return params
 
     def clear_rows(self) -> None:

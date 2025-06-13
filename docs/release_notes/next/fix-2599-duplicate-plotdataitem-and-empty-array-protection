@@ -1,0 +1,1 @@
+#2599: Resolve duplicate `PlotDataItem` in the Spectrum Viewer and add protection to fitting region against empty arrays.
