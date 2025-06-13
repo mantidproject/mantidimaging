@@ -387,6 +387,7 @@ class CILRecon(BaseRecon):
                                    angle_unit="radian",
                                    num_pixels=(pixel_num_h, pixel_num_v),
                                    pixel_size=pixel_size)
+
             images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
 
             if images.is_sinograms:
