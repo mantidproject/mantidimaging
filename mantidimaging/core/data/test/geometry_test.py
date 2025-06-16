@@ -80,7 +80,7 @@ class GeometryTest(unittest.TestCase):
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
-        self.assertTrue(np.isclose(geo.get_centre_of_rotation()["angle"][0], expected_angle))
+        self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
 
     @parameterized.expand([("default_units", ScalarCoR(256.0), 0.0, 0.0, 0.0),
                            ("positive_offset_angle", ScalarCoR(266.0), 1.0, 10.0, -1.0),
@@ -97,7 +97,7 @@ class GeometryTest(unittest.TestCase):
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
-        self.assertTrue(np.isclose(geo.get_centre_of_rotation()["angle"][0], expected_angle))
+        self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
 
     @parameterized.expand([("default_units", ScalarCoR(4.0), 0.0, 0.0, 0.0),
                            ("positive_offset_angle", ScalarCoR(5.0), 1.0, 1.0, -1.0),
@@ -114,4 +114,4 @@ class GeometryTest(unittest.TestCase):
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
-        self.assertTrue(np.isclose(geo.get_centre_of_rotation()["angle"][0], expected_angle))
+        self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
