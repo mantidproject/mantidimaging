@@ -11,8 +11,6 @@ from ..fitting_engine import FittingEngine, BaseFittingFunction, FittingRegion
 
 class MockFittingFunction(BaseFittingFunction):
     parameter_names = ['a', 'b']
-    additional_params = []
-    additional_parameter_names = []
 
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return {'a': 1, 'b': 2}
@@ -21,14 +19,8 @@ class MockFittingFunction(BaseFittingFunction):
         a, b = params
         return a * xdata + b
 
-    def get_additional_params(self) -> dict[str, float]:
-        return {}
-
-    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> None:
-        return
-
-    def fitting_setup_reset(self) -> None:
-        return
+    def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
+        return []
 
 
 class FittingEngineTest(unittest.TestCase):

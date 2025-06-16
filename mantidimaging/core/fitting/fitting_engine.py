@@ -19,29 +19,20 @@ class FittingEngine:
     def get_parameter_names(self) -> list[str]:
         return list(self.model.parameter_names)
 
-    def get_additional_parameter_names(self) -> list[str]:
-        return list(self.model.additional_parameter_names)
-
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return self.model.get_init_params_from_roi(region)
 
-    def get_additional_params(self) -> dict[str, float]:
-        return self.model.get_additional_params()
-
     def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray, initial_params: list[float]) -> dict[str, float]:
-        # TODO: let find_best_fit take in all parameters and then pass to a "pre-fitting" method which returns
-        #  the prefits of the additional parameters (e.g. a_0, b_0, a_hkl, b_hkl) so that they can be filtered
-        #  out of the initial_params for the minimize function. Another choice is to not filter out the addtional
-        #  params but to restrict them in minimize using bounds (if possible?) so that the minimize function
-        #  doesnt change them
-        #
-        self.model.fitting_setup(xdata, ydata, initial_params)
+        additional_params = self.model.prefitting(xdata, ydata, initial_params)
+        params_to_fit = initial_params[:len(initial_params) - len(additional_params)]
 
-        def f(params):
-            return ((self.model.evaluate(xdata, params) - ydata)**2).sum()
+        def f(params_to_fit):
+            if additional_params:
+                params_to_fit = np.concatenate((params_to_fit, np.array(additional_params)), axis=None)
+            return ((self.model.evaluate(xdata, params_to_fit) - ydata)**2).sum()
 
-        result = minimize(f, initial_params, method="Nelder-Mead")
+        result = minimize(f, params_to_fit, method="Nelder-Mead")
 
-        all_param_names = self.model.get_parameter_names() + self.model.get_additional_parameter_names()
-        all_params = list(result.x) + self.model.additional_params
+        all_param_names = self.model.get_parameter_names()
+        all_params = list(result.x) + additional_params
         return dict(zip(all_param_names, all_params, strict=True))

@@ -11,6 +11,14 @@ from scipy.optimize import curve_fit
 from scipy.special import erf, erfc
 
 
+class LeftSideFittingException(Exception):
+    pass
+
+
+class RightSideFittingException(Exception):
+    pass
+
+
 class FittingRegion(NamedTuple):
     x_min: float
     x_max: float
@@ -20,19 +28,10 @@ class FittingRegion(NamedTuple):
 
 class BaseFittingFunction(ABC):
     parameter_names: list[str]
-    additional_parameter_names: list[str]
-    additional_params: list[float]
     function_name: str
 
     def get_parameter_names(self) -> list[str]:
         return list(self.parameter_names)
-
-    def get_additional_parameter_names(self) -> list[str]:
-        return list(self.additional_parameter_names)
-
-    @abstractmethod
-    def get_additional_params(self) -> dict[str, float]:
-        ...
 
     @abstractmethod
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
@@ -43,28 +42,16 @@ class BaseFittingFunction(ABC):
         ...
 
     @abstractmethod
-    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> None:
-        ...
-
-    @abstractmethod
-    def fitting_setup_reset(self) -> None:
+    def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
         ...
 
 
 class ErfStepFunction(BaseFittingFunction):
     parameter_names = ["mu", "sigma", "h", "a"]
     function_name = "Error function"
-    additional_params = []
-    additional_parameter_names = []
 
-    def fitting_setup(self, _, __, ___) -> None:
-        return
-
-    def fitting_setup_reset(self) -> None:
-        return
-
-    def get_additional_params(self) -> dict[str, float]:
-        return {}
+    def prefitting(self, _, __, ___) -> list[float]:
+        return []
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         mu, sigma, h, a = params
@@ -83,18 +70,11 @@ class ErfStepFunction(BaseFittingFunction):
 
 
 class SantistebanFunction(BaseFittingFunction):
-    parameter_names = ["t_hkl", "sigma", "tau", "h", "a"]
-    additional_parameter_names = ["a_0", "b_0", "a_hkl", "b_hkl"]
+    parameter_names = ["t_hkl", "sigma", "tau", "h", "a", "a_0", "b_0", "a_hkl", "b_hkl"]
     function_name = "Santisteban"
-    additional_params = [0, 0, 0, 0]
-    x_B_eq_zero_tolerance = 1.1
-    x_B_eq_one_tolerance = 0.9
-    # TODO: try to reduce the number of attributes stored in the class
-    #  It might be easier to store the additional parameters in the parameter_names list and then either keep the
-    #  additional_parameter_names list so they can be filtered out or store the number of additional parameters
 
     def calculate_line_profile(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
-        t_hkl, sigma, tau, h, a = params
+        t_hkl, sigma, tau, h, a, _, __, ___, ____ = params
         B = 0.5 * (erfc(-(xdata - t_hkl) / (sqrt(2) * sigma)) - np.exp(-((xdata - t_hkl) / tau) +
                                                                        (sigma**2 /
                                                                         (2 * tau**2))) * erfc(-((xdata - t_hkl) /
@@ -102,32 +82,35 @@ class SantistebanFunction(BaseFittingFunction):
                                                                                               (sigma / tau)))
         return B
 
-    def fitting_setup(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> None:
+    def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
         B = self.calculate_line_profile(xdata, params)
 
-        x_B_eq_zero_ind = np.argwhere(B <= self.x_B_eq_zero_tolerance * np.min(B))[-1][0]
-        x_B_eq_one_ind = np.argwhere(B >= self.x_B_eq_one_tolerance * np.max(B))[0][0]
+        x_B_eq_zero_tolerance = 1.1
+        x_B_eq_one_tolerance = 0.9
 
-        # TODO: change how the additional parameters are found so that they are local variables which are calculated
-        #  within a loop instead of making the method self recursive. This would be a good way to ensure that
-        #  xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:] are never empty arrays
-        try:
-            a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
-            a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
-            self.additional_params = [a_0, b_0, a_hkl, b_hkl]
-        except TypeError:
-            self.x_B_eq_one_tolerance -= 0.1
-            self.x_B_eq_zero_tolerance += 0.1
-            self.fitting_setup(xdata, ydata, params)
-
-    def fitting_setup_reset(self) -> None:
-        self.additional_params = [0] * len(self.additional_params)
+        error_check = True
+        attempts = 0
+        while error_check:
+            try:
+                attempts += 1
+                x_B_eq_zero_ind = np.argwhere(B <= x_B_eq_zero_tolerance * np.min(B))[-1][0]
+                x_B_eq_one_ind = np.argwhere(B >= x_B_eq_one_tolerance * np.max(B))[0][0]
+                a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
+                a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
+                add_params = [a_0, b_0, a_hkl, b_hkl]
+                error_check = False
+            except LeftSideFittingException as err:
+                print(err)
+                x_B_eq_zero_tolerance += 0.1
+            except RightSideFittingException as err:
+                print(err)
+                x_B_eq_one_ind -= 0.1
+        return add_params
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
-        t_hkl, sigma, tau, h, a = params
-        a_0, b_0, a_hkl, b_hkl = self.additional_params
+        t_hkl, sigma, tau, h, a, a_0, b_0, a_hkl, b_hkl = params
         B = self.calculate_line_profile(xdata, params)
-        if self.additional_params == [0, 0, 0, 0]:
+        if [a_0, b_0, a_hkl, b_hkl] == [0, 0, 0, 0]:
             y = h + (a * B)
         else:
             y = (np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) +
@@ -142,30 +125,31 @@ class SantistebanFunction(BaseFittingFunction):
             "tau": (x2 - x1) / 8,
             "h": y2 - y1,
             "a": y1,
+            "a_0": 0,
+            "b_0": 0,
+            "a_hkl": 0,
+            "b_hkl": 0
         }
         return init_params
 
-    def get_additional_params(self) -> dict[str, float]:
-        add_params = {
-            "a_0": self.additional_params[0],
-            "b_0": self.additional_params[1],
-            "a_hkl": self.additional_params[2],
-            "b_hkl": self.additional_params[3]
-        }
-        return add_params
-
-    def right_side_fitting(self, xdata, ydata):
+    def right_side_fitting(self, xdata, ydata) -> list[float]:
 
         def f(t, a_0, b_0):
             return np.exp(-(a_0 + b_0 * t))
 
-        popt, pcov = curve_fit(f, xdata, ydata)
-        return popt
+        try:
+            popt, pcov = curve_fit(f, xdata, ydata)
+            return popt
+        except (TypeError, ValueError) as err:
+            raise RightSideFittingException from err
 
-    def left_side_fitting(self, xdata, ydata, a_0, b_0):
+    def left_side_fitting(self, xdata, ydata, a_0, b_0) -> list[float]:
 
         def f(t, a_hkl, b_hkl):
             return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
 
-        popt, pcov = curve_fit(f, xdata, ydata)
-        return popt
+        try:
+            popt, pcov = curve_fit(f, xdata, ydata)
+            return popt
+        except (TypeError, ValueError) as err:
+            raise LeftSideFittingException from err
