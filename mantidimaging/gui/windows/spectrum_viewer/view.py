@@ -167,7 +167,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
-        self.presenter.handle_tof_unit_change()
+        self.presenter.update_unit_labels_and_menus()
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""

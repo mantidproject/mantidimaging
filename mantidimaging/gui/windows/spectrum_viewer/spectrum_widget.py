@@ -359,10 +359,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def set_tof_axis_label(self, tof_axis_label: str) -> None:
         self.spectrum.setLabel('bottom', text=tof_axis_label)
 
-    def set_unit_range_label(self,
-                             range_min: float,
-                             range_max: float,
-                             unit_label: str = "Neutron Wavelength (Å)") -> None:
+    def set_unit_range_label(self, range_min: float, range_max: float, unit_label: str) -> None:
         if self._wavelength_range_label is None:
             self.nextRow()
             self._wavelength_range_label = self.addLabel()
