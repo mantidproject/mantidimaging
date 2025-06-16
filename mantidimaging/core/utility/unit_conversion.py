@@ -42,7 +42,10 @@ class UnitConversion:
 
     def check_data(self) -> None:
         try:
-            self.velocity = self.target_to_camera_dist / (self.tof_data_to_convert + self.data_offset)
+            tof_with_offset = self.tof_data_to_convert + self.data_offset
+            if np.any(tof_with_offset == 0):
+                raise ValueError("Time-of-flight (with offset) contains zero(s), which is likely invalid.")
+            self.velocity = self.target_to_camera_dist / tof_with_offset
         except AttributeError as exc:
             raise TypeError("No data to convert") from exc
 

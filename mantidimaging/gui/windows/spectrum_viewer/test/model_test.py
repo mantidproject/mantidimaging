@@ -47,7 +47,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         stack = ImageStack(np.ones([10, 11, 12]) * spectrum.reshape((10, 1, 1)))
         if with_tof:
             mock_inst_log = mock.create_autospec(InstrumentLog, source_file="", instance=True)
-            mock_inst_log.get_column.return_value = np.arange(0, 10) * 0.1
+            mock_inst_log.get_column.return_value = (np.arange(0, 10) + 1) * 0.1
             stack.log_file = mock_inst_log
         if with_shuttercount:
             mock_shuttercounts = mock.create_autospec(ShutterCount, source_file="", instance=True)
@@ -236,8 +236,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
-        self.assertIn("100000.0\t0.75\t0.25", mock_stream.captured[1])
-        self.assertIn("200000.0\t1.5\t0.5", mock_stream.captured[2])
+        self.assertIn("200000.0\t0.75\t0.25", mock_stream.captured[1])
+        self.assertIn("300000.00000000006\t1.5\t0.5", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
     def test_save_rits_roi_dat(self):
@@ -252,8 +252,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
             self.model.save_rits_roi(mock_path, ErrorMode.STANDARD_DEVIATION, roi)
         mock_path.open.assert_called_once_with("w")
         self.assertIn("0.0\t0.0\t0.0", mock_stream.captured[0])
-        self.assertIn("100000.0\t0.75\t0.25", mock_stream.captured[1])
-        self.assertIn("200000.0\t1.5\t0.5", mock_stream.captured[2])
+        self.assertIn("200000.0\t0.75\t0.25", mock_stream.captured[1])
+        self.assertIn("300000.00000000006\t1.5\t0.5", mock_stream.captured[2])
         self.assertTrue(mock_stream.is_closed)
 
     @parameterized.expand([
@@ -372,9 +372,10 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertIn("# ToF_index,Wavelength,ToF,Energy,all,all_open,all_norm,roi,roi_open,roi_norm",
                       mock_stream.captured[0])
         self.assertIn("# Index,Angstrom,Microseconds,MeV,Counts,Counts,Counts", mock_stream.captured[1])
-        self.assertIn("0.0,0.0,0.0,inf,0.0,2.0,0.0,0.0,2.0,0.0", mock_stream.captured[2])
+        self.assertIn("0.0,7.064346392065392,100000.0,2.9271405738026552,0.0,2.0,0.0,0.0,2.0,0.0",
+                      mock_stream.captured[2])
         self.assertIn(
-            "1.0,7.064346392065392,100000.0,2.9271405738026552,1.4166666666666667,2.0,0.7083333333333334,1.4166666666666667,2.0,0.7083333333333334",
+            "1.0,14.128692784130784,200000.0,1.4635702869013276,1.4166666666666667,2.0,0.7083333333333334,1.4166666666666667,2.0,0.7083333333333334",
             mock_stream.captured[3])
         self.assertTrue(mock_stream.is_closed)
 
@@ -406,27 +407,33 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.remove_all_roi()
         self.assertEqual(self.model._roi_id_counter, 0)
 
-    def test_WHEN_no_stack_tof_THEN_time_of_flight_none(self):
+    def test_WHEN_no_stack_tof_THEN_time_of_flight_empty(self):
         # No Stack
         self.model.set_stack(None)
-        self.assertIsNone(self.model.get_stack_time_of_flight())
+        result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.size, 0)
 
         # No Log
         stack, _ = self._set_sample_stack()
-        self.assertIsNone(self.model.get_stack_time_of_flight())
+        result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.size, 0)
 
         # Log but not tof
         mock_log = mock.create_autospec(InstrumentLog, source_file="foo.txt", instance=True)
         mock_log.get_column.side_effect = KeyError()
         stack.log_file = mock_log
-        self.assertIsNone(self.model.get_stack_time_of_flight())
+        result = self.model.get_stack_time_of_flight()
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.size, 0)
 
     def test_WHEN_stack_tof_THEN_tof_correct(self):
         stack, _ = self._set_sample_stack(with_tof=True)
 
         tof_result = self.model.get_stack_time_of_flight()
         self.assertIsInstance(tof_result, np.ndarray)
-        npt.assert_array_equal(tof_result, np.arange(0, 10) * 0.1)
+        npt.assert_array_equal(tof_result, (np.arange(0, 10) + 1) * 0.1)
 
     def test_error_modes(self):
         self.assertEqual(ErrorMode.get_by_value("Standard Deviation"), ErrorMode.STANDARD_DEVIATION)
