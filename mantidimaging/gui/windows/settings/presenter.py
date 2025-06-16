@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from PyQt5.QtCore import QSettings, QSignalBlocker
 
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.helper import initialise_logging
 
 LOG = getLogger(__name__)
 
@@ -25,6 +26,7 @@ class SettingsWindowPresenter(BasePresenter):
         super().__init__(view)
         self.view = view
         self.main_window = main_window
+
         self.current_theme = settings.value('theme_selection')
         if settings.value('selected_font_size') is None:
             self.current_menu_font_size = settings.value('default_font_size')
@@ -93,3 +95,21 @@ class SettingsWindowPresenter(BasePresenter):
 
     def set_processes_value(self):
         settings.setValue('multiprocessing/process_count', self.view.current_processes_value)
+
+    def set_log_directory(self, directory: str) -> None:
+        settings = QSettings()
+        settings.setValue("logging/log_dir", directory)
+        initialise_logging()
+
+    def set_log_level(self, value: str) -> None:
+        settings = QSettings()
+        settings.setValue("logging/log_level", value)
+        initialise_logging()
+
+    def set_performance_logging(self):
+        perf_logging = self.view.performanceLoggingCheckBox.isChecked()
+        settings.setValue("logging/performance_log", perf_logging)
+
+    def set_log_retention(self, value: int) -> None:
+        settings = QSettings()
+        settings.setValue("logging/retention", value)

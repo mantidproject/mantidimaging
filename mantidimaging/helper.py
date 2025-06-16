@@ -15,49 +15,50 @@ from PyQt5.QtCore import QSettings
 from mantidimaging.core.data import ImageStack
 
 
-def initialise_logging(arg_level: str) -> None:
+def initialise_logging(arg_level: str | None = None) -> None:
     log_formatter = logging.Formatter("%(asctime)s [%(name)s:L%(lineno)d] %(levelname)s: %(message)s")
 
     settings = QSettings()
     setting_level = settings.value("logging/log_level", defaultValue="INFO")
+    retention_days = settings.value("logging/retention", defaultValue=30, type=int)
 
-    if arg_level:
-        log_level = logging.getLevelName(arg_level)
-    else:
-        log_level = logging.getLevelName(setting_level)
+    log_level = logging.getLevelName(arg_level) if arg_level else logging.getLevelName(setting_level)
 
     # Capture all warnings
     logging.captureWarnings(True)
-
-    # Remove default handlers
     root_logger = logging.getLogger()
     root_logger.handlers = []
 
-    # Stdout handler
+    # Console Logging
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(log_formatter)
     root_logger.addHandler(console_handler)
 
-    # File handler
+    # File Logging
     log_directory = Path(settings.value("logging/log_dir", defaultValue=""))
-    if log_directory != Path(""):
-        filename = f"mantid_imaging_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
-        if not log_directory.exists():
-            log_directory.mkdir()
+    file_log = None
+    if log_directory and log_directory != Path(""):
+        log_directory.mkdir(parents=True, exist_ok=True)
+        now = datetime.now()
+        for log_file in log_directory.glob("mantid_imaging_*.log"):
+            file_time = datetime.fromtimestamp(log_file.stat().st_mtime)
+            if (now - file_time).days > retention_days:
+                log_file.unlink()
+
+        filename = f"mantid_imaging_{now.strftime('%Y-%m-%d_%H-%M-%S')}.log"
         file_log = logging.FileHandler(log_directory / filename)
         file_log.setFormatter(log_formatter)
         root_logger.addHandler(file_log)
-
-    # Default log level for mantidimaging only
     logging.getLogger('mantidimaging').setLevel(log_level)
 
+    # Performance Logging
     perf_logger = logging.getLogger('perf')
     perf_logger.setLevel(100)
     perf_logger.propagate = False
     if settings.value("logging/performance_log", defaultValue=False, type=bool):
         perf_logger.setLevel(1)
         perf_logger.addHandler(console_handler)
-        if log_directory != Path(""):
+        if file_log is not None:
             perf_logger.addHandler(file_log)
 
 
