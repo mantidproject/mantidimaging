@@ -498,7 +498,8 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span><span class="p">,</span> <span class="n">QSignalBlocker</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QSpinBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span>
+                             <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
 
@@ -534,6 +535,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Settings&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">SettingsWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_logging_tab</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">themeName</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s1">&#39;Fusion&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">themeName</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">list_themes</span><span class="p">())</span>
@@ -562,6 +564,78 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">processesSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processesSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;multiprocessing/process_count&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processesSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_processes_value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_logging_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggingTab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settingsTabWidget</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loggingTab</span><span class="p">,</span> <span class="s2">&quot;Logging&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create main</span>
+        <span class="n">mainLayout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loggingTab</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">mainLayout</span><span class="p">)</span>
+
+        <span class="c1"># Log Directory</span>
+        <span class="n">dirLayout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLabel</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Log Directory:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLineEdit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/log_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLineEdit</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Browse&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryButton</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_log_directory</span><span class="p">)</span>
+        <span class="n">dirLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLabel</span><span class="p">)</span>
+        <span class="n">dirLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLineEdit</span><span class="p">)</span>
+        <span class="n">dirLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryButton</span><span class="p">)</span>
+        <span class="n">dirLayout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">mainLayout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">dirLayout</span><span class="p">)</span>
+
+        <span class="c1"># Log Level</span>
+        <span class="n">levelLayout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logLevelLabel</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Log Level:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logLevelComboBox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logLevelComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;CRITICAL&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logLevelComboBox</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/log_level&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logLevelComboBox</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">levelLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logLevelLabel</span><span class="p">)</span>
+        <span class="n">levelLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logLevelComboBox</span><span class="p">)</span>
+        <span class="n">levelLayout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">mainLayout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">levelLayout</span><span class="p">)</span>
+
+        <span class="c1"># Retention (days)</span>
+        <span class="n">retentionLayout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionLabel</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Retention (days):&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mi">365</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/retention&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+        <span class="n">retentionLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logRetentionLabel</span><span class="p">)</span>
+        <span class="n">retentionLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span><span class="p">)</span>
+        <span class="n">retentionLayout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">mainLayout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">retentionLayout</span><span class="p">)</span>
+
+        <span class="c1"># Performance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">performanceLoggingCheckBox</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Performance Logging&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">performanceLoggingCheckBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/performance_log&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+        <span class="n">mainLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">performanceLoggingCheckBox</span><span class="p">)</span>
+
+        <span class="c1"># align</span>
+        <span class="n">mainLayout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+
+        <span class="c1"># Connect signals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logLevelComboBox</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_log_level</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logRetentionSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_log_retention</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select_log_directory</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">performanceLoggingCheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_performance_logging</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SettingsWindowView.select_log_directory">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.view.html#mantidimaging.gui.windows.settings.view.SettingsWindowView.select_log_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_log_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Select Log Directory&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">directory</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_log_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

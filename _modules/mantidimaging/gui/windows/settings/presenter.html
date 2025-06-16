@@ -501,6 +501,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span><span class="p">,</span> <span class="n">QSignalBlocker</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">initialise_logging</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -520,6 +521,7 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">current_theme</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;theme_selection&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;selected_font_size&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">current_menu_font_size</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;default_font_size&#39;</span><span class="p">)</span>
@@ -602,6 +604,36 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_processes_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_processes_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;multiprocessing/process_count&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_processes_value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsWindowPresenter.set_log_directory">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_log_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_log_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;logging/log_dir&quot;</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span>
+        <span class="n">initialise_logging</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SettingsWindowPresenter.set_log_level">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_log_level">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;logging/log_level&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">initialise_logging</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SettingsWindowPresenter.set_performance_logging">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_performance_logging">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_performance_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">perf_logging</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">performanceLoggingCheckBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;logging/performance_log&quot;</span><span class="p">,</span> <span class="n">perf_logging</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SettingsWindowPresenter.set_log_retention">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_log_retention">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_log_retention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;logging/retention&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

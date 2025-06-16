@@ -510,49 +510,50 @@ document.write(`
 
 <div class="viewcode-block" id="initialise_logging">
 <a class="viewcode-back" href="../../api/mantidimaging.helper.html#mantidimaging.helper.initialise_logging">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">initialise_logging</span><span class="p">(</span><span class="n">arg_level</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">initialise_logging</span><span class="p">(</span><span class="n">arg_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">log_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [</span><span class="si">%(name)s</span><span class="s2">:L</span><span class="si">%(lineno)d</span><span class="s2">] </span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
     <span class="n">setting_level</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/log_level&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="n">retention_days</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/retention&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">arg_level</span><span class="p">:</span>
-        <span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">arg_level</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">setting_level</span><span class="p">)</span>
+    <span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">arg_level</span><span class="p">)</span> <span class="k">if</span> <span class="n">arg_level</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">setting_level</span><span class="p">)</span>
 
     <span class="c1"># Capture all warnings</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">captureWarnings</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="c1"># Remove default handlers</span>
     <span class="n">root_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
     <span class="n">root_logger</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="c1"># Stdout handler</span>
+    <span class="c1"># Console Logging</span>
     <span class="n">console_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
     <span class="n">console_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">log_formatter</span><span class="p">)</span>
     <span class="n">root_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
 
-    <span class="c1"># File handler</span>
+    <span class="c1"># File Logging</span>
     <span class="n">log_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/log_dir&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">log_directory</span> <span class="o">!=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mantid_imaging_</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H-%M-%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.log&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">log_directory</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">log_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+    <span class="n">file_log</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">log_directory</span> <span class="ow">and</span> <span class="n">log_directory</span> <span class="o">!=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">log_directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">log_file</span> <span class="ow">in</span> <span class="n">log_directory</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;mantid_imaging_*.log&quot;</span><span class="p">):</span>
+            <span class="n">file_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">log_file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">file_time</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">&gt;</span> <span class="n">retention_days</span><span class="p">:</span>
+                <span class="n">log_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mantid_imaging_</span><span class="si">{</span><span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H-%M-%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.log&quot;</span>
         <span class="n">file_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_directory</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">file_log</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">log_formatter</span><span class="p">)</span>
         <span class="n">root_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_log</span><span class="p">)</span>
-
-    <span class="c1"># Default log level for mantidimaging only</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;mantidimaging&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
 
+    <span class="c1"># Performance Logging</span>
     <span class="n">perf_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;perf&#39;</span><span class="p">)</span>
     <span class="n">perf_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
     <span class="n">perf_logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/performance_log&quot;</span><span class="p">,</span> <span class="n">defaultValue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">):</span>
         <span class="n">perf_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">perf_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">log_directory</span> <span class="o">!=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file_log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">perf_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_log</span><span class="p">)</span></div>
 
 
