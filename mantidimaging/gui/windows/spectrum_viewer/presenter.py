@@ -132,7 +132,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
                                            self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
-        self.update_fitting_function(self.view.fitSelectionWidget.initial_fit_function)
+        #self.update_fitting_function(self.view.fitSelectionWidget.initial_fit_function)
         self.update_fitting_spectrum("roi", reset_region=True)
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
