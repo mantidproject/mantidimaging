@@ -96,10 +96,6 @@ class SettingsWindowPresenter(BasePresenter):
     def set_processes_value(self):
         settings.setValue('multiprocessing/process_count', self.view.current_processes_value)
 
-    def set_logging_enabled(self):
-        enabled = self.view.enableLoggingCheckBox.isChecked()
-        settings.setValue("logging/enabled", enabled)
-
     def set_log_directory(self, directory: str) -> None:
         settings = QSettings()
         settings.setValue("logging/log_dir", directory)

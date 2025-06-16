@@ -55,18 +55,14 @@ class WelcomeScreenPresenter:
         """
         Removes existing link labels and re-adds them with the new theme color logic.
         """
-        try:
-            layout = self.view.link_box_layout
-            while layout.count():
-                item = layout.takeAt(0)
-                if item.widget():
-                    item.widget().setParent(None)
+        layout = self.view.link_box_layout
+        while layout.count():
+            item = layout.takeAt(0)
+            if item.widget():
+                item.widget().setParent(None)
 
-            self.link_count = 0
-            self.set_up_links()
-
-        except RuntimeError:
-            LOG.warning("link_box_layout has already been deleted. Skipping recolor_links()")
+        self.link_count = 0
+        self.set_up_links()
 
     def check_issues(self) -> None:
         issues = []

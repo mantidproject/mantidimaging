@@ -35,12 +35,12 @@ def initialise_logging(arg_level: str | None = None) -> None:
     root_logger.addHandler(console_handler)
 
     # File Logging
-    log_directory = Path(settings.value("logging/log_dir", defaultValue="logs"))
+    log_directory = Path(settings.value("logging/log_dir", defaultValue=""))
     file_log = None
     if log_directory and log_directory != Path(""):
         log_directory.mkdir(parents=True, exist_ok=True)
         now = datetime.now()
-        for log_file in log_directory.glob("*.log"):
+        for log_file in log_directory.glob("mantid_imaging_*.log"):
             file_time = datetime.fromtimestamp(log_file.stat().st_mtime)
             if (now - file_time).days > retention_days:
                 log_file.unlink()

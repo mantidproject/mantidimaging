@@ -80,11 +80,6 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         mainLayout = QVBoxLayout()
         self.loggingTab.setLayout(mainLayout)
 
-        # Enable Logging
-        self.enableLoggingCheckBox = QCheckBox("Enable Logging")
-        self.enableLoggingCheckBox.setChecked(settings.value("logging/enabled", True, type=bool))
-        mainLayout.addWidget(self.enableLoggingCheckBox)
-
         # Log Directory
         dirLayout = QHBoxLayout()
         self.logDirectoryLabel = QLabel("Log Directory:")
@@ -133,7 +128,6 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         mainLayout.addStretch()
 
         # Connect signals
-        self.enableLoggingCheckBox.stateChanged.connect(self.presenter.set_logging_enabled)
         self.logLevelComboBox.currentTextChanged.connect(self.presenter.set_log_level)
         self.logRetentionSpinBox.valueChanged.connect(self.presenter.set_log_retention)
         self.logDirectoryButton.clicked.connect(self.select_log_directory)
