@@ -423,7 +423,7 @@ class ReconstructWindowPresenter(BasePresenter):
             initial_cor = []
             for slc in slice_indices:
                 if isinstance(slc, int | np.integer):
-                    initial_cor.append(self.model.data_model.get_cor_from_regression(slc))
+                    initial_cor.append(self.model.data_model.get_cor_from_regression(int(slc)))
                 else:
                     raise TypeError(f"Expected int for slice index, got {type(slc)}")
         else:
