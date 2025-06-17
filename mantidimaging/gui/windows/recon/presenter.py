@@ -421,6 +421,31 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
+        self._update_imagestack_geometry_data()
+
+    def _update_imagestack_geometry_data(self) -> None:
+        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
+        current_uuid = self.view.stackSelector.current()
+        assert current_uuid is not None, "Invalid stack UUID; No stack selected"
+
+        current_image_stack = self.main_window.get_stack(current_uuid)
+        if current_image_stack is None:
+            LOG.debug("No image stack or geometry found; skipping geometry update.")
+            return
+
+        if current_image_stack.geometry is None:
+            raise StackNotFoundError(f"No geometry found for imagestack with UUID: {current_uuid}")
+
+        height = current_image_stack.height if current_image_stack is not None else 0
+        cors = self.model.data_model.get_all_cors_from_regression(height)
+
+        if not cors or len(cors) < (height // 2):
+            LOG.warning("Not enough CORs available to update geometry data.")
+            return
+
+        tilt = self.view.tilt
+        cor_top = cors[0]
+        current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
 
     def _auto_find_correlation(self) -> None:
         if not self.model.images.has_proj180deg():
