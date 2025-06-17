@@ -8,7 +8,17 @@ from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor, QResizeEvent
 from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
 
-from pyqtgraph import ROI, GraphicsLayoutWidget, LinearRegionItem, PlotItem, mkPen, ViewBox, PlotDataItem, GraphicsItem
+from pyqtgraph import (
+    ROI,
+    GraphicsLayoutWidget,
+    LinearRegionItem,
+    PlotItem,
+    mkPen,
+    ViewBox,
+    PlotDataItem,
+    GraphicsItem,
+    LabelItem,
+)
 import numpy as np
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -306,6 +316,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     spectrum: MIPlotItem
     range_control: LinearRegionItem
     range_changed = pyqtSignal(object)
+    _wavelength_range_label: LabelItem | None
 
     def __init__(self) -> None:
         super().__init__()
@@ -320,6 +331,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         self.range_control = LinearRegionItem()
         self.range_control.sigRegionChangeFinished.connect(self._handle_tof_range_changed)
         self.ci.layout.setRowStretchFactor(0, 1)
+        self._wavelength_range_label = None
 
     def get_tof_range(self) -> tuple[float, float]:
         r_min, r_max = self.range_control.getRegion()
@@ -347,11 +359,11 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     def set_tof_axis_label(self, tof_axis_label: str) -> None:
         self.spectrum.setLabel('bottom', text=tof_axis_label)
 
-    def set_wavelength_range_label(self, range_min: float, range_max: float) -> None:
-        if not hasattr(self, "_wavelength_range_label"):
+    def set_unit_range_label(self, range_min: float, range_max: float, unit_label: str) -> None:
+        if self._wavelength_range_label is None:
             self.nextRow()
             self._wavelength_range_label = self.addLabel()
-        self._wavelength_range_label.setText(f"Neutron Wavelength (Å)\nRange: {range_min:.3f} - {range_max:.3f}")
+        self._wavelength_range_label.setText(f"{unit_label}\nRange: {range_min:.3f} - {range_max:.3f}")
 
 
 class SpectrumProjectionWidget(GraphicsLayoutWidget):

@@ -70,6 +70,9 @@ class ExportMode(Enum):
     IMAGE_MODE = 1
 
 
+MODE_TO_LABEL = {v["mode"]: (k, v["label"]) for k, v in allowed_modes.items()}
+
+
 class SpectrumViewerWindowPresenter(BasePresenter):
     """
     The presenter for the spectrum viewer window.
@@ -335,11 +338,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.fitting_spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
         self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name, image=image)
-        wavelength_range = float(np.min(tof_data)), float(np.max(tof_data))
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
         self.setup_fitting_model()
-        self.view.fittingDisplayWidget.update_labels(wavelength_range=wavelength_range)
+
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
 
@@ -527,13 +529,41 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_tof_unit_change(self) -> None:
         self.model.set_relevant_tof_units()
-        tof_axis_label = allowed_modes[self.view.tof_units_mode]["label"]
-        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(tof_axis_label)
+        self.update_unit_labels_and_menus()
         self.refresh_spectrum_plot()
+        self._update_all_fitting_spectra()
 
-    def handle_tof_unit_change_via_menu(self) -> None:
-        self.model.tof_mode = allowed_modes[self.view.tof_units_mode]["mode"]
+    def _update_all_fitting_spectra(self) -> None:
+        for roi_name in self.view.spectrum_widget.roi_dict:
+            self.update_fitting_spectrum(roi_name)
+
+    def handle_tof_unit_change_via_menu(self, unit_name: str) -> None:
+        self.view.tof_units_mode = unit_name
+        self.model.tof_mode = allowed_modes[unit_name]["mode"]
         self.handle_tof_unit_change()
+
+    def update_unit_labels_and_menus(self) -> None:
+        """
+        Update all unit-related axis and range labels, as well as unit selection menus
+        in both the main spectrum plot in the image tab and the fitting tab.
+        """
+        unit_mode = self.model.tof_mode
+        tof_data = self.model.tof_data
+
+        unit_name, axis_label = MODE_TO_LABEL.get(unit_mode, ("Image Index", allowed_modes["Image Index"]["label"]))
+
+        # Update axis labels
+        self.view.spectrum_widget.spectrum_plot_widget.set_tof_axis_label(axis_label)
+        self.view.fittingDisplayWidget.spectrum_plot.spectrum.setLabel('bottom', text=axis_label)
+
+        # Update range labels
+        if tof_data.size > 0:
+            range_min, range_max = float(np.min(tof_data)), float(np.max(tof_data))
+            self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(range_min, range_max)
+            self.view.fittingDisplayWidget.spectrum_plot.set_tof_range_label(range_min, range_max)
+            self.view.fittingDisplayWidget.spectrum_plot.set_unit_range_label(range_min, range_max, axis_label)
+
+        self.view.sync_unit_menus(unit_name)
 
     def refresh_spectrum_plot(self) -> None:
         self.view.show_visible_spectrums()

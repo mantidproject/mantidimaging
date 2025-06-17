@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
+from functools import partial
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem, QAction, QActionGroup
 from PyQt5.QtGui import QTransform
 from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 
+from mantidimaging.gui.windows.spectrum_viewer.model import allowed_modes
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
 from mantidimaging.core.fitting.fitting_functions import FittingRegion
 
@@ -16,6 +19,9 @@ class FittingDisplayWidget(QWidget):
     """
     Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.
     """
+
+    initial_fit_line: PlotDataItem | None = None
+    unit_changed = pyqtSignal(str)
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -46,6 +52,7 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi.setParentItem(self.image_item)
         self.image_preview_roi.setAcceptedMouseButtons(QtCore.Qt.NoButton)  # Optional: make non-interactive
         self.image_preview_roi.hide()
+        self._add_units_menu()
 
         self._showing_initial_fit = False
 
@@ -70,10 +77,23 @@ class FittingDisplayWidget(QWidget):
             scale = 150 / max(width, height)
             self.image_item.setTransform(QTransform().scale(scale, scale))
 
-    def update_labels(self, wavelength_range: tuple[float, float] | None = None) -> None:
-        """Update wavelength range label below the plot, if available."""
-        if wavelength_range is not None:
-            self.spectrum_plot.set_wavelength_range_label(*wavelength_range)
+    def _add_units_menu(self) -> None:
+        """Add a right-click units menu to the spectrum plot for unit conversion."""
+        self.units_menu = self.spectrum_plot.spectrum_viewbox.menu.addMenu("Units")
+        self.tof_mode_select_group = QActionGroup(self)
+        for mode in allowed_modes.keys():
+            action = QAction(mode, self.tof_mode_select_group)
+            action.setCheckable(True)
+            action.setObjectName(mode)
+            self.units_menu.addAction(action)
+            action.triggered.connect(partial(self.unit_changed.emit, mode))
+            if mode == "Image Index":
+                action.setChecked(True)
+
+    def update_labels(self, value_range: tuple[float, float] | None, unit_label: str) -> None:
+        """Update the unit range label below the plot, if available."""
+        if value_range is not None:
+            self.spectrum_plot.set_unit_range_label(*value_range, unit_label=unit_label)
 
     def set_default_region(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
         """Position the ROI centrally over the plotted data."""
