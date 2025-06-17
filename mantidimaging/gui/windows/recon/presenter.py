@@ -421,6 +421,19 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
+        self._update_imagestack_geometry_data()
+
+    def _update_imagestack_geometry_data(self) -> None:
+        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
+        # Update Imagestack geometry data
+        current_uuid = self.view.stackSelector.current()
+        current_image_stack = self.main_window.get_stack(current_uuid) if current_uuid is not None else None
+        geometry = current_image_stack.geometry if current_image_stack is not None else None
+        if geometry is not None:
+            height = current_image_stack.height if current_image_stack is not None else 0
+            cors = self.model.data_model.get_all_cors_from_regression(height)
+            tilt = self.view.tilt
+            geometry.set_geometry_from_cor_tilt(cors[height // 2], tilt)
 
     def _auto_find_correlation(self) -> None:
         if not self.model.images.has_proj180deg():
