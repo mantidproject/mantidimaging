@@ -1,0 +1,1 @@
+#2627: Remove Int type check of slice in  ``_auto_find_minimisation_square_sum`` to resolve TypeError when applying minimise error in reconstruction view.
