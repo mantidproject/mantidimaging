@@ -47,6 +47,7 @@ class Geometry(AcquisitionGeometry):
         :param tilt: A float value defining the tilt in degrees.
         :type tilt: float
         """
+
         offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt, angle_units='degree')
