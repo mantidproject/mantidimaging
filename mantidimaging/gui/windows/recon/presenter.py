@@ -422,10 +422,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if self.model.has_results:
             initial_cor = []
             for slc in slice_indices:
-                if isinstance(slc, int):
-                    initial_cor.append(self.model.data_model.get_cor_from_regression(slc))
-                else:
-                    raise TypeError(f"Expected int for slice index, got {type(slc)}")
+                initial_cor.append(self.model.data_model.get_cor_from_regression(slc))
         else:
             initial_cor = [self.view.rotation_centre]
 
