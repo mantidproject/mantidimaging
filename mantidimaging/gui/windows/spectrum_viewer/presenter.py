@@ -343,6 +343,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
 
+    def update_fitting_function(self, fitting_obj) -> None:
+        fitting_func = fitting_obj()
+        self.model.fitting_engine.set_fitting_model(fitting_func)
+        self.setup_fitting_model()
+
     def redraw_spectrum(self, name: str) -> None:
         """
         Redraw the spectrum with the given name

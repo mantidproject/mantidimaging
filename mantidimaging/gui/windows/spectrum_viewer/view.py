@@ -26,6 +26,8 @@ from mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget import 
 
 import numpy as np
 
+from ...widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROITableWidget
@@ -70,6 +72,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.roiSelectionWidget = ROISelectionWidget(self)
         self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
+
+        self.fitSelectionWidget = FitSelectionWidget(self)
+        self.fittingFormLayout.layout().addWidget(self.fitSelectionWidget)
+        self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
         self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
