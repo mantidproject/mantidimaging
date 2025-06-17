@@ -9,6 +9,7 @@ import numpy as np
 from parameterized import parameterized
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.geometry import Geometry
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
@@ -24,12 +25,14 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE
+        self.data.geometry = mock.Mock(return_value=Geometry(num_pixels=(128, 128), pixel_size=(1., 1.)))
 
         self.main_window = mock.MagicMock()
         self.main_window.get_stack.return_value = self.data
 
         self.presenter = ReconstructWindowPresenter(self.view, self.main_window)
         self.presenter.model.initial_select_data(self.data)
+        self.presenter.main_window.get_stack = mock.Mock(return_value=self.data)
 
         self.uuid = self.data.id
 
@@ -50,6 +53,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.subsetsSpinBox = mock.Mock()
         self.view.regPercentSpinBox = mock.Mock()
         self.view.regPercentLabel = mock.Mock()
+        self.view.stackSelector = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_current_stack(self, mock_start_async: mock.Mock):
