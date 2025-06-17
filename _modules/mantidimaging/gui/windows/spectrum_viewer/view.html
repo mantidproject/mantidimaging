@@ -496,6 +496,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span>
@@ -573,6 +574,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">fitSelectionWidget</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_fitting_function</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span> <span class="o">=</span> <span class="n">FittingDisplayWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">unit_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change_via_menu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_fitting_spectrum</span><span class="p">)</span>
 
@@ -597,8 +599,8 @@ document.write(`
             <span class="n">action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change_via_menu</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;Image Index&quot;</span><span class="p">:</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change_via_menu</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;Wavelength&quot;</span><span class="p">:</span>
                 <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -676,7 +678,17 @@ document.write(`
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_change_tab">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_change_tab">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_change_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imageTabs</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageTabs</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_unit_labels_and_menus</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowView.sync_unit_menus">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sync_unit_menus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_unit_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync the checked unit in both the image and fitting tab unit menus.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">actions</span><span class="p">():</span>
+                <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="n">unit_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.on_visibility_change">
@@ -998,6 +1010,13 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tof_units_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+    <span class="nd">@tof_units_mode</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tof_units_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">actions</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">break</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">table_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ROITableWidget</span><span class="p">:</span>

@@ -496,11 +496,14 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QGraphicsItem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QGraphicsItem</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QActionGroup</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTransform</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">RectROI</span><span class="p">,</span> <span class="n">mkPen</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">ROI</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">allowed_modes</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumPlotWidget</span><span class="p">,</span> <span class="n">SpectrumROI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingRegion</span>
 
@@ -511,6 +514,9 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">initial_fit_line</span><span class="p">:</span> <span class="n">PlotDataItem</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">unit_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -541,6 +547,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setParentItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setAcceptedMouseButtons</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoButton</span><span class="p">)</span>  <span class="c1"># Optional: make non-interactive</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_units_menu</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -574,12 +581,25 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">setTransform</span><span class="p">(</span><span class="n">QTransform</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">))</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_units_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a right-click units menu to the spectrum plot for unit conversion.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum_viewbox</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Units&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">allowed_modes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;Image Index&quot;</span><span class="p">:</span>
+                <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
 <div class="viewcode-block" id="FittingDisplayWidget.update_labels">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_labels">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wavelength_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update wavelength range label below the plot, if available.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">wavelength_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">set_wavelength_range_label</span><span class="p">(</span><span class="o">*</span><span class="n">wavelength_range</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unit_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the unit range label below the plot, if available.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">set_unit_range_label</span><span class="p">(</span><span class="o">*</span><span class="n">value_range</span><span class="p">,</span> <span class="n">unit_label</span><span class="o">=</span><span class="n">unit_label</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget.set_default_region">

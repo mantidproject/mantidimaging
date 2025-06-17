@@ -572,6 +572,9 @@ document.write(`
 
 
 
+<span class="n">MODE_TO_LABEL</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">]:</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">allowed_modes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SpectrumViewerWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
@@ -889,11 +892,10 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">tof_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">)</span>
-        <span class="n">wavelength_range</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">tof_data</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tof_data</span><span class="p">))</span>
         <span class="n">roi_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">show_roi_on_thumbnail_from_widget</span><span class="p">(</span><span class="n">roi_widget</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">update_labels</span><span class="p">(</span><span class="n">wavelength_range</span><span class="o">=</span><span class="n">wavelength_range</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">reset_region</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">set_default_region</span><span class="p">(</span><span class="n">tof_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_spectrum</span><span class="p">)</span></div>
 
@@ -1129,16 +1131,47 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_tof_unit_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_tof_unit_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_relevant_tof_units</span><span class="p">()</span>
-        <span class="n">tof_axis_label</span> <span class="o">=</span> <span class="n">allowed_modes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tof_units_mode</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_plot_widget</span><span class="o">.</span><span class="n">set_tof_axis_label</span><span class="p">(</span><span class="n">tof_axis_label</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_spectrum_plot</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_unit_labels_and_menus</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_spectrum_plot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_all_fitting_spectra</span><span class="p">()</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_all_fitting_spectra</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_fitting_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_tof_unit_change_via_menu">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_tof_unit_change_via_menu">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">handle_tof_unit_change_via_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">=</span> <span class="n">allowed_modes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tof_units_mode</span><span class="p">][</span><span class="s2">&quot;mode&quot;</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_tof_unit_change_via_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tof_units_mode</span> <span class="o">=</span> <span class="n">unit_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_mode</span> <span class="o">=</span> <span class="n">allowed_modes</span><span class="p">[</span><span class="n">unit_name</span><span class="p">][</span><span class="s2">&quot;mode&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_tof_unit_change</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.update_unit_labels_and_menus">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.update_unit_labels_and_menus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_unit_labels_and_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update all unit-related axis and range labels, as well as unit selection menus</span>
+<span class="sd">        in both the main spectrum plot in the image tab and the fitting tab.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unit_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_mode</span>
+        <span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span>
+
+        <span class="n">unit_name</span><span class="p">,</span> <span class="n">axis_label</span> <span class="o">=</span> <span class="n">MODE_TO_LABEL</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unit_mode</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Image Index&quot;</span><span class="p">,</span> <span class="n">allowed_modes</span><span class="p">[</span><span class="s2">&quot;Image Index&quot;</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]))</span>
+
+        <span class="c1"># Update axis labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_plot_widget</span><span class="o">.</span><span class="n">set_tof_axis_label</span><span class="p">(</span><span class="n">axis_label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">setLabel</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">axis_label</span><span class="p">)</span>
+
+        <span class="c1"># Update range labels</span>
+        <span class="k">if</span> <span class="n">tof_data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">tof_data</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tof_data</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_plot_widget</span><span class="o">.</span><span class="n">set_tof_range_label</span><span class="p">(</span><span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">set_tof_range_label</span><span class="p">(</span><span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">set_unit_range_label</span><span class="p">(</span><span class="n">range_min</span><span class="p">,</span> <span class="n">range_max</span><span class="p">,</span> <span class="n">axis_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">sync_unit_menus</span><span class="p">(</span><span class="n">unit_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.refresh_spectrum_plot">
