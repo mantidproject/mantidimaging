@@ -517,6 +517,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseFittingFunction</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="n">parameter_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">function_name</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="BaseFittingFunction.get_parameter_names">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.get_parameter_names">[docs]</a>
@@ -544,6 +545,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ErfStepFunction</span><span class="p">(</span><span class="n">BaseFittingFunction</span><span class="p">):</span>
     <span class="n">parameter_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">]</span>
+    <span class="n">function_name</span> <span class="o">=</span> <span class="s2">&quot;Error function&quot;</span>
 
 <div class="viewcode-block" id="ErfStepFunction.evaluate">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction.evaluate">[docs]</a>
@@ -562,6 +564,34 @@ document.write(`
             <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
             <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">,</span>
             <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">y1</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">init_params</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SantistebanFunction">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SantistebanFunction</span><span class="p">(</span><span class="n">BaseFittingFunction</span><span class="p">):</span>
+    <span class="n">parameter_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;t_hkl&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;tau&quot;</span><span class="p">]</span>
+    <span class="n">function_name</span> <span class="o">=</span> <span class="s2">&quot;Santisteban&quot;</span>
+
+<div class="viewcode-block" id="SantistebanFunction.evaluate">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">t_hkl</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">xdata</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="SantistebanFunction.get_init_params_from_roi">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.get_init_params_from_roi">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_init_params_from_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">FittingRegion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">region</span>
+        <span class="n">init_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;t_hkl&quot;</span><span class="p">:</span> <span class="mf">0.00</span><span class="p">,</span>
+            <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="mf">0.00</span><span class="p">,</span>
+            <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="mf">0.00</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">init_params</span></div>
 </div>

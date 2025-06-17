@@ -16,6 +16,7 @@ Submodules
    mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget
    mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget
    mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget
+   mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget
    mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget
    mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget
    mantidimaging.gui.widgets.spectrum_widgets.tof_properties

@@ -505,8 +505,14 @@ document.write(`
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_engine.html#mantidimaging.core.fitting.fitting_engine.FittingEngine">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FittingEngine</span><span class="p">:</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BaseFittingFunction</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BaseFittingFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+<div class="viewcode-block" id="FittingEngine.set_fitting_model">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_engine.html#mantidimaging.core.fitting.fitting_engine.FittingEngine.set_fitting_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_fitting_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">BaseFittingFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span></div>
+
 
 <div class="viewcode-block" id="FittingEngine.get_parameter_names">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_engine.html#mantidimaging.core.fitting.fitting_engine.FittingEngine.get_parameter_names">[docs]</a>

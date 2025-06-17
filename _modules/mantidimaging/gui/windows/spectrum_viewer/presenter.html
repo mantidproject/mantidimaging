@@ -898,6 +898,14 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">set_default_region</span><span class="p">(</span><span class="n">tof_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_spectrum</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.update_fitting_function">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.update_fitting_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fitting_func</span> <span class="o">=</span> <span class="n">fitting_obj</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">set_fitting_model</span><span class="p">(</span><span class="n">fitting_func</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.redraw_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_spectrum">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">redraw_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
