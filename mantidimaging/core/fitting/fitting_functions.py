@@ -70,6 +70,10 @@ class ErfStepFunction(BaseFittingFunction):
 
 
 class SantistebanFunction(BaseFittingFunction):
+    """
+    Fitting algorithm for fitting Bragg Edges to the forumulas given by Santisteban:
+    https://www.researchgate.net/publication/42793067_Time-of-flight_Neutron_Transmission_Diffraction
+    """
     parameter_names = ["t_hkl", "sigma", "tau", "h", "a", "a_0", "b_0", "a_hkl", "b_hkl"]
     function_name = "Santisteban"
 
