@@ -1,5 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
+from __future__ import annotations
 import inspect
 
 from mantidimaging.core.fitting import fitting_functions
@@ -55,8 +56,3 @@ class FitSelectionWidget(QtWidgets.QGroupBox):
     def current_fit_name(self) -> str:
         """Returns the currently selected fit from the dropdown."""
         return self.fitDropdown.currentText()
-
-    @property
-    def initial_fit_function(self) -> type[BaseFittingFunction]:
-        """Returns the currently selected fit from the dropdown."""
-        return list(self.func_dict.values())[0]
