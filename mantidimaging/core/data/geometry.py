@@ -6,6 +6,8 @@ from cil.framework import AcquisitionGeometry
 
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
+from math import tan, radians, degrees
+
 
 class Geometry(AcquisitionGeometry):
     is_parallel: bool = False
@@ -50,3 +52,20 @@ class Geometry(AcquisitionGeometry):
         offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt, angle_units='degree')
+
+    @property
+    def tilt(self) -> float:
+        slope: float = self.get_centre_of_rotation()['angle'][0]
+        return -degrees(slope)
+
+    @property
+    def cor(self) -> ScalarCoR:
+        offset = self.get_centre_of_rotation()['offset'][0]
+        num_pixels = self.config.panel.num_pixels[0] / 2
+        pixel_size = self.config.panel.pixel_size[0]
+        cil_cor = (offset / pixel_size) + num_pixels
+
+        tilt_radians = -radians(self.tilt)
+        mi_cor = cil_cor - num_pixels * tan(tilt_radians)
+
+        return ScalarCoR(mi_cor)
