@@ -126,8 +126,34 @@ GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where po
 
 Logging
 -------
+Logging can be configured interactively via the **Settings > Logging** tab in the application. This tab allows users to customize how log data is collected, stored, and used for debugging or performance analysis.
 
-Logging can be controlled using the QSettings configuration file :file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows (See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_:). For example::
+The following options are available:
+
+- **Log Directory**: The directory where log files are saved. If left empty, no log file is written.
+- **Retention (days)**: Defines how many days logs are kept before automatic deletion.
+- **Performance Logging**: Enables detailed performance profiling and timing logs for key operations.
+- **Log Level**: Controls the verbosity and detail of the log output. See below for descriptions.
+
+The log level determines how much information is recorded. Mantid Imaging supports the following standard log levels:
+
++-----------+--------------------------------------------------------------+
+| Level     | Description                                                  |
++===========+==============================================================+
+| DEBUG     | Detailed developer-focused messages                          |
++-----------+--------------------------------------------------------------+
+| INFO      | General workflow steps and user actions                      |
++-----------+--------------------------------------------------------------+
+| WARNING   | Recoverable problems or fallback behaviors                   |
++-----------+--------------------------------------------------------------+
+| ERROR     | Failed operations that interrupt the workflow                |
++-----------+--------------------------------------------------------------+
+| CRITICAL  | Severe issues such as crashes or data corruption             |
++-----------+--------------------------------------------------------------+
+
+Logging settings can also be configured manually via the `QSettings` configuration file. On Linux, this is located at:
+:file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows
+(See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_:). For example::
 
     [logging]
     log_level=DEBUG
