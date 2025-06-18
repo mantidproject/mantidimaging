@@ -7,7 +7,16 @@ from math import sqrt
 from typing import NamedTuple
 
 import numpy as np
-from scipy.special import erf
+from scipy.optimize import curve_fit
+from scipy.special import erf, erfc
+
+
+class LeftSideFittingException(Exception):
+    pass
+
+
+class RightSideFittingException(Exception):
+    pass
 
 
 class FittingRegion(NamedTuple):
@@ -32,10 +41,17 @@ class BaseFittingFunction(ABC):
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         ...
 
+    @abstractmethod
+    def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
+        ...
+
 
 class ErfStepFunction(BaseFittingFunction):
     parameter_names = ["mu", "sigma", "h", "a"]
     function_name = "Error function"
+
+    def prefitting(self, _, __, ___) -> list[float]:
+        return []
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         mu, sigma, h, a = params
@@ -54,19 +70,90 @@ class ErfStepFunction(BaseFittingFunction):
 
 
 class SantistebanFunction(BaseFittingFunction):
-    parameter_names = ["t_hkl", "sigma", "tau"]
+    """
+    Fitting algorithm for fitting Bragg Edges to the forumulas given by Santisteban:
+    https://www.researchgate.net/publication/42793067_Time-of-flight_Neutron_Transmission_Diffraction
+    """
+    parameter_names = ["t_hkl", "sigma", "tau", "h", "a", "a_0", "b_0", "a_hkl", "b_hkl"]
     function_name = "Santisteban"
 
+    def calculate_line_profile(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
+        t_hkl, sigma, tau, h, a, _, __, ___, ____ = params
+        B = 0.5 * (erfc(-(xdata - t_hkl) / (sqrt(2) * sigma)) - np.exp(-((xdata - t_hkl) / tau) +
+                                                                       (sigma**2 /
+                                                                        (2 * tau**2))) * erfc(-((xdata - t_hkl) /
+                                                                                                (sqrt(2) * sigma)) +
+                                                                                              (sigma / tau)))
+        return B
+
+    def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
+        B = self.calculate_line_profile(xdata, params)
+
+        x_B_eq_zero_tolerance = 1.1
+        x_B_eq_one_tolerance = 0.9
+
+        error_check = True
+        attempts = 0
+        while error_check:
+            try:
+                attempts += 1
+                x_B_eq_zero_ind = np.argwhere(B <= x_B_eq_zero_tolerance * np.min(B))[-1][0]
+                x_B_eq_one_ind = np.argwhere(B >= x_B_eq_one_tolerance * np.max(B))[0][0]
+                a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
+                a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
+                add_params = [a_0, b_0, a_hkl, b_hkl]
+                error_check = False
+            except LeftSideFittingException as err:
+                print(err)
+                x_B_eq_zero_tolerance += 0.1
+            except RightSideFittingException as err:
+                print(err)
+                x_B_eq_one_ind -= 0.1
+        return add_params
+
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
-        t_hkl, sigma, tau = params
-        y = xdata
+        t_hkl, sigma, tau, h, a, a_0, b_0, a_hkl, b_hkl = params
+        B = self.calculate_line_profile(xdata, params)
+        if [a_0, b_0, a_hkl, b_hkl] == [0, 0, 0, 0]:
+            y = h + (a * B)
+        else:
+            y = (np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) +
+                                                 (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B))
         return y
 
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         x1, x2, y1, y2 = region
         init_params = {
-            "t_hkl": 0.00,
-            "sigma": 0.00,
-            "tau": 0.00,
+            "t_hkl": (x1 + x2) / 2,
+            "sigma": (x2 - x1) / 4,
+            "tau": (x2 - x1) / 8,
+            "h": y2 - y1,
+            "a": y1,
+            "a_0": 0,
+            "b_0": 0,
+            "a_hkl": 0,
+            "b_hkl": 0
         }
         return init_params
+
+    def right_side_fitting(self, xdata, ydata) -> list[float]:
+
+        def f(t, a_0, b_0):
+            return np.exp(-(a_0 + b_0 * t))
+
+        try:
+            popt, pcov = curve_fit(f, xdata, ydata)
+            return popt
+        except (TypeError, ValueError) as err:
+            raise RightSideFittingException from err
+
+    def left_side_fitting(self, xdata, ydata, a_0, b_0) -> list[float]:
+
+        def f(t, a_hkl, b_hkl):
+            return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
+
+        try:
+            popt, pcov = curve_fit(f, xdata, ydata)
+            return popt
+        except (TypeError, ValueError) as err:
+            raise LeftSideFittingException from err

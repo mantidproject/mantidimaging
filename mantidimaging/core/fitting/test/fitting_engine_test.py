@@ -19,6 +19,9 @@ class MockFittingFunction(BaseFittingFunction):
         a, b = params
         return a * xdata + b
 
+    def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
+        return []
+
 
 class FittingEngineTest(unittest.TestCase):
 
