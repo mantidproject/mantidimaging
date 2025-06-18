@@ -500,7 +500,22 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">curve_fit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span><span class="p">,</span> <span class="n">erfc</span>
+
+
+<div class="viewcode-block" id="LeftSideFittingException">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.LeftSideFittingException">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LeftSideFittingException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="RightSideFittingException">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.RightSideFittingException">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RightSideFittingException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="FittingRegion">
@@ -537,6 +552,13 @@ document.write(`
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="o">...</span></div>
+
+
+<div class="viewcode-block" id="BaseFittingFunction.prefitting">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.prefitting">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prefitting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ydata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="o">...</span></div>
 </div>
 
 
@@ -546,6 +568,12 @@ document.write(`
 <span class="k">class</span><span class="w"> </span><span class="nc">ErfStepFunction</span><span class="p">(</span><span class="n">BaseFittingFunction</span><span class="p">):</span>
     <span class="n">parameter_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">]</span>
     <span class="n">function_name</span> <span class="o">=</span> <span class="s2">&quot;Error function&quot;</span>
+
+<div class="viewcode-block" id="ErfStepFunction.prefitting">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction.prefitting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prefitting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">___</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
 
 <div class="viewcode-block" id="ErfStepFunction.evaluate">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.ErfStepFunction.evaluate">[docs]</a>
@@ -573,14 +601,63 @@ document.write(`
 <div class="viewcode-block" id="SantistebanFunction">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SantistebanFunction</span><span class="p">(</span><span class="n">BaseFittingFunction</span><span class="p">):</span>
-    <span class="n">parameter_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;t_hkl&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;tau&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fitting algorithm for fitting Bragg Edges to the forumulas given by Santisteban:</span>
+<span class="sd">    https://www.researchgate.net/publication/42793067_Time-of-flight_Neutron_Transmission_Diffraction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parameter_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;t_hkl&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;tau&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a_0&quot;</span><span class="p">,</span> <span class="s2">&quot;b_0&quot;</span><span class="p">,</span> <span class="s2">&quot;a_hkl&quot;</span><span class="p">,</span> <span class="s2">&quot;b_hkl&quot;</span><span class="p">]</span>
     <span class="n">function_name</span> <span class="o">=</span> <span class="s2">&quot;Santisteban&quot;</span>
+
+<div class="viewcode-block" id="SantistebanFunction.calculate_line_profile">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.calculate_line_profile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_line_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">t_hkl</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">___</span><span class="p">,</span> <span class="n">____</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">erfc</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">xdata</span> <span class="o">-</span> <span class="n">t_hkl</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">xdata</span> <span class="o">-</span> <span class="n">t_hkl</span><span class="p">)</span> <span class="o">/</span> <span class="n">tau</span><span class="p">)</span> <span class="o">+</span>
+                                                                       <span class="p">(</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span>
+                                                                        <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tau</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span> <span class="o">*</span> <span class="n">erfc</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">xdata</span> <span class="o">-</span> <span class="n">t_hkl</span><span class="p">)</span> <span class="o">/</span>
+                                                                                                <span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">))</span> <span class="o">+</span>
+                                                                                              <span class="p">(</span><span class="n">sigma</span> <span class="o">/</span> <span class="n">tau</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">B</span></div>
+
+
+<div class="viewcode-block" id="SantistebanFunction.prefitting">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.prefitting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prefitting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ydata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_line_profile</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="n">x_B_eq_zero_tolerance</span> <span class="o">=</span> <span class="mf">1.1</span>
+        <span class="n">x_B_eq_one_tolerance</span> <span class="o">=</span> <span class="mf">0.9</span>
+
+        <span class="n">error_check</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">attempts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">error_check</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attempts</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">x_B_eq_zero_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">B</span> <span class="o">&lt;=</span> <span class="n">x_B_eq_zero_tolerance</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">B</span><span class="p">))[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">x_B_eq_one_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">B</span> <span class="o">&gt;=</span> <span class="n">x_B_eq_one_tolerance</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">B</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_side_fitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">[</span><span class="n">x_B_eq_one_ind</span><span class="p">:],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">x_B_eq_one_ind</span><span class="p">:])</span>
+                <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_side_fitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">[:</span><span class="n">x_B_eq_zero_ind</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[:</span><span class="n">x_B_eq_zero_ind</span><span class="p">],</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">)</span>
+                <span class="n">add_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span><span class="p">]</span>
+                <span class="n">error_check</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="n">LeftSideFittingException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">x_B_eq_zero_tolerance</span> <span class="o">+=</span> <span class="mf">0.1</span>
+            <span class="k">except</span> <span class="n">RightSideFittingException</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">x_B_eq_one_ind</span> <span class="o">-=</span> <span class="mf">0.1</span>
+        <span class="k">return</span> <span class="n">add_params</span></div>
+
 
 <div class="viewcode-block" id="SantistebanFunction.evaluate">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.evaluate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="n">t_hkl</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tau</span> <span class="o">=</span> <span class="n">params</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">xdata</span>
+        <span class="n">t_hkl</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_line_profile</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">[</span><span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">B</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">b_0</span> <span class="o">*</span> <span class="n">xdata</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_hkl</span> <span class="o">+</span> <span class="n">b_hkl</span> <span class="o">*</span> <span class="n">xdata</span><span class="p">))</span> <span class="o">+</span>
+                                                 <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_hkl</span> <span class="o">+</span> <span class="n">b_hkl</span> <span class="o">*</span> <span class="n">xdata</span><span class="p">)))</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">y</span></div>
 
 
@@ -589,11 +666,45 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">get_init_params_from_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="n">FittingRegion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">region</span>
         <span class="n">init_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;t_hkl&quot;</span><span class="p">:</span> <span class="mf">0.00</span><span class="p">,</span>
-            <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="mf">0.00</span><span class="p">,</span>
-            <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="mf">0.00</span><span class="p">,</span>
+            <span class="s2">&quot;t_hkl&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s2">&quot;tau&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span>
+            <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">,</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">y1</span><span class="p">,</span>
+            <span class="s2">&quot;a_0&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;b_0&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;a_hkl&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;b_hkl&quot;</span><span class="p">:</span> <span class="mi">0</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">init_params</span></div>
+
+
+<div class="viewcode-block" id="SantistebanFunction.right_side_fitting">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.right_side_fitting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">right_side_fitting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">b_0</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">popt</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RightSideFittingException</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span></div>
+
+
+<div class="viewcode-block" id="SantistebanFunction.left_side_fitting">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.left_side_fitting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">left_side_fitting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">b_0</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_hkl</span> <span class="o">+</span> <span class="n">b_hkl</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">popt</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">LeftSideFittingException</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span></div>
 </div>
 
 </pre></div>
