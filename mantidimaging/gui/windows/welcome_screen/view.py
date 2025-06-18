@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton
 from PyQt5.QtGui import QPixmap, QIcon
 
@@ -33,6 +33,8 @@ class CloseButton(QPushButton):
 
 class WelcomeScreenView(QWidget):
 
+    closed = pyqtSignal()
+
     def __init__(self, parent, presenter):
         super().__init__(parent)
         self.presenter = presenter
@@ -52,7 +54,7 @@ class WelcomeScreenView(QWidget):
 
         self.close_button = CloseButton(self)
 
-        self.close_button.clicked.connect(self.close_welcome_screen)
+        self.close_button.clicked.connect(self._handle_close_button_clicked)
 
         # Done to make sure the button appears in the top-right corner after rendering
         QTimer.singleShot(1, self.position_close_button)
@@ -91,3 +93,7 @@ class WelcomeScreenView(QWidget):
                                         "  margin-top: 5px; "
                                         "}")
         self.issues_label.setText(issues_text)
+
+    def _handle_close_button_clicked(self):
+        self.close()
+        self.closed.emit()

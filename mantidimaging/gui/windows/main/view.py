@@ -180,6 +180,7 @@ class MainWindowView(BaseMainWindowView):
     def create_welcome_screen(self):
         self.welcome_presenter = WelcomeScreenPresenter(self)
         self.welcome_screen = self.welcome_presenter.view
+        self.welcome_screen.closed.connect(self.close_welcome_screen)
         self.welcome_dock = QDockWidget("About Mantid Imaging", self)
         self.welcome_dock.setWidget(self.welcome_screen)
         self.welcome_dock.setTitleBarWidget(QWidget())
@@ -417,6 +418,7 @@ class MainWindowView(BaseMainWindowView):
             self.welcome_dock.setParent(None)
             self.welcome_dock = None
             self.welcome_screen = None
+            self.welcome_presenter = None
 
     def execute_image_file_save(self) -> None:
         self.presenter.notify(PresNotification.IMAGE_FILE_SAVE)
