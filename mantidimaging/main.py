@@ -7,10 +7,10 @@ import argparse
 import sys
 import warnings
 import os
+from pathlib import Path
 
 import darkdetect
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5 import QtCore
 from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
 
@@ -102,18 +102,39 @@ def main() -> None:
 
     q_application = setup_application()
 
+    # Check for non-clean shutdown
+    was_clean = settings.value("app/last_shutdown_clean", True, type=bool)
+    if not was_clean:
+        log_dir = settings.value("logging/log_dir", "")
+        latest_log = None
+        if log_dir:
+            logs = sorted(Path(log_dir).glob("mantid_imaging_*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
+            if logs:
+                latest_log = logs[0]
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("Previous Shutdown Warning")
+        if latest_log and latest_log.exists():
+            msg.setText(f"Mantid Imaging did not shut down cleanly last time.\n\nLog file:\n{latest_log}")
+        else:
+            msg.setText("Mantid Imaging did not shut down cleanly last time.\n\nNo log file is available.")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
+
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
 
-    CommandLineArguments(path=path,
-                         operation=operation,
-                         show_recon=args.recon,
-                         show_live_viewer=args.live_viewer,
-                         show_spectrum_viewer=args.spectrum_viewer)
+    CommandLineArguments(
+        path=path,
+        operation=operation,
+        show_recon=args.recon,
+        show_live_viewer=args.live_viewer,
+        show_spectrum_viewer=args.spectrum_viewer,
+    )
 
     h.initialise_logging(args.log_level)
 
-    settings = QSettings()
     process_count = settings.value("multiprocessing/process_count", 8, type=int)
 
     from mantidimaging import gui
@@ -121,7 +142,9 @@ def main() -> None:
         pm.create_and_start_pool(process_count)
         gui.execute()
         result = q_application.exec_()
+        settings.setValue("app/last_shutdown_clean", True)
     except BaseException as e:
+        settings.setValue("app/last_shutdown_clean", False)
         if sys.platform == 'linux':
             pm.clear_memory_from_current_process_linux()
         raise e
