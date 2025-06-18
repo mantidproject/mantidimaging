@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
+import sip
 
 from PyQt5.QtCore import QSettings
 from PyQt5.QtGui import QPalette
@@ -55,7 +56,12 @@ class WelcomeScreenPresenter:
         """
         Removes existing link labels and re-adds them with the new theme color logic.
         """
-        layout = self.view.link_box_layout
+        layout = getattr(self.view, 'link_box_layout', None)
+
+        if layout is None or sip.isdeleted(layout):
+            LOG.warning("link_box_layout is missing or deleted. Skipping recolor_links()")
+            return
+
         while layout.count():
             item = layout.takeAt(0)
             if item.widget():
