@@ -360,11 +360,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Redraw all ROIs and spectrum plots
         """
         for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
-            if not roi_widget.isVisible():
-                continue
-            widget_roi = self.view.spectrum_widget.get_roi(roi_name)
-            spectrum = self.model.get_spectrum(widget_roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
-            self.view.set_spectrum(roi_name, spectrum)
+            if roi_widget.isVisible():
+                self.redraw_spectrum(roi_name)
 
     def handle_button_enabled(self) -> None:
         """
