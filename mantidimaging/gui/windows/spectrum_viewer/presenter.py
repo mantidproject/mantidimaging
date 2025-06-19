@@ -233,6 +233,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             image_shape = self.model.get_image_shape()
             averaged_image = np.zeros(image_shape, dtype=np.float32)
         self.view.set_image(averaged_image, autoLevels=autoLevels)
+        self.view.fittingDisplayWidget.update_image(averaged_image)
 
     def show_new_sample(self) -> None:
         """
@@ -333,11 +334,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if tof_data.size == 0:
             return
 
-        image = (self.model.get_normalized_averaged_image()
-                 if self.view.normalisation_enabled() else self.model.get_averaged_image())
-
         self.fitting_spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
-        self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name, image=image)
+        self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name)
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
         self.setup_fitting_model()
