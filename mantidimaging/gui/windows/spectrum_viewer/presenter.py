@@ -338,7 +338,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name)
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
-        self.setup_fitting_model()
 
         if reset_region:
             self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)

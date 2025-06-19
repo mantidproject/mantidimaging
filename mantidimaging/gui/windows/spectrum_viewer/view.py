@@ -170,6 +170,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.set_roi_properties()
         self.presenter.initial_sample_change = False
         self.presenter.initial_roi_calc()
+        self.presenter.setup_fitting_model()
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
