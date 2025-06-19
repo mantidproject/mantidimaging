@@ -49,7 +49,21 @@ class Geometry(AcquisitionGeometry):
         :param tilt: A float value defining the tilt in degrees.
         :type tilt: float
         """
-        offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
+
+        pixel_x_midpoint = self.config.panel.num_pixels[0] / 2
+        pixel_y_midpoint = self.config.panel.num_pixels[1] / 2
+        print(f"midpoint: {pixel_y_midpoint}")
+        print(f"top cor: {cor}")
+        print(f"tilt: {tilt}")
+        pixel_size = self.config.panel.pixel_size[0]
+        tilt_rad = radians(-tilt)
+        print(f"tilt_rad: {tilt_rad}")
+
+        midpoint_cor = cor.value + pixel_y_midpoint * tan(tilt_rad)
+        print(f"midpoint_cor: {midpoint_cor}")
+
+        offset: float = (midpoint_cor - pixel_x_midpoint) * pixel_size
+        print(f"offset: {offset}")
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt, angle_units='degree')
 
