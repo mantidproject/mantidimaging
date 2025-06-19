@@ -69,23 +69,21 @@ class GeometryTest(unittest.TestCase):
         self.assertEqual(geo.config.angles.angle_unit, expected_values["angle_unit"])
         self.assertEqual(geo.config.system.units, expected_values["units"])
 
-    @parameterized.expand([("default_units", ScalarCoR(5.0), 0.0, 0.0, 0.0),
-                           ("positive_offset_angle", ScalarCoR(6.0), 1.0, 1.0, -1.0),
-                           ("negative_offset_angle", ScalarCoR(4.0), -1.0, -1.0, 1.0)])
-    def test_set_geometry_from_cor_tilt_default(self, _, cor, tilt, expected_offset, expected_angle):
+    @parameterized.expand([("default_units", ScalarCoR(5.0), 0.0), ("positive_offset_angle", ScalarCoR(6.0), 1.0),
+                           ("negative_offset_angle", ScalarCoR(4.0), -1.0)])
+    def test_set_geometry_from_cor_tilt_default(self, _, cor, tilt):
         """
         Tests converting and setting the AcquisitionGeometry centre of rotation value.
         """
         geo = Geometry()
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
-        self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
-        self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
+        self.assertEqual(geo.cor.value, cor.value)
+        self.assertTrue(np.isclose(geo.tilt, tilt))
 
-    @parameterized.expand([("default_units", ScalarCoR(256.0), 0.0, 0.0, 0.0),
-                           ("positive_offset_angle", ScalarCoR(266.0), 1.0, 10.0, -1.0),
-                           ("negative_offset_angle", ScalarCoR(246.0), -1.0, -10.0, 1.0)])
-    def test_set_geometry_from_cor_tilt_512(self, _, cor, tilt, expected_offset, expected_angle):
+    @parameterized.expand([("default_units", ScalarCoR(256.0), 0.0), ("positive_offset_angle", ScalarCoR(266.0), 1.0),
+                           ("negative_offset_angle", ScalarCoR(246.0), -1.0)])
+    def test_set_geometry_from_cor_tilt_512(self, _, cor, tilt):
         """
         Tests converting a centre of rotation and tilt (MI convention) into offset/angle values (CIL convention).
         Defines a Geometry object's detector using the horizontal/vertical dimensions 512x512.
@@ -96,13 +94,12 @@ class GeometryTest(unittest.TestCase):
         geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
-        self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
-        self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
+        self.assertAlmostEqual(geo.cor.value, cor.value, delta=0.0001)
+        self.assertTrue(np.isclose(geo.tilt, tilt))
 
-    @parameterized.expand([("default_units", ScalarCoR(4.0), 0.0, 0.0, 0.0),
-                           ("positive_offset_angle", ScalarCoR(5.0), 1.0, 1.0, -1.0),
-                           ("negative_offset_angle", ScalarCoR(3.0), -1.0, -1.0, 1.0)])
-    def test_set_geometry_from_cor_tilt_8(self, _, cor, tilt, expected_offset, expected_angle):
+    @parameterized.expand([("default_units", ScalarCoR(4.0), 0.0), ("positive_offset_angle", ScalarCoR(5.0), 1.0),
+                           ("negative_offset_angle", ScalarCoR(3.0), -1.0)])
+    def test_set_geometry_from_cor_tilt_8(self, _, cor, tilt):
         """
         Tests converting a centre of rotation and tilt (MI convention) into offset/angle values (CIL convention).
         Defines a Geometry object's detector using the horizontal/vertical dimensions 8x8.
@@ -113,5 +110,5 @@ class GeometryTest(unittest.TestCase):
         geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
-        self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
-        self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
+        self.assertEqual(geo.cor.value, cor.value)
+        self.assertTrue(np.isclose(geo.tilt, tilt))

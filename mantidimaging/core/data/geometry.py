@@ -42,9 +42,9 @@ class Geometry(AcquisitionGeometry):
 
     def set_geometry_from_cor_tilt(self, cor: ScalarCoR, tilt: float) -> None:
         """
-        Converts a centre of rotation (that uses MI conventions) to the CIL convention.
+        Set's the geometry's CIL-convention Offset and Angle from the MI-convention Centre-of-Rotation and Tilt.
 
-        :param cor: A ScalarCoR object defining the centre of rotation as a float value.
+        :param cor: A ScalarCoR object defining the MI-convention centre of rotation as a float value.
         :type cor: ScalarCoR
         :param tilt: A float value defining the tilt in degrees.
         :type tilt: float
@@ -54,8 +54,8 @@ class Geometry(AcquisitionGeometry):
         pixel_y_midpoint = self.config.panel.num_pixels[1] / 2
         pixel_size = self.config.panel.pixel_size[0]
 
-        tilt_rad = radians(-tilt)
-        midpoint_cor = cor.value + pixel_y_midpoint * tan(tilt_rad)
+        tilt_radians = -radians(tilt)
+        midpoint_cor = cor.value + pixel_y_midpoint * tan(tilt_radians)
 
         offset: float = (midpoint_cor - pixel_x_midpoint) * pixel_size
 
