@@ -2,6 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from math import tan, radians, degrees
+
 from cil.framework import AcquisitionGeometry
 
 from mantidimaging.core.utility.data_containers import ScalarCoR
@@ -50,3 +52,21 @@ class Geometry(AcquisitionGeometry):
         offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt, angle_units='degree')
+
+    @property
+    def tilt(self) -> float:
+        slope: float = self.get_centre_of_rotation()['angle'][0]
+        tilt = -degrees(slope)
+        return round(tilt)
+
+    @property
+    def cor(self) -> ScalarCoR:
+        offset = self.get_centre_of_rotation()['offset'][0]
+        num_pixels = self.config.panel.num_pixels[0] / 2
+        pixel_size = self.config.panel.pixel_size[0]
+        cil_cor = (offset / pixel_size) + num_pixels
+
+        tilt_radians = -radians(self.tilt)
+        mi_cor = cil_cor - num_pixels * tan(tilt_radians)
+
+        return ScalarCoR(round(mi_cor))
