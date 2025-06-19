@@ -1,0 +1,1 @@
+#2632: Add cor and tilt properties to the Geometry object, which return MI-format COR/tilt values
