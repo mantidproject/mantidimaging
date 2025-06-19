@@ -115,3 +115,20 @@ class GeometryTest(unittest.TestCase):
 
         self.assertEqual(geo.get_centre_of_rotation()["offset"][0], expected_offset)
         self.assertTrue(np.isclose(geo.get_centre_of_rotation(angle_units='degree')["angle"][0], expected_angle))
+
+    @parameterized.expand([("default_units", ScalarCoR(256.0), 0.0), ("positive_offset_angle", ScalarCoR(266.0), 1.0),
+                           ("negative_offset_angle", ScalarCoR(246.0), -1.0)])
+    def test_geometry_cor_tilt_properties(self, _, cor, tilt):
+        """
+        Tests that the values retrieved through Geometry's cor and tilt properties match the values
+        set through set_geometry_from_cor_tilt()
+        """
+
+        num_pixels = (8, 8)
+        pixel_size = (1., 1.)
+
+        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo.set_geometry_from_cor_tilt(cor, tilt)
+
+        self.assertEqual(geo.tilt, tilt)
+        self.assertEqual(geo.cor, cor)
