@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 class ImageStack:
     name: str
-    geometry: Geometry | None
+    geometry: Geometry | None = None
     _shared_array: pu.SharedArray
 
     def __init__(self,
@@ -263,7 +263,14 @@ class ImageStack:
 
     @data.setter
     def data(self, other: np.ndarray) -> None:
+        """
+        Set data array and update geometry data
+
+        :param other: numpy array
+        """
+
         self._shared_array.array = other
+        self.set_geometry_panels()
 
     @property
     def shared_array(self) -> pu.SharedArray:
@@ -272,6 +279,7 @@ class ImageStack:
     @shared_array.setter
     def shared_array(self, shared_array: pu.SharedArray) -> None:
         self._shared_array = shared_array
+        self.set_geometry_panels()
 
     @property
     def uses_shared_memory(self) -> bool:
@@ -315,11 +323,20 @@ class ImageStack:
         self._shutter_count_file = value
 
     def set_projection_angles(self, angles: ProjectionAngles) -> None:
+        """
+        Set the projection angles and update geometry data
+
+        :param angles: ProjectionAngles object
+        """
+
         if len(angles.value) != self.num_images:
             raise RuntimeError("The number of angles does not match the number of images. "
                                f"Num angles {len(angles.value)} and num images {self.num_images}")
 
         self._projection_angles = angles
+
+        if self.geometry is not None:
+            self.geometry.set_angles(angles=angles.value, angle_unit="radian")
 
     def real_projection_angles(self) -> ProjectionAngles | None:
         """
@@ -382,13 +399,20 @@ class ImageStack:
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
         self.geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
+        self.set_geometry_angles()
+        self.set_geometry_panels()
 
-    def update_geometry(self, angles: list | np.ndarray, angle_unit: str, num_pixels: list | tuple,
-                        pixel_size: list | tuple) -> None:
+    def set_geometry_panels(self):
         """
-        Updates the configuration of the ImageStack's Geometry object.
+        Updates the geometry's panel data based on its parent ImageStack's array data
         """
-        if self.geometry is None:
-            raise ValueError("self.geometry is not set")
-        self.geometry.set_angles(angles=angles, angle_unit=angle_unit)
-        self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+        if self.geometry is not None and self._shared_array is not None:
+            pixel_size = (1.0, 1.0)
+            pixel_num_h = self.width
+            pixel_num_v = self.height
+            num_pixels = (pixel_num_h, pixel_num_v)
+            self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+
+    def set_geometry_angles(self):
+        if self.geometry is not None and self._projection_angles is not None:
+            self.geometry.set_angles(angles=self._projection_angles.value, angle_unit="radian")
