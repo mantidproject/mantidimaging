@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 
 import darkdetect
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from PyQt5 import QtCore
 from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
@@ -93,35 +94,13 @@ def setup_application() -> QApplication:
 
 def main() -> None:
     args = parse_args()
-    # Print version number and exit
     if args.version:
         from mantidimaging import __version__ as version_no
-
         print(version_no)
         return
 
     q_application = setup_application()
-
-    # Check for non-clean shutdown
-    was_clean = settings.value("app/last_shutdown_clean", True, type=bool)
-    if not was_clean:
-        log_dir = settings.value("logging/log_dir", "")
-        latest_log = None
-        if log_dir:
-            logs = sorted(Path(log_dir).glob("mantid_imaging_*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
-            if logs:
-                latest_log = logs[0]
-
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Warning)
-        msg.setWindowTitle("Previous Shutdown Warning")
-        if latest_log and latest_log.exists():
-            msg.setText(f"Mantid Imaging did not shut down cleanly last time.\n\nLog file:\n{latest_log}")
-        else:
-            msg.setText("Mantid Imaging did not shut down cleanly last time.\n\nNo log file is available.")
-        msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec_()
-
+    show_unclean_shutdown_warning(settings)
     path = args.path if args.path else ""
     operation = args.operation if args.operation else ""
 
@@ -134,8 +113,8 @@ def main() -> None:
     )
 
     h.initialise_logging(args.log_level)
-
     process_count = settings.value("multiprocessing/process_count", 8, type=int)
+    settings.setValue("app/last_shutdown_clean", False)
 
     from mantidimaging import gui
     try:
@@ -143,15 +122,41 @@ def main() -> None:
         gui.execute()
         result = q_application.exec_()
         settings.setValue("app/last_shutdown_clean", True)
-    except BaseException as e:
-        settings.setValue("app/last_shutdown_clean", False)
+        return result
+    except BaseException:
         if sys.platform == 'linux':
             pm.clear_memory_from_current_process_linux()
-        raise e
+        raise
     finally:
         pm.end_pool()
 
-    return result
+
+def show_unclean_shutdown_warning(settings: QSettings) -> None:
+    was_clean = settings.value("app/last_shutdown_clean", True, type=bool)
+    if was_clean:
+        return
+
+    log_dir = settings.value("logging/log_dir", "")
+    latest_log = None
+
+    if log_dir:
+        logs = sorted(Path(log_dir).glob("mantid_imaging_*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
+        if logs:
+            latest_log = logs[0]
+
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Warning)
+    msg.setWindowTitle("Previous Shutdown Warning")
+
+    if latest_log and latest_log.exists():
+        msg.setText(f"Mantid Imaging did not shut down cleanly last time.\n\nLog file:\n{latest_log}")
+    else:
+        msg.setText("Mantid Imaging did not shut down cleanly last time.\n\n"
+                    "No log file is available.\n\n"
+                    "To record log files to disk, configure a directory in File -> Settings.")
+
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.exec_()
 
 
 if __name__ == "__main__":
