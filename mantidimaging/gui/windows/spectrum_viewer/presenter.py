@@ -135,7 +135,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
                                            self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
-        self.update_fitting_spectrum("roi", reset_region=True)
+        self.update_fitting_spectrum("roi")
+        self.set_default_fitting_region()
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
         """
@@ -323,7 +324,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
             self.model.get_number_of_images_in_stack(), np.nan))
 
-    def update_fitting_spectrum(self, roi_name: str, reset_region: bool = False) -> None:
+    def update_fitting_spectrum(self, roi_name: str) -> None:
         """
         Fetches the spectrum data for the selected ROI and updates the fitting display plot.
         """
@@ -339,8 +340,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
 
-        if reset_region:
-            self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
+    def set_default_fitting_region(self) -> None:
+        self.view.fittingDisplayWidget.set_default_region(self.model.tof_data, self.fitting_spectrum)
 
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
