@@ -67,7 +67,8 @@ class WelcomeScreenView(QWidget):
         self.close_button.move(self.banner_label.width() - self.close_button.width() - 1, 10)
 
     def close_welcome_screen(self):
-        self.parent().close()
+        self.close()
+        self.closed.emit()
 
     def set_version_label(self, version_text: str):
         self.version_label.setText(version_text)

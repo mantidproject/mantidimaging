@@ -56,7 +56,6 @@ class WelcomeScreenPresenter:
         Removes existing link labels and re-adds them with the new theme color logic.
         """
         layout = self.view.link_box_layout
-
         while layout.count():
             item = layout.takeAt(0)
             if item.widget():
