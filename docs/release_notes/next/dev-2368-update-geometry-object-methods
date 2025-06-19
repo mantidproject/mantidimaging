@@ -1,0 +1,1 @@
+#2638: Update Geometry object COR and tilt methods to accept and return mi-convention COR/tilt data rather than CIL-convention data
