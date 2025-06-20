@@ -135,7 +135,11 @@ class InstrumentLog:
             if parser.match(self.lines, self.source_file.name):
                 self.parser = parser
                 return
-        raise NoParserFound
+        raise NoParserFound(
+            f"File format not recognised for log file: '{self.source_file.name}'. "
+            "See documentation for details of supported formats: "
+            "https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack"
+        )
 
     def parse(self) -> None:
         self.data = self.parser(self.lines).parse()
