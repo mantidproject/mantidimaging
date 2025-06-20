@@ -500,10 +500,11 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">darkdetect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QMessageBox</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QGuiApplication</span><span class="p">,</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QFontInfo</span>
 
@@ -594,42 +595,72 @@ document.write(`
 <a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.main">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">()</span>
-    <span class="c1"># Print version number and exit</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">version_no</span>
-
         <span class="nb">print</span><span class="p">(</span><span class="n">version_no</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="n">q_application</span> <span class="o">=</span> <span class="n">setup_application</span><span class="p">()</span>
-
+    <span class="n">show_unclean_shutdown_warning</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
     <span class="n">operation</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">operation</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">operation</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="n">CommandLineArguments</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
-                         <span class="n">operation</span><span class="o">=</span><span class="n">operation</span><span class="p">,</span>
-                         <span class="n">show_recon</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">recon</span><span class="p">,</span>
-                         <span class="n">show_live_viewer</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">live_viewer</span><span class="p">,</span>
-                         <span class="n">show_spectrum_viewer</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">)</span>
+    <span class="n">CommandLineArguments</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+        <span class="n">operation</span><span class="o">=</span><span class="n">operation</span><span class="p">,</span>
+        <span class="n">show_recon</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">recon</span><span class="p">,</span>
+        <span class="n">show_live_viewer</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">live_viewer</span><span class="p">,</span>
+        <span class="n">show_spectrum_viewer</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">h</span><span class="o">.</span><span class="n">initialise_logging</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">log_level</span><span class="p">)</span>
-
-    <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
     <span class="n">process_count</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;multiprocessing/process_count&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;app/last_shutdown_clean&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">gui</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pm</span><span class="o">.</span><span class="n">create_and_start_pool</span><span class="p">(</span><span class="n">process_count</span><span class="p">)</span>
         <span class="n">gui</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">q_application</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;app/last_shutdown_clean&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
             <span class="n">pm</span><span class="o">.</span><span class="n">clear_memory_from_current_process_linux</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">raise</span>
     <span class="k">finally</span><span class="p">:</span>
-        <span class="n">pm</span><span class="o">.</span><span class="n">end_pool</span><span class="p">()</span>
+        <span class="n">pm</span><span class="o">.</span><span class="n">end_pool</span><span class="p">()</span></div>
 
-    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="show_unclean_shutdown_warning">
+<a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.show_unclean_shutdown_warning">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_unclean_shutdown_warning</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">QSettings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">was_clean</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;app/last_shutdown_clean&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">was_clean</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">log_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/log_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">latest_log</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">log_dir</span><span class="p">:</span>
+        <span class="n">logs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">log_dir</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;mantid_imaging_*.log&quot;</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logs</span><span class="p">:</span>
+            <span class="n">latest_log</span> <span class="o">=</span> <span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Previous Shutdown Warning&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">latest_log</span> <span class="ow">and</span> <span class="n">latest_log</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging did not shut down cleanly last time.</span><span class="se">\n\n</span><span class="s2">Log file:</span><span class="se">\n</span><span class="si">{</span><span class="n">latest_log</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging did not shut down cleanly last time.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;No log file is available.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;To record log files to disk, configure a directory in File -&gt; Settings.&quot;</span><span class="p">)</span>
+
+    <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
 
 
 
