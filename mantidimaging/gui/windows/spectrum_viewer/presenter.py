@@ -135,7 +135,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
                                            self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
-        self.update_fitting_spectrum("roi")
         self.set_default_fitting_region()
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
@@ -330,15 +329,22 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         if roi_name not in self.view.spectrum_widget.roi_dict:
             return
-        roi = self.view.spectrum_widget.get_roi(roi_name)
         tof_data = self.model.tof_data
         if tof_data.size == 0:
             return
 
-        self.fitting_spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
         self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name)
         roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
+
+    @property
+    def fitting_spectrum(self) -> np.ndarray:
+        selected_fitting_roi = self.view.roiSelectionWidget.current_roi_name
+        if selected_fitting_roi in self.view.spectrum_widget.spectrum_data_dict:
+            if (spectrum_data := self.view.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
+                return spectrum_data
+
+        raise RuntimeError("Fitting spectrum not calculated")
 
     def set_default_fitting_region(self) -> None:
         self.view.fittingDisplayWidget.set_default_region(self.model.tof_data, self.fitting_spectrum)
