@@ -368,6 +368,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                                                name=roi_name,
                                                pen=self.spectrum_widget.roi_dict[roi_name].colour)
 
+        if current_roi_name := self.roiSelectionWidget.current_roi_name:
+            self.fittingDisplayWidget.update_plot(self.presenter.model.tof_data, self.presenter.fitting_spectrum,
+                                                  current_roi_name)
+
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """
         Add a new row to the ROI table
