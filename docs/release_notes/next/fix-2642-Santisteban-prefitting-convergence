@@ -1,0 +1,1 @@
+#2642: The left and right-side prefitting constants have an attempt limit for convergence. If they do not converge, the initial values are used instead.
