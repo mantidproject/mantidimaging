@@ -244,5 +244,4 @@ class Progress:
             self.end_step = self.current_step
 
         # Log elapsed time and final memory usage
-        log.info("Elapsed time: %d sec.", self.execution_time())
         log.debug("Memory usage after execution: %s", get_memory_usage_linux_str())
