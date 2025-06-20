@@ -293,8 +293,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
             self.try_next_mean_chunk()
         else:
-            if self.view.roiSelectionWidget.current_roi_name == list(self.roi_to_process_queue.keys())[0]:
-                self.update_fitting_spectrum(list(self.roi_to_process_queue.keys())[0])
             self.roi_to_process_queue.pop(list(self.roi_to_process_queue.keys())[0])
         if len(self.roi_to_process_queue) > 0:
             self.try_next_mean_chunk()
@@ -531,11 +529,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_relevant_tof_units()
         self.update_unit_labels_and_menus()
         self.refresh_spectrum_plot()
-        self._update_all_fitting_spectra()
-
-    def _update_all_fitting_spectra(self) -> None:
-        for roi_name in self.view.spectrum_widget.roi_dict:
-            self.update_fitting_spectrum(roi_name)
 
     def handle_tof_unit_change_via_menu(self, unit_name: str) -> None:
         self.view.tof_units_mode = unit_name
