@@ -87,6 +87,7 @@ class SantistebanFunction(BaseFittingFunction):
         return B
 
     def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
+        _, __, ___, ____, _____, a_0, b_0, a_hkl, b_hkl = params
         B = self.calculate_line_profile(xdata, params)
 
         x_B_eq_zero_tolerance = 1.1
@@ -94,14 +95,13 @@ class SantistebanFunction(BaseFittingFunction):
 
         error_check = True
         attempts = 0
-        while error_check:
+        while error_check and attempts != 20:
             try:
                 attempts += 1
                 x_B_eq_zero_ind = np.argwhere(B <= x_B_eq_zero_tolerance * np.min(B))[-1][0]
                 x_B_eq_one_ind = np.argwhere(B >= x_B_eq_one_tolerance * np.max(B))[0][0]
                 a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
                 a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
-                add_params = [a_0, b_0, a_hkl, b_hkl]
                 error_check = False
             except LeftSideFittingException as err:
                 print(err)
@@ -109,13 +109,13 @@ class SantistebanFunction(BaseFittingFunction):
             except RightSideFittingException as err:
                 print(err)
                 x_B_eq_one_ind -= 0.1
-        return add_params
+        return [a_0, b_0, a_hkl, b_hkl]
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a, a_0, b_0, a_hkl, b_hkl = params
         B = self.calculate_line_profile(xdata, params)
         if [a_0, b_0, a_hkl, b_hkl] == [0, 0, 0, 0]:
-            y = h + (a * B)
+            y = a + (h * B)
         else:
             y = (np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) +
                                                  (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B))
