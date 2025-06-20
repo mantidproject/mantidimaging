@@ -12,11 +12,22 @@ from scipy.special import erf, erfc
 
 
 class LeftSideFittingException(Exception):
-    pass
+
+    def __init__(self, source_err):
+        print("LeftSideFittingException:", source_err)
 
 
 class RightSideFittingException(Exception):
-    pass
+
+    def __init__(self, source_err):
+        print("RightSideFittingException:", source_err)
+
+
+class BadFittingRoiError(Exception):
+
+    def __init__(self, message: str = 'A fit could not be found within the given ROI, please try widening the ROI.'):
+        self.message = message
+        super().__init__(self.message)
 
 
 class FittingRegion(NamedTuple):
@@ -87,35 +98,47 @@ class SantistebanFunction(BaseFittingFunction):
         return B
 
     def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
-        B = self.calculate_line_profile(xdata, params)
+        _, __, ___, ____, _____, a_0, b_0, a_hkl, b_hkl = params
 
-        x_B_eq_zero_tolerance = 1.1
-        x_B_eq_one_tolerance = 0.9
+        ydata_max_ind = np.argmax(ydata)
+        ydata_min_ind = np.argmin(ydata)
 
-        error_check = True
-        attempts = 0
-        while error_check:
-            try:
-                attempts += 1
-                x_B_eq_zero_ind = np.argwhere(B <= x_B_eq_zero_tolerance * np.min(B))[-1][0]
-                x_B_eq_one_ind = np.argwhere(B >= x_B_eq_one_tolerance * np.max(B))[0][0]
-                a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
-                a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
-                add_params = [a_0, b_0, a_hkl, b_hkl]
-                error_check = False
-            except LeftSideFittingException as err:
-                print(err)
-                x_B_eq_zero_tolerance += 0.1
-            except RightSideFittingException as err:
-                print(err)
-                x_B_eq_one_ind -= 0.1
-        return add_params
+        if ydata_max_ind == len(xdata) or ydata_min_ind == 0:
+            raise BadFittingRoiError()
+
+        percentile_right = np.percentile(ydata, 95)
+        p_r = np.argwhere(ydata < percentile_right)
+        percentile_right_threshold = np.extract(p_r > ydata_max_ind, p_r)
+        if percentile_right_threshold.size == 0:
+            raise BadFittingRoiError()
+        percentile_right_ind = percentile_right_threshold[0]
+
+        percentile_left = np.percentile(ydata[:ydata_min_ind], 10)
+        p_l = np.argwhere(ydata > percentile_left)
+        percentile_left_threshold = np.extract(p_l < ydata_min_ind, p_l)
+        if percentile_left_threshold.size == 0:
+            raise BadFittingRoiError()
+        percentile_left_ind = percentile_left_threshold[-1]
+
+        try:
+            a_0, b_0 = self.right_side_fitting(xdata[percentile_right_ind:], ydata[percentile_right_ind:])
+            a_hkl, b_hkl = self.left_side_fitting(xdata[:percentile_left_ind], ydata[:percentile_left_ind], a_0, b_0)
+        except LeftSideFittingException:
+            raise BadFittingRoiError(message='A fit could not be found for the left side of the Bragg Edge, '
+                                     'please adjust the ROI on the left.') from None
+        except RightSideFittingException:
+            raise BadFittingRoiError(message='A fit could not be found for the right side of the Bragg Edge, '
+                                     'please adjust the ROI on the right.') from None
+
+        if (np.array([a_0, b_0, a_hkl, b_hkl]) == 0).any():
+            raise BadFittingRoiError()
+        return [a_0, b_0, a_hkl, b_hkl]
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a, a_0, b_0, a_hkl, b_hkl = params
         B = self.calculate_line_profile(xdata, params)
         if [a_0, b_0, a_hkl, b_hkl] == [0, 0, 0, 0]:
-            y = h + (a * B)
+            y = a + (h * B)
         else:
             y = (np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) +
                                                  (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B))
@@ -142,10 +165,10 @@ class SantistebanFunction(BaseFittingFunction):
             return np.exp(-(a_0 + b_0 * t))
 
         try:
-            popt, pcov = curve_fit(f, xdata, ydata)
+            popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
             return popt
         except (TypeError, ValueError) as err:
-            raise RightSideFittingException from err
+            raise RightSideFittingException(err) from err
 
     def left_side_fitting(self, xdata, ydata, a_0, b_0) -> list[float]:
 
@@ -153,7 +176,7 @@ class SantistebanFunction(BaseFittingFunction):
             return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
 
         try:
-            popt, pcov = curve_fit(f, xdata, ydata)
+            popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
             return popt
         except (TypeError, ValueError) as err:
-            raise LeftSideFittingException from err
+            raise LeftSideFittingException(err) from err
