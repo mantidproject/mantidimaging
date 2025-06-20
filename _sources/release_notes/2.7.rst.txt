@@ -3,30 +3,30 @@ Mantid Imaging 2.7
 
 New Features
 ------------
-- #1912 : Support sub-directories in Live viewer
-- #1941 : Spectrum viewer tab for exporting to RITS
-- #1943 : RITS export transmission errors
-- #1945 : Export Binned RITS Formatted Data within Spectrum Viewer.
-- #1957 : ROI support for RITS export
-- #1992 : Spectrum Viewer: Change ROI Colour Through Right Click Dialog Menu
-- #1996 : Added .fits file compatibility for Live Viewer
-- #2026: Time of flight graph in the Spectrum Viewer is now resizable
-- #2027: The Spectrum ROI details display in an adjustable table via spinboxes
-- #2048: Update spectrum documentation to reflect changes made to the Spectrum Viewer.
+- `#1912 <https://github.com/mantidproject/mantidimaging/issues/1912>`_: Support sub-directories in Live viewer
+- `#1941 <https://github.com/mantidproject/mantidimaging/issues/1941>`_: Spectrum viewer tab for exporting to RITS
+- `#1943 <https://github.com/mantidproject/mantidimaging/issues/1943>`_: RITS export transmission errors
+- `#1945 <https://github.com/mantidproject/mantidimaging/issues/1945>`_: Export Binned RITS Formatted Data within Spectrum Viewer.
+- `#1957 <https://github.com/mantidproject/mantidimaging/issues/1957>`_: ROI support for RITS export
+- `#1992 <https://github.com/mantidproject/mantidimaging/issues/1992>`_: Spectrum Viewer: Change ROI Colour Through Right Click Dialog Menu
+- `#1996 <https://github.com/mantidproject/mantidimaging/issues/1996>`_: Added .fits file compatibility for Live Viewer
+- `#2026 <https://github.com/mantidproject/mantidimaging/issues/2026>`_: Time of flight graph in the Spectrum Viewer is now resizable
+- `#2027 <https://github.com/mantidproject/mantidimaging/issues/2027>`_: The Spectrum ROI details display in an adjustable table via spinboxes
+- `#2048 <https://github.com/mantidproject/mantidimaging/issues/2048>`_: Update spectrum documentation to reflect changes made to the Spectrum Viewer.
 
 Fixes
 -----
-- #1873 : fix typeError: qWait(ms: int): argument 1 has unexpected type 'float'
-- #1966: ExecutionTimer unit test fails intermittently for Windows GitHub Action
-- #2002 : Better default values in Remove all stripes
-- #2009 : Improve type annotation in gui.windows.recon
-- #2012 : numpy2 deprication
-- #2031 : Speed up imageview by avoiding unneeded calculation
+- `#1873 <https://github.com/mantidproject/mantidimaging/issues/1873>`_: fix typeError: qWait(ms: int): argument 1 has unexpected type 'float'
+- `#1966 <https://github.com/mantidproject/mantidimaging/issues/1966>`_: ExecutionTimer unit test fails intermittently for Windows GitHub Action
+- `#2002 <https://github.com/mantidproject/mantidimaging/issues/2002>`_: Better default values in Remove all stripes
+- `#2009 <https://github.com/mantidproject/mantidimaging/issues/2009>`_: Improve type annotation in gui.windows.recon
+- `#2012 <https://github.com/mantidproject/mantidimaging/issues/2012>`_: numpy2 deprication
+- `#2031 <https://github.com/mantidproject/mantidimaging/issues/2031>`_: Speed up imageview by avoiding unneeded calculation
 
 Developer Changes
 -----------------
-- #1932 : RITS Export Backend
-- #1951 : Various fixes to speedup pytest
-- #1955 : Add InstrumentLog as new log reader
-- #1960 : Update developer tools
-- #2011 : Move to a new conda repo https://anaconda.org/mantidimaging/mantidimaging
+- `#1932 <https://github.com/mantidproject/mantidimaging/issues/1932>`_: RITS Export Backend
+- `#1951 <https://github.com/mantidproject/mantidimaging/issues/1951>`_: Various fixes to speedup pytest
+- `#1955 <https://github.com/mantidproject/mantidimaging/issues/1955>`_: Add InstrumentLog as new log reader
+- `#1960 <https://github.com/mantidproject/mantidimaging/issues/1960>`_: Update developer tools
+- `#2011 <https://github.com/mantidproject/mantidimaging/issues/2011>`_: Move to a new conda repo https://anaconda.org/mantidimaging/mantidimaging

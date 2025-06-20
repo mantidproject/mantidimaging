@@ -559,79 +559,80 @@ document.write(`
 <section id="new-features">
 <h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>#2273: Display the modified image timestamp within the live viewer to allow for easier determination of what scan is being displayed within the live viewer.</p></li>
-<li><p>#2351: Option in live view menu to load current images as dataset</p></li>
-<li><p>#2361: Multiple Live Viewers can now be opened and pointed to different directories simultaneously</p></li>
-<li><p>#2375: Add Convergence Plot in AsyncTaskDialog Displayed During Reconstruction</p></li>
-<li><p>#2430: Add Residual Plot in AsyncTaskDialog Displayed During Reconstruction</p></li>
-<li><p>#2448: Live Viewer Intensity is calculated asynchronously via QThreads</p></li>
-<li><p>#2483: Add Geometry member class to the ImageStack class</p></li>
-<li><p>#2516: The plot in the Spectrum Viewer can be switched to a scatter plot via a right click menu. This feature can be activated on any plot in MI.</p></li>
-<li><p>#2545: the overlap correction script has been migrated into the operations window in MI</p></li>
-<li><p>#2548: Add a fitting system for Bragg Edges in Time of Flight data</p></li>
-<li><p>#2588: Enable user-editable initial fitting parameters within the spectrum viewer fitting tab</p></li>
-<li><p>#2596: Sync unit selection across Spectrum Viewer image and fitting tabs. Add right click unit conversion menu to fitting tab spectrum view.</p></li>
-<li><p>#2612: The Santisteban fitting algorithm for fitting to Bragg Edges has been implemented in the Spectrum Viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2273">#2273</a>: Display the modified image timestamp within the live viewer to allow for easier determination of what scan is being displayed within the live viewer.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2351">#2351</a>: Option in live view menu to load current images as dataset</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2361">#2361</a>: Multiple Live Viewers can now be opened and pointed to different directories simultaneously</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2375">#2375</a>: Add Convergence Plot in AsyncTaskDialog Displayed During Reconstruction</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2430">#2430</a>: Add Residual Plot in AsyncTaskDialog Displayed During Reconstruction</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2448">#2448</a>: Live Viewer Intensity is calculated asynchronously via QThreads</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2483">#2483</a>: Add Geometry member class to the ImageStack class</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2516">#2516</a>: The plot in the Spectrum Viewer can be switched to a scatter plot via a right click menu. This feature can be activated on any plot in MI.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2545">#2545</a>: the overlap correction script has been migrated into the operations window in MI</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2548">#2548</a>: Add a fitting system for Bragg Edges in Time of Flight data</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2588">#2588</a>: Enable user-editable initial fitting parameters within the spectrum viewer fitting tab</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2596">#2596</a>: Sync unit selection across Spectrum Viewer image and fitting tabs. Add right click unit conversion menu to fitting tab spectrum view.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2612">#2612</a>: The Santisteban fitting algorithm for fitting to Bragg Edges has been implemented in the Spectrum Viewer</p></li>
 </ul>
 </section>
 <section id="fixes">
 <h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>#1952: Fix brightness levels when applying flat fielding</p></li>
-<li><p>2222: Monitor normalisation: RuntimeError: No logfile available for this stack.</p></li>
-<li><p>#2229: Refactor Codebase by Removing Obsolete Functionality due to Introducing Efficient Compute Functions</p></li>
-<li><p>#2281 : TestGuiSystemReconstruction test_correlate should check COR and tilt</p></li>
-<li><p>#2285: Resolve operations windows crop co-ordinates ROI size from being larger than stack bounds. Additionally resolve ROI crop co-ordinate dialog window persistence if parent window closed.</p></li>
-<li><p>#2309: Fix SpectrumWidgetTest warnings</p></li>
-<li><p>#2315: Fix adding or replacing a stack within a dataset</p></li>
-<li><p>#2376: Fix spectrum visibility for ROIs where visibility is set to false are still displayed</p></li>
-<li><p>#2397: Fix FITS file support for drag and drop functionality within Mantid Imaging. This fix also resolves FITS file support when launching Mantid Imaging via the CLI with the <cite>–path</cite> optional argument.</p></li>
-<li><p>#2404: Fix nexus saving and make tests more robust</p></li>
-<li><p>2410: Added fits file to choose file path</p></li>
-<li><p>2432: Ensure Flight Path and Time Delay Display Three Decimal Places</p></li>
-<li><p>2420: corrected RITS export error when bin size equals step size</p></li>
-<li><p>2422: Spectrum viewer: Resolves a bug preventing a new ROI from being added after exporting to a CSV file</p></li>
-<li><p>2463: fix Quick Start Guide link</p></li>
-<li><p>#2471: The ROIs in the Spectrum Viewer can be moved smoothly while the spectrum updates.</p></li>
-<li><p>2472: When loading data, tabs are stacked correctly in the main view</p></li>
-<li><p>2473: Resolved issues with duplicate ROIs being created when switching sample</p></li>
-<li><p>2486: Fix ROI movement not updating spectrum unless selected</p></li>
-<li><p>#2490: The Live Viewer Intensity plot now updates correctly when images are modified, i.e. deleted or multiple added files</p></li>
-<li><p>#2497: Live Viewer Intensity now plots correctly with slow/faulty files</p></li>
-<li><p>2503: save the currently displayed image to a tiff file in spectrum viewer</p></li>
-<li><p>2523: The Spectrum Viewer configures stack and calculates spectrum after window is displayed. Spectrum is now cached.</p></li>
-<li><p>#2532: Make Jenks and Otsu robust against NaNs in the image</p></li>
-<li><p>#2542: Correctly update core and tilt table and line when changed</p></li>
-<li><p>#2593: Fix the ROI preview image not being anchored to the top-right of the spectrum viewer’s fitting tab</p></li>
-<li><p>#2599: Resolve duplicate <cite>PlotDataItem</cite> in the Spectrum Viewer and add protection to fitting region against empty arrays.</p></li>
-<li><p>#2627: Remove Int type check of slice in  <code class="docutils literal notranslate"><span class="pre">_auto_find_minimisation_square_sum</span></code> to resolve TypeError when applying minimise error in reconstruction view.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1952">#1952</a>: Fix brightness levels when applying flat fielding</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2222">#2222</a>: Monitor normalisation: RuntimeError: No logfile available for this stack.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2229">#2229</a>: Refactor Codebase by Removing Obsolete Functionality due to Introducing Efficient Compute Functions</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2281">#2281</a>: TestGuiSystemReconstruction test_correlate should check COR and tilt</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2285">#2285</a>: Resolve operations windows crop co-ordinates ROI size from being larger than stack bounds. Additionally resolve ROI crop co-ordinate dialog window persistence if parent window closed.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2309">#2309</a>: Fix SpectrumWidgetTest warnings</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2315">#2315</a>: Fix adding or replacing a stack within a dataset</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2376">#2376</a>: Fix spectrum visibility for ROIs where visibility is set to false are still displayed</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2397">#2397</a>: Fix FITS file support for drag and drop functionality within Mantid Imaging. This fix also resolves FITS file support when launching Mantid Imaging via the CLI with the <cite>–path</cite> optional argument.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2404">#2404</a>: Fix nexus saving and make tests more robust</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2410">#2410</a>: Added fits file to choose file path</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2432">#2432</a>: Ensure Flight Path and Time Delay Display Three Decimal Places</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2420">#2420</a>: corrected RITS export error when bin size equals step size</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2422">#2422</a>: Spectrum viewer: Resolves a bug preventing a new ROI from being added after exporting to a CSV file</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2463">#2463</a>: fix Quick Start Guide link</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2471">#2471</a>: The ROIs in the Spectrum Viewer can be moved smoothly while the spectrum updates.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2472">#2472</a>: When loading data, tabs are stacked correctly in the main view</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2473">#2473</a>: Resolved issues with duplicate ROIs being created when switching sample</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2486">#2486</a>: Fix ROI movement not updating spectrum unless selected</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2490">#2490</a>: The Live Viewer Intensity plot now updates correctly when images are modified, i.e. deleted or multiple added files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2497">#2497</a>: Live Viewer Intensity now plots correctly with slow/faulty files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2503">#2503</a>: save the currently displayed image to a tiff file in spectrum viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2523">#2523</a>: The Spectrum Viewer configures stack and calculates spectrum after window is displayed. Spectrum is now cached.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2532">#2532</a>: Make Jenks and Otsu robust against NaNs in the image</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2542">#2542</a>: Correctly update core and tilt table and line when changed</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2593">#2593</a>: Fix the ROI preview image not being anchored to the top-right of the spectrum viewer’s fitting tab</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2599">#2599</a>: Resolve duplicate <cite>PlotDataItem</cite> in the Spectrum Viewer and add protection to fitting region against empty arrays.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2627">#2627</a>: Remove Int type check of slice in  <code class="docutils literal notranslate"><span class="pre">_auto_find_minimisation_square_sum</span></code> to resolve TypeError when applying minimise error in reconstruction view.</p></li>
 </ul>
 </section>
 <section id="developer-changes">
 <h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>#2267: Python has been upgraded to use version 3.12</p></li>
-<li><p>#2267: Show attribute names in leak tracker</p></li>
-<li><p>#2268: various python packages have been updated including astropy, scipy, nu,py, algotom, cudatoolkit, cupy, and jenkspy</p></li>
-<li><p>#2269: Pyinstaller and h5py packages have been upgraded to 6.9.* and 3.7.* respectively</p></li>
-<li><p>#2277: System tests for spectum viewer</p></li>
-<li><p>#2289: updated packages to deal with numpy deprecation warnings leading towards 2.0</p></li>
-<li><p>#2296: Migrated from the Centos7 Docker image to Rocky8 to match IDaas</p></li>
-<li><p>#2300: Pyinstaller add libcurl libraries</p></li>
-<li><p>#2307: Try to find ShutterCount and Spectra log files within a selected dataset in the loading dialog menu</p></li>
-<li><p>#2313: Docker images are pruned after being built and pushed to free up storage space</p></li>
-<li><p>2320: Enhance System Tests for Spectrum Viewer</p></li>
-<li><p>#2324: Use branch feature on applitools</p></li>
-<li><p>#2330: The PySide6 module is now excluded when building via PyInstaller due to hook clashes</p></li>
-<li><p>#2348: Pyright dependancy to project, configure pyright basic rulest and resolve issues raised by pyright in basic configuration</p></li>
-<li><p>#2370: Add a cancel button to AsyncTaskDialog progress window</p></li>
-<li><p>#2380: Rename Spectrum Viewer tofPropertiesGroupBox to experimentSetupGroupBox and place into a custom widget.</p></li>
-<li><p>#2417: Reduce memory use in tests</p></li>
-<li><p>#2433: Speedup autospec in tests</p></li>
-<li><p>2436: Use static copyright years</p></li>
-<li><p>2438: Only try to remove old dev env if it exists</p></li>
-<li><p>#2444: Ruff rule to check for missing __init__.py files</p></li>
-<li><p>#2552: Replaced “Apply to all stacks” button with “Apply to Dataset”, which only applies the operation to the selected dataset.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2267">#2267</a>: Python has been upgraded to use version 3.12</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2267">#2267</a>: Show attribute names in leak tracker</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2268">#2268</a>: various python packages have been updated including astropy, scipy, nu,py, algotom, cudatoolkit, cupy, and jenkspy</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2269">#2269</a>: Pyinstaller and h5py packages have been upgraded to 6.9.* and 3.7.* respectively</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2277">#2277</a>: System tests for spectum viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2289">#2289</a>: updated packages to deal with numpy deprecation warnings leading towards 2.0</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2296">#2296</a>: Migrated from the Centos7 Docker image to Rocky8 to match IDaas</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2300">#2300</a>: Pyinstaller add libcurl libraries</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2307">#2307</a>: Try to find ShutterCount and Spectra log files within a selected dataset in the loading dialog menu</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2313">#2313</a>: Docker images are pruned after being built and pushed to free up storage space</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2320">#2320</a>: Enhance System Tests for Spectrum Viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2324">#2324</a>: Use branch feature on applitools</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2330">#2330</a>: The PySide6 module is now excluded when building via PyInstaller due to hook clashes</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2348">#2348</a>: Pyright dependancy to project, configure pyright basic rulest and resolve issues raised by pyright in basic configuration</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2370">#2370</a>: Add a cancel button to AsyncTaskDialog progress window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2380">#2380</a>: Rename Spectrum Viewer tofPropertiesGroupBox to experimentSetupGroupBox and place into a custom widget.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2417">#2417</a>: Reduce memory use in tests</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2433">#2433</a>: Speedup autospec in tests</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2436">#2436</a>: Use static copyright years</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2438">#2438</a>: Only try to remove old dev env if it exists</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2444">#2444</a>: Ruff rule to check for missing __init__.py files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2552">#2552</a>: Replaced “Apply to all stacks” button with “Apply to Dataset”, which only applies the operation to the selected dataset.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2609">#2609</a>: Refactor release_notes.py script to add reST GitHub Issue links to allow users to find the associated issue or PR for additional context.</p></li>
 </ul>
 </section>
 </section>
