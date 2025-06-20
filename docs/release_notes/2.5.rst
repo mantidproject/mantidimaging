@@ -38,88 +38,88 @@ There have also been many smaller changes and fixes which are listed below.
 
 New Features and improvements
 -----------------------------
-- #1601 : arithmetic filter optimisation
-- #1620 : Add multiple ROI to spectrum viewer
-- #1616 : Change selected stack with single click on tree widget
-- #1625 : Allow adding extra stacks to a dataset
-- #1625 : Load recons to an existing dataset
-- #1625 : Change selection in tree view when switching tabs
-- #1626 : Move stacks between datasets
-- #1622 : Add, Remove and Rename ROIs in spectrum viewer
-- #1464 : NeXus Recon: Add entry/reconstruction/date information
-- #1463 : NeXus Recon: Add entry/SAMPLE/name information
-- #1468 : NeXus Recon: Load recons
-- #1467 : NeXus Recon: Add other entry/data information
-- #1661 : Use `tifffile` for writing and reading tiff files
-- #1512, #1725 : Speedups for CIL setup
-- #1465 : NeXus Recon: Add entry/reconstruction/parameters information
-- #1666 : PyInstaller single file
-- #1665 : PyInstaller exe icon
-- #1680 : Multiple Spectrum Line Plots in Spectrum Viewer
-- #1691 : Remove "Beta" from spectrum viewer
-- #1697 : For NXtomoproc store data in float32
-- #1711 : Update CIL to 22.2.0
-- #1714 : Improve ROI hover behavior within Spectrum Viewer to be more intuitive.
-- #1664 : PyInstaller version at build time
-- #1632 : Add Stochastic PDHG
-- #1696 : Export ROI positional data following Pascal VOC format in separate `.csv` when exporting spectrum data in spectrum view.
-- #1225 : Loading of Golden Ratio datasets
-- #1739 : Load processed NeXus data
-- #1762 : NSIS installer for Windows
-- #1765 : NeXus float/int save option
-- #1588 : Improve application startup time
+- `#1601 <https://github.com/mantidproject/mantidimaging/issues/1601>`_: arithmetic filter optimisation
+- `#1620 <https://github.com/mantidproject/mantidimaging/issues/1620>`_: Add multiple ROI to spectrum viewer
+- `#1616 <https://github.com/mantidproject/mantidimaging/issues/1616>`_: Change selected stack with single click on tree widget
+- `#1625 <https://github.com/mantidproject/mantidimaging/issues/1625>`_: Allow adding extra stacks to a dataset
+- `#1625 <https://github.com/mantidproject/mantidimaging/issues/1625>`_: Load recons to an existing dataset
+- `#1625 <https://github.com/mantidproject/mantidimaging/issues/1625>`_: Change selection in tree view when switching tabs
+- `#1626 <https://github.com/mantidproject/mantidimaging/issues/1626>`_: Move stacks between datasets
+- `#1622 <https://github.com/mantidproject/mantidimaging/issues/1622>`_: Add, Remove and Rename ROIs in spectrum viewer
+- `#1464 <https://github.com/mantidproject/mantidimaging/issues/1464>`_: NeXus Recon: Add entry/reconstruction/date information
+- `#1463 <https://github.com/mantidproject/mantidimaging/issues/1463>`_: NeXus Recon: Add entry/SAMPLE/name information
+- `#1468 <https://github.com/mantidproject/mantidimaging/issues/1468>`_: NeXus Recon: Load recons
+- `#1467 <https://github.com/mantidproject/mantidimaging/issues/1467>`_: NeXus Recon: Add other entry/data information
+- `#1661 <https://github.com/mantidproject/mantidimaging/issues/1661>`_: Use `tifffile` for writing and reading tiff files
+- `#1512 <https://github.com/mantidproject/mantidimaging/issues/1512>`_, `#1725 <https://github.com/mantidproject/mantidimaging/issues/1725>`_: Speedups for CIL setup
+- `#1465 <https://github.com/mantidproject/mantidimaging/issues/1465>`_: NeXus Recon: Add entry/reconstruction/parameters information
+- `#1666 <https://github.com/mantidproject/mantidimaging/issues/1666>`_: PyInstaller single file
+- `#1665 <https://github.com/mantidproject/mantidimaging/issues/1665>`_: PyInstaller exe icon
+- `#1680 <https://github.com/mantidproject/mantidimaging/issues/1680>`_: Multiple Spectrum Line Plots in Spectrum Viewer
+- `#1691 <https://github.com/mantidproject/mantidimaging/issues/1691>`_: Remove "Beta" from spectrum viewer
+- `#1697 <https://github.com/mantidproject/mantidimaging/issues/1697>`_: For NXtomoproc store data in float32
+- `#1711 <https://github.com/mantidproject/mantidimaging/issues/1711>`_: Update CIL to 22.2.0
+- `#1714 <https://github.com/mantidproject/mantidimaging/issues/1714>`_: Improve ROI hover behavior within Spectrum Viewer to be more intuitive.
+- `#1664 <https://github.com/mantidproject/mantidimaging/issues/1664>`_: PyInstaller version at build time
+- `#1632 <https://github.com/mantidproject/mantidimaging/issues/1632>`_: Add Stochastic PDHG
+- `#1696 <https://github.com/mantidproject/mantidimaging/issues/1696>`_: Export ROI positional data following Pascal VOC format in separate `.csv` when exporting spectrum data in spectrum view.
+- `#1225 <https://github.com/mantidproject/mantidimaging/issues/1225>`_: Loading of Golden Ratio datasets
+- `#1739 <https://github.com/mantidproject/mantidimaging/issues/1739>`_: Load processed NeXus data
+- `#1762 <https://github.com/mantidproject/mantidimaging/issues/1762>`_: NSIS installer for Windows
+- `#1765 <https://github.com/mantidproject/mantidimaging/issues/1765>`_: NeXus float/int save option
+- `#1588 <https://github.com/mantidproject/mantidimaging/issues/1588>`_: Improve application startup time
 
 Fixes
 -----
-- #1589 : Recommend new update command
-- #1330 : Initial ROI box is sometimes much larger than image for relevant filters
-- #1602 : Prevent multiple ROI selector windows opening from Operations window
-- #1610 : Apply bug fix to disable Spectrum Viewer export button when no data is loaded
-- #1669 : Fix table or ROIs falling out of synchronisation with ROIs visible in the image when changing between samples
-- #1659 : PyInstaller missing cupy files
-- #1657 : PyInstaller: order of operations in menu is not sorted
-- #1712 : Fix redrawing of all ROIs and spectrum line plots of toggle and change of normalized stacks within spectrum viewer
-- #1219 : Fix image_180deg.tiff being included in sample stack
-- #1730 : Allow any characters in filenames
-- #1698 : Store processed (but not reconstructed) data in a different place in the nexus file
-- #1748 : Stop BHC promoting data arrays to float64
-- #1747 : Fix API links in docs
-- #1721 : For SPDHG show projections per subset
-- #1720 : Update memory requirements for SPDHG
-- #1742 : Restore native dialogs on Linux
-- #1761 : Hide float64 loading
-- #1774 : Force numexpr from conda-forge channel
-- #1779 : Saving images with log file loaded
+- `#1589 <https://github.com/mantidproject/mantidimaging/issues/1589>`_: Recommend new update command
+- `#1330 <https://github.com/mantidproject/mantidimaging/issues/1330>`_: Initial ROI box is sometimes much larger than image for relevant filters
+- `#1602 <https://github.com/mantidproject/mantidimaging/issues/1602>`_: Prevent multiple ROI selector windows opening from Operations window
+- `#1610 <https://github.com/mantidproject/mantidimaging/issues/1610>`_: Apply bug fix to disable Spectrum Viewer export button when no data is loaded
+- `#1669 <https://github.com/mantidproject/mantidimaging/issues/1669>`_: Fix table or ROIs falling out of synchronisation with ROIs visible in the image when changing between samples
+- `#1659 <https://github.com/mantidproject/mantidimaging/issues/1659>`_: PyInstaller missing cupy files
+- `#1657 <https://github.com/mantidproject/mantidimaging/issues/1657>`_: PyInstaller: order of operations in menu is not sorted
+- `#1712 <https://github.com/mantidproject/mantidimaging/issues/1712>`_: Fix redrawing of all ROIs and spectrum line plots of toggle and change of normalized stacks within spectrum viewer
+- `#1219 <https://github.com/mantidproject/mantidimaging/issues/1219>`_: Fix image_180deg.tiff being included in sample stack
+- `#1730 <https://github.com/mantidproject/mantidimaging/issues/1730>`_: Allow any characters in filenames
+- `#1698 <https://github.com/mantidproject/mantidimaging/issues/1698>`_: Store processed (but not reconstructed) data in a different place in the nexus file
+- `#1748 <https://github.com/mantidproject/mantidimaging/issues/1748>`_: Stop BHC promoting data arrays to float64
+- `#1747 <https://github.com/mantidproject/mantidimaging/issues/1747>`_: Fix API links in docs
+- `#1721 <https://github.com/mantidproject/mantidimaging/issues/1721>`_: For SPDHG show projections per subset
+- `#1720 <https://github.com/mantidproject/mantidimaging/issues/1720>`_: Update memory requirements for SPDHG
+- `#1742 <https://github.com/mantidproject/mantidimaging/issues/1742>`_: Restore native dialogs on Linux
+- `#1761 <https://github.com/mantidproject/mantidimaging/issues/1761>`_: Hide float64 loading
+- `#1774 <https://github.com/mantidproject/mantidimaging/issues/1774>`_: Force numexpr from conda-forge channel
+- `#1779 <https://github.com/mantidproject/mantidimaging/issues/1779>`_: Saving images with log file loaded
 
 Developer Changes
 -----------------
-- #1472 : Investigate issues reported by flake8-bugbear
-- #1607 : Add flake8-bugbear to environment, github actions and precommit
-- #1613 : Refactor Operations window ROI selector to be in its own class
-- #1652 : PEP440 compliant versions for alpha builds
-- #1595 : Store version number in package
-- #1663 : Postponed Evaluation of Annotations
-- #1670 : `tostring()` Deprecation Warning
-- #1673 : Update license year across the repository from 2022 to 2023
-- #1678 : Allow multiple datasets to be opened at once in the GUI when using the CLI `--path` flag
-- #1695 : Use FilenameGroup for Load Images
-- #1693 : Increase test coverage for spectrum widget
-- #1703 : Optimize Re-Drawing of ROIs within the Spectrum Viewer
-- #1630 : Update numexpr to 2.8 to resolve dependency deprecation warning
-- #1641 : More robust logging and error handling in automated testing
-- #1643 : Deprecations in GitHub actions
-- #1726, #1728 : Use FilenameGroup for Load Dataset
-- #1754 : Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry
-- #1757 : CLI log level only on to mantidimaging
-- #1788 : Switch to separate Windows and Linux conda packages
+- `#1472 <https://github.com/mantidproject/mantidimaging/issues/1472>`_: Investigate issues reported by flake8-bugbear
+- `#1607 <https://github.com/mantidproject/mantidimaging/issues/1607>`_: Add flake8-bugbear to environment, github actions and precommit
+- `#1613 <https://github.com/mantidproject/mantidimaging/issues/1613>`_: Refactor Operations window ROI selector to be in its own class
+- `#1652 <https://github.com/mantidproject/mantidimaging/issues/1652>`_: PEP440 compliant versions for alpha builds
+- `#1595 <https://github.com/mantidproject/mantidimaging/issues/1595>`_: Store version number in package
+- `#1663 <https://github.com/mantidproject/mantidimaging/issues/1663>`_: Postponed Evaluation of Annotations
+- `#1670 <https://github.com/mantidproject/mantidimaging/issues/1670>`_: `tostring()` Deprecation Warning
+- `#1673 <https://github.com/mantidproject/mantidimaging/issues/1673>`_: Update license year across the repository from 2022 to 2023
+- `#1678 <https://github.com/mantidproject/mantidimaging/issues/1678>`_: Allow multiple datasets to be opened at once in the GUI when using the CLI `--path` flag
+- `#1695 <https://github.com/mantidproject/mantidimaging/issues/1695>`_: Use FilenameGroup for Load Images
+- `#1693 <https://github.com/mantidproject/mantidimaging/issues/1693>`_: Increase test coverage for spectrum widget
+- `#1703 <https://github.com/mantidproject/mantidimaging/issues/1703>`_: Optimize Re-Drawing of ROIs within the Spectrum Viewer
+- `#1630 <https://github.com/mantidproject/mantidimaging/issues/1630>`_: Update numexpr to 2.8 to resolve dependency deprecation warning
+- `#1641 <https://github.com/mantidproject/mantidimaging/issues/1641>`_: More robust logging and error handling in automated testing
+- `#1643 <https://github.com/mantidproject/mantidimaging/issues/1643>`_: Deprecations in GitHub actions
+- `#1726 <https://github.com/mantidproject/mantidimaging/issues/1726>`_, `#1728 <https://github.com/mantidproject/mantidimaging/issues/1728>`_: Use FilenameGroup for Load Dataset
+- `#1754 <https://github.com/mantidproject/mantidimaging/issues/1754>`_: Migrate Centos7 and Ubuntu18 Docker images from DockerHub to GitHub Container Registry
+- `#1757 <https://github.com/mantidproject/mantidimaging/issues/1757>`_: CLI log level only on to mantidimaging
+- `#1788 <https://github.com/mantidproject/mantidimaging/issues/1788>`_: Switch to separate Windows and Linux conda packages
 
 Mantid Imaging 2.5.1
 ====================
 
 This release contains backported fixes for the following issues
 
-- #1864 : Add log file normalisation to support older log file formats
-- #1865 : Be less strict when finding flat and dark
-- #1870 : Load all file in the extra digits case
-- #1887 : Better error message for corrupt TIFF file
-- #1888 : Don't return files beginning with a dot when finding related
+- `#1864 <https://github.com/mantidproject/mantidimaging/issues/1864>`_: Add log file normalisation to support older log file formats
+- `#1865 <https://github.com/mantidproject/mantidimaging/issues/1865>`_: Be less strict when finding flat and dark
+- `#1870 <https://github.com/mantidproject/mantidimaging/issues/1870>`_: Load all file in the extra digits case
+- `#1887 <https://github.com/mantidproject/mantidimaging/issues/1887>`_: Better error message for corrupt TIFF file
+- `#1888 <https://github.com/mantidproject/mantidimaging/issues/1888>`_: Don't return files beginning with a dot when finding related
