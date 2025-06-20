@@ -59,16 +59,11 @@ class FittingDisplayWidget(QWidget):
     def set_plot_mode(self, mode: str) -> None:
         self._showing_initial_fit = (mode == "initial")
 
-    def update_plot(self,
-                    x_data: np.ndarray,
-                    y_data: np.ndarray,
-                    label: str = "ROI",
-                    image: np.ndarray | None = None) -> None:
+    def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
         self.set_default_region(x_data, y_data)
-        self.update_image(image)
 
     def update_image(self, image: np.ndarray | None) -> None:
         if image is not None:
