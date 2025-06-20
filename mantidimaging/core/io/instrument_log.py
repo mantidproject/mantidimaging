@@ -135,7 +135,11 @@ class InstrumentLog:
             if parser.match(self.lines, self.source_file.name):
                 self.parser = parser
                 return
-        raise NoParserFound
+        raise NoParserFound(
+            f"No parser matched log file: '{self.source_file.name}'. "
+            "Ensure the file includes a valid header row. See docs: "
+            "https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack"
+        )
 
     def parse(self) -> None:
         self.data = self.parser(self.lines).parse()
