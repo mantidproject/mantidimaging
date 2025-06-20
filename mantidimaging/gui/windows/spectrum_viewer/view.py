@@ -81,7 +81,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
-        self.roiSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_spectrum)
+        self.roiSelectionWidget.selectionChanged.connect(self.handle_fitting_roi_changed)
 
         self.scalable_roi_widget = FittingParamFormWidget(self.presenter)
         self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
@@ -325,6 +325,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         roi_names = self.presenter.get_roi_names()
         self.roiSelectionWidget.update_roi_list(roi_names)
         self.exportSettingsWidget.set_roi_names(roi_names)
+
+    def handle_fitting_roi_changed(self) -> None:
+        self.show_visible_spectrums()
+        self.presenter.update_roi_on_fitting_thumbnail()
 
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()

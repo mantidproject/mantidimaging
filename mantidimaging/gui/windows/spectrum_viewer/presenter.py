@@ -272,6 +272,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum.update()
         if not self.handle_roi_change_timer.isActive():
             self.handle_roi_change_timer.start(500)
+        self.update_roi_on_fitting_thumbnail()
 
     def handle_roi_moved(self) -> None:
         """
@@ -321,18 +322,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
             self.model.get_number_of_images_in_stack(), np.nan))
 
-    def update_fitting_spectrum(self, roi_name: str) -> None:
-        """
-        Fetches the spectrum data for the selected ROI and updates the fitting display plot.
-        """
-        if roi_name not in self.view.spectrum_widget.roi_dict:
-            return
-        tof_data = self.model.tof_data
-        if tof_data.size == 0:
-            return
-
-        self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name)
-        roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
+    def update_roi_on_fitting_thumbnail(self) -> None:
+        roi_widget = self.view.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
 
     @property
