@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from math import degrees
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLabel, QGridLayout
@@ -33,16 +34,23 @@ class StackPropertiesDialog(BaseDialogView):
         self.log_filename = self.presenter.get_log_filename()
 
         self.geometry_type = "N/A"
-        self.cor_and_tilt = "N/A"
         if self.stack.geometry is not None:
             self.geometry_type = f"{self.stack.geometry.geom_type}{self.stack.geometry.dimension}"
-            self.cor_and_tilt = self.stack.geometry.get_centre_of_rotation()
 
         self.angle_range = "N/A"
-        # if self.stack.real_projection_angles() is not None:
-        #     min_angle = degrees(self.stack.real_projection_angles().value[0])
-        #     max_angle = degrees(self.stack.real_projection_angles().value[-1])
-        #     self.angle_range = f"{min_angle:.2f}° - {max_angle:.2f}°"
+        real_projection_angles = self.stack.real_projection_angles()
+        if real_projection_angles is not None:
+            min_angle = degrees(real_projection_angles.value[0])
+            max_angle = degrees(real_projection_angles.value[-1])
+            self.angle_range = f"{min_angle:.2f}° - {max_angle:.2f}°"
+
+        self.cor_and_tilt = "N/A"
+        if self.stack.geometry is not None:
+            mi_cor = self.stack.geometry.cor
+            mi_tilt = self.stack.geometry.tilt
+            ci_rap = self.stack.geometry.config.system.rotation_axis.position
+            ci_rad = self.stack.geometry.config.system.rotation_axis.direction
+            self.cor_and_tilt = f"COR: {mi_cor}, Tilt: {mi_tilt}, Rotation Axis Position, Direction: {ci_rap}, {ci_rad}"
 
         self.setWindowTitle(f"Stack Properties: {origin_dataset.name}")
         self.layout = QGridLayout()
