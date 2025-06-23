@@ -1,0 +1,1 @@
+#2624: Check that SPDHG ``last_residual`` property exists before setting residual information.
