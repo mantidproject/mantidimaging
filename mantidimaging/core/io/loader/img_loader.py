@@ -85,14 +85,12 @@ class ImageLoader:
 
     def _do_files_load_seq(self, data: pu.SharedArray, files: list[str]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
-        shape, dtype, total_size = None, None, 0
+        total_size = 0
 
         with progress:
             for idx, in_file in enumerate(files):
                 try:
                     data.array[idx, :] = self.load_func(in_file)
-                    shape = shape or data.array.shape
-                    dtype = dtype or data.array.dtype
                     total_size += os.path.getsize(in_file)
                     progress.update(msg='Image')
                 except ValueError as exc:
@@ -104,7 +102,7 @@ class ImageLoader:
                     raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}") from exc
 
         LOG.info(f"Loaded {len(files)} files (name={os.path.basename(files[0])}, format={self.img_format}, "
-                 f"total size={total_size / (1024 * 1024):.2f} MB, dtype={dtype}, shape={shape})")
+                 f"total size={total_size / (1024 * 1024):.2f} MB, dtype={data.array.dtype}, shape={data.array.shape})")
         return data
 
     def load_files(self, files: list[str]) -> pu.SharedArray:
