@@ -91,8 +91,8 @@ class FittingDisplayWidget(QWidget):
             self.spectrum_plot.set_unit_range_label(*value_range, unit_label=unit_label)
 
     def set_default_region(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
-        """Position the ROI centrally over the plotted data."""
-        if y_data.size == 0 or x_data.size == 0:
+        """Position the ROI centrally over the plotted data, if valid data."""
+        if y_data.size == 0 or x_data.size == 0 or np.all(np.isnan(y_data)):
             # Fallback default region
             self.fitting_region.setPos((0, 0))
             self.fitting_region.setSize((1, 1))

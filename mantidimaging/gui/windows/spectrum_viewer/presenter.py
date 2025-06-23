@@ -135,7 +135,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
                                            self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
-        self.update_fitting_spectrum("roi", reset_region=True)
+        self.set_default_fitting_region()
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
         """
@@ -272,6 +272,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum.update()
         if not self.handle_roi_change_timer.isActive():
             self.handle_roi_change_timer.start(500)
+        self.update_roi_on_fitting_thumbnail()
 
     def handle_roi_moved(self) -> None:
         """
@@ -293,8 +294,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
             self.try_next_mean_chunk()
         else:
-            if self.view.roiSelectionWidget.current_roi_name == list(self.roi_to_process_queue.keys())[0]:
-                self.update_fitting_spectrum(list(self.roi_to_process_queue.keys())[0])
             self.roi_to_process_queue.pop(list(self.roi_to_process_queue.keys())[0])
         if len(self.roi_to_process_queue) > 0:
             self.try_next_mean_chunk()
@@ -323,24 +322,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
             self.model.get_number_of_images_in_stack(), np.nan))
 
-    def update_fitting_spectrum(self, roi_name: str, reset_region: bool = False) -> None:
-        """
-        Fetches the spectrum data for the selected ROI and updates the fitting display plot.
-        """
-        if roi_name not in self.view.spectrum_widget.roi_dict:
-            return
-        roi = self.view.spectrum_widget.get_roi(roi_name)
-        tof_data = self.model.tof_data
-        if tof_data.size == 0:
-            return
-
-        self.fitting_spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
-        self.view.fittingDisplayWidget.update_plot(tof_data, self.fitting_spectrum, label=roi_name)
-        roi_widget = self.view.spectrum_widget.roi_dict[roi_name]
+    def update_roi_on_fitting_thumbnail(self) -> None:
+        roi_widget = self.view.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
         self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
 
-        if reset_region:
-            self.view.fittingDisplayWidget.set_default_region(tof_data, self.fitting_spectrum)
+    @property
+    def fitting_spectrum(self) -> np.ndarray:
+        selected_fitting_roi = self.view.roiSelectionWidget.current_roi_name
+        if (spectrum_data := self.view.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
+            return spectrum_data
+
+        raise RuntimeError("Fitting spectrum not calculated")
+
+    def set_default_fitting_region(self) -> None:
+        self.view.fittingDisplayWidget.set_default_region(self.model.tof_data, self.fitting_spectrum)
 
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
@@ -490,7 +485,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.set_spectrum(ROI_RITS,
                                self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
         self.view.set_roi_visibility_flags(ROI_RITS, visible=False)
-        self.update_fitting_spectrum(ROI_RITS, reset_region=True)
 
     def do_add_roi_to_table(self, roi_name: str) -> None:
         """
@@ -525,11 +519,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_relevant_tof_units()
         self.update_unit_labels_and_menus()
         self.refresh_spectrum_plot()
-        self._update_all_fitting_spectra()
-
-    def _update_all_fitting_spectra(self) -> None:
-        for roi_name in self.view.spectrum_widget.roi_dict:
-            self.update_fitting_spectrum(roi_name)
 
     def handle_tof_unit_change_via_menu(self, unit_name: str) -> None:
         self.view.tof_units_mode = unit_name
