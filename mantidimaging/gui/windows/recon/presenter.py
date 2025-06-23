@@ -381,6 +381,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
+        self._update_imagestack_geometry_data()
 
     def _on_volume_recon_done(self, task: TaskWorkerThread) -> None:
         self.recon_is_running = False
@@ -414,6 +415,18 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
 
+    def _update_imagestack_geometry_data(self) -> None:
+        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
+        # Update Imagestack geometry data
+        current_uuid = self.view.stackSelector.current()
+        current_image_stack = self.view.get_stack(current_uuid) if current_uuid is not None else None
+        geometry = current_image_stack.geometry if current_image_stack is not None else None
+        if geometry is not None:
+            height = current_image_stack.height if current_image_stack is not None else 0
+            cors = self.model.data_model.get_all_cors_from_regression(height)
+            tilt = self.view.tilt
+            geometry.set_geometry_from_cor_tilt(cors[height // 2], tilt)
+
     def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)
         self.view.set_results(*self.model.get_results())
@@ -422,18 +435,6 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
         self._update_imagestack_geometry_data()
-
-    def _update_imagestack_geometry_data(self) -> None:
-        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
-        # Update Imagestack geometry data
-        current_uuid = self.view.stackSelector.current()
-        current_image_stack = self.main_window.get_stack(current_uuid) if current_uuid is not None else None
-        geometry = current_image_stack.geometry if current_image_stack is not None else None
-        if geometry is not None:
-            height = current_image_stack.height if current_image_stack is not None else 0
-            cors = self.model.data_model.get_all_cors_from_regression(height)
-            tilt = self.view.tilt
-            geometry.set_geometry_from_cor_tilt(cors[height // 2], tilt)
 
     def _auto_find_correlation(self) -> None:
         if not self.model.images.has_proj180deg():
