@@ -46,11 +46,11 @@ class StackPropertiesDialog(BaseDialogView):
 
         self.cor_and_tilt = "N/A"
         if self.stack.geometry is not None:
-            mi_cor = self.stack.geometry.cor.value
-            mi_tilt = self.stack.geometry.tilt
-            ci_rap = self.stack.geometry.config.system.rotation_axis.position
-            ci_rad = self.stack.geometry.config.system.rotation_axis.direction
-            self.cor_and_tilt = f"COR: {mi_cor}, Tilt: {mi_tilt}, Rotation Axis Position, Direction: {ci_rap}, {ci_rad}"
+            mi_cor = f"COR: {self.stack.geometry.cor.value}"
+            mi_tilt = f"Tilt: {self.stack.geometry.tilt:.5g}"
+            ci_rap = f"Rotation Axis Position: {self.stack.geometry.config.system.rotation_axis.position}"
+            ci_rad = f"Rotation Axis Direction: {self.stack.geometry.config.system.rotation_axis.direction}"
+            self.cor_and_tilt = f"{mi_cor}, {mi_tilt}, {ci_rap}, {ci_rad}"
 
         self.setWindowTitle(f"Stack Properties: {origin_dataset.name}")
         self.layout = QGridLayout()
