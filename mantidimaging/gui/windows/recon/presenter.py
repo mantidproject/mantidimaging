@@ -381,6 +381,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
+        self._update_imagestack_geometry_data()
 
     def _on_volume_recon_done(self, task: TaskWorkerThread) -> None:
         self.recon_is_running = False
@@ -414,15 +415,6 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
 
-    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
-        self.model.set_precalculated(cor, tilt)
-        self.view.set_results(*self.model.get_results())
-        for idx, point in enumerate(self.model.data_model.iter_points()):
-            self.view.set_table_point(idx, point.slice_index, point.cor)
-        self.do_update_projection()
-        self.do_preview_reconstruct_slice()
-        self._update_imagestack_geometry_data()
-
     def _update_imagestack_geometry_data(self) -> None:
         # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
         # Update Imagestack geometry data
@@ -434,6 +426,15 @@ class ReconstructWindowPresenter(BasePresenter):
             cors = self.model.data_model.get_all_cors_from_regression(height)
             tilt = self.view.tilt
             geometry.set_geometry_from_cor_tilt(cors[height // 2], tilt)
+
+    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
+        self.model.set_precalculated(cor, tilt)
+        self.view.set_results(*self.model.get_results())
+        for idx, point in enumerate(self.model.data_model.iter_points()):
+            self.view.set_table_point(idx, point.slice_index, point.cor)
+        self.do_update_projection()
+        self.do_preview_reconstruct_slice()
+        self._update_imagestack_geometry_data()
 
     def _auto_find_correlation(self) -> None:
         if not self.model.images.has_proj180deg():
