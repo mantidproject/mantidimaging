@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import time
 from multiprocessing import get_context
 import os
 import uuid
@@ -28,6 +29,7 @@ pool: Pool | None = None
 
 
 def create_and_start_pool(process_count: int) -> None:
+    t0 = time.monotonic()
     context = get_context('spawn')
     global cores
     if process_count == 0:
@@ -36,6 +38,8 @@ def create_and_start_pool(process_count: int) -> None:
         cores = process_count
     global pool
     pool = context.Pool(cores, initializer=worker_setup)
+    if perf_logger.isEnabledFor(1):
+        perf_logger.info(f"Process pool started in {time.monotonic() - t0}")
 
 
 def worker_setup():

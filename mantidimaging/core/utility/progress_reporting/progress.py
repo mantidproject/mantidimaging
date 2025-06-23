@@ -235,13 +235,9 @@ class Progress:
         """
         Marks the task as completed.
         """
-        log = getLogger(__name__)
 
         self.update(force_continue=True, msg=self.cancel_msg if self.should_cancel else msg)
 
         if not self.should_cancel:
             self.complete = True
             self.end_step = self.current_step
-
-        # Log elapsed time and final memory usage
-        log.debug("Memory usage after execution: %s", get_memory_usage_linux_str())
