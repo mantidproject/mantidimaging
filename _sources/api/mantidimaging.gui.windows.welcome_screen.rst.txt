@@ -6,14 +6,6 @@ mantidimaging.gui.windows.welcome\_screen package
    :undoc-members:
    :show-inheritance:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 3
-
-   mantidimaging.gui.windows.welcome_screen.tests
-
 Submodules
 ----------
 

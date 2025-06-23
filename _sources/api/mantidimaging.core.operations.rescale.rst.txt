@@ -13,4 +13,3 @@ Submodules
    :maxdepth: 3
 
    mantidimaging.core.operations.rescale.rescale
-   mantidimaging.core.operations.rescale.rescale_test

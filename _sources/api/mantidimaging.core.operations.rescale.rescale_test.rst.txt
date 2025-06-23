@@ -1,7 +1,0 @@
-mantidimaging.core.operations.rescale.rescale\_test module
-==========================================================
-
-.. automodule:: mantidimaging.core.operations.rescale.rescale_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
