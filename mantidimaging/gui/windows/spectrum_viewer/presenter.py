@@ -329,9 +329,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     @property
     def fitting_spectrum(self) -> np.ndarray:
         selected_fitting_roi = self.view.roiSelectionWidget.current_roi_name
-        if selected_fitting_roi in self.view.spectrum_widget.spectrum_data_dict:
-            if (spectrum_data := self.view.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
-                return spectrum_data
+        if (spectrum_data := self.view.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
+            return spectrum_data
 
         raise RuntimeError("Fitting spectrum not calculated")
 
