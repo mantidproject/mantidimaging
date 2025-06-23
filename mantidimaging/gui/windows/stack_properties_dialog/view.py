@@ -46,7 +46,7 @@ class StackPropertiesDialog(BaseDialogView):
 
         self.cor_and_tilt = "N/A"
         if self.stack.geometry is not None:
-            mi_cor = self.stack.geometry.cor
+            mi_cor = self.stack.geometry.cor.value
             mi_tilt = self.stack.geometry.tilt
             ci_rap = self.stack.geometry.config.system.rotation_axis.position
             ci_rad = self.stack.geometry.config.system.rotation_axis.direction
