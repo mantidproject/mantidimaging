@@ -380,6 +380,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
+        self._update_imagestack_geometry_data()
         self.do_preview_reconstruct_slice()
 
     def _on_volume_recon_done(self, task: TaskWorkerThread) -> None:
@@ -414,15 +415,6 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
 
-    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
-        self.model.set_precalculated(cor, tilt)
-        self.view.set_results(*self.model.get_results())
-        for idx, point in enumerate(self.model.data_model.iter_points()):
-            self.view.set_table_point(idx, point.slice_index, point.cor)
-        self.do_update_projection()
-        self.do_preview_reconstruct_slice()
-        self._update_imagestack_geometry_data()
-
     def _update_imagestack_geometry_data(self) -> None:
         # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
         current_uuid = self.view.stackSelector.current()
@@ -436,16 +428,18 @@ class ReconstructWindowPresenter(BasePresenter):
         if current_image_stack.geometry is None:
             raise StackNotFoundError(f"No geometry found for imagestack with UUID: {current_uuid}")
 
-        height = current_image_stack.height if current_image_stack is not None else 0
-        cors = self.model.data_model.get_all_cors_from_regression(height)
-
-        if not cors or len(cors) < (height // 2):
-            LOG.warning("Not enough CORs available to update geometry data.")
-            return
-
         tilt = self.view.tilt
-        cor_top = cors[0]
+        cor_top = ScalarCoR(self.view.rotation_centre)
         current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
+
+    def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
+        self.model.set_precalculated(cor, tilt)
+        self.view.set_results(*self.model.get_results())
+        for idx, point in enumerate(self.model.data_model.iter_points()):
+            self.view.set_table_point(idx, point.slice_index, point.cor)
+        self.do_update_projection()
+        self._update_imagestack_geometry_data()
+        self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self) -> None:
         if not self.model.images.has_proj180deg():
