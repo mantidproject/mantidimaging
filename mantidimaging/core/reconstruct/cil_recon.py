@@ -46,7 +46,7 @@ class MIProgressCallback(Callback):
             extra_info = {}
             if algo.iterations and algo.iterations[-1] == algo.iteration:
                 extra_info = {'iterations': algo.iterations[1:], 'losses': algo.loss[1:]}
-            if algo.last_residual and algo.last_residual[0] == algo.iteration:
+            if hasattr(algo, "last_residual") and algo.last_residual[0] == algo.iteration:
                 extra_info["residual"] = algo.last_residual[1]
             self.progress.update(
                 steps=1,
