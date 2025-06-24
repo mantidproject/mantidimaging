@@ -666,7 +666,11 @@ document.write(`
             <span class="k">if</span> <span class="n">parser</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_file</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
                 <span class="k">return</span>
-        <span class="k">raise</span> <span class="n">NoParserFound</span>
+        <span class="k">raise</span> <span class="n">NoParserFound</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;File format not recognised for log file: &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+            <span class="s2">&quot;See documentation for details of supported formats: &quot;</span>
+            <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack&quot;</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentLog.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.parse">[docs]</a>
