@@ -6,6 +6,8 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from collections.abc import Callable
+import os
+import logging
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.parallel import utility as pu
@@ -15,6 +17,8 @@ if TYPE_CHECKING:
     import numpy as np
     import numpy.typing as npt
     from ...utility.data_containers import Indices
+
+LOG = logging.getLogger(__name__)
 
 
 def execute(load_func: Callable[[str], np.ndarray],
@@ -81,11 +85,13 @@ class ImageLoader:
 
     def _do_files_load_seq(self, data: pu.SharedArray, files: list[str]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
+        total_size = 0
 
         with progress:
             for idx, in_file in enumerate(files):
                 try:
                     data.array[idx, :] = self.load_func(in_file)
+                    total_size += os.path.getsize(in_file)
                     progress.update(msg='Image')
                 except ValueError as exc:
                     raise ValueError("An image has different width and/or height "
@@ -95,6 +101,8 @@ class ImageLoader:
                 except OSError as exc:
                     raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}") from exc
 
+        LOG.info(f"Loaded {len(files)} files (name={os.path.basename(files[0])}, format={self.img_format}, "
+                 f"total size={total_size / (1024 * 1024):.2f} MB, dtype={data.array.dtype}, shape={data.array.shape})")
         return data
 
     def load_files(self, files: list[str]) -> pu.SharedArray:

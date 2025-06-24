@@ -44,9 +44,6 @@ def create_array(shape: tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> S
 
 def _create_shared_array(shape: tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> SharedArray:
     size = full_size_bytes(shape, dtype)
-
-    LOG.info(f'Requested shared array with shape={shape}, size={size}, dtype={dtype}')
-
     name = pm.generate_mi_shared_mem_name()
     mem = shared_memory.SharedMemory(name=name, create=True, size=size)
     return _read_array_from_shared_memory(shape, dtype, mem, True)
