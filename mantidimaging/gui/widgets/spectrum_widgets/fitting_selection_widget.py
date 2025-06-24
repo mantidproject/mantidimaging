@@ -7,6 +7,9 @@ from mantidimaging.core.fitting import fitting_functions
 from PyQt5 import QtWidgets, QtCore
 
 from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction
+import logging
+
+LOG = logging.getLogger(__name__)
 
 
 class FitSelectionWidget(QtWidgets.QGroupBox):
@@ -44,6 +47,7 @@ class FitSelectionWidget(QtWidgets.QGroupBox):
         """ Handle dropdown selection change and emit signal. """
         selected_fit = self.fitDropdown.currentText()
         self.selectionChanged.emit(self.func_dict[selected_fit])
+        LOG.info("Fit function selected: %s", self.fitDropdown.currentText())
 
     def set_available_fitting_functions(self) -> None:
         """ Update the dropdown and trigger selection change if needed. """

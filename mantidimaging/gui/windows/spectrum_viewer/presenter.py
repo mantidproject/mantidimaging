@@ -288,7 +288,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.finished.connect(self.thread_cleanup)
         self.thread.start()
-        LOG.info("ROI moved: name=%s, new coords=%s", self.changed_roi.name, self.changed_roi.as_sensible_roi())
 
     def thread_cleanup(self) -> None:
         self.view.show_visible_spectrums()
@@ -304,6 +303,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.view.show_visible_spectrums()
             self.view.spectrum_widget.spectrum.update()
+
+        roi = self.changed_roi.as_sensible_roi()
+        coords = (roi.left, roi.top, roi.right, roi.bottom)
+        if coords != getattr(self, "_last_logged_roi_coords", None):
+            LOG.info("ROI moved: name=%s, new coords=Left: %d, Top: %d, Right: %d, Bottom: %d",
+                     self.changed_roi.name, *coords)
+            self._last_logged_roi_coords = coords
 
     def try_next_mean_chunk(self) -> None:
         if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():

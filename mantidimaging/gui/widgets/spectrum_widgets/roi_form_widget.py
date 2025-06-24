@@ -125,6 +125,7 @@ class ROIPropertiesTableWidget(BaseWidget):
             self.spin_bottom.setValue(roi.bottom)
             self.label_width.setText(str(roi.width))
             self.label_height.setText(str(roi.height))
+            LOG.debug("ROI bounds set: left=%d, right=%d, top=%d, bottom=%d", roi.left, roi.right, roi.top, roi.bottom)
 
     def set_roi_limits(self, shape: tuple[int, ...]) -> None:
         self.spin_left.setMaximum(shape[1])
@@ -236,6 +237,7 @@ class ROITableWidget(RemovableRowTableView):
         self.roi_table_model.appendNewRow(name, colour, True)
         self.selected_row = self.roi_table_model.rowCount() - 1
         self.selectRow(self.selected_row)
+        LOG.debug("ROI added to table: name=%s, color=%s", name, colour[:3])
 
     def remove_row(self, row: int) -> None:
         """
@@ -243,12 +245,14 @@ class ROITableWidget(RemovableRowTableView):
         """
         self.roi_table_model.remove_row(row)
         self.selectRow(0)
+        LOG.debug("ROI row removed: row=%d", row)
 
     def clear_table(self) -> None:
         """
         Clears the ROI table in the spectrum viewer.
         """
         self.roi_table_model.clear_table()
+        LOG.debug("ROI table cleared")
 
     def select_roi(self, roi_name: str) -> None:
         selected_row = self.find_row_for_roi(roi_name)

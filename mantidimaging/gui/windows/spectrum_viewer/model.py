@@ -127,9 +127,12 @@ class SpectrumViewerWindowModel:
             return
         self.tof_range = (0, stack.data.shape[0] - 1)
         self.tof_data = self.get_stack_time_of_flight()
+        LOG.info("Sample stack set: shape=%s, ToF range=(%d–%d)",
+                 stack.data.shape, self.tof_range[0], self.tof_range[1])
 
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
+        LOG.info("Normalisation stack set: shape=%s", normalise_stack.data.shape)
 
     def get_normalized_averaged_image(self) -> np.ndarray | None:
         """
@@ -248,6 +251,9 @@ class SpectrumViewerWindowModel:
         if normalise_with_shuttercount:
             average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
             spectrum = spectrum / average_shuttercount
+
+        LOG.debug("Computing spectrum: ROI=%s, mode=%s, cached=%s",
+                  roi, mode.name, (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache)
 
         return spectrum
 
@@ -381,6 +387,9 @@ class SpectrumViewerWindowModel:
             csv_output.write(outfile)
             self.save_roi_coords(self.get_roi_coords_filename(path), rois)
 
+        LOG.info("Saving spectra to CSV: path=%s, ROIs=%s, normalised=%s, shuttercount=%s",
+                 path, list(rois.keys()), normalise, normalise_with_shuttercount)
+
     def save_single_rits_spectrum(self, path: Path, error_mode: ErrorMode, roi: SensibleROI) -> None:
         """
         Saves the spectrum for the RITS ROI to a RITS file.
@@ -417,6 +426,9 @@ class SpectrumViewerWindowModel:
             raise ValueError("Invalid error_mode given")
 
         self.export_spectrum_to_rits(path, tof, transmission, transmission_error)
+
+        LOG.info("Exporting RITS file: path=%s, ROI=(%d,%d,%d,%d), error_mode=%s",
+                 path, roi.left, roi.top, roi.right, roi.bottom, error_mode.name)
 
     def validate_bin_and_step_size(self, roi: SensibleROI, bin_size: int, step_size: int) -> None:
         """

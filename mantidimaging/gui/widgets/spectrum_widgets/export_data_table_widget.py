@@ -1,11 +1,13 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+import logging
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
 
+LOG = logging.getLogger(__name__)
 
 class ExportDataTableWidget(QWidget):
     """
@@ -66,6 +68,8 @@ class ExportDataTableWidget(QWidget):
         else:
             self.model.appendRow(items)
 
+        LOG.info("Export table updated: ROI=%s, Params=%s, Status=%s", roi_name, params, status)
+
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:
         """
         Find the row index for a given ROI name. Returns None if not found.
@@ -80,3 +84,4 @@ class ExportDataTableWidget(QWidget):
         Remove all rows from the table.
         """
         self.model.removeRows(0, self.model.rowCount())
+        LOG.info("Export table cleared")

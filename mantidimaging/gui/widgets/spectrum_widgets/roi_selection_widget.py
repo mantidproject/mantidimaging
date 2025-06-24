@@ -3,6 +3,9 @@
 
 from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
 from PyQt5 import QtWidgets, QtCore
+import logging
+
+LOG = logging.getLogger(__name__)
 
 
 class ROISelectionWidget(QtWidgets.QGroupBox):
@@ -33,6 +36,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         selected_roi = self.roiDropdown.currentText()
         if selected_roi != self.previous_selection:
             self.previous_selection = selected_roi
+            LOG.info("ROI selected: %s", selected_roi)
             self.selectionChanged.emit(selected_roi)
 
     def update_roi_list(self, roi_names: list[str]) -> None:
@@ -49,6 +53,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
             self._on_selection_changed()
             self._on_selection_changed()
         self.roiDropdown.blockSignals(False)
+        LOG.debug("ROI dropdown updated: %s", filtered_rois)
 
     def set_selected_roi(self, roi_name: str) -> None:
         """ Set the dropdown selection to the given ROI name. """
