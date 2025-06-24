@@ -164,6 +164,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
+        LOG.info("Spectrum Viewer: Spectrum file loaded with UUID=%s", uuid)
         self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
                                 self.view.shuttercount_norm_enabled())
         self.model.set_tof_unit_mode_for_stack()
@@ -259,6 +260,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
+        LOG.info("Projection range changed: ToF Range = %s", self.model.tof_range)
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
@@ -286,6 +288,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.finished.connect(self.thread_cleanup)
         self.thread.start()
+        LOG.info("ROI moved: name=%s, new coords=%s", self.changed_roi.name, self.changed_roi.as_sensible_roi())
 
     def thread_cleanup(self) -> None:
         self.view.show_visible_spectrums()
@@ -345,6 +348,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
         self.model.fitting_engine.set_fitting_model(fitting_func)
+        LOG.info("Spectrum Viewer: Fit function set to %s", fitting_func.__class__.__name__)
         self.setup_fitting_model()
 
     def redraw_spectrum(self, name: str) -> None:
@@ -427,6 +431,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def _async_save_done(self, task: TaskWorkerThread) -> None:
         if task.error is not None:
             self.view.show_error_dialog(f"Operation failed: {task.error}")
+            LOG.error("Fit failed: %s", task.error)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
@@ -462,6 +467,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             raise ValueError(f"ROI name already exists: {roi_name}")
         height, width = self.model.get_image_shape()
         roi = SensibleROI.from_list([0, 0, width, height])
+        LOG.info(f"ROI created: name={roi_name}, coords=(0, {width}, 0, {height})")
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)
@@ -511,10 +517,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name is None:
             for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
+                LOG.info(f"ROI removed: name={name}")
             self.view.spectrum_widget.roi_dict.clear()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
+            LOG.info(f"ROI removed: name={roi_name}")
         self.view.update_roi_dropdown()
 
     def handle_export_tab_change(self, index: int) -> None:
@@ -658,6 +666,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+        LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
 
     def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
                           init_params: list[float]) -> dict[str, float]:
@@ -678,6 +687,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
             result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
             self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+            LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
 
     def show_fit(self, params: list[float]) -> None:
         xvals = self.model.tof_data

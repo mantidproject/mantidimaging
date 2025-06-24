@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import logging
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
@@ -28,6 +29,7 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
 
+LOG = logging.getLogger(__name__)
 
 class SpectrumROI(ROI):
     """
@@ -258,6 +260,8 @@ class SpectrumWidget(QWidget):
         self.roi_dict[new_name] = self.roi_dict.pop(old_name)
         self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
         self.roi_dict[new_name].name = new_name
+
+        LOG.info(f"ROI renamed: from={old_name} to={new_name}")
 
     def _emit_roi_changed(self):
         sender_roi = self.sender()

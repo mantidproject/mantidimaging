@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 from PyQt5.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QLabel
+import logging
 
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -17,6 +18,7 @@ from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox
 
+LOG = logging.getLogger(__name__)
 
 class ROIFormWidget(BaseWidget):
     """
