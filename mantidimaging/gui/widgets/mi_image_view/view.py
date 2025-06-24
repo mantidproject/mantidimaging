@@ -153,6 +153,11 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
         self.roi.maxBounds = QRectF(0, 0, self.image_data.shape[2], self.image_data.shape[1])
 
     def setImage(self, image: np.ndarray, *args, **kwargs):
+        """
+        Set the image to be displayed in the widget
+
+        See :py:meth:`pyqtgraph.ImageView.setImage` for details of additional arguments
+        """
         dimensions_changed = self.image_data is None or self.image_data.shape != image.shape
         if image.ndim == 3:
             # For a 3 dimensional image, we need to specify which axes we are providing and their indices in the

@@ -157,6 +157,7 @@ class MainWindowModel:
     def remove_container(self, container_id: uuid.UUID) -> list[uuid.UUID]:
         """
         Removes a container from the model.
+
         :param container_id: The ID of the dataset or image stack.
         :return: A list of the IDs of all the image stacks that were deleted from the model if a match was found, None
             otherwise.

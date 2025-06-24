@@ -140,6 +140,11 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.im.hoverEvent = None
 
     def setImage(self, image: np.ndarray, *args, **kwargs) -> None:
+        """
+        Set the image to be displayed in the widget
+
+        See :py:meth:`pyqtgraph.ImageView.setImage` for details of additional arguments
+        """
         if self.bright_levels is not None:
             self.levels = [np.percentile(image, x) for x in self.bright_levels]
             self.im.setImage(image, *args, **kwargs, levels=self.levels)

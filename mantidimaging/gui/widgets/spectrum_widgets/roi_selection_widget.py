@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets, QtCore
 class ROISelectionWidget(QtWidgets.QGroupBox):
     """
     A custom Qt widget for selecting an ROI.
+
     Attributes:
         roiDropdown: A dropdown menu for selecting ROIs.
         selectionChanged: Signal emitted when the ROI selection changes.

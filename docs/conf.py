@@ -180,7 +180,10 @@ texinfo_documents = [
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'pyqtgraph': ('https://pyqtgraph.readthedocs.io/en/latest', None)
+}
 
 # Stop sphinx from being a smartypants and merging the -- into a single unicode dash
 html_use_smartypants = False
