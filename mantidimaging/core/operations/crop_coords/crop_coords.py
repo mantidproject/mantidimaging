@@ -11,6 +11,7 @@ from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -32,6 +33,7 @@ class CropCoordinatesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     region_of_interest: list[int] | list[float] | SensibleROI | None = None,
                     progress=None) -> ImageStack:

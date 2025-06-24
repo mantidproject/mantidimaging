@@ -13,6 +13,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -65,6 +66,7 @@ class FlatFieldFilter(BaseFilter):
     filter_name = 'Flat-fielding'
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     flat_before: ImageStack | None = None,
                     flat_after: ImageStack | None = None,

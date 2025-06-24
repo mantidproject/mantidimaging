@@ -9,6 +9,7 @@ import numpy as np
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -28,6 +29,7 @@ class ClipValuesFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(data,
                     clip_min=None,
                     clip_max=None,

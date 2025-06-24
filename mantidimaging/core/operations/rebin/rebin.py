@@ -12,6 +12,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import utility as pu, shared as ps
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -31,6 +32,7 @@ class RebinFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack, rebin_param=0.5, mode=None, progress=None) -> ImageStack:
         """
         :param images: Sample data which is to be processed. Expects radiograms

@@ -12,6 +12,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -39,6 +40,7 @@ class OutliersFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     diff=None,
                     radius=_default_radius,

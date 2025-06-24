@@ -13,6 +13,7 @@ from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 import numpy as np
 
@@ -35,6 +36,7 @@ class RotateFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(data: ImageStack, angle=None, progress=None):
         """
         Rotates images by an arbitrary degree.

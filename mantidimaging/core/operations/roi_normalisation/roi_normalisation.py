@@ -13,6 +13,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -38,6 +39,7 @@ class RoiNormalisationFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     region_of_interest: SensibleROI | None = None,
                     normalisation_mode: str = DEFAULT_NORMALISATION_MODE,

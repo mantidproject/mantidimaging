@@ -12,6 +12,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -30,6 +31,7 @@ class RingRemovalFilter(BaseFilter):
     show_negative_overlay = False
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     center_mode="image center",
                     center_x=None,

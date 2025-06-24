@@ -10,6 +10,7 @@ import tomopy
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -29,6 +30,7 @@ class CircularMaskFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(data: ImageStack, circular_mask_ratio=0.95, circular_mask_value=0., progress=None) -> ImageStack:
         """
         :param data: Input data as a 3D numpy.ndarray

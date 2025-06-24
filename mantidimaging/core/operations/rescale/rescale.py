@@ -9,6 +9,7 @@ import numpy as np
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -26,6 +27,7 @@ class RescaleFilter(BaseFilter):
     filter_name = 'Rescale'
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     min_input: float = 0.0,
                     max_input: float = 10000.0,

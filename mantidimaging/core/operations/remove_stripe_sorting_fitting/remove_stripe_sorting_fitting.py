@@ -10,6 +10,7 @@ from algotom.prep.removal import remove_stripe_based_fitting
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -36,6 +37,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
     operate_on_sinograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack, order=1, sigma=3, progress=None):
         """
         :param order: The polynomial fit order. Check algotom docs for more

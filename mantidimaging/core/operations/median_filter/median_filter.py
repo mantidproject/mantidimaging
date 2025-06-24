@@ -20,6 +20,7 @@ from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.utility import add_property_to_form
 from mantidimaging.gui.utility.qt_helpers import Type, on_change_and_disable
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # pragma: no cover
@@ -71,6 +72,7 @@ class MedianFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(data: ImageStack, size=None, mode="reflect", progress=None, force_cpu=True):
         """
         :param data: Input data as an ImageStack object.

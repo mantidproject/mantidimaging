@@ -10,6 +10,7 @@ from algotom.prep.removal import remove_all_stripe
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -36,6 +37,7 @@ class RemoveAllStripesFilter(BaseFilter):
     operate_on_sinograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack, snr=3, la_size=61, sm_size=21, dim=1, progress=None):
         """
         :param snr: The ratio used to segment between useful information and

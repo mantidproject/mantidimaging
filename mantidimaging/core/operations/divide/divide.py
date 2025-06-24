@@ -12,6 +12,7 @@ import numpy as np
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
@@ -33,6 +34,7 @@ class DivideFilter(BaseFilter):
     link_histograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack, value: int | float = 0, unit="micron", progress=None) -> ImageStack:
         """
         :param value: The division value.

@@ -10,6 +10,7 @@ from algotom.prep.removal import remove_large_stripe
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from mantidimaging.core.data.imagestack import ImageStack
@@ -36,6 +37,7 @@ class RemoveLargeStripesFilter(BaseFilter):
     operate_on_sinograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack, snr=3, la_size=61, progress=None):
         """
         :param snr: The ratio value.

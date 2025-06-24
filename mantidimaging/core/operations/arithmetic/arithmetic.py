@@ -5,6 +5,7 @@ from functools import partial
 from typing import TYPE_CHECKING
 from collections.abc import Callable
 
+from mantidimaging.core.operation_history.decorators import log_operation
 from mantidimaging.gui.utility.qt_helpers import add_property_to_form, MAX_SPIN_BOX, Type
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
@@ -27,6 +28,7 @@ class ArithmeticFilter(BaseFilter):
     filter_name = "Arithmetic"
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack,
                     div_val: float = 1.0,
                     mult_val: float = 1.0,

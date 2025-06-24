@@ -11,6 +11,7 @@ from scipy.ndimage import median_filter
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout, QWidget
@@ -40,6 +41,7 @@ class NaNRemovalFilter(BaseFilter):
     MODES = ["Constant", "Median"]
 
     @staticmethod
+    @log_operation
     def filter_func(data, replace_value=None, mode_value="Constant", progress=None) -> ImageStack:
         """
         :param data: The input data.

@@ -10,6 +10,7 @@ from algotom.prep.removal import remove_stripe_based_filtering, remove_stripe_ba
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.operation_history.decorators import log_operation
 
 if TYPE_CHECKING:
     from numpy import ndarray
@@ -36,6 +37,7 @@ class RemoveStripeFilteringFilter(BaseFilter):
     operate_on_sinograms = True
 
     @staticmethod
+    @log_operation
     def filter_func(images: ImageStack, sigma=3, size=21, window_dim=1, filtering_dim=1, progress=None):
         """
         :param sigma: The sigma of the Gaussian window used to separate the
