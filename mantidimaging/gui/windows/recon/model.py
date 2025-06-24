@@ -107,11 +107,14 @@ class ReconstructWindowModel:
         if self.images is None:
             raise ValueError('No image stack is provided')
 
+        LOG.info("Started COR/Tilt fitting")
         self.data_model.linear_regression()
         self.images.record_operation(const.OPERATION_NAME_COR_TILT_FINDING,
                                      display_name="Calculated COR/Tilt",
                                      **self.data_model.stack_properties)
 
+        LOG.info("COR/Tilt fitting completed: COR=%.3f, Tilt=%.3f°, Slope=%.3f", self.data_model.cor,
+                 self.data_model.angle_in_degrees, self.data_model.gradient)
         # Async task needs a non-None result of some sort
         return True
 
@@ -125,6 +128,8 @@ class ReconstructWindowModel:
         if images is None:
             return None
 
+        LOG.info("Running preview reconstruction: slice_idx=%d, COR=%.3f, algorithm=%s", slice_idx, cor,
+                 recon_params.algorithm)
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         output_shape = (1, images.width, images.width)
@@ -137,6 +142,7 @@ class ReconstructWindowModel:
 
         recon = self._apply_pixel_size(recon, recon_params)
 
+        LOG.info("Preview reconstruction completed for slice %d", slice_idx)
         return recon
 
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
@@ -144,11 +150,14 @@ class ReconstructWindowModel:
         images = self.images
         if images is None:
             return None
+        LOG.info("Starting full reconstruction: algorithm=%s, slices=%d", recon_params.algorithm, self.images.height)
+
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         # get the image height based on the current ROI
         recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
                                    progress)
         recon = self._apply_pixel_size(recon, recon_params, progress)
+        LOG.info("Full reconstruction completed")
         return recon
 
     @staticmethod
@@ -242,6 +251,7 @@ class ReconstructWindowModel:
         if len(initial_cor) != len(slices):
             raise ValueError("The number of initial COR values must match the number of slices being reconstructed")
 
+        LOG.info("Starting COR minimisation for %d slices", len(slices))
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
         progress.update(0, msg=f"Calculating COR for slice {slices[0]}")
@@ -250,6 +260,7 @@ class ReconstructWindowModel:
             cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
+            LOG.info("COR minimisation completed: CORs=%s", cors)
         return cors
 
     def auto_find_correlation(self, progress: Progress) -> tuple[ScalarCoR, Degrees]:
