@@ -2,6 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from math import degrees
+
 import unittest
 
 import numpy as np
@@ -112,3 +114,47 @@ class GeometryTest(unittest.TestCase):
 
         self.assertEqual(geo.cor.value, cor.value)
         self.assertTrue(np.isclose(geo.tilt, tilt))
+
+    @parameterized.expand([
+        ("default_units", ScalarCoR(64), 0.0, 0.0, 0.0),
+        ("positive_offset_angle", ScalarCoR(64), 22.5, -26.5, 22.5),
+        ("negative_offset_angle", ScalarCoR(64), -22.5, 26.5, -22.5),
+    ])
+    def test_set_mi_cor_sets_cil_geometry_128(self, _, cor, tilt, expected_cil_offset, expected_cil_angle):
+        """
+        Tests that setting the MI-convention COR/tilt values sets the correct internal CIL geometry.
+        """
+
+        num_pixels = (128, 128)
+        pixel_size = (1., 1.)
+
+        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo.set_geometry_from_cor_tilt(cor, tilt)
+
+        cil_offset = geo.get_centre_of_rotation()['offset'][0]
+        cil_angle = -degrees(geo.get_centre_of_rotation()['angle'][0])
+
+        self.assertAlmostEqual(cil_offset, expected_cil_offset, delta=0.15)
+        self.assertAlmostEqual(cil_angle, expected_cil_angle, delta=0.0001)
+
+    @parameterized.expand([
+        ("default_units", ScalarCoR(128), 0.0, 0.0, 0.0),
+        ("positive_offset_angle", ScalarCoR(128), 10, -45, 10),
+        ("negative_offset_angle", ScalarCoR(128), -10, 45, -10),
+    ])
+    def test_set_mi_cor_sets_cil_geometry_256_512(self, _, cor, tilt, expected_cil_offset, expected_cil_angle):
+        """
+        Tests that setting the MI-convention COR/tilt values sets the correct internal CIL geometry.
+        """
+
+        num_pixels = (256, 512)
+        pixel_size = (1., 1.)
+
+        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo.set_geometry_from_cor_tilt(cor, tilt)
+
+        cil_offset = geo.get_centre_of_rotation()['offset'][0]
+        cil_angle = -degrees(geo.get_centre_of_rotation()['angle'][0])
+
+        self.assertAlmostEqual(cil_offset, expected_cil_offset, delta=0.15)
+        self.assertAlmostEqual(cil_angle, expected_cil_angle, delta=0.0001)
