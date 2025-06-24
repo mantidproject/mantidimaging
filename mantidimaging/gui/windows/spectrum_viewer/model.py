@@ -164,6 +164,7 @@ class SpectrumViewerWindowModel:
         """
         Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
         If the image stack is None, an empty numpy array is returned.
+
         Parameters:
             stack (Optional[ImageStack]): The image stack to compute the spectrum from.
                 It can be None, in which case an empty array is returned.
@@ -426,6 +427,7 @@ class SpectrumViewerWindowModel:
         - Bin size must be larger than or equal to step size.
         - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.
         If any of these conditions are not met, a ValueError is raised.
+
         Parameters:
             roi: The region of interest (ROI) to which the bin size and step size should be compared.
             bin_size (int): The size of the bins to be validated.

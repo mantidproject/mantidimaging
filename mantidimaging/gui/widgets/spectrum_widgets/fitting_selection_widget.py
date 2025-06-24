@@ -12,6 +12,7 @@ from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction
 class FitSelectionWidget(QtWidgets.QGroupBox):
     """
     A custom Qt widget for selecting an Fitting Model.
+
     Attributes:
         fitDropdown: A dropdown menu for selecting fits.
         func_dict: A dictionary for storing fitting functions available in the viewer.
