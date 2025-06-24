@@ -123,6 +123,12 @@ GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where po
 
     make test-system
 
+Logging
+-------
+
+See the :ref:`troubleshooting-logging` section for details on logging configuration.
+
+
 Benchmarking and profiling
 --------------------------
 

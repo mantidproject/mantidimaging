@@ -3,6 +3,8 @@
 Troubleshooting
 ===============
 
+.. _troubleshooting-logging:
+
 Logging
 -------
 
