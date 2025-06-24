@@ -548,16 +548,21 @@ document.write(`
 <span class="sd">        If the Air Region is out of bounds, the crop will fail at runtime.</span>
 <span class="sd">        If the Air Region is in bounds, but has overlapping coordinates</span>
 <span class="sd">        the crop give back a 0 shape of the coordinates that were wrong.</span>
+
+<span class="sd">        ``normalisation_mode`` can be either</span>
+
+<span class="sd">        * ``Stack Average`` : The mean value of the air region across all projections is preserved.</span>
+<span class="sd">        * ``Flat Field`` : The mean value of the air regions in the projections is made equal to the mean value of the</span>
+<span class="sd">          air region in the flat field image.</span>
+
 <span class="sd">        :param images: Sample data which is to be processed. Expected in radiograms</span>
 <span class="sd">        :param region_of_interest: The order is - Left Top Right Bottom. The air</span>
-<span class="sd">        region for which grey values are summed up and used for normalisation/scaling.</span>
+<span class="sd">            region for which grey values are summed up and used for normalisation/scaling.</span>
 <span class="sd">        :param normalisation_mode: Controls what the ROI counts are normalised to.</span>
-<span class="sd">            &#39;Stack Average&#39; : The mean value of the air region across all projections is preserved.</span>
-<span class="sd">            &#39;Flat Field&#39; : The mean value of the air regions in the projections is made equal to the mean value of the</span>
-<span class="sd">                           air region in the flat field image.</span>
 <span class="sd">        :param flat_field: Flat field to use if &#39;Flat Field&#39; mode is enabled.</span>
 <span class="sd">        :param progress: Reference to a progress bar object</span>
 <span class="sd">        :returns: Filtered data (stack of images)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">region_of_interest</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;region_of_interest must be provided&#39;</span><span class="p">)</span>

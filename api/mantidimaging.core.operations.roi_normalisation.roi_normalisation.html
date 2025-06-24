@@ -597,21 +597,20 @@ as kwargs.
 This does NOT do any checks if the Air Region is out of bounds!
 If the Air Region is out of bounds, the crop will fail at runtime.
 If the Air Region is in bounds, but has overlapping coordinates
-the crop give back a 0 shape of the coordinates that were wrong.
-:param images: Sample data which is to be processed. Expected in radiograms
-:param region_of_interest: The order is - Left Top Right Bottom. The air
-region for which grey values are summed up and used for normalisation/scaling.
-:param normalisation_mode: Controls what the ROI counts are normalised to.</p>
-<blockquote>
-<div><p>‘Stack Average’ : The mean value of the air region across all projections is preserved.
-‘Flat Field’ : The mean value of the air regions in the projections is made equal to the mean value of the</p>
-<blockquote>
-<div><p>air region in the flat field image.</p>
-</div></blockquote>
-</div></blockquote>
+the crop give back a 0 shape of the coordinates that were wrong.</p>
+<p><code class="docutils literal notranslate"><span class="pre">normalisation_mode</span></code> can be either</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Stack</span> <span class="pre">Average</span></code> : The mean value of the air region across all projections is preserved.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">Field</span></code> : The mean value of the air regions in the projections is made equal to the mean value of the
+air region in the flat field image.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> – Sample data which is to be processed. Expected in radiograms</p></li>
+<li><p><strong>region_of_interest</strong> – The order is - Left Top Right Bottom. The air
+region for which grey values are summed up and used for normalisation/scaling.</p></li>
+<li><p><strong>normalisation_mode</strong> – Controls what the ROI counts are normalised to.</p></li>
 <li><p><strong>flat_field</strong> – Flat field to use if ‘Flat Field’ mode is enabled.</p></li>
 <li><p><strong>progress</strong> – Reference to a progress bar object</p></li>
 </ul>

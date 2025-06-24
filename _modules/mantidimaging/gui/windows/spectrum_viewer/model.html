@@ -691,6 +691,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the mean spectrum of the given image stack within the specified region of interest (ROI).</span>
 <span class="sd">        If the image stack is None, an empty numpy array is returned.</span>
+
 <span class="sd">        Parameters:</span>
 <span class="sd">            stack (Optional[ImageStack]): The image stack to compute the spectrum from.</span>
 <span class="sd">                It can be None, in which case an empty array is returned.</span>
@@ -1001,6 +1002,7 @@ document.write(`
 <span class="sd">        - Bin size must be larger than or equal to step size.</span>
 <span class="sd">        - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.</span>
 <span class="sd">        If any of these conditions are not met, a ValueError is raised.</span>
+
 <span class="sd">        Parameters:</span>
 <span class="sd">            roi: The region of interest (ROI) to which the bin size and step size should be compared.</span>
 <span class="sd">            bin_size (int): The size of the bins to be validated.</span>
