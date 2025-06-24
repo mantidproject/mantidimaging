@@ -774,17 +774,12 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Marks the task as completed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">force_continue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_cancel</span> <span class="k">else</span> <span class="n">msg</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_cancel</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">complete</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span>
-
-        <span class="c1"># Log elapsed time and final memory usage</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">%d</span><span class="s2"> sec.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">execution_time</span><span class="p">())</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Memory usage after execution: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">get_memory_usage_linux_str</span><span class="p">())</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span></div>
 </div>
 
 </pre></div>

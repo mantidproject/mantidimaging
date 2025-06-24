@@ -532,9 +532,7 @@ document.write(`
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cores</span> <span class="o">=</span> <span class="n">process_count</span>
     <span class="k">global</span> <span class="n">pool</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating process pool with </span><span class="si">{</span><span class="n">cores</span><span class="si">}</span><span class="s1"> processes&#39;</span><span class="p">)</span>
     <span class="n">pool</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">cores</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">worker_setup</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">perf_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Process pool started in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
