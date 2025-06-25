@@ -259,12 +259,10 @@ class ReconstructWindowPresenter(BasePresenter):
             return
 
         slice_idx = self._get_slice_index(slice_idx)
-        LOG.info("Running preview reconstruction: slice_idx=%d", slice_idx)
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         if self.view.is_auto_update_preview() or force_update:
             on_preview_complete = partial(self._on_preview_reconstruct_slice_done, reset_roi=reset_roi)
             self._get_reconstruct_slice(cor, slice_idx, on_preview_complete)
-        LOG.info("Preview reconstruction completed: slice_idx=%d", slice_idx)
 
     def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread, reset_roi: bool = False) -> None:
         if task.error is not None:
@@ -340,10 +338,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.num_iter = int(new_iters)
 
     def do_cor_fit(self) -> None:
-        LOG.info("Starting COR/Tilt fit")
         self.model.do_fit()
-        LOG.info("COR/Tilt fit completed: COR=%.3f, Tilt=%.3f°, Slope=%.3f", self.model.data_model.cor,
-                 self.model.data_model.angle_in_degrees, self.model.data_model.gradient)
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
         self.do_preview_reconstruct_slice()
