@@ -752,6 +752,7 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowView.clear_cor_table">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.clear_cor_table">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_cor_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cleared all COR table entries&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor_table_model</span><span class="o">.</span><span class="n">removeAllRows</span><span class="p">()</span></div>
 
 
@@ -900,7 +901,8 @@ document.write(`
 <span class="sd">        Adds a row to the manual COR table with a specified slice index.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cor_table_model</span><span class="o">.</span><span class="n">appendNewRow</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Added COR table row: row=</span><span class="si">%d</span><span class="s2">, slice=</span><span class="si">%d</span><span class="s2">, COR=</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">,</span> <span class="n">cor</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.get_cor_table_selected_rows">

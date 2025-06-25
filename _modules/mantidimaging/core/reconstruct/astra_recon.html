@@ -625,7 +625,7 @@ document.write(`
         <span class="n">image_width</span> <span class="o">=</span> <span class="n">sino</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">astra_mutex</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Astra recon already in progress. Waiting&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Astra recon already in progress. Waiting&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">astra_mutex</span><span class="p">:</span>
             <span class="n">vectors</span> <span class="o">=</span> <span class="n">vec_geom_init2d</span><span class="p">(</span><span class="n">proj_angles</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">cor</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">image_width</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="n">vol_geom</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">create_vol_geom</span><span class="p">((</span><span class="n">image_width</span><span class="p">,</span> <span class="n">image_width</span><span class="p">))</span>
