@@ -2,12 +2,15 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from logging import getLogger
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
 from PyQt5.QtGui import QDoubleValidator
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
+
+LOG = getLogger(__name__)
 
 
 class FittingParamFormWidget(QWidget):
@@ -68,11 +71,13 @@ class FittingParamFormWidget(QWidget):
         for name, value in values.items():
             row = self._rows[name]
             row[2].setText(f"{value:f}")
+            LOG.debug("Final fit parameter values updated: %s", values)
 
     def set_fitted_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
             row = self._rows[name]
             row[3].setText(f"{value:f}")
+            LOG.debug("Final fit parameter values updated: %s", values)
 
     def get_initial_param_values(self) -> list[float]:
         params = [float(row[2].text()) for row in self._rows.values()]
@@ -91,3 +96,4 @@ class FittingParamFormWidget(QWidget):
                 widget.setParent(None)
             self.params_layout.layout().removeItem(row_layout)
         self._rows.clear()
+        LOG.debug("Parameter form rows cleared")
