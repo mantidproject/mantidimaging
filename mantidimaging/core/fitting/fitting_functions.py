@@ -11,18 +11,6 @@ from scipy.optimize import curve_fit
 from scipy.special import erf, erfc
 
 
-class LeftSideFittingException(Exception):
-
-    def __init__(self, source_err):
-        print("LeftSideFittingException:", source_err)
-
-
-class RightSideFittingException(Exception):
-
-    def __init__(self, source_err):
-        print("RightSideFittingException:", source_err)
-
-
 class BadFittingRoiError(Exception):
 
     def __init__(self, message: str = 'A fit could not be found within the given ROI, please try widening the ROI.'):
@@ -105,11 +93,13 @@ class SantistebanFunction(BaseFittingFunction):
 
         try:
             a_0, b_0 = self.right_side_fitting(xdata[right_percentile_mean:], ydata[right_percentile_mean:])
-            a_hkl, b_hkl = self.left_side_fitting(xdata[:left_percentile_mean], ydata[:left_percentile_mean], a_0, b_0)
-        except LeftSideFittingException:
+        except (TypeError, ValueError):
             raise BadFittingRoiError(message='A fit could not be found for the left side of the Bragg Edge, '
                                      'please adjust the ROI on the left.') from None
-        except RightSideFittingException:
+
+        try:
+            a_hkl, b_hkl = self.left_side_fitting(xdata[:left_percentile_mean], ydata[:left_percentile_mean], a_0, b_0)
+        except (TypeError, ValueError):
             raise BadFittingRoiError(message='A fit could not be found for the right side of the Bragg Edge, '
                                      'please adjust the ROI on the right.') from None
 
@@ -147,19 +137,13 @@ class SantistebanFunction(BaseFittingFunction):
         def f(t, a_0, b_0):
             return np.exp(-(a_0 + b_0 * t))
 
-        try:
-            popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
-            return popt
-        except (TypeError, ValueError) as err:
-            raise RightSideFittingException(err) from err
+        popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
+        return popt
 
     def left_side_fitting(self, xdata, ydata, a_0, b_0) -> list[float]:
 
         def f(t, a_hkl, b_hkl):
             return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
 
-        try:
-            popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
-            return popt
-        except (TypeError, ValueError) as err:
-            raise LeftSideFittingException(err) from err
+        popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
+        return popt
