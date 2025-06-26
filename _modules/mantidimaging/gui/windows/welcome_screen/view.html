@@ -493,7 +493,7 @@ document.write(`
   <h1>Source code for mantidimaging.gui.windows.welcome_screen.view</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QTimer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSize</span><span class="p">,</span> <span class="n">QTimer</span><span class="p">,</span> <span class="n">pyqtSignal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QPushButton</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPixmap</span><span class="p">,</span> <span class="n">QIcon</span>
 
@@ -537,6 +537,8 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">WelcomeScreenView</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
 
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">presenter</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
@@ -577,7 +579,8 @@ document.write(`
 <div class="viewcode-block" id="WelcomeScreenView.close_welcome_screen">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.close_welcome_screen">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="WelcomeScreenView.set_version_label">

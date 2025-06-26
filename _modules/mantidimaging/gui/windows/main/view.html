@@ -680,6 +680,7 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">create_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span><span class="o">.</span><span class="n">view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close_welcome_screen</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span> <span class="o">=</span> <span class="n">QDockWidget</span><span class="p">(</span><span class="s2">&quot;About Mantid Imaging&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setTitleBarWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">())</span>
@@ -967,7 +968,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">removeDockWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span> <span class="o">=</span> <span class="kc">None</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.execute_image_file_save">
