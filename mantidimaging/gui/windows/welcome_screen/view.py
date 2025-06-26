@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton
 from PyQt5.QtGui import QPixmap, QIcon
 
@@ -32,6 +32,8 @@ class CloseButton(QPushButton):
 
 
 class WelcomeScreenView(QWidget):
+
+    closed = pyqtSignal()
 
     def __init__(self, parent, presenter):
         super().__init__(parent)
@@ -65,7 +67,8 @@ class WelcomeScreenView(QWidget):
         self.close_button.move(self.banner_label.width() - self.close_button.width() - 1, 10)
 
     def close_welcome_screen(self):
-        self.parent().close()
+        self.close()
+        self.closed.emit()
 
     def set_version_label(self, version_text: str):
         self.version_label.setText(version_text)

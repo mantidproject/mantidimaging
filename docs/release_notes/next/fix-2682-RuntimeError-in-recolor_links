@@ -1,0 +1,1 @@
+2633: Fixed an error where closing the Welcome Screen could raise an AttributeError: 'WelcomeScreenView' object has no attribute 'closed'.
