@@ -54,6 +54,8 @@ class WelcomeScreenView(QWidget):
 
         self.close_button = CloseButton(self)
 
+        self.close_button.clicked.connect(self.close_welcome_screen)
+
         # Done to make sure the button appears in the top-right corner after rendering
         QTimer.singleShot(1, self.position_close_button)
 
