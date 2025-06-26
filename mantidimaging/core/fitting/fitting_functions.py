@@ -88,20 +88,18 @@ class SantistebanFunction(BaseFittingFunction):
     def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
         _, __, ___, ____, _____, a_0, b_0, a_hkl, b_hkl = params
 
+        if ydata.shape[0] < 5:
+            raise BadFittingRoiError("Fitting region too narrow to find fit")
+
         right_percentile_mean = int(np.mean(np.argwhere(ydata > np.percentile(ydata, 95))))
         left_percentile_mean = int(np.mean(np.argwhere(ydata < np.percentile(ydata, 5))))
 
-        try:
-            a_0, b_0 = self.right_side_fitting(xdata[right_percentile_mean:], ydata[right_percentile_mean:])
-        except (TypeError, ValueError):
-            raise BadFittingRoiError(message='A fit could not be found for the left side of the Bragg Edge, '
-                                     'please adjust the ROI on the left.') from None
+        # ensure there are enough points for fit to run
+        right_percentile_mean = min(ydata.shape[0] - 3, right_percentile_mean)
+        left_percentile_mean = max(3, left_percentile_mean)
 
-        try:
-            a_hkl, b_hkl = self.left_side_fitting(xdata[:left_percentile_mean], ydata[:left_percentile_mean], a_0, b_0)
-        except (TypeError, ValueError):
-            raise BadFittingRoiError(message='A fit could not be found for the right side of the Bragg Edge, '
-                                     'please adjust the ROI on the right.') from None
+        a_0, b_0 = self.right_side_fitting(xdata[right_percentile_mean:], ydata[right_percentile_mean:])
+        a_hkl, b_hkl = self.left_side_fitting(xdata[:left_percentile_mean], ydata[:left_percentile_mean], a_0, b_0)
 
         if (np.array([a_0, b_0, a_hkl, b_hkl]) == 0).any():
             raise BadFittingRoiError()
