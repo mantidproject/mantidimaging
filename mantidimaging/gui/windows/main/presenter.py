@@ -312,6 +312,15 @@ class MainWindowPresenter(BasePresenter):
 
     def save_image_files(self) -> None:
         assert isinstance(self.view.image_save_dialog, ImageSaveDialog)
+
+        current_stack_name = self.view.image_save_dialog.stackNames.currentText()
+        export_type = "reconstruction" if "Recon" in current_stack_name else "raw data"
+        output_dir = self.view.image_save_dialog.save_path()
+        image_format = self.view.image_save_dialog.image_format()
+
+        logger.info(f"Exporting {export_type}: '{current_stack_name}' "
+                    f"→ format: {image_format}, directory: {output_dir}")
+
         kwargs = {
             'images_id': self.view.image_save_dialog.selected_stack,
             'output_dir': self.view.image_save_dialog.save_path(),
@@ -323,9 +332,11 @@ class MainWindowPresenter(BasePresenter):
         start_async_task_view(self.view, self.model.do_images_saving, self._on_save_done, kwargs)
 
     def _on_save_done(self, task: TaskWorkerThread) -> None:
-
         if not task.was_successful():
+            logger.error(f"Export failed with error: {task.error}")
             raise RuntimeError(self.SAVE_ERROR_STRING.format(task.error))
+        else:
+            logger.info("Export task finished successfully.")
 
     @property
     def stack_visualiser_list(self) -> list[StackId]:
