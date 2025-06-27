@@ -143,8 +143,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.experimentSetupFormWidget.connect_value_changed(self.presenter.handle_experiment_setup_properties_change)
 
         self.roi_form.table_view.selection_changed.connect(self.set_roi_properties)
-        self.roi_form.table_view.name_changed.connect(self.spectrum_widget.rename_roi)
-        self.roi_form.table_view.name_changed.connect(self.set_roi_properties)
+        self.roi_form.table_view.name_changed.connect(self.presenter.handle_roi_name_change)
         self.roi_form.table_view.visibility_changed.connect(self.on_visibility_change)
 
         self.formTabs.currentChanged.connect(self.handle_change_tab)
