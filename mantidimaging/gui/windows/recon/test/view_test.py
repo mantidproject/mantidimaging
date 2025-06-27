@@ -44,14 +44,14 @@ class ReconstructWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_error_dialog")
     def test_check_stack_for_invalid_180_deg_proj_when_proj_180_degree_shape_matches_images_is_false(
             self, show_error_dialog_mock):
-        self.main_window.get_images_from_stack_uuid = mock.Mock()
-        selected_images = self.main_window.get_images_from_stack_uuid.return_value
+        self.main_window.get_stack = mock.Mock()
+        selected_images = self.main_window.get_stack.return_value
         selected_images.has_proj180deg.return_value = True
         self.presenter.proj_180_degree_shape_matches_images.return_value = False
 
         uuid = mock.Mock()
         self.view.check_stack_for_invalid_180_deg_proj(uuid)
-        self.main_window.get_images_from_stack_uuid.assert_called_once_with(uuid)
+        self.main_window.get_stack.assert_called_once_with(uuid)
         self.presenter.proj_180_degree_shape_matches_images.assert_called_once_with(selected_images)
         show_error_dialog_mock.assert_called_once_with(
             "The shapes of the selected stack and it's 180 degree projections do not match! This is going to cause an "
@@ -60,14 +60,14 @@ class ReconstructWindowViewTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_error_dialog")
     def test_check_stack_for_invalid_180_deg_proj_when_proj_180_degree_shape_matches_images_is_true(
             self, show_error_dialog_mock):
-        self.main_window.get_images_from_stack_uuid = mock.Mock()
-        selected_images = self.main_window.get_images_from_stack_uuid.return_value
+        self.main_window.get_stack = mock.Mock()
+        selected_images = self.main_window.get_stack.return_value
         selected_images.has_proj180deg.return_value = True
         self.presenter.proj_180_degree_shape_matches_images.return_value = True
 
         uuid = mock.Mock()
         self.view.check_stack_for_invalid_180_deg_proj(uuid)
-        self.main_window.get_images_from_stack_uuid.assert_called_once_with(uuid)
+        self.main_window.get_stack.assert_called_once_with(uuid)
         self.presenter.proj_180_degree_shape_matches_images.assert_called_once_with(selected_images)
         show_error_dialog_mock.assert_not_called()
 
