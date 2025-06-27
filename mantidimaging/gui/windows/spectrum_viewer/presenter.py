@@ -259,6 +259,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
+        LOG.info("Projection range changed: ToF Range = %s", self.model.tof_range)
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
@@ -301,6 +302,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.show_visible_spectrums()
             self.view.spectrum_widget.spectrum.update()
 
+        roi = self.changed_roi.as_sensible_roi()
+        coords = (roi.left, roi.top, roi.right, roi.bottom)
+        if coords != getattr(self, "_last_logged_roi_coords", None):
+            LOG.info("ROI moved: name=%s, new coords=Left: %d, Top: %d, Right: %d, Bottom: %d", self.changed_roi.name,
+                     *coords)
+            self._last_logged_roi_coords = coords
+
     def try_next_mean_chunk(self) -> None:
         if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():
             return
@@ -340,6 +348,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
         self.model.fitting_engine.set_fitting_model(fitting_func)
+        LOG.info("Spectrum Viewer: Fit function set to %s", fitting_func.__class__.__name__)
         self.setup_fitting_model()
 
     def redraw_spectrum(self, name: str) -> None:
@@ -386,6 +395,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             normalise=self.spectrum_mode == SpecType.SAMPLE_NORMED,
             normalise_with_shuttercount=self.view.shuttercount_norm_enabled(),
         )
+        LOG.info("CSV export successful: file saved to '%s'", path)
 
     def handle_rits_export(self) -> None:
         """
@@ -422,6 +432,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def _async_save_done(self, task: TaskWorkerThread) -> None:
         if task.error is not None:
             self.view.show_error_dialog(f"Operation failed: {task.error}")
+            LOG.error("Fit failed: %s", task.error)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
         if enabled:
@@ -457,6 +468,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             raise ValueError(f"ROI name already exists: {roi_name}")
         height, width = self.model.get_image_shape()
         roi = SensibleROI.from_list([0, 0, width, height])
+        LOG.info(f"ROI created: name={roi_name}, coords=({roi.left}, {roi.right}, {roi.top}, {roi.bottom})")
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)
@@ -505,10 +517,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if roi_name is None:
             for name in list(self.get_roi_names()):
                 self.view.spectrum_widget.remove_roi(name)
+                LOG.info(f"ROI removed: name={name}")
             self.view.spectrum_widget.roi_dict.clear()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
+            LOG.info(f"ROI removed: name={roi_name}")
         self.view.update_roi_dropdown()
 
     def handle_export_tab_change(self, index: int) -> None:
@@ -647,6 +661,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+        LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
 
     def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
                           init_params: list[float]) -> dict[str, float]:
@@ -667,6 +682,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
             result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
             self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+            LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
 
     def show_fit(self, params: list[float]) -> None:
         xvals = self.model.tof_data
@@ -679,10 +695,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         path = self.view.get_csv_filename()
         if not path:
+            LOG.warning("Export cancelled: no file path selected.")
             return
+
         path = path.with_suffix(".csv") if path.suffix != ".csv" else path
         selected_roi = self.view.exportSettingsWidget.selected_area()
+        export_format = self.view.exportSettingsWidget.selected_format()
         model = self.view.exportDataTableWidget.model
+
+        LOG.info("User initiated export: format=%s, area=%s, path=%s", export_format, selected_roi, path)
 
         with open(path, 'w', newline='') as file:
             writer = csv.writer(file)

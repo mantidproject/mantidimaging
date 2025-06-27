@@ -13,6 +13,9 @@ from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 from mantidimaging.gui.windows.spectrum_viewer.model import allowed_modes
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
 from mantidimaging.core.fitting.fitting_functions import FittingRegion
+from logging import getLogger
+
+LOG = getLogger(__name__)
 
 
 class FittingDisplayWidget(QWidget):
@@ -64,6 +67,9 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
         self.set_default_region(x_data, y_data)
+        if not getattr(self, "_log_emitted", False):
+            LOG.debug("Spectrum plot updated: label=%s, points=%d", label, len(x_data))
+        self._log_emitted = True
 
     def update_image(self, image: np.ndarray | None) -> None:
         if image is not None:
@@ -114,6 +120,7 @@ class FittingDisplayWidget(QWidget):
         height = self.fitting_region.size().y()
         self.fitting_region.setPos((x_start, y_pos))
         self.fitting_region.setSize((width, height))
+        LOG.info("Fit region set: x_start=%.3f, x_end=%.3f", x_start, x_end)
 
     def get_selected_fit_region(self) -> FittingRegion:
         pos = self.fitting_region.pos()
@@ -154,6 +161,7 @@ class FittingDisplayWidget(QWidget):
             self._current_fit_line = None
         self._current_fit_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=color)
         self._showing_initial_fit = initial
+        LOG.debug("Fit line displayed: label=%s, initial=%s, points=%d", label, initial, len(x_data))
 
     def is_initial_fit_visible(self) -> bool:
         return self._showing_initial_fit

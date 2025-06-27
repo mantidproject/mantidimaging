@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 from PyQt5.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QLabel
+from logging import getLogger
 
 from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -16,6 +17,8 @@ from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox
+
+LOG = getLogger(__name__)
 
 
 class ROIFormWidget(BaseWidget):
@@ -81,12 +84,15 @@ class ROIFormWidget(BaseWidget):
         bin_size = self.bin_size_spinBox.value()
         roi_width = roi.right - roi.left
         roi_height = roi.bottom - roi.top
+        norm_mode = self.transmission_error_mode_combobox.currentText()
 
         if ((roi_width - bin_size) % step != 0 or (roi_height - bin_size) % step != 0):
             warning = (f"Step size {step} and bin size {bin_size} do not evenly divide ROI dimensions "
                        f"({roi_width}x{roi_height}). Some rows or columns may not be exported.")
             self.show_rits_warning(warning)
         else:
+            LOG.info("RITS config valid — bin=%d, step=%d, norm_error=%s, roi_size=%dx%d", bin_size, step, norm_mode,
+                     roi_width, roi_height)
             self.show_rits_warning(None)
 
 
@@ -123,6 +129,7 @@ class ROIPropertiesTableWidget(BaseWidget):
             self.spin_bottom.setValue(roi.bottom)
             self.label_width.setText(str(roi.width))
             self.label_height.setText(str(roi.height))
+            LOG.debug("ROI bounds set: left=%d, right=%d, top=%d, bottom=%d", roi.left, roi.right, roi.top, roi.bottom)
 
     def set_roi_limits(self, shape: tuple[int, ...]) -> None:
         self.spin_left.setMaximum(shape[1])
@@ -234,6 +241,7 @@ class ROITableWidget(RemovableRowTableView):
         self.roi_table_model.appendNewRow(name, colour, True)
         self.selected_row = self.roi_table_model.rowCount() - 1
         self.selectRow(self.selected_row)
+        LOG.debug("ROI added to table: name=%s, color=%s", name, colour[:3])
 
     def remove_row(self, row: int) -> None:
         """
@@ -241,12 +249,14 @@ class ROITableWidget(RemovableRowTableView):
         """
         self.roi_table_model.remove_row(row)
         self.selectRow(0)
+        LOG.debug("ROI row removed: row=%d", row)
 
     def clear_table(self) -> None:
         """
         Clears the ROI table in the spectrum viewer.
         """
         self.roi_table_model.clear_table()
+        LOG.debug("ROI table cleared")
 
     def select_roi(self, roi_name: str) -> None:
         selected_row = self.find_row_for_roi(roi_name)

@@ -11,6 +11,7 @@ from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QModelIndex
+from logging import getLogger
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -34,6 +35,8 @@ if TYPE_CHECKING:
     from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROITableWidget
     from mantidimaging.core.fitting.fitting_functions import FittingRegion
     from uuid import UUID
+
+LOG = getLogger(__name__)
 
 
 class SpectrumViewerWindowView(BaseMainWindowView):
@@ -175,6 +178,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
+        LOG.debug("Tab changed: index=%d", tab_index)
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""
@@ -239,6 +243,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingSpectrumPlot.spectrum.clear()
 
         if spectrum_data is not None and len(spectrum_data) > 0:
+            LOG.info("Fitting plot updated: ROI=%s, points=%d", roi_name, len(spectrum_data))
             yellow_pen = mkPen(color=(255, 255, 0), width=2)
             self.fittingSpectrumPlot.spectrum.plot(self.presenter.model.tof_data,
                                                    spectrum_data,
@@ -325,6 +330,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         roi_names = self.presenter.get_roi_names()
         self.roiSelectionWidget.update_roi_list(roi_names)
         self.exportSettingsWidget.set_roi_names(roi_names)
+        LOG.debug("ROI dropdown updated in view")
 
     def handle_fitting_roi_changed(self) -> None:
         self.show_visible_spectrums()
@@ -340,6 +346,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.presenter.do_add_roi()
         self.roi_form.roi_properties_widget.enable_roi_spinboxes(True)
         self.set_roi_properties()
+        LOG.debug("New ROI creation triggered by user")
 
     def handle_table_click(self, index: QModelIndex) -> None:
         if index.isValid() and index.column() == 1:
@@ -391,6 +398,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         Clear the selected ROI in the table view
         """
         roi_name = self.table_view.get_roi_name_by_row(self.table_view.selected_row)
+        LOG.debug("ROI removed by user: %s", roi_name)
 
         self.table_view.remove_row(self.table_view.selected_row)
         self.presenter.do_remove_roi(roi_name)
