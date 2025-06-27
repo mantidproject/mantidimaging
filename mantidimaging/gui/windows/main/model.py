@@ -75,9 +75,11 @@ class MainWindowModel:
 
     def do_images_saving(self, images_id: uuid.UUID, output_dir: str, name_prefix: str, image_format: str,
                          overwrite: bool, pixel_depth: str, progress: Progress) -> bool:
+        logger.info(f"Starting export of ImageStack {images_id} to {output_dir} with format {image_format}")
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
+
         filenames = saver.image_save(images,
                                      output_dir=output_dir,
                                      name_prefix=name_prefix,
@@ -86,15 +88,18 @@ class MainWindowModel:
                                      pixel_depth=pixel_depth,
                                      progress=progress)
         images.filenames = filenames
+        logger.info(f"Export completed. Files saved: {filenames}")
         return True
 
     def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool:
+        logger.info(f"Starting NeXus export for dataset {dataset_id} to file {path}")
         dataset = self.datasets.get(dataset_id)
         if not dataset:
             raise RuntimeError(f"Failed to get Dataset with ID {dataset_id}")
         if not dataset.sample:
             raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
         saver.nexus_save(dataset, path, sample_name, save_as_float)
+        logger.info(f"NeXus export completed successfully for dataset {dataset_id}. File saved at {path}")
         return True
 
     def get_existing_180_id(self, dataset_id: uuid.UUID) -> uuid.UUID | None:
