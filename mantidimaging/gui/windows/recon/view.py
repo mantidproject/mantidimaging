@@ -477,11 +477,6 @@ class ReconstructWindowView(BaseMainWindowView):
     def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID) -> None:
         self.main_window.add_recon_to_dataset(data, stack_id)
 
-    def get_stack(self, uuid) -> ImageStack | None:
-        if uuid is not None:
-            return self.main_window.get_stack(uuid)
-        return None
-
     def hide_tilt(self) -> None:
         self.image_view.hide_cor_line()
 
