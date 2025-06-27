@@ -41,6 +41,7 @@ class FittingParamFormWidget(QWidget):
         self.run_fit_button = QPushButton("Run fit")
         self.layout().addWidget(self.run_fit_button)
         self.run_fit_button.clicked.connect(self.presenter.run_region_fit)
+        self._param_values_logged = False
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -71,13 +72,16 @@ class FittingParamFormWidget(QWidget):
         for name, value in values.items():
             row = self._rows[name]
             row[2].setText(f"{value:f}")
-            LOG.debug("Final fit parameter values updated: %s", values)
+
+        if not self._param_values_logged:
+            LOG.info("Final fit parameter values updated: %s", values)
+            self._param_values_logged = True
 
     def set_fitted_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
             row = self._rows[name]
             row[3].setText(f"{value:f}")
-            LOG.debug("Final fit parameter values updated: %s", values)
+        LOG.debug("Final fit parameter values updated: %s", values)
 
     def get_initial_param_values(self) -> list[float]:
         params = [float(row[2].text()) for row in self._rows.values()]

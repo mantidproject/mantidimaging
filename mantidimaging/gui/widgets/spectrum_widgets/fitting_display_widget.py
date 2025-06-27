@@ -67,7 +67,9 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
         self.set_default_region(x_data, y_data)
-        LOG.debug("Spectrum plot updated: label=%s, points=%d", label, len(x_data))
+        if not getattr(self, "_log_emitted", False):
+            LOG.debug("Spectrum plot updated: label=%s, points=%d", label, len(x_data))
+        self._log_emitted = True
 
     def update_image(self, image: np.ndarray | None) -> None:
         if image is not None:
