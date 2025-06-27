@@ -513,17 +513,8 @@ class MainWindowView(BaseMainWindowView):
     def get_stack_visualiser(self, stack_uuid) -> StackVisualiserView:
         return self.presenter.get_stack_visualiser(stack_uuid)
 
-    def get_stack(self, stack_uuid: uuid.UUID) -> ImageStack:
+    def get_stack(self, stack_uuid: uuid.UUID | None) -> ImageStack:
         return self.presenter.get_stack(stack_uuid)
-
-    def get_images_from_stack_uuid(self, stack_uuid) -> ImageStack:
-        stack_visualiser = self.presenter.get_stack_visualiser(stack_uuid)
-        if stack_visualiser is None:
-            raise ValueError(f"No stack visualiser found for UUID: {stack_uuid}")
-        images = stack_visualiser.presenter.images
-        if images is None:
-            raise ValueError(f"No images found for stack UUID: {stack_uuid}")
-        return images
 
     def get_dataset_id_from_stack_uuid(self, stack_id: uuid.UUID) -> uuid.UUID:
         return self.presenter.get_dataset_id_for_stack(stack_id)

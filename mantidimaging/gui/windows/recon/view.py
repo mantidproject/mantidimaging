@@ -222,7 +222,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
         try:
-            selected_images = self.main_window.get_images_from_stack_uuid(uuid)
+            selected_images = self.main_window.get_stack(uuid)
         except KeyError:
             # Likely due to stack no longer existing, e.g. when all stacks closed
             LOG.debug("UUID did not match open stack")

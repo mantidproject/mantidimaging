@@ -393,7 +393,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
-                selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.current_stack_uuid)
+                selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
                 self.view.show_error_dialog(
                     f"Finding the COR failed, likely caused by the selected stack's 180 "
                     f"degree projection being a different shape. \n\n "
