@@ -11,18 +11,6 @@ from scipy.optimize import curve_fit
 from scipy.special import erf, erfc
 
 
-class LeftSideFittingException(Exception):
-
-    def __init__(self, source_err):
-        print("LeftSideFittingException:", source_err)
-
-
-class RightSideFittingException(Exception):
-
-    def __init__(self, source_err):
-        print("RightSideFittingException:", source_err)
-
-
 class BadFittingRoiError(Exception):
 
     def __init__(self, message: str = 'A fit could not be found within the given ROI, please try widening the ROI.'):
@@ -100,35 +88,18 @@ class SantistebanFunction(BaseFittingFunction):
     def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
         _, __, ___, ____, _____, a_0, b_0, a_hkl, b_hkl = params
 
-        ydata_max_ind = np.argmax(ydata)
-        ydata_min_ind = np.argmin(ydata)
+        if ydata.shape[0] < 5:
+            raise BadFittingRoiError("Fitting region too narrow to find fit")
 
-        if ydata_max_ind == len(xdata) or ydata_min_ind == 0:
-            raise BadFittingRoiError()
+        right_percentile_mean = int(np.mean(np.argwhere(ydata > np.percentile(ydata, 95))))
+        left_percentile_mean = int(np.mean(np.argwhere(ydata < np.percentile(ydata, 5))))
 
-        percentile_right = np.percentile(ydata, 95)
-        p_r = np.argwhere(ydata < percentile_right)
-        percentile_right_threshold = np.extract(p_r > ydata_max_ind, p_r)
-        if percentile_right_threshold.size == 0:
-            raise BadFittingRoiError()
-        percentile_right_ind = percentile_right_threshold[0]
+        # ensure there are enough points for fit to run
+        right_percentile_mean = min(ydata.shape[0] - 3, right_percentile_mean)
+        left_percentile_mean = max(3, left_percentile_mean)
 
-        percentile_left = np.percentile(ydata[:ydata_min_ind], 10)
-        p_l = np.argwhere(ydata > percentile_left)
-        percentile_left_threshold = np.extract(p_l < ydata_min_ind, p_l)
-        if percentile_left_threshold.size == 0:
-            raise BadFittingRoiError()
-        percentile_left_ind = percentile_left_threshold[-1]
-
-        try:
-            a_0, b_0 = self.right_side_fitting(xdata[percentile_right_ind:], ydata[percentile_right_ind:])
-            a_hkl, b_hkl = self.left_side_fitting(xdata[:percentile_left_ind], ydata[:percentile_left_ind], a_0, b_0)
-        except LeftSideFittingException:
-            raise BadFittingRoiError(message='A fit could not be found for the left side of the Bragg Edge, '
-                                     'please adjust the ROI on the left.') from None
-        except RightSideFittingException:
-            raise BadFittingRoiError(message='A fit could not be found for the right side of the Bragg Edge, '
-                                     'please adjust the ROI on the right.') from None
+        a_0, b_0 = self.right_side_fitting(xdata[right_percentile_mean:], ydata[right_percentile_mean:])
+        a_hkl, b_hkl = self.left_side_fitting(xdata[:left_percentile_mean], ydata[:left_percentile_mean], a_0, b_0)
 
         if (np.array([a_0, b_0, a_hkl, b_hkl]) == 0).any():
             raise BadFittingRoiError()
@@ -164,19 +135,13 @@ class SantistebanFunction(BaseFittingFunction):
         def f(t, a_0, b_0):
             return np.exp(-(a_0 + b_0 * t))
 
-        try:
-            popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
-            return popt
-        except (TypeError, ValueError) as err:
-            raise RightSideFittingException(err) from err
+        popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
+        return popt
 
     def left_side_fitting(self, xdata, ydata, a_0, b_0) -> list[float]:
 
         def f(t, a_hkl, b_hkl):
             return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
 
-        try:
-            popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
-            return popt
-        except (TypeError, ValueError) as err:
-            raise LeftSideFittingException(err) from err
+        popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
+        return popt
