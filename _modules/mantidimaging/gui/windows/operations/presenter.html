@@ -499,7 +499,6 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">groupby</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
@@ -507,6 +506,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QLineEdit</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operation_history.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATION_HISTORY</span><span class="p">,</span> <span class="n">OPERATION_DISPLAY_NAME</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
@@ -516,6 +516,8 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiltersWindowModel</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">APPLY_TO_180_MSG</span> <span class="o">=</span> <span class="s2">&quot;Operations applied to the sample are also automatically applied to the &quot;</span> \
       <span class="s2">&quot;180 degree projection. Please avoid applying an operation unless you&#39;re&quot;</span> \
@@ -659,6 +661,10 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="n">stack</span>
+        <span class="k">if</span> <span class="n">stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stack changed: name=</span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, shape=</span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stack selection cleared (None)&quot;</span><span class="p">)</span>
 
         <span class="c1"># Update the preview image index</span>
         <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">]):</span>
@@ -666,7 +672,6 @@ document.write(`
             <span class="n">max_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_preview_image_idx</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">previewImageIndex</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_slice</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">z_slider</span><span class="o">.</span><span class="n">set_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_slice</span><span class="p">)</span>
-
             <span class="k">for</span> <span class="n">row_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
                 <span class="n">widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="n">row_id</span><span class="p">)</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">):</span>
@@ -908,17 +913,14 @@ document.write(`
                 <span class="k">return</span>
             <span class="n">subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">sino_as_image_stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_image_idx</span><span class="p">)</span>
             <span class="n">squeeze_axis</span> <span class="o">=</span> <span class="mi">1</span>
-
-        <span class="c1"># Take copies for display to prevent issues when the shared memory is cleaned</span>
+        <span class="c1"># Take copies for display to prevent issues when shared memory is cleaned</span>
         <span class="n">before_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">subset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">squeeze_axis</span><span class="p">))</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply_to_images</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply_to_images</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">is_preview</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Error applying filter for preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-
             <span class="c1"># Can&#39;t continue be need the before image drawn</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_preview_image</span><span class="p">(</span><span class="n">before_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">preview_image_before</span><span class="p">)</span>
             <span class="k">return</span>
