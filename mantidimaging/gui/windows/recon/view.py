@@ -450,6 +450,10 @@ class ReconstructWindowView(BaseMainWindowView):
         else:
             return None
 
+    @property
+    def current_stack_uuid(self) -> UUID | None:
+        return self.stackSelector.current()
+
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
                                         filter_name=self.filter_name,
