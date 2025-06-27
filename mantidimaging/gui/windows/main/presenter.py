@@ -374,6 +374,7 @@ class MainWindowPresenter(BasePresenter):
 
     def get_stack(self, stack_id: uuid.UUID) -> ImageStack:
         images = self.model.get_images_by_uuid(stack_id)
+
         if images is None:
             raise RuntimeError(f"Stack not found: {stack_id}")
         return images
