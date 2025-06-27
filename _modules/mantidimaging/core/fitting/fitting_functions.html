@@ -504,24 +504,6 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">erf</span><span class="p">,</span> <span class="n">erfc</span>
 
 
-<div class="viewcode-block" id="LeftSideFittingException">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.LeftSideFittingException">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">LeftSideFittingException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_err</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LeftSideFittingException:&quot;</span><span class="p">,</span> <span class="n">source_err</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="RightSideFittingException">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.RightSideFittingException">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">RightSideFittingException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_err</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RightSideFittingException:&quot;</span><span class="p">,</span> <span class="n">source_err</span><span class="p">)</span></div>
-
-
-
 <div class="viewcode-block" id="BadFittingRoiError">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BadFittingRoiError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BadFittingRoiError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -639,35 +621,18 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">prefitting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ydata</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">___</span><span class="p">,</span> <span class="n">____</span><span class="p">,</span> <span class="n">_____</span><span class="p">,</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span> <span class="o">=</span> <span class="n">params</span>
 
-        <span class="n">ydata_max_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
-        <span class="n">ydata_min_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">(</span><span class="s2">&quot;Fitting region too narrow to find fit&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">ydata_max_ind</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ydata_min_ind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">()</span>
+        <span class="n">right_percentile_mean</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">ydata</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ydata</span><span class="p">,</span> <span class="mi">95</span><span class="p">))))</span>
+        <span class="n">left_percentile_mean</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">ydata</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ydata</span><span class="p">,</span> <span class="mi">5</span><span class="p">))))</span>
 
-        <span class="n">percentile_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ydata</span><span class="p">,</span> <span class="mi">95</span><span class="p">)</span>
-        <span class="n">p_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">ydata</span> <span class="o">&lt;</span> <span class="n">percentile_right</span><span class="p">)</span>
-        <span class="n">percentile_right_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">p_r</span> <span class="o">&gt;</span> <span class="n">ydata_max_ind</span><span class="p">,</span> <span class="n">p_r</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">percentile_right_threshold</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">()</span>
-        <span class="n">percentile_right_ind</span> <span class="o">=</span> <span class="n">percentile_right_threshold</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># ensure there are enough points for fit to run</span>
+        <span class="n">right_percentile_mean</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">right_percentile_mean</span><span class="p">)</span>
+        <span class="n">left_percentile_mean</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">left_percentile_mean</span><span class="p">)</span>
 
-        <span class="n">percentile_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">ydata</span><span class="p">[:</span><span class="n">ydata_min_ind</span><span class="p">],</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">p_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">ydata</span> <span class="o">&gt;</span> <span class="n">percentile_left</span><span class="p">)</span>
-        <span class="n">percentile_left_threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">p_l</span> <span class="o">&lt;</span> <span class="n">ydata_min_ind</span><span class="p">,</span> <span class="n">p_l</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">percentile_left_threshold</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">()</span>
-        <span class="n">percentile_left_ind</span> <span class="o">=</span> <span class="n">percentile_left_threshold</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_side_fitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">[</span><span class="n">percentile_right_ind</span><span class="p">:],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">percentile_right_ind</span><span class="p">:])</span>
-            <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_side_fitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">[:</span><span class="n">percentile_left_ind</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[:</span><span class="n">percentile_left_ind</span><span class="p">],</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">LeftSideFittingException</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;A fit could not be found for the left side of the Bragg Edge, &#39;</span>
-                                     <span class="s1">&#39;please adjust the ROI on the left.&#39;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-        <span class="k">except</span> <span class="n">RightSideFittingException</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s1">&#39;A fit could not be found for the right side of the Bragg Edge, &#39;</span>
-                                     <span class="s1">&#39;please adjust the ROI on the right.&#39;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_side_fitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">[</span><span class="n">right_percentile_mean</span><span class="p">:],</span> <span class="n">ydata</span><span class="p">[</span><span class="n">right_percentile_mean</span><span class="p">:])</span>
+        <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_side_fitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">[:</span><span class="n">left_percentile_mean</span><span class="p">],</span> <span class="n">ydata</span><span class="p">[:</span><span class="n">left_percentile_mean</span><span class="p">],</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="n">BadFittingRoiError</span><span class="p">()</span>
@@ -712,11 +677,8 @@ document.write(`
         <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a_0</span><span class="p">,</span> <span class="n">b_0</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">b_0</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">popt</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RightSideFittingException</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span></div>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">popt</span></div>
 
 
 <div class="viewcode-block" id="SantistebanFunction.left_side_fitting">
@@ -726,11 +688,8 @@ document.write(`
         <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a_hkl</span><span class="p">,</span> <span class="n">b_hkl</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_0</span> <span class="o">+</span> <span class="n">b_0</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">a_hkl</span> <span class="o">+</span> <span class="n">b_hkl</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">popt</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">LeftSideFittingException</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span></div>
+        <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">popt</span></div>
 </div>
 
 </pre></div>
