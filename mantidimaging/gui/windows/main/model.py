@@ -87,8 +87,10 @@ class MainWindowModel:
                                      out_format=image_format,
                                      pixel_depth=pixel_depth,
                                      progress=progress)
+
         images.filenames = filenames
-        logger.info(f"Export completed. Files saved: {filenames}")
+        logger.info(f"Export completed. Files saved: {filenames[:2]}{' ...' if len(filenames) > 2 else ''} "
+                    f"(total {len(filenames)} files)")
         return True
 
     def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool:
