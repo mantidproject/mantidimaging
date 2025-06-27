@@ -504,6 +504,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPixmap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QActionGroup</span><span class="p">,</span> <span class="n">QAction</span><span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QModelIndex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
@@ -527,6 +528,8 @@ document.write(`
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROIFormWidget</span><span class="p">,</span> <span class="n">ROITableWidget</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingRegion</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView">
@@ -680,7 +683,8 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_change_tab">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_change_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageTabs</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_unit_labels_and_menus</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_unit_labels_and_menus</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Tab changed: index=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.sync_unit_menus">
@@ -769,6 +773,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingSpectrumPlot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">spectrum_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectrum_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fitting plot updated: ROI=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectrum_data</span><span class="p">))</span>
             <span class="n">yellow_pen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fittingSpectrumPlot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="p">,</span>
                                                    <span class="n">spectrum_data</span><span class="p">,</span>
@@ -896,7 +901,8 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates the ROI dropdown menu with the available ROIs. &quot;&quot;&quot;</span>
         <span class="n">roi_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">update_roi_list</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">set_roi_names</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">set_roi_names</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI dropdown updated in view&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_fitting_roi_changed">
@@ -920,7 +926,8 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_add_roi</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">enable_roi_spinboxes</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New ROI creation triggered by user&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_table_click">
@@ -990,6 +997,7 @@ document.write(`
 <span class="sd">        Clear the selected ROI in the table view</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI removed by user: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">remove_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_remove_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>

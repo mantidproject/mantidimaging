@@ -500,6 +500,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QSignalBlocker</span><span class="p">,</span> <span class="n">QModelIndex</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPixmap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAbstractItemView</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QLabel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
@@ -509,6 +510,8 @@ document.write(`
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QGroupBox</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ROIFormWidget">
@@ -582,12 +585,15 @@ document.write(`
         <span class="n">bin_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size_spinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="n">roi_width</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span>
         <span class="n">roi_height</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span> <span class="o">-</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span>
+        <span class="n">norm_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission_error_mode_combobox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="p">((</span><span class="n">roi_width</span> <span class="o">-</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">step</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">roi_height</span> <span class="o">-</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">step</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
             <span class="n">warning</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Step size </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2"> and bin size </span><span class="si">{</span><span class="n">bin_size</span><span class="si">}</span><span class="s2"> do not evenly divide ROI dimensions &quot;</span>
                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">roi_width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">roi_height</span><span class="si">}</span><span class="s2">). Some rows or columns may not be exported.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_rits_warning</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RITS config valid — bin=</span><span class="si">%d</span><span class="s2">, step=</span><span class="si">%d</span><span class="s2">, norm_error=</span><span class="si">%s</span><span class="s2">, roi_size=</span><span class="si">%d</span><span class="s2">x</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">norm_mode</span><span class="p">,</span>
+                     <span class="n">roi_width</span><span class="p">,</span> <span class="n">roi_height</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_rits_warning</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
 
 
@@ -631,7 +637,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">spin_top</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spin_bottom</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">label_width</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">label_height</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_height</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI bounds set: left=</span><span class="si">%d</span><span class="s2">, right=</span><span class="si">%d</span><span class="s2">, top=</span><span class="si">%d</span><span class="s2">, bottom=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROIPropertiesTableWidget.set_roi_limits">
@@ -778,7 +785,8 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">appendNewRow</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI added to table: name=</span><span class="si">%s</span><span class="s2">, color=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.remove_row">
@@ -788,7 +796,8 @@ document.write(`
 <span class="sd">        Remove a row from the ROI table</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">remove_row</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI row removed: row=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.clear_table">
@@ -797,7 +806,8 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clears the ROI table in the spectrum viewer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI table cleared&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.select_roi">

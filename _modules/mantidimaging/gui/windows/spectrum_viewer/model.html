@@ -641,13 +641,19 @@ document.write(`
         <span class="k">if</span> <span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_time_of_flight</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tof_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_time_of_flight</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Sample stack set: shape=</span><span class="si">%s</span><span class="s2">, ToF range=(</span><span class="si">%d</span><span class="s2">–</span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.set_normalise_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_normalise_stack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_normalise_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalise_stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="o">=</span> <span class="n">normalise_stack</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="o">=</span> <span class="n">normalise_stack</span>
+        <span class="k">if</span> <span class="n">normalise_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Normalisation stack set: shape=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">normalise_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Normalisation stack cleared&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.get_normalized_averaged_image">
@@ -691,7 +697,6 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the mean spectrum of the given image stack within the specified region of interest (ROI).</span>
 <span class="sd">        If the image stack is None, an empty numpy array is returned.</span>
-
 <span class="sd">        Parameters:</span>
 <span class="sd">            stack (Optional[ImageStack]): The image stack to compute the spectrum from.</span>
 <span class="sd">                It can be None, in which case an empty array is returned.</span>
@@ -791,6 +796,9 @@ document.write(`
         <span class="k">if</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span>
             <span class="n">average_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shuttercount_normalised_correction_parameter</span><span class="p">()</span>
             <span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum</span> <span class="o">/</span> <span class="n">average_shuttercount</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing spectrum: ROI=</span><span class="si">%s</span><span class="s2">, mode=</span><span class="si">%s</span><span class="s2">, cached=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                  <span class="p">(</span><span class="o">*</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">spectrum</span></div>
 
@@ -946,7 +954,10 @@ document.write(`
 
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
             <span class="n">csv_output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_roi_coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_coords_filename</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">rois</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_roi_coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_coords_filename</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">rois</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving spectra to CSV: path=</span><span class="si">%s</span><span class="s2">, ROIs=</span><span class="si">%s</span><span class="s2">, normalised=</span><span class="si">%s</span><span class="s2">, shuttercount=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">rois</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+                 <span class="n">normalise</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_single_rits_spectrum">
@@ -989,7 +1000,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid error_mode given&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">export_spectrum_to_rits</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tof</span><span class="p">,</span> <span class="n">transmission</span><span class="p">,</span> <span class="n">transmission_error</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_spectrum_to_rits</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tof</span><span class="p">,</span> <span class="n">transmission</span><span class="p">,</span> <span class="n">transmission_error</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exporting RITS file: path=</span><span class="si">%s</span><span class="s2">, ROI=(</span><span class="si">%d</span><span class="s2">,</span><span class="si">%d</span><span class="s2">,</span><span class="si">%d</span><span class="s2">,</span><span class="si">%d</span><span class="s2">), error_mode=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
+                 <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span> <span class="n">error_mode</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.validate_bin_and_step_size">
@@ -1002,7 +1016,6 @@ document.write(`
 <span class="sd">        - Bin size must be larger than or equal to step size.</span>
 <span class="sd">        - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.</span>
 <span class="sd">        If any of these conditions are not met, a ValueError is raised.</span>
-
 <span class="sd">        Parameters:</span>
 <span class="sd">            roi: The region of interest (ROI) to which the bin size and step size should be compared.</span>
 <span class="sd">            bin_size (int): The size of the bins to be validated.</span>

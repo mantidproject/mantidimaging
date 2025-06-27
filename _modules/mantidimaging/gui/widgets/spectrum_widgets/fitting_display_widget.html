@@ -506,6 +506,9 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">allowed_modes</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumPlotWidget</span><span class="p">,</span> <span class="n">SpectrumROI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingRegion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget">
@@ -563,7 +566,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_region</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_region</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_log_emitted&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Spectrum plot updated: label=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_emitted</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget.update_image">
@@ -625,7 +631,8 @@ document.write(`
         <span class="n">y_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">pos</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">()</span>
         <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">setPos</span><span class="p">((</span><span class="n">x_start</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">setSize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">setSize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fit region set: x_start=</span><span class="si">%.3f</span><span class="s2">, x_end=</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">x_start</span><span class="p">,</span> <span class="n">x_end</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget.get_selected_fit_region">
@@ -674,7 +681,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="n">initial</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="n">initial</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fit line displayed: label=</span><span class="si">%s</span><span class="s2">, initial=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget.is_initial_fit_visible">

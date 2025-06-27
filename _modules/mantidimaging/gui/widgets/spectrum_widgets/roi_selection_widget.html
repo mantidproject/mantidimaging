@@ -496,6 +496,9 @@ document.write(`
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI_RITS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ROISelectionWidget">
@@ -503,7 +506,6 @@ document.write(`
 <span class="k">class</span><span class="w"> </span><span class="nc">ROISelectionWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A custom Qt widget for selecting an ROI.</span>
-
 <span class="sd">    Attributes:</span>
 <span class="sd">        roiDropdown: A dropdown menu for selecting ROIs.</span>
 <span class="sd">        selectionChanged: Signal emitted when the ROI selection changes.</span>
@@ -529,6 +531,7 @@ document.write(`
         <span class="n">selected_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">selected_roi</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_selection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">previous_selection</span> <span class="o">=</span> <span class="n">selected_roi</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ROI selected: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">selected_roi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">selected_roi</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ROISelectionWidget.update_roi_list">
@@ -546,7 +549,8 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_on_selection_changed</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_on_selection_changed</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI dropdown updated: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filtered_rois</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROISelectionWidget.set_selected_roi">

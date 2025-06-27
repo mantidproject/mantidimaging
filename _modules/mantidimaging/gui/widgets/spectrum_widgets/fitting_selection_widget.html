@@ -500,6 +500,9 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFittingFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FitSelectionWidget">
@@ -507,7 +510,6 @@ document.write(`
 <span class="k">class</span><span class="w"> </span><span class="nc">FitSelectionWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A custom Qt widget for selecting an Fitting Model.</span>
-
 <span class="sd">    Attributes:</span>
 <span class="sd">        fitDropdown: A dropdown menu for selecting fits.</span>
 <span class="sd">        func_dict: A dictionary for storing fitting functions available in the viewer.</span>
@@ -540,6 +542,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Handle dropdown selection change and emit signal. &quot;&quot;&quot;</span>
         <span class="n">selected_fit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_dict</span><span class="p">[</span><span class="n">selected_fit</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fit function selected: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
 
 <div class="viewcode-block" id="FitSelectionWidget.set_available_fitting_functions">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget.FitSelectionWidget.set_available_fitting_functions">[docs]</a>

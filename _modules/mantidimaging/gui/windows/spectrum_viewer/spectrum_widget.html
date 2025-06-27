@@ -495,6 +495,7 @@ document.write(`
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QSignalBlocker</span><span class="p">,</span> <span class="n">QEvent</span>
@@ -520,6 +521,8 @@ document.write(`
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># noqa:F401   # pragma: no cover</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SpectrumROI">
@@ -730,7 +733,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sigRegionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_emit_roi_changing</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sigClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_clicked</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">hoverPen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">hoverPen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI created: name=</span><span class="si">%s</span><span class="s2">, coords=(Left: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
+                  <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.adjust_roi">
@@ -741,7 +746,9 @@ document.write(`
 <span class="sd">        @param new_roi: The new SpectrumROI to replace the existing SpectrumROI</span>
 <span class="sd">        @param roi_name: The name of the existing ROI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">adjust_spec_roi</span><span class="p">(</span><span class="n">new_roi</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">adjust_spec_roi</span><span class="p">(</span><span class="n">new_roi</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI adjusted: name=</span><span class="si">%s</span><span class="s2">, new coords=(Left: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span>
+                  <span class="n">new_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">new_roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">new_roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">new_roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.get_roi">
@@ -777,7 +784,8 @@ document.write(`
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI &#39;</span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">])</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span></div>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ROI deleted: name=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.rename_roi">
@@ -799,7 +807,9 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">new_name</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">new_name</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI renamed: from=</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> to=</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_emit_roi_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -905,6 +915,7 @@ document.write(`
         <span class="n">tof_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tof_range</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_tof_range_label</span><span class="p">(</span><span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">tof_range</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Projection range changed: TOF=</span><span class="si">%.2f</span><span class="s2"> to </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <div class="viewcode-block" id="SpectrumPlotWidget.add_range">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.add_range">[docs]</a>
