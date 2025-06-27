@@ -51,15 +51,19 @@ class ExportDataTableWidget(QWidget):
         Add or update a row for the specified ROI, populating parameter values and status.
         """
         row_index = self._find_row_by_roi_name(roi_name)
-        items = [QStandardItem(roi_name)]
+        name_item = QStandardItem(roi_name)
+        name_item.setData(roi_name)
+        items = [name_item]
 
         for param in self.parameter_names:
             value = params[param]
-            cell = QStandardItem(f"{value:.3f}")
+            cell = QStandardItem(f"{value:.4g}")
+            cell.setData(f"{value:.6g}")
             cell.setTextAlignment(Qt.AlignCenter)
             items.append(cell)
 
         status_item = QStandardItem(status)
+        status_item.setData(status)
         status_item.setTextAlignment(Qt.AlignCenter)
         items.append(status_item)
 
