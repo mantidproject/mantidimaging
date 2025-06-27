@@ -343,7 +343,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
         self.view = mock.MagicMock()
         self.presenter.view = self.view
-        self.view.main_window.get_images_from_stack_uuid = mock.MagicMock(return_value=images)
+        self.view.main_window.get_stack = mock.MagicMock(return_value=images)
 
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
 
