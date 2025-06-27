@@ -494,3 +494,12 @@ class ReconstructWindowPresenter(BasePresenter):
 
         algorithm_name = f"{prefix}_{recon_name}"
         return f"{algorithm_name}_{filter_name}" if filter_name else algorithm_name
+
+    def handle_show_event(self) -> None:
+        if self.stack_selection_change_pending:
+            self.set_stack_uuid(self.view.current_stack_uuid)
+            self.stack_selection_change_pending = False
+            self.stack_changed_pending = False
+        elif self.stack_changed_pending:
+            self.handle_stack_changed()
+            self.stack_changed_pending = False
