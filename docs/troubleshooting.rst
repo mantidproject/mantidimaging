@@ -3,6 +3,60 @@
 Troubleshooting
 ===============
 
+.. _troubleshooting-logging:
+
+Logging
+-------
+
+Logging can be configured interactively via the **Settings > Logging** tab. From here, you can customise how log data is collected, stored, and used for debugging or performance analysis.
+
+The following options are available:
+
+- **Log Directory**: The directory where log files are saved. If left empty, no log file is written.
+- **Retention (days)**: Defines how many days logs are kept before automatic deletion.
+- **Performance Logging**: Enables detailed performance profiling and timing logs for key operations.
+- **Log Level**: Controls the level of detail outputted to the log.
+
+The log level determines how much information is recorded. Mantid Imaging supports the following standard log levels:
+
++-----------+--------------------------------------------------------------+
+| Level     | Description                                                  |
++===========+==============================================================+
+| DEBUG     | Detailed developer-focused messages                          |
++-----------+--------------------------------------------------------------+
+| INFO      | General workflow steps and user actions                      |
++-----------+--------------------------------------------------------------+
+| WARNING   | Recoverable problems or fallback behaviors                   |
++-----------+--------------------------------------------------------------+
+| ERROR     | Failed operations that interrupt the workflow                |
++-----------+--------------------------------------------------------------+
+| CRITICAL  | Severe issues such as crashes or data corruption             |
++-----------+--------------------------------------------------------------+
+
+.. note::
+
+   Log file retention only applies to the currently configured log directory.
+   If you change the directory after logs have been written, previous log files
+   in older directories will **not** be automatically deleted. You may need to
+   manage these manually.
+
+Logging settings can also be configured manually via the `QSettings` configuration file.
+
+**Locations by platform:**
+
+- **Linux**: :file:`~/.config/mantidproject/Mantid Imaging.conf`
+- **Windows**: Stored in the Windows Registry under:
+  :file:`HKEY_CURRENT_USER\\Software\\mantidproject\\Mantid Imaging`
+- **IDAaaS**: Same as Linux, usually in the user’s home directory at:
+  :file:`~/.config/mantidproject/Mantid Imaging.conf`
+
+For example::
+
+    [logging]
+    log_level=DEBUG
+    log_dir=/tmp/mantid_imaging_logs
+    performance_log=true
+
 Can't reconstruct with FBP_CUDA and SIRT_CUDA
 ---------------------------------------------
 
