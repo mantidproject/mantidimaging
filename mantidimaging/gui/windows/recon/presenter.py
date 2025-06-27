@@ -145,6 +145,9 @@ class ReconstructWindowPresenter(BasePresenter):
             self.stack_selection_change_pending = True
             return
 
+        if uuid is None:
+            return
+
         images = self.main_window.get_stack(uuid)
         if self.model.is_current_stack(uuid):
             return
@@ -171,7 +174,7 @@ class ReconstructWindowPresenter(BasePresenter):
             # Likely due to stack no longer existing, e.g. when all stacks closed
             LOG.debug("UUID did not match open stack")
             return
-        if not selected_images.proj_180_degree_shape_matches_images():
+        if selected_images is not None and not selected_images.proj_180_degree_shape_matches_images():
             self.view.show_error_dialog(
                 "The shapes of the selected stack and it's 180 degree projections do not match! This is "
                 "going to cause an error when calculating the COR. Fix the shape before continuing!")
@@ -415,9 +418,12 @@ class ReconstructWindowPresenter(BasePresenter):
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
+
                 if self.view.current_stack_uuid is None:
                     raise RuntimeError("Cannot find stack UUID")
                 selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
+                if selected_stack is None:
+                    raise RuntimeError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
                 self.view.show_error_dialog(
                     f"Finding the COR failed, likely caused by the selected stack's 180 "
                     f"degree projection being a different shape. \n\n "

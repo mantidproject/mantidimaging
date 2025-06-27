@@ -41,7 +41,7 @@ class StackId(NamedTuple):
     name: str
 
 
-logger = getLogger(__name__)
+LOG = getLogger(__name__)
 
 
 class Notification(Enum):
@@ -105,7 +105,7 @@ class MainWindowPresenter(BasePresenter):
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
-            getLogger(__name__).exception("Notification handler failed")
+            LOG.exception("Notification handler failed")
 
     def _get_stack_visualiser_by_name(self, search_name: str) -> StackVisualiserView | None:
         """
@@ -322,8 +322,8 @@ class MainWindowPresenter(BasePresenter):
         output_dir = self.view.image_save_dialog.save_path()
         image_format = self.view.image_save_dialog.image_format()
 
-        logger.info(f"Exporting {export_type}: '{current_stack_name}' "
-                    f"→ format: {image_format}, directory: {output_dir}")
+        LOG.info(f"Exporting {export_type}: '{current_stack_name}' "
+                 f"→ format: {image_format}, directory: {output_dir}")
 
         kwargs = {
             'images_id': self.view.image_save_dialog.selected_stack,
@@ -337,10 +337,10 @@ class MainWindowPresenter(BasePresenter):
 
     def _on_save_done(self, task: TaskWorkerThread) -> None:
         if not task.was_successful():
-            logger.error(f"Export failed with error: {task.error}")
+            LOG.error(f"Export failed with error: {task.error}")
             raise RuntimeError(self.SAVE_ERROR_STRING.format(task.error))
         else:
-            logger.info("Export task finished successfully.")
+            LOG.info("Export task finished successfully.")
 
     @property
     def stack_visualiser_list(self) -> list[StackId]:
@@ -372,11 +372,10 @@ class MainWindowPresenter(BasePresenter):
     def get_stack_visualiser(self, stack_id: uuid.UUID) -> StackVisualiserView:
         return self.stack_visualisers[stack_id]
 
-    def get_stack(self, stack_id: uuid.UUID) -> ImageStack:
+    def get_stack(self, stack_id: uuid.UUID) -> ImageStack | None:
         images = self.model.get_images_by_uuid(stack_id)
-
         if images is None:
-            raise RuntimeError(f"Stack not found: {stack_id}")
+            LOG.debug(f"ImageStack is None for UUID: '{stack_id}'")
         return images
 
     def get_stack_visualiser_history(self, stack_id: uuid.UUID) -> dict[str, Any]:
@@ -634,10 +633,12 @@ class MainWindowPresenter(BasePresenter):
                 f"Unable to find destination dataset with ID {destination_dataset_id} when attempting to move stack")
 
         stack_to_move = self.get_stack(stack_id)
-        stack_to_move.name = self._create_dataset_stack_name(destination_stack_type, destination_dataset.name)
 
-        origin_dataset.delete_stack(stack_id)
-        self.add_images_to_existing_dataset(destination_dataset_id, stack_to_move, destination_stack_type)
+        if stack_to_move is not None:
+            stack_to_move.name = self._create_dataset_stack_name(destination_stack_type, destination_dataset.name)
+
+            origin_dataset.delete_stack(stack_id)
+            self.add_images_to_existing_dataset(destination_dataset_id, stack_to_move, destination_stack_type)
 
     @staticmethod
     def _create_dataset_stack_name(stack_type: str, dataset_name: str) -> str:

@@ -263,11 +263,11 @@ class MainWindowViewTest(unittest.TestCase):
     def test_get_images_from_stack_uuid(self):
         uuid = uuid4()
         images = mock.MagicMock()
-        self.presenter.get_stack_visualiser.return_value.presenter.images = images
+        self.presenter.get_stack.return_value = images
 
-        return_value = self.view.get_images_from_stack_uuid(uuid)
+        return_value = self.view.get_stack(uuid)
 
-        self.presenter.get_stack_visualiser.assert_called_once_with(uuid)
+        self.presenter.get_stack.assert_called_once_with(uuid)
         self.assertEqual(images, return_value)
 
     def test_load_image_stack(self):
