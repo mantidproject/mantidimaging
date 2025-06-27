@@ -5,17 +5,22 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING, Any
 from collections.abc import Callable
+from datetime import datetime
 
 from mantidimaging.core.operations.base_filter import FilterGroup
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from logging import getLogger
 
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowPresenter  # pragma: no cover
     from mantidimaging.core.data import ImageStack
     from mantidimaging.core.operations.loader import BaseFilterClass
+
+LOG = getLogger(__name__)
+perf_logger = getLogger("perf." + __name__)
 
 
 class FiltersWindowModel:
@@ -117,9 +122,8 @@ class FiltersWindowModel:
         for stack in stacks:
             self.apply_to_images(stack, progress=progress)
 
-    def apply_to_images(self, images: ImageStack, progress=None) -> None:
+    def apply_to_images(self, images: ImageStack, progress=None, is_preview=False) -> None:
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
-
         # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
         if not self.selected_filter.validate_execute_kwargs(input_kwarg_widgets):
             raise ValueError("Not all required parameters specified")
@@ -127,7 +131,17 @@ class FiltersWindowModel:
         # Run filter
         exec_func = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
         exec_func.keywords["progress"] = progress
+        params = ', '.join(f"{k}={v!r}" for k, v in exec_func.keywords.items() if k != "progress")
+
+        start = datetime.now()
         exec_func(images)
+        duration = (datetime.now() - start).total_seconds()
+
+        if not is_preview:
+            LOG.info(f"Starting operation: {self.selected_filter.__name__} "
+                     f"(shape={images.data.shape}, {params})")
+            perf_logger.info(f"{self.selected_filter.filter_name} completed in {duration:.3f}s")
+
         # store the executed filter in history if it executed successfully
         images.record_operation(
             self.selected_filter.__name__,  # type: ignore
