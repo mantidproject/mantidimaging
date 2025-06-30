@@ -472,9 +472,6 @@ class ReconstructWindowPresenter(BasePresenter):
                               },
                               tracker=self.async_tracker)
 
-    def proj_180_degree_shape_matches_images(self, images) -> bool:
-        return self.model.proj_180_degree_shape_matches_images(images)
-
     def _do_nan_zero_negative_check(self) -> None:
         """
         Checks if the data contains NaNs/zeroes and displays a message if they are found.
