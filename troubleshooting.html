@@ -502,6 +502,66 @@ document.write(`
                   
   <section id="troubleshooting">
 <span id="id1"></span><h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h1>
+<section id="logging">
+<span id="troubleshooting-logging"></span><h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">#</a></h2>
+<p>Logging can be configured interactively via the <strong>Settings &gt; Logging</strong> tab. From here, you can customise how log data is collected, stored, and used for debugging or performance analysis.</p>
+<p>The following options are available:</p>
+<ul class="simple">
+<li><p><strong>Log Directory</strong>: The directory where log files are saved. If left empty, no log file is written.</p></li>
+<li><p><strong>Retention (days)</strong>: Defines how many days logs are kept before automatic deletion.</p></li>
+<li><p><strong>Performance Logging</strong>: Enables detailed performance profiling and timing logs for key operations.</p></li>
+<li><p><strong>Log Level</strong>: Controls the level of detail outputted to the log.</p></li>
+</ul>
+<p>The log level determines how much information is recorded. Mantid Imaging supports the following standard log levels:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Level</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DEBUG</p></td>
+<td><p>Detailed developer-focused messages</p></td>
+</tr>
+<tr class="row-odd"><td><p>INFO</p></td>
+<td><p>General workflow steps and user actions</p></td>
+</tr>
+<tr class="row-even"><td><p>WARNING</p></td>
+<td><p>Recoverable problems or fallback behaviors</p></td>
+</tr>
+<tr class="row-odd"><td><p>ERROR</p></td>
+<td><p>Failed operations that interrupt the workflow</p></td>
+</tr>
+<tr class="row-even"><td><p>CRITICAL</p></td>
+<td><p>Severe issues such as crashes or data corruption</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Log file retention only applies to the currently configured log directory.
+If you change the directory after logs have been written, previous log files
+in older directories will <strong>not</strong> be automatically deleted. You may need to
+manage these manually.</p>
+</div>
+<p>Logging settings can also be configured manually via the <cite>QSettings</cite> configuration file.</p>
+<p><strong>Locations by platform:</strong></p>
+<ul class="simple">
+<li><p><strong>Linux</strong>: <code class="file docutils literal notranslate"><span class="pre">~/.config/mantidproject/Mantid</span> <span class="pre">Imaging.conf</span></code></p></li>
+<li><p><strong>Windows</strong>: Stored in the Windows Registry under:
+<code class="file docutils literal notranslate"><span class="pre">HKEY_CURRENT_USER\Software\mantidproject\Mantid</span> <span class="pre">Imaging</span></code></p></li>
+<li><p><strong>IDAaaS</strong>: Same as Linux, usually in the user’s home directory at:
+<code class="file docutils literal notranslate"><span class="pre">~/.config/mantidproject/Mantid</span> <span class="pre">Imaging.conf</span></code></p></li>
+</ul>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">logging</span><span class="p">]</span>
+<span class="n">log_level</span><span class="o">=</span><span class="n">DEBUG</span>
+<span class="n">log_dir</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">mantid_imaging_logs</span>
+<span class="n">performance_log</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+</section>
 <section id="can-t-reconstruct-with-fbp-cuda-and-sirt-cuda">
 <h2>Can’t reconstruct with FBP_CUDA and SIRT_CUDA<a class="headerlink" href="#can-t-reconstruct-with-fbp-cuda-and-sirt-cuda" title="Link to this heading">#</a></h2>
 <p>These algorithms have 2 requirements:</p>
@@ -611,6 +671,7 @@ By default, the CUDA-version of <code class="code docutils literal notranslate">
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Troubleshooting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-t-reconstruct-with-fbp-cuda-and-sirt-cuda">Can’t reconstruct with FBP_CUDA and SIRT_CUDA</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#having-a-cuda-compatible-graphics-card">Having a CUDA-compatible graphics card</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#having-the-cuda-runtime-10-2-libraries-installed">Having the CUDA Runtime 10.2 libraries installed</a></li>
