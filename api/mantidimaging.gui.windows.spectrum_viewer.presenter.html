@@ -577,32 +577,6 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.presenter.</span></span><span class="sig-name descname"><span class="pre">SpectrumCalulcationWorker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">presenter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter" title="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter"><span class="pre">SpectrumViewerWindowPresenter</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumCalulcationWorker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker.finished">
-<span class="sig-name descname"><span class="pre">finished</span></span><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker.finished" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumCalulcationWorker.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker.run" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.spectrum_viewer.presenter.</span></span><span class="sig-name descname"><span class="pre">SpectrumViewerWindowPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView" title="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView"><span class="pre">SpectrumViewerWindowView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html#mantidimaging.gui.mvp_base.presenter.BasePresenter" title="mantidimaging.gui.mvp_base.presenter.BasePresenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePresenter</span></code></a></p>
@@ -873,6 +847,11 @@ and displays the new fit result.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.run_spectrum_calculation">
+<span class="sig-name descname"><span class="pre">run_spectrum_calculation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.run_spectrum_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.run_spectrum_calculation" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.set_default_fitting_region">
 <span class="sig-name descname"><span class="pre">set_default_fitting_region</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.set_default_fitting_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.set_default_fitting_region" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -922,7 +901,7 @@ image view accordingly. Resets the ROIs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.thread_cleanup">
-<span class="sig-name descname"><span class="pre">thread_cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.thread_cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.thread_cleanup" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">thread_cleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.dialogs.async_task.task.html#mantidimaging.gui.dialogs.async_task.task.TaskWorkerThread" title="mantidimaging.gui.dialogs.async_task.task.TaskWorkerThread"><span class="pre">TaskWorkerThread</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/presenter.html#SpectrumViewerWindowPresenter.thread_cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.thread_cleanup" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1013,11 +992,6 @@ in both the main spectrum plot in the image tab and the fitting tab.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.ExportMode.ROI_MODE"><code class="docutils literal notranslate"><span class="pre">ExportMode.ROI_MODE</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker"><code class="docutils literal notranslate"><span class="pre">SpectrumCalulcationWorker</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker.finished"><code class="docutils literal notranslate"><span class="pre">SpectrumCalulcationWorker.finished</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumCalulcationWorker.run"><code class="docutils literal notranslate"><span class="pre">SpectrumCalulcationWorker.run()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.add_rits_roi"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.add_rits_roi()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.auto_find_flat_stack"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.auto_find_flat_stack()</span></code></a></li>
@@ -1067,6 +1041,7 @@ in both the main spectrum plot in the image tab and the fitting tab.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.reset_units_menu"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.reset_units_menu()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.roi_to_process_queue"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.roi_to_process_queue</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.run_region_fit"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.run_region_fit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.run_spectrum_calculation"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.run_spectrum_calculation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.set_default_fitting_region"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.set_default_fitting_region()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.set_shuttercount_error"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.set_shuttercount_error()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.setup_fitting_model"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowPresenter.setup_fitting_model()</span></code></a></li>
