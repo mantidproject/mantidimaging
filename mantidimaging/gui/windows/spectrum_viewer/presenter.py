@@ -229,16 +229,17 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
-        if self.changed_roi.name not in self.roi_to_process_queue.keys():
-            self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
+        run_thread_check = not bool(self.roi_to_process_queue)
+        self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
         spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
         if spectrum is not None:
             self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
         self.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
-        if not self.handle_roi_change_timer.isActive():
-            self.handle_roi_change_timer.start(500)
+        if run_thread_check:
+            if not self.handle_roi_change_timer.isActive():
+                self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
     def run_spectrum_calculation(self):
