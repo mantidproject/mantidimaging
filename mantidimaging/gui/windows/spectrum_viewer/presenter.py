@@ -718,5 +718,5 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 roi_name = model.item(row, 0).text()
                 if selected_roi != "All" and roi_name != selected_roi:
                     continue
-                row_data = [model.item(row, col).text() for col in range(model.columnCount())]
+                row_data = [model.item(row, col).data() for col in range(model.columnCount())]
                 writer.writerow(row_data)
