@@ -8,6 +8,7 @@ from functools import partial
 from logging import getLogger
 from typing import TYPE_CHECKING, Any
 from collections.abc import Callable
+from uuid import UUID
 
 import numpy as np
 from PyQt5.QtWidgets import QWidget
@@ -49,6 +50,7 @@ class Notifications(Enum):
     REFINE_ITERS = auto()
     AUTO_FIND_COR_CORRELATE = auto()
     AUTO_FIND_COR_MINIMISE = auto()
+    SET_STACK_UUID = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -104,6 +106,8 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_update_projection()
             elif notification == Notifications.ADD_COR:
                 self.do_add_cor()
+            elif notification == Notifications.SET_STACK_UUID:
+                self.do_stack_uuid_changed()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
             elif notification == Notifications.REFINE_ITERS:
@@ -130,7 +134,13 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
         self.view.change_refine_iterations()
 
-    def set_stack_uuid(self, uuid) -> None:
+    def do_stack_uuid_changed(self) -> None:
+        uuid = self.view.stackSelector.current()
+        self.set_stack_uuid(uuid)
+        if uuid is not None:
+            self.check_stack_for_invalid_180_deg_proj(uuid)
+
+    def set_stack_uuid(self, uuid: UUID | None) -> None:
         if not self.view.isVisible():
             self.stack_selection_change_pending = True
             return
@@ -153,6 +163,18 @@ class ReconstructWindowPresenter(BasePresenter):
         self._set_max_preview_indexes()
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
+
+    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
+        try:
+            selected_images = self.main_window.get_stack(uuid)
+        except KeyError:
+            # Likely due to stack no longer existing, e.g. when all stacks closed
+            LOG.debug("UUID did not match open stack")
+            return
+        if not selected_images.proj_180_degree_shape_matches_images():
+            self.view.show_error_dialog(
+                "The shapes of the selected stack and it's 180 degree projections do not match! This is "
+                "going to cause an error when calculating the COR. Fix the shape before continuing!")
 
     def _set_max_preview_indexes(self) -> None:
         images = self.model.images

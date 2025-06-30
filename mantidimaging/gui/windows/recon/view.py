@@ -173,7 +173,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.on_table_row_count_change()
 
         self.stackSelector.subscribe_to_main_window(main_window)
-        self.stackSelector.stack_selected_uuid.connect(self.check_stack_for_invalid_180_deg_proj)
+        self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_STACK_UUID))
         self.stackSelector.select_eligible_stack()
 
         self.maxProjAngle.valueChanged.connect(

@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 from pathlib import Path
 from unittest import mock
+from parameterized import parameterized
 
 from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -355,45 +356,26 @@ class ImageStackTest(unittest.TestCase):
         npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
         self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
 
-    def test_proj_180_degree_shape_matches_images_where_they_match(self):
+    @parameterized.expand([("shapes_match", 10, 10, 10, 10, True), ("shapes_do_not_match", 10, 10, 20, 10, False)])
+    def test_proj_180_degree_shape_matches_images(self, _, height, width, proj180_height, proj180_width, expected):
         data = generate_images().data
         images = ImageStack(data=data)
         images.set_geometry()
         angles = range(0, 360)
         angle_unit = "radian"
         pixel_size = (1., 1.)
-        num_pixels = (10, 10)
+        num_pixels = (width, height)
 
         images.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         images.geometry.set_angles(angles=angles, angle_unit=angle_unit)
 
         images._proj180deg = mock.MagicMock()
-        images._proj180deg.height = 10
-        images._proj180deg.width = 10
+        images._proj180deg.height = proj180_height
+        images._proj180deg.width = proj180_width
         images.has_proj180deg = mock.MagicMock(return_value=True)
         images._is_sinograms = True
 
-        self.assertTrue(images.proj_180_degree_shape_matches_images())
-
-    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
-        data = generate_images().data
-        images = ImageStack(data=data)
-        images.set_geometry()
-        angles = range(0, 360)
-        angle_unit = "radian"
-        pixel_size = (1., 1.)
-        num_pixels = (10, 10)
-
-        images.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
-        images.geometry.set_angles(angles=angles, angle_unit=angle_unit)
-
-        images._proj180deg = mock.MagicMock()
-        images._proj180deg.height = 20
-        images._proj180deg.width = 20
-        images.has_proj180deg = mock.MagicMock(return_value=True)
-        images._is_sinograms = True
-
-        self.assertFalse(images.proj_180_degree_shape_matches_images())
+        self.assertEqual(images.proj_180_degree_shape_matches_images(), expected)
 
     def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
         data = generate_images().data
