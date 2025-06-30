@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker, QTimer, QObject, pyqtSignal, QThread, Qt
+from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
@@ -28,40 +28,6 @@ if TYPE_CHECKING:
     from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
-
-
-class SpectrumCalulcationWorker(QObject):
-    finished = pyqtSignal()
-
-    def __init__(self, presenter: SpectrumViewerWindowPresenter):
-        super().__init__()
-        self.presenter = presenter
-
-    def run(self):
-        roi_name = list(self.presenter.roi_to_process_queue.keys())[0]
-        roi = self.presenter.roi_to_process_queue[roi_name]
-        chunk_size = 100
-        if chunk_size > 0:
-            nanInds = np.argwhere(np.isnan(self.presenter.image_nan_mask_dict[roi_name]))
-            chunk_start = int(nanInds[0, 0])
-            if len(nanInds) > chunk_size:
-                chunk_end = int(nanInds[chunk_size, 0])
-            else:
-                chunk_end = int(nanInds[-1, 0]) + 1
-        else:
-            chunk_start, chunk_end = (0, -1)
-
-        spectrum = self.presenter.model.get_spectrum(roi.as_sensible_roi(), self.presenter.spectrum_mode,
-                                                     self.presenter.view.shuttercount_norm_enabled(), chunk_start,
-                                                     chunk_end)
-
-        for i in range(len(spectrum)):
-            np.put(self.presenter.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
-            if np.isnan(spectrum[i]):
-                self.presenter.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
-            else:
-                np.put(self.presenter.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
-        self.finished.emit()
 
 
 class ExportMode(Enum):
@@ -275,21 +241,43 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
+    def run_spectrum_calculation(self):
+        roi_name = list(self.roi_to_process_queue.keys())[0]
+        roi = self.roi_to_process_queue[roi_name]
+        chunk_size = 100
+        if chunk_size > 0:
+            nanInds = np.argwhere(np.isnan(self.image_nan_mask_dict[roi_name]))
+            chunk_start = int(nanInds[0, 0])
+            if len(nanInds) > chunk_size:
+                chunk_end = int(nanInds[chunk_size, 0])
+            else:
+                chunk_end = int(nanInds[-1, 0]) + 1
+        else:
+            chunk_start, chunk_end = (0, -1)
+
+        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), self.spectrum_mode,
+                                           self.view.shuttercount_norm_enabled(), chunk_start, chunk_end)
+
+        for i in range(len(spectrum)):
+            np.put(self.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
+            if np.isnan(spectrum[i]):
+                self.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
+            else:
+                np.put(self.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
+
     def handle_roi_moved(self) -> None:
         """
         Handle changes to any ROI position and size.
         """
-        self.thread = QThread()
-        self.worker = SpectrumCalulcationWorker(self)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.finished.connect(self.thread_cleanup)
+        self.thread = TaskWorkerThread()
+        self.thread.task_function = self.run_spectrum_calculation
+
+        self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
 
-    def thread_cleanup(self) -> None:
+    def thread_cleanup(self, thread: TaskWorkerThread) -> None:
+        if thread.error is not None:
+            raise thread.error
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
         if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
