@@ -388,35 +388,6 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.show_error_dialog.assert_called_once()
         self.view.set_recon_buttons_enabled.assert_called_once_with(True)
 
-    def test_proj_180_degree_shape_matches_images_where_they_match(self):
-        images = mock.MagicMock()
-        images.height = 10
-        images.width = 10
-        images.proj180deg.height = 10
-        images.proj180deg.width = 10
-        has_proj180deg = mock.MagicMock(return_value=True)
-        images.has_proj180deg = has_proj180deg
-
-        self.assertTrue(self.presenter.proj_180_degree_shape_matches_images(images))
-
-    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
-        images = mock.MagicMock()
-        images.height = 10
-        images.width = 10
-        images.proj180deg.height = 20
-        images.proj180deg.width = 20
-        has_proj180deg = mock.MagicMock(return_value=True)
-        images.has_proj180deg = has_proj180deg
-
-        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
-
-    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
-        images = mock.MagicMock()
-        has_proj180deg = mock.MagicMock(return_value=False)
-        images.has_proj180deg = has_proj180deg
-
-        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
-
     def test_status_message_shows_nan_zero_negative_warning(self):
         self.presenter.model.stack_contains_nans = mock.Mock(return_value=True)
         self.presenter.model.stack_contains_zeroes = mock.Mock(return_value=True)
