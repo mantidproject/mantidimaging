@@ -1,10 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-import uuid
 from logging import getLogger
 from typing import TYPE_CHECKING
-from uuid import UUID
 
 import numpy
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
@@ -28,6 +26,7 @@ from mantidimaging.gui.windows.recon.presenter import ReconstructWindowPresenter
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
+    from uuid import UUID
 
 LOG = getLogger(__name__)
 
@@ -225,19 +224,6 @@ class ReconstructWindowView(BaseMainWindowView):
             e.ignore()
         else:
             self.hide()
-
-    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
-        try:
-            selected_images = self.main_window.get_images_from_stack_uuid(uuid)
-        except KeyError:
-            # Likely due to stack no longer existing, e.g. when all stacks closed
-            LOG.debug("UUID did not match open stack")
-            return
-        if selected_images.has_proj180deg() and \
-                not self.presenter.proj_180_degree_shape_matches_images(selected_images):
-            self.show_error_dialog(
-                "The shapes of the selected stack and it's 180 degree projections do not match! This is "
-                "going to cause an error when calculating the COR. Fix the shape before continuing!")
 
     def remove_selected_cor(self) -> None:
         return self.tableView.removeSelectedRows()
@@ -476,7 +462,7 @@ class ReconstructWindowView(BaseMainWindowView):
         # handled as an internal Qt event in the model
         self.cor_table_model.set_point(idx, slice_idx, cor, reset_results=False)
 
-    def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID) -> None:
+    def show_recon_volume(self, data: ImageStack, stack_id: UUID) -> None:
         self.main_window.add_recon_to_dataset(data, stack_id)
 
     def get_stack(self, uuid) -> ImageStack | None:
