@@ -367,6 +367,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if roi_widget.isVisible():
                 self.redraw_spectrum(roi_name)
 
+    def handle_roi_name_change(self, old_name: str, new_name: str) -> None:
+        self.view.spectrum_widget.rename_roi(old_name, new_name)
+        self.view.set_roi_properties()
+        self.view.roiSelectionWidget.update_roi_list(self.get_roi_names())
+
     def handle_button_enabled(self) -> None:
         """
         Enable the export button if the current stack is not None and normalisation is valid
