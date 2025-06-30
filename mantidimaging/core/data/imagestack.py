@@ -237,6 +237,13 @@ class ImageStack:
         else:
             return self.data[projection_idx]
 
+    def proj_180_degree_shape_matches_images(self) -> bool:
+        if self.proj180deg is not None:
+            return self.has_proj180deg(
+            ) and self.height == self.proj180deg.height and self.width == self.proj180deg.width
+        else:
+            return False
+
     def has_proj180deg(self) -> bool:
         return self._proj180deg is not None
 

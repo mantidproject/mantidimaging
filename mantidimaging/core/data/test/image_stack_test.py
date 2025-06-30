@@ -351,3 +351,49 @@ class ImageStackTest(unittest.TestCase):
         npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
         npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
         self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
+
+    def test_proj_180_degree_shape_matches_images_where_they_match(self):
+        data = generate_images().data
+        images = ImageStack(data=data)
+        images.set_geometry()
+        angles = range(0, 360)
+        angle_unit = "radian"
+        pixel_size = (1., 1.)
+        num_pixels = (10, 10)
+
+        images.update_geometry(angles=angles, angle_unit=angle_unit, num_pixels=num_pixels, pixel_size=pixel_size)
+
+        images._proj180deg = mock.MagicMock()
+        images._proj180deg.height = 10
+        images._proj180deg.width = 10
+        images.has_proj180deg = mock.MagicMock(return_value=True)
+        images._is_sinograms = True
+
+        self.assertTrue(images.proj_180_degree_shape_matches_images())
+
+    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
+        data = generate_images().data
+        images = ImageStack(data=data)
+        images.set_geometry()
+        angles = range(0, 360)
+        angle_unit = "radian"
+        pixel_size = (1., 1.)
+        num_pixels = (10, 10)
+
+        images.update_geometry(angles=angles, angle_unit=angle_unit, num_pixels=num_pixels, pixel_size=pixel_size)
+
+        images._proj180deg = mock.MagicMock()
+        images._proj180deg.height = 20
+        images._proj180deg.width = 20
+        images.has_proj180deg = mock.MagicMock(return_value=True)
+        images._is_sinograms = True
+
+        self.assertFalse(images.proj_180_degree_shape_matches_images())
+
+    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
+        data = generate_images().data
+        images = ImageStack(data=data)
+        images.set_geometry()
+        images.has_proj180deg = mock.MagicMock(return_value=False)
+
+        self.assertFalse(images.proj_180_degree_shape_matches_images())
