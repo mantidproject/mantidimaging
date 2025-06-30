@@ -70,7 +70,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         self.processesSpinBox.setValue(settings.value("multiprocessing/process_count", 8, type=int))
         self.processesSpinBox.valueChanged.connect(self.presenter.set_processes_value)
 
-    def _create_logging_tab(self):
+    def _create_logging_tab(self) -> None:
         settings = QSettings()
 
         self.loggingTab = QWidget()
@@ -133,7 +133,7 @@ class SettingsWindowView(BaseMainWindowView, QtStyleTools):
         self.logDirectoryButton.clicked.connect(self.select_log_directory)
         self.performanceLoggingCheckBox.stateChanged.connect(self.presenter.set_performance_logging)
 
-    def select_log_directory(self):
+    def select_log_directory(self) -> None:
         directory = QFileDialog.getExistingDirectory(self, "Select Log Directory")
         if directory:
             self.logDirectoryLineEdit.setText(directory)
