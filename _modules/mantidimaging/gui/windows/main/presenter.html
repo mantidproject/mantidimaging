@@ -860,6 +860,15 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.save_image_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_image_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="p">,</span> <span class="n">ImageSaveDialog</span><span class="p">)</span>
+
+        <span class="n">current_stack_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">stackNames</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;reconstruction&quot;</span> <span class="k">if</span> <span class="s2">&quot;Recon&quot;</span> <span class="ow">in</span> <span class="n">current_stack_name</span> <span class="k">else</span> <span class="s2">&quot;raw data&quot;</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">()</span>
+        <span class="n">image_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">image_format</span><span class="p">()</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting </span><span class="si">{</span><span class="n">export_type</span><span class="si">}</span><span class="s2">: &#39;</span><span class="si">{</span><span class="n">current_stack_name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;→ format: </span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s2">, directory: </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;images_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">selected_stack</span><span class="p">,</span>
             <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">(),</span>
@@ -872,9 +881,11 @@ document.write(`
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_save_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Export failed with error: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAVE_ERROR_STRING</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export task finished successfully.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stack_visualiser_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">StackId</span><span class="p">]:</span>
