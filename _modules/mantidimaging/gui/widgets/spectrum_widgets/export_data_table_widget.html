@@ -551,15 +551,19 @@ document.write(`
 <span class="sd">        Add or update a row for the specified ROI, populating parameter values and status.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_row_by_roi_name</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">QStandardItem</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)]</span>
+        <span class="n">name_item</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
+        <span class="n">name_item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">name_item</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_names</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
-            <span class="n">cell</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">cell</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
             <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
         <span class="n">status_item</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">status_item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
         <span class="n">status_item</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignCenter</span><span class="p">)</span>
         <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status_item</span><span class="p">)</span>
 
