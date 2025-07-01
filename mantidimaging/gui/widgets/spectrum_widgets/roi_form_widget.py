@@ -137,6 +137,13 @@ class ROIPropertiesTableWidget(BaseWidget):
         self.spin_top.setMaximum(shape[0])
         self.spin_bottom.setMaximum(shape[0])
 
+    def update_roi_limits(self, roi: SensibleROI) -> None:
+        self.set_roi_values(roi)
+        self.spin_left.setMaximum(roi.right - 1)
+        self.spin_right.setMinimum(roi.left + 1)
+        self.spin_top.setMaximum(roi.bottom - 1)
+        self.spin_bottom.setMinimum(roi.top + 1)
+
     def to_roi(self) -> SensibleROI:
         new_roi = SensibleROI(left=self.spin_left.value(),
                               right=self.spin_right.value(),

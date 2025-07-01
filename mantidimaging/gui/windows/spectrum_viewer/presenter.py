@@ -229,6 +229,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
+        self.view.roi_form.roi_properties_widget.update_roi_limits(roi.as_sensible_roi())
         run_thread_check = not bool(self.roi_to_process_queue)
         self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
         spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
