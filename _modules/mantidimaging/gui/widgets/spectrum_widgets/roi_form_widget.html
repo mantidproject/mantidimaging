@@ -650,6 +650,16 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">spin_bottom</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
+<div class="viewcode-block" id="ROIPropertiesTableWidget.update_roi_limits">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIPropertiesTableWidget.update_roi_limits">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_values</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spin_left</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spin_right</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spin_top</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">bottom</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spin_bottom</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">top</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ROIPropertiesTableWidget.to_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIPropertiesTableWidget.to_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SensibleROI</span><span class="p">:</span>
