@@ -162,7 +162,7 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QDoubleSpinBox" name="resultCor">
+                    <widget class="QDoubleSpinBox" name="resultCorSpinBox">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -203,7 +203,7 @@
                     </widget>
                    </item>
                    <item row="2" column="1">
-                    <widget class="QDoubleSpinBox" name="resultTilt">
+                    <widget class="QDoubleSpinBox" name="resultTiltSpinBox">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -241,7 +241,7 @@
                     </widget>
                    </item>
                    <item row="3" column="1">
-                    <widget class="QDoubleSpinBox" name="resultSlope">
+                    <widget class="QDoubleSpinBox" name="resultSlopeSpinBox">
                      <property name="minimumSize">
                       <size>
                        <width>0</width>
@@ -263,7 +263,7 @@
                     </widget>
                    </item>
                    <item row="4" column="1">
-                    <widget class="QPushButton" name="calculateCors">
+                    <widget class="QPushButton" name="calculateCorsButton">
                      <property name="toolTip">
                       <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                      </property>
@@ -290,7 +290,7 @@
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
-                  <widget class="QPushButton" name="correlateBtn">
+                  <widget class="QPushButton" name="correlateButton">
                    <property name="toolTip">
                     <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
                    </property>
@@ -300,7 +300,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="minimiseBtn">
+                  <widget class="QPushButton" name="minimiseButton">
                    <property name="toolTip">
                     <string>Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
                    </property>
@@ -350,7 +350,7 @@
                  <item>
                   <layout class="QGridLayout" name="gridLayout">
                    <item row="0" column="1">
-                    <widget class="QPushButton" name="addBtn">
+                    <widget class="QPushButton" name="addButton">
                      <property name="toolTip">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -360,7 +360,7 @@
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QPushButton" name="removeBtn">
+                    <widget class="QPushButton" name="removeButton">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -373,7 +373,7 @@
                     </widget>
                    </item>
                    <item row="1" column="0">
-                    <widget class="QPushButton" name="clearAllBtn">
+                    <widget class="QPushButton" name="clearAllButton">
                      <property name="toolTip">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes all rows from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -383,7 +383,7 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QPushButton" name="refineCorBtn">
+                    <widget class="QPushButton" name="refineCorButton">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -420,7 +420,7 @@
                     </widget>
                    </item>
                    <item row="2" column="1">
-                    <widget class="QDoubleSpinBox" name="lbhc_a1">
+                    <widget class="QDoubleSpinBox" name="lbhcA1SpinBox">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -443,7 +443,7 @@
                     </widget>
                    </item>
                    <item row="4" column="1">
-                    <widget class="QDoubleSpinBox" name="lbhc_a3">
+                    <widget class="QDoubleSpinBox" name="lbhcA3SpinBox">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -473,7 +473,7 @@
                     </widget>
                    </item>
                    <item row="3" column="1">
-                    <widget class="QDoubleSpinBox" name="lbhc_a2">
+                    <widget class="QDoubleSpinBox" name="lbhcA2SpinBox">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -489,7 +489,7 @@
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QDoubleSpinBox" name="lbhc_a0">
+                    <widget class="QDoubleSpinBox" name="lbhcA0SpinBox">
                      <property name="enabled">
                       <bool>false</bool>
                      </property>
@@ -505,7 +505,7 @@
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QCheckBox" name="lbhc_enabled">
+                    <widget class="QCheckBox" name="lbhcEnabledCheckBox">
                      <property name="text">
                       <string>Enabled</string>
                      </property>
@@ -539,7 +539,7 @@
               <item>
                <layout class="QGridLayout" name="optionsLayout">
                 <item row="1" column="1">
-                 <widget class="QComboBox" name="algorithmName">
+                 <widget class="QComboBox" name="algorithmNameComboBox">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -558,7 +558,7 @@
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QSpinBox" name="numIter">
+                 <widget class="QSpinBox" name="numIterSpinBox">
                   <property name="minimum">
                    <number>1</number>
                   </property>
@@ -669,14 +669,14 @@
                  </widget>
                 </item>
                 <item row="9" column="1">
-                 <widget class="QDoubleSpinBox" name="pixelSize">
+                 <widget class="QDoubleSpinBox" name="pixelSizeSpinBox">
                   <property name="maximum">
                    <double>99999.000000000000000</double>
                   </property>
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QComboBox" name="filterName">
+                 <widget class="QComboBox" name="filterNameComboBox">
                   <item>
                    <property name="text">
                     <string>ram-lak</string>
@@ -722,7 +722,7 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="maxProjAngle">
+                 <widget class="QDoubleSpinBox" name="maxProjAngleSpinBox">
                   <property name="maximum">
                    <double>9999.000000000000000</double>
                   </property>
@@ -763,7 +763,7 @@
                </layout>
               </item>
               <item>
-               <widget class="QPushButton" name="refineIterationsBtn">
+               <widget class="QPushButton" name="refineIterationsButton">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -793,7 +793,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="reconstructSlice">
+               <widget class="QPushButton" name="reconstructSliceButton">
                 <property name="text">
                  <string>Reconstruct Slice</string>
                 </property>
@@ -802,7 +802,7 @@
               <item>
                <layout class="QHBoxLayout" name="reconButtonGroup">
                 <item>
-                 <widget class="QPushButton" name="reconstructVolume">
+                 <widget class="QPushButton" name="reconstructVolumeButton">
                   <property name="text">
                    <string>Reconstruct Volume</string>
                   </property>
@@ -852,14 +852,14 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QSpinBox" name="previewProjectionIndex">
+              <widget class="QSpinBox" name="previewProjectionIndexSpinBox">
                <property name="maximum">
                 <number>99999</number>
                </property>
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QSpinBox" name="previewSliceIndex">
+              <widget class="QSpinBox" name="previewSliceIndexSpinBox">
                <property name="maximum">
                 <number>99999</number>
                </property>
@@ -948,7 +948,7 @@
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <item>
-              <widget class="QLabel" name="messageIcon">
+              <widget class="QLabel" name="messageIconLabel">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                  <horstretch>0</horstretch>

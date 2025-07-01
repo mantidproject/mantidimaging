@@ -144,7 +144,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         image_data = mock.Mock()
         preview_slice_idx = 13
 
-        self.view.previewSliceIndex = preview_slice_index_mock = mock.Mock()
+        self.view.previewSliceIndexSpinBox = preview_slice_index_mock = mock.Mock()
         self.view.update_projection(image_data, preview_slice_idx)
 
         preview_slice_index_mock.setValue.assert_called_once_with(preview_slice_idx)
@@ -182,8 +182,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_on_table_row_count_change(self):
         self.tableView.model.return_value.empty = empty = False
-        self.view.removeBtn = remove_button_mock = mock.Mock()
-        self.view.clearAllBtn = clear_all_button_mock = mock.Mock()
+        self.view.removeButton = remove_button_mock = mock.Mock()
+        self.view.clearAllButton = clear_all_button_mock = mock.Mock()
         self.view.on_table_row_count_change()
 
         remove_button_mock.setEnabled.assert_called_once_with(not empty)
@@ -280,7 +280,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_set_filters_for_recon_tool(self):
         filters = ["abc" for _ in range(3)]
-        with mock.patch.object(self.view, "filterName") as fn:
+        with mock.patch.object(self.view, "filterNameComboBox") as fn:
             self.view.set_filters_for_recon_tool(filters)
             fn.clear.assert_called_once()
             fn.insertItems.assert_called_once_with(0, filters)
@@ -326,8 +326,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
         assert self.view.get_auto_cor_method() == AutoCorMethod.MINIMISATION_SQUARE_SUM
 
     def test_set_correlate_buttons_enables(self):
-        self.view.correlateBtn = correlate_button_mock = mock.Mock()
-        self.view.minimiseBtn = minimise_button_mock = mock.Mock()
+        self.view.correlateButton = correlate_button_mock = mock.Mock()
+        self.view.minimiseButton = minimise_button_mock = mock.Mock()
 
         for enabled in [True, False]:
             with self.subTest(enabled=enabled):
@@ -354,17 +354,17 @@ class ReconstructWindowViewTest(unittest.TestCase):
         show_error_dialog_mock.assert_called_once_with(str(RuntimeError()))
 
     def test_change_refine_iterations_when_algorithm_name_is_sirt(self):
-        self.view.refineIterationsBtn = refine_iterations_button_mock = mock.Mock()
-        self.view.algorithmName = mock.Mock()
-        self.view.algorithmName.currentText.return_value = "SIRT_CUDA"
+        self.view.refineIterationsButton = refine_iterations_button_mock = mock.Mock()
+        self.view.algorithmNameComboBox = mock.Mock()
+        self.view.algorithmNameComboBox.currentText.return_value = "SIRT_CUDA"
 
         self.view.change_refine_iterations()
         refine_iterations_button_mock.setEnabled.assert_called_once_with(True)
 
     def test_change_refine_iterations_when_algorithm_name_is_not_sirt(self):
-        self.view.refineIterationsBtn = refine_iterations_button_mock = mock.Mock()
-        self.view.algorithmName = mock.Mock()
-        self.view.algorithmName.currentText.return_value = "FBP_CUDA"
+        self.view.refineIterationsButton = refine_iterations_button_mock = mock.Mock()
+        self.view.algorithmNameComboBox = mock.Mock()
+        self.view.algorithmNameComboBox.currentText.return_value = "FBP_CUDA"
 
         self.view.change_refine_iterations()
         refine_iterations_button_mock.setEnabled.assert_called_once_with(False)
@@ -372,8 +372,8 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def test_set_recon_buttons_enabled(self):
 
         def assert_button_state_is_correct(is_enabled):
-            self.assertEqual(self.view.reconstructSlice.isEnabled(), is_enabled)
-            self.assertEqual(self.view.reconstructVolume.isEnabled(), is_enabled)
+            self.assertEqual(self.view.reconstructSliceButton.isEnabled(), is_enabled)
+            self.assertEqual(self.view.reconstructVolumeButton.isEnabled(), is_enabled)
 
         assert_button_state_is_correct(is_enabled=True)
 
@@ -397,7 +397,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_WHEN_param_change_THEN_preview_called(self):
         for func, val in [
-            (self.view.numIter.setValue, 2),
+            (self.view.numIterSpinBox.setValue, 2),
             (self.view.alphaSpinBox.setValue, 2),
             (self.view.stochasticCheckBox.setChecked, True),
             (self.view.subsetsSpinBox.setValue, 2),
