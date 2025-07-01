@@ -1,0 +1,1 @@
+#2705: Simplify reconstruction window's get_stack logic by removing extraneous functions, replacing with MainWindow's get_stack()
