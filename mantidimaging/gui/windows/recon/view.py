@@ -33,40 +33,32 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowView(BaseMainWindowView):
-    tableView: RemovableRowTableView
-    imageLayout: QVBoxLayout
+    # ----------------
+    # COR and Tilt tab
 
-    inputTab: QWidget
+    resultsTab: QWidget
+
+    stackSelector: DatasetSelectorWidgetView
+
+    resultCor: QDoubleSpinBox
+    resultTilt: QDoubleSpinBox
+    resultSlope: QDoubleSpinBox
     calculateCors: QPushButton
-
-    resultTab: QWidget
-    addBtn: QPushButton
-    refineCorBtn: QPushButton
-    refineIterationsBtn: QPushButton
-    clearAllBtn: QPushButton
-    removeBtn: QPushButton
 
     correlateBtn: QPushButton
     minimiseBtn: QPushButton
     corHelpButton: QPushButton
 
-    reconTab: QWidget
+    tableView: RemovableRowTableView
+    removeBtn: QPushButton
+    addBtn: QPushButton
+    clearAllBtn: QPushButton
+    refineCorBtn: QPushButton
 
-    # part of the Reconstruct tab
-    algorithmName: QComboBox
-    filterName: QComboBox
-    numIter: QSpinBox
-    maxProjAngle: QDoubleSpinBox
-    pixelSize: QDoubleSpinBox
-    alphaSpinBox: QDoubleSpinBox
-    nonNegativeCheckBox: QCheckBox
-    stochasticCheckBox: QCheckBox
-    subsetsSpinBox: QSpinBox
-    resultCor: QDoubleSpinBox
-    resultTilt: QDoubleSpinBox
-    resultSlope: QDoubleSpinBox
-    reconstructVolume: QPushButton
-    reconstructSlice: QPushButton
+    # ----------------
+    # BHC tab
+
+    bhcTab: QWidget
 
     lbhc_enabled: QCheckBox
     lbhc_a0: QDoubleSpinBox
@@ -74,13 +66,46 @@ class ReconstructWindowView(BaseMainWindowView):
     lbhc_a2: QDoubleSpinBox
     lbhc_a3: QDoubleSpinBox
 
-    statusMessageTextEdit: QTextEdit
-    messageIcon: QLabel
+    # ----------------
+    # Reconstruct tab
+
+    reconTab: QWidget
+
+    maxProjAngle: QDoubleSpinBox
+    algorithmName: QComboBox
+    filterName: QComboBox
+    numIter: QSpinBox
+    alphaSpinBox: QDoubleSpinBox
+
+    nonNegativeCheckBox: QCheckBox
+    stochasticCheckBox: QCheckBox
+
+    subsetsSpinBox: QSpinBox
+    regPercentSpinBox: QSpinBox
+    pixelSize: QDoubleSpinBox
+
+    refineIterationsBtn: QPushButton
+    reconHelpButton: QPushButton
+
+    reconstructSlice: QPushButton
+    reconstructVolume: QPushButton
+
+    # ----------------
+    # Preview section
+
+    previewProjectionIndex: QSpinBox
+    previewSliceIndex: QSpinBox
 
     changeColourPaletteButton: QPushButton
     change_colour_palette_dialog: PaletteChangerView | None = None
 
-    stackSelector: DatasetSelectorWidgetView
+    messageIcon: QLabel
+    statusMessageTextEdit: QTextEdit
+
+    # ----------------
+    # Image section
+
+    imageLayout: QVBoxLayout
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/recon_window.ui')
