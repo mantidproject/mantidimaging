@@ -34,7 +34,7 @@ class FittingDisplayWidget(QWidget):
         self.layout.addWidget(self.spectrum_plot)
         self._current_fit_line: PlotDataItem | None = None
 
-        self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
+        self.fitting_region = RectROI([-1, -1], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
         self.fitting_region.setZValue(10)
         self.fitting_region.addScaleHandle([1, 1], [0, 0])
         self.fitting_region.addScaleHandle([0, 0], [1, 1])
@@ -99,11 +99,10 @@ class FittingDisplayWidget(QWidget):
     def set_default_region_if_needed(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
         """Position the ROI centrally over the plotted data, if valid data and not in existing region"""
         if y_data.size == 0 or x_data.size == 0 or np.all(np.isnan(y_data)):
-            # Fallback default region
-            self.fitting_region.setPos((0, 0))
-            self.fitting_region.setSize((1, 1))
+            self.fitting_region.hide()
             return
 
+        self.fitting_region.show()
         if self.is_data_in_region(x_data, y_data, self.get_selected_fit_region()):
             return
 
