@@ -332,7 +332,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         raise RuntimeError("Fitting spectrum not calculated")
 
     def set_default_fitting_region(self) -> None:
-        self.view.fittingDisplayWidget.set_default_region(self.model.tof_data, self.fitting_spectrum)
+        self.view.fittingDisplayWidget.set_default_region_if_needed(self.model.tof_data, self.fitting_spectrum)
 
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
