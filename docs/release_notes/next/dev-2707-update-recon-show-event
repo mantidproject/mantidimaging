@@ -1,0 +1,1 @@
+#2707: Update the reconstruction window's showEvent handler, moving some code to the presenter to better adhere to MVP principles.
