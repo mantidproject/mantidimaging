@@ -17,12 +17,12 @@ from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWork
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
     ToFUnitMode, allowed_modes
+from mantidimaging.core.fitting.fitting_functions import FittingRegion, BadFittingRoiError
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
-    from mantidimaging.core.fitting.fitting_functions import FittingRegion
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
     from PyQt5.QtWidgets import QAction
@@ -674,9 +674,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             roi = roi_widget.as_sensible_roi()
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             fitting_region = self.view.get_fitting_region()
+            try:
+                result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
+                status = "Fitted"
+            except (ValueError, BadFittingRoiError) as e:
+                LOG.warning(f"Failed to find fit for {roi_name}: {e}")
+                result = {param_name: 0 for param_name in self.model.fitting_engine.get_parameter_names()}
+                status = "Failed"
 
-            result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
-            self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+            self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status=status)
             LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
 
     def show_fit(self, params: list[float]) -> None:
