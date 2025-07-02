@@ -14,7 +14,7 @@ from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.core.parallel import manager as pm
 
 
-def execute():
+def execute() -> None:
     # all data will be row-major, so this needs to be specified as the default is col-major
     pyqtgraph.setConfigOptions(imageAxisOrder="row-major")
 
@@ -25,7 +25,7 @@ def execute():
         "".join(traceback.format_exception_only(exc_type, exc_value)), "".join(
             traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
-    def dont_let_qt_shutdown_while_debugging(type, value, tback):
+    def dont_let_qt_shutdown_while_debugging(type, value, tback) -> None:
         # log the exception here
         logging.getLogger(__name__).error(
             f"Exception {type} encountered:\n{traceback.format_exception(type, value, tback)}")
@@ -37,7 +37,7 @@ def execute():
 
     application_window.show()
 
-    def clean_up_old_memory():
+    def clean_up_old_memory() -> None:
         if sys.platform == 'linux':
             memory_to_clean = pm.find_memory_from_previous_process_linux()
             if memory_to_clean:

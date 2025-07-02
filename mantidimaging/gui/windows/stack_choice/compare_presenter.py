@@ -23,10 +23,10 @@ class StackComparePresenter(StackChoicePresenterMixin):
         self.view.originalStackLabel.setText(stack_one.name)
         self.view.newStackLabel.setText(stack_two.name)
 
-    def show(self):
+    def show(self) -> None:
         self.view.show()
 
-    def notify(self, signal):
+    def notify(self, signal) -> None:
         try:
             super().notify(signal)
         except Exception as e:

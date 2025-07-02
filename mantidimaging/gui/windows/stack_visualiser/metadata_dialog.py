@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-
+from typing import Any
 from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialogButtonBox, QVBoxLayout, QShortcut,
                              QPushButton)
 from PyQt5.QtGui import QKeySequence, QGuiApplication
@@ -44,7 +44,7 @@ class MetadataDialog(BaseDialogView):
         shortcut.activated.connect(self.copy_metadata_to_clipboard)
 
     @staticmethod
-    def build_metadata_tree(metadata):
+    def build_metadata_tree(metadata: dict[str, Any]) -> QTreeWidget:
         """
         Builds a QTreeWidget from the 'operation_history' metadata of an image.
 
@@ -64,7 +64,7 @@ class MetadataDialog(BaseDialogView):
         return main_widget
 
     @staticmethod
-    def _build_operation_history(main_widget, metadata):
+    def _build_operation_history(main_widget: QTreeWidget, metadata: dict[str, Any]) -> None:
         for i, op in enumerate(metadata[const.OPERATION_HISTORY]):
             operation_item = QTreeWidgetItem(main_widget)
             if const.OPERATION_DISPLAY_NAME in op and op[const.OPERATION_DISPLAY_NAME]:
@@ -88,6 +88,6 @@ class MetadataDialog(BaseDialogView):
                     kwargs_item = QTreeWidgetItem(kwargs_list_item)
                     kwargs_item.setText(0, f"{kw}: {val}")
 
-    def copy_metadata_to_clipboard(self):
+    def copy_metadata_to_clipboard(self) -> None:
         meta_data_as_text = json.dumps(self.metadata, indent=4)
         QGuiApplication.clipboard().setText(meta_data_as_text)
