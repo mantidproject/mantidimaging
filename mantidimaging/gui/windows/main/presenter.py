@@ -181,6 +181,9 @@ class MainWindowPresenter(BasePresenter):
             self.view.args.clear_window_args()
 
     def _on_dataset_load_done(self, task: TaskWorkerThread) -> None:
+        if isinstance(task.error, StopIteration):
+            self.view.show_message("Data loading was cancelled by the user.")
+            return
 
         if task.was_successful():
             self._add_dataset_to_view(task.result)

@@ -114,7 +114,7 @@ def start_async_task_view(parent: QMainWindow,
                           kwargs: dict | None = None,
                           tracker: set[Any] | None = None,
                           busy: bool | None = False,
-                          cancelable: bool = False) -> None:
+                          cancelable: bool = True) -> None:
     atd = AsyncTaskDialogView(parent)
     if not kwargs:
         kwargs = {'progress': Progress()}

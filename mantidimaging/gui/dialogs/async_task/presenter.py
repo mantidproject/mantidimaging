@@ -49,6 +49,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
 
     def set_parameters(self, **kwargs) -> None:
         self.model.task.kwargs = kwargs
+        self.progress = kwargs.get('progress')
 
     def set_on_complete(self, f: Callable) -> None:
         self.model.on_complete_function = f
@@ -57,11 +58,8 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
         self.model.set_tracker(tracker)
 
     def do_start_processing(self) -> None:
-        """
-        Starts async task execution and shows GUI.
-        """
         self.model.do_execute_async()
-        self.view.show_delayed(1000)
+        self.view.show()
 
     @property
     def task_is_running(self) -> bool:
