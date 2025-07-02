@@ -89,7 +89,7 @@ class StackVisualiserPresenter(BasePresenter):
             raise ValueError("Invalid parameter name has been requested from the Stack "
                              f"Visualiser, parameter: {parameter}")
 
-    def toggle_image_mode(self) -> None:
+    def toggle_image_mode(self):
         if self.image_mode is SVImageMode.NORMAL:
             self.image_mode = SVImageMode.SUMMED
         else:
