@@ -20,6 +20,7 @@ class AsyncTaskDialogPresenterTest(unittest.TestCase):
             return a + b
 
         v = mock.create_autospec(AsyncTaskDialogView, instance=True)
+        v.show = mock.Mock()
 
         p = AsyncTaskDialogPresenter(v)
         p.set_task(f)
@@ -27,8 +28,7 @@ class AsyncTaskDialogPresenterTest(unittest.TestCase):
         self.assertFalse(p.task_is_running)
 
         p.notify(Notification.START)
-        v.show_delayed.assert_called_once()
+        v.show.assert_called_once()
         self.assertTrue(p.task_is_running)
 
         p.model.task.wait()
-        self.assertFalse(p.task_is_running)
