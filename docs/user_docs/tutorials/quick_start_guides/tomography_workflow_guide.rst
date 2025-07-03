@@ -1,6 +1,6 @@
 .. _quick-start-tomography-workflow-guide:
 
-Quick start: Example Reconstruction
+Quick Start: Example Reconstruction
 -----------------------------------
 
 Written: November 2020
@@ -12,7 +12,7 @@ Example data that can be used for this tutorial can be downloaded from `github.c
 Loading Sample Stack
 ####################
 
-Firstly, let's load our projections. Go to "File" then "Load Dataset" or alternatively use the shortcut "Ctrl"+"o". This brings up the following loading screen:
+Firstly, let's load our projections. Go to "File" then "Load Dataset" or alternatively use the shortcut :code:`"Ctrl"+"o"`. This brings up the following loading screen:
 
 .. image:: ../../../_static/loading_screen.png
     :alt: Loading screen
