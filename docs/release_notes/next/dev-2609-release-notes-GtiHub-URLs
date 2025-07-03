@@ -1,1 +1,0 @@
-#2609: Refactor release_notes.py script to add reST GitHub Issue links to allow users to find the associated issue or PR for additional context.
