@@ -2,9 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from unittest import mock
+
 import numpy as np
+import pytest
 from PyQt5.QtWidgets import QApplication
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.io.instrument_log import InstrumentLog, LogColumn
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
@@ -13,7 +17,7 @@ from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 class SpectrumViewerWindowTest(BaseEyesTest):
 
-    def _generate_spectrum_dataset(self):
+    def _generate_spectrum_dataset(self) -> Dataset:
         sample_stack = generate_images(seed=2023, shape=(20, 10, 10))
         sample_stack.name = "Sample Stack"
         open_stack = generate_images(seed=666, shape=(20, 10, 10))
@@ -21,9 +25,31 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         dataset = Dataset(sample=sample_stack, flat_before=open_stack)
         self.imaging.presenter.model.add_dataset_to_model(dataset)
         QApplication.sendPostedEvents()
+        return dataset
+
+    def _generate_spectra_log(self):
+        data = {
+            LogColumn.TIME_OF_FLIGHT: np.linspace(0.01, 0.09, 20),
+            LogColumn.SPECTRUM_COUNTS: np.linspace(1000, 1200, 20)
+        }
+        with mock.patch("mantidimaging.core.io.instrument_log.InstrumentLog._find_parser"):
+            with mock.patch("mantidimaging.core.io.instrument_log.InstrumentLog.parse"):
+                log = InstrumentLog(20, "filename")
+        log.data = data
+
+        return log
 
     def test_spectrum_viewer_opens_with_data(self):
         self._generate_spectrum_dataset()
+        self.imaging.show_spectrum_viewer_window()
+        wait_until(lambda: not np.isnan(self.imaging.spectrum_viewer.spectrum_widget.spectrum_data_dict["roi"]).any(),
+                   max_retry=600)
+        self.check_target(widget=self.imaging.spectrum_viewer)
+
+    @pytest.mark.xfail
+    def test_spectrum_viewer_opens_with_data_with_tof(self):
+        dataset = self._generate_spectrum_dataset()
+        dataset.sample.log_file = self._generate_spectra_log()
         self.imaging.show_spectrum_viewer_window()
         wait_until(lambda: not np.isnan(self.imaging.spectrum_viewer.spectrum_widget.spectrum_data_dict["roi"]).any(),
                    max_retry=600)
