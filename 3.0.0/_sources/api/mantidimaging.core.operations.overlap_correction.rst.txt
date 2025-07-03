@@ -1,0 +1,15 @@
+mantidimaging.core.operations.overlap\_correction package
+=========================================================
+
+.. automodule:: mantidimaging.core.operations.overlap_correction
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.overlap_correction.overlap_correction

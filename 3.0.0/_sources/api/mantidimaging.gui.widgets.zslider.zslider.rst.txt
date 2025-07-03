@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.zslider.zslider module
+================================================
+
+.. automodule:: mantidimaging.gui.widgets.zslider.zslider
+   :members:
+   :undoc-members:
+   :show-inheritance:

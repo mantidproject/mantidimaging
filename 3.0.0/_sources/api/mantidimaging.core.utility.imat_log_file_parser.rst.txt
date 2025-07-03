@@ -1,0 +1,7 @@
+mantidimaging.core.utility.imat\_log\_file\_parser module
+=========================================================
+
+.. automodule:: mantidimaging.core.utility.imat_log_file_parser
+   :members:
+   :undoc-members:
+   :show-inheritance:

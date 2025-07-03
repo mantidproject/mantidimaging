@@ -1,0 +1,19 @@
+mantidimaging.gui.windows.recon package
+=======================================
+
+.. automodule:: mantidimaging.gui.windows.recon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.recon.image_view
+   mantidimaging.gui.windows.recon.model
+   mantidimaging.gui.windows.recon.point_table_model
+   mantidimaging.gui.windows.recon.presenter
+   mantidimaging.gui.windows.recon.view

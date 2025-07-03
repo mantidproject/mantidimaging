@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.mi\_image\_view.view module
+=====================================================
+
+.. automodule:: mantidimaging.gui.widgets.mi_image_view.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

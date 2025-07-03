@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.stack\_properties\_dialog.view module
+===============================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_properties_dialog.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

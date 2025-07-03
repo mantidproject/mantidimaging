@@ -1,0 +1,7 @@
+mantidimaging.core.utility.command\_line\_arguments module
+==========================================================
+
+.. automodule:: mantidimaging.core.utility.command_line_arguments
+   :members:
+   :undoc-members:
+   :show-inheritance:

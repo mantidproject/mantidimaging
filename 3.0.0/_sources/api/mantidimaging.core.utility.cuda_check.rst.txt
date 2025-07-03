@@ -1,0 +1,7 @@
+mantidimaging.core.utility.cuda\_check module
+=============================================
+
+.. automodule:: mantidimaging.core.utility.cuda_check
+   :members:
+   :undoc-members:
+   :show-inheritance:

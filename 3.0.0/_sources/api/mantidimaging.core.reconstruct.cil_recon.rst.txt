@@ -1,0 +1,7 @@
+mantidimaging.core.reconstruct.cil\_recon module
+================================================
+
+.. automodule:: mantidimaging.core.reconstruct.cil_recon
+   :members:
+   :undoc-members:
+   :show-inheritance:

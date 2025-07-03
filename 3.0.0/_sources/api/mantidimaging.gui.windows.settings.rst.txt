@@ -1,0 +1,16 @@
+mantidimaging.gui.windows.settings package
+==========================================
+
+.. automodule:: mantidimaging.gui.windows.settings
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.settings.presenter
+   mantidimaging.gui.windows.settings.view

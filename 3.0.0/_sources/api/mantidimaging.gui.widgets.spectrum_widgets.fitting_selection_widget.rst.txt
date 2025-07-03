@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.spectrum\_widgets.fitting\_selection\_widget module
+=============================================================================
+
+.. automodule:: mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+mantidimaging.core.utility.version\_check module
+================================================
+
+.. automodule:: mantidimaging.core.utility.version_check
+   :members:
+   :undoc-members:
+   :show-inheritance:

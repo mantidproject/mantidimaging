@@ -1,0 +1,7 @@
+mantidimaging.core.utility.unit\_conversion module
+==================================================
+
+.. automodule:: mantidimaging.core.utility.unit_conversion
+   :members:
+   :undoc-members:
+   :show-inheritance:

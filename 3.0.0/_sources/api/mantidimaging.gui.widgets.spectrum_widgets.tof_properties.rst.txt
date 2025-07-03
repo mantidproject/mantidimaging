@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.spectrum\_widgets.tof\_properties module
+==================================================================
+
+.. automodule:: mantidimaging.gui.widgets.spectrum_widgets.tof_properties
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.palette\_changer.view module
+======================================================
+
+.. automodule:: mantidimaging.gui.widgets.palette_changer.view
+   :members:
+   :undoc-members:
+   :show-inheritance:

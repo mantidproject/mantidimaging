@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.wizard.model module
+=============================================
+
+.. automodule:: mantidimaging.gui.windows.wizard.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

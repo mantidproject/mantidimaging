@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.live\_viewer.live\_view\_widget module
+================================================================
+
+.. automodule:: mantidimaging.gui.windows.live_viewer.live_view_widget
+   :members:
+   :undoc-members:
+   :show-inheritance:

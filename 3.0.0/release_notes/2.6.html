@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mantid Imaging 2.6 &#8212; MantidImaging 2.9.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=517e76a2" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=ef7a7510"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'release_notes/2.6';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 2.5" href="2.5.html" />
+    <link rel="prev" title="Mantid Imaging 2.7" href="2.7.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.9.0a1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/tutorials/installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/tutorials/installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="next.html">Mantid Imaging next release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.8.html">Mantid Imaging 2.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.7.html">Mantid Imaging 2.7</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mantid Imaging 2.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.5.html">Mantid Imaging 2.5</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="2.4.html">Mantid Imaging 2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.3.html">Mantid Imaging 2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.2.html">Mantid Imaging 2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.1.html">Mantid Imaging 2.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.0.html">Mantid Imaging 2.0</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Release Notes</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Mantid Imaging 2.6</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="mantid-imaging-2-6">
+<h1>Mantid Imaging 2.6<a class="headerlink" href="#mantid-imaging-2-6" title="Link to this heading">#</a></h1>
+<p>This release introduces a live viewer that can be used to observe images arriving from an instrument.</p>
+<p>It also features more control when reconstructing with SPDHG, toggling ROIs in the spectrum viewer, improvements to the roation operation and performance improvements. There are also several bug fixes and updates to dependencies. For a full list of changes see below.</p>
+<section id="new-features">
+<h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1722">#1722</a>: SPDHG: Allow adjusting the percent of iterations used regularisation</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1798">#1798</a>: Allow for toggling of ROI visibility in the table of ROIs within the spectrum viewer.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1828">#1828</a>: Performance improvements for the spectrum viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1758">#1758</a>: Use QFileSystemWatcher to watch for changes in the file system.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1859">#1859</a>: Select Sample Log if found when loading a dataset</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1871">#1871</a>: Show Cuda enabled reconstruction algorithms in disabled state if no gpu is available</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1876">#1876</a>: Display filename of currently displayed image in the live viewer.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1881">#1881</a>: Allow Live Viewer to be launched using cli argument with a specific directory</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1904">#1904</a>: Backend architecture for image scroller front-end. All relevant image metadata is now stored in a list accessible to the presenter view.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1916">#1916</a>: Image scroller for live view</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1776">#1776</a>: Fix Redrawing of ROIs within Compare Image Stack Window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1777">#1777</a>: More consistent menu and window naming for comparing image stack data.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1778">#1778</a>: Fix ROIs being drawn outside of the sample images within Compare Image Stack Window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1784">#1784</a>: Don’t overwrite new metadata when loading old metadata</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1833">#1833</a>: Rotate image stack by cardinal or non-cardinal Angle. Image aspect ratio snaps to closest cardinal angle.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1815">#1815</a>: Improve handling of NaN data within Spectrum Viewer, resolving exception error dialog pop-up within Spectrum Viewer if only dataset loaded into Mantid Imaging is removed.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1864">#1864</a>: Add log file normalisation to support older log file formats</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1833">#1833</a>: Create dropdown menu of default degrees of rotation within operations rotate stack</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1865">#1865</a>: Be less strict when finding flat and dark</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1870">#1870</a>: Load all file in the extra digits case</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1875">#1875</a>: Additional live viewer error handling for read operations on files and improved handling of slow copies to watched directory</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1882">#1882</a>: Additional Logging of file change emit signals and reduction in file change emit signals</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1887">#1887</a>: Better error message for corrupt TIFF file</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1888">#1888</a>: Don’t return files beginning with a dot when finding related</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1891">#1891</a>: Fix LiveViewer handling of deleting all files from watched directory.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1894">#1894</a>: Fix for path in PackageWithPyInstaller</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1918">#1918</a>: Use initializer to ensure worker pool do setup</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1920">#1920</a>: Fix Renaming of ROIs</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1922">#1922</a>: Load images into live viewer on initialisation if images already present in selected directory.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1929">#1929</a>: Handle Live Viewer window closure to resolve directory persistence when trying to switch directories.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1937">#1937</a>: Fix adjusting recon line profile from handles</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1940">#1940</a>: Fix loading a subset of a sample when there is a log with angles</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/962">#962</a>: Type annotation improvements</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1792">#1792</a>: Update python to 3.10</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1796">#1796</a>: Add MyPy to pre-commit checks.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1799">#1799</a>: Speed up packaged builds with boa</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1803">#1803</a>: Separate files for release notes</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1813">#1813</a>: Remove deprecated load_module()</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1818">#1818</a>: CIL -&gt; 23.0</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1819">#1819</a>: Update yapf-&gt;0.33, MyPy-&gt;1.3.0, flake8-&gt;ruff</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1821">#1821</a>: Spectrum screenshot test</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1845">#1845</a>: Create Basic Live Viewer Window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1853">#1853</a>: Add performance logger</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1889">#1889</a>: Refactor how focus is set for windows launched by cli so they open above the main window.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1901">#1901</a>: Add ExecutionProfiler context manager</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1901">#1901</a>: Launch Spectrum Viewer from CLI with additional CLI argument</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2.7.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Mantid Imaging 2.7</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2.5.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Mantid Imaging 2.5</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-changes">Developer Changes</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/release_notes/2.6.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

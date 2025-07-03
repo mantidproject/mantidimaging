@@ -1,0 +1,7 @@
+mantidimaging.core.utility.custom\_exceptions module
+====================================================
+
+.. automodule:: mantidimaging.core.utility.custom_exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:

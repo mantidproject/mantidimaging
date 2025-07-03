@@ -1,0 +1,7 @@
+mantidimaging.core.data.imagestack module
+=========================================
+
+.. automodule:: mantidimaging.core.data.imagestack
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,16 @@
+mantidimaging.core.utility.progress\_reporting package
+======================================================
+
+.. automodule:: mantidimaging.core.utility.progress_reporting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.utility.progress_reporting.console_progress_bar
+   mantidimaging.core.utility.progress_reporting.progress

@@ -1,0 +1,63 @@
+Mantid Imaging 2.8
+==================
+
+Mantid Imaging 2.8.0 continues to expand the capability to work with energy resolved imaging data.
+
+It is now possible to do a shutter count correction when normalising transmission data. The spectrum view can do unit conversion to show and export data in wavelength, energy or time of flight, with the ability to set path length and offset. The spectrum viewer now allows zoom by holding Ctrl and dragging a box and makes it easier to change ROI colours. NaN warnings have been added to the spectrum viewer.
+
+A settings dialog has been added which can be used to change themes and adjust the number of threads used for running operations. Note that themes are not well tested yet.
+
+There have been many bug fixes. The live viewer is now usable with large directories. Working with ROIs is more reliable.
+
+MI now has updated many dependent packages bringing performance improvements. There have been improvements to testing, type annotations and static analysis. Migration of operations to compute function style is almost complete. These changes improve stability and help developers find bugs faster.
+
+New Features
+------------
+- `#2046 <https://github.com/mantidproject/mantidimaging/issues/2046>`_: Enhancement: Implement Click Dialog for Changing ROI Colors in Table
+- `#2051 <https://github.com/mantidproject/mantidimaging/issues/2051>`_: Move operations to compute_function style
+- `#2067 <https://github.com/mantidproject/mantidimaging/issues/2067>`_: Add ConfigurationManager Class to operations_tests.py
+- `#2094 <https://github.com/mantidproject/mantidimaging/issues/2094>`_: Add ShutterCount File type.
+- `#2094 <https://github.com/mantidproject/mantidimaging/issues/2094>`_: Front-end for loading ShutterCount files into Mantid Imaging.
+- `#2094 <https://github.com/mantidproject/mantidimaging/issues/2094>`_: Apply ShutterCount Normalisation within Spectrum Viewer
+- `#2133 <https://github.com/mantidproject/mantidimaging/issues/2133>`_: The Spectrum plot in the Spectrum Viewer can be zoomed via a click and drag zoom-box
+- `#2144 <https://github.com/mantidproject/mantidimaging/issues/2144>`_: MI UI theme can be changed in runtime via a settings menu
+- `#2151 <https://github.com/mantidproject/mantidimaging/issues/2151>`_: Neutron wavelength, energy and tof units can be selected in the Spectrum Viewer
+- `#2151 <https://github.com/mantidproject/mantidimaging/issues/2151>`_: Time of Flight user properties can be set in the Spectrum Viewer
+- `#2206 <https://github.com/mantidproject/mantidimaging/issues/2206>`_: Improve output naming for reconstructed slices and volumes
+- `#2216 <https://github.com/mantidproject/mantidimaging/issues/2216>`_: Add Wavelength, ToF and Energy unit conversions to Spectrum Viewer CSV Output
+- `#2230 <https://github.com/mantidproject/mantidimaging/issues/2230>`_: Create checkbox that can be toggled on or off to apply ShutterCount correction to ToF data within the spectrum viewer window
+
+Fixes
+-----
+- `#2053 <https://github.com/mantidproject/mantidimaging/issues/2053>`_: Fix unreliable tests due to viewbox
+- `#2076 <https://github.com/mantidproject/mantidimaging/issues/2076>`_: ROI speed up
+- `#2113 <https://github.com/mantidproject/mantidimaging/issues/2113>`_: Spectrum Viewer stacks now update with Main Window after operation applied
+- `#2129 <https://github.com/mantidproject/mantidimaging/issues/2129>`_: fix menu position for new pyqtgraph
+- `#2129 <https://github.com/mantidproject/mantidimaging/issues/2129>`_: fix: Pytest failure AttributeError: 'ImageStack' object has no attribute 'shape
+- `#2167 <https://github.com/mantidproject/mantidimaging/issues/2167>`_: The Spectrum Viewer no longer produces in different sizes
+- `#2185 <https://github.com/mantidproject/mantidimaging/issues/2185>`_: NaN warning icon now appears in the Spectrum Viewer when NaN are in averaged image
+- `#2204 <https://github.com/mantidproject/mantidimaging/issues/2204>`_: Live viewer, handle notification quickly and defer slow work
+- `#2209 <https://github.com/mantidproject/mantidimaging/issues/2209>`_: Mantid Imaging now switches between Fusion and qt-material themes correctly
+- `#2219 <https://github.com/mantidproject/mantidimaging/issues/2219>`_: Live viewer: informative error if live directory deleted
+- `#2246 <https://github.com/mantidproject/mantidimaging/issues/2246>`_: Don't duplicate ROI names after stack modification
+- `#2250 <https://github.com/mantidproject/mantidimaging/issues/2250>`_: A bug where a lock object was trying to be pickled has not been fixed, the median filter is now functional.
+- `#2242 <https://github.com/mantidproject/mantidimaging/issues/2242>`_: In the Spectrum Viewer, the Export Tabs now disable when no image stacks are available to prevent a KeyError
+
+Developer Changes
+-----------------
+- `#1985 <https://github.com/mantidproject/mantidimaging/issues/1985>`_: Backend work for TGV reconstruction
+- `#2008 <https://github.com/mantidproject/mantidimaging/issues/2008>`_: Update mypy, remove --no-site-packages, fix issues
+- `#2035 <https://github.com/mantidproject/mantidimaging/issues/2035>`_: Add setting for number of processes to start in multiprocessing pool (default to 8)
+- `#2080 <https://github.com/mantidproject/mantidimaging/issues/2080>`_: Switch to pydata documentation theme
+- `#2082 <https://github.com/mantidproject/mantidimaging/issues/2082>`_: Normal, System, and Screenshot test are now explicitly separated in the Makefile
+- `#2107 <https://github.com/mantidproject/mantidimaging/issues/2107>`_: Fix operation test param defaults
+- `#2109 <https://github.com/mantidproject/mantidimaging/issues/2109>`_: Allow tuple params in operation test cases
+- `#2114 <https://github.com/mantidproject/mantidimaging/issues/2114>`_: Update ruff and fix some new warnings
+- `#2116 <https://github.com/mantidproject/mantidimaging/issues/2116>`_: Don't run test suite when only doc changes
+- `#2139 <https://github.com/mantidproject/mantidimaging/issues/2139>`_: Doc extensions: use StringList instead of ViewList
+- `#2172 <https://github.com/mantidproject/mantidimaging/issues/2172>`_: Unit tests for the UnitConversion class
+- `#2177 <https://github.com/mantidproject/mantidimaging/issues/2177>`_: Added unit tests for the Time of Flight user properties in the Spectrum Viewer
+- `#2183 <https://github.com/mantidproject/mantidimaging/issues/2183>`_: Update CIL to 24.0, numpy 1.23, scipy 1.8
+- `#2196 <https://github.com/mantidproject/mantidimaging/issues/2196>`_: Cancel in progress test runs when new commit pushed
+- `#2213 <https://github.com/mantidproject/mantidimaging/issues/2213>`_: unit tests have been added to check that the Time of Flight modes behave correctly when switching between stacks
+- `#2250 <https://github.com/mantidproject/mantidimaging/issues/2250>`_: Make systems tests stricter to catch operations errors

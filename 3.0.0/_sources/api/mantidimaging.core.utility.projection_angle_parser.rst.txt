@@ -1,0 +1,7 @@
+mantidimaging.core.utility.projection\_angle\_parser module
+===========================================================
+
+.. automodule:: mantidimaging.core.utility.projection_angle_parser
+   :members:
+   :undoc-members:
+   :show-inheritance:

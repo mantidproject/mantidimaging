@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.roi\_selector.view module
+===================================================
+
+.. automodule:: mantidimaging.gui.widgets.roi_selector.view
+   :members:
+   :undoc-members:
+   :show-inheritance:
