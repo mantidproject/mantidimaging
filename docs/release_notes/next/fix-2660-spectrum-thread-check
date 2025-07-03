@@ -1,1 +1,0 @@
-#2660: The Spectrum Viewer only starts a QThread when the ROI queue is empty. This prevents cross-threading issues.
