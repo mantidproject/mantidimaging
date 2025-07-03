@@ -5,7 +5,6 @@ from __future__ import annotations
 from unittest import mock
 
 import numpy as np
-import pytest
 from PyQt5.QtWidgets import QApplication
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.instrument_log import InstrumentLog, LogColumn
@@ -46,7 +45,6 @@ class SpectrumViewerWindowTest(BaseEyesTest):
                    max_retry=600)
         self.check_target(widget=self.imaging.spectrum_viewer)
 
-    @pytest.mark.xfail
     def test_spectrum_viewer_opens_with_data_with_tof(self):
         dataset = self._generate_spectrum_dataset()
         dataset.sample.log_file = self._generate_spectra_log()
