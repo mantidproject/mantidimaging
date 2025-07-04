@@ -22,7 +22,7 @@ class MoveStackPresenter(BasePresenter):
     def __init__(self, view: MoveStackDialog):
         super().__init__(view)
 
-    def notify(self, n: Notification):
+    def notify(self, n: Notification) -> None:
         try:
             if n == Notification.ACCEPTED:
                 self._on_accepted()
@@ -31,14 +31,14 @@ class MoveStackPresenter(BasePresenter):
         except RuntimeError as err:
             self.view.show_error_dialog(str(err))
 
-    def _on_accepted(self):
+    def _on_accepted(self) -> None:
         """
         Calls the execute move stack method in the main view.
         """
         self.view.parent_view.execute_move_stack(self.view.origin_dataset_id, self.view.stack_id,
                                                  self.view.destination_stack_type, self.view.destination_dataset_id)
 
-    def _on_dataset_changed(self):
+    def _on_dataset_changed(self) -> None:
         """
         Change the contents of the destination type combo box when the destination dataset has changed.
         """
