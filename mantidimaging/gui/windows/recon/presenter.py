@@ -25,6 +25,7 @@ LOG = getLogger(__name__)
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main import MainWindowView
+    import uuid
 
 
 class AutoCorMethod(Enum):
@@ -130,12 +131,15 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
         self.view.change_refine_iterations()
 
-    def set_stack_uuid(self, uuid) -> None:
+    def set_stack_uuid(self, uuid: uuid.UUID | None) -> None:
         if not self.view.isVisible():
             self.stack_selection_change_pending = True
             return
 
-        images = self.view.get_stack(uuid)
+        if uuid is None:
+            return
+
+        images = self.main_window.get_stack(uuid)
         if self.model.is_current_stack(uuid):
             return
 
@@ -392,7 +396,10 @@ class ReconstructWindowPresenter(BasePresenter):
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
-                selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
+
+                if self.view.current_stack_uuid is None:
+                    raise RuntimeError("Cannot find stack UUID")
+                selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
                 self.view.show_error_dialog(
                     f"Finding the COR failed, likely caused by the selected stack's 180 "
                     f"degree projection being a different shape. \n\n "

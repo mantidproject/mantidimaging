@@ -228,7 +228,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
         try:
-            selected_images = self.main_window.get_images_from_stack_uuid(uuid)
+            selected_images = self.main_window.get_stack(uuid)
         except KeyError:
             # Likely due to stack no longer existing, e.g. when all stacks closed
             LOG.debug("UUID did not match open stack")
@@ -448,6 +448,10 @@ class ReconstructWindowView(BaseMainWindowView):
         else:
             return None
 
+    @property
+    def current_stack_uuid(self) -> UUID | None:
+        return self.stackSelector.current()
+
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
                                         filter_name=self.filter_name,
@@ -476,11 +480,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def show_recon_volume(self, data: ImageStack, stack_id: uuid.UUID) -> None:
         self.main_window.add_recon_to_dataset(data, stack_id)
-
-    def get_stack(self, uuid) -> ImageStack | None:
-        if uuid is not None:
-            return self.main_window.get_stack(uuid)
-        return None
 
     def hide_tilt(self) -> None:
         self.image_view.hide_cor_line()
