@@ -8,10 +8,17 @@ The spectrum viewer can be accessed from the main menu under "Workflow" > "Spect
 
 To try out the spectrum viewer, you can find a basic example workflow to follow within :ref:`quick start <quick-start>`.
 
-.. image:: ../../../_static/spectrum_viewer.png
-    :alt: Spectrum Viewer ROI Mode
+.. image:: ../../../_static/spectrum_viewer_light.png
+    :alt: Spectrum Viewer Window (Light)
     :width: 90%
     :align: center
+    :class: only-light
+
+.. image:: ../../../_static/spectrum_viewer_dark.png
+    :alt: Spectrum Viewer Window (Dark)
+    :width: 90%
+    :align: center
+    :class: only-dark
 
 Above you can see that the spectrum viewer consists of a left hand side panel and a right hand side panel.
 The left hand side panel contains the ROI selection tools and the right hand side panel contains the spectrum plot.
