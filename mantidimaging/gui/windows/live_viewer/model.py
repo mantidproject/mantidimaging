@@ -214,25 +214,40 @@ class LiveViewerWindowModel:
         self.mean = np.full(len(self.images), np.nan)
         self.mean_readable = np.full(len(self.images), 1)
 
-    def calc_mean_chunk(self, chunk_size: int) -> None:
+    def calc_mean_chunk(self, chunk_size: int = 100) -> None:
         if self.images is not None:
+            print("calc_mean_chunk 0")
             nanInds = np.argwhere(np.isnan(self.mean))
             if self.roi:
+                print("calc_mean_chunk 0")
                 left, top, right, bottom = self.roi
             else:
+                print("calc_mean_chunk 0")
                 left, top, right, bottom = (0, 0, -1, -1)
             if nanInds.size > 0:
                 for ind in nanInds[-1:-chunk_size:-1]:
                     try:
                         buffer_data = self.image_cache.load_image(self.images[ind[0]])
+                        #print(f"calc_mean_chunk try: {buffer_data=}")
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
+                        #print(f"calc_mean_chunk try: {buffer_mean=}")
                         mean_readable = 1
                     except ImageLoadFailError:
-                        mean_readable = 0
+                        #print(f"Failed to load {self.images[ind[0]]}")
                         buffer_mean = np.nan
+                    if np.isnan(buffer_mean):
+                        print(f"{self.images[ind[0]].image_name=}")
+                        print(f"{buffer_data[top:bottom, left:right]=}")
+                        print(f"{np.isnan(buffer_data[top:bottom, left:right]).any()=}")
+
+                        mean_readable = 0
                     self.mean_paths[self.images[ind[0]].image_path] = (buffer_mean, mean_readable)
                     np.put(self.mean, ind, buffer_mean)
                     np.put(self.mean_readable, ind, mean_readable)
+                    print(f"calc_mean_chunk: {ind=}")
+                    print(f"calc_mean_chunk: {buffer_mean=}")
+                    print(f"calc_mean_chunk: {mean_readable=}")
+                    print(f"calc_mean_chunk: {buffer_mean * mean_readable=}")
 
 
 class ImageWatcher(QObject):

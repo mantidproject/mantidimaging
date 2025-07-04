@@ -15,6 +15,7 @@ from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
 from tifffile.tifffile import TiffFileError
 
+from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
@@ -30,18 +31,6 @@ logger = getLogger(__name__)
 IMAGE_lIST_UPDATE_TIME = 100
 
 
-class Worker(QObject):
-    finished = pyqtSignal()
-
-    def __init__(self, presenter: LiveViewerWindowPresenter):
-        super().__init__()
-        self.presenter = presenter
-
-    def run(self):
-        self.presenter.model.calc_mean_chunk(100)
-        self.finished.emit()
-
-
 class LiveViewerWindowPresenter(BasePresenter):
     """
     The presenter for the Live Viewer window.
@@ -52,8 +41,6 @@ class LiveViewerWindowPresenter(BasePresenter):
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
     op_func: Callable
-    thread: QThread
-    worker: Worker
     old_image_list_paths: list[Path] = []
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
@@ -243,25 +230,24 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.model.clear_mean_partial()
         self.model.roi = roi
         self.set_roi_enabled(False)
-        self.run_mean_chunk_calc()
+        self.thread = TaskWorkerThread()
+        self.thread.kwargs = {"chunk_size": 100}
+        self.thread.task_function = self.model.calc_mean_chunk
 
-    def run_mean_chunk_calc(self) -> None:
-        self.thread = QThread()
-        self.worker = Worker(self)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.finished.connect(self.thread_cleanup)
+        self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
 
-    def thread_cleanup(self) -> None:
+    def thread_cleanup(self, thread: TaskWorkerThread) -> None:
+        print(f"thread_cleanup 0: {np.isnan(self.model.mean * self.model.mean_readable).any()}")
+        if thread.error is not None:
+            raise thread.error
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
         if np.isnan(self.model.mean).any() and self.model.mean_readable.all():
+            print("thread_cleanup 1")
             self.try_next_mean_chunk()
         if not np.isnan(self.model.mean * self.model.mean_readable).any():
+            print("thread_cleanup 2")
             self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self) -> None:
