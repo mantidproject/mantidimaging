@@ -28,7 +28,7 @@ def find_first_file_that_is_possibly_a_sample(file_path: Path) -> Path | None:
         if possible_files:
             break
     for possible_file in sorted(possible_files):
-        lower_filename = os.path.basename(possible_file).lower()
+        lower_filename = possible_file.name.lower()
         if 'flat' not in lower_filename and 'dark' not in lower_filename and '180' not in lower_filename:
             return possible_file
     return None

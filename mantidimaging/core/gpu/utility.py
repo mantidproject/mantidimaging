@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
+
 import numpy as np
 
 from logging import getLogger
@@ -78,9 +80,8 @@ def _load_cuda_kernel(dtype):
     :param dtype: The data type of the array that is going to be processed.
     :return: The CUDA kernel in string format.
     """
-    cuda_kernel = ""
-    with open(os.path.join(os.path.dirname(__file__), KERNEL_FILENAME)) as f:
-        cuda_kernel += f.read()
+    kernel_path = Path(__file__).parent / KERNEL_FILENAME
+    cuda_kernel = kernel_path.read_text()
     if "float64" in str(dtype):
         return cuda_kernel.replace("float", "double")
     return cuda_kernel

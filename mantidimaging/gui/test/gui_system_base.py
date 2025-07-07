@@ -28,8 +28,8 @@ SHORT_DELAY = 100
 
 @mock_versions
 @pytest.mark.system
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE_FOLDER), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(Path(LOAD_SAMPLE).exists(), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(Path(LOAD_SAMPLE_FOLDER).exists(), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication

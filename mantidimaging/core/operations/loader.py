@@ -5,6 +5,7 @@ import os
 import pkgutil
 import sys
 from importlib.util import module_from_spec
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -16,10 +17,10 @@ _OPERATION_MODULES_LIST: list[BaseFilterClass] = []
 
 def _find_operation_modules() -> list[BaseFilterClass]:
     module_list: list[BaseFilterClass] = []
-    for finder, module_name, ispkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
+    search_path = str(Path(__file__).parent)
+    for finder, module_name, ispkg in pkgutil.walk_packages([search_path]):
         if not ispkg:
             continue
-
         if getattr(sys, 'frozen', False):
             # Need to prevent importing standard library test modules found by pkgutil
             if "test.support" in module_name:

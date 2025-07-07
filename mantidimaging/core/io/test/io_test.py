@@ -67,11 +67,11 @@ class IOTest(FileOutputtingTestCase):
             filenames = saver.generate_names(base_name, indices, num_images, out_format=file_format)
 
             for f in filenames:
-                self.assertTrue(os.path.isfile(f))
-
+                path = base_name.parent / f
+                self.assertTrue( path.is_file(),f"File does not exist: {path}")
         else:
-            filename = base_name + '.' + file_format
-            self.assertTrue(os.path.isfile(filename))
+            filename = base_name.with_suffix(f".{file_format}")
+            self.assertTrue(filename.is_file(),f"File does not exist: {filename}" )
 
     # fits sequential
     def test_preproc_fits_seq(self):
@@ -143,11 +143,11 @@ class IOTest(FileOutputtingTestCase):
 
         # saver.save_preproc_images(expected_images)
         saver.image_save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
-        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
-                                data_as_stack, expected_images.data.shape[0], saver_indices)
+        self.assert_files_exist( self.output_directory / saver.DEFAULT_NAME_PREFIX,img_format,data_as_stack,
+                                 expected_images.data.shape[0],saver_indices,)
 
         filename = f"{saver.DEFAULT_NAME_PREFIX}_000000.{img_format}"
-        group = FilenameGroup.from_file(Path(self.output_directory) / filename)
+        group = FilenameGroup.from_file(self.output_directory / filename)
         group.find_all_files()
 
         loaded_images = loader.load(group, indices=loader_indices)
@@ -165,7 +165,7 @@ class IOTest(FileOutputtingTestCase):
         saver.image_save(images, self.output_directory, out_format=img_format)
 
         data_as_stack = False
-        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
+        self.assert_files_exist(self.output_directory / saver.DEFAULT_NAME_PREFIX, img_format,
                                 data_as_stack, images.data.shape[0])
 
         filename = saver.DEFAULT_NAME_PREFIX + "_000000.tiff"

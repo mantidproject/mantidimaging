@@ -5,6 +5,7 @@ from __future__ import annotations
 import inspect
 import os
 import sys
+from pathlib import Path
 from tempfile import mkdtemp
 from typing import TYPE_CHECKING, Any
 from unittest import mock
@@ -59,9 +60,10 @@ class EyesManager:
         self.eyes.abort_if_not_closed()
 
     def check_target(self, widget: QWidget = None):
-        test_file_name = os.path.basename(inspect.stack()[2][1])
+        caller_path = Path(inspect.stack()[2][1])
+        test_file_name = caller_path.name
         test_method_name = inspect.stack()[2][3]
-        test_image_name = test_file_name.rpartition(".")[0] + "_" + test_method_name
+        test_image_name = f"{caller_path.stem}_{test_method_name}"
 
         image = self._take_screenshot(widget=widget, image_name=test_image_name)
 
@@ -93,9 +95,9 @@ class EyesManager:
         :return: Will return the path to the saved image, or None if failed.
         """
         if self.image_directory is None:
-            directory = mkdtemp()
+            directory = Path(mkdtemp())
         else:
-            directory = self.image_directory
+            directory = Path(self.image_directory)
 
         if widget is None and self.imaging is not None:
             widget = self.imaging
@@ -111,12 +113,12 @@ class EyesManager:
         if image_name is None:
             image_name = str(uuid4())
 
-        file_path = os.path.join(directory, image_name) + ".png"
+        file_path = directory / f"{image_name}.png"
 
-        if window_image.save(file_path, "PNG"):
+        if window_image.save(str(file_path), "PNG"):
             return file_path
         else:
-            raise OSError("Failed to save", file_path)
+            raise OSError("Failed to save", str(file_path))
 
     def close_eyes(self):
         if self.eyes.is_open:

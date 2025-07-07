@@ -58,21 +58,18 @@ class CompilePyQtUiFiles(Command):
     def finalize_options(self):
         pass
 
+
     @staticmethod
-    def compile_single_file(ui_filename):
+    def compile_single_file(ui_filename: Path):
         from PyQt5 import uic
 
-        py_filename = os.path.splitext(ui_filename)[0] + ".py"
-        with open(py_filename, "w") as py_file:
-            uic.compileUi(ui_filename, py_file)
+        py_filename = ui_filename.with_suffix(".py")
+        with py_filename.open("w") as py_file:
+            uic.compileUi(str(ui_filename), py_file)
 
     @staticmethod
     def find_ui_files():
-        matches = []
-        for root, _, filenames in os.walk("./mantidimaging/"):
-            for filename in fnmatch.filter(filenames, "*.ui"):
-                matches.append(os.path.join(root, filename))
-        return matches
+        return list(Path("mantidimaging").rglob("*.ui"))
 
     def run(self):
         ui_files = self.find_ui_files()

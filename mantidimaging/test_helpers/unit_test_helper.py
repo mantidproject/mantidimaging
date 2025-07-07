@@ -125,11 +125,12 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
             filenames.append(base_name + str(i) + file_extension_separator + file_extension)
 
         for f in filenames:
-            cls.assertTrue(os.path.isfile(f))
-
+            path = Path(f)
+            cls.assertTrue(path.is_file(), f"File does not exist: {path}")
     else:
-        filename = base_name + file_extension_separator + file_extension
-        cls.assertTrue(os.path.isfile(filename))
+        filename = f"{base_name}{file_extension_separator}{file_extension}"
+        path = Path(filename)
+        cls.assertTrue(path.is_file(), f"File does not exist: {path}")
 
 
 class IgnoreOutputStreams:
