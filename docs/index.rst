@@ -60,6 +60,6 @@ For more information, see the :ref:`overview`.
    Anaconda Package <https://anaconda.org/mantidimaging/mantidimaging>
 
 Please cite as:
-Akello-Egwel, Dolica; Allen, Jack; Baust, Rachel; Gigg, Martyn; Jones, Samuel; Meigh, Ashley; Nixon, Daniel; Stock, Samuel; Sullivan, Michael; Tasev, Dimitar; Taylor, Will; Tygier, Sam. (2025). Mantid Imaging (3.0.0), Zenodo https://doi.org/10.5281/zenodo.4728059
+Akello-Egwel, Dolica; Allen, Jack; Alhassan, Hussam; Baust, Rachel; Cornal, James; Gigg, Martyn; Ioannide, Despina; Jones, Samuel; Meigh, Ashley; Nixon, Daniel; Stock, Samuel; Sullivan, Michael; Tasev, Dimitar; Taylor, Will; Tygier, Sam. (2025). Mantid Imaging (3.0.0), Zenodo https://doi.org/10.5281/zenodo.4728059
 
 (See `Zenodo <https://doi.org/10.5281/zenodo.4728059>`_ for citing specific versions).
