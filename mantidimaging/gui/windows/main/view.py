@@ -141,12 +141,12 @@ class MainWindowView(BaseMainWindowView):
         if self.open_dialogs:
             if versions.is_prerelease():
                 self.setWindowTitle("Mantid Imaging Unstable")
-                bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_unstable_64px.png")
+                bg_image = base_path / "gui" / "ui" / "images" / "mantid_imaging_unstable_64px.png"
             else:
-                bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
+                bg_image = base_path / "gui" / "ui" / "images" / "mantid_imaging_64px.png"
         else:
-            bg_image = os.path.join(base_path, "gui/ui/images/mantid_imaging_64px.png")
-        self.setWindowIcon(QIcon(bg_image))
+            bg_image = base_path / "gui" / "ui" / "images" / "mantid_imaging_64px.png"
+        self.setWindowIcon(QIcon(str(bg_image)))
 
         self.wizard = None
 
@@ -284,13 +284,15 @@ class MainWindowView(BaseMainWindowView):
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
 
-    def show_image_load_dialog_with_path(self, file_path: str) -> bool:
+    def show_image_load_dialog_with_path(self, file_path: str | Path) -> bool:
         """
         Open the dataset loading dialog with a given file_path preset as the sample
         """
+        file_path = Path(file_path)
         sample_file = find_first_file_that_is_possibly_a_sample(file_path)
         if sample_file is None:
-            sample_file = find_first_file_that_is_possibly_a_sample(os.path.dirname(file_path))
+            sample_file = find_first_file_that_is_possibly_a_sample(file_path.parent)
+
         if sample_file is not None:
             self.image_load_dialog = ImageLoadDialog(self)
             self.image_load_dialog.presenter.do_update_sample(sample_file)
@@ -636,10 +638,10 @@ class MainWindowView(BaseMainWindowView):
 
     def dropEvent(self, event: QDropEvent) -> None:
         for url in event.mimeData().urls():
-            file_path = url.toLocalFile()
-            if not os.path.exists(file_path):
+            file_path = Path(url.toLocalFile())
+            if not file_path.exists():
                 continue
-            if os.path.isdir(file_path):
+            if file_path.is_dir():
                 sample_loading = self.show_image_load_dialog_with_path(file_path)
                 if not sample_loading:
                     QMessageBox.critical(

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import datetime
 import json
-import os.path
 import uuid
 from copy import deepcopy
+from pathlib import Path
 from typing import Any, TextIO, TYPE_CHECKING, cast
 
 import numpy as np
@@ -31,7 +31,7 @@ class ImageStack:
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
-                 filenames: list[str] | None = None,
+                 filenames: list[Path] | None = None,
                  indices: list[int] | Indices | None = None,
                  metadata: dict[str, Any] | None = None,
                  sinograms: bool = False,
@@ -65,7 +65,7 @@ class ImageStack:
 
         if name is None:
             if filenames is not None:
-                self.name = os.path.splitext(os.path.basename(filenames[0]))[0]
+                self.name = filenames[0].stem
             else:
                 self.name = "untitled"
         else:

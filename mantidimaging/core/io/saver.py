@@ -68,53 +68,27 @@ def write_nxs(data: np.ndarray,
         rangle[...] = projection_angles
 
 
-def image_save(images: ImageStack,
-               output_dir: str,
-               name_prefix: str = DEFAULT_NAME_PREFIX,
-               swap_axes: bool = False,
-               out_format: str = DEFAULT_IO_FILE_FORMAT,
-               overwrite_all: bool = False,
-               custom_idx: int | None = None,
-               zfill_len: int = DEFAULT_ZFILL_LENGTH,
-               name_postfix: str = DEFAULT_NAME_POSTFIX,
-               indices: list[int] | Indices | None = None,
-               pixel_depth: str | None = None,
-               progress: Progress | None = None) -> list[str]:
+def image_save(
+    images: ImageStack,
+    output_dir: str,
+    name_prefix: str = DEFAULT_NAME_PREFIX,
+    swap_axes: bool = False,
+    out_format: str = DEFAULT_IO_FILE_FORMAT,
+    overwrite_all: bool = False,
+    custom_idx: int | None = None,
+    zfill_len: int = DEFAULT_ZFILL_LENGTH,
+    name_postfix: str = DEFAULT_NAME_POSTFIX,
+    indices: list[int] | Indices | None = None,
+    pixel_depth: str | None = None,
+    progress: Progress | None = None
+) -> list[Path]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
-    The Z axis in the script is the ndarray.shape[0].
-
-    :param images: Data as images/slices stores in numpy array
-    :param output_dir: Output directory for the files
-    :param name_prefix: Prefix for the names of the images,
-           appended before the image number
-    :param swap_axes: Swap the 0 and 1 axis of the images
-           (convert from radiograms to sinograms on saving)
-    :param out_format: File format of the saved out images
-    :param overwrite_all: Overwrite existing images with conflicting names
-    :param custom_idx: Single index to be used for the file name,
-           instead of incremental numbers
-    :param zfill_len: This option is ignored if custom_idx is specified!
-           Prepend zeros to the output file names to have a
-           constant file name length. Example:
-           - saving out an image with zfill_len = 6:
-           saved_image000001,...saved_image000201 and so on
-           - saving out an image with zfill_len = 3:
-           saved_image001,...saved_image201 and so on
-    :param name_postfix: Postfix for the name after the index
-    :param indices: Only works if custom_idx is not specified.
-           Specify the start and end range of the indices
-           which will be used for the file names.
-    :param progress: Passed to ensure progress during saving is tracked properly
-    :param pixel_depth: Defines the target pixel depth of the save operation so
-           np.float32 or np.int16 will ensure the values are scaled
-           correctly to these values.
-    :returns: The filename/filenames of the saved data.
     """
     progress = Progress.ensure_instance(progress, task_name='Save')
 
-    # expand the path for plugins that don't do it themselves
-    output_dir = os.path.abspath(os.path.expanduser(output_dir))
+    # Expand the path for plugins that don't do it themselves
+    output_dir = Path(output_dir).expanduser().resolve()
     make_dirs_if_needed(output_dir, overwrite_all)
 
     # Define current parameters
@@ -122,7 +96,7 @@ def image_save(images: ImageStack,
     max_value: float = np.nanmax(images.data)
     int_16_slope = max_value / INT16_SIZE
 
-    # Do rescale if needed.
+    # Do rescale if needed
     if pixel_depth is None or pixel_depth == "float32":
         rescale_params: dict[str, str | float] | None = None
         rescale_info = ""
@@ -131,12 +105,12 @@ def image_save(images: ImageStack,
         rescale_params = {"offset": str(min_value), "slope": int_16_slope}
         rescale_info = "offset = {offset} \n slope = {slope}".format(**rescale_params)
     else:
-        raise ValueError("The pixel depth given is not handled: " + pixel_depth)
+        raise ValueError(f"The pixel depth given is not handled: {pixel_depth}")
 
     # Save metadata
-    metadata_filename = os.path.join(output_dir, name_prefix + '.json')
+    metadata_filename = output_dir / f"{name_prefix}.json"
     LOG.debug(f'Metadata filename: {metadata_filename}')
-    with open(metadata_filename, 'w+') as f:
+    with metadata_filename.open('w+') as f:
         images.save_metadata(f, rescale_params)
 
     data = images.data
@@ -145,14 +119,13 @@ def image_save(images: ImageStack,
         data = np.swapaxes(data, 0, 1)
 
     if out_format in ['nxs']:
-        filename = os.path.join(output_dir, name_prefix + name_postfix)
-        write_nxs(data, filename + '.nxs', overwrite=overwrite_all)
-        return [filename]
+        filename_base = output_dir / f"{name_prefix}{name_postfix}"
+        write_nxs(data, str(filename_base) + '.nxs', overwrite=overwrite_all)
+        return [filename_base]
     else:
         if out_format in ['fit', 'fits']:
             write_func: Callable[[np.ndarray, str, bool, str | None], None] = write_fits
         else:
-            # pass all other formats to skimage
             write_func = write_img
 
         num_images = data.shape[0]
@@ -160,27 +133,29 @@ def image_save(images: ImageStack,
 
         names = generate_names(name_prefix, indices, num_images, custom_idx, zfill_len, name_postfix, out_format)
 
-        for i in range(len(names)):
-            names[i] = os.path.join(output_dir, names[i])
+        # Convert names to full paths
+        names = [output_dir / name for name in names]
 
         with progress:
             for idx in range(num_images):
                 # Overwrite images with the copy that has been rescaled.
                 if pixel_depth == "int16":
-                    output_data = RescaleFilter.filter_array(np.copy(images.data[idx]),
-                                                             min_input=min_value,
-                                                             max_input=max_value,
-                                                             max_output=INT16_SIZE - 1).astype(np.uint16)
-                    write_func(output_data, names[idx], overwrite_all, rescale_info)
+                    output_data = RescaleFilter.filter_array(
+                        np.copy(images.data[idx]),
+                        min_input=min_value,
+                        max_input=max_value,
+                        max_output=INT16_SIZE - 1
+                    ).astype(np.uint16)
+                    write_func(output_data, str(names[idx]), overwrite_all, rescale_info)
                 else:
-                    write_func(data[idx, :, :], names[idx], overwrite_all, rescale_info)
+                    write_func(data[idx, :, :], str(names[idx]), overwrite_all, rescale_info)
 
                 progress.update(msg='Image')
 
         return names
 
 
-def nexus_save(dataset: Dataset, path: str, sample_name: str, save_as_float: bool) -> None:
+def nexus_save(dataset: Dataset, path: Path, sample_name: str, save_as_float: bool) -> None:
     """
     Uses information from a Dataset to create a NeXus file.
     :param dataset: The dataset to save as a NeXus file.
@@ -188,17 +163,16 @@ def nexus_save(dataset: Dataset, path: str, sample_name: str, save_as_float: boo
     :param sample_name: The sample name.
     """
     try:
-        nexus_file = h5py.File(path, "w", driver="core")
+        nexus_file = h5py.File(str(path), "w", driver="core")
     except OSError as exc:
-        raise RuntimeError("Unable to save NeXus file. " + str(exc)) from exc
+        raise RuntimeError(f"Unable to save NeXus file. {exc}") from exc
 
     try:
         _nexus_save(nexus_file, dataset, sample_name, save_as_float)
     except OSError as exc:
         nexus_file.close()
-        os.remove(path)
-        raise RuntimeError("Unable to save NeXus file. " + str(exc)) from exc
-
+        path.unlink(missing_ok=True)
+        raise RuntimeError(f"Unable to save NeXus file. {exc}") from exc
     nexus_file.close()
 
 
@@ -418,23 +392,24 @@ def generate_names(name_prefix: str,
     return names
 
 
-def make_dirs_if_needed(dirname: str | None = None, overwrite_all: bool = False) -> None:
+def make_dirs_if_needed(dirname: str | Path | None = None, overwrite_all: bool = False) -> None:
     """
     Makes sure that the directory needed (for example to save a file)
     exists, otherwise creates it.
 
-    :param dirname :: (output) directory to check
+    :param dirname: (output) directory to check
+    :param overwrite_all: Whether to allow overwriting non-empty directories
     """
     if dirname is None:
         return
-
-    path = os.path.abspath(os.path.expanduser(dirname))
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-    elif os.listdir(path) and not overwrite_all:
-        raise RuntimeError(f"The output directory is NOT empty:{path}\nThis can be "
-                           "overridden by specifying 'Overwrite on name conflict'.")
+    # Convert to Path if given as str
+    path = Path(dirname).expanduser().resolve()
+    if not path.exists():
+        path.mkdir(parents=True, exist_ok=True)
+    elif any(path.iterdir()) and not overwrite_all:
+        raise RuntimeError(
+            f"The output directory is NOT empty: {path}\n"
+            f"This can be overridden by specifying 'Overwrite on name conflict'.")
 
 
 def create_rits_format(tof: np.ndarray, transmission: np.ndarray, transmission_error: np.ndarray) -> str:

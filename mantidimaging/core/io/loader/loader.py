@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-import os
+from pathlib import Path
 from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
@@ -128,11 +128,10 @@ def load(filename_group: FilenameGroup,
          log_file: Path | None = None,
          shutter_count_file: Path | None = None) -> ImageStack:
     """
-
     Loads a stack, including sample, white and dark images.
 
-    :param dtype: Default:np.float32, data type for the input images
-    :param filename_group: FilenameGroup to provided file names for loading
+    :param dtype: Default: np.float32, data type for the input images
+    :param filename_group: FilenameGroup to provide file names for loading
     :param indices: Specify which indices are loaded from the found files.
                     This **DOES NOT** check for the number in the image
                     filename, but removes all indices from the filenames list
@@ -143,7 +142,8 @@ def load(filename_group: FilenameGroup,
     if indices and len(indices) < 3:
         raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
 
-    file_names = [str(p) for p in filename_group.all_files()]
+    # Keep files as Path objects
+    file_names = list(filename_group.all_files())
     in_format = filename_group.first_file().suffix.lstrip('.')
     load_func = get_loader(in_format)
 
@@ -166,7 +166,6 @@ def load(filename_group: FilenameGroup,
     if shutter_count_file is not None:
         image_stack.shutter_count_file = load_shutter_counts(shutter_count_file)
 
-    # Search for and load metadata file
     metadata_filename = filename_group.metadata_path
     if metadata_filename:
         with open(metadata_filename) as f:
@@ -179,12 +178,12 @@ def load(filename_group: FilenameGroup,
 
 
 def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameters | None:
-    sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
+    sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
         return None
 
     loading_parameters = LoadingParameters()
-    loading_parameters.name = os.path.basename(sample_file)
+    loading_parameters.name = sample_file.name
 
     sample_fg = FilenameGroup.from_file(sample_file)
     sample_fg.find_all_files()

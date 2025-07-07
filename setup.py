@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import fnmatch
 import importlib
-import os
+from pathlib import Path
 import platform
 import subprocess
 from distutils.core import Command
@@ -17,7 +17,7 @@ from importlib.machinery import SourceFileLoader
 
 from setuptools import find_packages, setup
 
-THIS_PATH = os.path.dirname(__file__)
+THIS_PATH = Path(__file__).parent
 
 versions = SourceFileLoader('versions', 'mantidimaging/__init__.py').load_module()
 

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import glob
 import os
+from pathlib import Path
+
 import numpy as np
 from logging import getLogger
 
@@ -15,14 +17,14 @@ NEXUS_PROCESSED_DATA_PATH = 'processed-data'
 THRESHOLD_180 = np.radians(1)
 
 
-def find_first_file_that_is_possibly_a_sample(file_path: str) -> str | None:
+def find_first_file_that_is_possibly_a_sample(file_path: Path) -> Path | None:
     """
     Finds the first file that is possibly a tif, .tiff, .fit or .fits sample file.
     If files are found, the files are sorted and filtered based on name and returned.
     """
     file_types = ['tif', 'tiff', 'fit', 'fits']
     for file_type in file_types:
-        possible_files = glob.glob(os.path.join(file_path, f'**/*.{file_type}'), recursive=True)
+        possible_files = list(file_path.glob(f'**/*.{file_type}'))
         if possible_files:
             break
     for possible_file in sorted(possible_files):
