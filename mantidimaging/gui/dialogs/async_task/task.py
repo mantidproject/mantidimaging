@@ -8,6 +8,7 @@ from collections.abc import Callable
 from PyQt5.QtCore import QThread
 
 from mantidimaging.core.utility.func_call import call_with_known_parameters
+from mantidimaging.core.utility.progress_reporting.progress import TaskCancelled
 
 
 class TaskWorkerThread(QThread):
@@ -34,9 +35,7 @@ class TaskWorkerThread(QThread):
         super().__init__(parent)
 
         self.task_function = None
-
         self.kwargs = {}
-
         self.result = None
         self.error = None
 
@@ -49,10 +48,17 @@ class TaskWorkerThread(QThread):
 
             self.result = call_with_known_parameters(self.task_function, **self.kwargs)
 
+        except TaskCancelled as e:
+            log.info("Task was cancelled by the user.")
+            self.result = None
+            self.error = e
+            return
+
         except Exception as e:
             log.exception(f"Failed to execute task: {e}")
             self.result = None
             self.error = e
+            return
 
     def was_successful(self) -> bool:
         """

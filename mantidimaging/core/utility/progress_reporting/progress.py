@@ -1,15 +1,23 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-
 import threading
 import time
 from logging import getLogger
-from typing import NamedTuple, SupportsInt
+from typing import SupportsInt, NamedTuple
 
 from mantidimaging.core.utility.memory_usage import get_memory_usage_linux_str
 
-ProgressHistory = NamedTuple('ProgressHistory', [('time', float), ('step', int), ('msg', str)])
+
+class ProgressHistory(NamedTuple):
+    time: float
+    step: int
+    msg: str
+
+
+class TaskCancelled(Exception):
+    """Raised when a task is explicitly cancelled by the user."""
+    pass
 
 
 class ProgressHandler:
@@ -48,7 +56,7 @@ class Progress:
 
         # Current step being executed (0 denoting not started)
         self.current_step = 0
-        # Estimated number of steps (used to calculated percentage complete)
+        # Estimated number of steps (used to calculate percentage complete)
         self.end_step = 0
         self.set_estimated_steps(num_steps)
 
@@ -71,6 +79,7 @@ class Progress:
 
         # Flag to indicate cancellation of the current task
         self.cancel_msg = None
+        self.cancelled = False
 
         # Add initial step to history
         self.update(0, 'init')
@@ -101,33 +110,25 @@ class Progress:
         return self.current_step > 0
 
     def is_completed(self):
-        """
-        Checks if the task has been marked as completed.
-        """
+        """Checks if the task has been marked as completed."""
         return self.complete
 
     def completion(self):
-        """
-        Gets the completion of the task in the range of 0.0 - 1.0
-        """
+        """Gets the completion of the task in the range of 0.0 - 1.0"""
         with self.lock:
             return round(self.current_step / self.end_step, 3)
 
     def last_status_message(self):
-        """
-        Gets the message from the last progress update.
-        """
+        """Gets the message from the last progress update."""
         with self.lock:
             if len(self.progress_history) > 0:
                 msg = self.progress_history[-1][2]
                 return msg if len(msg) > 0 else None
-
         return None
 
     def execution_time(self):
         """
         Gets the total time this task has been executing.
-
         Total time is measured from the timestamp of the first progress message
         to the timestamp of the last progress message.
         """
@@ -139,17 +140,12 @@ class Progress:
             return 0.0
 
     def set_estimated_steps(self, num_steps: int):
-        """
-        Sets the number of steps this task is expected to take to complete.
-        """
+        """Sets the number of steps this task is expected to take to complete."""
         self.current_step = 0
         self.end_step = num_steps
 
-    def add_estimated_steps(self, num_steps):
-        """
-        Increments the number of steps this task is expected to take to
-        complete.
-        """
+    def add_estimated_steps(self, num_steps: int):
+        """Increments the number of steps this task is expected to take to complete."""
         self.end_step += num_steps
 
     def add_progress_handler(self, handler: ProgressHandler):
@@ -183,6 +179,9 @@ class Progress:
         """
         # Acquire lock while manipulating progress state
         with self.lock:
+            if self.cancelled and not force_continue:
+                raise TaskCancelled('Task has been cancelled')
+
             # Update current step
             self.current_step += steps
             if self.current_step > self.end_step:
@@ -197,20 +196,15 @@ class Progress:
             self.progress_history.append(step_details)
             self.extra_info = extra_info
 
-        # process progress callbacks
+        # Process progress callbacks
         for cb in self.progress_handlers:
             cb.progress_update()
-
-        # Force cancellation on progress update
-        if self.should_cancel and not force_continue:
-            raise StopIteration('Task has been cancelled')
 
     @staticmethod
     def calculate_mean_time(progress_history: list[ProgressHistory]) -> float:
         if len(progress_history) > 1:
             average_over_steps = min(STEPS_TO_AVERAGE, len(progress_history))
             time_diff = progress_history[-1].time - progress_history[-average_over_steps].time
-
             return time_diff / (average_over_steps - 1)
         else:
             return 0
@@ -223,21 +217,17 @@ class Progress:
         many calls to update() to be cancellable.
         """
         self.cancel_msg = msg
+        self.cancelled = True
 
     @property
     def should_cancel(self):
-        """
-        Checks if the task should be cancelled.
-        """
-        return self.cancel_msg is not None
+        """Checks if the task should be cancelled."""
+        return self.cancelled
 
     def mark_complete(self, msg='complete'):
-        """
-        Marks the task as completed.
-        """
+        """Marks the task as completed."""
+        self.update(force_continue=True, msg=self.cancel_msg if self.cancelled else msg)
 
-        self.update(force_continue=True, msg=self.cancel_msg if self.should_cancel else msg)
-
-        if not self.should_cancel:
+        if not self.cancelled:
             self.complete = True
             self.end_step = self.current_step
