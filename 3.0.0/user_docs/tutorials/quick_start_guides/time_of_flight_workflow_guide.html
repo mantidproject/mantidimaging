@@ -1,0 +1,813 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quick Start: Example Time of Flight (ToF) Analysis &#8212; MantidImaging 2.9.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=517e76a2" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=ef7a7510"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_docs/tutorials/quick_start_guides/time_of_flight_workflow_guide';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0a1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="icon" href="../../../_static/mantid_imaging_64px.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="How-To Guides" href="../../how-to-guides/index.html" />
+    <link rel="prev" title="Quick Start: Example Reconstruction" href="tomography_workflow_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 2.9.0a1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Tutorials</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_start_guides.html">Quick Start Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tomography_workflow_guide.html">Quick Start: Example Reconstruction</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Quick Start: Example Time of Flight (ToF) Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../how-to-guides/index.html">How-To Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../explanations/index.html">Explanations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../explanations/overview.html">Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../explanations/gui/index.html">Graphical User Interface (GUI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/gui/loading_saving.html">Loading and Saving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/gui/image_view.html">Image view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/gui/operations_window.html">Operations Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/gui/recon_window.html">Reconstruction Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/gui/spectrum_viewer.html">Spectrum Viewer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../explanations/operations/index.html">Operations</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../explanations/reconstructions/index.html">Reconstruction Help page</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/reconstructions/center_of_rotation.html">Center of Rotation and Tilt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/reconstructions/algorithms.html">Reconstruction Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../explanations/reconstructions/filters.html">Reconstruction Filters</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../reference/index.html">Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/mantidimaging.html">mantidimaging package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.core.html">mantidimaging.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.gui.html">mantidimaging.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.helper.html">mantidimaging.helper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.ipython.html">mantidimaging.ipython module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/mantidimaging.main.html">mantidimaging.main module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../release_notes/next.html">Mantid Imaging next release</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">User Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Quick...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="quick-start-example-time-of-flight-tof-analysis">
+<span id="quick-start-time-of-flight-workflow-guide"></span><h1>Quick Start: Example Time of Flight (ToF) Analysis<a class="headerlink" href="#quick-start-example-time-of-flight-tof-analysis" title="Link to this heading">#</a></h1>
+<section id="loading-time-of-flight-data">
+<h2>Loading Time-of-Flight Data<a class="headerlink" href="#loading-time-of-flight-data" title="Link to this heading">#</a></h2>
+<img alt="Loading Dialog WIndow with Time-of-Flight Dataset Loaded (Light)" class="only-light align-center" src="../../../_images/loading_screen_tof_dataset_light.png" />
+<img alt="Loading Dialog WIndow with Time-of-Flight Dataset Loaded (Dark)" class="only-dark align-center" src="../../../_images/loading_screen_tof_dataset_dark.png" />
+</section>
+<section id="minimal-files-required-for-tof-quick-start-guide">
+<h2>Minimal Files Required For ToF Quick Start Guide<a class="headerlink" href="#minimal-files-required-for-tof-quick-start-guide" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">Sample</span></code>: Typical sample file formats to expect here are <code class="code docutils literal notranslate"><span class="pre">.fits</span></code> and <code class="code docutils literal notranslate"><span class="pre">.tif</span></code>. We also accept <code class="code docutils literal notranslate"><span class="pre">.nxs</span></code> files, however the loading steps are different from those below. See the (loading_nexus - ADD LINK LATER) for more information on loading Nexus files.</p></li>
+<li><p>Open Beam: This is typically a file that has been collected with no sample in the beam path. This is used to normalise the sample data to the open beam - load either a <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">Before</span></code> or <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">After</span></code> file.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Sample</span> <span class="pre">/</span> <span class="pre">Spectra</span> <span class="pre">Log</span></code>: For a ToF dataset, this is typically a file that contains the time of flight information for each pixel in the image stack. This is used to map the time of flight data to the image stack.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Sample</span> <span class="pre">Shutter</span> <span class="pre">Counts</span></code>: This is typically a file that contains the number of counts for each pixel in the image stack when the sample shutter is open. This is used to normalise the sample data to the sample shutter counts.</p></li>
+<li><p>Open Beam Shutter Counts (<code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">Before</span> <span class="pre">Shutter</span> <span class="pre">Counts</span></code> or <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">After</span> <span class="pre">Shutter</span> <span class="pre">Counts</span></code>): Contains the number of counts for each pixel in the related image stack. This is used to normalise the sample data to the open beam shutter counts. It’s important to select the relevant stack based on whether you loaded a <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">Before</span></code> or <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">After</span></code> above.</p></li>
+</ul>
+<section id="spectrum-viewer">
+<h3>Spectrum Viewer<a class="headerlink" href="#spectrum-viewer" title="Link to this heading">#</a></h3>
+<img alt="Spectrum Viewer Window (Light)" class="only-light align-center" src="../../../_images/spectrum_viewer_light.png" />
+<img alt="Spectrum Viewer Window (Dark)" class="only-dark align-center" src="../../../_images/spectrum_viewer_dark.png" />
+<p>The spectrum viewer is a tool that allows you to view spectrum data within a Time of flight (TOF) image stack. To open the spectrum viewer go to <code class="code docutils literal notranslate"><span class="pre">Workflow</span> <span class="pre">&gt;</span> <span class="pre">Spectrum</span> <span class="pre">Viewer</span></code>.</p>
+<p><strong>Export Spectrum Data</strong>:</p>
+<ol class="arabic simple">
+<li><p>Resize the ROI to just cover the size of the sample within your data or a particular area of interest within your sample. This will allow you to see the spectrum within the ROI which you will be able to see in the spectrum line plot at the bottom of the window.</p></li>
+<li><p>Click the <code class="code docutils literal notranslate"><span class="pre">Add</span></code> button on the left to add another ROI which you can position over a particular detail of your choosing on the sample.</p></li>
+<li><p>Within the ROI Table, double click <code class="code docutils literal notranslate"><span class="pre">roi_1</span></code> to rename to something more descriptive of what the ROI is covering.</p></li>
+<li><p>To remove an ROI, you can select the ROI you would like to remove within the ROI Table and click the <code class="code docutils literal notranslate"><span class="pre">Remove</span></code> button on the left.</p></li>
+<li><p>The location and size of ROIs can be finely tuned using the <code class="code docutils literal notranslate"><span class="pre">Roi</span> <span class="pre">Properties</span></code> table below the table of ROIs. The <code class="code docutils literal notranslate"><span class="pre">Roi</span> <span class="pre">Properties</span></code> will show the coordinates of the currently selected ROI in the tabel of ROIs.</p></li>
+<li><p>To export spectrum data, you can click the <code class="code docutils literal notranslate"><span class="pre">Export</span> <span class="pre">spectrum</span></code> button and select a location and filename. Two files will be saved to this location <code class="code docutils literal notranslate"><span class="pre">&lt;filename&gt;.csv</span></code> and <code class="code docutils literal notranslate"><span class="pre">&lt;filename&gt;_roi_coords.csv</span></code>. <code class="code docutils literal notranslate"><span class="pre">&lt;filename&gt;.csv</span></code> contains the spectrum data for each ROI. <code class="code docutils literal notranslate"><span class="pre">&lt;filename&gt;_roi_coords.csv</span></code> contains the coordinates of the ROIs in the image stack.</p></li>
+<li><p>If you have a TOF dataset loaded where you would like to normalise to the open beam, you can do so by toggling the <code class="code docutils literal notranslate"><span class="pre">Normalise</span> <span class="pre">to</span> <span class="pre">open</span> <span class="pre">beam</span></code> checkbox. This will normalise the spectrum to the open beam spectrum. The greyed out drop down menu will become available and you can select which dataset you would like to use as the open beam.</p></li>
+<li><p>If you have loaded Shutter Count files for your <code class="code docutils literal notranslate"><span class="pre">sample</span></code> and  <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">Before</span> <span class="pre">Shutter</span> <span class="pre">Counts</span></code> or <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">After</span> <span class="pre">Shutter</span> <span class="pre">Counts</span></code> (dependent on if you loaded a <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">Before</span></code> or <code class="code docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">After</span></code> image stack), you can also apply <code class="code docutils literal notranslate"><span class="pre">Shutter</span> <span class="pre">Count</span> <span class="pre">Correction</span></code> by clicking on the checkbox. Applying shutter count correction will autoscale the normalised sample against the open beam to acheive more accurate results where counts across stacks differ from one another. The greyed out toggle box will become togglable once <code class="code docutils literal notranslate"><span class="pre">Normalise</span> <span class="pre">to</span> <span class="pre">open</span> <span class="pre">beam</span></code> has been toggled to true with a valid open beam dataset selected from the drop-down menu.</p></li>
+<li><p>You can also modify the <code class="code docutils literal notranslate"><span class="pre">Flight</span> <span class="pre">path</span></code> and an <code class="code docutils literal notranslate"><span class="pre">Time</span> <span class="pre">delay</span></code> specific to your instrument data under the <code class="code docutils literal notranslate"><span class="pre">Time</span> <span class="pre">of</span> <span class="pre">Flight</span> <span class="pre">Poperties</span></code> section at the bottom of the left hand side of the window. The <code class="code docutils literal notranslate"><span class="pre">Flight</span> <span class="pre">path</span></code> is the distance from the sample to the detector in metres. The <code class="code docutils literal notranslate"><span class="pre">Time</span> <span class="pre">delay</span></code> is the time delay in microseconds between the start of the ToF measurement and the start of the data acquisition. This is typically used to account for any delays in the data acquisition system.</p></li>
+</ol>
+<p><strong>Export Single or Binned Spectrum Data in RITS Format</strong></p>
+<ol class="arabic">
+<li><p>To enter <code class="code docutils literal notranslate"><span class="pre">IMAGE</span></code> mode to export single or binned spectrum data in <a class="reference external" href="https://mlfinfo.jp/bl22/en/GUI-RITS.html">RITS</a> format, you can click the <code class="code docutils literal notranslate"><span class="pre">IMAGE</span></code> tab at the top of the table of ROIs.</p></li>
+<li><p>Resize the ROI in the same way as before for exporting regular spectrum data to cover an area of the sample you would like to acquire the spectrum for.</p></li>
+<li><p>Select the output mode from the top drop down menu on the left which replaces the table of ROIs, either <code class="code docutils literal notranslate"><span class="pre">Single</span> <span class="pre">Spectrum</span></code> or <code class="code docutils literal notranslate"><span class="pre">2D</span> <span class="pre">Binned</span></code> depending on what you would like to export. 2D binned will bin within the ROI and export the binned data as multi-spectrum data.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>If you choose to export as a <code class="code docutils literal notranslate"><span class="pre">2D</span> <span class="pre">Binned</span></code> you can choose the size of your bin in pixels squared from the drop down menu on the left. You can also select the step size of the bin from the drop down menu. If the step size if the same as the bin size, the binned data will be non-overlapping tiled binning. If the step size is smaller than the bin size, the binned data will be overlapping which will achieve a rolling average.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Choose between <code class="code docutils literal notranslate"><span class="pre">Propagated</span></code> and <code class="code docutils literal notranslate"><span class="pre">Standard</span> <span class="pre">Deviation</span></code> from the <code class="code docutils literal notranslate"><span class="pre">Error</span> <span class="pre">Mode</span></code> drop down box. Propagated will calculate the error from the propagated error of the counts in the spectrum. Standard Deviation will calculate the error from the standard deviation of the counts in the spectrum. The mode you choose will depend on the data you are working with. Optionally, you could export to both modes separately to compare the results.</p></li>
+</ol>
+<img alt="Spectrum Viewer Window (Light)" class="only-light align-center" src="../../../_images/spectrum_viewer_image_mode_light.png" />
+<img alt="Spectrum Viewer Window (Dark)" class="only-dark align-center" src="../../../_images/spectrum_viewer_image_mode_dark.png" />
+<p><strong>Changing Units</strong></p>
+<ol class="arabic simple">
+<li><p>You can change the units of the spectrum data by right clicking on any spectrum plot within the Spectrum Viewer and selecting <code class="code docutils literal notranslate"><span class="pre">Units</span></code>. Available units to convert to are:</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">Image</span> <span class="pre">Index</span></code>: The index of the pixel in the image stack.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Wavelength</span></code>: The wavelength of the neutrons in Angstroms (Selected by default).</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Energy</span></code>: The energy of the neutrons in meV.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Time</span> <span class="pre">of</span> <span class="pre">Flight</span> <span class="pre">(μs)</span></code>: The time of flight of the neutrons in microseconds.</p></li>
+</ul>
+<img alt="Spectrum Viewer Unit Conversion in ROI Mode" class="align-center" src="../../../_images/spectrum_viewer_unit_conversion_dark.png" />
+<p><strong>Fitting</strong></p>
+<ol class="arabic simple">
+<li><p>Select the <code class="code docutils literal notranslate"><span class="pre">Fitting</span></code> tab at the top of the Spectrum Viewer window to open the fitting interface. The fitting interface allows you to fit a function to the spectrum data for a selected ROI. The available fitting functions are:</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">Error</span> <span class="pre">function</span></code>: A simple error function model.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Santisteban</span></code>: A Santisteban model, which is a common model used in neutron scattering.</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Clicking the <code class="code docutils literal notranslate"><span class="pre">From</span> <span class="pre">ROI</span></code> button will create an initial guess and fitting parameters based on the data in the selected ROI. This will populate the fitting parameters table with initial values for the fitting function. The inital fit will be plotted on the spectrum plot for the selected ROI. This initial guess is based on the data in the selected ROI and will be used as a starting point for your selected fitting algorithm.</p></li>
+<li><p>Clicking the <code class="code docutils literal notranslate"><span class="pre">Run</span> <span class="pre">fit</span></code> button will run the fitting algorithm on the selected ROI data using the initial fitting parameters generated by <code class="code docutils literal notranslate"><span class="pre">From</span> <span class="pre">ROI</span></code>. The fitted function will be overlayed on the spectrum plot for the selected ROI, allowing you to visually assess the fit.</p></li>
+<li><p>You can then adjust the initial fitting parameters in the table at the bottom left-hand side of the view to refine the fit further. The fitting parameters table allows you to adjust the following parameters:</p></li>
+</ol>
+<p><strong>Santisteban Fit Example</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><ul>
+<li><p><strong>Error Function Parameters</strong></p>
+<a class="only-light reference internal image-reference" href="../../../_images/spectrum_viewer_fitting_err_func_params_light.png"><img alt="Error Function (Light)" class="only-light" src="../../../_images/spectrum_viewer_fitting_err_func_params_light.png" style="width: 300px;" /></a>
+<a class="only-dark reference internal image-reference" href="../../../_images/spectrum_viewer_fitting_err_func_params_dark.png"><img alt="Error Function (Dark)" class="only-dark" src="../../../_images/spectrum_viewer_fitting_err_func_params_dark.png" style="width: 300px;" /></a>
+</li>
+</ul>
+</td>
+<td><ul>
+<li><p><strong>Santisteban Parameters</strong></p>
+<a class="only-light reference internal image-reference" href="../../../_images/spectrum_viewer_fitting_santisteban_params_light.png"><img alt="Santisteban (Light)" class="only-light" src="../../../_images/spectrum_viewer_fitting_santisteban_params_light.png" style="width: 300px;" /></a>
+<a class="only-dark reference internal image-reference" href="../../../_images/spectrum_viewer_fitting_santisteban_params_dark.png"><img alt="Santisteban (Dark)" class="only-dark" src="../../../_images/spectrum_viewer_fitting_santisteban_params_dark.png" style="width: 300px;" /></a>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Error Function Parameters</strong></p></th>
+<th class="head"><p><strong>Santisteban Parameters</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">mu</span></code>: The mean of the fitting function.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">sigma</span></code>: The standard deviation of the fitting function.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">h</span></code>: The height or the function or distance from <code class="code docutils literal notranslate"><span class="pre">min(func)</span></code> to <code class="code docutils literal notranslate"><span class="pre">max(func)</span></code>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">a</span></code>: The vertical offset of the function, i.e. the value of the bottom of the ROI.</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">t_hkl</span></code>: The time of flight for the hkl reflection.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">sigma</span></code>: The standard deviation of the fitting function.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">tau</span></code>: The time constant of the fitting function.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">h</span></code>: The height or the function or distance from <code class="code docutils literal notranslate"><span class="pre">min(func)</span></code> to <code class="code docutils literal notranslate"><span class="pre">max(func)</span></code>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">a</span></code>: The vertical offset of the function, i.e. the value of the bottom of the ROI.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">a_0</span></code>: The baseline transmission i.e. the transmission value before the Bragg edge (high-wavelength side).</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">b_0</span></code>: The overall baseline transmission (background level), similar to (<code class="code docutils literal notranslate"><span class="pre">a_0</span></code>) in the single-edge case.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">a_hkl</span></code> and <code class="code docutils literal notranslate"><span class="pre">b_hkl</span></code>: Describes the jump in the cross-section <code class="code docutils literal notranslate"><span class="pre">sigma_hkl</span></code>.</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For more information on the Santisteban fitting function, see the paper <a class="reference external" href="https://www.researchgate.net/publication/42793067_Time-of-flight_Neutron_Transmission_Diffraction">Time-of-flight Neutron Transmission Diffraction</a> .</p>
+<p>As of now, the fitting interface is still under development and will be improved in future releases. If you have any feedback on the fitting interface, please do get in touch with us via our support email which can be found on our <a class="reference external" href="https://github.com/mantidproject/mantidimaging">GitHub repository</a> :code`README`.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="tomography_workflow_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Quick Start: Example Reconstruction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../how-to-guides/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">How-To Guides</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-time-of-flight-data">Loading Time-of-Flight Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-files-required-for-tof-quick-start-guide">Minimal Files Required For ToF Quick Start Guide</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spectrum-viewer">Spectrum Viewer</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/user_docs/tutorials/quick_start_guides/time_of_flight_workflow_guide.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2024, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
