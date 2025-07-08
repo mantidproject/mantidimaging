@@ -66,8 +66,8 @@ class NexusSaveDialog(BaseDialogView):
     def _check_extension(self) -> None:
         path = Path(self.save_path())
         if path.suffix != NXS_EXT:
-            new_path = path.with_suffix(NXS_EXT)
-            self.savePath.setText(str(new_path))
+            path_with_nxs_ext = path.with_suffix(NXS_EXT)
+            self.savePath.setText(str(path_with_nxs_ext))
 
     @property
     def save_as_float(self) -> bool:

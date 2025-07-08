@@ -137,12 +137,10 @@ class MainWindowView(BaseMainWindowView):
 
         base_path = Path(finder.ROOT_PATH)
         self.open_dialogs = open_dialogs
-        if self.open_dialogs:
-            if versions.is_prerelease():
-                self.setWindowTitle("Mantid Imaging Unstable")
-                image_path = "gui/ui/images/mantid_imaging_unstable_64px.png"
-            else:
-                image_path = "gui/ui/images/mantid_imaging_64px.png"
+
+        if self.open_dialogs and versions.is_prerelease():
+            self.setWindowTitle("Mantid Imaging Unstable")
+            image_path = "gui/ui/images/mantid_imaging_unstable_64px.png"
         else:
             image_path = "gui/ui/images/mantid_imaging_64px.png"
         bg_image = base_path / image_path
@@ -288,9 +286,9 @@ class MainWindowView(BaseMainWindowView):
         Open the dataset loading dialog with a given file_path preset as the sample
         """
         file_path = Path(file_path)
-        sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
+        sample_file = find_first_file_that_is_possibly_a_sample(file_path)
         if sample_file is None:
-            sample_file = find_first_file_that_is_possibly_a_sample(str(file_path.parent))
+            sample_file = find_first_file_that_is_possibly_a_sample(file_path.parent)
 
         if sample_file is not None:
             self.image_load_dialog = ImageLoadDialog(self)
