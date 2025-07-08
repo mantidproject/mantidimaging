@@ -1,10 +1,11 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-import os
+
 import pkgutil
 import sys
 from importlib.util import module_from_spec
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -16,7 +17,8 @@ _OPERATION_MODULES_LIST: list[BaseFilterClass] = []
 
 def _find_operation_modules() -> list[BaseFilterClass]:
     module_list: list[BaseFilterClass] = []
-    for finder, module_name, ispkg in pkgutil.walk_packages([os.path.dirname(__file__)]):
+    search_path = str(Path(__file__).parent)
+    for finder, module_name, ispkg in pkgutil.walk_packages([search_path]):
         if not ispkg:
             continue
 
@@ -26,10 +28,8 @@ def _find_operation_modules() -> list[BaseFilterClass]:
                 continue
             # If we're running a PyInstaller executable then we need to use a full module path
             module_name = f'mantidimaging.core.operations.{module_name}'
-
         # near impossible to type check as find can be a pyinstaller specific type that we can't normally import
         spec = finder.find_spec(module_name)  # type: ignore[call-arg]
-
         assert spec is not None
         assert spec.loader is not None
         module = module_from_spec(spec)
@@ -37,7 +37,6 @@ def _find_operation_modules() -> list[BaseFilterClass]:
         spec.loader.exec_module(module)
         if hasattr(module, 'FILTER_CLASS'):
             module_list.append(module.FILTER_CLASS)
-
     return module_list
 
 
