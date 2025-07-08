@@ -136,7 +136,7 @@ class LiveViewerWindowView(BaseMainWindowView):
             self.presenter.model.clear_mean_partial()
             if self.presenter.model.images:
                 self.presenter.handle_roi_moved()
-                self.presenter.update_intensity(self.presenter.model.mean)
+                self.presenter.update_intensity(self.presenter.model.mean_nan_mask)
         else:
             self.live_viewer.set_roi_visibility_flags(False)
             self.splitter.setSizes([widget_height, 0])
