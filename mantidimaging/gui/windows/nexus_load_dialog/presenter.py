@@ -101,6 +101,7 @@ class NexusLoadPresenter:
                 self.image_key_dataset = self.image_key_dataset[:]
 
                 self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+
                 if self.rotation_angles is None:
                     return
 
@@ -109,8 +110,11 @@ class NexusLoadPresenter:
                     degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
                     degrees = "deg" in str(self.rotation_angles.attrs["units"])
+
                 if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
+                    assert isinstance(self.rotation_angles, np.ndarray)
+
                 self.rotation_angles = self.rotation_angles[:]
 
                 self._look_for_recon_entries()
