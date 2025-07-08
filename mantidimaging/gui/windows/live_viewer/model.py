@@ -200,7 +200,7 @@ class LiveViewerWindowModel:
         self.update_mean(mean_to_add)
 
     def update_mean(self, mean_to_add: float) -> None:
-        self.mean_nan_mask = np.append(self.mean_nan_mask, np.array(mean_to_add))
+        self.mean_nan_mask = np.ma.append(self.mean_nan_mask, np.array(mean_to_add))
 
     def clear_mean_partial(self) -> None:
         self.mean_nan_mask = np.ma.asarray(np.full(len(self.images), np.nan))

@@ -100,11 +100,11 @@ class LiveViewerWindowPresenter(BasePresenter):
                 images_list_paths = [image.image_path for image in images_list]
                 if self.old_image_list_paths == images_list_paths[:-1]:
                     self.try_add_mean(images_list[-1])
-                    self.update_intensity(self.model.mean)
+                    self.update_intensity(self.model.mean_nan_mask)
                     self.old_image_list_paths = images_list_paths
                 else:
                     self.model.clear_mean_partial()
-                    self.run_mean_chunk_calc()
+                    self.handle_roi_moved()
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -115,11 +115,11 @@ class LiveViewerWindowPresenter(BasePresenter):
     def try_add_mean(self, image: Image_Data) -> None:
         try:
             image_data = self.model.image_cache.load_image(image)
-            self.model.add_mean(image.image_path, image_data)
+            self.model.add_mean(image_data)
             self.update_intensity_with_mean()
         except ImageLoadFailError as error:
             logger.error(error.message)
-            self.model.add_mean(image.image_path, None)
+            self.model.add_mean(None)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
