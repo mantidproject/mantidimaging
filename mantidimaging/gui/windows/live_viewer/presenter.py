@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
-from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
+from PyQt5.QtCore import QTimer
 from astropy.io import fits
 from astropy.utils.exceptions import AstropyUserWarning
 
@@ -238,32 +238,28 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.thread.start()
 
     def thread_cleanup(self, thread: TaskWorkerThread) -> None:
-        print(f"thread_cleanup 0: {np.isnan(self.model.mean * self.model.mean_readable).any()}")
         if thread.error is not None:
             raise thread.error
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
-        if np.isnan(self.model.mean).any() and self.model.mean_readable.all():
-            print("thread_cleanup 1")
-            self.try_next_mean_chunk()
-        if not np.isnan(self.model.mean * self.model.mean_readable).any():
-            print("thread_cleanup 2")
+        if np.isnan(self.model.mean_nan_mask).any():
             self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self) -> None:
         self.model.clear_mean_partial()
+
         if not self.handle_roi_change_timer.isActive():
             self.handle_roi_change_timer.start(10)
 
     def update_intensity_with_mean(self) -> None:
         self.view.intensity_profile.clearPlots()
-        self.view.intensity_profile.plot(self.model.mean)
+        self.view.intensity_profile.plot(self.model.mean_nan_mask)
 
     def set_roi_enabled(self, enable: bool):
         if self.view.live_viewer.roi_object is not None:
             self.view.live_viewer.roi_object.blockSignals(not enable)
 
     def try_next_mean_chunk(self) -> None:
-        if np.isnan(self.model.mean).any():
+        if np.isnan(self.model.mean_nan_mask).any():
             if not self.handle_roi_change_timer.isActive():
                 self.handle_roi_change_timer.start(10)
