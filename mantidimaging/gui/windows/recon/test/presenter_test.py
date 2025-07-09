@@ -297,6 +297,22 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_projection.assert_called_once()
         self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
+    @parameterized.expand([(False, True), (True, False)])
+    def test_check_stack_for_invalid_180_deg_proj(self, shape_matches, expect_error):
+        uuid = mock.Mock()
+        selected_images = self.presenter.main_window.get_stack(uuid)
+        selected_images.proj_180_degree_shape_matches_images = mock.Mock(return_value=shape_matches)
+
+        self.presenter.check_stack_for_invalid_180_deg_proj(uuid)
+        selected_images.proj_180_degree_shape_matches_images.assert_called_once()
+
+        if expect_error:
+            self.view.show_error_dialog.assert_called_once_with(
+                "The shapes of the selected stack and it's 180 degree projections do not match! This is going to cause "
+                "an error when calculating the COR. Fix the shape before continuing!")
+        else:
+            self.view.show_error_dialog.assert_not_called()
+
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_with_180_projection(self, mock_start_async: mock.Mock):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
@@ -367,35 +383,6 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.show_recon_volume.assert_not_called()
         self.view.show_error_dialog.assert_called_once()
         self.view.set_recon_buttons_enabled.assert_called_once_with(True)
-
-    def test_proj_180_degree_shape_matches_images_where_they_match(self):
-        images = mock.MagicMock()
-        images.height = 10
-        images.width = 10
-        images.proj180deg.height = 10
-        images.proj180deg.width = 10
-        has_proj180deg = mock.MagicMock(return_value=True)
-        images.has_proj180deg = has_proj180deg
-
-        self.assertTrue(self.presenter.proj_180_degree_shape_matches_images(images))
-
-    def test_proj_180_degree_shape_matches_images_where_they_dont_match(self):
-        images = mock.MagicMock()
-        images.height = 10
-        images.width = 10
-        images.proj180deg.height = 20
-        images.proj180deg.width = 20
-        has_proj180deg = mock.MagicMock(return_value=True)
-        images.has_proj180deg = has_proj180deg
-
-        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
-
-    def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
-        images = mock.MagicMock()
-        has_proj180deg = mock.MagicMock(return_value=False)
-        images.has_proj180deg = has_proj180deg
-
-        self.assertFalse(self.presenter.proj_180_degree_shape_matches_images(images))
 
     def test_status_message_shows_nan_zero_negative_warning(self):
         self.presenter.model.stack_contains_nans = mock.Mock(return_value=True)

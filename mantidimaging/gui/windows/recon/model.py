@@ -220,7 +220,7 @@ class ReconstructWindowModel:
     def set_precalculated(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.data_model.set_precalculated(cor, tilt)
 
-    def is_current_stack(self, uuid: uuid.UUID) -> bool:
+    def is_current_stack(self, uuid: uuid.UUID | None) -> bool:
         return self.stack_id == uuid
 
     def get_slice_indices(self, num_cors: int) -> tuple[int, np.ndarray]:
@@ -259,11 +259,6 @@ class ReconstructWindowModel:
 
     def auto_find_correlation(self, progress: Progress) -> tuple[ScalarCoR, Degrees]:
         return find_center(self.images, progress)
-
-    @staticmethod
-    def proj_180_degree_shape_matches_images(images) -> bool:
-        return images.has_proj180deg() and images.height == images.proj180deg.height \
-               and images.width == images.proj180deg.width
 
     def stack_contains_nans(self) -> bool:
         return bool(np.any(np.isnan(self.images.data)))
