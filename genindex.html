@@ -933,7 +933,7 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.check_issues">check_issues() (mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter method)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.check_stack_for_invalid_180_deg_proj">check_stack_for_invalid_180_deg_proj() (mantidimaging.gui.windows.recon.view.ReconstructWindowView method)</a>
+      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.check_stack_for_invalid_180_deg_proj">check_stack_for_invalid_180_deg_proj() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.checkboxes">checkboxes (mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog attribute)</a>
 </li>
@@ -1463,10 +1463,10 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_add_roi_to_table">do_add_roi_to_table() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.do_adjust_roi">do_adjust_roi() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_algorithm_changed">do_algorithm_changed() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter">do_apply_filter() (mantidimaging.gui.windows.operations.model.FiltersWindowModel method)</a>
@@ -1524,6 +1524,8 @@ document.write(`
       <li><a href="api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up">do_set_up() (mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_stack_reconstruct_slice">do_stack_reconstruct_slice() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_stack_uuid_changed">do_stack_uuid_changed() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.dialogs.async_task.presenter.html#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.do_start_processing">do_start_processing() (mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter method)</a>
 </li>
@@ -5779,10 +5781,10 @@ document.write(`
         <li><a href="api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.populate_slice_indices">(mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel method)</a>
 </li>
       </ul></li>
-      <li><a href="api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.position_close_button">position_close_button() (mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mantidimaging.gui.windows.welcome_screen.view.html#mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView.position_close_button">position_close_button() (mantidimaging.gui.windows.welcome_screen.view.WelcomeScreenView method)</a>
+</li>
       <li><a href="api/mantidimaging.gui.widgets.indicator_icon.view.html#mantidimaging.gui.widgets.indicator_icon.view.IndicatorIconView.position_icon">position_icon() (mantidimaging.gui.widgets.indicator_icon.view.IndicatorIconView method)</a>
 </li>
       <li><a href="api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.prefitting">prefitting() (mantidimaging.core.fitting.fitting_functions.BaseFittingFunction method)</a>
@@ -5865,12 +5867,8 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.FILE_TYPES.PROJ_180">PROJ_180 (mantidimaging.core.utility.data_containers.FILE_TYPES attribute)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images">proj_180_degree_shape_matches_images() (mantidimaging.gui.windows.recon.model.ReconstructWindowModel static method)</a>
-
-      <ul>
-        <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.proj_180_degree_shape_matches_images">(mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
+      <li><a href="api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.proj_180_degree_shape_matches_images">proj_180_degree_shape_matches_images() (mantidimaging.core.data.imagestack.ImageStack method)</a>
 </li>
-      </ul></li>
       <li><a href="api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.projection">projection() (mantidimaging.core.data.imagestack.ImageStack method)</a>
 </li>
       <li><a href="api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.LogColumn.PROJECTION_ANGLE">PROJECTION_ANGLE (mantidimaging.core.io.instrument_log.LogColumn attribute)</a>
@@ -6668,6 +6666,8 @@ document.write(`
       <li><a href="api/mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.set_stack_data">set_stack_data() (mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.set_stack_directory">set_stack_directory() (mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.Notifications.SET_STACK_UUID">SET_STACK_UUID (mantidimaging.gui.windows.recon.presenter.Notifications attribute)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid">set_stack_uuid() (mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter method)</a>
 

@@ -756,7 +756,7 @@ document.write(`
 
 <div class="viewcode-block" id="ReconstructWindowModel.is_current_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">is_current_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_current_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_id</span> <span class="o">==</span> <span class="n">uuid</span></div>
 
 
@@ -804,14 +804,6 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_correlation">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">auto_find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Degrees</span><span class="p">]:</span>
         <span class="k">return</span> <span class="n">find_center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ReconstructWindowModel.proj_180_degree_shape_matches_images">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.proj_180_degree_shape_matches_images">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">proj_180_degree_shape_matches_images</span><span class="p">(</span><span class="n">images</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">height</span> \
-               <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">width</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowModel.stack_contains_nans">
