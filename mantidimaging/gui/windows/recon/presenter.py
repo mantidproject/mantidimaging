@@ -152,6 +152,19 @@ class ReconstructWindowPresenter(BasePresenter):
         if self.model.is_current_stack(uuid):
             return
 
+        self._reset_ui_for_new_stack(images)
+
+        if images is None:
+            self.view.reset_recon_line_profile()
+            self.view.show_status_message("")
+            return
+
+        self._setup_new_stack_previews()
+
+    def _reset_ui_for_new_stack(self, images) -> None:
+        """
+        Reset UI state and perform basic setup for new stack
+        """
         self.view.reset_recon_and_sino_previews()
         self.view.clear_cor_table()
         self.model.initial_select_data(images)
@@ -159,10 +172,11 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
-        if images is None:
-            self.view.reset_recon_line_profile()
-            self.view.show_status_message("")
-            return
+
+    def _setup_new_stack_previews(self) -> None:
+        """
+        Setup previews and validation for valid image stack
+        """
         self._set_max_preview_indexes()
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
