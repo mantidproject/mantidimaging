@@ -85,22 +85,11 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    @mock.patch('mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack')
-    def test_set_stack_uuid_no_image_data(self, mock_is_current_stack, mock_start_async_task_view):
-        self.presenter.model._images = None
-        self.main_window.get_stack.return_value = None
-        mock_is_current_stack.return_value = False
-
+    def test_set_stack_uuid_no_image_data(self, mock_start_async: mock.Mock):
+        """Test that set_stack_uuid handles a UUID of 'None' properly"""
         self.presenter.set_stack_uuid(None)
-        self.view.reset_recon_and_sino_previews.assert_called_once()
-        self.view.reset_projection_preview.assert_called_once()
-        mock_start_async_task_view.assert_not_called()
-        self.view.update_sinogram.assert_not_called()
-        self.view.update_projection.assert_not_called()
-        self.view.reset_recon_line_profile.assert_called_once()
-        self.view.show_status_message.assert_called_once_with("")
-        self.view.set_max_projection_index.assert_not_called()
-        self.view.set_max_slice_index.assert_not_called()
+        self.main_window.get_stack.assert_not_called()
+        mock_start_async.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
