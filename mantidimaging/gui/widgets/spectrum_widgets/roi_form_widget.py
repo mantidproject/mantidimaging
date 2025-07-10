@@ -43,7 +43,7 @@ class ROIFormWidget(BaseWidget):
         self.image_output_mode_combobox.currentTextChanged.connect(self.set_binning_visibility)
         self.set_binning_visibility()
 
-        icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+        icon_path = (finder.ROOT_PATH / "gui" / "ui" / "images" / "exclamation-triangle-red.png").as_posix()
         self.rits_warning_icon_pixmap = QPixmap(icon_path)
 
         self.ritsWarningIcon = QLabel(self)
