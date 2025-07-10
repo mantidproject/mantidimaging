@@ -36,14 +36,15 @@ class CommandLineArgumentsTest(unittest.TestCase):
 
     def test_valid_path_check_made_once(self):
         first_path = "first/path"
-        with mock.patch("mantidimaging.core.utility.command_line_arguments.os.path.exists") as exists_mock:
+        with mock.patch("mantidimaging.core.utility.command_line_arguments.Path.exists") as exists_mock:
+            exists_mock.return_value = True
             CommandLineArguments(first_path)
             CommandLineArguments("second/path")
-        exists_mock.assert_called_once_with(first_path)
+        exists_mock.assert_called_once()
         self.assertEqual(CommandLineArguments().path(), [first_path])
 
     def test_no_check_if_no_path_is_given(self):
-        with mock.patch("mantidimaging.core.utility.command_line_arguments.os.path.exists") as exists_mock:
+        with mock.patch("mantidimaging.core.utility.command_line_arguments.Path.exists") as exists_mock:
             CommandLineArguments()
         exists_mock.assert_not_called()
 

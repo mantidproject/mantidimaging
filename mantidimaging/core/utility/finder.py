@@ -1,8 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+from pathlib import Path
 
-import os
 import mantidimaging
 "Path to the MantidImaging module"
-ROOT_PATH = os.path.dirname(mantidimaging.__file__)
+ROOT_PATH = Path(mantidimaging.__file__).parent

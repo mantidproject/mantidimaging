@@ -44,18 +44,21 @@ git clone https://github.com/mantidproject/mantidimaging-data.git"""
 NEXUS_SAMPLE = str(
     Path.home()) + "/mantidimaging-data/Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
 
-APPLITOOLS_IMAGE_DIR = os.getenv("APPLITOOLS_IMAGE_DIR")
-if APPLITOOLS_IMAGE_DIR is None:
-    APPLITOOLS_IMAGE_DIR = mkdtemp(prefix="mantid_image_eyes_")
+# Handle Applitools image directory
+applitools_image_dir_env = os.getenv("APPLITOOLS_IMAGE_DIR")
+if applitools_image_dir_env is None:
+    APPLITOOLS_IMAGE_DIR = Path(mkdtemp(prefix="mantid_image_eyes_"))
 else:
-    if not os.path.isdir(APPLITOOLS_IMAGE_DIR):
+    APPLITOOLS_IMAGE_DIR = Path(applitools_image_dir_env)
+    if not APPLITOOLS_IMAGE_DIR.is_dir():
         raise ValueError(f"Directory does not exist: APPLITOOLS_IMAGE_DIR = {APPLITOOLS_IMAGE_DIR}")
 
+# Set global Qt font
 QApplication.setFont(QFont("Sans Serif", 10))
 
 
 @unittest.skipIf(API_KEY_PRESENT is None, "API Key is not defined in the environment, so Eyes tests are skipped.")
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(LOAD_SAMPLE.exists(), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
     eyes_manager: EyesManager

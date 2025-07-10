@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import psutil
 from psutil import NoSuchProcess, AccessDenied
@@ -45,17 +45,32 @@ class ParallelManagerTest(unittest.TestCase):
         self.assertEqual([], pm.find_memory_from_previous_process_linux())
 
     @patch('mantidimaging.core.parallel.manager._get_shared_mem_names_linux')
-    @patch('os.path.getmtime')
     @patch('mantidimaging.core.parallel.manager._lookup_process', new_callable=lambda: _lookup_process_mock)
-    def test_find_memory_from_previous_process_linux_with_mem_to_clear(self, _mock_lookup_process, _mock_getmtime,
-                                                                       _mock_get_shared_mem_names_linux):
+    @patch('pathlib.Path.stat')
+    def test_find_memory_from_previous_process_linux_with_mem_to_clear(
+        self,
+        mock_stat,
+        mock_lookup_process,
+        mock_get_shared_mem_names_linux,
+    ):
         all_mem_files = [
-            f'MI_{CURRENT_PID}_123', f'Other_{CURRENT_PID}_123', f'MI_{OLD_PID}_123', f'MI_{CURRENT_PID + 2}_123',
-            f'MI_{OLD_PID}_124', 'MI_1234', 'MI_test_123-456-789', 'MI-1234-125'
+            f'MI_{CURRENT_PID}_123',
+            f'Other_{CURRENT_PID}_123',
+            f'MI_{OLD_PID}_123',
+            f'MI_{CURRENT_PID + 2}_123',
+            f'MI_{OLD_PID}_124',
+            'MI_1234',
+            'MI_test_123-456-789',
+            'MI-1234-125'
         ]
         files_to_remove = [f'MI_{OLD_PID}_123', f'MI_{OLD_PID}_124']
 
-        _mock_get_shared_mem_names_linux.return_value = all_mem_files
-        _mock_getmtime.return_value = psutil.Process().create_time() - 3600
+        mock_get_shared_mem_names_linux.return_value = all_mem_files
 
-        self.assertEqual(files_to_remove, pm.find_memory_from_previous_process_linux())
+        # Mock st_mtime on the Path.stat() result
+        mock_stat.return_value = MagicMock( st_mtime=psutil.Process().create_time() - 3600 )
+
+        self.assertEqual(
+            files_to_remove,
+            pm.find_memory_from_previous_process_linux()
+        )

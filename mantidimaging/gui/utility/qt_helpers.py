@@ -9,6 +9,7 @@ import os
 from abc import ABCMeta
 from enum import IntEnum, auto
 from logging import getLogger
+from pathlib import Path
 from typing import Any
 from collections.abc import Callable
 
@@ -48,8 +49,9 @@ class BlockQtSignals:
 
 
 def compile_ui(ui_file: str, qt_obj=None) -> QWidget:
-    base_path = finder.ROOT_PATH
-    return uic.loadUi(os.path.join(base_path, ui_file), qt_obj)
+    base_path = Path(finder.ROOT_PATH)
+    ui_path = base_path / ui_file
+    return uic.loadUi(str(ui_path), qt_obj)
 
 
 def select_directory(field: QWidget, caption: str) -> None:
