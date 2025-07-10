@@ -89,6 +89,9 @@ class ImageLoader:
 
         with progress:
             for idx, in_file in enumerate(files):
+                if progress.should_cancel:
+                    LOG.info("Loading cancelled by user.")
+                    raise RuntimeError("Loading cancelled by user.")
                 try:
                     data.array[idx, :] = self.load_func(in_file)
                     total_size += os.path.getsize(in_file)

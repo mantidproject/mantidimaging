@@ -7,7 +7,7 @@ import unittest
 from unittest import mock
 
 from mantidimaging.core.utility.progress_reporting import Progress, ProgressHandler
-from mantidimaging.core.utility.progress_reporting.progress import ProgressHistory
+from mantidimaging.core.utility.progress_reporting.progress import ProgressHistory, TaskCancelled
 
 
 class ProgressTest(unittest.TestCase):
@@ -230,18 +230,15 @@ class ProgressTest(unittest.TestCase):
     def test_cancellation(self):
         p = Progress()
         p.add_estimated_steps(10)
-
         with p:
             for i in range(10):
                 if i < 6:
                     p.update()
-
                     if i == 5:
                         p.cancel("nope")
                         self.assertTrue(p.should_cancel)
-
                 else:
-                    with self.assertRaises(StopIteration):
+                    with self.assertRaises(TaskCancelled):
                         p.update()
 
         self.assertFalse(p.is_completed())

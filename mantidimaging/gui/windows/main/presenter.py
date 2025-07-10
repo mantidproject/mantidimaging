@@ -20,6 +20,7 @@ from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.progress_reporting.progress import TaskCancelled
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
@@ -181,6 +182,9 @@ class MainWindowPresenter(BasePresenter):
             self.view.args.clear_window_args()
 
     def _on_dataset_load_done(self, task: TaskWorkerThread) -> None:
+        if isinstance(task.error, TaskCancelled):
+            getLogger(__name__).info("Loading was cancelled by the user.")
+            return
 
         if task.was_successful():
             self._add_dataset_to_view(task.result)
