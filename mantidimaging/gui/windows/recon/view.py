@@ -232,13 +232,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def showEvent(self, e) -> None:
         super().showEvent(e)
-        if self.presenter.stack_selection_change_pending:
-            self.presenter.set_stack_uuid(self.stackSelector.current())
-            self.presenter.stack_selection_change_pending = False
-            self.presenter.stack_changed_pending = False
-        elif self.presenter.stack_changed_pending:
-            self.presenter.handle_stack_changed()
-            self.presenter.stack_changed_pending = False
+        self.presenter.handle_show_event()
         self.activateWindow()
 
     def closeEvent(self, e) -> None:
@@ -457,6 +451,10 @@ class ReconstructWindowView(BaseMainWindowView):
             return params
         else:
             return None
+
+    @property
+    def current_stack_uuid(self) -> UUID | None:
+        return self.stackSelector.current()
 
     def recon_params(self) -> ReconstructionParameters:
         return ReconstructionParameters(algorithm=self.algorithm_name,
