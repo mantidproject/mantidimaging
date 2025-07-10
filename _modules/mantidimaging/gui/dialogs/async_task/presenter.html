@@ -554,7 +554,8 @@ document.write(`
 <div class="viewcode-block" id="AsyncTaskDialogPresenter.set_parameters">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.presenter.html#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_parameters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;progress&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AsyncTaskDialogPresenter.set_on_complete">

@@ -494,15 +494,29 @@ document.write(`
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
 <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">SupportsInt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupportsInt</span><span class="p">,</span> <span class="n">NamedTuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.memory_usage</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_memory_usage_linux_str</span>
 
-<span class="n">ProgressHistory</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s1">&#39;ProgressHistory&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)])</span>
+
+<div class="viewcode-block" id="ProgressHistory">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProgressHistory</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">time</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">step</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+
+<div class="viewcode-block" id="TaskCancelled">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.TaskCancelled">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TaskCancelled</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a task is explicitly cancelled by the user.&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="ProgressHandler">
@@ -552,7 +566,7 @@ document.write(`
 
         <span class="c1"># Current step being executed (0 denoting not started)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Estimated number of steps (used to calculated percentage complete)</span>
+        <span class="c1"># Estimated number of steps (used to calculate percentage complete)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_estimated_steps</span><span class="p">(</span><span class="n">num_steps</span><span class="p">)</span>
 
@@ -575,6 +589,7 @@ document.write(`
 
         <span class="c1"># Flag to indicate cancellation of the current task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Add initial step to history</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;init&#39;</span><span class="p">)</span>
@@ -610,18 +625,14 @@ document.write(`
 <div class="viewcode-block" id="Progress.is_completed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.is_completed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if the task has been marked as completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the task has been marked as completed.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete</span></div>
 
 
 <div class="viewcode-block" id="Progress.completion">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.completion">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">completion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the completion of the task in the range of 0.0 - 1.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the completion of the task in the range of 0.0 - 1.0&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></div>
 
@@ -629,14 +640,11 @@ document.write(`
 <div class="viewcode-block" id="Progress.last_status_message">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.last_status_message">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">last_status_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the message from the last progress update.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the message from the last progress update.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
                 <span class="k">return</span> <span class="n">msg</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
-
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -645,7 +653,6 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">execution_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the total time this task has been executing.</span>
-
 <span class="sd">        Total time is measured from the timestamp of the first progress message</span>
 <span class="sd">        to the timestamp of the last progress message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -660,20 +667,15 @@ document.write(`
 <div class="viewcode-block" id="Progress.set_estimated_steps">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.set_estimated_steps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_estimated_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the number of steps this task is expected to take to complete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the number of steps this task is expected to take to complete.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span> <span class="o">=</span> <span class="n">num_steps</span></div>
 
 
 <div class="viewcode-block" id="Progress.add_estimated_steps">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_estimated_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Increments the number of steps this task is expected to take to</span>
-<span class="sd">        complete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_estimated_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increments the number of steps this task is expected to take to complete.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span> <span class="o">+=</span> <span class="n">num_steps</span></div>
 
 
@@ -713,6 +715,9 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Acquire lock while manipulating progress state</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force_continue</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TaskCancelled</span><span class="p">(</span><span class="s1">&#39;Task has been cancelled&#39;</span><span class="p">)</span>
+
             <span class="c1"># Update current step</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">+=</span> <span class="n">steps</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span><span class="p">:</span>
@@ -727,13 +732,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">progress_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">step_details</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">extra_info</span> <span class="o">=</span> <span class="n">extra_info</span>
 
-        <span class="c1"># process progress callbacks</span>
+        <span class="c1"># Process progress callbacks</span>
         <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_handlers</span><span class="p">:</span>
-            <span class="n">cb</span><span class="o">.</span><span class="n">progress_update</span><span class="p">()</span>
-
-        <span class="c1"># Force cancellation on progress update</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_cancel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force_continue</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s1">&#39;Task has been cancelled&#39;</span><span class="p">)</span></div>
+            <span class="n">cb</span><span class="o">.</span><span class="n">progress_update</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Progress.calculate_mean_time">
@@ -743,7 +744,6 @@ document.write(`
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">progress_history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">average_over_steps</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">STEPS_TO_AVERAGE</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">progress_history</span><span class="p">))</span>
             <span class="n">time_diff</span> <span class="o">=</span> <span class="n">progress_history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">progress_history</span><span class="p">[</span><span class="o">-</span><span class="n">average_over_steps</span><span class="p">]</span><span class="o">.</span><span class="n">time</span>
-
             <span class="k">return</span> <span class="n">time_diff</span> <span class="o">/</span> <span class="p">(</span><span class="n">average_over_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span></div>
@@ -758,26 +758,22 @@ document.write(`
 <span class="sd">        Task should either periodically inspect should_cancel or have suitably</span>
 <span class="sd">        many calls to update() to be cancellable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="o">=</span> <span class="n">msg</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">should_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if the task should be cancelled.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the task should be cancelled.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span>
 
 <div class="viewcode-block" id="Progress.mark_complete">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.mark_complete">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;complete&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Marks the task as completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Marks the task as completed.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">force_continue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span> <span class="k">else</span> <span class="n">msg</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">force_continue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_msg</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_cancel</span> <span class="k">else</span> <span class="n">msg</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_cancel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cancelled</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">complete</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_step</span></div>
 </div>

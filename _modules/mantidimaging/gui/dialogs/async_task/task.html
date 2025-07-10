@@ -501,6 +501,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QThread</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.func_call</span><span class="w"> </span><span class="kn">import</span> <span class="n">call_with_known_parameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting.progress</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskCancelled</span>
 
 
 <div class="viewcode-block" id="TaskWorkerThread">
@@ -529,9 +530,7 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">task_function</span> <span class="o">=</span> <span class="kc">None</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -546,10 +545,17 @@ document.write(`
 
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">call_with_known_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_function</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="k">except</span> <span class="n">TaskCancelled</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task was cancelled by the user.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">e</span>
+            <span class="k">return</span>
+
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to execute task: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">e</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">e</span>
+            <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="TaskWorkerThread.was_successful">

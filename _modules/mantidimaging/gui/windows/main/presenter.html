@@ -513,6 +513,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_projection_closest_to_180</span><span class="p">,</span> <span class="n">THRESHOLD_180</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting.progress</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskCancelled</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.async_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_async_task_view</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.stack_visualiser.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackVisualiserView</span>
@@ -706,6 +707,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">clear_window_args</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_dataset_load_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">TaskCancelled</span><span class="p">):</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading was cancelled by the user.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_dataset_to_view</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>

@@ -569,9 +569,8 @@ document.write(`
 <p>Class used to perform basic progress monitoring and reporting.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps">
-<span class="sig-name descname"><span class="pre">add_estimated_steps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.add_estimated_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps" title="Link to this definition">#</a></dt>
-<dd><p>Increments the number of steps this task is expected to take to
-complete.</p>
+<span class="sig-name descname"><span class="pre">add_estimated_steps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.add_estimated_steps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.add_estimated_steps" title="Link to this definition">#</a></dt>
+<dd><p>Increments the number of steps this task is expected to take to complete.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -610,8 +609,8 @@ parameter, or simply create and configure a new one.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.Progress.execution_time">
 <span class="sig-name descname"><span class="pre">execution_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#Progress.execution_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.Progress.execution_time" title="Link to this definition">#</a></dt>
-<dd><p>Gets the total time this task has been executing.</p>
-<p>Total time is measured from the timestamp of the first progress message
+<dd><p>Gets the total time this task has been executing.
+Total time is measured from the timestamp of the first progress message
 to the timestamp of the last progress message.</p>
 </dd></dl>
 
@@ -683,7 +682,7 @@ to this function</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.progress_reporting.progress.</span></span><span class="sig-name descname"><span class="pre">ProgressHistory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.progress_reporting.progress.</span></span><span class="sig-name descname"><span class="pre">ProgressHistory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#ProgressHistory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.msg">
@@ -703,6 +702,13 @@ to this function</p></li>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.progress_reporting.progress.TaskCancelled">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.progress_reporting.progress.</span></span><span class="sig-name descname"><span class="pre">TaskCancelled</span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/progress_reporting/progress.html#TaskCancelled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.progress_reporting.progress.TaskCancelled" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Raised when a task is explicitly cancelled by the user.</p>
 </dd></dl>
 
 </section>
@@ -780,6 +786,7 @@ to this function</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.progress_reporting.progress.ProgressHistory.time"><code class="docutils literal notranslate"><span class="pre">ProgressHistory.time</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.progress_reporting.progress.TaskCancelled"><code class="docutils literal notranslate"><span class="pre">TaskCancelled</span></code></a></li>
 </ul>
   </nav></div>
 
