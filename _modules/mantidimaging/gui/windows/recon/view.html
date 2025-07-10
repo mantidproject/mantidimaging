@@ -527,54 +527,76 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReconstructWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
-    <span class="n">tableView</span><span class="p">:</span> <span class="n">RemovableRowTableView</span>
-    <span class="n">imageLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
+    <span class="c1"># COR and Tilt tab</span>
 
-    <span class="n">inputTab</span><span class="p">:</span> <span class="n">QWidget</span>
-    <span class="n">calculateCors</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">resultsTab</span><span class="p">:</span> <span class="n">QWidget</span>
 
-    <span class="n">resultTab</span><span class="p">:</span> <span class="n">QWidget</span>
-    <span class="n">addBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">refineCorBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">refineIterationsBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">clearAllBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">removeBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">stackSelector</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span>
 
-    <span class="n">correlateBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">minimiseBtn</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">resultCorSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">resultTiltSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">resultSlopeSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">calculateCorsButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+
+    <span class="n">correlateButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">minimiseButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">corHelpButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+
+    <span class="n">tableView</span><span class="p">:</span> <span class="n">RemovableRowTableView</span>
+    <span class="n">removeButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">addButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">clearAllButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">refineCorButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+
+    <span class="c1"># BHC tab</span>
+
+    <span class="n">bhcTab</span><span class="p">:</span> <span class="n">QWidget</span>
+
+    <span class="n">lbhcEnabledCheckBox</span><span class="p">:</span> <span class="n">QCheckBox</span>
+    <span class="n">lbhcA0SpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">lbhcA1SpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">lbhcA2SpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">lbhcA3SpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+
+    <span class="c1"># Reconstruct tab</span>
 
     <span class="n">reconTab</span><span class="p">:</span> <span class="n">QWidget</span>
 
-    <span class="c1"># part of the Reconstruct tab</span>
-    <span class="n">algorithmName</span><span class="p">:</span> <span class="n">QComboBox</span>
-    <span class="n">filterName</span><span class="p">:</span> <span class="n">QComboBox</span>
-    <span class="n">numIter</span><span class="p">:</span> <span class="n">QSpinBox</span>
-    <span class="n">maxProjAngle</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">pixelSize</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">maxProjAngleSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">algorithmNameComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
+    <span class="n">filterNameComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
+    <span class="n">numIterSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
     <span class="n">alphaSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+
     <span class="n">nonNegativeCheckBox</span><span class="p">:</span> <span class="n">QCheckBox</span>
     <span class="n">stochasticCheckBox</span><span class="p">:</span> <span class="n">QCheckBox</span>
+
     <span class="n">subsetsSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
-    <span class="n">resultCor</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">resultTilt</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">resultSlope</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">reconstructVolume</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">reconstructSlice</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">regPercentSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
+    <span class="n">pixelSizeSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
 
-    <span class="n">lbhc_enabled</span><span class="p">:</span> <span class="n">QCheckBox</span>
-    <span class="n">lbhc_a0</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">lbhc_a1</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">lbhc_a2</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
-    <span class="n">lbhc_a3</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
+    <span class="n">refineIterationsButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">reconHelpButton</span><span class="p">:</span> <span class="n">QPushButton</span>
 
-    <span class="n">statusMessageTextEdit</span><span class="p">:</span> <span class="n">QTextEdit</span>
-    <span class="n">messageIcon</span><span class="p">:</span> <span class="n">QLabel</span>
+    <span class="n">reconstructSliceButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">reconstructVolumeButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+
+    <span class="c1"># ----------------</span>
+    <span class="c1"># Preview section</span>
+
+    <span class="n">previewProjectionIndexSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
+    <span class="n">previewSliceIndexSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
 
     <span class="n">changeColourPaletteButton</span><span class="p">:</span> <span class="n">QPushButton</span>
-    <span class="n">change_colour_palette_dialog</span><span class="p">:</span> <span class="n">PaletteChangerView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">changeColourPaletteDialog</span><span class="p">:</span> <span class="n">PaletteChangerView</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">stackSelector</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span>
+    <span class="n">messageIconLabel</span><span class="p">:</span> <span class="n">QLabel</span>
+    <span class="n">statusMessageTextEdit</span><span class="p">:</span> <span class="n">QTextEdit</span>
+
+    <span class="c1"># ----------------</span>
+    <span class="c1"># Image section</span>
+
+    <span class="n">imageLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;gui/ui/recon_window.ui&#39;</span><span class="p">)</span>
@@ -582,24 +604,24 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">ReconstructWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;FBP_CUDA&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;SIRT_CUDA&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;CIL_PDHG-TV&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;FBP_CUDA&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;SIRT_CUDA&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;CIL_PDHG-TV&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">CudaChecker</span><span class="p">()</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">update_recon_hist_needed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_stacks</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">stack_selected_uuid</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_stack_uuid</span><span class="p">)</span>
 
         <span class="c1"># Handle preview image selection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">previewProjectionIndex</span><span class="o">.</span><span class="n">valueChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_preview_projection_idx</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndex</span><span class="o">.</span><span class="n">valueChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_preview_slice_idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previewProjectionIndexSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_preview_projection_idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndexSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_preview_slice_idx</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span> <span class="o">=</span> <span class="n">ReconImagesView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="p">)</span>
@@ -627,17 +649,17 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cor_table_model</span><span class="o">.</span><span class="n">dataChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_data_change</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">clearAllBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">CLEAR_ALL_CORS</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">removeBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">REMOVE_SELECTED_COR</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">ADD_COR</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refineCorBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">REFINE_COR</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refineIterationsBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">REFINE_ITERS</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">calculateCors</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">CALCULATE_CORS_FROM_MANUAL_TILT</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructVolume</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_VOLUME</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructSlice</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_STACK_SLICE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clearAllButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">CLEAR_ALL_CORS</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">REMOVE_SELECTED_COR</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">ADD_COR</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refineCorButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">REFINE_COR</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refineIterationsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">REFINE_ITERS</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculateCorsButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">CALCULATE_CORS_FROM_MANUAL_TILT</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructVolumeButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_VOLUME</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructSliceButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_STACK_SLICE</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">correlateBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">AUTO_FIND_COR_CORRELATE</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">minimiseBtn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">AUTO_FIND_COR_MINIMISE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlateButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">AUTO_FIND_COR_CORRELATE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimiseButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">AUTO_FIND_COR_MINIMISE</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">changeColourPaletteButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_change_colour_palette</span><span class="p">)</span>
 
@@ -658,7 +680,7 @@ document.write(`
 
             <span class="c1"># Only allow buttons which act on selected row to be clicked when a valid</span>
             <span class="c1"># row is selected</span>
-            <span class="k">for</span> <span class="n">button</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">refineCorBtn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">removeBtn</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">button</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">refineCorButton</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">removeButton</span><span class="p">]:</span>
                 <span class="n">button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span><span class="o">.</span><span class="n">currentRowChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">on_row_change</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
@@ -670,17 +692,17 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">stack_selected_uuid</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">SET_STACK_UUID</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">select_eligible_stack</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxProjAngle</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxProjAngleSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">ALGORITHM_CHANGED</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">ALGORITHM_CHANGED</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filterName</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filterNameComboBox</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numIter</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numIterSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">pixelSize</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixelSizeSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alphaSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nonNegativeCheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stochasticCheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
@@ -698,10 +720,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">previewAutoUpdate</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_auto_update_preview_selection</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updatePreviewButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_USER_CLICK</span><span class="p">))</span>
 
-        <span class="k">for</span> <span class="n">spinbox</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a3</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">spinbox</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lbhcA0SpinBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcA1SpinBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcA2SpinBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcA3SpinBox</span><span class="p">]:</span>
             <span class="n">spinbox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_enabled</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_enabled</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lbhcEnabledCheckBox</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lbhcEnabledCheckBox</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>
 
 <div class="viewcode-block" id="ReconstructWindowView.showEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.showEvent">[docs]</a>
@@ -795,8 +817,8 @@ document.write(`
 <span class="sd">        :param tilt_angle: Angle of the tilt line</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndex</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndex</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">preview_slice_index</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndexSpinBox</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndexSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">preview_slice_index</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">update_projection</span><span class="p">(</span><span class="n">image_data</span><span class="p">,</span> <span class="n">preview_slice_index</span><span class="p">)</span></div>
 
@@ -873,8 +895,8 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Disable clear buttons when there are no rows in the table</span>
         <span class="n">empty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">model</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">removeBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="ow">not</span> <span class="n">empty</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clearAllBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="ow">not</span> <span class="n">empty</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="ow">not</span> <span class="n">empty</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clearAllButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="ow">not</span> <span class="n">empty</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.add_cor_table_row">
@@ -897,56 +919,56 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rotation_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultCor</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultCorSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@rotation_centre</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rotation_centre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resultCor</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultCorSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultTilt</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultTiltSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@tilt</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resultTilt</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultTiltSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">slope</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultSlope</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultSlopeSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@slope</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">slope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resultSlope</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultSlopeSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">max_proj_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxProjAngle</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxProjAngleSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">algorithm_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithmName</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterName</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterNameComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">num_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numIter</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numIterSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@num_iter</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">num_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iters</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numIter</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">iters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numIterSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">iters</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pixel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixelSize</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixelSizeSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@pixel_size</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pixel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixelSize</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pixelSize</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixelSizeSpinBox</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixelSizeSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -978,10 +1000,10 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">beam_hardening_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_enabled</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcEnabledCheckBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">spinbox</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhc_a3</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">spinbox</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lbhcA0SpinBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcA1SpinBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcA2SpinBox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lbhcA3SpinBox</span><span class="p">]:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spinbox</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">params</span>
@@ -1043,8 +1065,8 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowView.set_filters_for_recon_tool">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_filters_for_recon_tool">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_filters_for_recon_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filterName</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filterName</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filterNameComboBox</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filterNameComboBox</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.get_number_of_cors">
@@ -1077,8 +1099,8 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowView.set_correlate_buttons_enabled">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_correlate_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">correlateBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">minimiseBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlateButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimiseButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.open_help_webpage">
@@ -1093,7 +1115,7 @@ document.write(`
 <div class="viewcode-block" id="ReconstructWindowView.change_refine_iterations">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.change_refine_iterations">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">change_refine_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refineIterationsBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm_name</span> <span class="o">==</span> <span class="s2">&quot;SIRT_CUDA&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refineIterationsButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm_name</span> <span class="o">==</span> <span class="s2">&quot;SIRT_CUDA&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.on_change_colour_palette">
@@ -1102,11 +1124,11 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens the Palette Changer window when the &quot;Auto&quot; button has been clicked.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_colour_palette_dialog</span> <span class="o">=</span> <span class="n">PaletteChangerView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                                               <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">histogram</span><span class="p">,</span>
-                                                               <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">image_data</span><span class="p">,</span>
-                                                               <span class="n">recon_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_colour_palette_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changeColourPaletteDialog</span> <span class="o">=</span> <span class="n">PaletteChangerView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                                            <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">histogram</span><span class="p">,</span>
+                                                            <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageview_recon</span><span class="o">.</span><span class="n">image_data</span><span class="p">,</span>
+                                                            <span class="n">recon_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changeColourPaletteDialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.show_status_message">
@@ -1119,28 +1141,28 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">statusMessageTextEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">msg</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">messageIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QApplication</span><span class="o">.</span><span class="n">style</span><span class="p">()</span><span class="o">.</span><span class="n">standardPixmap</span><span class="p">(</span><span class="n">QStyle</span><span class="o">.</span><span class="n">SP_MessageBoxCritical</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messageIconLabel</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QApplication</span><span class="o">.</span><span class="n">style</span><span class="p">()</span><span class="o">.</span><span class="n">standardPixmap</span><span class="p">(</span><span class="n">QStyle</span><span class="o">.</span><span class="n">SP_MessageBoxCritical</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">messageIcon</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messageIconLabel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.set_recon_buttons_enabled">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_recon_buttons_enabled">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_recon_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructSlice</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructVolume</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructSliceButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reconstructVolumeButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.set_max_projection_index">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_projection_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_max_projection_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">previewProjectionIndex</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_index</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previewProjectionIndexSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_index</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowView.set_max_slice_index">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_slice_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_max_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndex</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_index</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndexSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_index</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
