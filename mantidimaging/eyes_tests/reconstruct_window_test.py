@@ -76,4 +76,4 @@ class ReconstructionWindowTest(BaseEyesTest):
         self.imaging.recon.image_view.imageview_recon.setImage(np.zeros((512, 512)))
         self.imaging.recon.changeColourPaletteButton.click()
 
-        self.check_target(widget=self.imaging.recon.change_colour_palette_dialog)
+        self.check_target(widget=self.imaging.recon.changeColourPaletteDialog)

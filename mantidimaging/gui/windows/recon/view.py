@@ -32,54 +32,76 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowView(BaseMainWindowView):
-    tableView: RemovableRowTableView
-    imageLayout: QVBoxLayout
+    # COR and Tilt tab
 
-    inputTab: QWidget
-    calculateCors: QPushButton
+    resultsTab: QWidget
 
-    resultTab: QWidget
-    addBtn: QPushButton
-    refineCorBtn: QPushButton
-    refineIterationsBtn: QPushButton
-    clearAllBtn: QPushButton
-    removeBtn: QPushButton
+    stackSelector: DatasetSelectorWidgetView
 
-    correlateBtn: QPushButton
-    minimiseBtn: QPushButton
+    resultCorSpinBox: QDoubleSpinBox
+    resultTiltSpinBox: QDoubleSpinBox
+    resultSlopeSpinBox: QDoubleSpinBox
+    calculateCorsButton: QPushButton
+
+    correlateButton: QPushButton
+    minimiseButton: QPushButton
     corHelpButton: QPushButton
+
+    tableView: RemovableRowTableView
+    removeButton: QPushButton
+    addButton: QPushButton
+    clearAllButton: QPushButton
+    refineCorButton: QPushButton
+
+    # BHC tab
+
+    bhcTab: QWidget
+
+    lbhcEnabledCheckBox: QCheckBox
+    lbhcA0SpinBox: QDoubleSpinBox
+    lbhcA1SpinBox: QDoubleSpinBox
+    lbhcA2SpinBox: QDoubleSpinBox
+    lbhcA3SpinBox: QDoubleSpinBox
+
+    # Reconstruct tab
 
     reconTab: QWidget
 
-    # part of the Reconstruct tab
-    algorithmName: QComboBox
-    filterName: QComboBox
-    numIter: QSpinBox
-    maxProjAngle: QDoubleSpinBox
-    pixelSize: QDoubleSpinBox
+    maxProjAngleSpinBox: QDoubleSpinBox
+    algorithmNameComboBox: QComboBox
+    filterNameComboBox: QComboBox
+    numIterSpinBox: QSpinBox
     alphaSpinBox: QDoubleSpinBox
+
     nonNegativeCheckBox: QCheckBox
     stochasticCheckBox: QCheckBox
+
     subsetsSpinBox: QSpinBox
-    resultCor: QDoubleSpinBox
-    resultTilt: QDoubleSpinBox
-    resultSlope: QDoubleSpinBox
-    reconstructVolume: QPushButton
-    reconstructSlice: QPushButton
+    regPercentSpinBox: QSpinBox
+    pixelSizeSpinBox: QDoubleSpinBox
 
-    lbhc_enabled: QCheckBox
-    lbhc_a0: QDoubleSpinBox
-    lbhc_a1: QDoubleSpinBox
-    lbhc_a2: QDoubleSpinBox
-    lbhc_a3: QDoubleSpinBox
+    refineIterationsButton: QPushButton
+    reconHelpButton: QPushButton
 
-    statusMessageTextEdit: QTextEdit
-    messageIcon: QLabel
+    reconstructSliceButton: QPushButton
+    reconstructVolumeButton: QPushButton
+
+    # ----------------
+    # Preview section
+
+    previewProjectionIndexSpinBox: QSpinBox
+    previewSliceIndexSpinBox: QSpinBox
 
     changeColourPaletteButton: QPushButton
-    change_colour_palette_dialog: PaletteChangerView | None = None
+    changeColourPaletteDialog: PaletteChangerView | None = None
 
-    stackSelector: DatasetSelectorWidgetView
+    messageIconLabel: QLabel
+    statusMessageTextEdit: QTextEdit
+
+    # ----------------
+    # Image section
+
+    imageLayout: QVBoxLayout
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/recon_window.ui')
@@ -87,24 +109,24 @@ class ReconstructWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
 
-        self.algorithmName.insertItem(1, "FBP_CUDA")
-        self.algorithmName.insertItem(2, "SIRT_CUDA")
-        self.algorithmName.insertItem(3, "CIL_PDHG-TV")
-        self.algorithmName.setCurrentIndex(1)
+        self.algorithmNameComboBox.insertItem(1, "FBP_CUDA")
+        self.algorithmNameComboBox.insertItem(2, "SIRT_CUDA")
+        self.algorithmNameComboBox.insertItem(3, "CIL_PDHG-TV")
+        self.algorithmNameComboBox.setCurrentIndex(1)
         if not CudaChecker().cuda_is_present():
-            self.algorithmName.model().item(1).setEnabled(False)
-            self.algorithmName.model().item(2).setEnabled(False)
-            self.algorithmName.model().item(3).setEnabled(False)
-            self.algorithmName.setCurrentIndex(0)
-        self.algorithmName.setEnabled(True)
+            self.algorithmNameComboBox.model().item(1).setEnabled(False)
+            self.algorithmNameComboBox.model().item(2).setEnabled(False)
+            self.algorithmNameComboBox.model().item(3).setEnabled(False)
+            self.algorithmNameComboBox.setCurrentIndex(0)
+        self.algorithmNameComboBox.setEnabled(True)
 
         self.update_recon_hist_needed = False
         self.stackSelector.presenter.show_stacks = True
         self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
 
         # Handle preview image selection
-        self.previewProjectionIndex.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
-        self.previewSliceIndex.valueChanged[int].connect(self.presenter.set_preview_slice_idx)
+        self.previewProjectionIndexSpinBox.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
+        self.previewSliceIndexSpinBox.valueChanged[int].connect(self.presenter.set_preview_slice_idx)
 
         self.image_view = ReconImagesView(self)
         self.imageLayout.addWidget(self.image_view)
@@ -132,17 +154,17 @@ class ReconstructWindowView(BaseMainWindowView):
 
         self.cor_table_model.dataChanged.connect(on_data_change)
 
-        self.clearAllBtn.clicked.connect(lambda: self.presenter.notify(PresN.CLEAR_ALL_CORS))
-        self.removeBtn.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
-        self.addBtn.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
-        self.refineCorBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
-        self.refineIterationsBtn.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_ITERS))
-        self.calculateCors.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
-        self.reconstructVolume.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
-        self.reconstructSlice.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
+        self.clearAllButton.clicked.connect(lambda: self.presenter.notify(PresN.CLEAR_ALL_CORS))
+        self.removeButton.clicked.connect(lambda: self.presenter.notify(PresN.REMOVE_SELECTED_COR))
+        self.addButton.clicked.connect(lambda: self.presenter.notify(PresN.ADD_COR))
+        self.refineCorButton.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_COR))
+        self.refineIterationsButton.clicked.connect(lambda: self.presenter.notify(PresN.REFINE_ITERS))
+        self.calculateCorsButton.clicked.connect(lambda: self.presenter.notify(PresN.CALCULATE_CORS_FROM_MANUAL_TILT))
+        self.reconstructVolumeButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_VOLUME))
+        self.reconstructSliceButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_STACK_SLICE))
 
-        self.correlateBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_CORRELATE))
-        self.minimiseBtn.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_MINIMISE))
+        self.correlateButton.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_CORRELATE))
+        self.minimiseButton.clicked.connect(lambda: self.presenter.notify(PresN.AUTO_FIND_COR_MINIMISE))
 
         self.changeColourPaletteButton.clicked.connect(self.on_change_colour_palette)
 
@@ -163,7 +185,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
-            for button in [self.refineCorBtn, self.removeBtn]:
+            for button in [self.refineCorButton, self.removeButton]:
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
@@ -175,17 +197,17 @@ class ReconstructWindowView(BaseMainWindowView):
         self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_STACK_UUID))
         self.stackSelector.select_eligible_stack()
 
-        self.maxProjAngle.valueChanged.connect(
+        self.maxProjAngleSpinBox.valueChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
-        self.algorithmName.currentTextChanged.connect(
+        self.algorithmNameComboBox.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
-        self.filterName.currentTextChanged.connect(
+        self.filterNameComboBox.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
-        self.numIter.valueChanged.connect(
+        self.numIterSpinBox.valueChanged.connect(
             lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
 
-        self.pixelSize.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+        self.pixelSizeSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.alphaSpinBox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.nonNegativeCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
         self.stochasticCheckBox.stateChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
@@ -203,10 +225,10 @@ class ReconstructWindowView(BaseMainWindowView):
         self.previewAutoUpdate.stateChanged.connect(self.handle_auto_update_preview_selection)
         self.updatePreviewButton.clicked.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_USER_CLICK))
 
-        for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
+        for spinbox in [self.lbhcA0SpinBox, self.lbhcA1SpinBox, self.lbhcA2SpinBox, self.lbhcA3SpinBox]:
             spinbox.valueChanged.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
-            self.lbhc_enabled.toggled.connect(spinbox.setEnabled)
-        self.lbhc_enabled.toggled.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
+            self.lbhcEnabledCheckBox.toggled.connect(spinbox.setEnabled)
+        self.lbhcEnabledCheckBox.toggled.connect(lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))
 
     def showEvent(self, e) -> None:
         super().showEvent(e)
@@ -277,8 +299,8 @@ class ReconstructWindowView(BaseMainWindowView):
         :param tilt_angle: Angle of the tilt line
         """
 
-        with QSignalBlocker(self.previewSliceIndex):
-            self.previewSliceIndex.setValue(preview_slice_index)
+        with QSignalBlocker(self.previewSliceIndexSpinBox):
+            self.previewSliceIndexSpinBox.setValue(preview_slice_index)
 
         self.image_view.update_projection(image_data, preview_slice_index)
 
@@ -328,8 +350,8 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         # Disable clear buttons when there are no rows in the table
         empty = self.tableView.model().empty
-        self.removeBtn.setEnabled(not empty)
-        self.clearAllBtn.setEnabled(not empty)
+        self.removeButton.setEnabled(not empty)
+        self.clearAllButton.setEnabled(not empty)
 
     def add_cor_table_row(self, row: int, slice_index: int, cor: float) -> None:
         """
@@ -345,56 +367,56 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @property
     def rotation_centre(self) -> float:
-        return self.resultCor.value()
+        return self.resultCorSpinBox.value()
 
     @rotation_centre.setter
     def rotation_centre(self, value: float) -> None:
-        self.resultCor.setValue(value)
+        self.resultCorSpinBox.setValue(value)
 
     @property
     def tilt(self) -> float:
-        return self.resultTilt.value()
+        return self.resultTiltSpinBox.value()
 
     @tilt.setter
     def tilt(self, value: float) -> None:
-        self.resultTilt.setValue(value)
+        self.resultTiltSpinBox.setValue(value)
 
     @property
     def slope(self) -> float:
-        return self.resultSlope.value()
+        return self.resultSlopeSpinBox.value()
 
     @slope.setter
     def slope(self, value: float) -> None:
-        self.resultSlope.setValue(value)
+        self.resultSlopeSpinBox.setValue(value)
 
     @property
     def max_proj_angle(self) -> float:
-        return self.maxProjAngle.value()
+        return self.maxProjAngleSpinBox.value()
 
     @property
     def algorithm_name(self) -> str:
-        return self.algorithmName.currentText()
+        return self.algorithmNameComboBox.currentText()
 
     @property
     def filter_name(self) -> str:
-        return self.filterName.currentText()
+        return self.filterNameComboBox.currentText()
 
     @property
     def num_iter(self) -> int:
-        return self.numIter.value()
+        return self.numIterSpinBox.value()
 
     @num_iter.setter
     def num_iter(self, iters: int) -> None:
-        self.numIter.setValue(iters)
+        self.numIterSpinBox.setValue(iters)
 
     @property
     def pixel_size(self) -> float:
-        return self.pixelSize.value()
+        return self.pixelSizeSpinBox.value()
 
     @pixel_size.setter
     def pixel_size(self, value: int) -> None:
-        with QSignalBlocker(self.pixelSize):
-            self.pixelSize.setValue(value)
+        with QSignalBlocker(self.pixelSizeSpinBox):
+            self.pixelSizeSpinBox.setValue(value)
 
     @property
     def alpha(self) -> float:
@@ -426,10 +448,10 @@ class ReconstructWindowView(BaseMainWindowView):
 
     @property
     def beam_hardening_coefs(self) -> list[float] | None:
-        if not self.lbhc_enabled.isChecked():
+        if not self.lbhcEnabledCheckBox.isChecked():
             return None
         params = []
-        for spinbox in [self.lbhc_a0, self.lbhc_a1, self.lbhc_a2, self.lbhc_a3]:
+        for spinbox in [self.lbhcA0SpinBox, self.lbhcA1SpinBox, self.lbhcA2SpinBox, self.lbhcA3SpinBox]:
             params.append(spinbox.value())
         if any(params):
             return params
@@ -474,8 +496,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.image_view.hide_cor_line()
 
     def set_filters_for_recon_tool(self, filters: list[str]) -> None:
-        self.filterName.clear()
-        self.filterName.insertItems(0, filters)
+        self.filterNameComboBox.clear()
+        self.filterNameComboBox.insertItems(0, filters)
 
     def get_number_of_cors(self) -> int | None:
         num, accepted = QInputDialog.getInt(self,
@@ -499,8 +521,8 @@ class ReconstructWindowView(BaseMainWindowView):
             return AutoCorMethod.MINIMISATION_SQUARE_SUM
 
     def set_correlate_buttons_enabled(self, enabled: bool) -> None:
-        self.correlateBtn.setEnabled(enabled)
-        self.minimiseBtn.setEnabled(enabled)
+        self.correlateButton.setEnabled(enabled)
+        self.minimiseButton.setEnabled(enabled)
 
     def open_help_webpage(self, page: str) -> None:
         try:
@@ -509,17 +531,17 @@ class ReconstructWindowView(BaseMainWindowView):
             self.show_error_dialog(str(err))
 
     def change_refine_iterations(self) -> None:
-        self.refineIterationsBtn.setEnabled(self.algorithm_name == "SIRT_CUDA")
+        self.refineIterationsButton.setEnabled(self.algorithm_name == "SIRT_CUDA")
 
     def on_change_colour_palette(self) -> None:
         """
         Opens the Palette Changer window when the "Auto" button has been clicked.
         """
-        self.change_colour_palette_dialog = PaletteChangerView(self,
-                                                               self.image_view.imageview_recon.histogram,
-                                                               self.image_view.imageview_recon.image_data,
-                                                               recon_mode=True)
-        self.change_colour_palette_dialog.show()
+        self.changeColourPaletteDialog = PaletteChangerView(self,
+                                                            self.image_view.imageview_recon.histogram,
+                                                            self.image_view.imageview_recon.image_data,
+                                                            recon_mode=True)
+        self.changeColourPaletteDialog.show()
 
     def show_status_message(self, msg: str) -> None:
         """
@@ -529,16 +551,16 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         self.statusMessageTextEdit.setText(msg)
         if msg:
-            self.messageIcon.setPixmap(QApplication.style().standardPixmap(QStyle.SP_MessageBoxCritical))
+            self.messageIconLabel.setPixmap(QApplication.style().standardPixmap(QStyle.SP_MessageBoxCritical))
         else:
-            self.messageIcon.clear()
+            self.messageIconLabel.clear()
 
     def set_recon_buttons_enabled(self, enabled: bool) -> None:
-        self.reconstructSlice.setEnabled(enabled)
-        self.reconstructVolume.setEnabled(enabled)
+        self.reconstructSliceButton.setEnabled(enabled)
+        self.reconstructVolumeButton.setEnabled(enabled)
 
     def set_max_projection_index(self, max_index: int) -> None:
-        self.previewProjectionIndex.setMaximum(max_index)
+        self.previewProjectionIndexSpinBox.setMaximum(max_index)
 
     def set_max_slice_index(self, max_index: int) -> None:
-        self.previewSliceIndex.setMaximum(max_index)
+        self.previewSliceIndexSpinBox.setMaximum(max_index)

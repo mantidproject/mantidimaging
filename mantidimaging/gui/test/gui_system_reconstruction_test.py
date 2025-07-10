@@ -53,9 +53,9 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         self.assertEqual(self.recon_window.tilt, expected_initial_tilt)
 
         for _ in range(5):
-            QTest.mouseClick(self.recon_window.correlateBtn, Qt.MouseButton.LeftButton)
+            QTest.mouseClick(self.recon_window.correlateButton, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
-            wait_until(lambda: self.recon_window.correlateBtn.isEnabled())
+            wait_until(lambda: self.recon_window.correlateButton.isEnabled())
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
         final_cor_value = self.recon_window.rotation_centre
@@ -74,9 +74,9 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
         for i in range(2, 6):
             QTimer.singleShot(SHORT_DELAY, lambda i=i: self._click_InputDialog(set_int=i))
-            QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
+            QTest.mouseClick(self.recon_window.minimiseButton, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
-            wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=500)
+            wait_until(lambda: self.recon_window.minimiseButton.isEnabled(), max_retry=500)
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
             QTest.qWait(SHORT_DELAY)
 
@@ -105,12 +105,12 @@ class TestGuiSystemReconstruction(GuiSystemBase):
 
     def test_refine(self):
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=4))
-        QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
-        wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+        QTest.mouseClick(self.recon_window.minimiseButton, Qt.MouseButton.LeftButton)
+        wait_until(lambda: self.recon_window.minimiseButton.isEnabled(), max_retry=200)
 
         for _ in range(5):
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
-            QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
+            QTest.mouseClick(self.recon_window.refineCorButton, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY * 2)
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
@@ -120,16 +120,16 @@ class TestGuiSystemReconstruction(GuiSystemBase):
     def test_refine_stress(self):
         for i in range(5):
             print(f"test_refine_stress iteration {i}")
-            QTest.mouseClick(self.recon_window.correlateBtn, Qt.MouseButton.LeftButton)
+            QTest.mouseClick(self.recon_window.correlateButton, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
-            wait_until(lambda: self.recon_window.correlateBtn.isEnabled())
+            wait_until(lambda: self.recon_window.correlateButton.isEnabled())
 
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_InputDialog(set_int=3))
-            QTest.mouseClick(self.recon_window.minimiseBtn, Qt.MouseButton.LeftButton)
-            wait_until(lambda: self.recon_window.minimiseBtn.isEnabled(), max_retry=200)
+            QTest.mouseClick(self.recon_window.minimiseButton, Qt.MouseButton.LeftButton)
+            wait_until(lambda: self.recon_window.minimiseButton.isEnabled(), max_retry=200)
 
             QTimer.singleShot(SHORT_DELAY, lambda: self._click_cor_inspect())
-            QTest.mouseClick(self.recon_window.refineCorBtn, Qt.MouseButton.LeftButton)
+            QTest.mouseClick(self.recon_window.refineCorButton, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY * 2)
             wait_until(lambda: len(self.recon_window.presenter.async_tracker) == 0)
 
@@ -143,7 +143,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         wait_until(lambda: mock_do_preview_reconstruct_slice.call_count == 1)
 
     @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._get_reconstruct_slice")
-    def test_clicking_update_now_btn_triggers_preview(self, mock_get_reconstruct_slice):
+    def test_clicking_update_now_Button_triggers_preview(self, mock_get_reconstruct_slice):
         self.recon_window.previewAutoUpdate.setCheckState(Qt.CheckState.Unchecked)
 
         QTest.mouseClick(self.recon_window.updatePreviewButton, Qt.MouseButton.LeftButton)

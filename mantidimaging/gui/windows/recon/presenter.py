@@ -63,8 +63,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model = ReconstructWindowModel(self.view.cor_table_model)
         self.allowed_recon_kwargs: dict[str, list[str]] = self.model.load_allowed_recon_kwargs()
         self.restricted_arg_widgets: dict[str, list[QWidget]] = {
-            'filter_name': [self.view.filterName, self.view.filterNameLabel],
-            'num_iter': [self.view.numIter, self.view.numIterLabel],
+            'filter_name': [self.view.filterNameComboBox, self.view.filterNameLabel],
+            'num_iter': [self.view.numIterSpinBox, self.view.numIterLabel],
             'alpha': [self.view.alphaSpinBox, self.view.alphaLabel],
             'non_negative': [self.view.nonNegativeCheckBox, self.view.nonNegativeLabel],
             'stochastic': [self.view.stochasticCheckBox, self.view.stochasticLabel],
@@ -129,7 +129,7 @@ class ReconstructWindowPresenter(BasePresenter):
             else:
                 for widget in widgets:
                     widget.hide()
-        with BlockQtSignals([self.view.filterName, self.view.numIter]):
+        with BlockQtSignals([self.view.filterNameComboBox, self.view.numIterSpinBox]):
             self.view.set_filters_for_recon_tool(self.model.get_allowed_filters(alg_name))
         self.do_preview_reconstruct_slice()
         self.view.change_refine_iterations()

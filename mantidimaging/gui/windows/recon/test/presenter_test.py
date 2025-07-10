@@ -34,9 +34,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     def make_view(self):
         self.view = mock.create_autospec(ReconstructWindowView, instance=True)
-        self.view.filterName = mock.Mock()
+        self.view.filterNameComboBox = mock.Mock()
         self.view.filterNameLabel = mock.Mock()
-        self.view.numIter = mock.Mock()
+        self.view.numIterSpinBox = mock.Mock()
         self.view.numIterLabel = mock.Mock()
         self.view.image_view = mock.Mock()
         self.view.alphaSpinBox = mock.Mock()
