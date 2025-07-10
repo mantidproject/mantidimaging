@@ -1076,6 +1076,18 @@ document.write(`
 
         <span class="n">algorithm_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">recon_name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">algorithm_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">filter_name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">filter_name</span> <span class="k">else</span> <span class="n">algorithm_name</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowPresenter.handle_show_event">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.handle_show_event">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_show_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_selection_change_pending</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_stack_uuid</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_selection_change_pending</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span> <span class="o">=</span> <span class="kc">False</span></div>
 </div>
 
 </pre></div>
