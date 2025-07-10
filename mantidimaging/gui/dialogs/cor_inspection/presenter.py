@@ -72,11 +72,12 @@ class CORInspectionDialogPresenter(BasePresenter):
     def on_select_image(self, img) -> None:
         LOG.debug(f'Image selected: {img}')
 
-        # Adjust COR/iterations step
         self.model.adjust(img)
 
+        selected_cor = self.model.centre_value
+        LOG.info("COR selection made: COR=%.6f, Step=%.2f", selected_cor, self.view.step_size)
+
         if img != ImageType.CURRENT:
-            # Update UI
             self.do_refresh()
         else:
             self.do_refresh([ImageType.LESS, ImageType.MORE])

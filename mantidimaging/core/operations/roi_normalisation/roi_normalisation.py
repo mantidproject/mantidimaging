@@ -48,16 +48,21 @@ class RoiNormalisationFilter(BaseFilter):
         If the Air Region is out of bounds, the crop will fail at runtime.
         If the Air Region is in bounds, but has overlapping coordinates
         the crop give back a 0 shape of the coordinates that were wrong.
+
+        ``normalisation_mode`` can be either
+
+        * ``Stack Average`` : The mean value of the air region across all projections is preserved.
+        * ``Flat Field`` : The mean value of the air regions in the projections is made equal to the mean value of the
+          air region in the flat field image.
+
         :param images: Sample data which is to be processed. Expected in radiograms
         :param region_of_interest: The order is - Left Top Right Bottom. The air
-        region for which grey values are summed up and used for normalisation/scaling.
+            region for which grey values are summed up and used for normalisation/scaling.
         :param normalisation_mode: Controls what the ROI counts are normalised to.
-            'Stack Average' : The mean value of the air region across all projections is preserved.
-            'Flat Field' : The mean value of the air regions in the projections is made equal to the mean value of the
-                           air region in the flat field image.
         :param flat_field: Flat field to use if 'Flat Field' mode is enabled.
         :param progress: Reference to a progress bar object
         :returns: Filtered data (stack of images)
+
         """
         if not region_of_interest:
             raise ValueError('region_of_interest must be provided')

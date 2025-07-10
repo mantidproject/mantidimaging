@@ -348,6 +348,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if task.error is not None:
             self.view.show_error_dialog(f"Encountered error while trying to reconstruct: {str(task.error)}")
             self.view.set_recon_buttons_enabled(True)
+            LOG.info("Full reconstruction completed")
             return
 
         try:
@@ -428,12 +429,15 @@ class ReconstructWindowPresenter(BasePresenter):
 
         def _completed_finding_cors(task: TaskWorkerThread) -> None:
             if task.error is not None:
-                self.view.show_error_dialog(f"Finding the COR failed.\n\n Error: {str(task.error)}")
+                LOG.error("COR minimisation failed: %s", str(task.error))
+                self.view.show_error_dialog(f"Finding the COR failed.\n\nError: {str(task.error)}")
             else:
                 cors = task.result
                 for slice_idx, cor in zip(slice_indices, cors, strict=True):
                     self.view.add_cor_table_row(selected_row, slice_idx, cor)
+                LOG.info("COR minimisation completed: slices=%s, CORs=%s", slice_indices, cors)
                 self.do_cor_fit()
+
             self.view.set_correlate_buttons_enabled(True)
 
         self.view.set_correlate_buttons_enabled(False)

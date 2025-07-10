@@ -1,10 +1,13 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+from logging import getLogger
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt
+
+LOG = getLogger(__name__)
 
 
 class ExportDataTableWidget(QWidget):
@@ -48,15 +51,19 @@ class ExportDataTableWidget(QWidget):
         Add or update a row for the specified ROI, populating parameter values and status.
         """
         row_index = self._find_row_by_roi_name(roi_name)
-        items = [QStandardItem(roi_name)]
+        name_item = QStandardItem(roi_name)
+        name_item.setData(roi_name)
+        items = [name_item]
 
         for param in self.parameter_names:
             value = params[param]
-            cell = QStandardItem(f"{value:.3f}")
+            cell = QStandardItem(f"{value:.4g}")
+            cell.setData(f"{value:.6g}")
             cell.setTextAlignment(Qt.AlignCenter)
             items.append(cell)
 
         status_item = QStandardItem(status)
+        status_item.setData(status)
         status_item.setTextAlignment(Qt.AlignCenter)
         items.append(status_item)
 
@@ -65,6 +72,8 @@ class ExportDataTableWidget(QWidget):
                 self.model.setItem(row_index, col, item)
         else:
             self.model.appendRow(items)
+
+        LOG.info("Export table updated: ROI=%s, Params=%s, Status=%s", roi_name, params, status)
 
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:
         """
@@ -80,3 +89,4 @@ class ExportDataTableWidget(QWidget):
         Remove all rows from the table.
         """
         self.model.removeRows(0, self.model.rowCount())
+        LOG.info("Export table cleared")

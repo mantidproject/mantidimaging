@@ -11,12 +11,11 @@ from scipy.optimize import curve_fit
 from scipy.special import erf, erfc
 
 
-class LeftSideFittingException(Exception):
-    pass
+class BadFittingRoiError(Exception):
 
-
-class RightSideFittingException(Exception):
-    pass
+    def __init__(self, message: str = 'A fit could not be found within the given ROI, please try widening the ROI.'):
+        self.message = message
+        super().__init__(self.message)
 
 
 class FittingRegion(NamedTuple):
@@ -87,35 +86,30 @@ class SantistebanFunction(BaseFittingFunction):
         return B
 
     def prefitting(self, xdata: np.ndarray, ydata: np.ndarray, params: list[float]) -> list[float]:
-        B = self.calculate_line_profile(xdata, params)
+        _, __, ___, ____, _____, a_0, b_0, a_hkl, b_hkl = params
 
-        x_B_eq_zero_tolerance = 1.1
-        x_B_eq_one_tolerance = 0.9
+        if ydata.shape[0] < 5:
+            raise BadFittingRoiError("Fitting region too narrow to find fit")
 
-        error_check = True
-        attempts = 0
-        while error_check:
-            try:
-                attempts += 1
-                x_B_eq_zero_ind = np.argwhere(B <= x_B_eq_zero_tolerance * np.min(B))[-1][0]
-                x_B_eq_one_ind = np.argwhere(B >= x_B_eq_one_tolerance * np.max(B))[0][0]
-                a_0, b_0 = self.right_side_fitting(xdata[x_B_eq_one_ind:], ydata[x_B_eq_one_ind:])
-                a_hkl, b_hkl = self.left_side_fitting(xdata[:x_B_eq_zero_ind], ydata[:x_B_eq_zero_ind], a_0, b_0)
-                add_params = [a_0, b_0, a_hkl, b_hkl]
-                error_check = False
-            except LeftSideFittingException as err:
-                print(err)
-                x_B_eq_zero_tolerance += 0.1
-            except RightSideFittingException as err:
-                print(err)
-                x_B_eq_one_ind -= 0.1
-        return add_params
+        right_percentile_mean = int(np.mean(np.argwhere(ydata > np.percentile(ydata, 95))))
+        left_percentile_mean = int(np.mean(np.argwhere(ydata < np.percentile(ydata, 5))))
+
+        # ensure there are enough points for fit to run
+        right_percentile_mean = min(ydata.shape[0] - 3, right_percentile_mean)
+        left_percentile_mean = max(3, left_percentile_mean)
+
+        a_0, b_0 = self.right_side_fitting(xdata[right_percentile_mean:], ydata[right_percentile_mean:])
+        a_hkl, b_hkl = self.left_side_fitting(xdata[:left_percentile_mean], ydata[:left_percentile_mean], a_0, b_0)
+
+        if (np.array([a_0, b_0, a_hkl, b_hkl]) == 0).any():
+            raise BadFittingRoiError()
+        return [a_0, b_0, a_hkl, b_hkl]
 
     def evaluate(self, xdata: np.ndarray, params: list[float]) -> np.ndarray:
         t_hkl, sigma, tau, h, a, a_0, b_0, a_hkl, b_hkl = params
         B = self.calculate_line_profile(xdata, params)
         if [a_0, b_0, a_hkl, b_hkl] == [0, 0, 0, 0]:
-            y = h + (a * B)
+            y = a + (h * B)
         else:
             y = (np.exp(-(a_0 + b_0 * xdata)) * (np.exp(-(a_hkl + b_hkl * xdata)) +
                                                  (1 - np.exp(-(a_hkl + b_hkl * xdata))) * B))
@@ -141,19 +135,13 @@ class SantistebanFunction(BaseFittingFunction):
         def f(t, a_0, b_0):
             return np.exp(-(a_0 + b_0 * t))
 
-        try:
-            popt, pcov = curve_fit(f, xdata, ydata)
-            return popt
-        except (TypeError, ValueError) as err:
-            raise RightSideFittingException from err
+        popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
+        return popt
 
     def left_side_fitting(self, xdata, ydata, a_0, b_0) -> list[float]:
 
         def f(t, a_hkl, b_hkl):
             return np.exp(-(a_0 + b_0 * t)) * np.exp(-(a_hkl + b_hkl * t))
 
-        try:
-            popt, pcov = curve_fit(f, xdata, ydata)
-            return popt
-        except (TypeError, ValueError) as err:
-            raise LeftSideFittingException from err
+        popt, pcov = curve_fit(f, xdata, ydata, [0, 0])
+        return popt

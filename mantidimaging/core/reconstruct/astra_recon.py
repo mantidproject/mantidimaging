@@ -116,7 +116,7 @@ class AstraRecon(BaseRecon):
         image_width = sino.shape[1]
 
         if astra_mutex.locked():
-            LOG.warning("Astra recon already in progress. Waiting")
+            LOG.debug("Astra recon already in progress. Waiting")
         with astra_mutex:
             vectors = vec_geom_init2d(proj_angles, 1.0, cor.to_vec(image_width).value)
             vol_geom = astra.create_vol_geom((image_width, image_width))

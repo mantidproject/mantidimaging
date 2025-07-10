@@ -74,6 +74,7 @@ class FlatFieldFilter(BaseFilter):
                     use_dark: bool = True,
                     progress=None) -> ImageStack:
         """Do background correction with flat and dark images.
+
         :param images: Sample data which is to be processed. Expected in radiograms
         :param flat_before: Flat (open beam) image to use in normalization, collected before the sample was imaged
         :param flat_after: Flat (open beam) image to use in normalization, collected after the sample was imaged

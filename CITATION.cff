@@ -6,10 +6,16 @@ authors:
   - family-names: Allen
     given-names: Jack
     orcid: https://orcid.org/0009-0007-2873-3731
+  - family-names: Alhassan
+    given-names: Hussam
   - family-names: Baust
     given-names: Rachel
+  - family-names: Cornal
+    given-names: James
   - family-names: Gigg
     given-names: Martyn
+  - family-names: Ioannide
+    given-names: Despina
   - family-names: Jones
     given-names: Samuel
     orcid: https://orcid.org/0000-0001-7217-2280
@@ -33,9 +39,9 @@ authors:
     orcid: https://orcid.org/0000-0002-7495-8655
 title: "Mantid Imaging"
 abstract: "Mantid Imaging is a graphical toolkit for performing 3D reconstruction of neutron tomography data.  It provides an easy-to-use graphical interface to a wide range of pre/post-processing operations, tilt correction and reconstruction algorithms, accommodating for tomography users with varying data complexity and image analysis background knowledge. It utilises a flexible plugin system that allows easy integration of external software, and has allowed us to re-use software widely known in the neutron tomography community."
-version: "2.8.0"
+version: "3.0.0"
 doi: 10.5281/zenodo.4728059
-date-released: 2024-07-08
+date-released: 2025-07-03
 license: "GPL-3.0-or-later"
 repository-code: https://github.com/mantidproject/mantidimaging
 url: https://mantidproject.github.io/mantidimaging

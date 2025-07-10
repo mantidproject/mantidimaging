@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from logging import getLogger
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
@@ -27,6 +28,8 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
+
+LOG = getLogger(__name__)
 
 
 class SpectrumROI(ROI):
@@ -201,6 +204,8 @@ class SpectrumWidget(QWidget):
         self.roi_dict[name].sigClicked.connect(self.roi_clicked.emit)
         self.image.vb.addItem(self.roi_dict[name])
         self.roi_dict[name].hoverPen = mkPen(self.roi_dict[name].colour, width=3)
+        LOG.debug("ROI created: name=%s, coords=(Left: %d, Right: %d, Top: %d, Bottom: %d)", name, roi.left, roi.right,
+                  roi.top, roi.bottom)
 
     def adjust_roi(self, new_roi: SensibleROI, roi_name: str) -> None:
         """
@@ -209,6 +214,8 @@ class SpectrumWidget(QWidget):
         @param roi_name: The name of the existing ROI.
         """
         self.roi_dict[roi_name].adjust_spec_roi(new_roi)
+        LOG.debug("ROI adjusted: name=%s, new coords=(Left: %d, Right: %d, Top: %d, Bottom: %d)", roi_name,
+                  new_roi.left, new_roi.right, new_roi.top, new_roi.bottom)
 
     def get_roi(self, roi_name: str) -> SensibleROI:
         """
@@ -239,6 +246,7 @@ class SpectrumWidget(QWidget):
 
         self.image.vb.removeItem(self.roi_dict[roi_name])
         del self.roi_dict[roi_name]
+        LOG.info("ROI deleted: name=%s", roi_name)
 
     def rename_roi(self, old_name: str, new_name: str) -> None:
         """
@@ -258,6 +266,8 @@ class SpectrumWidget(QWidget):
         self.roi_dict[new_name] = self.roi_dict.pop(old_name)
         self.spectrum_data_dict[new_name] = self.spectrum_data_dict.pop(old_name)
         self.roi_dict[new_name].name = new_name
+
+        LOG.info(f"ROI renamed: from={old_name} to={new_name}")
 
     def _emit_roi_changed(self):
         sender_roi = self.sender()
@@ -341,6 +351,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
         tof_range = self.get_tof_range()
         self.set_tof_range_label(tof_range[0], tof_range[1])
         self.range_changed.emit(tof_range)
+        LOG.info("Projection range changed: TOF=%.2f to %.2f", tof_range[0], tof_range[1])
 
     def add_range(self, range_min: int | float, range_max: int | float) -> None:
         with QSignalBlocker(self.range_control):

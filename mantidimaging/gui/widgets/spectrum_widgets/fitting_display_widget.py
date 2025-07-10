@@ -13,6 +13,9 @@ from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 from mantidimaging.gui.windows.spectrum_viewer.model import allowed_modes
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
 from mantidimaging.core.fitting.fitting_functions import FittingRegion
+from logging import getLogger
+
+LOG = getLogger(__name__)
 
 
 class FittingDisplayWidget(QWidget):
@@ -31,7 +34,7 @@ class FittingDisplayWidget(QWidget):
         self.layout.addWidget(self.spectrum_plot)
         self._current_fit_line: PlotDataItem | None = None
 
-        self.fitting_region = RectROI([0, 0], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
+        self.fitting_region = RectROI([-1, -1], [1, 1], pen=mkPen((255, 0, 0), width=2), movable=True)
         self.fitting_region.setZValue(10)
         self.fitting_region.addScaleHandle([1, 1], [0, 0])
         self.fitting_region.addScaleHandle([0, 0], [1, 1])
@@ -63,7 +66,10 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
-        self.set_default_region(x_data, y_data)
+        self.set_default_region_if_needed(x_data, y_data)
+        if not getattr(self, "_log_emitted", False):
+            LOG.debug("Spectrum plot updated: label=%s, points=%d", label, len(x_data))
+        self._log_emitted = True
 
     def update_image(self, image: np.ndarray | None) -> None:
         if image is not None:
@@ -90,13 +96,16 @@ class FittingDisplayWidget(QWidget):
         if value_range is not None:
             self.spectrum_plot.set_unit_range_label(*value_range, unit_label=unit_label)
 
-    def set_default_region(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
-        """Position the ROI centrally over the plotted data, if valid data."""
-        if y_data.size == 0 or x_data.size == 0 or np.all(np.isnan(y_data)):
-            # Fallback default region
-            self.fitting_region.setPos((0, 0))
-            self.fitting_region.setSize((1, 1))
+    def set_default_region_if_needed(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
+        """Position the ROI centrally over the plotted data, if valid data and not in existing region"""
+        if y_data.size == 0 or x_data.size == 0 or np.all(np.isnan(y_data)) or np.all(y_data == 0):
+            self.fitting_region.hide()
             return
+
+        self.fitting_region.show()
+        if self.is_data_in_region(x_data, y_data, self.get_selected_fit_region()):
+            return
+
         x_min, x_max = float(np.nanmin(x_data)), float(np.nanmax(x_data))
         y_min, y_max = float(np.nanmin(y_data)), float(np.nanmax(y_data))
         x_span = (x_max - x_min) * 0.25
@@ -106,6 +115,11 @@ class FittingDisplayWidget(QWidget):
         self.fitting_region.setPos((x_start, y_start))
         self.fitting_region.setSize((x_span, y_span))
 
+    @staticmethod
+    def is_data_in_region(x_data: np.ndarray, y_data: np.ndarray, roi: FittingRegion):
+        return np.any((x_data >= roi.x_min) & (x_data <= roi.x_max)
+                    & (y_data >= roi.y_min) & (y_data <= roi.y_max)) # yapf: disable
+
     def set_selected_fit_region(self, region: tuple[float, float]) -> None:
         """Set the horizontal (X-axis) range of the ROI."""
         x_start, x_end = region
@@ -114,6 +128,7 @@ class FittingDisplayWidget(QWidget):
         height = self.fitting_region.size().y()
         self.fitting_region.setPos((x_start, y_pos))
         self.fitting_region.setSize((width, height))
+        LOG.info("Fit region set: x_start=%.3f, x_end=%.3f", x_start, x_end)
 
     def get_selected_fit_region(self) -> FittingRegion:
         pos = self.fitting_region.pos()
@@ -154,6 +169,7 @@ class FittingDisplayWidget(QWidget):
             self._current_fit_line = None
         self._current_fit_line = self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=color)
         self._showing_initial_fit = initial
+        LOG.debug("Fit line displayed: label=%s, initial=%s, points=%d", label, initial, len(x_data))
 
     def is_initial_fit_visible(self) -> bool:
         return self._showing_initial_fit

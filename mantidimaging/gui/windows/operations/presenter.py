@@ -6,7 +6,6 @@ import uuid
 from enum import Enum, auto
 from functools import partial
 from itertools import groupby
-from logging import getLogger
 from time import sleep
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -14,6 +13,7 @@ from uuid import UUID
 import numpy as np
 from PyQt5.QtWidgets import QApplication, QLineEdit
 
+from logging import getLogger
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -23,6 +23,8 @@ from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresente
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from .model import FiltersWindowModel
+
+LOG = getLogger(__name__)
 
 APPLY_TO_180_MSG = "Operations applied to the sample are also automatically applied to the " \
       "180 degree projection. Please avoid applying an operation unless you're" \
@@ -150,6 +152,10 @@ class FiltersWindowPresenter(BasePresenter):
 
     def set_stack(self, stack: ImageStack | None):
         self.stack = stack
+        if stack is not None:
+            LOG.info(f"Stack changed: name={stack.name}, shape={stack.data.shape}")
+        else:
+            LOG.info("Stack selection cleared (None)")
 
         # Update the preview image index
         with BlockQtSignals([self.view]):
@@ -157,7 +163,6 @@ class FiltersWindowPresenter(BasePresenter):
             max_slice = self.max_preview_image_idx
             self.view.previewImageIndex.setMaximum(max_slice)
             self.view.previews.z_slider.set_range(0, max_slice)
-
             for row_id in range(self.view.filterPropertiesLayout.count()):
                 widget = self.view.filterPropertiesLayout.itemAt(row_id).widget()
                 if isinstance(widget, DatasetSelectorWidgetView):
@@ -375,17 +380,14 @@ class FiltersWindowPresenter(BasePresenter):
                 return
             subset = self.stack.sino_as_image_stack(self.model.preview_image_idx)
             squeeze_axis = 1
-
-        # Take copies for display to prevent issues when the shared memory is cleaned
+        # Take copies for display to prevent issues when shared memory is cleaned
         before_image = np.copy(subset.data.squeeze(squeeze_axis))
-
         try:
             if self.model.filter_widget_kwargs:
-                self.model.apply_to_images(subset)
+                self.model.apply_to_images(subset, is_preview=True)
         except Exception as e:
             msg = f"Error applying filter for preview: {e}"
             self.show_error(msg, traceback.format_exc())
-
             # Can't continue be need the before image drawn
             self._update_preview_image(before_image, self.view.preview_image_before)
             return

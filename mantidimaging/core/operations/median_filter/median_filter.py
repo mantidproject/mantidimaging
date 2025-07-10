@@ -78,7 +78,7 @@ class MedianFilter(BaseFilter):
         :param mode: The mode with which to handle the edges.
                      One of [reflect, constant, nearest, mirror, wrap].
                      Modes are described in the `SciPy documentation
-                     <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.median_filter.html>`_.
+                     <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.median_filter.html>`__.
         :param progress: The object for displaying the progress.
         :param force_cpu: Whether or not to use the CPU.
 

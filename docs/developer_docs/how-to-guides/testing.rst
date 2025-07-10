@@ -123,16 +123,10 @@ GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where po
 
     make test-system
 
-
 Logging
 -------
 
-Logging can be controlled using the QSettings configuration file :file:`.config/mantidproject/Mantid Imaging.conf` on Linux or the equivalent registry keys on windows (See `QSettings <https://doc.qt.io/qtforpython-5/PySide2/QtCore/QSettings.html>`_:). For example::
-
-    [logging]
-    log_level=DEBUG
-    log_dir=/tmp/mantid_imaging_logs
-    performance_log=true
+See the :ref:`troubleshooting-logging` section for details on logging configuration.
 
 
 Benchmarking and profiling

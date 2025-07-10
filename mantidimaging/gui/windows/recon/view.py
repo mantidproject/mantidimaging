@@ -243,6 +243,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.tableView.removeSelectedRows()
 
     def clear_cor_table(self) -> None:
+        LOG.info("Cleared all COR table entries")
         return self.cor_table_model.removeAllRows()
 
     def cleanup(self) -> None:
@@ -350,6 +351,7 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         self.cor_table_model.appendNewRow(row, slice_index, cor)
         self.tableView.selectRow(row)
+        LOG.debug("Added COR table row: row=%d, slice=%d, COR=%.3f", row, slice_index, cor)
 
     def get_cor_table_selected_rows(self) -> list[int]:
         rows = self.tableView.selectionModel().selectedRows()

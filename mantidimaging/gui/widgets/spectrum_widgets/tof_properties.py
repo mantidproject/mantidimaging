@@ -2,6 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from PyQt5 import QtCore, QtWidgets
+from logging import getLogger
+
+LOG = getLogger(__name__)
 
 
 class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
@@ -75,6 +78,7 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
     @flight_path.setter
     def flight_path(self, value: float) -> None:
         self.flightPathSpinBox.setValue(value)
+        LOG.debug("Flight path set to: %.3f m", value)
 
     @property
     def time_delay(self) -> float:
@@ -83,6 +87,7 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
     @time_delay.setter
     def time_delay(self, value: float):
         self.timeDelaySpinBox.setValue(value)
+        LOG.debug("Time delay set to: %.3f µs", value)
 
     def connect_value_changed(self, handler: QtCore.pyqtSlot):
         self.flightPathSpinBox.valueChanged.connect(handler)
