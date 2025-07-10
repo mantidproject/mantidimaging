@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-import os
+from pathlib import Path
 from typing import NoReturn
 
 from mantidimaging.core.operations.loader import load_filter_packages
@@ -45,10 +45,11 @@ class CommandLineArguments:
             valid_paths: list[str] = []
             if path:
                 for filepath in path.split(","):
-                    if not os.path.exists(filepath):
+                    filepath_path = Path(filepath)
+                    if not filepath_path.exists():
                         _log_and_exit(f"Path {filepath} doesn't exist. Exiting.")
                     else:
-                        valid_paths.append(filepath)
+                        valid_paths.append(filepath_path.as_posix())
                 cls._images_path = valid_paths
             if operation:
                 command_line_names = _get_filter_names()
@@ -70,11 +71,11 @@ class CommandLineArguments:
             else:
                 cls._show_spectrum_viewer = show_spectrum_viewer
             if show_live_viewer and show_live_viewer != cls._show_live_viewer:
-                if not os.path.exists(show_live_viewer):
+                live_viewer_path = Path(show_live_viewer)
+                if not live_viewer_path.exists():
                     _log_and_exit("Path given for live view does not exist. Exiting.")
                 else:
-                    cls._show_live_viewer = show_live_viewer
-
+                    cls._show_live_viewer = live_viewer_path.as_posix()
         return cls._instance
 
     @classmethod

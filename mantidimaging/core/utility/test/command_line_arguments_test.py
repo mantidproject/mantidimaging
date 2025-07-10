@@ -3,6 +3,7 @@
 from __future__ import annotations
 import logging
 import unittest
+from pathlib import Path
 from unittest import mock
 
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
@@ -21,7 +22,7 @@ class CommandLineArgumentsTest(unittest.TestCase):
     @staticmethod
     def reset_singleton():
         CommandLineArguments._instance = None
-        CommandLineArguments._images_path = ""
+        CommandLineArguments._images_path = []
         CommandLineArguments._init_operation = ""
         CommandLineArguments._show_recon = False
         CommandLineArguments._show_live_viewer = ""
@@ -35,15 +36,16 @@ class CommandLineArgumentsTest(unittest.TestCase):
         self.assertIn(f"Path {bad_path} doesn't exist. Exiting.", mock_log.output[0])
 
     def test_valid_path_check_made_once(self):
-        first_path = "first/path"
-        with mock.patch("mantidimaging.core.utility.command_line_arguments.os.path.exists") as exists_mock:
+        first_path = Path("first/path").as_posix()
+        with mock.patch("mantidimaging.core.utility.command_line_arguments.Path.exists") as exists_mock:
+            exists_mock.return_value = True
             CommandLineArguments(first_path)
             CommandLineArguments("second/path")
-        exists_mock.assert_called_once_with(first_path)
+        exists_mock.assert_called_once()
         self.assertEqual(CommandLineArguments().path(), [first_path])
 
     def test_no_check_if_no_path_is_given(self):
-        with mock.patch("mantidimaging.core.utility.command_line_arguments.os.path.exists") as exists_mock:
+        with mock.patch.object(Path, "exists") as exists_mock:
             CommandLineArguments()
         exists_mock.assert_not_called()
 
