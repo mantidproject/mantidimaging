@@ -1,17 +1,15 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-
-import os
 import sys
 from functools import partial
+from io import StringIO
 from pathlib import Path
 
 from unittest import mock
 import numpy as np
 import numpy.random
 import numpy.testing as npt
-from io import StringIO
 import pyfakefs.fake_filesystem_unittest
 
 from mantidimaging.core.data import ImageStack
@@ -106,7 +104,6 @@ def vsdebug():
 def assert_files_exist(cls, base_name, file_extension, file_extension_separator='.', single_file=True, num_images=1):
     """
     Asserts that a file exists.
-
     :param cls: Must be a unittest.TestCase class, in order to use the
                 assertTrue
     :param base_name: The base name of the filename.
@@ -125,11 +122,12 @@ def assert_files_exist(cls, base_name, file_extension, file_extension_separator=
             filenames.append(base_name + str(i) + file_extension_separator + file_extension)
 
         for f in filenames:
-            cls.assertTrue(os.path.isfile(f))
-
+            path = Path(f)
+            cls.assertTrue(path.is_file(), f"File does not exist: {path}")
     else:
-        filename = base_name + file_extension_separator + file_extension
-        cls.assertTrue(os.path.isfile(filename))
+        filename = f"{base_name}{file_extension_separator}{file_extension}"
+        path = Path(filename)
+        cls.assertTrue(path.is_file(), f"File does not exist: {path}")
 
 
 class IgnoreOutputStreams:
