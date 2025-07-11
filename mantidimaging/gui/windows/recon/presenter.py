@@ -13,7 +13,7 @@ from uuid import UUID
 import numpy as np
 from PyQt5.QtWidgets import QWidget
 
-from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
@@ -434,10 +434,10 @@ class ReconstructWindowPresenter(BasePresenter):
             if task.error is not None:
 
                 if self.view.current_stack_uuid is None:
-                    raise RuntimeError("Cannot find stack UUID")
+                    raise StackNotFoundError("Cannot find stack UUID")
                 selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
                 if selected_stack is None:
-                    raise RuntimeError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
+                    raise StackNotFoundError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
                 self.view.show_error_dialog(
                     f"Finding the COR failed, likely caused by the selected stack's 180 "
                     f"degree projection being a different shape. \n\n "

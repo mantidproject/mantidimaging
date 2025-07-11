@@ -8,6 +8,7 @@ import os.path
 import uuid
 from copy import deepcopy
 from typing import Any, TextIO, TYPE_CHECKING, cast
+import logging
 
 import numpy as np
 
@@ -22,6 +23,13 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 if TYPE_CHECKING:
     from mantidimaging.core.io.instrument_log import InstrumentLog, ShutterCount
     import numpy.typing as npt
+
+
+class StackNotFoundError(RuntimeError):
+
+    def __init__(self, message: str, log_level: int = logging.ERROR):
+        super().__init__(message)
+        logging.log(log_level, message)
 
 
 class ImageStack:
