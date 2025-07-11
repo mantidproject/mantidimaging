@@ -22,13 +22,14 @@ class ReconWindowPresenterTest(unittest.TestCase):
     def setUp(self):
         self.make_view()
 
-        self.presenter = ReconstructWindowPresenter(self.view, mock.Mock())
-
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE
 
+        self.main_window = mock.MagicMock()
+        self.main_window.get_stack.return_value = self.data
+
+        self.presenter = ReconstructWindowPresenter(self.view, self.main_window)
         self.presenter.model.initial_select_data(self.data)
-        self.view.get_stack = mock.Mock(return_value=self.data)
 
         self.uuid = self.data.id
 
@@ -64,7 +65,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.set_stack_uuid(self.uuid)
 
         mock_start_async.assert_called_once()
-        self.view.get_stack.assert_called_once_with(self.uuid)
+        self.main_window.get_stack.assert_called_once_with(self.uuid)
 
         self.view.update_projection.assert_called_once()
         self.view.clear_cor_table.assert_called_once()
@@ -75,8 +76,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         # calling again with the same stack shouldn't re-do everything
         self.presenter.set_stack_uuid(self.uuid)
-        self.assertEqual(self.view.get_stack.call_count, 2)
-        self.view.get_stack.assert_has_calls([mock.call(self.uuid), mock.call(self.uuid)])
+        self.assertEqual(self.main_window.get_stack.call_count, 2)
+        self.main_window.get_stack.assert_has_calls([mock.call(self.uuid), mock.call(self.uuid)])
 
         self.view.update_projection.assert_called_once()
         self.view.clear_cor_table.assert_called_once()
@@ -84,22 +85,11 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    @mock.patch('mantidimaging.gui.windows.recon.model.ReconstructWindowModel.is_current_stack')
-    def test_set_stack_uuid_no_image_data(self, mock_is_current_stack, mock_start_async_task_view):
-        self.presenter.model._images = None
-        self.view.get_stack.return_value = None
-        mock_is_current_stack.return_value = False
-
+    def test_set_stack_uuid_no_image_data(self, mock_start_async: mock.Mock):
+        """Test that set_stack_uuid handles a UUID of 'None' properly"""
         self.presenter.set_stack_uuid(None)
-        self.view.reset_recon_and_sino_previews.assert_called_once()
-        self.view.reset_projection_preview.assert_called_once()
-        mock_start_async_task_view.assert_not_called()
-        self.view.update_sinogram.assert_not_called()
-        self.view.update_projection.assert_not_called()
-        self.view.reset_recon_line_profile.assert_called_once()
-        self.view.show_status_message.assert_called_once_with("")
-        self.view.set_max_projection_index.assert_not_called()
-        self.view.set_max_slice_index.assert_not_called()
+        self.main_window.get_stack.assert_not_called()
+        mock_start_async.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
@@ -342,7 +332,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
         self.view = mock.MagicMock()
         self.presenter.view = self.view
-        self.view.main_window.get_images_from_stack_uuid = mock.MagicMock(return_value=images)
+        self.view.main_window.get_stack = mock.MagicMock(return_value=images)
 
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
 

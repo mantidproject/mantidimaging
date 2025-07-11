@@ -13,7 +13,7 @@ from uuid import UUID
 import numpy as np
 from PyQt5.QtWidgets import QWidget
 
-from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
@@ -145,10 +145,26 @@ class ReconstructWindowPresenter(BasePresenter):
             self.stack_selection_change_pending = True
             return
 
-        images = self.view.get_stack(uuid)
+        if uuid is None:
+            return
+
+        images = self.main_window.get_stack(uuid)
         if self.model.is_current_stack(uuid):
             return
 
+        self._reset_ui_for_new_stack(images)
+
+        if images is None:
+            self.view.reset_recon_line_profile()
+            self.view.show_status_message("")
+            return
+
+        self._setup_new_stack_previews()
+
+    def _reset_ui_for_new_stack(self, images) -> None:
+        """
+        Reset UI state and perform basic setup for new stack
+        """
         self.view.reset_recon_and_sino_previews()
         self.view.clear_cor_table()
         self.model.initial_select_data(images)
@@ -156,10 +172,11 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
-        if images is None:
-            self.view.reset_recon_line_profile()
-            self.view.show_status_message("")
-            return
+
+    def _setup_new_stack_previews(self) -> None:
+        """
+        Setup previews and validation for valid image stack
+        """
         self._set_max_preview_indexes()
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
@@ -171,7 +188,7 @@ class ReconstructWindowPresenter(BasePresenter):
             # Likely due to stack no longer existing, e.g. when all stacks closed
             LOG.debug("UUID did not match open stack")
             return
-        if not selected_images.proj_180_degree_shape_matches_images():
+        if selected_images is not None and not selected_images.proj_180_degree_shape_matches_images():
             self.view.show_error_dialog(
                 "The shapes of the selected stack and it's 180 degree projections do not match! This is "
                 "going to cause an error when calculating the COR. Fix the shape before continuing!")
@@ -415,7 +432,12 @@ class ReconstructWindowPresenter(BasePresenter):
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
-                selected_stack = self.view.main_window.get_images_from_stack_uuid(self.view.stackSelector.current())
+
+                if self.view.current_stack_uuid is None:
+                    raise StackNotFoundError("Cannot find stack UUID")
+                selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
+                if selected_stack is None:
+                    raise StackNotFoundError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
                 self.view.show_error_dialog(
                     f"Finding the COR failed, likely caused by the selected stack's 180 "
                     f"degree projection being a different shape. \n\n "
