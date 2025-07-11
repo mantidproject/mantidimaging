@@ -6,8 +6,8 @@ from logging import getLogger
 from pathlib import Path
 from typing import NoReturn, TYPE_CHECKING
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset
+from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
@@ -127,10 +127,10 @@ class MainWindowModel:
         images.set_projection_angles(proj_angles)
 
     def raise_error_when_images_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to get ImageStack with ID {images_id}")
+        raise StackNotFoundError(f"Failed to get ImageStack with ID {images_id}")
 
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
-        raise RuntimeError(f"Failed to find dataset containing ImageStack with ID {images_id}")
+        raise StackNotFoundError(f"Failed to find dataset containing ImageStack with ID {images_id}")
 
     def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path) -> None:
         images = self.get_images_by_uuid(images_id)

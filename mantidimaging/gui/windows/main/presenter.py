@@ -15,8 +15,8 @@ from PyQt5.QtGui import QFont, QPalette, QColor
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
 from qt_material import apply_stylesheet
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
+from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -396,7 +396,7 @@ class MainWindowPresenter(BasePresenter):
         for _, sv in self.stack_visualisers.items():
             if images is sv.presenter.images:
                 return sv
-        raise RuntimeError(f"Did not find stack {images} in stacks! Stacks: {self.stack_visualisers.items()}")
+        raise StackNotFoundError(f"Did not find stack {images} in stacks! Stacks: {self.stack_visualisers.items()}")
 
     def add_projection_angles_to_sample(self, stack_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
@@ -535,7 +535,7 @@ class MainWindowPresenter(BasePresenter):
             self.stack_visualisers[stack_id].setVisible(True)
             self.stack_visualisers[stack_id].raise_()
         else:
-            raise RuntimeError(f"Unable to find stack with ID {stack_id}")
+            raise StackNotFoundError(f"Unable to find stack with ID {stack_id}")
 
     def _add_recon_to_dataset(self, recon_data: ImageStack, stack_id: uuid.UUID) -> None:
         """
