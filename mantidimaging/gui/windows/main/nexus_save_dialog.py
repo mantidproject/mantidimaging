@@ -1,9 +1,10 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-import os
+
 import uuid
 from collections.abc import Iterable
+from pathlib import Path
 
 from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
@@ -63,9 +64,10 @@ class NexusSaveDialog(BaseDialogView):
         self._check_extension()
 
     def _check_extension(self) -> None:
-        path = self.save_path()
-        if os.path.splitext(path)[1] != NXS_EXT:
-            self.savePath.setText(path + NXS_EXT)
+        path = Path(self.save_path())
+        if path.suffix != NXS_EXT:
+            path_with_nxs_ext = path.with_suffix(NXS_EXT)
+            self.savePath.setText(str(path_with_nxs_ext))
 
     @property
     def save_as_float(self) -> bool:

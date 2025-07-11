@@ -1,7 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-import os
 from dataclasses import dataclass, field
 from logging import getLogger
 from pathlib import Path
@@ -179,14 +178,13 @@ def load(filename_group: FilenameGroup,
 
 
 def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameters | None:
-    sample_file = find_first_file_that_is_possibly_a_sample(str(file_path))
+    sample_file = find_first_file_that_is_possibly_a_sample(file_path)
     if sample_file is None:
         return None
 
     loading_parameters = LoadingParameters()
-    loading_parameters.name = os.path.basename(sample_file)
-
-    sample_fg = FilenameGroup.from_file(sample_file)
+    loading_parameters.name = sample_file.stem
+    sample_fg = FilenameGroup.from_file(str(sample_file))
     sample_fg.find_all_files()
     sample_fg.find_shutter_count_file()
     sample_fg.find_log_file()
@@ -202,5 +200,4 @@ def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameter
         if file_type.tname == "Flat":
             fg.find_log_file()
         loading_parameters.image_stacks[file_type] = ImageParameters(fg, fg.log_path, fg.shutter_count_path)
-
     return loading_parameters
