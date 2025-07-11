@@ -7,6 +7,7 @@ from multiprocessing import get_context
 import os
 import uuid
 from logging import getLogger
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import psutil
@@ -78,7 +79,8 @@ def free_shared_memory_linux(mem_names: list[str]) -> None:
 
 def _is_safe_to_remove(mem_name: str) -> bool:
     process_start = psutil.Process().create_time()
-    if _is_mi_shared_mem(mem_name) and os.path.getmtime(f'{MEM_DIR_LINUX}/{mem_name}') < process_start:
+    mem_path = Path(MEM_DIR_LINUX) / mem_name
+    if _is_mi_shared_mem(mem_name) and mem_path.exists() and mem_path.stat().st_mtime < process_start:
         try:
             pid = int(mem_name.split('_')[1])
             _lookup_process(pid)
