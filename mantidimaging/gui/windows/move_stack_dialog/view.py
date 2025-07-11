@@ -40,7 +40,7 @@ class MoveStackDialog(BaseDialogView):
         self.presenter.notify(Notification.ACCEPTED)
         self.close()
 
-    def _on_destination_dataset_changed(self):
+    def _on_destination_dataset_changed(self) -> None:
         self.presenter.notify(Notification.DATASET_CHANGED)
 
     @property
