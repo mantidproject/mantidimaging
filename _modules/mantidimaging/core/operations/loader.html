@@ -494,10 +494,11 @@ document.write(`
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">pkgutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">module_from_spec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -509,7 +510,8 @@ document.write(`
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_operation_modules</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseFilterClass</span><span class="p">]:</span>
     <span class="n">module_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseFilterClass</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">finder</span><span class="p">,</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)]):</span>
+    <span class="n">search_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">finder</span><span class="p">,</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">([</span><span class="n">search_path</span><span class="p">]):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ispkg</span><span class="p">:</span>
             <span class="k">continue</span>
 
@@ -519,10 +521,8 @@ document.write(`
                 <span class="k">continue</span>
             <span class="c1"># If we&#39;re running a PyInstaller executable then we need to use a full module path</span>
             <span class="n">module_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mantidimaging.core.operations.</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s1">&#39;</span>
-
         <span class="c1"># near impossible to type check as find can be a pyinstaller specific type that we can&#39;t normally import</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
-
         <span class="k">assert</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="n">spec</span><span class="o">.</span><span class="n">loader</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">module</span> <span class="o">=</span> <span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
@@ -530,7 +530,6 @@ document.write(`
         <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;FILTER_CLASS&#39;</span><span class="p">):</span>
             <span class="n">module_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">FILTER_CLASS</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">module_list</span>
 
 
