@@ -500,6 +500,7 @@ document.write(`
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
@@ -592,7 +593,8 @@ document.write(`
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_safe_to_remove</span><span class="p">(</span><span class="n">mem_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="n">process_start</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">create_time</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">_is_mi_shared_mem</span><span class="p">(</span><span class="n">mem_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">MEM_DIR_LINUX</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">mem_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">process_start</span><span class="p">:</span>
+    <span class="n">mem_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">MEM_DIR_LINUX</span><span class="p">)</span> <span class="o">/</span> <span class="n">mem_name</span>
+    <span class="k">if</span> <span class="n">_is_mi_shared_mem</span><span class="p">(</span><span class="n">mem_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mem_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">mem_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span> <span class="o">&lt;</span> <span class="n">process_start</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">_lookup_process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
