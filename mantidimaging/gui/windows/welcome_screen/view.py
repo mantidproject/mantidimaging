@@ -14,8 +14,8 @@ class CloseButton(QPushButton):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.default_icon = QIcon(finder.ROOT_PATH + "/gui/ui/images/x_button.png")
-        self.hover_icon = QIcon(finder.ROOT_PATH + "/gui/ui/images/x_button_hover.png")
+        self.default_icon = QIcon((finder.ROOT_PATH / "gui" / "ui" / "images" / "x_button.png").as_posix())
+        self.hover_icon = QIcon((finder.ROOT_PATH / "gui" / "ui" / "images" / "x_button_hover.png").as_posix())
 
         self.setIcon(self.default_icon)
         self.setIconSize(QSize(20, 20))
@@ -45,7 +45,7 @@ class WelcomeScreenView(QWidget):
             self.Banner_container.setLayout(QVBoxLayout())
 
         # Set the banner image
-        banner = finder.ROOT_PATH.replace('\\', '/') + '/gui/ui/images/welcome_banner.png'
+        banner = (finder.ROOT_PATH / "gui" / "ui" / "images" / "welcome_banner.png").as_posix()
         self.banner_label = QLabel(self)
         self.banner_label.setPixmap(QPixmap(banner))
         self.banner_label.setScaledContents(False)

@@ -99,7 +99,7 @@ class BadDataOverlay(ABC, metaclass=_metaclass_sip_abc):
     def enable_check(self, name: str, color: list[int], pos: int, func: Callable, message: str,
                      actions: list[tuple[str, Callable]] | None) -> None:
         if name not in self.enabled_checks:
-            icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            icon_path = (finder.ROOT_PATH / "gui" / "ui" / "images" / "exclamation-triangle-red.png").as_posix()
             indicator = IndicatorIconView(self.viewbox, icon_path, pos, color, message)
             if actions is not None:
                 indicator.add_actions(actions)
@@ -131,7 +131,7 @@ class BadDataOverlay(ABC, metaclass=_metaclass_sip_abc):
 
     def enable_message(self, enable: bool = True) -> None:
         if enable:
-            icon_path = finder.ROOT_PATH + "/gui/ui/images/exclamation-triangle-red.png"
+            icon_path = (finder.ROOT_PATH / "gui" / "ui" / "images" / "exclamation-triangle-red.png").as_posix()
             self.message_indicator = IndicatorIconView(self.viewbox, icon_path, 0, OVERLAY_COLOUR_MESSAGE, "")
             self.message_indicator.setVisible(False)
         else:
