@@ -1,9 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-
 import sys
-import os
+from pathlib import Path
 
 # -*- coding: utf-8 -*-
 #
@@ -21,11 +20,11 @@ import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
+# documentation root, use Path.resolve() to make it absolute, like shown here.
+
+# from pathlib import Path
 # import sys
-# sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, str((Path(__file__).parent / ".").resolve()))
 
 # -- General configuration ------------------------------------------------
 
@@ -50,8 +49,10 @@ extensions = [
 ]
 
 # Add custom extensions
-sys.path.append(os.path.abspath("./ext"))
-sys.path.append(os.path.abspath("../"))
+THIS_DIR = Path(__file__).parent
+sys.path.append(str((THIS_DIR / "ext").resolve()))
+sys.path.append(str((THIS_DIR.parent).resolve()))
+
 extensions.append("operations_user_doc")
 extensions.append("release_notes")
 
