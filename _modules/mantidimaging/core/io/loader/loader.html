@@ -494,7 +494,6 @@ document.write(`
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -701,14 +700,13 @@ document.write(`
 <div class="viewcode-block" id="create_loading_parameters_for_file_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.create_loading_parameters_for_file_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_loading_parameters_for_file_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoadingParameters</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">sample_file</span> <span class="o">=</span> <span class="n">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+    <span class="n">sample_file</span> <span class="o">=</span> <span class="n">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sample_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="n">loading_parameters</span> <span class="o">=</span> <span class="n">LoadingParameters</span><span class="p">()</span>
-    <span class="n">loading_parameters</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sample_file</span><span class="p">)</span>
-
-    <span class="n">sample_fg</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">sample_file</span><span class="p">)</span>
+    <span class="n">loading_parameters</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sample_file</span><span class="o">.</span><span class="n">stem</span>
+    <span class="n">sample_fg</span> <span class="o">=</span> <span class="n">FilenameGroup</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sample_file</span><span class="p">))</span>
     <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_all_files</span><span class="p">()</span>
     <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_shutter_count_file</span><span class="p">()</span>
     <span class="n">sample_fg</span><span class="o">.</span><span class="n">find_log_file</span><span class="p">()</span>
@@ -724,7 +722,6 @@ document.write(`
         <span class="k">if</span> <span class="n">file_type</span><span class="o">.</span><span class="n">tname</span> <span class="o">==</span> <span class="s2">&quot;Flat&quot;</span><span class="p">:</span>
             <span class="n">fg</span><span class="o">.</span><span class="n">find_log_file</span><span class="p">()</span>
         <span class="n">loading_parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">file_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImageParameters</span><span class="p">(</span><span class="n">fg</span><span class="p">,</span> <span class="n">fg</span><span class="o">.</span><span class="n">log_path</span><span class="p">,</span> <span class="n">fg</span><span class="o">.</span><span class="n">shutter_count_path</span><span class="p">)</span>
-
     <span class="k">return</span> <span class="n">loading_parameters</span></div>
 
 </pre></div>

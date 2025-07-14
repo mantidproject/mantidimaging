@@ -495,7 +495,6 @@ document.write(`
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -633,19 +632,17 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">setup_shortcuts</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_shortcuts</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setAcceptDrops</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">base_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span>
 
+        <span class="n">base_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open_dialogs</span> <span class="o">=</span> <span class="n">open_dialogs</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_dialogs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">versions</span><span class="o">.</span><span class="n">is_prerelease</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging Unstable&quot;</span><span class="p">)</span>
-                <span class="n">bg_image</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="s2">&quot;gui/ui/images/mantid_imaging_unstable_64px.png&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">bg_image</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="s2">&quot;gui/ui/images/mantid_imaging_64px.png&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bg_image</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="s2">&quot;gui/ui/images/mantid_imaging_64px.png&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">bg_image</span><span class="p">))</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_dialogs</span> <span class="ow">and</span> <span class="n">versions</span><span class="o">.</span><span class="n">is_prerelease</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging Unstable&quot;</span><span class="p">)</span>
+            <span class="n">image_path</span> <span class="o">=</span> <span class="s2">&quot;gui/ui/images/mantid_imaging_unstable_64px.png&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_path</span> <span class="o">=</span> <span class="s2">&quot;gui/ui/images/mantid_imaging_64px.png&quot;</span>
+        <span class="n">bg_image</span> <span class="o">=</span> <span class="n">base_path</span> <span class="o">/</span> <span class="n">image_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bg_image</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wizard</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Recon and operation windows are launched from view using self.args</span>
@@ -814,16 +811,16 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.show_image_load_dialog_with_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog_with_path">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_image_load_dialog_with_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_image_load_dialog_with_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Open the dataset loading dialog with a given file_path preset as the sample</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sample_file</span> <span class="o">=</span> <span class="n">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sample_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sample_file</span> <span class="o">=</span> <span class="n">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="n">sample_file</span> <span class="o">=</span> <span class="n">find_first_file_that_is_possibly_a_sample</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sample_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_load_dialog</span> <span class="o">=</span> <span class="n">ImageLoadDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">image_load_dialog</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_sample</span><span class="p">(</span><span class="n">sample_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_load_dialog</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_update_sample</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sample_file</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_load_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">sample_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
@@ -1283,10 +1280,10 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.dropEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dropEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QDropEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">mimeData</span><span class="p">()</span><span class="o">.</span><span class="n">urls</span><span class="p">():</span>
-            <span class="n">file_path</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">toLocalFile</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">toLocalFile</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                 <span class="n">sample_loading</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_image_load_dialog_with_path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_loading</span><span class="p">:</span>
                     <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
