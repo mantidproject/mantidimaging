@@ -30,10 +30,8 @@ class MainWindowPresenterTest(unittest.TestCase):
         image_dir = Path("/path/to/dir")
         image_paths = [image_dir / f"image_{i:03d}.tif" for i in range(5)]
         self.model.images = [mock.create_autospec(Image_Data, image_path=p, instance=True) for p in image_paths]
-
         self.presenter.load_as_dataset()
-
-        self.main_window.show_image_load_dialog_with_path.assert_called_once_with(str(image_dir))
+        self.main_window.show_image_load_dialog_with_path.assert_called_once_with(image_dir)
 
     def test_load_as_dataset_empty_dir(self):
         self.model.images = []
