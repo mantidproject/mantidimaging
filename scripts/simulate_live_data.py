@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-import os
+from pathlib import Path
 import shutil
 import argparse
 import random
@@ -10,7 +10,7 @@ from tqdm import tqdm
 import time
 
 
-def copy_dataset(source_dir: str, dest_dir: str, rate: float, mode: str, verbose: bool) -> None:
+def copy_dataset(source_dir: Path, dest_dir: Path, rate: float, mode: str, verbose: bool) -> None:
     """
     Copy data from a source directory to a destination directory.
     Files are copied one image at a time at a specified rate in seconds.
@@ -20,19 +20,15 @@ def copy_dataset(source_dir: str, dest_dir: str, rate: float, mode: str, verbose
     param rate: Rate in seconds at which to copy files from dataset i.e. 1, 1.5, 2...
     param slow_copy_mode: copy the file slowly in chunks
     """
-    if not os.path.exists(dest_dir):
-        os.makedirs(dest_dir)
-    source_list = os.listdir(source_dir)
-
-    if verbose:
-        it = source_list
-    else:
-        it = tqdm(source_list)
+    if not dest_dir.exists():
+        dest_dir.mkdir(parents=True, exist_ok=True)
+    source_list = list(source_dir.iterdir())
+    it = source_list if verbose else tqdm(source_list)
 
     for item in it:
-        source_item = os.path.join(source_dir, item)
-        dest_item = os.path.join(dest_dir, item)
-        if os.path.isfile(source_item):
+        source_item = item
+        dest_item = dest_dir / item.name
+        if source_item.is_file():
             if verbose:
                 print(f"Copying {source_item}", end="", flush=True)
 
@@ -45,48 +41,40 @@ def copy_dataset(source_dir: str, dest_dir: str, rate: float, mode: str, verbose
             if verbose:
                 print(" DONE")
 
-            time.sleep(float(rate))
-        if os.path.isdir(source_item):
+            time.sleep(rate)
+        elif source_item.is_dir():
             copy_dataset(source_item, dest_item, rate, mode, verbose)
 
 
-def slow_copy(source: str, dest: str) -> None:
-    with open(source, "rb") as source_file:
-        data = source_file.read()
+def slow_copy(source: Path, dest: Path) -> None:
+    data = source.read_bytes()
     data_size = len(data)
-
-    if os.path.exists(dest):
-        os.remove(dest)
-
-    with open(dest, "wb") as dest_file:
-        writen = 0
-        while writen < data_size:
+    if dest.exists():
+        dest.unlink()
+    with dest.open("wb") as dest_file:
+        written = 0
+        while written < data_size:
             time.sleep(0.1)
-            start = writen
+            start = written
             stop = start + data_size // 10
-            writen += dest_file.write(data[start:stop])
+            written += dest_file.write(data[start:stop])
 
 
-def faulty_copy(source: str, dest: str) -> None:
-    with open(source, "rb") as source_file:
-        data = source_file.read()
+def faulty_copy(source: Path, dest: Path) -> None:
+    data = source.read_bytes()
     data_size = len(data)
-
-    if os.path.exists(dest):
-        os.remove(dest)
-
+    if dest.exists():
+        dest.unlink()
     if random.random() < 0.1:
         data = data[:random.randint(0, data_size)]
-
-    with open(dest, "wb") as dest_file:
-        dest_file.write(data)
+    dest.write_bytes(data)
 
 
 def main() -> None:
     """
     Main function to copy dataset from a source directory to a destination directory
     """
-    default_output_dir = os.path.join(os.getcwd(), "mock_dataset_copy")
+    default_output_dir = Path.cwd() / "mock_dataset_copy"
     parser = argparse.ArgumentParser(description="Make copy of dataset at a specified rate (s)")
     parser.add_argument("-s", "--source_dir", required=True, help="Source directory containing dataset to copy")
     parser.add_argument("-d",
