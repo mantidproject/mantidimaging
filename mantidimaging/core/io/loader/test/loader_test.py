@@ -95,4 +95,4 @@ class LoaderTest(FakeFSTestCase):
 
         self._file_list_count_equal(filenames, reordered_filenames)
         self.assertListEqual(['foo_0.tif', 'foo_8.tif', 'foo_16.tif', 'foo_3.tif', 'foo_11.tif'],
-                             reordered_filenames[:5])
+                             [p.name for p in reordered_filenames[:5]])

@@ -127,11 +127,10 @@ def load(filename_group: FilenameGroup,
          log_file: Path | None = None,
          shutter_count_file: Path | None = None) -> ImageStack:
     """
-
     Loads a stack, including sample, white and dark images.
 
-    :param dtype: Default:np.float32, data type for the input images
-    :param filename_group: FilenameGroup to provided file names for loading
+    :param dtype: Default: np.float32, data type for the input images
+    :param filename_group: FilenameGroup to provide file names for loading
     :param indices: Specify which indices are loaded from the found files.
                     This **DOES NOT** check for the number in the image
                     filename, but removes all indices from the filenames list
@@ -142,7 +141,7 @@ def load(filename_group: FilenameGroup,
     if indices and len(indices) < 3:
         raise ValueError("Indices at this point MUST have 3 elements: [start, stop, step]!")
 
-    file_names = [str(p) for p in filename_group.all_files()]
+    file_names = list(filename_group.all_files())
     in_format = filename_group.first_file().suffix.lstrip('.')
     load_func = get_loader(in_format)
 
@@ -165,7 +164,6 @@ def load(filename_group: FilenameGroup,
     if shutter_count_file is not None:
         image_stack.shutter_count_file = load_shutter_counts(shutter_count_file)
 
-    # Search for and load metadata file
     metadata_filename = filename_group.metadata_path
     if metadata_filename:
         with open(metadata_filename) as f:
@@ -183,8 +181,8 @@ def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameter
         return None
 
     loading_parameters = LoadingParameters()
-    loading_parameters.name = sample_file.stem
-    sample_fg = FilenameGroup.from_file(str(sample_file))
+    loading_parameters.name = sample_file.name
+    sample_fg = FilenameGroup.from_file(sample_file)
     sample_fg.find_all_files()
     sample_fg.find_shutter_count_file()
     sample_fg.find_log_file()
@@ -200,4 +198,5 @@ def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameter
         if file_type.tname == "Flat":
             fg.find_log_file()
         loading_parameters.image_stacks[file_type] = ImageParameters(fg, fg.log_path, fg.shutter_count_path)
+
     return loading_parameters
