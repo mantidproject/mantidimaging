@@ -63,7 +63,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.main_window = main_window
 
-        icon_path = finder.ROOT_PATH / "gui/ui/images/exclamation-triangle-red.png"
+        icon_path = (finder.ROOT_PATH / "gui" / "ui" / "images" / "exclamation-triangle-red.png").as_posix()
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
         self.presenter = SpectrumViewerWindowPresenter(self, main_window)
