@@ -231,7 +231,7 @@ class LiveViewerWindowPresenter(BasePresenter):
     def load_as_dataset(self) -> None:
         if self.model.images:
             image_dir = self.model.images[0].image_path.parent
-            self.main_window.show_image_load_dialog_with_path(str(image_dir))
+            self.main_window.show_image_load_dialog_with_path(image_dir)
 
     def update_intensity(self, spec_data: list | np.ndarray) -> None:
         self.view.intensity_profile.clearPlots()

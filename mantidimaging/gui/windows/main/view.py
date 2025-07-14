@@ -281,15 +281,13 @@ class MainWindowView(BaseMainWindowView):
         self.image_load_dialog = ImageLoadDialog(self)
         self.image_load_dialog.show()
 
-    def show_image_load_dialog_with_path(self, file_path: str | Path) -> bool:
+    def show_image_load_dialog_with_path(self, file_path: Path) -> bool:
         """
         Open the dataset loading dialog with a given file_path preset as the sample
         """
-        file_path = Path(file_path)
         sample_file = find_first_file_that_is_possibly_a_sample(file_path)
         if sample_file is None:
             sample_file = find_first_file_that_is_possibly_a_sample(file_path.parent)
-
         if sample_file is not None:
             self.image_load_dialog = ImageLoadDialog(self)
             self.image_load_dialog.presenter.do_update_sample(str(sample_file))
