@@ -78,7 +78,7 @@ class StackVisualiserView(QDockWidget):
         self.image_view.roi_changed_callback = self.roi_changed_callback
         self.layout.addWidget(self.image_view)
 
-        self.connection_stack_changed = self._main_window.stack_changed.connect(
+        self.connection_stack_modified = self._main_window.stack_modified.connect(
             lambda: self.presenter.notify(SVNotification.REFRESH_IMAGE))
 
     @property
@@ -204,12 +204,12 @@ class StackVisualiserView(QDockWidget):
                                               flags=INPUT_DIALOG_FLAGS)
         if accepted:
             self.presenter.images._is_sinograms = False if item == "projections" else True
-            self._main_window.stack_changed.emit()
+            self._main_window.stack_modified.emit()
 
     def ask_confirmation(self, msg: str) -> bool:
         response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
         return response == QMessageBox.Ok
 
     def cleanup(self):
-        self._main_window.stack_changed.disconnect(self.connection_stack_changed)
+        self._main_window.stack_modified.disconnect(self.connection_stack_modified)
         self.presenter = None
