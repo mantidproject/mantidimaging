@@ -565,7 +565,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">processesSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;multiprocessing/process_count&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">processesSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_processes_value</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_create_logging_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_logging_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">loggingTab</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
@@ -630,7 +630,7 @@ document.write(`
 
 <div class="viewcode-block" id="SettingsWindowView.select_log_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.settings.view.html#mantidimaging.gui.windows.settings.view.SettingsWindowView.select_log_directory">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">select_log_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_log_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">directory</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Select Log Directory&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">directory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logDirectoryLineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>

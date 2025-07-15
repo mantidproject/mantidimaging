@@ -522,7 +522,7 @@ document.write(`
 
 <div class="viewcode-block" id="MoveStackPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.move_stack_dialog.presenter.html#mantidimaging.gui.windows.move_stack_dialog.presenter.MoveStackPresenter.notify">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">ACCEPTED</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_on_accepted</span><span class="p">()</span>
@@ -532,14 +532,14 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_accepted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calls the execute move stack method in the main view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">parent_view</span><span class="o">.</span><span class="n">execute_move_stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">origin_dataset_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stack_id</span><span class="p">,</span>
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destination_stack_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">destination_dataset_id</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_dataset_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_dataset_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the contents of the destination type combo box when the destination dataset has changed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

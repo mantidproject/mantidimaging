@@ -575,7 +575,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.notify">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Notification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">NEXUS_FILE_SELECTED</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">scan_nexus_file</span><span class="p">()</span>
@@ -585,7 +585,7 @@ document.write(`
 
 <div class="viewcode-block" id="NexusLoadPresenter.scan_nexus_file">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.scan_nexus_file">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">scan_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scan_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Try to open the NeXus file and display its contents on the view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -607,6 +607,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="p">[:]</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="n">ROTATION_ANGLE_PATH</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span>
 
@@ -615,8 +616,11 @@ document.write(`
                     <span class="n">degrees</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">degrees</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
+
                 <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">)</span>
+                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">[:]</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_recon_entries</span><span class="p">()</span>
@@ -653,7 +657,7 @@ document.write(`
 
         <span class="k">return</span> <span class="n">rotation_angles</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">rotation_angles</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_missing_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_missing_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a missing data message and display it on the view.</span>
 <span class="sd">        :param field: The name of the field that couldn&#39;t be found in the NeXus file.</span>
@@ -720,7 +724,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_recon_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_recon_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tries to find recon entries in the NeXus file then stores the data in a list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -747,7 +751,7 @@ document.write(`
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_from_image_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_from_image_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Looks for the projection and dark/flat before/after images and update the information on the view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -832,7 +836,7 @@ document.write(`
         <span class="k">return</span> <span class="n">ds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_create_sample_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_sample_images</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates the sample ImageStack object.</span>
 <span class="sd">        :return: An ImageStack object containing projections. If given, projection angles, pixel size, and 180deg are</span>

@@ -522,13 +522,13 @@ document.write(`
 
 <div class="viewcode-block" id="StackChoicePresenter.show">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.presenter.html#mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter.show">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="StackChoicePresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.presenter.html#mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter.notify">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">:</span> <span class="n">Notification</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">signal</span> <span class="o">==</span> <span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_ORIGINAL</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_reapply_original_data</span><span class="p">()</span>
@@ -543,7 +543,7 @@ document.write(`
 
 <div class="viewcode-block" id="StackChoicePresenter.do_reapply_original_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.presenter.html#mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter.do_reapply_original_data">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">do_reapply_original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_reapply_original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">shared_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">shared_array</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">choice_made</span> <span class="o">=</span> <span class="kc">True</span>
@@ -552,7 +552,7 @@ document.write(`
 
 <div class="viewcode-block" id="StackChoicePresenter.do_clean_up_original_data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.presenter.html#mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter.do_clean_up_original_data">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">do_clean_up_original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_clean_up_original_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">choice_made</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close_view</span><span class="p">()</span></div>
 
@@ -567,7 +567,7 @@ document.write(`
 
 <div class="viewcode-block" id="StackChoicePresenter.enable_nonpositive_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_choice.presenter.html#mantidimaging.gui.windows.stack_choice.presenter.StackChoicePresenter.enable_nonpositive_check">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">enable_nonpositive_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enable_nonpositive_check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">()</span></div>
 </div>
