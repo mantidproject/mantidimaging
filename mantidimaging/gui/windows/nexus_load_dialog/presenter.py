@@ -72,14 +72,14 @@ class NexusLoadPresenter:
         self.flat_after_array: np.ndarray | None = None
         self.dark_after_array: np.ndarray | None = None
 
-    def notify(self, n: Notification):
+    def notify(self, n: Notification) -> None:
         try:
             if n == Notification.NEXUS_FILE_SELECTED:
                 self.scan_nexus_file()
         except RuntimeError as err:
             self.view.show_exception(str(err), traceback.format_exc())
 
-    def scan_nexus_file(self):
+    def scan_nexus_file(self) -> None:
         """
         Try to open the NeXus file and display its contents on the view.
         """
@@ -101,6 +101,7 @@ class NexusLoadPresenter:
                 self.image_key_dataset = self.image_key_dataset[:]
 
                 self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+
                 if self.rotation_angles is None:
                     return
 
@@ -109,8 +110,11 @@ class NexusLoadPresenter:
                     degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
                     degrees = "deg" in str(self.rotation_angles.attrs["units"])
+
                 if degrees:
                     self.rotation_angles = np.radians(self.rotation_angles)
+                    assert isinstance(self.rotation_angles, np.ndarray)
+
                 self.rotation_angles = self.rotation_angles[:]
 
                 self._look_for_recon_entries()
@@ -146,7 +150,7 @@ class NexusLoadPresenter:
 
         return rotation_angles if np.any(rotation_angles) else None
 
-    def _missing_data_error(self, field: str):
+    def _missing_data_error(self, field: str) -> None:
         """
         Create a missing data message and display it on the view.
         :param field: The name of the field that couldn't be found in the NeXus file.
@@ -213,7 +217,7 @@ class NexusLoadPresenter:
         self.view.disable_ok_button()
         return None
 
-    def _look_for_recon_entries(self):
+    def _look_for_recon_entries(self) -> None:
         """
         Tries to find recon entries in the NeXus file then stores the data in a list.
         """
@@ -240,7 +244,7 @@ class NexusLoadPresenter:
         except KeyError:
             return None
 
-    def _get_data_from_image_key(self):
+    def _get_data_from_image_key(self) -> None:
         """
         Looks for the projection and dark/flat before/after images and update the information on the view.
         """
@@ -322,7 +326,7 @@ class NexusLoadPresenter:
 
         return ds, self.title
 
-    def _create_sample_images(self):
+    def _create_sample_images(self) -> ImageStack:
         """
         Creates the sample ImageStack object.
         :return: An ImageStack object containing projections. If given, projection angles, pixel size, and 180deg are

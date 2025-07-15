@@ -62,7 +62,7 @@ def initialise_logging(arg_level: str | None = None) -> None:
             perf_logger.addHandler(file_log)
 
 
-def check_data_stack(data, expected_dims=3, expected_class=ImageStack):
+def check_data_stack(data, expected_dims=3, expected_class=ImageStack) -> None:
     """
     Make sure the data has expected dimensions and class.
     """

@@ -33,7 +33,7 @@ class SettingsWindowPresenter(BasePresenter):
         else:
             self.current_menu_font_size = settings.value('selected_font_size')
 
-    def set_theme(self):
+    def set_theme(self) -> None:
         self.current_theme = self.view.current_theme
         settings.setValue('theme_selection', self.current_theme)
         if self.current_theme == 'Fusion':
@@ -42,14 +42,14 @@ class SettingsWindowPresenter(BasePresenter):
             self.view.darkModeCheckBox.setEnabled(False)
         self.main_window.presenter.do_update_UI()
 
-    def set_extra_style(self):
+    def set_extra_style(self) -> None:
         extra_style = settings.value('extra_style')
         settings.setValue('selected_font_size', self.view.current_menu_font_size)
         extra_style.update({'font_size': self.view.current_menu_font_size + 'px'})
         settings.setValue('extra_style', extra_style)
         self.main_window.presenter.do_update_UI()
 
-    def set_dark_mode(self):
+    def set_dark_mode(self) -> None:
         if self.view.darkModeCheckBox.isChecked():
             use_dark_mode = 'True'
         else:
@@ -59,7 +59,7 @@ class SettingsWindowPresenter(BasePresenter):
         settings.setValue('override_os_theme', 'True')
         self.main_window.presenter.do_update_UI()
 
-    def set_to_os_defaults(self):
+    def set_to_os_defaults(self) -> None:
         if self.view.osDefaultsCheckBox.isChecked():
             settings.setValue('use_os_defaults', 'True')
             theme_text = 'Fusion'
@@ -93,7 +93,7 @@ class SettingsWindowPresenter(BasePresenter):
             self.view.darkModeCheckBox.setEnabled(dark_mode_enabled)
         self.main_window.presenter.do_update_UI()
 
-    def set_processes_value(self):
+    def set_processes_value(self) -> None:
         settings.setValue('multiprocessing/process_count', self.view.current_processes_value)
 
     def set_log_directory(self, directory: str) -> None:
@@ -106,7 +106,7 @@ class SettingsWindowPresenter(BasePresenter):
         settings.setValue("logging/log_level", value)
         initialise_logging()
 
-    def set_performance_logging(self):
+    def set_performance_logging(self) -> None:
         perf_logging = self.view.performanceLoggingCheckBox.isChecked()
         settings.setValue("logging/performance_log", perf_logging)
 

@@ -136,7 +136,7 @@ class NexusLoadDialog(BaseDialogView):
         data_section.setText(PATH_COLUMN, path)
         data_section.setText(SHAPE_COLUMN, str(shape))
 
-    def set_images_found(self, position: int, found: bool, shape: tuple[int, int, int]) -> None:
+    def set_images_found(self, position: int, found: bool, shape: tuple[int, ...]) -> None:
         """
         Indicate on the QTreeWidget if the projections and dark/flat before/after images were found in the data array.
         :param position: The row position for the image type.

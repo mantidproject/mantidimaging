@@ -6,7 +6,7 @@ import numpy as np
 import traceback
 from enum import IntEnum, auto
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
@@ -51,7 +51,7 @@ class StackVisualiserPresenter(BasePresenter):
         self.image_mode: SVImageMode = SVImageMode.NORMAL
         self.summed_image = None
 
-    def notify(self, signal):
+    def notify(self, signal) -> None:
         try:
             if signal == SVNotification.REFRESH_IMAGE:
                 self.refresh_image()
@@ -72,13 +72,13 @@ class StackVisualiserPresenter(BasePresenter):
         self.view.cleanup()
         self.view = None
 
-    def refresh_image(self):
+    def refresh_image(self) -> None:
         if self.image_mode is SVImageMode.SUMMED:
             self.view.image = self.summed_image
         else:
             self.view.set_image(self.images)
 
-    def get_parameter_value(self, parameter: SVParameters):
+    def get_parameter_value(self, parameter: SVParameters) -> Any:
         """
         Gets a parameter from the stack visualiser for use elsewhere (e.g. operations).
         :param parameter: The parameter value to be retrieved
@@ -101,7 +101,7 @@ class StackVisualiserPresenter(BasePresenter):
             self.summed_image = self.model.sum_images(self.images.data)
         self.refresh_image()
 
-    def create_swapped_axis_stack(self):
+    def create_swapped_axis_stack(self) -> None:
         with operation_in_progress("Creating sinograms, copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_stack = self.images.copy(flip_axes=True)
@@ -109,21 +109,21 @@ class StackVisualiserPresenter(BasePresenter):
             new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
             self.add_sinograms_to_model_and_update_view(new_stack)
 
-    def dupe_stack(self):
+    def dupe_stack(self) -> None:
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy(flip_axes=False)
             new_images.name = self.images.name
             self.add_new_dataset_to_model_and_update_view(new_images)
 
-    def dupe_stack_roi(self):
+    def dupe_stack_roi(self) -> None:
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
             new_images = self.images.copy_roi(SensibleROI.from_points(*self.view.image_view.get_roi()))
             new_images.name = self.images.name
             self.add_new_dataset_to_model_and_update_view(new_images)
 
-    def add_new_dataset_to_model_and_update_view(self, images: ImageStack):
+    def add_new_dataset_to_model_and_update_view(self, images: ImageStack) -> None:
         dataset = Dataset(stacks=[images], name=images.name)
         self.view._main_window.presenter.model.add_dataset_to_model(dataset)
         self.view._main_window.presenter.update_dataset_tree()
@@ -140,5 +140,5 @@ class StackVisualiserPresenter(BasePresenter):
                 return index
         return len(self.images.projection_angles().value)
 
-    def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack):
+    def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack) -> None:
         self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)
