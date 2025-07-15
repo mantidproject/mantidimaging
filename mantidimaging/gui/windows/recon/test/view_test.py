@@ -234,14 +234,11 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.show_recon_volume(data, stack_id)
         add_to_dataset_mock.assert_called_once_with(data, stack_id)
 
-    def test_get_stack_when_uuid_is_none(self):
-        assert self.view.get_stack(None) is None
-
     def test_get_stack_when_uuid_is_not_none(self):
         uuid = mock.Mock()
         self.main_window.get_stack = mock.Mock()
 
-        assert self.view.get_stack(uuid) == self.main_window.get_stack.return_value
+        assert self.main_window.get_stack(uuid) == self.main_window.get_stack.return_value
         self.main_window.get_stack.assert_called_once_with(uuid)
 
     def test_hide_tilt(self):

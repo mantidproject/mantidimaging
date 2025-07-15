@@ -10,7 +10,7 @@ import numpy as np
 from math import ceil
 
 from logging import getLogger
-from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.imagestack import ImageStack
 from mantidimaging.core.fitting.fitting_engine import FittingEngine
 from mantidimaging.core.fitting.fitting_functions import ErfStepFunction
 from mantidimaging.core.io.csv_output import CSVOutput

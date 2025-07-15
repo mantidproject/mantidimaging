@@ -5,7 +5,7 @@ import uuid
 
 import numpy as np
 
-from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.data.reconlist import ReconList
 from mantidimaging.core.utility.data_containers import FILE_TYPES
 
@@ -224,4 +224,4 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: Dataset) -> str:
         return "Dark After"
     if dataset.proj180deg is not None and stack_id == dataset.proj180deg.id:
         return "180"
-    raise RuntimeError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
+    raise StackNotFoundError(f"No stack with ID {stack_id} found in dataset {dataset.id}")
