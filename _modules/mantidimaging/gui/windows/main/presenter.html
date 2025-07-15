@@ -508,8 +508,8 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTabBar</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qt_material</span><span class="w"> </span><span class="kn">import</span> <span class="n">apply_stylesheet</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_stack_data_type</span><span class="p">,</span> <span class="n">Dataset</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span><span class="p">,</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_projection_closest_to_180</span><span class="p">,</span> <span class="n">THRESHOLD_180</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
@@ -537,7 +537,7 @@ document.write(`
 
 
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Notification">
@@ -608,7 +608,7 @@ document.write(`
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_stack_visualiser_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StackVisualiserView</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -870,8 +870,8 @@ document.write(`
         <span class="n">output_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">()</span>
         <span class="n">image_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">image_format</span><span class="p">()</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting </span><span class="si">{</span><span class="n">export_type</span><span class="si">}</span><span class="s2">: &#39;</span><span class="si">{</span><span class="n">current_stack_name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;→ format: </span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s2">, directory: </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting </span><span class="si">{</span><span class="n">export_type</span><span class="si">}</span><span class="s2">: &#39;</span><span class="si">{</span><span class="n">current_stack_name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;→ format: </span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s2">, directory: </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;images_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">selected_stack</span><span class="p">,</span>
@@ -886,10 +886,10 @@ document.write(`
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_save_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Export failed with error: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Export failed with error: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SAVE_ERROR_STRING</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export task finished successfully.&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export task finished successfully.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stack_visualiser_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">StackId</span><span class="p">]:</span>
@@ -929,10 +929,10 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowPresenter.get_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_stack">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stack not found: </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ImageStack is None for UUID: &#39;</span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
 
 
@@ -962,7 +962,7 @@ document.write(`
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">sv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="n">sv</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">sv</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Did not find stack </span><span class="si">{</span><span class="n">images</span><span class="si">}</span><span class="s2"> in stacks! Stacks: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Did not find stack </span><span class="si">{</span><span class="n">images</span><span class="si">}</span><span class="s2"> in stacks! Stacks: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.add_projection_angles_to_sample">
@@ -1123,7 +1123,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to find stack with ID </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to find stack with ID </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_recon_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1230,10 +1230,12 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Unable to find destination dataset with ID </span><span class="si">{</span><span class="n">destination_dataset_id</span><span class="si">}</span><span class="s2"> when attempting to move stack&quot;</span><span class="p">)</span>
 
         <span class="n">stack_to_move</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
-        <span class="n">stack_to_move</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_dataset_stack_name</span><span class="p">(</span><span class="n">destination_stack_type</span><span class="p">,</span> <span class="n">destination_dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="n">origin_dataset</span><span class="o">.</span><span class="n">delete_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">destination_dataset_id</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stack_to_move</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stack_to_move</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_dataset_stack_name</span><span class="p">(</span><span class="n">destination_stack_type</span><span class="p">,</span> <span class="n">destination_dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="n">origin_dataset</span><span class="o">.</span><span class="n">delete_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">destination_dataset_id</span><span class="p">,</span> <span class="n">stack_to_move</span><span class="p">,</span> <span class="n">destination_stack_type</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_dataset_stack_name</span><span class="p">(</span><span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
