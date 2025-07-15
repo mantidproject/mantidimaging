@@ -121,8 +121,9 @@ class ReconstructWindowView(BaseMainWindowView):
         self.algorithmNameComboBox.setEnabled(True)
 
         self.update_recon_hist_needed = False
+
         self.stackSelector.presenter.show_stacks = True
-        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_stack_uuid)
+        self.stackSelector.stack_selected_uuid.connect(self.presenter.set_current_stack)
 
         # Handle preview image selection
         self.previewProjectionIndexSpinBox.valueChanged[int].connect(self.presenter.set_preview_projection_idx)
@@ -194,7 +195,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.on_table_row_count_change()
 
         self.stackSelector.subscribe_to_main_window(main_window)
-        self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_STACK_UUID))
+        self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_CURRENT_STACK))
         self.stackSelector.select_eligible_stack()
 
         self.maxProjAngleSpinBox.valueChanged.connect(

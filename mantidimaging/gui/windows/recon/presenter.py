@@ -50,7 +50,7 @@ class Notifications(Enum):
     REFINE_ITERS = auto()
     AUTO_FIND_COR_CORRELATE = auto()
     AUTO_FIND_COR_MINIMISE = auto()
-    SET_STACK_UUID = auto()
+    SET_CURRENT_STACK = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -106,7 +106,7 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_update_projection()
             elif notification == Notifications.ADD_COR:
                 self.do_add_cor()
-            elif notification == Notifications.SET_STACK_UUID:
+            elif notification == Notifications.SET_CURRENT_STACK:
                 self.do_stack_uuid_changed()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
@@ -136,11 +136,11 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_stack_uuid_changed(self) -> None:
         uuid = self.view.stackSelector.current()
-        self.set_stack_uuid(uuid)
+        self.set_current_stack(uuid)
         if uuid is not None:
             self.check_stack_for_invalid_180_deg_proj(uuid)
 
-    def set_stack_uuid(self, uuid: UUID | None) -> None:
+    def set_current_stack(self, uuid: UUID | None) -> None:
         if not self.view.isVisible():
             self.stack_selection_change_pending = True
             return
@@ -538,7 +538,7 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def handle_show_event(self) -> None:
         if self.stack_selection_change_pending:
-            self.set_stack_uuid(self.view.current_stack_uuid)
+            self.set_current_stack(self.view.current_stack_uuid)
             self.stack_selection_change_pending = False
             self.stack_changed_pending = False
         elif self.stack_changed_pending:
