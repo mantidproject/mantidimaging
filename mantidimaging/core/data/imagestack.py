@@ -279,14 +279,14 @@ class ImageStack:
         return self._shared_array.array
 
     @data.setter
-    def data(self, other: np.ndarray) -> None:
+    def data(self, value: np.ndarray) -> None:
         """
         Set data array and update geometry data
 
-        :param other: numpy array
+        :param value: new numpy array containing image data.
         """
 
-        self._shared_array.array = other
+        self._shared_array.array = value
         self.set_geometry_panels()
 
     @property
@@ -341,9 +341,14 @@ class ImageStack:
 
     def set_projection_angles(self, angles: ProjectionAngles) -> None:
         """
-        Set the projection angles and update geometry data
+        Assigns a set of projection angles to the image stack and updates the associated geometry.
 
-        :param angles: ProjectionAngles object
+        This method validates that the number of provided angles matches the number of images in the stack.
+        If the geometry object is present, it updates its angles accordingly.
+
+        :param angles: An object containing the projection angles to assign, in radians.
+        :raises RuntimeError: If the number of angles does not match the number of images in the stack.
+        :side effects: Updates the internal projection angles and, if available, updates the geometry's angles.
         """
 
         if len(angles.value) != self.num_images:
@@ -357,7 +362,12 @@ class ImageStack:
 
     def real_projection_angles(self) -> ProjectionAngles | None:
         """
-        Return only the projection angles that are from a log file or have been manually loaded.
+        Return projection angles from actual data sources (log files or manually loaded files).
+
+        This method returns angles that were either:
+          - Explicitly set via projection_angles setter
+          - Read from a log file during data loading
+
         :return: Real projection angles if they were found, None otherwise.
         """
         if self._projection_angles is not None:
@@ -419,13 +429,13 @@ class ImageStack:
         self.set_geometry_angles()
         self.set_geometry_panels()
 
-    def set_geometry_panels(self):
+    def set_geometry_panels(self) -> None:
         """
         Updates the geometry's panel data based on its parent ImageStack's array data if both geometry
         and array data are present.
 
         Set the number of pixels and the pixel size for the geometry panel based on the
-        current width and heigh of the image stack.
+        current width and height of the image stack.
 
         :side effects: Modifies self.geometry by updating its panel configuration.
         """
@@ -451,4 +461,3 @@ class ImageStack:
             return
 
         self.geometry.set_angles(angles=self._projection_angles.value, angle_unit="radian")
-
