@@ -869,7 +869,6 @@ document.write(`
 
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;CIL reconstruction&#39;</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">num_iter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">pixel_size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
         <span class="n">pixel_num_h</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span>
         <span class="n">pixel_num_v</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">height</span>
 
@@ -904,21 +903,16 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;recon_params.tilt is not set&quot;</span><span class="p">)</span>
             <span class="n">tilt</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">value</span>
 
-            <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images.geometry is not set&quot;</span><span class="p">)</span>
-            <span class="n">angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">images</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="n">angles</span><span class="p">,</span>
-                                   <span class="n">angle_unit</span><span class="o">=</span><span class="s2">&quot;radian&quot;</span><span class="p">,</span>
-                                   <span class="n">num_pixels</span><span class="o">=</span><span class="p">(</span><span class="n">pixel_num_h</span><span class="p">,</span> <span class="n">pixel_num_v</span><span class="p">),</span>
-                                   <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">)</span>
-            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">cors</span><span class="p">[</span><span class="n">pixel_num_v</span> <span class="o">//</span> <span class="mi">2</span><span class="p">],</span> <span class="n">tilt</span><span class="p">)</span>
-
             <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_sinograms</span><span class="p">:</span>
                 <span class="n">data_order</span> <span class="o">=</span> <span class="n">DataOrder</span><span class="o">.</span><span class="n">ASTRA_AG_LABELS</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data_order</span> <span class="o">=</span> <span class="n">DataOrder</span><span class="o">.</span><span class="n">TIGRE_AG_LABELS</span>
-            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span><span class="n">data_order</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images.geometry is not set&quot;</span><span class="p">)</span>
+
+            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">cors</span><span class="p">[</span><span class="n">pixel_num_v</span> <span class="o">//</span> <span class="mi">2</span><span class="p">],</span> <span class="n">tilt</span><span class="p">)</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span><span class="n">data_order</span><span class="p">)</span>
             <span class="n">ig</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_ImageGeometry</span><span class="p">()</span>
 
             <span class="n">data</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">BaseRecon</span><span class="o">.</span><span class="n">prepare_sinogram</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">),</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
