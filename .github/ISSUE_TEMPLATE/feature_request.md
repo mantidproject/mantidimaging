@@ -7,23 +7,23 @@ assignees: ''
 type: 'Feature'
 
 ---
-
+<!-- Please write your feature assuming your audience has no prior knowledge of the project to improve inclusivity. -->
 ### Current Behaviour
 
-<!--- Please provide information about the undesired current behaviour. -->
+<!--- Describe what happens now. What is the current workflow or limitation? -->
 
 ### Desired Behaviour
 
-<!--- Explain how the program should behave once the issue has been resolved. -->
+<!--- What you would like to happen? What is the improved workflow or new feature? -->
 
-### Undesired Behaviour
+### Potential Pitfalls or Risks to Avoid
 
-<!--- Please provide information about undesired behaviour that should be avoided. -->
+<!--- (Optional) Are there any specific undesired side-effects or regressions that should be avoided with this change?  -->
 
 ### Importance of Feature
 
-<!--- Please provide a brief description of why this feature is important. This will help us prioritize the feature. -->
+<!--- Briefly explain why this feature is important or valuable. argue a case for why it should be prioritized. -->
 
 ### Additional Context
 
-<!--- Please provide any additional context or screenshots about the feature request here if applicable -->
+<!--- Add any other context, screenshots, code snippets, or other examples here -->
