@@ -6,7 +6,7 @@ This module handles the loading of FIT, FITS, TIF, TIFF
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from collections.abc import Callable
-import os
+from pathlib import Path
 import logging
 
 from mantidimaging.core.data import ImageStack
@@ -21,8 +21,8 @@ if TYPE_CHECKING:
 LOG = logging.getLogger(__name__)
 
 
-def execute(load_func: Callable[[str], np.ndarray],
-            sample_path: list[str],
+def execute(load_func: Callable[[Path], np.ndarray],
+            sample_path: list[Path],
             img_format: str,
             dtype: npt.DTypeLike,
             indices: list[int] | Indices | None,
@@ -56,13 +56,15 @@ def execute(load_func: Callable[[str], np.ndarray],
 
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    return ImageStack(sample_data, chosen_input_filenames, indices)
+    chosen_input_filenames_str = list(map(str, chosen_input_filenames))
+
+    return ImageStack(sample_data, chosen_input_filenames_str, indices)
 
 
 class ImageLoader:
 
     def __init__(self,
-                 load_func: Callable[[str], np.ndarray],
+                 load_func: Callable[[Path], np.ndarray],
                  img_format: str,
                  img_shape: tuple[int, ...],
                  data_dtype: npt.DTypeLike,
@@ -75,7 +77,7 @@ class ImageLoader:
         self.indices = indices
         self.progress = progress
 
-    def load_sample_data(self, input_file_names: list[str]) -> pu.SharedArray:
+    def load_sample_data(self, input_file_names: list[Path]) -> pu.SharedArray:
         # determine what the loaded data was
         if len(self.img_shape) == 2:
             # the loaded file was a single image
@@ -83,18 +85,15 @@ class ImageLoader:
         else:
             raise ValueError(f"Data loaded has invalid shape: {self.img_shape}")
 
-    def _do_files_load_seq(self, data: pu.SharedArray, files: list[str]) -> pu.SharedArray:
+    def _do_files_load_seq(self, data: pu.SharedArray, files: list[Path]) -> pu.SharedArray:
         progress = Progress.ensure_instance(self.progress, num_steps=len(files), task_name='Loading')
         total_size = 0
 
         with progress:
             for idx, in_file in enumerate(files):
-                if progress.should_cancel:
-                    LOG.info("Loading cancelled by user.")
-                    raise RuntimeError("Loading cancelled by user.")
                 try:
                     data.array[idx, :] = self.load_func(in_file)
-                    total_size += os.path.getsize(in_file)
+                    total_size += in_file.stat().st_size
                     progress.update(msg='Image')
                 except ValueError as exc:
                     raise ValueError("An image has different width and/or height "
@@ -104,11 +103,11 @@ class ImageLoader:
                 except OSError as exc:
                     raise RuntimeError(f"Could not load file {in_file}. Error details: {exc}") from exc
 
-        LOG.info(f"Loaded {len(files)} files (name={os.path.basename(files[0])}, format={self.img_format}, "
+        LOG.info(f"Loaded {len(files)} files (name={files[0].name}, format={self.img_format}, "
                  f"total size={total_size / (1024 * 1024):.2f} MB, dtype={data.array.dtype}, shape={data.array.shape})")
         return data
 
-    def load_files(self, files: list[str]) -> pu.SharedArray:
+    def load_files(self, files: list[Path]) -> pu.SharedArray:
         # Zeroing here to make sure that we can allocate the memory.
         # If it's not possible better crash here than later.
         num_images = len(files)
