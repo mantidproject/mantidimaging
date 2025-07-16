@@ -73,7 +73,7 @@ class MainWindowModel:
         images = loader.load_stack_from_group(group, progress)
         return images
 
-    def do_images_saving(self, images_id: uuid.UUID, output_dir: str, name_prefix: str, image_format: str,
+    def do_images_saving(self, images_id: uuid.UUID, output_dir: str | Path, name_prefix: str, image_format: str,
                          overwrite: bool, pixel_depth: str, progress: Progress) -> bool:
         logger.info(f"Starting export of ImageStack {images_id} to {output_dir} with format {image_format}")
         images = self.get_images_by_uuid(images_id)
@@ -88,12 +88,12 @@ class MainWindowModel:
                                      pixel_depth=pixel_depth,
                                      progress=progress)
 
-        images.filenames = filenames
+        images.filenames = [str(p) for p in filenames]
         logger.info(f"Export completed. Files saved: {filenames[:2]}{' ...' if len(filenames) > 2 else ''} "
                     f"(total {len(filenames)} files)")
         return True
 
-    def do_nexus_saving(self, dataset_id: uuid.UUID, path: str, sample_name: str, save_as_float: bool) -> bool:
+    def do_nexus_saving(self, dataset_id: uuid.UUID, path: Path, sample_name: str, save_as_float: bool) -> bool:
         logger.info(f"Starting NeXus export for dataset {dataset_id} to file {path}")
         dataset = self.datasets.get(dataset_id)
         if not dataset:
