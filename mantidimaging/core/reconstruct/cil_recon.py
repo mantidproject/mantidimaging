@@ -378,7 +378,9 @@ class CILRecon(BaseRecon):
 
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
-            tilt = recon_params.tilt.value
+
+            if images.geometry is None:
+                raise ValueError("images.geometry is not set")
 
             if images.geometry is None:
                 raise ValueError("images.geometry is not set")

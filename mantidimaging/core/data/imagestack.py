@@ -279,6 +279,7 @@ class ImageStack:
     @data.setter
     def data(self, other: np.ndarray) -> None:
         self._shared_array.array = other
+        self.set_geometry_panels()
 
     @property
     def shared_array(self) -> pu.SharedArray:
@@ -287,6 +288,7 @@ class ImageStack:
     @shared_array.setter
     def shared_array(self, shared_array: pu.SharedArray) -> None:
         self._shared_array = shared_array
+        self.set_geometry_panels()
 
     @property
     def uses_shared_memory(self) -> bool:
