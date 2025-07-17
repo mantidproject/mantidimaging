@@ -100,7 +100,13 @@ The tests can also be run locally, with options tailored for different platforms
 
       export APPLITOOLS_IMAGE_DIR=/path/to/your/directory
 
-- **Windows-Specific Testing**: For running screenshot tests specifically on Windows, use the following command::
+- **Windows-Specific Testing**: For running screenshot tests specifically on Windows, first ensure you've downloaded the `Dataset <https://github.com/mantidproject/mantidimaging-data/>`_ to your user directory.
+
+  Set the Applitools API environment variable::
+
+      set APPLITOOLS_API_KEY=local
+
+  Then use the following command::
 
       make test-screenshots-win
 
