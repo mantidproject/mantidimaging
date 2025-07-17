@@ -53,12 +53,9 @@ def execute(load_func: Callable[[Path], np.ndarray],
 
     # forward all arguments to internal class for easy re-usage
     il = ImageLoader(load_func, img_format, img_shape, dtype, indices, progress)
-
     sample_data = il.load_sample_data(chosen_input_filenames)
 
-    chosen_input_filenames_str = list(map(str, chosen_input_filenames))
-
-    return ImageStack(sample_data, chosen_input_filenames_str, indices)
+    return ImageStack(sample_data, chosen_input_filenames, indices)
 
 
 class ImageLoader:
