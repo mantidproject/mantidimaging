@@ -7,6 +7,7 @@ import unittest
 import getpass
 from pathlib import Path
 from tempfile import mkdtemp
+import logging
 from uuid import uuid4
 
 from PyQt5.QtGui import QFont
@@ -26,36 +27,66 @@ import matplotlib.pyplot  # noqa: F401 - need to import before FakeFileSystem, s
 
 # APPLITOOLS_BATCH_ID will be set by Github actions to the commit SHA, or a random UUID for individual developer
 # execution
+logger = logging.getLogger(__name__)
 
-APPLITOOLS_BATCH_ID = os.getenv("APPLITOOLS_BATCH_ID")
-if APPLITOOLS_BATCH_ID is None:
-    APPLITOOLS_BATCH_ID = str(uuid4())
 
-API_KEY_PRESENT = os.getenv("APPLITOOLS_API_KEY")
+def get_env_var(name: str, default: str | None = None, required: bool = False) -> str:
+    """
+    Retrieve an environment variable value with optional default, logging, and required flag.
 
-TEST_NAME = os.getenv("GITHUB_BRANCH_NAME")
-if TEST_NAME is None:
-    TEST_NAME = f"{getpass.getuser()}'s Local Test"
+    :param name: Name of the environment variable
+    :param default: Default value if the variable is not set
+    :param required: If True, raises RuntimeError if variable is unset
+    :return: The value of the environment variable or default
+    """
+    value = os.getenv(name, default)
 
-LOAD_SAMPLE = str(Path.home()) + "/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
-LOAD_SAMPLE_MISSING_MESSAGE = """Data not present, please clone to your home directory e.g.
-git clone https://github.com/mantidproject/mantidimaging-data.git"""
+    if value is not None:
+        logger.debug(f"Environment variable '{name}' found with value: {value}")
+        return value
+    else:
+        if required:
+            logger.error(f"Required environment variable '{name}' is not set.")
+            raise RuntimeError(f"Required environment variable '{name}' is not set.")
+        logger.info(f"Environment variable '{name}' not set; using default: {default}")
+        return default if default is not None else ""
 
-NEXUS_SAMPLE = str(
-    Path.home()) + "/mantidimaging-data/Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
 
-APPLITOOLS_IMAGE_DIR = os.getenv("APPLITOOLS_IMAGE_DIR")
-if APPLITOOLS_IMAGE_DIR is None:
-    APPLITOOLS_IMAGE_DIR = mkdtemp(prefix="mantid_image_eyes_")
-else:
-    if not os.path.isdir(APPLITOOLS_IMAGE_DIR):
-        raise ValueError(f"Directory does not exist: APPLITOOLS_IMAGE_DIR = {APPLITOOLS_IMAGE_DIR}")
+API_KEY_PRESENT = get_env_var("APPLITOOLS_API_KEY")
+TEST_NAME = get_env_var("GITHUB_BRANCH_NAME", default=f"{getpass.getuser()}'s Local Test")
+APPLITOOLS_BATCH_ID = get_env_var("APPLITOOLS_BATCH_ID", default=str(uuid4()))
+env_data_path = get_env_var("MANTIDIMAGING_DATA_DIR")
+
+POTENTIAL_DATA_DIRS = []
+if env_data_path:
+    POTENTIAL_DATA_DIRS.append(Path(env_data_path))
+POTENTIAL_DATA_DIRS.extend(
+    [Path(__file__).resolve().parent.parent / "mantidimaging-data",
+     Path.home() / "mantidimaging-data"])
+
+POTENTIAL_DATA_DIRS = [p for p in POTENTIAL_DATA_DIRS if p is not None]
+DATA_ROOT = next((candidate for candidate in POTENTIAL_DATA_DIRS if candidate.is_dir()), None)
+
+if DATA_ROOT is None:
+    raise RuntimeError("mantidimaging-data repository not found in any known location.\n"
+                       "Please clone it beside mantidimaging-dev, "
+                       "in your home directory, or set MANTIDIMAGING_DATA_DIR.")
+
+LOAD_SAMPLE = DATA_ROOT / "ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif"
+LOAD_SAMPLE_MISSING_MESSAGE = ("Data not present, please clone e.g.:\n"
+                               "git clone https://github.com/mantidproject/mantidimaging-data.git\n")
+NEXUS_SAMPLE = DATA_ROOT / "Diamond/i13/AKingUVA_7050wSSwire_InSitu_95RH_2MMgCl2_p4ul_p4h/24737.nxs"
+applitools_image_dir_str = get_env_var("APPLITOOLS_IMAGE_DIR", default=mkdtemp(prefix="mantid_image_eyes_"))
+APPLITOOLS_IMAGE_DIR = Path(applitools_image_dir_str)
+
+if not APPLITOOLS_IMAGE_DIR.is_dir():
+    raise ValueError(f"Directory does not exist: APPLITOOLS_IMAGE_DIR = {APPLITOOLS_IMAGE_DIR}")
 
 QApplication.setFont(QFont("Sans Serif", 10))
 
 
 @unittest.skipIf(API_KEY_PRESENT is None, "API Key is not defined in the environment, so Eyes tests are skipped.")
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(LOAD_SAMPLE.exists(), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class BaseEyesTest(unittest.TestCase):
     eyes_manager: EyesManager
