@@ -3,9 +3,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import fnmatch
 import importlib
-import os
 import platform
 import subprocess
 from distutils.core import Command
@@ -17,9 +15,8 @@ from importlib.machinery import SourceFileLoader
 
 from setuptools import find_packages, setup
 
-THIS_PATH = os.path.dirname(__file__)
-
-versions = SourceFileLoader('versions', 'mantidimaging/__init__.py').load_module()
+THIS_PATH = Path(__file__).parent
+versions = SourceFileLoader('versions', str(THIS_PATH / 'mantidimaging' / '__init__.py')).load_module()
 
 
 class GenerateReleaseNotes(Command):
@@ -33,7 +30,8 @@ class GenerateReleaseNotes(Command):
         pass
 
     def run(self):
-        spec = importlib.util.spec_from_file_location('release_notes', 'docs/ext/release_notes.py')
+        spec = importlib.util.spec_from_file_location('release_notes',
+                                                      str(THIS_PATH / 'docs' / 'ext' / 'release_notes.py'))
         release_notes = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(release_notes)
 
@@ -59,20 +57,16 @@ class CompilePyQtUiFiles(Command):
         pass
 
     @staticmethod
-    def compile_single_file(ui_filename):
+    def compile_single_file(ui_filename: Path):
         from PyQt5 import uic
 
-        py_filename = os.path.splitext(ui_filename)[0] + ".py"
-        with open(py_filename, "w") as py_file:
-            uic.compileUi(ui_filename, py_file)
+        py_filename = ui_filename.with_suffix(".py")
+        with py_filename.open("w") as py_file:
+            uic.compileUi(str(ui_filename), py_file)
 
     @staticmethod
-    def find_ui_files():
-        matches = []
-        for root, _, filenames in os.walk("./mantidimaging/"):
-            for filename in fnmatch.filter(filenames, "*.ui"):
-                matches.append(os.path.join(root, filename))
-        return matches
+    def find_ui_files() -> list[Path]:
+        return list(Path("./mantidimaging").rglob("*.ui"))
 
     def run(self):
         ui_files = self.find_ui_files()
@@ -98,13 +92,12 @@ class CreateDeveloperEnvironment(Command):
         if self.conda is None:
             raise ValueError("Could not find conda or mamba")
 
-    def count_indent(self, line):
+    def count_indent(self, line: str) -> int:
         leading_spaces = len(line) - len(line.lstrip(" "))
         return leading_spaces // 2
 
-    def get_package_depends(self):
-        # Parse the metafile manually, do avoid needing a nonstandard library
-        meta_file = Path(__file__).parent / "conda" / "meta.yaml"
+    def get_package_depends(self) -> list[str]:
+        meta_file = THIS_PATH / "conda" / "meta.yaml"
         with meta_file.open() as meta_file_fh:
             section = []
             parsed_values = defaultdict(list)
@@ -122,9 +115,10 @@ class CreateDeveloperEnvironment(Command):
                     parsed_values[".".join(section)].append(line.strip(" -\n"))
         return parsed_values["requirements.run"]
 
-    def make_environment_file(self, extra_deps):
-        dev_env_file = Path(__file__).parent / "environment-dev.yml"
+    def make_environment_file(self, extra_deps: list[str]) -> str:
+        dev_env_file = THIS_PATH / "environment-dev.yml"
         output_env_file = tempfile.NamedTemporaryFile("wt", delete=False, suffix=".yaml")
+
         in_dependencies_section = False
         with dev_env_file.open() as dev_env_file_fh:
             for line in dev_env_file_fh:
@@ -142,17 +136,21 @@ class CreateDeveloperEnvironment(Command):
 
     def run(self):
         existing_envs_output = subprocess.check_output([self.conda, "env", "list"], encoding="utf8")
-        if any(line.startswith("mantidimaging-dev ") for line in existing_envs_output.split("\n")):
+        if any(line.startswith("mantidimaging-dev ") for line in existing_envs_output.splitlines()):
             print("Removing existing mantidimaging-dev environment")
-            command_conda_env_remove = [self.conda, "env", "remove", "-n", "mantidimaging-dev"]
-            subprocess.check_call(command_conda_env_remove)
+            subprocess.check_call([self.conda, "env", "remove", "-n", "mantidimaging-dev"])
         extra_deps = self.get_package_depends()
         env_file_path = self.make_environment_file(extra_deps)
         print("Creating conda environment for development")
-        command_conda_env = [self.conda, "env", "create", "-f", env_file_path]
-        subprocess.check_call(command_conda_env)
-        os.remove(env_file_path)
+        subprocess.check_call([self.conda, "env", "create", "-f", env_file_path])
+        Path(env_file_path).unlink()
 
+
+try:
+    long_description = (THIS_PATH / "README.md").read_text(encoding="utf-8")
+except FileNotFoundError:
+    long_description = ""
+    print("Warning: README.md not found. Using default description for long_description")
 
 setup(
     name="mantidimaging",
@@ -169,7 +167,8 @@ setup(
     url="https://github.com/mantidproject/mantidimaging",
     license="GPL-3.0",
     description="Graphical toolkit for neutron imaging",
-    long_description=open("README.md").read(),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python :: 3.10",
         "Natural Language :: English",
