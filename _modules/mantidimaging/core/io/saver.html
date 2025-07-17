@@ -495,7 +495,6 @@ document.write(`
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
@@ -573,7 +572,7 @@ document.write(`
 <div class="viewcode-block" id="image_save">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.image_save">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">image_save</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
-               <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+               <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
                <span class="n">name_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_NAME_PREFIX</span><span class="p">,</span>
                <span class="n">swap_axes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                <span class="n">out_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span><span class="p">,</span>
@@ -583,11 +582,10 @@ document.write(`
                <span class="n">name_postfix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_NAME_POSTFIX</span><span class="p">,</span>
                <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                <span class="n">pixel_depth</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-               <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+               <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save image volume (3d) into a series of slices along the Z axis.</span>
 <span class="sd">    The Z axis in the script is the ndarray.shape[0].</span>
-
 <span class="sd">    :param images: Data as images/slices stores in numpy array</span>
 <span class="sd">    :param output_dir: Output directory for the files</span>
 <span class="sd">    :param name_prefix: Prefix for the names of the images,</span>
@@ -616,70 +614,60 @@ document.write(`
 <span class="sd">    :returns: The filename/filenames of the saved data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Save&#39;</span><span class="p">)</span>
-
-    <span class="c1"># expand the path for plugins that don&#39;t do it themselves</span>
-    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">output_dir</span><span class="p">))</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">make_dirs_if_needed</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">)</span>
 
-    <span class="c1"># Define current parameters</span>
     <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="n">int_16_slope</span> <span class="o">=</span> <span class="n">max_value</span> <span class="o">/</span> <span class="n">INT16_SIZE</span>
 
-    <span class="c1"># Do rescale if needed.</span>
     <span class="k">if</span> <span class="n">pixel_depth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;float32&quot;</span><span class="p">:</span>
         <span class="n">rescale_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">rescale_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">elif</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
-        <span class="c1"># turn the offset to string otherwise json throws a TypeError when trying to save float32</span>
         <span class="n">rescale_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">min_value</span><span class="p">),</span> <span class="s2">&quot;slope&quot;</span><span class="p">:</span> <span class="n">int_16_slope</span><span class="p">}</span>
-        <span class="n">rescale_info</span> <span class="o">=</span> <span class="s2">&quot;offset = </span><span class="si">{offset}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> slope = </span><span class="si">{slope}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">rescale_params</span><span class="p">)</span>
+        <span class="n">rescale_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;offset = </span><span class="si">{</span><span class="n">rescale_params</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> slope = </span><span class="si">{</span><span class="n">rescale_params</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The pixel depth given is not handled: &quot;</span> <span class="o">+</span> <span class="n">pixel_depth</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The pixel depth given is not handled: </span><span class="si">{</span><span class="n">pixel_depth</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Save metadata</span>
-    <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">name_prefix</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">)</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Metadata filename: </span><span class="si">{</span><span class="n">metadata_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">metadata_filename</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}</span><span class="s2">.json&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metadata filename: </span><span class="si">{</span><span class="n">metadata_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">metadata_filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">images</span><span class="o">.</span><span class="n">save_metadata</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">rescale_params</span><span class="p">)</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span>
-
     <span class="k">if</span> <span class="n">swap_axes</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nxs&#39;</span><span class="p">]:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">name_prefix</span> <span class="o">+</span> <span class="n">name_postfix</span><span class="p">)</span>
-        <span class="n">write_nxs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.nxs&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite_all</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">filename</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;nxs&quot;</span><span class="p">]:</span>
+        <span class="n">filename_base</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}{</span><span class="n">name_postfix</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">filename_with_ext</span> <span class="o">=</span> <span class="n">filename_base</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.nxs&quot;</span><span class="p">)</span>
+        <span class="n">write_nxs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename_with_ext</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite_all</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">filename_with_ext</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;fits&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;fits&quot;</span><span class="p">]:</span>
             <span class="n">write_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">write_fits</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># pass all other formats to skimage</span>
             <span class="n">write_func</span> <span class="o">=</span> <span class="n">write_img</span>
 
         <span class="n">num_images</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">progress</span><span class="o">.</span><span class="n">set_estimated_steps</span><span class="p">(</span><span class="n">num_images</span><span class="p">)</span>
 
         <span class="n">names</span> <span class="o">=</span> <span class="n">generate_names</span><span class="p">(</span><span class="n">name_prefix</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">num_images</span><span class="p">,</span> <span class="n">custom_idx</span><span class="p">,</span> <span class="n">zfill_len</span><span class="p">,</span> <span class="n">name_postfix</span><span class="p">,</span> <span class="n">out_format</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)):</span>
-            <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_dir</span> <span class="o">/</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
 
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
-                <span class="c1"># Overwrite images with the copy that has been rescaled.</span>
                 <span class="k">if</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
                     <span class="n">output_data</span> <span class="o">=</span> <span class="n">RescaleFilter</span><span class="o">.</span><span class="n">filter_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span>
                                                              <span class="n">min_input</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
                                                              <span class="n">max_input</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
                                                              <span class="n">max_output</span><span class="o">=</span><span class="n">INT16_SIZE</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">)</span>
-                    <span class="n">write_func</span><span class="p">(</span><span class="n">output_data</span><span class="p">,</span> <span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
+                    <span class="n">write_func</span><span class="p">(</span><span class="n">output_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">write_func</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
+                    <span class="n">write_func</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
 
-                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Image&#39;</span><span class="p">)</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Image&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">names</span></div>
 
@@ -687,7 +675,7 @@ document.write(`
 
 <div class="viewcode-block" id="nexus_save">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.nexus_save">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Uses information from a Dataset to create a NeXus file.</span>
 <span class="sd">    :param dataset: The dataset to save as a NeXus file.</span>
@@ -695,17 +683,16 @@ document.write(`
 <span class="sd">    :param sample_name: The sample name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">nexus_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">)</span>
+        <span class="n">nexus_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to save NeXus file. &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to save NeXus file. </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_nexus_save</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="n">nexus_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to save NeXus file. &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
-
+        <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to save NeXus file. </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
     <span class="n">nexus_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
@@ -911,7 +898,7 @@ document.write(`
                    <span class="n">custom_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                    <span class="n">zfill_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_ZFILL_LENGTH</span><span class="p">,</span>
                    <span class="n">name_postfix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_NAME_POSTFIX</span><span class="p">,</span>
-                   <span class="n">out_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+                   <span class="n">out_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_IO_FILE_FORMAT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
     <span class="n">start_index</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">indices</span> <span class="k">else</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">custom_idx</span><span class="p">:</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">custom_idx</span>
@@ -923,7 +910,8 @@ document.write(`
     <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
         <span class="c1"># create the file name, and use the format as extension</span>
-        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name_prefix</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">zfill_len</span><span class="p">)</span> <span class="o">+</span> <span class="n">name_postfix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">out_format</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">zfill_len</span><span class="p">)</span><span class="si">}{</span><span class="n">name_postfix</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">out_format</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="n">increment</span>
     <span class="k">return</span> <span class="n">names</span></div>
 
@@ -931,23 +919,23 @@ document.write(`
 
 <div class="viewcode-block" id="make_dirs_if_needed">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.make_dirs_if_needed">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_dirs_if_needed</span><span class="p">(</span><span class="n">dirname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_dirs_if_needed</span><span class="p">(</span><span class="n">dirname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes sure that the directory needed (for example to save a file)</span>
 <span class="sd">    exists, otherwise creates it.</span>
 
-<span class="sd">    :param dirname :: (output) directory to check</span>
+<span class="sd">    :param dirname: (output) directory to check</span>
+<span class="sd">    :param overwrite_all: Whether to allow overwriting non-empty directories</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dirname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
-
-    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">dirname</span><span class="p">))</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_all</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The output directory is NOT empty:</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="s2">This can be &quot;</span>
-                           <span class="s2">&quot;overridden by specifying &#39;Overwrite on name conflict&#39;.&quot;</span><span class="p">)</span></div>
+    <span class="c1"># Convert to Path if given as str</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_all</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The output directory is NOT empty: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="sa">f</span><span class="s2">&quot;This can be overridden by specifying &#39;Overwrite on name conflict&#39;.&quot;</span><span class="p">)</span></div>
 
 
 
