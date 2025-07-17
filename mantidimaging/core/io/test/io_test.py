@@ -3,6 +3,7 @@
 from __future__ import annotations
 import datetime
 import os
+import pathlib
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -324,28 +325,29 @@ class IOTest(FileOutputtingTestCase):
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
-    def test_h5py_os_error_returns(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
+    def test_h5py_os_error_returns(self, nexus_save_mock, file_mock):
         file_mock.side_effect = OSError
         with self.assertRaises(RuntimeError):
-            saver.nexus_save(Dataset(sample=th.generate_images()), "path", "sample-name", True)
+            saver.nexus_save(Dataset(sample=th.generate_images()), Path("path"), "sample-name", True)
         nexus_save_mock.assert_not_called()
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
-    @mock.patch("mantidimaging.core.io.saver.os")
-    def test_failed_nexus_save_deletes_file(self, os_mock: mock.Mock, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
+    @mock.patch("pathlib.Path.unlink")
+    def test_failed_nexus_save_deletes_file(self, unlink_mock, nexus_save_mock, file_mock):
         nexus_save_mock.side_effect = OSError
-        save_path = "failed/save/path"
+        save_path = pathlib.Path("failed/save/path")
         with self.assertRaises(RuntimeError):
             saver.nexus_save(Dataset(sample=th.generate_images()), save_path, "sample-name", True)
         file_mock.return_value.close.assert_called_once()
-        os_mock.remove.assert_called_once_with(save_path)
+        unlink_mock.assert_called_once_with(missing_ok=True)
 
     @mock.patch("mantidimaging.core.io.saver.h5py.File")
     @mock.patch("mantidimaging.core.io.saver._nexus_save")
     def test_successful_nexus_save_closes_file(self, nexus_save_mock: mock.Mock, file_mock: mock.Mock):
-        saver.nexus_save(Dataset(sample=th.generate_images()), "path", "sample-name", True)
+        saver.nexus_save(Dataset(sample=th.generate_images()), Path("path"), "sample-name", True)
         file_mock.return_value.close.assert_called_once()
+        nexus_save_mock.assert_called_once()
 
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
     def test_save_recons_if_present(self, recon_save_mock: mock.Mock):
