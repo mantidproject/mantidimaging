@@ -277,13 +277,13 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(imgs.name, "untitled")
 
     def test_name_from_filenames(self):
-        filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
-        imgs = ImageStack(np.asarray([1]), filenames=filenames)
+        filenames = [Path("/path/tomo_0000.tiff"), Path("/path/tomo_0001.tiff")]
+        imgs = ImageStack(np.asarray([1, 2]), filenames=filenames)
         self.assertEqual(imgs.name, "tomo_0000")
 
     def test_name_from_argument(self):
-        filenames = ["/path/tomo_0000.tiff", "/path/tomo_0001.tiff"]
-        imgs = ImageStack(np.asarray([1]), filenames=filenames, name="given")
+        filenames = [Path("/path/tomo_0000.tiff"), Path("/path/tomo_0001.tiff")]
+        imgs = ImageStack(np.asarray([1, 2]), filenames=filenames, name="given")
         self.assertEqual(imgs.name, "given")
 
     def test_name_unique_new(self):
