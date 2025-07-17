@@ -59,7 +59,7 @@ test-screenshots:
 test-screenshots-win:
 	-mkdir ${TEST_RESULT_DIR}
 	${XVFBRUN} pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
-	@echo "Screenshots writen to" ${TEST_RESULT_DIR}
+	@echo "Screenshots written to" ${TEST_RESULT_DIR}
 
 mypy:
 	python -m mypy --ignore-missing-imports ${SOURCE_DIRS}
