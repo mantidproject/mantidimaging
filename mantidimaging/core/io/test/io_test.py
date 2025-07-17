@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import datetime
-import os
 import pathlib
 import unittest
 from pathlib import Path
@@ -39,7 +38,7 @@ def _nexus_dataset_to_string(nexus_dataset) -> str:
 
 def _create_sample_with_filename() -> ImageStack:
     sample = th.generate_images()
-    sample.filenames = [f"image{str(i)}.tiff" for i in range(sample.data.shape[0])]
+    sample.filenames = [Path(f"image{i}.tiff") for i in range(sample.data.shape[0])]
     return sample
 
 
@@ -59,20 +58,15 @@ class IOTest(FileOutputtingTestCase):
         self.sample_path = "sample/file/path.tiff"
 
     def assert_files_exist(self, base_name, file_format, stack=True, num_images=1, indices=None):
-
         if not stack:
-            # this way we account for only selected indices in the filenames
             if not indices:
                 indices = [0, num_images, 1]
-
             filenames = saver.generate_names(base_name, indices, num_images, out_format=file_format)
-
             for f in filenames:
-                self.assertTrue(os.path.isfile(f))
-
+                self.assertTrue(Path(f).is_file(), f"File does not exist: {f}")
         else:
-            filename = base_name + '.' + file_format
-            self.assertTrue(os.path.isfile(filename))
+            filename = Path(f"{base_name}.{file_format}")
+            self.assertTrue(filename.is_file(), f"File does not exist: {filename}")
 
     # fits sequential
     def test_preproc_fits_seq(self):
@@ -136,27 +130,25 @@ class IOTest(FileOutputtingTestCase):
 
     def do_preproc(self, img_format, loader_indices=None, expected_len=None, saver_indices=None, data_as_stack=False):
         expected_images = th.generate_images()
-
-        # saver indices only affects the enumeration of the data
         if saver_indices:
-            # crop the original images to make sure the tests is correct
+            # Slice only the required range for expected output
             expected_images.data = expected_images.data[saver_indices[0]:saver_indices[1]]
-
-        # saver.save_preproc_images(expected_images)
+        # Save the images
         saver.image_save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
-        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
-                                data_as_stack, expected_images.data.shape[0], saver_indices)
+        # Assert the expected files exist
+        base_name = Path(self.output_directory) / saver.DEFAULT_NAME_PREFIX
+        self.assert_files_exist(base_name, img_format, data_as_stack, expected_images.data.shape[0], saver_indices)
 
+        # Load the saved file group
         filename = f"{saver.DEFAULT_NAME_PREFIX}_000000.{img_format}"
         group = FilenameGroup.from_file(Path(self.output_directory) / filename)
         group.find_all_files()
-
         loaded_images = loader.load(group, indices=loader_indices)
 
+        # Validate shape if loader_indices provided
         if loader_indices:
             self.assertEqual(expected_len, len(loaded_images.data))
             expected_images.data = expected_images.data[loader_indices[0]:loader_indices[1]]
-
         npt.assert_equal(loaded_images.data, expected_images.data)
 
     def test_load_sample(self):
@@ -164,17 +156,15 @@ class IOTest(FileOutputtingTestCase):
         images = th.generate_images()
 
         saver.image_save(images, self.output_directory, out_format=img_format)
-
         data_as_stack = False
-        self.assert_files_exist(os.path.join(self.output_directory, saver.DEFAULT_NAME_PREFIX), img_format,
-                                data_as_stack, images.data.shape[0])
+        base_name = Path(self.output_directory) / saver.DEFAULT_NAME_PREFIX
+        self.assert_files_exist(base_name, img_format, data_as_stack, images.data.shape[0])
 
-        filename = saver.DEFAULT_NAME_PREFIX + "_000000.tiff"
+        filename = f"{saver.DEFAULT_NAME_PREFIX}_000000.tiff"
         group = FilenameGroup.from_file(Path(self.output_directory) / filename)
         group.find_all_files()
 
         loaded_images = loader.load(group)
-
         npt.assert_equal(loaded_images.data, images.data)
 
     def test_metadata_round_trip(self):

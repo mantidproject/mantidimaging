@@ -88,7 +88,7 @@ class MainWindowModel:
                                      pixel_depth=pixel_depth,
                                      progress=progress)
 
-        images.filenames = [str(p) for p in filenames]
+        images.filenames = filenames
         logger.info(f"Export completed. Files saved: {filenames[:2]}{' ...' if len(filenames) > 2 else ''} "
                     f"(total {len(filenames)} files)")
         return True
@@ -138,7 +138,7 @@ class MainWindowModel:
             raise RuntimeError
         log = loader.load_log(log_file)
         if images.filenames is not None:
-            log.raise_if_angle_missing(images.filenames)
+            log.raise_if_angle_missing([str(f) for f in images.filenames])
         images.log_file = log
 
     def add_shutter_counts_to_sample(self, images_id: uuid.UUID, shutter_counts_file: Path) -> None:

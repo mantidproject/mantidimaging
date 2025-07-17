@@ -239,7 +239,7 @@ def _nexus_save(nexus_file: h5py.File, dataset: Dataset, sample_name: str, save_
     for recon in dataset.recons:
         assert dataset.sample is not None
         assert dataset.sample.filenames is not None
-        _save_recon_to_nexus(nexus_file, recon, dataset.sample.filenames[0])
+        _save_recon_to_nexus(nexus_file, recon, str(dataset.sample.filenames[0]))
 
 
 def _save_processed_data_to_nexus(nexus_file: h5py.File, dataset: Dataset, rotation_angle: h5py.Dataset,
