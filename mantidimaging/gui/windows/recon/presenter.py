@@ -50,7 +50,7 @@ class Notifications(Enum):
     REFINE_ITERS = auto()
     AUTO_FIND_COR_CORRELATE = auto()
     AUTO_FIND_COR_MINIMISE = auto()
-    SET_STACK_UUID = auto()
+    SET_CURRENT_STACK = auto()
 
 
 class ReconstructWindowPresenter(BasePresenter):
@@ -76,8 +76,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.recon_is_running = False
         self.async_tracker: set[Any] = set()
 
-        self.main_window.stack_changed.connect(self.handle_stack_changed)
-        self.stack_changed_pending = False
+        self.main_window.stack_modified.connect(self.handle_stack_modified)
+        self.stack_modified_pending = False
         self.stack_selection_change_pending = False
 
     def notify(self, notification, slice_idx=None):
@@ -106,7 +106,7 @@ class ReconstructWindowPresenter(BasePresenter):
                 self.do_update_projection()
             elif notification == Notifications.ADD_COR:
                 self.do_add_cor()
-            elif notification == Notifications.SET_STACK_UUID:
+            elif notification == Notifications.SET_CURRENT_STACK:
                 self.do_stack_uuid_changed()
             elif notification == Notifications.REFINE_COR:
                 self._do_refine_selected_cor()
@@ -136,11 +136,11 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def do_stack_uuid_changed(self) -> None:
         uuid = self.view.stackSelector.current()
-        self.set_stack_uuid(uuid)
+        self.set_current_stack(uuid)
         if uuid is not None:
             self.check_stack_for_invalid_180_deg_proj(uuid)
 
-    def set_stack_uuid(self, uuid: UUID | None) -> None:
+    def set_current_stack(self, uuid: UUID | None) -> None:
         if not self.view.isVisible():
             self.stack_selection_change_pending = True
             return
@@ -225,14 +225,14 @@ class ReconstructWindowPresenter(BasePresenter):
         img_data = images.projection(self.model.preview_projection_idx)
         self.view.update_projection(img_data, self.model.preview_slice_idx)
 
-    def handle_stack_changed(self) -> None:
+    def handle_stack_modified(self) -> None:
         if self.view.isVisible():
             self.model.reset_cor_model()
             self.do_update_projection()
             self._set_max_preview_indexes()
             self.do_preview_reconstruct_slice(reset_roi=True)
         else:
-            self.stack_changed_pending = True
+            self.stack_modified_pending = True
 
     def _find_next_free_slice_index(self) -> int:
         slice_index = self.model.preview_slice_idx
@@ -538,9 +538,9 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def handle_show_event(self) -> None:
         if self.stack_selection_change_pending:
-            self.set_stack_uuid(self.view.current_stack_uuid)
+            self.set_current_stack(self.view.current_stack_uuid)
             self.stack_selection_change_pending = False
-            self.stack_changed_pending = False
-        elif self.stack_changed_pending:
-            self.handle_stack_changed()
-            self.stack_changed_pending = False
+            self.stack_modified_pending = False
+        elif self.stack_modified_pending:
+            self.handle_stack_modified()
+            self.stack_modified_pending = False

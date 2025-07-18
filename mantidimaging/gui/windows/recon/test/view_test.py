@@ -20,7 +20,7 @@ class MockMainWindow(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.stack_changed = mock.Mock()
+        self.stack_modified = mock.Mock()
         self.model_changed = mock.Mock()
         self.model_changed = mock.Mock()
         self.presenter = mock.Mock(datasets={})

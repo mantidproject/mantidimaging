@@ -65,7 +65,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
         self.export_mode = ExportMode.ROI_MODE
-        self.main_window.stack_changed.connect(self.handle_stack_modified)
+        self.main_window.stack_modified.connect(self.handle_stack_modified)
 
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
