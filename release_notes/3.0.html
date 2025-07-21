@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Mantid Imaging 2.8 &#8212; MantidImaging 3.0.0a1 documentation</title>
+    <title>Mantid Imaging 3.0 &#8212; MantidImaging 3.0.0a1 documentation</title>
   
   
   
@@ -44,7 +44,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'release_notes/2.8';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'release_notes/3.0';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -54,8 +54,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mantid Imaging 2.7" href="2.7.html" />
-    <link rel="prev" title="Mantid Imaging 3.0" href="3.0.html" />
+    <link rel="next" title="Mantid Imaging 2.8" href="2.8.html" />
+    <link rel="prev" title="Release Notes" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -451,8 +451,8 @@ document.write(`
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="next.html">Mantid Imaging next release</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3.0.html">Mantid Imaging 3.0</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mantid Imaging 2.8</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mantid Imaging 3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.8.html">Mantid Imaging 2.8</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2.7.html">Mantid Imaging 2.7</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2.6.html">Mantid Imaging 2.6</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2.5.html">Mantid Imaging 2.5</a></li>
@@ -502,7 +502,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Release Notes</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Mantid Imaging 2.8</li>
+    <li class="breadcrumb-item active" aria-current="page">Mantid Imaging 3.0</li>
   </ul>
 </nav>
 </div>
@@ -519,68 +519,108 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="mantid-imaging-2-8">
-<h1>Mantid Imaging 2.8<a class="headerlink" href="#mantid-imaging-2-8" title="Link to this heading">#</a></h1>
-<p>Mantid Imaging 2.8.0 continues to expand the capability to work with energy resolved imaging data.</p>
-<p>It is now possible to do a shutter count correction when normalising transmission data. The spectrum view can do unit conversion to show and export data in wavelength, energy or time of flight, with the ability to set path length and offset. The spectrum viewer now allows zoom by holding Ctrl and dragging a box and makes it easier to change ROI colours. NaN warnings have been added to the spectrum viewer.</p>
-<p>A settings dialog has been added which can be used to change themes and adjust the number of threads used for running operations. Note that themes are not well tested yet.</p>
-<p>There have been many bug fixes. The live viewer is now usable with large directories. Working with ROIs is more reliable.</p>
-<p>MI now has updated many dependent packages bringing performance improvements. There have been improvements to testing, type annotations and static analysis. Migration of operations to compute function style is almost complete. These changes improve stability and help developers find bugs faster.</p>
+  <section id="mantid-imaging-3-0">
+<h1>Mantid Imaging 3.0<a class="headerlink" href="#mantid-imaging-3-0" title="Link to this heading">#</a></h1>
+<p>We are pleased to announce the release of Mantid Imaging 3.0.0, a major update that introduces significant new features and improvements.</p>
+<section id="key-highlights">
+<h2>Key Highlights:<a class="headerlink" href="#key-highlights" title="Link to this heading">#</a></h2>
+<p><strong>Bragg Edge Analysis:</strong>
+Mantid Imaging 3.0.0 introduces the capability to perform Bragg edge analysis on energy-resolved neutron images. This powerful feature enables a range of scientific techniques for measuring structural and elemental properties across samples.</p>
+<p><strong>Reconstruction View Enhancements:</strong>
+Users can now view convergence and residual plots within the reconstruction view, providing deeper insight into the reconstruction process. Additionally, Mantid Imaging 3.0.0 introduces initial support for geometry handling.</p>
+<p><strong>Live Viewer Improvements:</strong>
+The live viewer tool now supports opening multiple windows for monitoring several datasets. Displaying date and time information for newly acquired images makes it easier to track and correlate data as it arrives. The addition of a new line plot for intensity visualisation provides immediate feedback on the image quality and experiment conditions. Mantid Imaging 3.0.0 also includes improvements to performance, making the live viewer more flexible and informative for users working with real-time data.</p>
+<p><strong>Enhanced Logging:</strong>
+A new logging view is available within the Settings dialog. This lets users set the desired log level, making it easier to provide detailed error reports to the Mantid Imaging team.</p>
+<p>We encourage all users to upgrade to this latest version to take advantage of the new features and improvements.</p>
+</section>
 <section id="new-features">
 <h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2046">#2046</a>: Enhancement: Implement Click Dialog for Changing ROI Colors in Table</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2051">#2051</a>: Move operations to compute_function style</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2067">#2067</a>: Add ConfigurationManager Class to operations_tests.py</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2094">#2094</a>: Add ShutterCount File type.</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2094">#2094</a>: Front-end for loading ShutterCount files into Mantid Imaging.</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2094">#2094</a>: Apply ShutterCount Normalisation within Spectrum Viewer</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2133">#2133</a>: The Spectrum plot in the Spectrum Viewer can be zoomed via a click and drag zoom-box</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2144">#2144</a>: MI UI theme can be changed in runtime via a settings menu</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2151">#2151</a>: Neutron wavelength, energy and tof units can be selected in the Spectrum Viewer</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2151">#2151</a>: Time of Flight user properties can be set in the Spectrum Viewer</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2206">#2206</a>: Improve output naming for reconstructed slices and volumes</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2216">#2216</a>: Add Wavelength, ToF and Energy unit conversions to Spectrum Viewer CSV Output</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2230">#2230</a>: Create checkbox that can be toggled on or off to apply ShutterCount correction to ToF data within the spectrum viewer window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2273">#2273</a>: Display the modified image timestamp within the live viewer to allow for easier determination of what scan is being displayed within the live viewer.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2351">#2351</a>: Option in live view menu to load current images as dataset</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2361">#2361</a>: Multiple Live Viewers can now be opened and pointed to different directories simultaneously</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2366">#2366</a>: Added Warning Dialog MI shutdown was Not Clean and Point to Logs</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2375">#2375</a>: Add Convergence Plot in AsyncTaskDialog Displayed During Reconstruction</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2430">#2430</a>: Add Residual Plot in AsyncTaskDialog Displayed During Reconstruction</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2448">#2448</a>: Live Viewer Intensity is calculated asynchronously via QThreads</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2483">#2483</a>: Add Geometry member class to the ImageStack class</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2516">#2516</a>: The plot in the Spectrum Viewer can be switched to a scatter plot via a right click menu. This feature can be activated on any plot in MI.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2545">#2545</a>: The overlap correction script has been migrated into the operations window in MI</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2548">#2548</a>: Add a fitting system for Bragg Edges in Time of Flight data</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2588">#2588</a>: Enable user-editable initial fitting parameters within the spectrum viewer fitting tab</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2596">#2596</a>: Sync unit selection across Spectrum Viewer image and fitting tabs. Add right click unit conversion menu to fitting tab spectrum view.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2612">#2612</a>: The Santisteban fitting algorithm for fitting to Bragg Edges has been implemented in the Spectrum Viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2626">#2626</a>: Improved logs for reconstruction, spectrum viewer, saving, loading, and operations for clearer troubleshooting.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2648">#2648</a>: Improve error when log file doesn’t have a header</p></li>
 </ul>
 </section>
 <section id="fixes">
 <h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2053">#2053</a>: Fix unreliable tests due to viewbox</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2076">#2076</a>: ROI speed up</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2113">#2113</a>: Spectrum Viewer stacks now update with Main Window after operation applied</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2129">#2129</a>: fix menu position for new pyqtgraph</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2129">#2129</a>: fix: Pytest failure AttributeError: ‘ImageStack’ object has no attribute ‘shape</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2167">#2167</a>: The Spectrum Viewer no longer produces in different sizes</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2185">#2185</a>: NaN warning icon now appears in the Spectrum Viewer when NaN are in averaged image</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2204">#2204</a>: Live viewer, handle notification quickly and defer slow work</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2209">#2209</a>: Mantid Imaging now switches between Fusion and qt-material themes correctly</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2219">#2219</a>: Live viewer: informative error if live directory deleted</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2246">#2246</a>: Don’t duplicate ROI names after stack modification</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2250">#2250</a>: A bug where a lock object was trying to be pickled has not been fixed, the median filter is now functional.</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2242">#2242</a>: In the Spectrum Viewer, the Export Tabs now disable when no image stacks are available to prevent a KeyError</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1952">#1952</a>: Fix brightness levels when applying flat fielding</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2222">#2222</a>: Monitor normalisation: RuntimeError: No logfile available for this stack.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2229">#2229</a>: Refactor Codebase by Removing Obsolete Functionality due to Introducing Efficient Compute Functions</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2281">#2281</a>: TestGuiSystemReconstruction test_correlate should check COR and tilt</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2285">#2285</a>: Resolve operations windows crop co-ordinates ROI size from being larger than stack bounds. Additionally resolve ROI crop co-ordinate dialog window persistence if parent window closed.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2309">#2309</a>: Fix SpectrumWidgetTest warnings</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2315">#2315</a>: Fix adding or replacing a stack within a dataset</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2376">#2376</a>: Fix spectrum visibility for ROIs where visibility is set to false are still displayed</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2397">#2397</a>: Fix FITS file support for drag and drop functionality within Mantid Imaging. This fix also resolves FITS file support when launching Mantid Imaging via the CLI with the <cite>–path</cite> optional argument.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2404">#2404</a>: Fix nexus saving and make tests more robust</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2410">#2410</a>: Added fits file to choose file path</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2432">#2432</a>: Ensure Flight Path and Time Delay Display Three Decimal Places</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2420">#2420</a>: Corrected an error in RITS export that occured when the bin size was equal to the step size.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2422">#2422</a>: Spectrum viewer: Resolves a bug preventing a new ROI from being added after exporting to a CSV file</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2463">#2463</a>: fix Quick Start Guide link</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2471">#2471</a>: The ROIs in the Spectrum Viewer can be moved smoothly while the spectrum updates.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2472">#2472</a>: When loading data, tabs are stacked correctly in the main view</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2473">#2473</a>: Resolved issues with duplicate ROIs being created when switching sample</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2486">#2486</a>: Fix ROI movement not updating spectrum unless selected</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2490">#2490</a>: The Live Viewer Intensity plot now updates correctly when images are modified, i.e. deleted or multiple added files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2497">#2497</a>: Live Viewer Intensity now plots correctly with slow/faulty files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2503">#2503</a>: Save the currently displayed image to a TIFF file in Spectrum Viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2523">#2523</a>: The Spectrum Viewer configures stack and calculates spectrum after window is displayed. Spectrum is now cached.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2532">#2532</a>: Make Jenks and Otsu robust against NaNs in the image</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2542">#2542</a>: Correctly update core and tilt table and line when changed</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2593">#2593</a>: Fix the ROI preview image not being anchored to the top-right of the spectrum viewer’s fitting tab</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2599">#2599</a>: Resolve duplicate <cite>PlotDataItem</cite> in the Spectrum Viewer and add protection to fitting region against empty arrays.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2624">#2624</a>: Check that SPDHG <code class="docutils literal notranslate"><span class="pre">last_residual</span></code> property exists before setting residual information.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2627">#2627</a>: Remove Int type check of slice in  <code class="docutils literal notranslate"><span class="pre">_auto_find_minimisation_square_sum</span></code> to resolve TypeError when applying minimise error in reconstruction view.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2642">#2642</a>: While using the Santisteban fit, the window no longer crashes if a bad fit is detected or a poor ROI is chosen. The user now receives a warning if a poor ROI is selected.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2660">#2660</a>: The Spectrum Viewer only starts a QThread when the ROI queue is empty. This prevents cross-threading issues.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2677">#2677</a>: When a ROI is renamed in the Spectrum Viewer, changing the colour of the ROI no longer gives an error. The ROI is also updated in the Fitting Tab</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2633">#2633</a>: Fixed an error where closing the Welcome Screen could raise an AttributeError: ‘WelcomeScreenView’ object has no attribute ‘closed’.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2690">#2690</a>: Handle exception in the spectrum viewer worker thread</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2698">#2698</a>: The Spectrum ROI spinboxes limits are updated when ROIs are moved by the user. The size parameters are now updated correctly.</p></li>
 </ul>
 </section>
 <section id="developer-changes">
 <h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1985">#1985</a>: Backend work for TGV reconstruction</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2008">#2008</a>: Update mypy, remove –no-site-packages, fix issues</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2035">#2035</a>: Add setting for number of processes to start in multiprocessing pool (default to 8)</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2080">#2080</a>: Switch to pydata documentation theme</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2082">#2082</a>: Normal, System, and Screenshot test are now explicitly separated in the Makefile</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2107">#2107</a>: Fix operation test param defaults</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2109">#2109</a>: Allow tuple params in operation test cases</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2114">#2114</a>: Update ruff and fix some new warnings</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2116">#2116</a>: Don’t run test suite when only doc changes</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2139">#2139</a>: Doc extensions: use StringList instead of ViewList</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2172">#2172</a>: Unit tests for the UnitConversion class</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2177">#2177</a>: Added unit tests for the Time of Flight user properties in the Spectrum Viewer</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2183">#2183</a>: Update CIL to 24.0, numpy 1.23, scipy 1.8</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2196">#2196</a>: Cancel in progress test runs when new commit pushed</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2213">#2213</a>: unit tests have been added to check that the Time of Flight modes behave correctly when switching between stacks</p></li>
-<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2250">#2250</a>: Make systems tests stricter to catch operations errors</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2267">#2267</a>: Show attribute names in leak tracker</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2267">#2267</a>: Python has been upgraded to use version 3.12</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2268">#2268</a>: Various Python packages have been updated including astropy, scipy, numpy, algotom, cudatoolkit, cupy, and jenkspy</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2269">#2269</a>: Pyinstaller and h5py packages have been upgraded to 6.9.* and 3.7.* respectively</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2277">#2277</a>: System tests for spectum viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2289">#2289</a>: Updated packages to address Numpy deprecation warnings leading towards 2.0</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2296">#2296</a>: Migrated from the Centos7 Docker image to Rocky8 to match IDaas</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2300">#2300</a>: Pyinstaller add libcurl libraries</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2307">#2307</a>: Try to find ShutterCount and Spectra log files within a selected dataset in the loading dialog menu</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2313">#2313</a>: Docker images are pruned after being built and pushed to free up storage space</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2320">#2320</a>: Enhance System Tests for Spectrum Viewer</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2324">#2324</a>: Use branch feature on applitools</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2330">#2330</a>: The PySide6 module is now excluded when building via PyInstaller due to hook clashes</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2348">#2348</a>: Pyright dependancy to project, configure pyright basic rulest and resolve issues raised by pyright in basic configuration</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2370">#2370</a>: Add a cancel button to AsyncTaskDialog progress window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2380">#2380</a>: Rename Spectrum Viewer tofPropertiesGroupBox to experimentSetupGroupBox and place into a custom widget.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2417">#2417</a>: Reduce memory use in tests</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2433">#2433</a>: Speedup autospec in tests</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2436">#2436</a>: Use static copyright years</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2438">#2438</a>: Only try to remove old dev env if it exists</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2444">#2444</a>: Ruff rule to check for missing __init__.py files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2552">#2552</a>: Replaced “Apply to all stacks” button with “Apply to Dataset”, which only applies the operation to the selected dataset.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2609">#2609</a>: Refactor release_notes.py script to add reST GitHub Issue links to allow users to find the associated issue or PR for additional context.</p></li>
 </ul>
 </section>
 </section>
@@ -596,20 +636,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="3.0.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Mantid Imaging 3.0</p>
+        <p class="prev-next-title">Release Notes</p>
       </div>
     </a>
     <a class="right-next"
-       href="2.7.html"
+       href="2.8.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Mantid Imaging 2.7</p>
+        <p class="prev-next-title">Mantid Imaging 2.8</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -631,6 +671,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-highlights">Key Highlights:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New Features</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-changes">Developer Changes</a></li>
@@ -640,7 +681,7 @@ document.write(`
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/release_notes/2.8.rst.txt">
+    <a href="../_sources/release_notes/3.0.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
