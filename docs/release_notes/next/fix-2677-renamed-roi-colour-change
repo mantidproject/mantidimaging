@@ -1,1 +1,0 @@
-#2677: When a ROI is renamed in the Spectrum Viewer, changing the colour of the ROI no longer gives an error. The ROI is also updated in the Fitting Tab
