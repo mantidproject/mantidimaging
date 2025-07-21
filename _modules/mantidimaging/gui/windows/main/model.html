@@ -597,7 +597,7 @@ document.write(`
                                      <span class="n">pixel_depth</span><span class="o">=</span><span class="n">pixel_depth</span><span class="p">,</span>
                                      <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
 
-        <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
+        <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="n">filenames</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Export completed. Files saved: </span><span class="si">{</span><span class="n">filenames</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}{</span><span class="s1">&#39; ...&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"> &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;(total </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span><span class="si">}</span><span class="s2"> files)&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -665,7 +665,7 @@ document.write(`
             <span class="k">raise</span> <span class="ne">RuntimeError</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">])</span>
         <span class="n">images</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log</span></div>
 
 

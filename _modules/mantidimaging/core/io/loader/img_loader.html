@@ -548,12 +548,9 @@ document.write(`
 
     <span class="c1"># forward all arguments to internal class for easy re-usage</span>
     <span class="n">il</span> <span class="o">=</span> <span class="n">ImageLoader</span><span class="p">(</span><span class="n">load_func</span><span class="p">,</span> <span class="n">img_format</span><span class="p">,</span> <span class="n">img_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
-
     <span class="n">sample_data</span> <span class="o">=</span> <span class="n">il</span><span class="o">.</span><span class="n">load_sample_data</span><span class="p">(</span><span class="n">chosen_input_filenames</span><span class="p">)</span>
 
-    <span class="n">chosen_input_filenames_str</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">chosen_input_filenames</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">sample_data</span><span class="p">,</span> <span class="n">chosen_input_filenames_str</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">sample_data</span><span class="p">,</span> <span class="n">chosen_input_filenames</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span></div>
 
 
 
