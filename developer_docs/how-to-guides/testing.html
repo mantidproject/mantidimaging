@@ -631,7 +631,12 @@ See the Pytest docs for additional <a class="reference external" href="https://d
 </pre></div>
 </div>
 </li>
-<li><p><strong>Windows-Specific Testing</strong>: For running screenshot tests specifically on Windows, use the following command:</p>
+<li><p><strong>Windows-Specific Testing</strong>: For running screenshot tests specifically on Windows, first ensure you’ve downloaded the <a class="reference external" href="https://github.com/mantidproject/mantidimaging-data/">Dataset</a> to your user directory.</p>
+<p>Set the Applitools API environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span> <span class="n">APPLITOOLS_API_KEY</span><span class="o">=</span><span class="n">local</span>
+</pre></div>
+</div>
+<p>Then use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">test</span><span class="o">-</span><span class="n">screenshots</span><span class="o">-</span><span class="n">win</span>
 </pre></div>
 </div>
