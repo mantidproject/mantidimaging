@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 import uuid
+from pathlib import Path
 
 from unittest import mock
 from unittest.mock import patch, call
@@ -427,7 +428,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_no_need_for_alternative_180(self, find_180_mock: mock.Mock):
         dataset = Dataset(sample=generate_images())
         dataset.proj180deg = generate_images((1, 20, 20))
-        dataset.proj180deg.filenames = ["filename"]
+        dataset.proj180deg.filenames = [Path("filename")]
 
         self.presenter.add_alternative_180_if_required(dataset)
         find_180_mock.assert_not_called()

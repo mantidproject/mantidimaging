@@ -255,11 +255,11 @@ class NexusLoaderTest(unittest.TestCase):
     def test_image_names(self):
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
-        assert dataset.sample.filenames[0] == "Projections " + self.title
-        assert dataset.flat_before.filenames[0] == "Flat Before " + self.title
-        assert dataset.dark_before.filenames[0] == "Dark Before " + self.title
-        assert dataset.dark_after.filenames[0] == "Dark After " + self.title
-        assert dataset.flat_after.filenames[0] == "Flat After " + self.title
+        assert str(dataset.sample.filenames[0]) == "Projections " + self.title
+        assert str(dataset.flat_before.filenames[0]) == "Flat Before " + self.title
+        assert str(dataset.dark_before.filenames[0]) == "Dark Before " + self.title
+        assert str(dataset.dark_after.filenames[0]) == "Dark After " + self.title
+        assert str(dataset.flat_after.filenames[0]) == "Flat After " + self.title
 
     def test_empty_name_field(self):
         del self.tomo_entry["title"]

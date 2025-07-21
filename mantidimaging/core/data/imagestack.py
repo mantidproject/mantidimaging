@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import datetime
 import json
-import os.path
 import uuid
 from copy import deepcopy
 from typing import Any, TextIO, TYPE_CHECKING, cast
 import logging
+from pathlib import Path
 
 import numpy as np
 
@@ -41,7 +41,7 @@ class ImageStack:
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
-                 filenames: list[str] | None = None,
+                 filenames: list[Path] | None = None,
                  indices: list[int] | Indices | None = None,
                  metadata: dict[str, Any] | None = None,
                  sinograms: bool = False,
@@ -74,10 +74,7 @@ class ImageStack:
         self._projection_angles: ProjectionAngles | None = None
 
         if name is None:
-            if filenames is not None:
-                self.name = os.path.splitext(os.path.basename(filenames[0]))[0]
-            else:
-                self.name = "untitled"
+            self.name = str(filenames[0].stem) if filenames else "untitled"
         else:
             self.name = name
 
@@ -106,11 +103,11 @@ class ImageStack:
         return len(self._filenames) if self._filenames else 0
 
     @property
-    def filenames(self) -> list[str] | None:
+    def filenames(self) -> list[Path] | None:
         return self._filenames
 
     @filenames.setter
-    def filenames(self, new_ones: list[str]) -> None:
+    def filenames(self, new_ones: list[Path]) -> None:
         assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
