@@ -253,6 +253,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
     def test_add_projection_angles_to_stack(self):
         id, angles = "doesn't-exist", ProjectionAngles(np.ndarray([1]))
+        self.presenter.stack_visualisers[id] = mock.Mock()
         self.presenter.add_projection_angles_to_sample(id, angles)
         self.model.add_projection_angles_to_sample.assert_called_with(id, angles)
 
