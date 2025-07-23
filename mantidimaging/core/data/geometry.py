@@ -2,6 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from math import tan, radians, degrees
+
 from cil.framework import AcquisitionGeometry
 
 from mantidimaging.core.utility.data_containers import ScalarCoR
@@ -40,13 +42,44 @@ class Geometry(AcquisitionGeometry):
 
     def set_geometry_from_cor_tilt(self, cor: ScalarCoR, tilt: float) -> None:
         """
-        Converts a centre of rotation (that uses MI conventions) to the CIL convention.
+        Set's the geometry's CIL-convention Offset and Angle from the MI-convention Centre-of-Rotation and Tilt.
 
-        :param cor: A ScalarCoR object defining the centre of rotation as a float value.
+        :param cor: A ScalarCoR object defining the MI-convention centre of rotation as a float value.
         :type cor: ScalarCoR
         :param tilt: A float value defining the tilt in degrees.
         :type tilt: float
         """
-        offset: float = (cor.value - self.config.panel.num_pixels[0] / 2) * self.config.panel.pixel_size[0]
+
+        pixel_x_midpoint = self.config.panel.num_pixels[0] / 2
+        pixel_y_midpoint = self.config.panel.num_pixels[1] / 2
+        pixel_size = self.config.panel.pixel_size[0]
+
+        tilt_radians = -radians(tilt)
+        midpoint_cor = cor.value + pixel_y_midpoint * tan(tilt_radians)
+
+        offset: float = (midpoint_cor - pixel_x_midpoint) * pixel_size
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt, angle_units='degree')
+
+    @property
+    def tilt(self) -> float:
+        tilt: float = self.get_centre_of_rotation()['angle'][0]
+        return -degrees(tilt)
+
+    @property
+    def cor(self) -> ScalarCoR:
+        """
+        Converts the internal CIL-convention COR (defined at the midpoint of the image) to MI-convention.
+
+        :return (ScalarCoR) : the MI-convention Centre-of-Rotation (defined at the top of the image).
+        """
+        offset = self.get_centre_of_rotation()['offset'][0]
+        pixel_x_midpoint = self.config.panel.num_pixels[0] / 2
+        pixel_y_midpoint = self.config.panel.num_pixels[1] / 2
+        pixel_size = self.config.panel.pixel_size[0]
+        midpoint_cor = (offset / pixel_size) + pixel_x_midpoint
+
+        tilt_radians = -radians(self.tilt)
+        cor = midpoint_cor - pixel_y_midpoint * tan(tilt_radians)
+
+        return ScalarCoR(cor)
