@@ -71,7 +71,7 @@ class ImageStack:
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
         self._shutter_count_file: ShutterCount | None = None
-        self._projection_angles: ProjectionAngles | None = None
+        # self._projection_angles: ProjectionAngles | None = None
 
         if name is None:
             self.name = str(filenames[0].stem) if filenames else "untitled"
@@ -352,10 +352,12 @@ class ImageStack:
             raise RuntimeError("The number of angles does not match the number of images. "
                                f"Num angles {len(angles.value)} and num images {self.num_images}")
 
-        self._projection_angles = angles
+        # self._projection_angles = angles
 
         if self.geometry:
             self.geometry.set_angles(angles=angles.value, angle_unit="radian")
+        else:
+            LOG.warning(f"Cannot update geometry angles: ImageStack {self.name} has no Geometry object")
 
     def real_projection_angles(self) -> ProjectionAngles | None:
         """
@@ -367,8 +369,9 @@ class ImageStack:
 
         :return: Real projection angles if they were found, None otherwise.
         """
-        if self._projection_angles is not None:
-            return self._projection_angles
+
+        if self.geometry is not None:
+            return ProjectionAngles(self.geometry.angles)
         if self._log_file is not None and self._log_file.has_projection_angles():
             return self._log_file.projection_angles()
         return None
@@ -376,8 +379,8 @@ class ImageStack:
     def projection_angles(self, max_angle: float = 360.0) -> ProjectionAngles:
         """
         Return projection angles, in priority order:
-        - From a log
         - From the manually loaded file with a list of angles
+        - From a log
         - Automatically generated with equidistant step
 
         :param max_angle: The maximum angle up to which the angles will be generated.
@@ -452,9 +455,13 @@ class ImageStack:
 
         :side effects: Modifies self.geometry by updating its angle configuration.
         """
-        if not self.geometry or not self._projection_angles:
-            LOG.warning(f"Cannot update geometry angles:"
-                        f"geometry is {self.geometry}, projection angles is {self._projection_angles}")
+        # if not self.geometry or not self._projection_angles:
+        #     LOG.warning(f"Cannot update geometry angles:"
+        #                 f"geometry is {self.geometry}, projection angles is {self._projection_angles}")
+        #     return
+
+        if not self.geometry:
+            LOG.warning(f"Cannot update geometry angles: geometry is {self.geometry}")
             return
 
-        self.geometry.set_angles(angles=self._projection_angles.value, angle_unit="radian")
+        # self.geometry.set_angles(angles=self._projection_angles.value, angle_unit="radian")
