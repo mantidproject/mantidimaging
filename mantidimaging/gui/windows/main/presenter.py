@@ -396,6 +396,7 @@ class MainWindowPresenter(BasePresenter):
 
     def add_projection_angles_to_sample(self, stack_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
         self.model.add_projection_angles_to_sample(stack_id, proj_angles)
+        self.stack_visualisers[stack_id].image_view.angles = proj_angles
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
         loading_params = create_loading_parameters_for_file_path(Path(file_path))
