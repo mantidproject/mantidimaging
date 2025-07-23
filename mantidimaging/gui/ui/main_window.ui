@@ -59,6 +59,7 @@
     </property>
     <addaction name="actionFilters"/>
     <addaction name="actionRecon"/>
+    <addaction name="actionGeometry"/>
     <addaction name="actionCompareImages"/>
     <addaction name="actionSpectrumViewer"/>
    </widget>
@@ -127,6 +128,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionGeometry">
+   <property name="text">
+    <string>Geometry</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
   <action name="actionManual_Center_of_Rotation">
