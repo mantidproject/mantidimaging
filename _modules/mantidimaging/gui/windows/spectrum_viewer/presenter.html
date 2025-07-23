@@ -563,7 +563,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">SpectrumViewerWindowModel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">=</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_modified</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_modified</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span><span class="o">.</span><span class="n">setSingleShot</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>

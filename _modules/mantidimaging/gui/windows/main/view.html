@@ -569,8 +569,8 @@ document.write(`
 
     <span class="c1"># Emitted when a new stack is created or an existing one deleted</span>
     <span class="n">model_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
-    <span class="c1"># Emitted when an existing stack is changed</span>
-    <span class="n">stack_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="c1"># Emitted when an existing stack is modified</span>
+    <span class="n">stack_modified</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
     <span class="n">backend_message</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span>
 
     <span class="n">menuFile</span><span class="p">:</span> <span class="n">QMenu</span>
@@ -1055,7 +1055,7 @@ document.write(`
     <span class="k">def</span><span class="w"> </span><span class="nf">show_filters_window</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">FiltersWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">filter_applied</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">filter_applied</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">activateWindow</span><span class="p">()</span>

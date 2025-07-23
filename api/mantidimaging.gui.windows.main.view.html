@@ -1238,9 +1238,14 @@ the welcome screen’s links if it’s still visible.</p>
 <span class="sig-name descname"><span class="pre">spectrum_viewer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView" title="mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView"><span class="pre">SpectrumViewerWindowView</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.spectrum_viewer" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_list">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.StackId" title="mantidimaging.gui.windows.main.presenter.StackId"><span class="pre">StackId</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_list" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_changed">
-<span class="sig-name descname"><span class="pre">stack_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_changed" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_modified">
+<span class="sig-name descname"><span class="pre">stack_modified</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_modified" title="Link to this definition">#</a></dt>
 <dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
 <p>types is normally a sequence of individual types.  Each type is either a
 type object or a string that is the name of a C++ type.  Alternatively
@@ -1252,11 +1257,6 @@ revision is the optional revision of the signal that is exported to QML.
 If it is not specified then 0 is used.
 arguments is the optional sequence of the names of the signal’s arguments.</p>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_list">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stack_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.StackId" title="mantidimaging.gui.windows.main.presenter.StackId"><span class="pre">StackId</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_list" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_names">
@@ -1468,8 +1468,8 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_wizard"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_wizard()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.sino_text"><code class="docutils literal notranslate"><span class="pre">MainWindowView.sino_text</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.spectrum_viewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.spectrum_viewer</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_changed"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_changed</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_list"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_list</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_modified"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_modified</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_names"><code class="docutils literal notranslate"><span class="pre">MainWindowView.stack_names</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.uncaught_exception"><code class="docutils literal notranslate"><span class="pre">MainWindowView.uncaught_exception()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.update_shortcuts"><code class="docutils literal notranslate"><span class="pre">MainWindowView.update_shortcuts()</span></code></a></li>

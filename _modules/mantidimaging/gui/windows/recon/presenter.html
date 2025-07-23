@@ -548,7 +548,7 @@ document.write(`
     <span class="n">REFINE_ITERS</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">AUTO_FIND_COR_CORRELATE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">AUTO_FIND_COR_MINIMISE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
-    <span class="n">SET_STACK_UUID</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+    <span class="n">SET_CURRENT_STACK</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
 
 
@@ -577,8 +577,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_modified</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_modified_pending</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack_selection_change_pending</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.notify">
@@ -609,7 +609,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_update_projection</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">notification</span> <span class="o">==</span> <span class="n">Notifications</span><span class="o">.</span><span class="n">ADD_COR</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_add_cor</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">notification</span> <span class="o">==</span> <span class="n">Notifications</span><span class="o">.</span><span class="n">SET_STACK_UUID</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">notification</span> <span class="o">==</span> <span class="n">Notifications</span><span class="o">.</span><span class="n">SET_CURRENT_STACK</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">do_stack_uuid_changed</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">notification</span> <span class="o">==</span> <span class="n">Notifications</span><span class="o">.</span><span class="n">REFINE_COR</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_do_refine_selected_cor</span><span class="p">()</span>
@@ -645,14 +645,14 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_stack_uuid_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_stack_uuid_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_stack_uuid</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_stack</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">check_stack_for_invalid_180_deg_proj</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ReconstructWindowPresenter.set_stack_uuid">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.set_stack_uuid">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ReconstructWindowPresenter.set_current_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.set_current_stack">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_current_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stack_selection_change_pending</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">return</span>
@@ -756,16 +756,16 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">update_projection</span><span class="p">(</span><span class="n">img_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_slice_idx</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ReconstructWindowPresenter.handle_stack_changed">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.handle_stack_changed">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">handle_stack_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ReconstructWindowPresenter.handle_stack_modified">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.handle_stack_modified">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_stack_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset_cor_model</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_update_projection</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_max_preview_indexes</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_preview_reconstruct_slice</span><span class="p">(</span><span class="n">reset_roi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span> <span class="o">=</span> <span class="kc">True</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_modified_pending</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_next_free_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -1104,12 +1104,12 @@ document.write(`
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.handle_show_event">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_show_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_selection_change_pending</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_stack_uuid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_stack_uuid</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_current_stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_stack_uuid</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stack_selection_change_pending</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">stack_changed_pending</span> <span class="o">=</span> <span class="kc">False</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_modified_pending</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_modified_pending</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_modified</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_modified_pending</span> <span class="o">=</span> <span class="kc">False</span></div>
 </div>
 
 </pre></div>

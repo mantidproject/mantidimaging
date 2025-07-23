@@ -573,7 +573,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">roi_changed_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_changed_callback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">connection_stack_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection_stack_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">REFRESH_IMAGE</span><span class="p">))</span>
 
     <span class="nd">@property</span>
@@ -731,7 +731,7 @@ document.write(`
                                               <span class="n">flags</span><span class="o">=</span><span class="n">INPUT_DIALOG_FLAGS</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">accepted</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">_is_sinograms</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s2">&quot;projections&quot;</span> <span class="k">else</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="StackVisualiserView.ask_confirmation">
@@ -744,7 +744,7 @@ document.write(`
 <div class="viewcode-block" id="StackVisualiserView.cleanup">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.cleanup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_stack_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_stack_modified</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="kc">None</span></div>
 </div>
 

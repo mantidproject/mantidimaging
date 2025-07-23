@@ -2481,10 +2481,12 @@ document.write(`
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.handle_stack_changed">handle_stack_changed() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
+      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.handle_stack_modified">handle_stack_modified() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_stack_modified">(mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_stack_modified">handle_stack_modified() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
-</li>
+      </ul></li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_table_click">handle_table_click() (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_tof_unit_change">handle_tof_unit_change() (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter method)</a>
@@ -6461,6 +6463,10 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled">set_correlate_buttons_enabled() (mantidimaging.gui.windows.recon.view.ReconstructWindowView method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.Notifications.SET_CURRENT_STACK">SET_CURRENT_STACK (mantidimaging.gui.windows.recon.presenter.Notifications attribute)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.set_current_stack">set_current_stack() (mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
+</li>
       <li><a href="api/mantidimaging.gui.windows.settings.presenter.html#mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter.set_dark_mode">set_dark_mode() (mantidimaging.gui.windows.settings.presenter.SettingsWindowPresenter method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.nexus_load_dialog.view.html#mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog.set_data_found">set_data_found() (mantidimaging.gui.windows.nexus_load_dialog.view.NexusLoadDialog method)</a>
@@ -6679,14 +6685,8 @@ document.write(`
 </li>
       <li><a href="api/mantidimaging.gui.windows.stack_properties_dialog.presenter.html#mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter.set_stack_directory">set_stack_directory() (mantidimaging.gui.windows.stack_properties_dialog.presenter.StackPropertiesPresenter method)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.Notifications.SET_STACK_UUID">SET_STACK_UUID (mantidimaging.gui.windows.recon.presenter.Notifications attribute)</a>
-</li>
       <li><a href="api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_stack_uuid">set_stack_uuid() (mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter method)</a>
-
-      <ul>
-        <li><a href="api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.set_stack_uuid">(mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter method)</a>
 </li>
-      </ul></li>
       <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_table_point">set_table_point() (mantidimaging.gui.windows.recon.view.ReconstructWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.dialogs.async_task.presenter.html#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter.set_task">set_task() (mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter method)</a>
@@ -7063,8 +7063,6 @@ document.write(`
         <li><a href="api/mantidimaging.gui.windows.stack_properties_dialog.view.html#mantidimaging.gui.windows.stack_properties_dialog.view.StackPropertiesDialog.stack">(mantidimaging.gui.windows.stack_properties_dialog.view.StackPropertiesDialog attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_changed">stack_changed (mantidimaging.gui.windows.main.view.MainWindowView attribute)</a>
-</li>
       <li><a href="api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_nans">stack_contains_nans() (mantidimaging.gui.windows.recon.model.ReconstructWindowModel method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.stack_contains_negative_values">stack_contains_negative_values() (mantidimaging.gui.windows.recon.model.ReconstructWindowModel method)</a>
@@ -7078,6 +7076,8 @@ document.write(`
 </li>
       </ul></li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_list">stack_list (mantidimaging.gui.windows.main.view.MainWindowView property)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_modified">stack_modified (mantidimaging.gui.windows.main.view.MainWindowView attribute)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.stack_names">stack_names (mantidimaging.gui.windows.main.view.MainWindowView property)</a>
 </li>

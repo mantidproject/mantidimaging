@@ -523,7 +523,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">wizard_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">wizard_data_file</span><span class="o">.</span><span class="n">open</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">populate</span><span class="p">()</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">model_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_change</span><span class="p">)</span>
-        <span class="n">parent</span><span class="o">.</span><span class="n">stack_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_change</span><span class="p">)</span>
+        <span class="n">parent</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_change</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_change</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
