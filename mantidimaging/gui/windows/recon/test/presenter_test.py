@@ -52,7 +52,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.regPercentLabel = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    def test_set_stack_uuid(self, mock_start_async: mock.Mock):
+    def test_set_current_stack(self, mock_start_async: mock.Mock):
         # reset the model data
         rng = np.random.default_rng()
         self.presenter.model.initial_select_data(None)
@@ -62,7 +62,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_reconstructor.single_sino.return_value = rng.random((128, 128))
 
         # first-time selecting this data after reset
-        self.presenter.set_stack_uuid(self.uuid)
+        self.presenter.set_current_stack(self.uuid)
 
         mock_start_async.assert_called_once()
         self.main_window.get_stack.assert_called_once_with(self.uuid)
@@ -75,7 +75,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.set_max_slice_index.assert_called_once_with(self.data.height - 1)
 
         # calling again with the same stack shouldn't re-do everything
-        self.presenter.set_stack_uuid(self.uuid)
+        self.presenter.set_current_stack(self.uuid)
         self.assertEqual(self.main_window.get_stack.call_count, 2)
         self.main_window.get_stack.assert_has_calls([mock.call(self.uuid), mock.call(self.uuid)])
 
@@ -85,29 +85,29 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.update_sinogram.assert_called_once()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    def test_set_stack_uuid_no_image_data(self, mock_start_async: mock.Mock):
-        """Test that set_stack_uuid handles a UUID of 'None' properly"""
-        self.presenter.set_stack_uuid(None)
+    def test_set_current_stack_no_image_data(self, mock_start_async: mock.Mock):
+        """Test that the stack setting logic handles a UUID of 'None' properly"""
+        self.presenter.set_current_stack(None)
         self.main_window.get_stack.assert_not_called()
         mock_start_async.assert_not_called()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    def test_set_stack_uuid_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
+    def test_set_current_stack_updates_rotation_centre_and_pixel_size(self, mock_start_async: mock.Mock):
         self.presenter.model._images = None
         # first-time selecting this data after reset
-        self.presenter.set_stack_uuid(self.uuid)
+        self.presenter.set_current_stack(self.uuid)
         mock_start_async.assert_called_once()
 
         self.assertEqual(64.0, self.view.rotation_centre)
         self.assertEqual(TEST_PIXEL_SIZE, self.view.pixel_size)
 
-    def test_set_stack_uuid_no_preview_redraw_when_window_closed(self):
+    def test_set_current_stack_no_preview_redraw_when_window_closed(self):
         self.view.isVisible = mock.Mock(return_value=False)
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
         # reset the model data
         self.presenter.model.initial_select_data(None)
 
-        self.presenter.set_stack_uuid(self.uuid)
+        self.presenter.set_current_stack(self.uuid)
 
         self.presenter.do_preview_reconstruct_slice.assert_not_called()
 
@@ -422,21 +422,21 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter._on_volume_recon_done(task)
         self.view.set_recon_buttons_enabled.assert_called_once_with(True)
 
-    def test_handle_stack_changed_requests_roi_reset(self):
+    def test_handle_stack_modified_requests_roi_reset(self):
         self.view.isVisible.return_value = True
         self.presenter.model.reset_cor_model = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
-        self.presenter.handle_stack_changed()
+        self.presenter.handle_stack_modified()
 
         self.presenter.do_preview_reconstruct_slice.assert_called_once_with(reset_roi=True)
 
-    def test_handle_stack_changed_updates_preview_indexes(self):
+    def test_handle_stack_modified_updates_preview_indexes(self):
         self.view.isVisible.return_value = True
         self.presenter.model.reset_cor_model = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
-        self.presenter.handle_stack_changed()
+        self.presenter.handle_stack_modified()
 
         self.view.set_max_projection_index.assert_called_once_with(self.data.num_projections - 1)
         self.view.set_max_slice_index.assert_called_once_with(self.data.height - 1)

@@ -71,8 +71,8 @@ class MainWindowView(BaseMainWindowView):
 
     # Emitted when a new stack is created or an existing one deleted
     model_changed = pyqtSignal()
-    # Emitted when an existing stack is changed
-    stack_changed = pyqtSignal()
+    # Emitted when an existing stack is modified
+    stack_modified = pyqtSignal()
     backend_message = pyqtSignal(bytes)
 
     menuFile: QMenu
@@ -471,7 +471,7 @@ class MainWindowView(BaseMainWindowView):
     def show_filters_window(self) -> None:
         if not self.filters:
             self.filters = FiltersWindowView(self)
-            self.filters.filter_applied.connect(self.stack_changed.emit)
+            self.filters.filter_applied.connect(self.stack_modified.emit)
             self.filters.show()
         else:
             self.filters.activateWindow()

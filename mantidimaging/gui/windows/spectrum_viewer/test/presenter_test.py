@@ -30,7 +30,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images
 class SpectrumViewerWindowPresenterTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.main_window = mock.create_autospec(MainWindowView, instance=True, stack_changed=mock.Mock())
+        self.main_window = mock.create_autospec(MainWindowView, instance=True, stack_modified=mock.Mock())
         self.view = mock.create_autospec(SpectrumViewerWindowView, instance=True)
         self.view.current_dataset_id = uuid.uuid4()
         self.view.roi_form = mock.create_autospec(ROIFormWidget, instance=True)
