@@ -1,12 +1,12 @@
-name: mantidimaging-nightly
+name: mantidimaging
 channels:
-  - mantidimaging/label/unstable
+  - mantidimaging/label/main
   - conda-forge
   - ccpi
   - algotom
   - https://software.repos.intel.com/python/conda/
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
-  - mantidimaging>=2.5.0
+  - mantidimaging>=3.0.0,<3.1.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - ipp=2021.12 # https://github.com/mantidproject/mantidimaging/issues/2354
