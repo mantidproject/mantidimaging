@@ -495,6 +495,8 @@ document.write(`
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">tan</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">degrees</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionGeometry</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span>
@@ -537,17 +539,48 @@ document.write(`
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Converts a centre of rotation (that uses MI conventions) to the CIL convention.</span>
+<span class="sd">        Set&#39;s the geometry&#39;s CIL-convention Offset and Angle from the MI-convention Centre-of-Rotation and Tilt.</span>
 
-<span class="sd">        :param cor: A ScalarCoR object defining the centre of rotation as a float value.</span>
+<span class="sd">        :param cor: A ScalarCoR object defining the MI-convention centre of rotation as a float value.</span>
 <span class="sd">        :type cor: ScalarCoR</span>
 <span class="sd">        :param tilt: A float value defining the tilt in degrees.</span>
 <span class="sd">        :type tilt: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">pixel_x_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">pixel_y_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">tilt_radians</span> <span class="o">=</span> <span class="o">-</span><span class="n">radians</span><span class="p">(</span><span class="n">tilt</span><span class="p">)</span>
+        <span class="n">midpoint_cor</span> <span class="o">=</span> <span class="n">cor</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">pixel_y_midpoint</span> <span class="o">*</span> <span class="n">tan</span><span class="p">(</span><span class="n">tilt_radians</span><span class="p">)</span>
+
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">midpoint_cor</span> <span class="o">-</span> <span class="n">pixel_x_midpoint</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_size</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_centre_of_rotation</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">angle</span><span class="o">=-</span><span class="n">tilt</span><span class="p">,</span> <span class="n">angle_units</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span></div>
-</div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">tilt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_centre_of_rotation</span><span class="p">()[</span><span class="s1">&#39;angle&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">degrees</span><span class="p">(</span><span class="n">tilt</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the internal CIL-convention COR (defined at the midpoint of the image) to MI-convention.</span>
+
+<span class="sd">        :return (ScalarCoR) : the MI-convention Centre-of-Rotation (defined at the top of the image).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_centre_of_rotation</span><span class="p">()[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pixel_x_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">pixel_y_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">midpoint_cor</span> <span class="o">=</span> <span class="p">(</span><span class="n">offset</span> <span class="o">/</span> <span class="n">pixel_size</span><span class="p">)</span> <span class="o">+</span> <span class="n">pixel_x_midpoint</span>
+
+        <span class="n">tilt_radians</span> <span class="o">=</span> <span class="o">-</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tilt</span><span class="p">)</span>
+        <span class="n">cor</span> <span class="o">=</span> <span class="n">midpoint_cor</span> <span class="o">-</span> <span class="n">pixel_y_midpoint</span> <span class="o">*</span> <span class="n">tan</span><span class="p">(</span><span class="n">tilt_radians</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span></div>
 
 </pre></div>
 
