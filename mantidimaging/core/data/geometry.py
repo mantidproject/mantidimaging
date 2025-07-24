@@ -5,7 +5,6 @@ from __future__ import annotations
 from math import tan, radians, degrees
 
 from cil.framework import AcquisitionGeometry
-
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
