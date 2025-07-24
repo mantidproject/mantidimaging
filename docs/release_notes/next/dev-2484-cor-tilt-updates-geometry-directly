@@ -1,0 +1,1 @@
+#2484: COR/tilt inputs in the reconstruction window now update Geometry data directly rather than passing it on to CIL reconstruction
