@@ -63,24 +63,24 @@ def add_data_files(run_options):
     # Each tuple in the list should give the location of the data files to copy and the destination to copy them to in
     # the package
     subprocess.check_call(["python", "../conda/make_versions.py", "pyinstaller"])
-    data_files = [('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/'),
-                  ('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/'),
-                  ('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/'),
-                  ('../mantidimaging/versions.py', 'mantidimaging/'),
-                  ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
+    base = Path("../mantidimaging")
+    patterns = [('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/'),
+                ('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/'),
+                ('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/'),
+                ('../mantidimaging/versions.py', 'mantidimaging/'),
+                ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
+
+    data_files = [(str(f.resolve()), dest) for pat, dest in patterns
+                  for f in (base / pat).parent.glob((base / pat).name)]
 
     data_files += collect_data_files("cupy")
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
 def add_conda_dynamic_libs(module_name, pattern):
-    options = []
     binaries = conda_support.collect_dynamic_libs(module_name)
-    for src, dest in binaries:
-        if pattern in Path(src).name:
-            options.append(f'--add-binary={src}{os.pathsep}{dest}')
-
-    return options
+    sep = os.pathsep
+    return [f"--add-binary={Path(src).resolve()}{sep}{dest}" for src, dest in binaries if pattern in Path(src).name]
 
 
 def add_optional_arguments(run_options):
