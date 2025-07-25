@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import os
 from pathlib import Path
 import unittest
 from unittest import mock
@@ -28,8 +27,8 @@ SHORT_DELAY = 100
 
 @mock_versions
 @pytest.mark.system
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE_FOLDER), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(Path(LOAD_SAMPLE).exists(), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(Path(LOAD_SAMPLE_FOLDER).exists(), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication
