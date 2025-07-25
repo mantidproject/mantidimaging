@@ -127,6 +127,12 @@ class MainWindowPresenter(BasePresenter):
     def add_log_to_sample(self, stack_id: uuid.UUID, log_file: Path) -> None:
         self.model.add_log_to_sample(stack_id, log_file)
 
+        image_stack = self.get_stack(stack_id)
+        if image_stack is not None:
+            proj_angles = image_stack.real_projection_angles()
+            if proj_angles is not None:
+                self.stack_visualisers[stack_id].image_view.angles = proj_angles
+
     def add_shuttercounts_to_sample(self, stack_id: uuid.UUID, shuttercount_file: Path) -> None:
         self.model.add_shutter_counts_to_sample(stack_id, shuttercount_file)
 
