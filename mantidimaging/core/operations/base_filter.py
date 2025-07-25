@@ -53,7 +53,7 @@ class BaseFilter:
         return ImageStack(np.asarray([]))
 
     @staticmethod
-    def execute_wrapper(args) -> partial:
+    def execute_wrapper(*args, **kwargs) -> partial:
         """
         Should construct a partial call to _filter_func using values taken from the widgets passed to this function
         as kwargs.
@@ -89,6 +89,11 @@ class BaseFilter:
 
     @staticmethod
     def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
+        """
+        Validates the kwargs passed to the execute_wrapper.
+        :param kwargs: the kwargs to validate
+        :return: True if the kwargs are valid, False otherwise
+        """
         return True
 
     @staticmethod
