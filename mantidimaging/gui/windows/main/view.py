@@ -13,7 +13,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -180,7 +180,9 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_screen.closed.connect(self.close_welcome_screen)
         self.welcome_dock = QDockWidget("About Mantid Imaging", self)
         self.welcome_dock.setWidget(self.welcome_screen)
-        self.welcome_dock.setTitleBarWidget(QWidget())
+        hidden_title_bar = QWidget()
+        hidden_title_bar.setLayout(QVBoxLayout())
+        self.welcome_dock.setTitleBarWidget(hidden_title_bar)
         self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
         self.welcome_dock.setStyleSheet("QDockWidget::title { background: transparent; }")
         self.welcome_dock.setAllowedAreas(Qt.RightDockWidgetArea)
