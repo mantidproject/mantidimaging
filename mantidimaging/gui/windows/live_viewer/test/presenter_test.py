@@ -74,6 +74,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.mean_nan_mask = np.ma.asarray([1, 2, 3, np.nan])
         self.presenter.handle_roi_change_timer = mock.Mock()
         self.presenter.handle_roi_change_timer.isActive.return_value = False
+        self.model.images = np.empty(4)
         self.presenter.try_next_mean_chunk()
         self.presenter.handle_roi_change_timer.start.assert_called_once_with(10)
 
@@ -81,5 +82,10 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.model.mean_nan_mask = np.ma.asarray([1, 2, 3, 4])
         self.presenter.handle_roi_change_timer = mock.Mock()
         self.presenter.handle_roi_change_timer.isActive.return_value = False
-        self.presenter.try_next_mean_chunk()
+        self.model.images = np.empty(4)
+        mock_thread = mock.Mock()
+        mock_thread.error = None
+        self.presenter.set_roi_enabled = mock.Mock()
+        self.presenter.update_intensity_with_mean = mock.Mock()
+        self.presenter.thread_cleanup(mock_thread)
         self.presenter.handle_roi_change_timer.start.assert_not_called()
