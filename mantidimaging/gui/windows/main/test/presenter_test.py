@@ -218,6 +218,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.assertIsNone(self.presenter._get_stack_visualiser_by_name("bad-id"))
 
     def test_add_log_to_sample(self):
+        self.presenter.stack_visualisers["doesn't exist"] = mock.Mock()
         self.presenter.add_log_to_sample("doesn't exist", "log file")
         self.presenter.model.add_log_to_sample.assert_called_with("doesn't exist", "log file")
 
