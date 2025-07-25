@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
-from PyQt5.QtCore import pyqtSignal, QObject, QThread, QTimer
+from PyQt5.QtCore import QTimer
 from astropy.io import fits
 from astropy.utils.exceptions import AstropyUserWarning
 
@@ -15,6 +15,7 @@ from imagecodecs._deflate import DeflateError
 from tifffile import tifffile
 from tifffile.tifffile import TiffFileError
 
+from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.live_viewer.model import LiveViewerWindowModel, Image_Data
 from mantidimaging.core.operations.loader import load_filter_packages
@@ -28,18 +29,7 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 IMAGE_lIST_UPDATE_TIME = 100
-
-
-class Worker(QObject):
-    finished = pyqtSignal()
-
-    def __init__(self, presenter: LiveViewerWindowPresenter):
-        super().__init__()
-        self.presenter = presenter
-
-    def run(self):
-        self.presenter.model.calc_mean_chunk(100)
-        self.finished.emit()
+CHUNK_SIZE = 10
 
 
 class LiveViewerWindowPresenter(BasePresenter):
@@ -52,9 +42,9 @@ class LiveViewerWindowPresenter(BasePresenter):
     view: LiveViewerWindowView
     model: LiveViewerWindowModel
     op_func: Callable
-    thread: QThread
-    worker: Worker
     old_image_list_paths: list[Path] = []
+    try_next_mean_chunk_count: int = 0
+    try_next_mean_chunk_max_retry: int = 100
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -113,11 +103,11 @@ class LiveViewerWindowPresenter(BasePresenter):
                 images_list_paths = [image.image_path for image in images_list]
                 if self.old_image_list_paths == images_list_paths[:-1]:
                     self.try_add_mean(images_list[-1])
-                    self.update_intensity(self.model.mean)
+                    self.update_intensity(self.model.mean_nan_mask)
                     self.old_image_list_paths = images_list_paths
                 else:
                     self.model.clear_mean_partial()
-                    self.run_mean_chunk_calc()
+                    self.handle_roi_moved()
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -128,11 +118,11 @@ class LiveViewerWindowPresenter(BasePresenter):
     def try_add_mean(self, image: Image_Data) -> None:
         try:
             image_data = self.model.image_cache.load_image(image)
-            self.model.add_mean(image.image_path, image_data)
+            self.model.add_mean(image_data)
             self.update_intensity_with_mean()
         except ImageLoadFailError as error:
             logger.error(error.message)
-            self.model.add_mean(image.image_path, None)
+            self.model.add_mean(None)
 
     def select_image(self, index: int) -> None:
         if not self.model.images:
@@ -241,43 +231,43 @@ class LiveViewerWindowPresenter(BasePresenter):
         roi = self.view.live_viewer.get_roi()
         if roi != self.model.roi:
             self.model.clear_mean_partial()
+            self.try_next_mean_chunk_count = 0
         self.model.roi = roi
         self.set_roi_enabled(False)
-        self.run_mean_chunk_calc()
+        self.thread = TaskWorkerThread()
+        self.thread.kwargs = {"chunk_size": CHUNK_SIZE}
+        self.thread.task_function = self.model.calc_mean_chunk
 
-    def run_mean_chunk_calc(self) -> None:
-        self.thread = QThread()
-        self.worker = Worker(self)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.finished.connect(self.thread_cleanup)
+        self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
 
-    def thread_cleanup(self) -> None:
+    def thread_cleanup(self, thread: TaskWorkerThread) -> None:
+        if thread.error is not None:
+            logger.error("Error during background processing: %s", thread.error)
+            raise thread.error
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
-        if np.isnan(self.model.mean).any() and self.model.mean_readable.all():
-            self.try_next_mean_chunk()
-        if not np.isnan(self.model.mean * self.model.mean_readable).any():
+        if np.isnan(self.model.mean_nan_mask).any():
             self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self) -> None:
         self.model.clear_mean_partial()
+
         if not self.handle_roi_change_timer.isActive():
             self.handle_roi_change_timer.start(10)
 
     def update_intensity_with_mean(self) -> None:
         self.view.intensity_profile.clearPlots()
-        self.view.intensity_profile.plot(self.model.mean)
+        self.view.intensity_profile.plot(self.model.mean_nan_mask)
 
     def set_roi_enabled(self, enable: bool):
         if self.view.live_viewer.roi_object is not None:
             self.view.live_viewer.roi_object.blockSignals(not enable)
 
     def try_next_mean_chunk(self) -> None:
-        if np.isnan(self.model.mean).any():
-            if not self.handle_roi_change_timer.isActive():
-                self.handle_roi_change_timer.start(10)
+        self.try_next_mean_chunk_count += 1
+        if self.try_next_mean_chunk_count > (len(self.model.images) / CHUNK_SIZE) + self.try_next_mean_chunk_max_retry:
+            logger.warning("Too many retries for mean calculation. Aborting.")
+            return
+        if not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(10)

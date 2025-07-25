@@ -151,9 +151,7 @@ class LiveViewerWindowModel:
         self._dataset_path: Path | None = None
         self.image_watcher: ImageWatcher | None = None
         self.images: list[Image_Data] = []
-        self.mean: np.ndarray = np.empty(0)
-        self.mean_readable: np.ndarray = np.empty(0)
-        self.mean_paths: dict[Path, tuple[float, int]] = {}
+        self.mean_nan_mask: np.ma.MaskedArray = np.ma.empty(0)
         self.roi: SensibleROI | None = None
         self.image_cache = ImageCache(max_cache_size=100)
         self.mean_calc_finished = False
@@ -191,32 +189,25 @@ class LiveViewerWindowModel:
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
-    def add_mean(self, image_path: Path, image_array: np.ndarray | None) -> None:
+    def add_mean(self, image_array: np.ndarray | None) -> None:
         if image_array is None:
             mean_to_add = np.nan
-            mean_readable = 0
         elif self.roi is not None:
             left, top, right, bottom = self.roi
             mean_to_add = np.mean(image_array[top:bottom, left:right])
-            mean_readable = 1
         else:
             mean_to_add = np.mean(image_array)
-            mean_readable = 1
-        self.update_mean_dict(image_path, mean_to_add, mean_readable)
+        self.update_mean(mean_to_add)
 
-    def update_mean_dict(self, image_path: Path, mean_to_add: float, mean_readable: int) -> None:
-        self.mean_paths[image_path] = (mean_to_add, mean_readable)
-        self.mean = np.array(list(self.mean_paths.values()))[:, 0]
-        self.mean_readable = np.array(list(self.mean_paths.values()))[:, 1]
+    def update_mean(self, mean_to_add: float) -> None:
+        self.mean_nan_mask = np.ma.append(self.mean_nan_mask, np.array(mean_to_add))
 
     def clear_mean_partial(self) -> None:
-        self.mean_paths = dict.fromkeys(self.mean_paths, (np.nan, 1))
-        self.mean = np.full(len(self.images), np.nan)
-        self.mean_readable = np.full(len(self.images), 1)
+        self.mean_nan_mask = np.ma.asarray(np.full(len(self.images), np.nan))
 
-    def calc_mean_chunk(self, chunk_size: int) -> None:
+    def calc_mean_chunk(self, chunk_size: int = 100) -> None:
         if self.images is not None:
-            nanInds = np.argwhere(np.isnan(self.mean))
+            nanInds = np.argwhere(np.isnan(self.mean_nan_mask))
             if self.roi:
                 left, top, right, bottom = self.roi
             else:
@@ -226,13 +217,12 @@ class LiveViewerWindowModel:
                     try:
                         buffer_data = self.image_cache.load_image(self.images[ind[0]])
                         buffer_mean = np.mean(buffer_data[top:bottom, left:right])
-                        mean_readable = 1
                     except ImageLoadFailError:
-                        mean_readable = 0
                         buffer_mean = np.nan
-                    self.mean_paths[self.images[ind[0]].image_path] = (buffer_mean, mean_readable)
-                    np.put(self.mean, ind, buffer_mean)
-                    np.put(self.mean_readable, ind, mean_readable)
+                    if np.isnan(buffer_mean):
+                        self.mean_nan_mask[ind[0]] = np.ma.masked
+                    else:
+                        np.put(self.mean_nan_mask, ind, buffer_mean)
 
 
 class ImageWatcher(QObject):
