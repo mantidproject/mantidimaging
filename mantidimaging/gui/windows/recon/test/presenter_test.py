@@ -9,6 +9,7 @@ import numpy as np
 from parameterized import parameterized
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.geometry import Geometry
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
@@ -24,12 +25,14 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE
+        self.data.geometry = Geometry(num_pixels=(128, 128), pixel_size=(1., 1.))
 
         self.main_window = mock.MagicMock()
         self.main_window.get_stack.return_value = self.data
 
         self.presenter = ReconstructWindowPresenter(self.view, self.main_window)
         self.presenter.model.initial_select_data(self.data)
+        self.presenter.main_window.get_stack = mock.Mock(return_value=self.data)
 
         self.uuid = self.data.id
 
@@ -50,6 +53,10 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view.subsetsSpinBox = mock.Mock()
         self.view.regPercentSpinBox = mock.Mock()
         self.view.regPercentLabel = mock.Mock()
+        self.view.stackSelector = mock.Mock()
+        self.view.resultCor = mock.Mock()
+        self.view.resultTilt = mock.Mock()
+        self.view.calculateCors = mock.Mock()
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_set_current_stack(self, mock_start_async: mock.Mock):
@@ -261,7 +268,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_corview.return_value.exec.assert_called_once()
         assert self.view.num_iter == iters
 
-    def test_do_cor_fit(self):
+    @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._update_imagestack_geometry_data")
+    def test_do_cor_fit(self, _):
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
         self.presenter.do_update_projection = mock.Mock()
 
@@ -271,7 +279,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_projection.assert_called_once()
         self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
-    def test_set_precalculated_cor_tilt(self):
+    @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._update_imagestack_geometry_data")
+    def test_set_precalculated_cor_tilt(self, _):
         self.view.rotation_centre = 150
         self.view.tilt = 1
         self.presenter.do_preview_reconstruct_slice = mock.Mock()
@@ -440,3 +449,19 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.view.set_max_projection_index.assert_called_once_with(self.data.num_projections - 1)
         self.view.set_max_slice_index.assert_called_once_with(self.data.height - 1)
+
+    def test_set_geometry_data_from_recon_window(self):
+        """
+        Test that setting COR/tilt values in the reconstruction window correctly sets
+        the ImageStack's geometry data, keeping everything in sync.
+        """
+        cor = 64
+        tilt = 0
+
+        self.view.resultCor.setValue(cor)
+        self.view.resultTilt.setValue(tilt)
+
+        self.view.calculateCors.click()
+
+        self.assertEqual(self.data.geometry.cor.value, cor)
+        self.assertEqual(self.data.geometry.tilt, tilt)
