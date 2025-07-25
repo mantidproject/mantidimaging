@@ -13,7 +13,7 @@ import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -174,19 +174,25 @@ class MainWindowView(BaseMainWindowView):
 
         self.presenter.do_update_UI()
 
-    def create_welcome_screen(self):
+    def create_welcome_screen(self) -> None:
         self.welcome_presenter = WelcomeScreenPresenter(self)
         self.welcome_screen = self.welcome_presenter.view
         self.welcome_screen.closed.connect(self.close_welcome_screen)
         self.welcome_dock = QDockWidget("About Mantid Imaging", self)
         self.welcome_dock.setWidget(self.welcome_screen)
-        self.welcome_dock.setTitleBarWidget(QWidget())
+        self._hide_dock_widget_title(self.welcome_dock)
         self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
         self.welcome_dock.setStyleSheet("QDockWidget::title { background: transparent; }")
         self.welcome_dock.setAllowedAreas(Qt.RightDockWidgetArea)
 
         self.welcome_dock.id = "welcome_screen"
         self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+
+    @staticmethod
+    def _hide_dock_widget_title(dock: QDockWidget) -> None:
+        hidden_title_bar = QWidget()
+        hidden_title_bar.setLayout(QVBoxLayout())
+        dock.setTitleBarWidget(hidden_title_bar)
 
     def refresh_welcome_links(self):
         """

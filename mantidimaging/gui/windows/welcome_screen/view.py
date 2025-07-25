@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton
 from PyQt5.QtGui import QPixmap, QIcon
 
 from mantidimaging.core.utility import finder
@@ -41,12 +41,9 @@ class WelcomeScreenView(QWidget):
 
         compile_ui("gui/ui/welcome_widget.ui", self)
 
-        if not self.Banner_container.layout():
-            self.Banner_container.setLayout(QVBoxLayout())
-
         # Set the banner image
         banner = (finder.ROOT_PATH / "gui" / "ui" / "images" / "welcome_banner.png").as_posix()
-        self.banner_label = QLabel(self)
+        self.banner_label = QLabel()
         self.banner_label.setPixmap(QPixmap(banner))
         self.banner_label.setScaledContents(False)
         self.banner_label.setMinimumSize(self.Banner_container.size())
