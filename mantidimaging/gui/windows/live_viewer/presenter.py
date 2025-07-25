@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 IMAGE_lIST_UPDATE_TIME = 100
+CHUNK_SIZE = 10
 
 
 class LiveViewerWindowPresenter(BasePresenter):
@@ -42,6 +43,8 @@ class LiveViewerWindowPresenter(BasePresenter):
     model: LiveViewerWindowModel
     op_func: Callable
     old_image_list_paths: list[Path] = []
+    try_next_mean_chunk_count: int = 0
+    try_next_mean_chunk_max_retry: int = 100
 
     def __init__(self, view: LiveViewerWindowView, main_window: MainWindowView):
         super().__init__(view)
@@ -228,10 +231,11 @@ class LiveViewerWindowPresenter(BasePresenter):
         roi = self.view.live_viewer.get_roi()
         if roi != self.model.roi:
             self.model.clear_mean_partial()
+            self.try_next_mean_chunk_count = 0
         self.model.roi = roi
         self.set_roi_enabled(False)
         self.thread = TaskWorkerThread()
-        self.thread.kwargs = {"chunk_size": 100}
+        self.thread.kwargs = {"chunk_size": CHUNK_SIZE}
         self.thread.task_function = self.model.calc_mean_chunk
 
         self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
@@ -239,6 +243,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def thread_cleanup(self, thread: TaskWorkerThread) -> None:
         if thread.error is not None:
+            logger.error("Error during background processing: %s", thread.error)
             raise thread.error
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
@@ -260,6 +265,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.roi_object.blockSignals(not enable)
 
     def try_next_mean_chunk(self) -> None:
-        if np.isnan(self.model.mean_nan_mask).any():
-            if not self.handle_roi_change_timer.isActive():
-                self.handle_roi_change_timer.start(10)
+        self.try_next_mean_chunk_count += 1
+        if self.try_next_mean_chunk_count > (len(self.model.images) / CHUNK_SIZE) + self.try_next_mean_chunk_max_retry:
+            logger.warning("Too many retries for mean calculation. Aborting.")
+            return
+        if not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(10)
