@@ -6,13 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>400</height>
+    <width>1495</width>
+    <height>1029</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Geometry</string>
   </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="test_qlabel">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>150</height>
+      </size>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>
