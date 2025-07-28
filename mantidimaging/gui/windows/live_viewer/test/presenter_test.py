@@ -89,3 +89,16 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.update_intensity_with_mean = mock.Mock()
         self.presenter.thread_cleanup(mock_thread)
         self.presenter.handle_roi_change_timer.start.assert_not_called()
+
+    def test_WHEN_thread_error_raised_THEN_error_caught_and_logged(self):
+        self.model.mean_nan_mask = np.ma.asarray([1, 2, 3, 4])
+        self.presenter.handle_roi_change_timer = mock.Mock()
+        self.presenter.handle_roi_change_timer.isActive.return_value = False
+        self.model.images = np.empty(4)
+        mock_thread = mock.Mock()
+        mock_thread.error = ValueError()
+        self.presenter.set_roi_enabled = mock.Mock()
+        self.presenter.update_intensity_with_mean = mock.Mock()
+        with self.assertRaises(ValueError):
+            self.presenter.thread_cleanup(mock_thread)
+        self.presenter.handle_roi_change_timer.start.assert_not_called()
