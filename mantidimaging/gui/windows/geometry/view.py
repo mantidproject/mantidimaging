@@ -5,6 +5,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import io
+
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QPixmap
+
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.windows.geometry.presenter import GeometryWindowPresenter
 
@@ -33,24 +38,30 @@ class MplCanvas(FigureCanvasQTAgg):
 
 class GeometryWindowView(BaseMainWindowView):
 
+    test_qlabel: QLabel
+
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/geometry_window.ui')
 
         self.main_window = main_window
         self.presenter = GeometryWindowPresenter(self, main_window)
 
-        test_uuid = None
+        test_geometry = None
         for u in self.main_window.stack_list:
-            if u.id is not None:
-                test_uuid = u.id
+            if u.id is not None and self.main_window.get_stack(u.id).geometry is not None:
+                test_geometry = self.main_window.get_stack(u.id).geometry
                 break
 
-        test_geometry = self.main_window.get_stack(test_uuid).geometry
+        test_plot: Figure = show_geometry(test_geometry).figure
 
-        test_plot: Figure = show_geometry(test_geometry)
+        # Render to an in-memory buffer
+        buf = io.BytesIO()
+        test_plot.savefig(buf, format="png")
+        buf.seek(0)
 
-        # Create the maptlotlib FigureCanvas object,
-        # which defines a single set of axes as self.axes.
-        sc = MplCanvas(self, figure=test_plot, width=5, height=4, dpi=100)
-        sc.axes.plot([0, 1, 2, 3, 4], [10, 1, 20, 3, 40])
-        self.setCentralWidget(sc)
+        # Load PNG data into QPixmap
+        pixmap = QPixmap()
+        pixmap.loadFromData(buf.getvalue())
+
+        # Create a QLabel and set its pixmap
+        self.test_qlabel.setPixmap(pixmap)
