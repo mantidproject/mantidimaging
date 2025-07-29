@@ -37,6 +37,7 @@ class PackagingPatterns:
     """
     Holds static methods to retrieve all PyInstaller data file patterns.
     """
+
     @staticmethod
     def get_patterns() -> list[DataFilePattern]:
         return [
