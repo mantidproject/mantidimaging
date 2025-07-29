@@ -506,7 +506,7 @@ document.write(`
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">QPoint</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QDragEnterEvent</span><span class="p">,</span> <span class="n">QDropEvent</span><span class="p">,</span> <span class="n">QDesktopServices</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QSplitter</span><span class="p">,</span> \
-    <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QDockWidget</span><span class="p">,</span> <span class="n">QWidget</span>
+    <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QDockWidget</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_first_file_that_is_possibly_a_sample</span>
@@ -674,13 +674,13 @@ document.write(`
 
 <div class="viewcode-block" id="MainWindowView.create_welcome_screen">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_welcome_screen">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_welcome_screen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span> <span class="o">=</span> <span class="n">WelcomeScreenPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_presenter</span><span class="o">.</span><span class="n">view</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close_welcome_screen</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span> <span class="o">=</span> <span class="n">QDockWidget</span><span class="p">(</span><span class="s2">&quot;About Mantid Imaging&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_screen</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setTitleBarWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hide_dock_widget_title</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setFeatures</span><span class="p">(</span><span class="n">QDockWidget</span><span class="o">.</span><span class="n">DockWidgetClosable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QDockWidget::title { background: transparent; }&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">setAllowedAreas</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">)</span>
@@ -688,6 +688,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s2">&quot;welcome_screen&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">welcome_dock</span><span class="p">)</span></div>
 
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_hide_dock_widget_title</span><span class="p">(</span><span class="n">dock</span><span class="p">:</span> <span class="n">QDockWidget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">hidden_title_bar</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">hidden_title_bar</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">QVBoxLayout</span><span class="p">())</span>
+        <span class="n">dock</span><span class="o">.</span><span class="n">setTitleBarWidget</span><span class="p">(</span><span class="n">hidden_title_bar</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MainWindowView.refresh_welcome_links">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.refresh_welcome_links">[docs]</a>
