@@ -1,19 +1,83 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from __future__ import annotations
-
-# Package the application using PyInstaller
-#
+# File: packaging/PackageWithPyInstaller.py
 import os
 import pkgutil
 import subprocess
+import logging
 import sys
+from dataclasses import dataclass
 from pathlib import Path
+
 from PyInstaller.utils.hooks import conda_support, collect_data_files
 import PyInstaller.__main__
 
 
+@dataclass
+class DataFilePattern:
+    source: str
+    destination: str
+    description: str = ""
+
+    def collect_files(self, base_path: Path) -> list[tuple[str, str]]:
+        """
+        Collects files matching the pattern relative to the base path.
+
+        Args:
+            base_path (Path): Root path to resolve the source pattern against.
+
+        Returns:
+            list[tuple[str, str]]: List of (absolute file path, destination path) tuples.
+        """
+        resolved_files = list((base_path / self.source).parent.glob((base_path / self.source).name))
+        return [(str(f.resolve()), self.destination) for f in resolved_files]
+
+
+class PackagingPatterns:
+    """
+    Holds static methods to retrieve all PyInstaller data file patterns.
+    """
+    @staticmethod
+    def get_patterns() -> list[DataFilePattern]:
+        return [
+            DataFilePattern('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/', 'Qt UI files'),
+            DataFilePattern('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/', 'UI image resources'),
+            DataFilePattern('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/', 'CUDA GPU code'),
+            DataFilePattern('../mantidimaging/versions.py', 'mantidimaging/', 'Version file'),
+            DataFilePattern('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/',
+                            'Wizard YAML files'),
+        ]
+
+
+class DataFileCollector:
+
+    def __init__(self, base_path: Path = Path("../mantidimaging")):
+        self.base_path = base_path
+        self.patterns = PackagingPatterns.get_patterns()
+
+    def collect_pattern_files(self) -> list[tuple[str, str]]:
+        """
+        Collects all files matching defined patterns.
+
+        Returns:
+            list[tuple[str, str]]: Resolved (source, destination) file pairs for PyInstaller.
+        """
+        data_files = []
+        for pattern in self.patterns:
+            files = pattern.collect_files(self.base_path)
+            if not files:
+                logging.warning(f"No files matched for pattern: {pattern.source}")
+            data_files.extend(files)
+        return data_files
+
+
 def create_run_options():
+    """
+    Creates the full list of PyInstaller options required to build the application.
+
+    Returns:
+        list[str]: Arguments to pass to PyInstaller.
+    """
     run_options = [
         '../mantidimaging/__main__.py', '--name=MantidImaging', '--additional-hooks-dir=hooks', '--onedir',
         '--icon=../images/mantid_imaging_unstable_64px.ico'
@@ -55,42 +119,43 @@ def add_hidden_imports(run_options):
 
 
 def add_missing_submodules(run_options):
-    imports = ['cupy', 'cupy_backends']
-    run_options.extend([f'--collect-submodules={name}' for name in imports])
+    run_options.extend([f'--collect-submodules={name}' for name in ['cupy', 'cupy_backends']])
 
 
 def add_data_files(run_options):
-    # Each tuple in the list should give the location of the data files to copy and the destination to copy them to in
-    # the package
-    subprocess.check_call(["python", "../conda/make_versions.py", "pyinstaller"])
-    base = Path("../mantidimaging")
-    patterns = [('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/'),
-                ('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/'),
-                ('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/'),
-                ('../mantidimaging/versions.py', 'mantidimaging/'),
-                ('../mantidimaging/gui/windows/wizard/*.yml', 'mantidimaging/gui/windows/wizard/')]
+    """
+    Add necessary data files to the PyInstaller build.
 
-    data_files = [(str(f.resolve()), dest) for pat, dest in patterns
-                  for f in (base / pat).parent.glob((base / pat).name)]
+    This includes:
+    - Running the version script to generate `versions.py`
+    - Collecting all relevant static file patterns (e.g. .ui, .yml, images, .cu) using DataFileCollector
+    - Collecting additional data files from the 'cupy' package
+    - Extending the provided run_options with --add-data arguments for each resolved file pair
+    """
+    subprocess.check_call(["python", "../conda/make_versions.py", "pyinstaller"])
+    collector = DataFileCollector()
+    data_files = collector.collect_pattern_files()
 
     data_files += collect_data_files("cupy")
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
 def add_conda_dynamic_libs(module_name, pattern):
+    options = []
     binaries = conda_support.collect_dynamic_libs(module_name)
-    sep = os.pathsep
-    return [f"--add-binary={Path(src).resolve()}{sep}{dest}" for src, dest in binaries if pattern in Path(src).name]
+    for src, dest in binaries:
+        src_path = Path(src).resolve()
+        if pattern in src_path.name:
+            options.append(f'--add-binary={src_path}{os.pathsep}{dest}')
+    return options
 
 
 def add_optional_arguments(run_options):
-    optional_args = ['--noconfirm', '--clean']
-    run_options.extend(optional_args)
+    run_options.extend(['--noconfirm', '--clean'])
 
 
 def add_exclude_modules(run_options):
-    excludes = ['matplotlib', 'dask', 'pandas', 'PySide6']
-    for exclude in excludes:
+    for exclude in ['matplotlib', 'dask', 'pandas', 'PySide6']:
         run_options.extend(['--exclude-module', exclude])
 
 
@@ -100,5 +165,4 @@ if __name__ == "__main__":
     # The default limit is 1000, meaning a recursion error would occur at around 115 nested imports.
     # A limit of 5000 means the error should occur at about 660 nested imports.
     sys.setrecursionlimit(sys.getrecursionlimit() * 5)
-
     PyInstaller.__main__.run(create_run_options())
