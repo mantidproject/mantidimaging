@@ -217,14 +217,21 @@ class SpectrumViewerWindowModel:
             return "Need 2 different ShutterCount stacks"
         return ""
 
+    @staticmethod
+    def _make_cache_key(roi, mode, normalise_with_shuttercount):
+        roi_key = tuple(roi) if isinstance(roi, tuple) else roi
+        return roi_key, mode, normalise_with_shuttercount
+
     def get_spectrum(self,
-                     roi: SensibleROI,
+                     roi: SensibleROI | tuple[SensibleROI, SensibleROI],
                      mode: SpecType,
                      normalise_with_shuttercount: bool = False,
                      chunk_start: int = 0,
                      chunk_end: int | None = None) -> np.ndarray:
-        if (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache.keys():
-            return self.spectrum_cache[(*roi, mode, normalise_with_shuttercount)]
+
+        cache_key = self._make_cache_key(roi, mode, normalise_with_shuttercount)
+        if cache_key in self.spectrum_cache:
+            return self.spectrum_cache[cache_key]
 
         if self._stack is None:
             return np.array([])
@@ -234,6 +241,7 @@ class SpectrumViewerWindowModel:
 
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
+            self.spectrum_cache[cache_key] = sample_spectrum
             return sample_spectrum
 
         if self._normalise_stack is None:
@@ -241,24 +249,30 @@ class SpectrumViewerWindowModel:
 
         if mode == SpecType.OPEN:
             open_spectrum = self.get_stack_spectrum(self._normalise_stack, roi, chunk_start, chunk_end)
+            self.spectrum_cache[cache_key] = open_spectrum
             return open_spectrum
+
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
                 return np.array([])
-            roi_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
-            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi, chunk_start, chunk_end)
-        spectrum = np.divide(roi_spectrum,
-                             roi_norm_spectrum,
-                             out=np.zeros_like(roi_spectrum),
-                             where=roi_norm_spectrum != 0)
-        if normalise_with_shuttercount:
-            average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
-            spectrum = spectrum / average_shuttercount
 
-        LOG.debug("Computing spectrum: ROI=%s, mode=%s, cached=%s", roi, mode.name,
-                  (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache)
+            if isinstance(roi, tuple) and len(roi) == 2:
+                sample_roi, open_roi = roi
+            else:
+                sample_roi = open_roi = roi
+            roi_spectrum = self.get_stack_spectrum(self._stack, sample_roi, chunk_start, chunk_end)
+            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, open_roi, chunk_start, chunk_end)
 
-        return spectrum
+            spectrum = np.divide(roi_spectrum,
+                                 roi_norm_spectrum,
+                                 out=np.zeros_like(roi_spectrum),
+                                 where=roi_norm_spectrum != 0)
+            if normalise_with_shuttercount:
+                average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
+                spectrum = spectrum / average_shuttercount
+
+            self.spectrum_cache[cache_key] = spectrum
+            return spectrum
 
     def store_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool, spectrum: np.ndarray):
         params = (*roi, mode, normalise_with_shuttercount)

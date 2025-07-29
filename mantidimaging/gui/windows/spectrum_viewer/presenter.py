@@ -73,7 +73,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_stack_modified(self) -> None:
         """
-        Called when an image stack is modified somewhere else in MI, for example in the operations window
+        Called when an image stack is modified somewhere else in MI, for example in the operations window.
         """
         if self.current_stack_uuid:
             self.model.set_stack(self.main_window.get_stack(self.current_stack_uuid))
@@ -89,17 +89,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
-        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
-                                self.view.shuttercount_norm_enabled())
+        roi_arg = self._get_default_roi_arg()
+        self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.reset_units_menu()
-
         self.handle_tof_unit_change()
         self.show_new_sample()
         self.redraw_all_rois()
 
     def initial_roi_calc(self):
-        spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
-                                           self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        roi_arg = self._get_default_roi_arg()
+        spectrum = self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum("roi", spectrum)
         self.set_default_fitting_region()
 
@@ -114,7 +113,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.current_stack_uuid = uuid
         new_dataset_id = self.get_dataset_id_for_stack(uuid)
-
         if new_dataset_id:
             self.auto_find_flat_stack(new_dataset_id)
         else:
@@ -123,6 +121,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.do_remove_roi()
         self.view.table_view.clear_table()
         self.model.spectrum_cache.clear()
+
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
@@ -130,11 +129,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
-        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
-                                self.view.shuttercount_norm_enabled())
+        roi_arg = self._get_default_roi_arg()
+        self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
         self.handle_tof_unit_change()
+
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
             try:
@@ -142,6 +142,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
+
         self.do_add_roi()
         self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
@@ -246,26 +247,35 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def run_spectrum_calculation(self):
         roi_name = list(self.roi_to_process_queue.keys())[0]
         roi = self.roi_to_process_queue[roi_name]
+        sample_roi = roi.as_sensible_roi()
+        open_beam_roi = self.view.get_open_beam_roi() or sample_roi
+        roi_arg = (sample_roi, open_beam_roi) if self.spectrum_mode == SpecType.SAMPLE_NORMED else sample_roi
         chunk_size = 100
+        nan_mask = self.image_nan_mask_dict[roi_name]
+        spectrum_data = self.view.spectrum_widget.spectrum_data_dict[roi_name]
+        max_len = len(spectrum_data)
+
         if chunk_size > 0:
-            nanInds = np.argwhere(np.isnan(self.image_nan_mask_dict[roi_name]))
-            chunk_start = int(nanInds[0, 0])
-            if len(nanInds) > chunk_size:
-                chunk_end = int(nanInds[chunk_size, 0])
+            nan_inds = np.argwhere(np.isnan(nan_mask))
+            chunk_start = int(nan_inds[0, 0]) if len(nan_inds) > 0 else 0
+            if len(nan_inds) > chunk_size:
+                chunk_end = int(nan_inds[chunk_size, 0])
+            elif len(nan_inds) > 0:
+                chunk_end = int(nan_inds[-1, 0]) + 1
             else:
-                chunk_end = int(nanInds[-1, 0]) + 1
+                chunk_end = 0
+            chunk_end = min(chunk_end, max_len)
         else:
-            chunk_start, chunk_end = (0, -1)
+            chunk_start, chunk_end = 0, max_len
 
-        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), self.spectrum_mode,
-                                           self.view.shuttercount_norm_enabled(), chunk_start, chunk_end)
-
-        for i in range(len(spectrum)):
-            np.put(self.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
-            if np.isnan(spectrum[i]):
-                self.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
-            else:
-                np.put(self.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
+        spectrum = self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled(),
+                                           chunk_start, chunk_end)
+        for i, value in enumerate(spectrum):
+            index = chunk_start + i
+            if index >= max_len:
+                break
+            spectrum_data[index] = value
+            nan_mask[index] = np.ma.masked if np.isnan(value) else value
 
     def handle_roi_moved(self) -> None:
         """
@@ -343,10 +353,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def redraw_spectrum(self, name: str) -> None:
         """
-        Redraw the spectrum with the given name
+        Redraw the spectrum with the given name.
         """
-        roi = self.view.spectrum_widget.get_roi(name)
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        sample_roi = self.view.spectrum_widget.get_roi(name)
+        roi_arg = self._get_roi_arg(sample_roi)
+        spectrum = self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(name, spectrum)
 
     def redraw_all_rois(self) -> None:
@@ -456,7 +467,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def do_add_roi(self) -> None:
         """
-        Add a new ROI to the spectrum
+        Add a new ROI to the spectrum.
         """
         roi_name = self.model.roi_name_generator()
         if roi_name in self.view.spectrum_widget.roi_dict:
@@ -465,7 +476,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         roi = SensibleROI.from_list([0, 0, width, height])
         LOG.info(f"ROI created: name={roi_name}, coords=({roi.left}, {roi.right}, {roi.top}, {roi.bottom})")
         self.view.spectrum_widget.add_roi(roi, roi_name)
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        roi_arg = self._get_roi_arg(roi)
+        spectrum = self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
@@ -489,8 +501,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
         self.view.spectrum_widget.add_roi(roi, ROI_RITS)
-        self.view.set_spectrum(ROI_RITS,
-                               self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
+        roi_arg = self._get_roi_arg(roi)
+        spectrum = self.model.get_spectrum(roi_arg, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        self.view.set_spectrum(ROI_RITS, spectrum)
         self.view.set_roi_visibility_flags(ROI_RITS, visible=False)
 
     def do_add_roi_to_table(self, roi_name: str) -> None:
@@ -623,15 +636,17 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         if self.view.fittingDisplayWidget.is_initial_fit_visible():
             self._plot_initial_fit()
-        else:
-            init_params = self.view.scalable_roi_widget.get_initial_param_values()
-            roi_name = self.view.roiSelectionWidget.current_roi_name
-            roi = self.view.spectrum_widget.get_roi(roi_name)
-            spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
-            xvals = self.model.tof_data
-            result = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params)
-            self.view.scalable_roi_widget.set_fitted_parameter_values(result)
-            self.show_fit(list(result.values()))
+            return
+        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        roi_name = self.view.roiSelectionWidget.current_roi_name
+        sample_roi = self.view.spectrum_widget.get_roi(roi_name)
+        roi_arg = self._get_roi_arg(sample_roi)
+        spectrum = self.model.get_spectrum(roi_arg, self.spectrum_mode)
+        xvals = self.model.tof_data
+        result = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params)
+
+        self.view.scalable_roi_widget.set_fitted_parameter_values(result)
+        self.show_fit(list(result.values()))
 
     def show_initial_fit(self) -> None:
         """
@@ -716,3 +731,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     continue
                 row_data = [model.item(row, col).data() for col in range(model.columnCount())]
                 writer.writerow(row_data)
+
+    def _get_roi_arg(self, sample_roi: SensibleROI) -> SensibleROI | tuple[SensibleROI, SensibleROI]:
+        open_beam_roi = self.view.get_open_beam_roi() or sample_roi
+        return (sample_roi, open_beam_roi) if self.spectrum_mode == SpecType.SAMPLE_NORMED else sample_roi
+
+    def _get_default_roi_arg(self) -> SensibleROI | tuple[SensibleROI, SensibleROI]:
+        sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
+        return self._get_roi_arg(sample_roi)

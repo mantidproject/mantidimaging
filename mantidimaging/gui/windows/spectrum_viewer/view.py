@@ -14,6 +14,7 @@ from PyQt5.QtCore import QModelIndex
 from logging import getLogger
 
 from mantidimaging.core.utility import finder
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .model import ROI_RITS, allowed_modes
@@ -391,6 +392,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """
         self.table_view.add_row(name, colour, self.presenter.get_roi_names())
         self.roi_form.removeBtn.setEnabled(True)
+
+    def get_open_beam_roi(self) -> SensibleROI | None:
+        roi_name = "open_beam"
+        if roi_name in self.spectrum_widget.roi_dict:
+            return self.spectrum_widget.roi_dict[roi_name].as_sensible_roi()
+        return None
 
     def remove_roi(self) -> None:
         """

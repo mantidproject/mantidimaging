@@ -25,6 +25,14 @@ class SensibleROI(Iterable):
         self.right = right
         self.bottom = bottom
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, SensibleROI):
+            return NotImplemented
+        return (self.left, self.top, self.right, self.bottom) == (other.left, other.top, other.right, other.bottom)
+
+    def __hash__(self) -> int:
+        return hash((self.left, self.top, self.right, self.bottom))
+
     @staticmethod
     def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> SensibleROI:
         return SensibleROI(position.x, position.y, position.x + size.x, position.y + size.y)
@@ -34,10 +42,6 @@ class SensibleROI(Iterable):
         return SensibleROI(int(roi[0]), int(roi[1]), int(roi[2]), int(roi[3]))
 
     def __iter__(self) -> Iterator[int]:
-        """
-        Allows unpacking the ROI with `*roi`
-        :return: Iterable of all ROI parts
-        """
         return iter((self.left, self.top, self.right, self.bottom))
 
     def __str__(self) -> str:
