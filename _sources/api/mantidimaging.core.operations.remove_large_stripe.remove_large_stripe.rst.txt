@@ -3,5 +3,5 @@ mantidimaging.core.operations.remove\_large\_stripe.remove\_large\_stripe module
 
 .. automodule:: mantidimaging.core.operations.remove_large_stripe.remove_large_stripe
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

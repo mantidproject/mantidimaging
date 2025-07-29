@@ -3,5 +3,5 @@ mantidimaging.core.parallel.manager module
 
 .. automodule:: mantidimaging.core.parallel.manager
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

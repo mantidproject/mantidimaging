@@ -3,5 +3,5 @@ mantidimaging.core.utility.size\_calculator module
 
 .. automodule:: mantidimaging.core.utility.size_calculator
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -3,8 +3,8 @@ mantidimaging.core.operation\_history package
 
 .. automodule:: mantidimaging.core.operation_history
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

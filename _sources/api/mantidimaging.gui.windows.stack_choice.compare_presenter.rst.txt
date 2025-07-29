@@ -3,5 +3,5 @@ mantidimaging.gui.windows.stack\_choice.compare\_presenter module
 
 .. automodule:: mantidimaging.gui.windows.stack_choice.compare_presenter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

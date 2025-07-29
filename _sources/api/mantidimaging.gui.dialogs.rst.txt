@@ -3,8 +3,8 @@ mantidimaging.gui.dialogs package
 
 .. automodule:: mantidimaging.gui.dialogs
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Subpackages
 -----------

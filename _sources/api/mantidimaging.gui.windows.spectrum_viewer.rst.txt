@@ -3,8 +3,8 @@ mantidimaging.gui.windows.spectrum\_viewer package
 
 .. automodule:: mantidimaging.gui.windows.spectrum_viewer
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

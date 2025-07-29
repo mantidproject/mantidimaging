@@ -3,8 +3,8 @@ mantidimaging.gui.dialogs.cor\_inspection package
 
 .. automodule:: mantidimaging.gui.dialogs.cor_inspection
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

@@ -3,8 +3,8 @@ mantidimaging.gui.dialogs.multiple\_stack\_select package
 
 .. automodule:: mantidimaging.gui.dialogs.multiple_stack_select
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

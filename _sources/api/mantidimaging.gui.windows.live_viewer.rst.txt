@@ -3,8 +3,8 @@ mantidimaging.gui.windows.live\_viewer package
 
 .. automodule:: mantidimaging.gui.windows.live_viewer
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

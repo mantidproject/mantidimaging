@@ -3,5 +3,5 @@ mantidimaging.core.operations.overlap\_correction.overlap\_correction module
 
 .. automodule:: mantidimaging.core.operations.overlap_correction.overlap_correction
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

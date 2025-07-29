@@ -3,5 +3,5 @@ mantidimaging.gui.widgets.spectrum\_widgets.export\_settings\_widget module
 
 .. automodule:: mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.dataset\_selector\_dialog package
 
 .. automodule:: mantidimaging.gui.widgets.dataset_selector_dialog
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

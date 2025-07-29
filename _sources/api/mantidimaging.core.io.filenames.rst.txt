@@ -3,5 +3,5 @@ mantidimaging.core.io.filenames module
 
 .. automodule:: mantidimaging.core.io.filenames
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.line\_profile\_plot package
 
 .. automodule:: mantidimaging.gui.widgets.line_profile_plot
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

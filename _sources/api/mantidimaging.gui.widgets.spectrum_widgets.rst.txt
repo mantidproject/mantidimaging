@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.spectrum\_widgets package
 
 .. automodule:: mantidimaging.gui.widgets.spectrum_widgets
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

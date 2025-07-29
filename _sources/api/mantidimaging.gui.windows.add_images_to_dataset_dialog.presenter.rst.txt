@@ -3,5 +3,5 @@ mantidimaging.gui.windows.add\_images\_to\_dataset\_dialog.presenter module
 
 .. automodule:: mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

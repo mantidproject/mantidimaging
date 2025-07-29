@@ -3,5 +3,5 @@ mantidimaging.gui.windows.operations.model module
 
 .. automodule:: mantidimaging.gui.windows.operations.model
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

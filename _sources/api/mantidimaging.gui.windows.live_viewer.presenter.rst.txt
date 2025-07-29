@@ -3,5 +3,5 @@ mantidimaging.gui.windows.live\_viewer.presenter module
 
 .. automodule:: mantidimaging.gui.windows.live_viewer.presenter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

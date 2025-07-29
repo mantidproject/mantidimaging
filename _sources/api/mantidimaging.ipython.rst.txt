@@ -3,5 +3,5 @@ mantidimaging.ipython module
 
 .. automodule:: mantidimaging.ipython
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

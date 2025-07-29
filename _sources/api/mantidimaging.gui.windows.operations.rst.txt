@@ -3,8 +3,8 @@ mantidimaging.gui.windows.operations package
 
 .. automodule:: mantidimaging.gui.windows.operations
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

@@ -3,8 +3,8 @@ mantidimaging.gui.windows.move\_stack\_dialog package
 
 .. automodule:: mantidimaging.gui.windows.move_stack_dialog
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

@@ -3,8 +3,8 @@ mantidimaging.core.operations.remove\_stripe\_sorting\_fitting package
 
 .. automodule:: mantidimaging.core.operations.remove_stripe_sorting_fitting
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

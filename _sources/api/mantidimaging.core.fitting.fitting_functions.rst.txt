@@ -3,5 +3,5 @@ mantidimaging.core.fitting.fitting\_functions module
 
 .. automodule:: mantidimaging.core.fitting.fitting_functions
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

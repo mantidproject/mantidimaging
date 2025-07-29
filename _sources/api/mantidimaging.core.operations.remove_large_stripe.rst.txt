@@ -3,8 +3,8 @@ mantidimaging.core.operations.remove\_large\_stripe package
 
 .. automodule:: mantidimaging.core.operations.remove_large_stripe
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

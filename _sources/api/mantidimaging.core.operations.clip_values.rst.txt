@@ -3,8 +3,8 @@ mantidimaging.core.operations.clip\_values package
 
 .. automodule:: mantidimaging.core.operations.clip_values
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

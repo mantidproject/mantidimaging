@@ -3,8 +3,8 @@ mantidimaging.core.operations.crop\_coords package
 
 .. automodule:: mantidimaging.core.operations.crop_coords
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

@@ -3,5 +3,5 @@ mantidimaging.gui.windows.operations.presenter module
 
 .. automodule:: mantidimaging.gui.windows.operations.presenter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

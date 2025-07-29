@@ -3,8 +3,8 @@ mantidimaging.core.operations.remove\_stripe\_filtering package
 
 .. automodule:: mantidimaging.core.operations.remove_stripe_filtering
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

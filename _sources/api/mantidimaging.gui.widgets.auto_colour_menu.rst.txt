@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.auto\_colour\_menu package
 
 .. automodule:: mantidimaging.gui.widgets.auto_colour_menu
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

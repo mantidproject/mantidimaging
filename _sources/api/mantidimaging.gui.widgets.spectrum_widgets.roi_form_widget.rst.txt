@@ -3,5 +3,5 @@ mantidimaging.gui.widgets.spectrum\_widgets.roi\_form\_widget module
 
 .. automodule:: mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

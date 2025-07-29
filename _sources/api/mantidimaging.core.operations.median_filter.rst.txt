@@ -3,8 +3,8 @@ mantidimaging.core.operations.median\_filter package
 
 .. automodule:: mantidimaging.core.operations.median_filter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

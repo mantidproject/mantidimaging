@@ -3,5 +3,5 @@ mantidimaging.core.io.loader.loader module
 
 .. automodule:: mantidimaging.core.io.loader.loader
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

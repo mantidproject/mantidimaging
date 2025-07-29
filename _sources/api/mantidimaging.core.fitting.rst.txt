@@ -3,8 +3,8 @@ mantidimaging.core.fitting package
 
 .. automodule:: mantidimaging.core.fitting
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

@@ -3,5 +3,5 @@ mantidimaging.gui.windows.nexus\_load\_dialog.presenter module
 
 .. automodule:: mantidimaging.gui.windows.nexus_load_dialog.presenter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

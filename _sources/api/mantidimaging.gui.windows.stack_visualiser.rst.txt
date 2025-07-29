@@ -3,8 +3,8 @@ mantidimaging.gui.windows.stack\_visualiser package
 
 .. automodule:: mantidimaging.gui.windows.stack_visualiser
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

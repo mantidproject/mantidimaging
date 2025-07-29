@@ -3,8 +3,8 @@ mantidimaging.core.operations.roi\_normalisation package
 
 .. automodule:: mantidimaging.core.operations.roi_normalisation
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.zslider package
 
 .. automodule:: mantidimaging.gui.widgets.zslider
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

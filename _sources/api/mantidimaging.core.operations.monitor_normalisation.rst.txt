@@ -3,8 +3,8 @@ mantidimaging.core.operations.monitor\_normalisation package
 
 .. automodule:: mantidimaging.core.operations.monitor_normalisation
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

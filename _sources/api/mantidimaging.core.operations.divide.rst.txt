@@ -3,8 +3,8 @@ mantidimaging.core.operations.divide package
 
 .. automodule:: mantidimaging.core.operations.divide
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

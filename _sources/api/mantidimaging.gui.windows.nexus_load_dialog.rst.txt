@@ -3,8 +3,8 @@ mantidimaging.gui.windows.nexus\_load\_dialog package
 
 .. automodule:: mantidimaging.gui.windows.nexus_load_dialog
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

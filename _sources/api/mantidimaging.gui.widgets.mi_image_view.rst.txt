@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.mi\_image\_view package
 
 .. automodule:: mantidimaging.gui.widgets.mi_image_view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

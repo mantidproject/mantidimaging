@@ -3,5 +3,5 @@ mantidimaging.core.operations.gaussian.gaussian module
 
 .. automodule:: mantidimaging.core.operations.gaussian.gaussian
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -3,8 +3,8 @@ mantidimaging.core.operations.nan\_removal package
 
 .. automodule:: mantidimaging.core.operations.nan_removal
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

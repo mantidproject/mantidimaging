@@ -3,8 +3,8 @@ mantidimaging.core.utility.progress\_reporting package
 
 .. automodule:: mantidimaging.core.utility.progress_reporting
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

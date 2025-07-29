@@ -3,8 +3,8 @@ mantidimaging.gui.mvp\_base package
 
 .. automodule:: mantidimaging.gui.mvp_base
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

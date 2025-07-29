@@ -3,5 +3,5 @@ mantidimaging.gui.windows.recon.image\_view module
 
 .. automodule:: mantidimaging.gui.windows.recon.image_view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

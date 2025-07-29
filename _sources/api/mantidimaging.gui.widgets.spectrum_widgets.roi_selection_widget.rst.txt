@@ -3,5 +3,5 @@ mantidimaging.gui.widgets.spectrum\_widgets.roi\_selection\_widget module
 
 .. automodule:: mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

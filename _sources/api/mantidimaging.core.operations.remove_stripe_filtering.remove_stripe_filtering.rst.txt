@@ -3,5 +3,5 @@ mantidimaging.core.operations.remove\_stripe\_filtering.remove\_stripe\_filterin
 
 .. automodule:: mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

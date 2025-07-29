@@ -3,5 +3,5 @@ mantidimaging.gui.widgets.indicator\_icon.view module
 
 .. automodule:: mantidimaging.gui.widgets.indicator_icon.view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

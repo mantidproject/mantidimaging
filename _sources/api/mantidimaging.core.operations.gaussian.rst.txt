@@ -3,8 +3,8 @@ mantidimaging.core.operations.gaussian package
 
 .. automodule:: mantidimaging.core.operations.gaussian
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

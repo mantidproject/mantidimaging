@@ -3,5 +3,5 @@ mantidimaging.core.operations.arithmetic.arithmetic module
 
 .. automodule:: mantidimaging.core.operations.arithmetic.arithmetic
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

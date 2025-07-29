@@ -3,8 +3,8 @@ mantidimaging.gui.windows.stack\_choice package
 
 .. automodule:: mantidimaging.gui.windows.stack_choice
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

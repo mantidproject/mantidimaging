@@ -3,5 +3,5 @@ mantidimaging.gui.windows.stack\_visualiser.view module
 
 .. automodule:: mantidimaging.gui.windows.stack_visualiser.view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

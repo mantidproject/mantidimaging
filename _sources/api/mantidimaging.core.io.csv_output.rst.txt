@@ -3,5 +3,5 @@ mantidimaging.core.io.csv\_output module
 
 .. automodule:: mantidimaging.core.io.csv_output
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

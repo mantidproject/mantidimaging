@@ -3,8 +3,8 @@ mantidimaging package
 
 .. automodule:: mantidimaging
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Subpackages
 -----------

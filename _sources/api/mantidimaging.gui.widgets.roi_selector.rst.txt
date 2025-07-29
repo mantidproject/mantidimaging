@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.roi\_selector package
 
 .. automodule:: mantidimaging.gui.widgets.roi_selector
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

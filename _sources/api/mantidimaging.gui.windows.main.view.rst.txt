@@ -3,5 +3,5 @@ mantidimaging.gui.windows.main.view module
 
 .. automodule:: mantidimaging.gui.windows.main.view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -3,5 +3,5 @@ mantidimaging.gui.widgets.dataset\_selector.presenter module
 
 .. automodule:: mantidimaging.gui.widgets.dataset_selector.presenter
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

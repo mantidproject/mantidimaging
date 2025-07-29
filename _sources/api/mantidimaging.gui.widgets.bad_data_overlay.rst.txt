@@ -3,8 +3,8 @@ mantidimaging.gui.widgets.bad\_data\_overlay package
 
 .. automodule:: mantidimaging.gui.widgets.bad_data_overlay
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

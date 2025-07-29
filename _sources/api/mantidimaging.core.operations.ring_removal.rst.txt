@@ -3,8 +3,8 @@ mantidimaging.core.operations.ring\_removal package
 
 .. automodule:: mantidimaging.core.operations.ring_removal
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

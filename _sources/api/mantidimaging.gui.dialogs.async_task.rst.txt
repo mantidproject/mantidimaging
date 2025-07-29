@@ -3,8 +3,8 @@ mantidimaging.gui.dialogs.async\_task package
 
 .. automodule:: mantidimaging.gui.dialogs.async_task
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

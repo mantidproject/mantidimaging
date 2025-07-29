@@ -3,8 +3,8 @@ mantidimaging.core.net package
 
 .. automodule:: mantidimaging.core.net
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

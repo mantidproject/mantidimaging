@@ -3,8 +3,8 @@ mantidimaging.core.operations.rotate\_stack package
 
 .. automodule:: mantidimaging.core.operations.rotate_stack
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

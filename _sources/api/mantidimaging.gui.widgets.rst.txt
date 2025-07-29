@@ -3,8 +3,8 @@ mantidimaging.gui.widgets package
 
 .. automodule:: mantidimaging.gui.widgets
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Subpackages
 -----------

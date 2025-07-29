@@ -3,8 +3,8 @@ mantidimaging.core.operations.outliers package
 
 .. automodule:: mantidimaging.core.operations.outliers
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

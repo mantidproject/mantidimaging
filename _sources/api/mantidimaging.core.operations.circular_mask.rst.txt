@@ -3,8 +3,8 @@ mantidimaging.core.operations.circular\_mask package
 
 .. automodule:: mantidimaging.core.operations.circular_mask
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Submodules
 ----------

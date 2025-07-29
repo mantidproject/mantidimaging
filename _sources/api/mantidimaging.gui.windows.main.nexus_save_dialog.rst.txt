@@ -3,5 +3,5 @@ mantidimaging.gui.windows.main.nexus\_save\_dialog module
 
 .. automodule:: mantidimaging.gui.windows.main.nexus_save_dialog
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

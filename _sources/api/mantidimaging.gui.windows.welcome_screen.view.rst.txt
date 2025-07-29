@@ -3,5 +3,5 @@ mantidimaging.gui.windows.welcome\_screen.view module
 
 .. automodule:: mantidimaging.gui.windows.welcome_screen.view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

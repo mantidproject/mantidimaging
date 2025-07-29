@@ -3,5 +3,5 @@ mantidimaging.core.operations.rescale.rescale module
 
 .. automodule:: mantidimaging.core.operations.rescale.rescale
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -3,5 +3,5 @@ mantidimaging.gui.windows.stack\_choice.view module
 
 .. automodule:: mantidimaging.gui.windows.stack_choice.view
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
