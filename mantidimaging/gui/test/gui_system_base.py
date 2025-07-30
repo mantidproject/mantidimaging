@@ -55,11 +55,15 @@ class GuiSystemBase(unittest.TestCase):
         if leak_count := leak_tracker.count():
             print("\nItems still alive:", leak_count)
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
+            if leak_count > 10:
+                print("details:")
+                leak_tracker.pretty_print(debug_init=True, debug_owners=True, trace_depth=5)
+                raise RuntimeError(f"Too many leaked objects: {leak_count}")
             leak_tracker.clear()
 
         for widget in self.app.topLevelWidgets():
             if widget.isVisible():
-                RuntimeError(f"\n\nWindow still open {widget=}")
+                raise RuntimeError(f"\n\nWindow still open {widget=}")
 
     @classmethod
     def _check_no_open_dialogs(cls) -> None:
