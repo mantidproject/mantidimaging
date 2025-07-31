@@ -11,8 +11,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry,
-                           BlockDataContainer)
+from cil.framework import AcquisitionData, AcquisitionGeometry, ImageGeometry, BlockGeometry, BlockDataContainer
 from cil.optimisation.algorithms import PDHG, SPDHG, Algorithm
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
@@ -31,6 +30,17 @@ from mantidimaging.core.utility.memory_usage import system_free_memory
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
+
+try:
+    # COMPAT: CIL < 24.2 has DataOrder with handy enums. Afterwards we need AcquisitionDimension.get_order_for_engine()
+    from cil.framework import DataOrder
+except ImportError:
+    from cil.framework.labels import Backend, AcquisitionDimension
+
+    class DataOrder:  # type: ignore
+        ASTRA_AG_LABELS = AcquisitionDimension.get_order_for_engine(Backend.ASTRA)
+        TIGRE_AG_LABELS = AcquisitionDimension.get_order_for_engine(Backend.TIGRE)
+
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
