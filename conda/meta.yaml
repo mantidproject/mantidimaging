@@ -19,7 +19,7 @@ requirements:
     - pip
     - astropy=6.0.*
     - scipy=1.14.*
-    - scikit-image=0.22.*
+    - scikit-image=0.25.*
     - tifffile=2023.7.18
     - imagecodecs=2023.9.18
     - numpy=1.26.*
