@@ -16,10 +16,10 @@ dependencies:
   - types-requests
   - types-PyYAML
   - types-docutils
-  - pytest==7.4.*
-  - pytest-cov==4.1.*
+  - pytest==8.4.*
+  - pytest-cov==6.2.*
   - pytest-randomly==3.15.*
-  - pytest-xdist==3.3.*
+  - pytest-xdist==3.6.*
   - testfixtures==7.2.*
   - gitpython==3.1.*
   - coverage==7.9.*
