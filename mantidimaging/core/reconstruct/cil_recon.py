@@ -387,7 +387,7 @@ class CILRecon(BaseRecon):
             if images.geometry is None:
                 raise ValueError("images.geometry is not set")
 
-            images.geometry.set_geometry_from_cor_tilt(cors[pixel_num_v // 2], tilt)
+            images.geometry.set_geometry_from_cor_tilt(cors[0], tilt)
             images.geometry.set_labels(data_order)
             ig = images.geometry.get_ImageGeometry()
 
