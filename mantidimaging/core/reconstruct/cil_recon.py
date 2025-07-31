@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from logging import getLogger, DEBUG
 from math import sqrt, ceil
+from packaging.version import parse
 from threading import Lock
 from typing import TYPE_CHECKING
 
@@ -19,6 +20,7 @@ from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator
 from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
 from cil.optimisation.utilities.callbacks import Callback
 from cil.plugins.astra.operators import ProjectionOperator
+import cil.version
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
@@ -220,8 +222,9 @@ class CILRecon(BaseRecon):
             for i in range(len(data)):
                 data.get_item(i).reorder('astra')
                 geo.append(data.get_item(i).geometry)
-            # COMPAT - workaround for https://github.com/TomographicImaging/CIL/issues/1445
-            data.geometry = BlockGeometry(*geo)
+            if parse(cil.version.version) < parse("24.1"):
+                # COMPAT CIL < 24.1  - workaround for https://github.com/TomographicImaging/CIL/issues/1445
+                data.geometry = BlockGeometry(*geo)
         else:
             data.reorder('astra')
 
