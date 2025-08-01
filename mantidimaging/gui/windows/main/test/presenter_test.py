@@ -148,7 +148,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.dataset.sample.clear_proj180deg()
+        self.dataset.sample.proj180deg = None
         self.presenter.add_alternative_180_if_required(self.dataset)
 
     def test_threshold_180_is_separate_data(self):
@@ -158,7 +158,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter.get_stack_visualiser = mock.Mock()
         self.presenter._create_and_tabify_stack_window = mock.Mock()
-        self.dataset.sample.clear_proj180deg()
+        self.dataset.sample.proj180deg = None
         self.presenter.add_alternative_180_if_required(self.dataset)
 
         self.assertIsNone(self.dataset.proj180deg.data.base)
@@ -166,7 +166,7 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_create_new_stack_dataset_and_reject_180(self):
         self.view.ask_to_use_closest_to_180.return_value = False
 
-        self.dataset.sample.clear_proj180deg()
+        self.dataset.sample.proj180deg = None
         self.presenter.add_alternative_180_if_required(self.dataset)
         self.assertIsNone(self.dataset.proj180deg)
 

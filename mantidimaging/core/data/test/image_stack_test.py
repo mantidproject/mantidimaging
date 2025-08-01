@@ -179,10 +179,11 @@ class ImageStackTest(unittest.TestCase):
     def test_clear_proj180deg(self):
         images = generate_images((10, 100, 350))
         # expected without having a specific 180 deg projection
-        self.assertIsNone(images._proj180deg)
-        images._proj180deg = generate_images((1, 100, 350))
-        images.clear_proj180deg()
-        self.assertIsNone(images._proj180deg)
+        self.assertFalse(images.has_proj180deg())
+        images.proj180deg = generate_images((1, 100, 350))
+        self.assertTrue(images.has_proj180deg())
+        images.proj180deg = None
+        self.assertFalse(images.has_proj180deg())
 
     def test_data_set(self):
         data = generate_images().data

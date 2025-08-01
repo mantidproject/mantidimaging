@@ -85,7 +85,7 @@ class Dataset:
             self.dark_after = None
         elif isinstance(self.proj180deg, ImageStack) and self.proj180deg.id == images_id:
             assert self.sample is not None
-            self.sample.clear_proj180deg()
+            self.sample.proj180deg = None
         elif isinstance(self.sinograms, ImageStack) and self.sinograms.id == images_id:
             self.sinograms = None
         else:

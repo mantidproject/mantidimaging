@@ -259,8 +259,7 @@ class ImageStack:
         return self._proj180deg
 
     @proj180deg.setter
-    def proj180deg(self, value: ImageStack) -> None:
-        assert isinstance(value, ImageStack)
+    def proj180deg(self, value: ImageStack | None) -> None:
         self._proj180deg = value
 
     @property
@@ -406,9 +405,6 @@ class ImageStack:
     @pixel_size.setter
     def pixel_size(self, value: float) -> None:
         self.metadata[const.PIXEL_SIZE] = value
-
-    def clear_proj180deg(self) -> None:
-        self._proj180deg = None
 
     def make_name_unique(self, existing_names: list[str]) -> None:
         name = self.name
