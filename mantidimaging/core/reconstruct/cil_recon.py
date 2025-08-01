@@ -377,7 +377,9 @@ class CILRecon(BaseRecon):
 
             if recon_params.tilt is None:
                 raise ValueError("recon_params.tilt is not set")
-            tilt = recon_params.tilt.value
+
+            if images.geometry is None:
+                raise ValueError("images.geometry is not set")
 
             if images.is_sinograms:
                 data_order = DataOrder.ASTRA_AG_LABELS
@@ -387,7 +389,6 @@ class CILRecon(BaseRecon):
             if images.geometry is None:
                 raise ValueError("images.geometry is not set")
 
-            images.geometry.set_geometry_from_cor_tilt(cors[0], tilt)
             images.geometry.set_labels(data_order)
             ig = images.geometry.get_ImageGeometry()
 
