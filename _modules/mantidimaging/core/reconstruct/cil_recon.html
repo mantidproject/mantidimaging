@@ -484,13 +484,13 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">DEBUG</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">ceil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lock</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">DataOrder</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span><span class="p">,</span>
-                           <span class="n">BlockDataContainer</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionData</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">,</span> <span class="n">ImageGeometry</span><span class="p">,</span> <span class="n">BlockGeometry</span><span class="p">,</span> <span class="n">BlockDataContainer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDHG</span><span class="p">,</span> <span class="n">SPDHG</span><span class="p">,</span> <span class="n">Algorithm</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">GradientOperator</span><span class="p">,</span> <span class="n">BlockOperator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymmetrisedGradientOperator</span><span class="p">,</span> <span class="n">ZeroOperator</span><span class="p">,</span> <span class="n">IdentityOperator</span>
@@ -498,6 +498,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MixedL21Norm</span><span class="p">,</span> <span class="n">L2NormSquared</span><span class="p">,</span> <span class="n">BlockFunction</span><span class="p">,</span> <span class="n">ZeroFunction</span><span class="p">,</span> <span class="n">IndicatorBox</span><span class="p">,</span> <span class="n">Function</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.optimisation.utilities.callbacks</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callback</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.plugins.astra.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionOperator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cil.version</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.reconstruct.base_recon</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRecon</span>
@@ -508,6 +509,20 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># COMPAT: CIL &lt; 24.2 has DataOrder with handy enums. Afterwards we need AcquisitionDimension.get_order_for_engine()</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataOrder</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework.labels</span><span class="w"> </span><span class="kn">import</span> <span class="n">Backend</span><span class="p">,</span> <span class="n">AcquisitionDimension</span>
+
+<div class="viewcode-block" id="DataOrder">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.cil_recon.html#mantidimaging.core.reconstruct.cil_recon.DataOrder">[docs]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">DataOrder</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+        <span class="n">ASTRA_AG_LABELS</span> <span class="o">=</span> <span class="n">AcquisitionDimension</span><span class="o">.</span><span class="n">get_order_for_engine</span><span class="p">(</span><span class="n">Backend</span><span class="o">.</span><span class="n">ASTRA</span><span class="p">)</span>
+        <span class="n">TIGRE_AG_LABELS</span> <span class="o">=</span> <span class="n">AcquisitionDimension</span><span class="o">.</span><span class="n">get_order_for_engine</span><span class="p">(</span><span class="n">Backend</span><span class="o">.</span><span class="n">TIGRE</span><span class="p">)</span></div>
+
+
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">tomopy</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">&#39;tomopy&#39;</span><span class="p">)</span>
@@ -718,8 +733,9 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="s1">&#39;astra&#39;</span><span class="p">)</span>
                 <span class="n">geo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
-            <span class="c1"># COMPAT - workaround for https://github.com/TomographicImaging/CIL/issues/1445</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">BlockGeometry</span><span class="p">(</span><span class="o">*</span><span class="n">geo</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parse</span><span class="p">(</span><span class="n">cil</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">parse</span><span class="p">(</span><span class="s2">&quot;24.1&quot;</span><span class="p">):</span>
+                <span class="c1"># COMPAT CIL &lt; 24.1  - workaround for https://github.com/TomographicImaging/CIL/issues/1445</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">BlockGeometry</span><span class="p">(</span><span class="o">*</span><span class="n">geo</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">reorder</span><span class="p">(</span><span class="s1">&#39;astra&#39;</span><span class="p">)</span>
 
