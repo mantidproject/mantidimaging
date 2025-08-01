@@ -5,13 +5,13 @@ from __future__ import annotations
 import time
 from logging import getLogger, DEBUG
 from math import sqrt, ceil
+from packaging.version import parse
 from threading import Lock
 from typing import TYPE_CHECKING
 
 import numpy as np
 
-from cil.framework import (AcquisitionData, AcquisitionGeometry, DataOrder, ImageGeometry, BlockGeometry,
-                           BlockDataContainer)
+from cil.framework import AcquisitionData, AcquisitionGeometry, ImageGeometry, BlockGeometry, BlockDataContainer
 from cil.optimisation.algorithms import PDHG, SPDHG, Algorithm
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
@@ -19,6 +19,7 @@ from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator
 from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
 from cil.optimisation.utilities.callbacks import Callback
 from cil.plugins.astra.operators import ProjectionOperator
+import cil.version
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
@@ -29,6 +30,17 @@ from mantidimaging.core.utility.memory_usage import system_free_memory
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
+
+try:
+    # COMPAT: CIL < 24.2 has DataOrder with handy enums. Afterwards we need AcquisitionDimension.get_order_for_engine()
+    from cil.framework import DataOrder
+except ImportError:
+    from cil.framework.labels import Backend, AcquisitionDimension
+
+    class DataOrder:  # type: ignore
+        ASTRA_AG_LABELS = AcquisitionDimension.get_order_for_engine(Backend.ASTRA)
+        TIGRE_AG_LABELS = AcquisitionDimension.get_order_for_engine(Backend.TIGRE)
+
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
@@ -220,8 +232,9 @@ class CILRecon(BaseRecon):
             for i in range(len(data)):
                 data.get_item(i).reorder('astra')
                 geo.append(data.get_item(i).geometry)
-            # COMPAT - workaround for https://github.com/TomographicImaging/CIL/issues/1445
-            data.geometry = BlockGeometry(*geo)
+            if parse(cil.version.version) < parse("24.1"):
+                # COMPAT CIL < 24.1  - workaround for https://github.com/TomographicImaging/CIL/issues/1445
+                data.geometry = BlockGeometry(*geo)
         else:
             data.reorder('astra')
 
