@@ -57,6 +57,7 @@ class TestGuiSystemOperations(GuiSystemBase):
 
     def setUp(self) -> None:
         super().setUp()
+        self.leak_count_limit = 3
         self._close_welcome()
         self._load_data_set()
 

@@ -33,11 +33,13 @@ SHORT_DELAY = 100
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication
+    leak_count_limit: int
 
     def setUp(self) -> None:
         self.main_window = MainWindowView()
         self.main_window.show()
         QTest.qWait(SHORT_DELAY)
+        self.leak_count_limit = 0
 
     def tearDown(self) -> None:
         """
@@ -55,7 +57,7 @@ class GuiSystemBase(unittest.TestCase):
         if leak_count := leak_tracker.count():
             print("\nItems still alive:", leak_count)
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
-            if leak_count > 10:
+            if leak_count > self.leak_count_limit:
                 print("details:")
                 leak_tracker.pretty_print(debug_init=True, debug_owners=True, trace_depth=5)
                 raise RuntimeError(f"Too many leaked objects: {leak_count}")

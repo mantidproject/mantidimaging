@@ -25,6 +25,7 @@ class TestGuiSystemLoading(GuiSystemBase):
 
     def setUp(self) -> None:
         super().setUp()
+        self.leak_count_limit = 10
         self._close_welcome()
 
     def tearDown(self) -> None:

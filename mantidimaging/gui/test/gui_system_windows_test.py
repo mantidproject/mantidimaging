@@ -56,6 +56,7 @@ class TestGuiSystemWindows(GuiSystemBase):
         QTest.qWait(SHOW_DELAY)
 
     def test_open_reconstruction(self):
+        self.leak_count_limit = 4
         self._close_welcome()
         self._load_data_set()
 

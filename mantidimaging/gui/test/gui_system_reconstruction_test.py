@@ -23,6 +23,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         self.mock_show_error_dialog = patcher_show_error_dialog.start()
         self.addCleanup(patcher_show_error_dialog.stop)
         super().setUp()
+        self.leak_count_limit = 4
         self._close_welcome()
         self._load_data_set()
 
