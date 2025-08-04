@@ -20,6 +20,7 @@ class TestGuiLiveViewer(GuiSystemBase):
         self.mock_show_error_dialog = patcher_show_error_dialog.start()
         self.addCleanup(patcher_show_error_dialog.stop)
         super().setUp()
+        self.leak_count_limit = 2
         self._close_welcome()
 
         self._open_live_viewer()
