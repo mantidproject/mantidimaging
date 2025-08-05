@@ -22,13 +22,13 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiSystemLoading(GuiSystemBase):
-    leak_count_limit = 10
 
     def setUp(self) -> None:
         super().setUp()
         self._close_welcome()
 
     def tearDown(self) -> None:
+        self._clear_image_stacks()
         self._close_image_stacks()
         self._check_datasets_consistent()
         super().tearDown()
