@@ -33,13 +33,12 @@ SHORT_DELAY = 100
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication
-    leak_count_limit: int
+    leak_count_limit: int = 0
 
     def setUp(self) -> None:
         self.main_window = MainWindowView()
         self.main_window.show()
         QTest.qWait(SHORT_DELAY)
-        self.leak_count_limit = 0
 
     def tearDown(self) -> None:
         """

@@ -13,6 +13,7 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiLiveViewer(GuiSystemBase):
+    leak_count_limit = 2
 
     def setUp(self) -> None:
         patcher_show_error_dialog = mock.patch(
@@ -20,7 +21,6 @@ class TestGuiLiveViewer(GuiSystemBase):
         self.mock_show_error_dialog = patcher_show_error_dialog.start()
         self.addCleanup(patcher_show_error_dialog.stop)
         super().setUp()
-        self.leak_count_limit = 2
         self._close_welcome()
 
         self._open_live_viewer()
