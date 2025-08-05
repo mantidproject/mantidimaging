@@ -900,7 +900,9 @@
 
             <span class="k">if</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">tilt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;recon_params.tilt is not set&quot;</span><span class="p">)</span>
-            <span class="n">tilt</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">tilt</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images.geometry is not set&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_sinograms</span><span class="p">:</span>
                 <span class="n">data_order</span> <span class="o">=</span> <span class="n">DataOrder</span><span class="o">.</span><span class="n">ASTRA_AG_LABELS</span>
@@ -910,7 +912,6 @@
             <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images.geometry is not set&quot;</span><span class="p">)</span>
 
-            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">cors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tilt</span><span class="p">)</span>
             <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span><span class="n">data_order</span><span class="p">)</span>
             <span class="n">ig</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_ImageGeometry</span><span class="p">()</span>
 
