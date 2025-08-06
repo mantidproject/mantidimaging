@@ -260,13 +260,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
-    def run_spectrum_calculation(self):
+    def run_spectrum_calculation(self, roi_to_process_queue, image_nan_mask_dict, spectrum_data_dict):
+        queue = roi_to_process_queue
+        mask = image_nan_mask_dict
+        spec_data_dict = spectrum_data_dict
         with self.spectrum_calculation_lock:
-            roi_name = list(self.roi_to_process_queue.keys())[0]
-            roi = self.roi_to_process_queue[roi_name]
+            roi_name = list(queue.keys())[0]
+            roi = queue[roi_name]
             chunk_size = 100
             if chunk_size > 0:
-                nanInds = np.argwhere(np.isnan(self.image_nan_mask_dict[roi_name]))
+                nanInds = np.argwhere(np.isnan(mask[roi_name]))
                 chunk_start = int(nanInds[0, 0])
                 if len(nanInds) > chunk_size:
                     chunk_end = int(nanInds[chunk_size, 0])
@@ -288,11 +291,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                self.view.shuttercount_norm_enabled(), chunk_start, chunk_end)
 
             for i in range(len(spectrum)):
-                np.put(self.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
+                np.put(spec_data_dict[roi_name], chunk_start + i, spectrum[i])
                 if np.isnan(spectrum[i]):
-                    self.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
+                    mask[roi_name][chunk_start + i] = np.ma.masked
                 else:
-                    np.put(self.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
+                    np.put(mask[roi_name], chunk_start + i, spectrum[i])
+
+        return queue, mask, spec_data_dict
 
     def handle_roi_moved(self) -> None:
         """
@@ -300,6 +305,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         self.thread = TaskWorkerThread()
         self.thread.task_function = self.run_spectrum_calculation
+        self.thread.kwargs = {
+            "roi_to_process_queue": self.roi_to_process_queue,
+            "image_nan_mask_dict": self.image_nan_mask_dict,
+            "spectrum_data_dict": self.view.spectrum_widget.spectrum_data_dict
+        }
 
         self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
@@ -307,6 +317,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self, thread: TaskWorkerThread) -> None:
         if thread.error is not None:
             raise thread.error
+        if self.thread.result is not None:
+            (self.roi_to_process_queue, self.image_nan_mask_dict,
+             self.view.spectrum_widget.spectrum_data_dict) = self.thread.result
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
         if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
