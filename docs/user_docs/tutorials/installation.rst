@@ -62,7 +62,7 @@ a fresh Miniforge3.
 
 .. _packages: https://anaconda.org/mantidimaging/mantidimaging/
 
-1. Download and install CUDA Runtime version 10.2 - https://developer.nvidia.com/cuda-10.2-download-archive before installing the Mantid Imaging environment.
+1. Download and install CUDA Runtime version 12.9 - https://developer.nvidia.com/cuda-12-9-0-download-archive before installing the Mantid Imaging environment.
 2. Download and install `Miniforge3 <https://github.com/conda-forge/miniforge#download>`_ (this is the conda distribution that we recommend).
 3. Make sure :code:`mamba` or :code:`conda` is available on your PATH. The steps below assume you are using mamba.
 4. Create a mantidimaging conda environment::
