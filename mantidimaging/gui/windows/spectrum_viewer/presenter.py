@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import threading
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING
@@ -70,6 +71,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
+
+        self.spectrum_calculation_lock = threading.Lock()
 
     def handle_stack_modified(self) -> None:
         """
@@ -258,34 +261,38 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.update_roi_on_fitting_thumbnail()
 
     def run_spectrum_calculation(self):
-        roi_name = list(self.roi_to_process_queue.keys())[0]
-        roi = self.roi_to_process_queue[roi_name]
-        chunk_size = 100
-        if chunk_size > 0:
-            nanInds = np.argwhere(np.isnan(self.image_nan_mask_dict[roi_name]))
-            chunk_start = int(nanInds[0, 0])
-            if len(nanInds) > chunk_size:
-                chunk_end = int(nanInds[chunk_size, 0])
+        with self.spectrum_calculation_lock:
+            roi_name = list(self.roi_to_process_queue.keys())[0]
+            roi = self.roi_to_process_queue[roi_name]
+            chunk_size = 100
+            if chunk_size > 0:
+                nanInds = np.argwhere(np.isnan(self.image_nan_mask_dict[roi_name]))
+                chunk_start = int(nanInds[0, 0])
+                if len(nanInds) > chunk_size:
+                    chunk_end = int(nanInds[chunk_size, 0])
+                else:
+                    chunk_end = int(nanInds[-1, 0]) + 1
             else:
-                chunk_end = int(nanInds[-1, 0]) + 1
-        else:
-            chunk_start, chunk_end = (0, -1)
+                chunk_start, chunk_end = (0, -1)
 
-        sample_roi = roi.as_sensible_roi()
-        open_beam_roi = self.view.get_open_beam_roi()
-        spectrum = self.model.get_spectrum(sample_roi,
-                                           self.spectrum_mode,
-                                           self.view.shuttercount_norm_enabled(),
-                                           chunk_start,
-                                           chunk_end,
-                                           open_beam_roi=open_beam_roi)
+            sample_roi = roi.as_sensible_roi()
+            open_beam_roi = self.view.get_open_beam_roi()
+            spectrum = self.model.get_spectrum(sample_roi,
+                                               self.spectrum_mode,
+                                               self.view.shuttercount_norm_enabled(),
+                                               chunk_start,
+                                               chunk_end,
+                                               open_beam_roi=open_beam_roi)
 
-        for i in range(len(spectrum)):
-            np.put(self.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
-            if np.isnan(spectrum[i]):
-                self.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
-            else:
-                np.put(self.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
+            spectrum = self.model.get_spectrum(roi.as_sensible_roi(), self.spectrum_mode,
+                                               self.view.shuttercount_norm_enabled(), chunk_start, chunk_end)
+
+            for i in range(len(spectrum)):
+                np.put(self.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
+                if np.isnan(spectrum[i]):
+                    self.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
+                else:
+                    np.put(self.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
 
     def handle_roi_moved(self) -> None:
         """
