@@ -481,10 +481,10 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABCMeta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
@@ -529,8 +529,8 @@
 <div class="viewcode-block" id="compile_ui">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.utility.qt_helpers.html#mantidimaging.gui.utility.qt_helpers.compile_ui">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qt_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
-    <span class="n">base_path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span>
-    <span class="k">return</span> <span class="n">uic</span><span class="o">.</span><span class="n">loadUi</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">ui_file</span><span class="p">),</span> <span class="n">qt_obj</span><span class="p">)</span></div>
+    <span class="n">ui_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span><span class="p">)</span> <span class="o">/</span> <span class="n">ui_file</span>
+    <span class="k">return</span> <span class="n">uic</span><span class="o">.</span><span class="n">loadUi</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ui_path</span><span class="p">),</span> <span class="n">qt_obj</span><span class="p">)</span></div>
 
 
 
