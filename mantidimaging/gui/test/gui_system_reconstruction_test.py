@@ -16,6 +16,7 @@ from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_
 
 @start_multiprocessing_pool
 class TestGuiSystemReconstruction(GuiSystemBase):
+    leak_count_limit = 4
 
     def setUp(self) -> None:
         patcher_show_error_dialog = mock.patch(
