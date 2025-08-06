@@ -599,6 +599,8 @@ class MainWindowView(BaseMainWindowView):
             # Close additional windows which do not have the MainWindow as parent
             if self.recon:
                 self.recon.close()
+            if self.geometry:
+                self.geometry.close()
             while self.live_viewer_list:
                 self.live_viewer_list[-1].close()
             if self.spectrum_viewer:
