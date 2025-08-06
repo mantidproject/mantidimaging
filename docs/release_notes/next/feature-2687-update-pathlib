@@ -1,0 +1,1 @@
+2687: Replaced all os.path usage with pathlib.Path for more robust, readable, and modern path handling.
