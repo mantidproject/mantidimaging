@@ -12,7 +12,7 @@ dependencies:
   - pip:
       - eyes-images==5.23.*
   - yapf==0.43.*
-  - mypy==1.8
+  - mypy==1.17
   - types-requests
   - types-PyYAML
   - types-docutils

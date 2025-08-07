@@ -67,7 +67,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.view.previews.link_before_after_histogram_scales.assert_called_once_with(False)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter')
-    def test_apply_filter(self, apply_filter_mock: mock.Mock):
+    def test_apply_filter(self, apply_filter_mock):
         stack = mock.Mock()
         stack.has_proj180deg.return_value = False
         self.presenter.stack = stack
@@ -80,7 +80,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
 
     @mock.patch("mantidimaging.gui.utility.common.operation_in_progress")
     @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter")
-    def test_apply_filter_to_dataset(self, apply_filter_mock: mock.Mock, _):
+    def test_apply_filter_to_dataset(self, apply_filter_mock, _):
         self.view.ask_confirmation.return_value = False
         self.presenter.stack = mock.Mock()
         self.presenter.do_apply_filter_to_dataset()

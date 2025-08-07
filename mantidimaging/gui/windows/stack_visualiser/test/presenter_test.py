@@ -38,31 +38,26 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
     def test_notify_refresh_image_averaged_image_mode(self):
         self.presenter.image_mode = SVImageMode.SUMMED
+        mock_summed = mock.Mock()
+        self.presenter.model.sum_images.return_value = mock_summed
         self.presenter.notify(SVNotification.REFRESH_IMAGE)
-        self.assertIs(self.view.image, self.presenter.summed_image, "Image should have been set as averaged image")
+        self.presenter.model.sum_images.assert_called_with(self.presenter.images)
+        self.assertIs(self.view.image, mock_summed, "Image should have been set as averaged image")
 
-    def test_notify_toggle_image_mode_normal_to_summed(self):
+    @mock.patch('mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.refresh_image')
+    def test_notify_toggle_image_mode_normal_to_summed(self, mock_refresh):
         self.presenter.image_mode = SVImageMode.SUMMED
         self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
         assert self.presenter.image_mode is SVImageMode.NORMAL
+        mock_refresh.assert_called_once()
         self.presenter.model.sum_images.assert_not_called()
 
-    def test_notify_toggle_image_mode_summed_to_normal(self):
+    @mock.patch('mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.refresh_image')
+    def test_notify_toggle_image_mode_summed_to_normal(self, mock_refresh):
         self.presenter.image_mode = SVImageMode.NORMAL
         self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
         assert self.presenter.image_mode is SVImageMode.SUMMED
-
-    def test_notify_toggle_image_mode_sets_summed_image(self):
-        self.presenter.image_mode = SVImageMode.NORMAL
-        self.summed_image = None
-        self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
-        assert self.presenter.summed_image == self.presenter.model.sum_images.return_value
-        self.presenter.model.sum_images.assert_called_once_with(self.presenter.images.data)
-
-    def test_notify_toggle_image_mode_does_not_set_summed_image(self):
-        self.presenter.image_mode = SVImageMode.NORMAL
-        self.presenter.summed_image = self.presenter.images.data[0]
-        self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)
+        mock_refresh.assert_called_once()
         self.presenter.model.sum_images.assert_not_called()
 
     def test_get_num_images(self):

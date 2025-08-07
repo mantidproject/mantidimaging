@@ -409,7 +409,7 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.pixelSizeSpinBox.value()
 
     @pixel_size.setter
-    def pixel_size(self, value: int) -> None:
+    def pixel_size(self, value: float) -> None:
         with QSignalBlocker(self.pixelSizeSpinBox):
             self.pixelSizeSpinBox.setValue(value)
 

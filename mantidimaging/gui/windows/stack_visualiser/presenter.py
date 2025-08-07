@@ -49,7 +49,6 @@ class StackVisualiserPresenter(BasePresenter):
         self.images = images
         self._current_image_index = 0
         self.image_mode: SVImageMode = SVImageMode.NORMAL
-        self.summed_image = None
 
     def notify(self, signal) -> None:
         try:
@@ -74,7 +73,7 @@ class StackVisualiserPresenter(BasePresenter):
 
     def refresh_image(self) -> None:
         if self.image_mode is SVImageMode.SUMMED:
-            self.view.image = self.summed_image
+            self.view.image = self.model.sum_images(self.images.data)
         else:
             self.view.set_image(self.images)
 
@@ -95,10 +94,6 @@ class StackVisualiserPresenter(BasePresenter):
         else:
             self.image_mode = SVImageMode.NORMAL
 
-        if self.image_mode is SVImageMode.SUMMED and \
-                (self.summed_image is None
-                 or self.summed_image.shape != self.images.data.shape[1:]):
-            self.summed_image = self.model.sum_images(self.images.data)
         self.refresh_image()
 
     def create_swapped_axis_stack(self) -> None:
