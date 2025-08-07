@@ -536,7 +536,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_image_index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span><span class="p">:</span> <span class="n">SVImageMode</span> <span class="o">=</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">NORMAL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="StackVisualiserPresenter.notify">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.notify">[docs]</a>
@@ -569,7 +568,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.refresh_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">refresh_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="ow">is</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">SUMMED</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sum_images</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">)</span></div>
 
@@ -596,10 +595,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="o">=</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">NORMAL</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mode</span> <span class="ow">is</span> <span class="n">SVImageMode</span><span class="o">.</span><span class="n">SUMMED</span> <span class="ow">and</span> \
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="ow">is</span> <span class="kc">None</span>
-                 <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">summed_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sum_images</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_image</span><span class="p">()</span></div>
 
 
