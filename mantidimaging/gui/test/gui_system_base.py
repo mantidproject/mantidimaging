@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import os
 from pathlib import Path
 import unittest
 from unittest import mock
@@ -28,11 +27,12 @@ SHORT_DELAY = 100
 
 @mock_versions
 @pytest.mark.system
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE), LOAD_SAMPLE_MISSING_MESSAGE)
-@unittest.skipUnless(os.path.exists(LOAD_SAMPLE_FOLDER), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(Path(LOAD_SAMPLE).exists(), LOAD_SAMPLE_MISSING_MESSAGE)
+@unittest.skipUnless(Path(LOAD_SAMPLE_FOLDER).exists(), LOAD_SAMPLE_MISSING_MESSAGE)
 @start_qapplication
 class GuiSystemBase(unittest.TestCase):
     app: QApplication
+    leak_count_limit: int = 0
 
     def setUp(self) -> None:
         self.main_window = MainWindowView()
@@ -55,11 +55,15 @@ class GuiSystemBase(unittest.TestCase):
         if leak_count := leak_tracker.count():
             print("\nItems still alive:", leak_count)
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
+            if leak_count > self.leak_count_limit:
+                print("details:")
+                leak_tracker.pretty_print(debug_init=True, debug_owners=True, trace_depth=5)
+                raise RuntimeError(f"Too many leaked objects: {leak_count}")
             leak_tracker.clear()
 
         for widget in self.app.topLevelWidgets():
             if widget.isVisible():
-                RuntimeError(f"\n\nWindow still open {widget=}")
+                raise RuntimeError(f"\n\nWindow still open {widget=}")
 
     @classmethod
     def _check_no_open_dialogs(cls) -> None:

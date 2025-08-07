@@ -380,6 +380,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.model.do_fit()
         self.view.set_results(*self.model.get_results())
         self.do_update_projection()
+        self._update_imagestack_geometry_data()
         self.do_preview_reconstruct_slice()
 
     def _on_volume_recon_done(self, task: TaskWorkerThread) -> None:
@@ -414,12 +415,30 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
 
+    def _update_imagestack_geometry_data(self) -> None:
+        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
+        current_uuid = self.view.stackSelector.current()
+        assert current_uuid is not None, "Invalid stack UUID; No stack selected"
+
+        current_image_stack = self.main_window.get_stack(current_uuid)
+        if current_image_stack is None:
+            LOG.debug("No image stack or geometry found; skipping geometry update.")
+            return
+
+        if current_image_stack.geometry is None:
+            raise StackNotFoundError(f"No geometry found for imagestack with UUID: {current_uuid}")
+
+        tilt = self.view.tilt
+        cor_top = ScalarCoR(self.view.rotation_centre)
+        current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
+
     def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)
         self.view.set_results(*self.model.get_results())
         for idx, point in enumerate(self.model.data_model.iter_points()):
             self.view.set_table_point(idx, point.slice_index, point.cor)
         self.do_update_projection()
+        self._update_imagestack_geometry_data()
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self) -> None:

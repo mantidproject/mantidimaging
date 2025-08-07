@@ -54,6 +54,7 @@ ALLOWED_ERRORS = [
 
 @start_multiprocessing_pool
 class TestGuiSystemOperations(GuiSystemBase):
+    leak_count_limit = 3
 
     def setUp(self) -> None:
         super().setUp()
