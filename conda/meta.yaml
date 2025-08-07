@@ -28,7 +28,7 @@ requirements:
     - tomopy=1.12.*
     - cudatoolkit=11.8.*
     - cupy=12.3.*
-    - astra-toolbox=2.1.0=cuda*
+    - astra-toolbox=2.1.1=cuda*
     - requests=2.32.*
     - h5py=3.9.*
     - hdf5=1.14.2
