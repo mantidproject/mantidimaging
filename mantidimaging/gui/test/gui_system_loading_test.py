@@ -22,7 +22,7 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiSystemLoading(GuiSystemBase):
-    leak_count_limit = 10
+    leak_count_limit = 2
 
     def setUp(self) -> None:
         super().setUp()
