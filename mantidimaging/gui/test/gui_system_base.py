@@ -6,11 +6,13 @@ from pathlib import Path
 import unittest
 from unittest import mock
 
+import numpy as np
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog, QDialog
 import pytest
 
+from mantidimaging.core.parallel.utility import SharedArray
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
@@ -155,3 +157,8 @@ class GuiSystemBase(unittest.TestCase):
             if isinstance(widget, window_type):
                 QTest.qWait(SHORT_DELAY)
                 widget.close()
+
+    def _clear_image_stacks(self) -> None:
+        con_id = list(self.main_window.presenter.model.datasets.keys())[0]
+        for stack in self.main_window.presenter.model.datasets[con_id].all:
+            stack.shared_array = SharedArray(np.empty((1, 1, 1)), None)
