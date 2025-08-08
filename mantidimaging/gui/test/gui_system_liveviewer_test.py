@@ -68,4 +68,4 @@ class TestGuiLiveViewer(GuiSystemBase):
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean_nan_mask).any(), max_retry=600)
         QTest.qWait(SHORT_DELAY)
         assert_raises(AssertionError, np.testing.assert_array_equal, old_mean,
-                    self.live_viewer_window.presenter.model.mean_nan_mask)
+                      self.live_viewer_window.presenter.model.mean_nan_mask)
