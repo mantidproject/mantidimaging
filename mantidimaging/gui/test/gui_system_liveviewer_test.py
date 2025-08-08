@@ -7,6 +7,7 @@ from unittest import mock
 import numpy as np
 from PyQt5.QtTest import QTest
 from numpy.testing import assert_raises
+from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, SHOW_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
@@ -49,18 +50,22 @@ class TestGuiLiveViewer(GuiSystemBase):
         self.assertEqual(self.live_viewer_window.splitter.sizes()[1], 0)
         QTest.qWait(SHOW_DELAY)
 
-    def test_roi_resized(self):
+    @parameterized.expand([
+        (0, (10, 20)),  # top-left
+        (1, (30, 20)),  # top-right
+        (2, (10, 40)),  # bottom-left
+        (3, (30, 40)),  # bottom-right
+    ])
+    def test_roi_resized(self, handle_index, new_position):
         QTest.qWait(SHORT_DELAY * 4)
         self.live_viewer_window.intensity_action.trigger()
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean_nan_mask).any(), max_retry=600)
         old_mean = self.live_viewer_window.presenter.model.mean_nan_mask
         roi = self.live_viewer_window.live_viewer.roi_object
-        handle_index = 0
-        new_position = (10, 20)
         roi.movePoint(handle_index, new_position)
         self.live_viewer_window.presenter.model.clear_mean_partial()
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean_nan_mask).any(), max_retry=600)
         QTest.qWait(SHORT_DELAY)
         assert_raises(AssertionError, np.testing.assert_array_equal, old_mean,
-                      self.live_viewer_window.presenter.model.mean_nan_mask)
+                    self.live_viewer_window.presenter.model.mean_nan_mask)
