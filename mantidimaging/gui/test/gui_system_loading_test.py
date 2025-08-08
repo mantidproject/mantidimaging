@@ -28,7 +28,6 @@ class TestGuiSystemLoading(GuiSystemBase):
         self._close_welcome()
 
     def tearDown(self) -> None:
-        self._clear_image_stacks()
         self._close_image_stacks()
         self._check_datasets_consistent()
         super().tearDown()
@@ -159,6 +158,7 @@ class TestGuiSystemLoading(GuiSystemBase):
             wait_until(lambda: mock_save.call_count == 1)
             # Confirm that save has been called only once
             mock_save.assert_called_once()
+            mock_save.reset_mock()
 
     def test_save_nexus(self):
         self._load_data_set()
@@ -174,9 +174,10 @@ class TestGuiSystemLoading(GuiSystemBase):
             QTest.mouseClick(ok_button, Qt.LeftButton)
 
             QApplication.processEvents()
-            wait_until(lambda: mock_save.call_count == 1)
             # Confirm that save has been called only once
             mock_save.assert_called_once()
+            # reset the mocked nexus_save to release references to ImageStack objects
+            mock_save.reset_mock()
 
     @parameterized.expand([
         (None, 100),
