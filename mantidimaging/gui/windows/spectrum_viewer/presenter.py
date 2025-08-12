@@ -528,7 +528,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.update_unit_labels_and_menus()
         self.refresh_spectrum_plot()
 
-    def _resolve_open_beam_roi(self, sample_roi_name: str) -> "SensibleROI | None":
+    def _resolve_open_beam_roi(self, sample_roi_name: str | None = None):
+        """
+        Return the chosen open-beam ROI from the dropdown, or None to use the same ROI.
+        sample_roi_name is accepted for call-site compatibility but not used.
+        """
         choice = self.view.get_open_beam_roi_choice()
         if choice == "Use same ROI":
             return None
@@ -536,6 +540,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return self.view.spectrum_widget.get_roi(choice)
         except KeyError:
             return None
+
+    def handle_open_beam_roi_choice_changed(self) -> None:
+        self.redraw_all_rois()
 
     def handle_tof_unit_change_via_menu(self, unit_name: str) -> None:
         self.view.tof_units_mode = unit_name
