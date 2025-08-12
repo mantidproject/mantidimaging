@@ -151,6 +151,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.formTabs.currentChanged.connect(self.handle_change_tab)
 
+        # During __init__ after ROI widgets are created:
+        self.openBeamRoiCombo = QtWidgets.QComboBox()
+        self.openBeamRoiCombo.addItem("Use same ROI")
+        self.exportLayout.addWidget(QtWidgets.QLabel("Normalise against"))
+        self.exportLayout.addWidget(self.openBeamRoiCombo)
+
     def show(self) -> None:
         super().show()
         self.activateWindow()
@@ -178,6 +184,28 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
         LOG.debug("Tab changed: index=%d", tab_index)
+
+    def get_open_beam_roi_choice(self) -> str:
+        return self.openBeamRoiCombo.currentText()
+
+    def update_roi_dropdown(self) -> None:
+        roi_names = self.presenter.get_roi_names()
+        self.roiSelectionWidget.update_roi_list(roi_names)
+        self.exportSettingsWidget.set_roi_names(roi_names)
+
+        # refresh open-beam combo
+        current = self.openBeamRoiCombo.currentText() if self.openBeamRoiCombo.count() else "Use same ROI"
+        self.openBeamRoiCombo.blockSignals(True)
+        self.openBeamRoiCombo.clear()
+        self.openBeamRoiCombo.addItem("Use same ROI")
+        for n in roi_names:
+            self.openBeamRoiCombo.addItem(n)
+        # try keep the same selection
+        idx = self.openBeamRoiCombo.findText(current)
+        self.openBeamRoiCombo.setCurrentIndex(idx if idx >= 0 else 0)
+        self.openBeamRoiCombo.blockSignals(False)
+
+        LOG.debug("ROI dropdown updated in view")
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""

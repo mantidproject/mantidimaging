@@ -342,11 +342,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.setup_fitting_model()
 
     def redraw_spectrum(self, name: str) -> None:
-        """
-        Redraw the spectrum with the given name
-        """
-        roi = self.view.spectrum_widget.get_roi(name)
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        sample_roi = self.view.spectrum_widget.get_roi(name)
+        open_roi = self._resolve_open_beam_roi(name)
+        roi_arg = (sample_roi, open_roi) if open_roi is not None else sample_roi
+        spectrum = self.model.get_spectrum( roi_arg, self.spectrum_mode,self.view.shuttercount_norm_enabled(),)
         self.view.set_spectrum(name, spectrum)
 
     def redraw_all_rois(self) -> None:
@@ -528,6 +527,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_relevant_tof_units()
         self.update_unit_labels_and_menus()
         self.refresh_spectrum_plot()
+
+    def _resolve_open_beam_roi(self, sample_roi_name: str) -> "SensibleROI | None":
+        choice = self.view.get_open_beam_roi_choice()
+        if choice == "Use same ROI":
+            return None
+        try:
+            return self.view.spectrum_widget.get_roi(choice)
+        except KeyError:
+            return None
 
     def handle_tof_unit_change_via_menu(self, unit_name: str) -> None:
         self.view.tof_units_mode = unit_name
