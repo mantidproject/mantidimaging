@@ -33,7 +33,11 @@ class UnrotateablePlotROI(ROI):
 
     def __init__(self):
         ROI.__init__(self, pos=[0, 0])
-        self.addScaleHandle([1, 1], [0, 0])
+        # Add scale handles to all four corners
+        self.addScaleHandle([0, 0], [1, 1])  # top-left
+        self.addScaleHandle([1, 0], [0, 1])  # top-right
+        self.addScaleHandle([0, 1], [1, 0])  # bottom-left
+        self.addScaleHandle([1, 1], [0, 0])  # bottom-right
 
 
 def clip(value, lower, upper):
