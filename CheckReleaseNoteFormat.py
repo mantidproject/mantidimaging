@@ -32,8 +32,42 @@ class ReleaseNote:
     def validate_filename(self) -> bool:
         match = self.FILENAME_PATTERN.match(self.name)
         if not match:
+            print(f"Warning: Filename '{self.name}' is invalid.\n"
+                  "  Expected format: <fix|dev|feature>-<issue_number>-<description>\n"
+                  "  Example: dev-2769-release_notes_pre-commit")
             return False
         self.prefix, self.issue_number = match.group(1), match.group(2)
+        return True
+
+    def load_content(self) -> None:
+        try:
+            self.content = self.filepath.read_text(encoding='utf-8').strip()
+        except (FileNotFoundError, UnicodeDecodeError) as file_error:
+            print(f"Error reading {self.filepath}: {file_error}")
+            self.content = None
+
+    def validate_content(self) -> bool:
+        """
+        Validate that the content of the release note matches the issue number in the filename
+        and the content pattern matches the expected format i.e. "#1234: Some description".
+        """
+        if self.content is None:
+            self.load_content()
+        if self.content is None:
+            print(f"Warning: No content loaded for {self.filepath}.")
+            return False
+
+        match = self.CONTENT_PATTERN.search(self.content)
+        if not match:
+            print(f"Warning: Content in {self.name} does not match required pattern '#<issue_number>: <description>'.")
+            return False
+
+        self.content_issue_number = match.group(1)
+        if self.content_issue_number != self.issue_number:
+            print(f"Warning: Issue number in content '{self.content_issue_number}' "
+                  f"does not match filename '{self.issue_number}' in {self.name}.")
+            return False
+
         return True
 
 
@@ -69,10 +103,10 @@ def main() -> None:
     print(f"Staged release notes found: {len(staged_files)}")
     release_notes = [ReleaseNote(Path(file)) for file in staged_files]
     for note in release_notes:
-        if not note.validate_filename():
-            print(f"Invalid release note filename: {note.name}")
-        else:
-            print(f"Valid release note filename: {note.name} with issue number {note.issue_number}")
+        print(f"Validating release note: {note.name}")
+        note.validate_filename()
+        note.validate_content()
+        print("\n")
 
 
 if __name__ == "__main__":
