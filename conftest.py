@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import os
 from collections import Counter
 
 import pytest
@@ -12,7 +13,8 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 
 def pytest_addoption(parser):
-    parser.addoption("--run-system-tests", action="store_true", default=False, help="Run GUI system tests")
+    parser.addoption("--run-system-tests", action="store_true", default=False, help="Run GUI system tests offscreen")
+    parser.addoption("--run-system-tests-show", action="store_true", default=False, help="Run GUI system tests onscreen")
     parser.addoption("--run-unit-tests", action="store_true", default=False, help="Run unit tests")
     parser.addoption("--run-eyes-tests", action="store_true", default=False, help="Run eyes tests")
 
@@ -30,6 +32,10 @@ skipped_tests = []
 def pytest_collection_modifyitems(config, items):
     if config.getoption("--run-system-tests"):
         allowed_markers.append(pytest.mark.system.mark)
+        os.environ["QT_QPA_PLATFORM"] = "minimal"
+    if config.getoption("--run-system-tests-show"):
+        allowed_markers.append(pytest.mark.system.mark)
+        os.environ["QT_QPA_PLATFORM"] = ""
     if config.getoption("--run-eyes-tests"):
         allowed_markers.append(pytest.mark.eyes.mark)
     if config.getoption("--run-unit-tests") or len(allowed_markers) == 0:
