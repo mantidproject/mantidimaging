@@ -124,6 +124,22 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.set_shuttercount_error)
         self.normalise_ShutterCount_CheckBox.stateChanged.connect(self.presenter.handle_button_enabled)
 
+        self.openBeamRoiCombo = QtWidgets.QComboBox()
+        self.openBeamRoiCombo.addItem("Use same ROI")
+
+        row_layout = QtWidgets.QHBoxLayout()
+        row_layout.addWidget(QtWidgets.QLabel("Normalise against:", self))
+        row_layout.addWidget(self.openBeamRoiCombo)
+        row_layout.addStretch(1)
+
+        image_left_vlayout = self.optionsLayout.layout()
+        pos = image_left_vlayout.indexOf(self.normaliseStackSelector)
+        if pos != -1:
+            image_left_vlayout.insertLayout(pos + 1, row_layout)
+        else:
+            image_left_vlayout.addLayout(row_layout)
+
+        self.openBeamRoiCombo.currentIndexChanged.connect(self.presenter.handle_open_beam_roi_choice_changed)
         self.roi_form.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
 
         # ROI action buttons
@@ -324,11 +340,23 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.shuttercountErrorIcon.setPixmap(QPixmap())
             self.shuttercountErrorIcon.setToolTip("")
 
+    def get_open_beam_roi_choice(self) -> str:
+        return self.openBeamRoiCombo.currentText()
+
     def update_roi_dropdown(self) -> None:
-        """ Updates the ROI dropdown menu with the available ROIs. """
+        """ Updates the ROI dropdown menus with the available ROIs. """
         roi_names = self.presenter.get_roi_names()
         self.roiSelectionWidget.update_roi_list(roi_names)
         self.exportSettingsWidget.set_roi_names(roi_names)
+        current = self.openBeamRoiCombo.currentText() if hasattr(self, "openBeamRoiCombo") else "Use same ROI"
+        self.openBeamRoiCombo.blockSignals(True)
+        self.openBeamRoiCombo.clear()
+        self.openBeamRoiCombo.addItem("Use same ROI")
+        for name in roi_names:
+            self.openBeamRoiCombo.addItem(name)
+        idx = self.openBeamRoiCombo.findText(current)
+        self.openBeamRoiCombo.setCurrentIndex(idx if idx >= 0 else 0)
+        self.openBeamRoiCombo.blockSignals(False)
         LOG.debug("ROI dropdown updated in view")
 
     def handle_fitting_roi_changed(self) -> None:
