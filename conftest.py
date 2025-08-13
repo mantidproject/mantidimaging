@@ -14,7 +14,7 @@ from mantidimaging.core.utility.leak_tracker import leak_tracker
 
 def pytest_addoption(parser):
     parser.addoption("--run-system-tests", action="store_true", default=False, help="Run GUI system tests offscreen")
-    parser.addoption("--run-system-tests-show", action="store_true", default=False, help="Run GUI system tests onscreen")
+    parser.addoption("--run-system-tests-show", action="store_true", default=False, help="Run GUI system tests")
     parser.addoption("--run-unit-tests", action="store_true", default=False, help="Run unit tests")
     parser.addoption("--run-eyes-tests", action="store_true", default=False, help="Run eyes tests")
 
