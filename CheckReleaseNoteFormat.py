@@ -159,38 +159,59 @@ class ReleaseNoteDirectory:
         return issue_numbers
 
 
+class ReleaseNoteValidator:
+    """
+    Centralise all validation logic to check the format of release notes.
+    """
+
+    def __init__(self, release_notes_dir: str, repo_url: str) -> None:
+        self.release_notes_dir = ReleaseNoteDirectory(release_notes_dir)
+        self.issue_checker = GitHubIssueChecker(repo_url)
+
+    def _warn_duplicates(self, issue_number: str, note: ReleaseNote, existing_issue_numbers: set[str]) -> None:
+        """Check for duplicate issue numbers in the filename and file content"""
+        if issue_number and issue_number in existing_issue_numbers:
+            print(f"Warning: Issue number '{issue_number}' in {note.name} is a duplicate of an existing "
+                  f"issue number in the same directory.")
+
+    def _warn_github_issue_not_found(self, issue_number: str, note: ReleaseNote) -> None:
+        """Check for GitHub issue existence"""
+        if issue_number and not self.issue_checker.check_issue_exists(issue_number):
+            print(f"Warning: Issue number '{issue_number}' in {note.name} does not exist on GitHub.")
+
+    def validate(self, staged_files: list[str]) -> None:
+        staged_filepaths = [Path(file) for file in staged_files]
+        existing_issue_numbers = self.release_notes_dir.get_issue_numbers(exclude_files=staged_filepaths)
+
+        for file in staged_filepaths:
+            release_note = ReleaseNote(file)
+            valid_filename = release_note.validate_filename()
+
+            if not valid_filename:
+                match = ReleaseNote.CONTENT_PATTERN.search(release_note.content or "")
+                if match:
+                    content_issue_number = match.group(1)
+                    print(f"Warning: Filename '{release_note.name}' is missing a valid issue number, "
+                          f"but content has the issue number '{content_issue_number}'.")
+                continue
+
+            valid_content = release_note.validate_content()
+            for issue_number in release_note.get_all_issue_numbers():
+                self._warn_duplicates(issue_number, release_note, existing_issue_numbers)
+            if not valid_content:
+                continue
+            self._warn_github_issue_not_found(release_note.issue_number, release_note)
+
+
 def main() -> None:
-    staged_files = FindStagedReleaseNotes(RELEASE_NOTES_DIR).get_staged_files()
-    release_note_dir = ReleaseNoteDirectory(RELEASE_NOTES_DIR)
+    staged_files = [Path(file) for file in FindStagedReleaseNotes(RELEASE_NOTES_DIR).get_staged_files()]
 
     if not staged_files:
         print("No staged release notes found.")
         return
 
-    staged_paths = [Path(f) for f in staged_files]
-    # Exclude all staged files from the duplicate check
-    existing_issue_numbers = release_note_dir.get_issue_numbers(exclude_files=staged_paths)
-
-    for file in staged_files:
-        note = ReleaseNote(Path(file))
-        note.validate_filename()
-        note.load_content()
-        match = note.CONTENT_PATTERN.search(note.content or "")
-
-        # Check for duplicate issue numbers in filenames and content
-        if note.issue_number in existing_issue_numbers:
-            print(f"Warning: Issue number '{note.issue_number}' in the filename of {note.name} "
-                  f" is a duplicate in the directory.")
-        if match and match.group(1) in existing_issue_numbers:
-            print(f"Warning: Issue number '{match.group(1)}' in content of {note.name} "
-                  f" is a duplicate in the directory.")
-
-        # check if the issue number exists on GitHub
-        issue_checker = GitHubIssueChecker(REPO_URL)
-        if not issue_checker.check_issue_exists(note.issue_number):
-            print(f"Warning: Issue number '{note.issue_number}' in {note.name} does not exist on GitHub.")
-
-        print("\n")
+    validator = ReleaseNoteValidator(RELEASE_NOTES_DIR, REPO_URL)
+    validator.validate(staged_files)
 
 
 if __name__ == "__main__":
