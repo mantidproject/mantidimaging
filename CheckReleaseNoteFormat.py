@@ -95,17 +95,64 @@ class FindStagedReleaseNotes:
         return release_notes
 
 
+class ReleaseNoteDirectory:
+    """
+    Manages a directory of release notes, providing methods to list files and check for issue numbers."""
+
+    def __init__(self, directory: str) -> None:
+        self.directory = Path(directory)
+
+    def list_files(self, exclude_files: list[Path] = None) -> list[ReleaseNote]:
+        """
+        List all release note files in the directory.
+        """
+        exclude_set = {file.resolve() for file in exclude_files} if exclude_files else set()
+        return [
+            ReleaseNote(file) for file in self.directory.iterdir()
+            if file.is_file() and file.resolve() not in exclude_set
+        ]
+
+    def get_issue_numbers(self, exclude_files: list[Path]) -> set[str]:
+        """
+        Return a set of all issue numbers found in filenames and file contents in the release notes directory.
+        """
+        issue_numbers = set()
+        for release_note in self.list_files(exclude_files):
+            if release_note.validate_filename():
+                issue_numbers.add(release_note.issue_number)
+            release_note.load_content()
+            match = release_note.CONTENT_PATTERN.search(release_note.content or "")
+            if match:
+                issue_numbers.add(match.group(1))
+        return issue_numbers
+
+
 def main() -> None:
     staged_files = FindStagedReleaseNotes(RELEASE_NOTES_DIR).get_staged_files()
+    release_note_dir = ReleaseNoteDirectory(RELEASE_NOTES_DIR)
+
     if not staged_files:
         print("No staged release notes found.")
         return
-    print(f"Staged release notes found: {len(staged_files)}")
-    release_notes = [ReleaseNote(Path(file)) for file in staged_files]
-    for note in release_notes:
-        print(f"Validating release note: {note.name}")
+
+    staged_paths = [Path(f) for f in staged_files]
+    # Exclude all staged files from the duplicate check
+    existing_issue_numbers = release_note_dir.get_issue_numbers(exclude_files=staged_paths)
+
+    for file in staged_files:
+        note = ReleaseNote(Path(file))
         note.validate_filename()
-        note.validate_content()
+        note.load_content()
+        match = note.CONTENT_PATTERN.search(note.content or "")
+
+        # Check for duplicate issue numbers in filenames and content
+        if note.issue_number in existing_issue_numbers:
+            print(f"Warning: Issue number '{note.issue_number}' in the filename of {note.name} "
+                  f" is a duplicate in the directory.")
+        if match and match.group(1) in existing_issue_numbers:
+            print(f"Warning: Issue number '{match.group(1)}' in content of {note.name} "
+                  f" is a duplicate in the directory.")
+
         print("\n")
 
 
