@@ -12,9 +12,10 @@ from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
 from mantidimaging.gui.widgets.indicator_icon.view import IndicatorIconView
 from mantidimaging.core.utility import finder
 
-OVERLAY_COLOUR_NAN = [255, 0, 0, 255]
-OVERLAY_COLOUR_NONPOSITVE = [255, 192, 0, 255]
-OVERLAY_COLOUR_MESSAGE = [255, 0, 0, 255]
+OVERLAY_COLOUR_NAN = [255, 0, 200, 255]
+OVERLAY_COLOUR_ZERO = [255, 255, 0, 255]
+OVERLAY_COLOUR_NEGATIVE = [255, 170, 0, 255]
+OVERLAY_COLOUR_MESSAGE = [0, 128, 255, 255]
 
 
 class BadDataCheck:
@@ -86,15 +87,28 @@ class BadDataOverlay(ABC, metaclass=_metaclass_sip_abc):
         else:
             self.disable_check("nan")
 
-    def enable_nonpositive_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
+    def enable_value_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
         if enable:
 
-            def is_non_positive(data):
-                return data <= 0
+            def is_zero(data):
+                data = np.asarray(data, dtype=float)
+                return (data == 0) & ~np.isnan(data)
 
-            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive, "Non-positive values", actions)
+            def is_negative(data):
+                data = np.asarray(data, dtype=float)
+                return (data < 0) & ~np.isnan(data)
+
+            def is_nan(data):
+                data = np.asarray(data, dtype=float)
+                return np.isnan(data)
+
+            self.enable_check("zero", OVERLAY_COLOUR_ZERO, 1, is_zero, "Zero values", actions)
+            self.enable_check("negative", OVERLAY_COLOUR_NEGATIVE, 2, is_negative, "Negative values", actions)
+            self.enable_check("nan", OVERLAY_COLOUR_NAN, 3, is_nan, "Invalid values: Not a number", actions)
         else:
-            self.disable_check("nonpos")
+            self.disable_check("zero")
+            self.disable_check("negative")
+            self.disable_check("nan")
 
     def enable_check(self, name: str, color: list[int], pos: int, func: Callable, message: str,
                      actions: list[tuple[str, Callable]] | None) -> None:
