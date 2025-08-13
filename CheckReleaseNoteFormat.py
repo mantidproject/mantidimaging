@@ -7,7 +7,7 @@
 from __future__ import annotations
 from pathlib import Path
 import re
-
+import requests
 import subprocess
 
 RELEASE_NOTES_DIR = "docs/release_notes/next"
@@ -95,9 +95,31 @@ class FindStagedReleaseNotes:
         return release_notes
 
 
+class GitHubIssueChecker:
+    """
+    Checks if a GitHub issue or PR exists.
+    """
+
+    def __init__(self, repo_url: str) -> None:
+        self.repo_url = repo_url
+
+    def check_issue_exists(self, issue_number: str) -> bool:
+        """
+        Check if a GitHub issu or PR exists based on a given issue number.
+        """
+        url_issue = f"{self.repo_url}/issues/{issue_number}"
+        try:
+            response = requests.get(url_issue, timeout=5)
+            return response.status_code == 200
+        except requests.RequestException as response_error:
+            print(f"Error checking issue {issue_number}: {response_error}")
+            return False
+
+
 class ReleaseNoteDirectory:
     """
-    Manages a directory of release notes, providing methods to list files and check for issue numbers."""
+    Manages a directory of release notes, providing methods to list files and check for issue numbers.
+    """
 
     def __init__(self, directory: str) -> None:
         self.directory = Path(directory)
@@ -152,6 +174,11 @@ def main() -> None:
         if match and match.group(1) in existing_issue_numbers:
             print(f"Warning: Issue number '{match.group(1)}' in content of {note.name} "
                   f" is a duplicate in the directory.")
+
+        # check if the issue number exists on GitHub
+        issue_checker = GitHubIssueChecker(REPO_URL)
+        if not issue_checker.check_issue_exists(note.issue_number):
+            print(f"Warning: Issue number '{note.issue_number}' in {note.name} does not exist on GitHub.")
 
         print("\n")
 
