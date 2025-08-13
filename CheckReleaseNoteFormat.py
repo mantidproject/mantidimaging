@@ -70,6 +70,21 @@ class ReleaseNote:
 
         return True
 
+    def get_all_issue_numbers(self) -> set[str]:
+        """
+        Returns a set of all issue numbers found in the filename and content.
+        """
+        numbers = set()
+        match = self.FILENAME_PATTERN.match(self.name)
+        if match:
+            numbers.add(match.group(2))
+        if self.content is None:
+            self.load_content()
+        match_content = self.CONTENT_PATTERN.search(self.content or "")
+        if match_content:
+            numbers.add(match_content.group(1))
+        return numbers
+
 
 class FindStagedReleaseNotes:
     """
@@ -140,12 +155,7 @@ class ReleaseNoteDirectory:
         """
         issue_numbers = set()
         for release_note in self.list_files(exclude_files):
-            if release_note.validate_filename():
-                issue_numbers.add(release_note.issue_number)
-            release_note.load_content()
-            match = release_note.CONTENT_PATTERN.search(release_note.content or "")
-            if match:
-                issue_numbers.add(match.group(1))
+            issue_numbers.update(release_note.get_all_issue_numbers())
         return issue_numbers
 
 
