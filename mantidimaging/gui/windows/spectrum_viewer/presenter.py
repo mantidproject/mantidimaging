@@ -345,9 +345,39 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Redraw the spectrum with the given name
         """
-        roi = self.view.spectrum_widget.get_roi(name)
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        sample_roi: SensibleROI = self.view.spectrum_widget.get_roi(name)
+        open_roi = self._resolve_open_beam_roi()
+
+        if open_roi is not None:
+            spectrum = self.model.get_spectrum(
+                (sample_roi, open_roi),
+                self.spectrum_mode,
+                self.view.shuttercount_norm_enabled(),
+            )
+        else:
+            spectrum = self.model.get_spectrum(
+                sample_roi,
+                self.spectrum_mode,
+                self.view.shuttercount_norm_enabled(),
+            )
+
         self.view.set_spectrum(name, spectrum)
+
+    def _resolve_open_beam_roi(self, sample_roi_name: str | None = None):
+        """
+        Return the chosen open-beam ROI from the dropdown, or None to use the same ROI.
+        sample_roi_name is accepted for call-site compatibility but not used.
+        """
+        choice = self.view.get_open_beam_roi_choice()
+        if choice == "Use same ROI":
+            return None
+        try:
+            return self.view.spectrum_widget.get_roi(choice)
+        except KeyError:
+            return None
+
+    def handle_open_beam_roi_choice_changed(self) -> None:
+        self.redraw_all_rois()
 
     def redraw_all_rois(self) -> None:
         """
