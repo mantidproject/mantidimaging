@@ -67,6 +67,8 @@ class ReconstructionWindowTest(BaseEyesTest):
 
         self._show_recon_window()
 
+        self.check_target(widget=self.imaging.recon)
+
         QApplication.processEvents()
 
         error_message = self.imaging.recon.statusMessageTextEdit.toPlainText()
