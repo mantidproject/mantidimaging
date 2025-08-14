@@ -182,17 +182,20 @@ class ReleaseNoteValidator:
     def __init__(self, release_notes_dir: Path, repo_url: str) -> None:
         self.release_notes_dir = ReleaseNoteDirectory(release_notes_dir)
         self.issue_checker = GitHubIssueChecker(repo_url)
+        self.warnings_found = False
 
     def _warn_duplicates(self, issue_number: str, note: ReleaseNote, existing_issue_numbers: set[str]) -> None:
         """Check for duplicate issue numbers in the filename and file content"""
         if issue_number and issue_number in existing_issue_numbers:
             print(f"Warning: Issue number '{issue_number}' in {note.name} is a duplicate of an existing "
                   f"issue number in the same directory.")
+            self.warnings_found = True
 
     def _warn_github_issue_not_found(self, issue_number: str, note: ReleaseNote) -> None:
         """Check for GitHub issue existence"""
         if issue_number and not self.issue_checker.check_issue_exists(issue_number):
             print(f"Warning: Issue number '{issue_number}' in {note.name} does not exist on GitHub.")
+            self.warnings_found = True
 
     def validate(self, staged_files: list[Path]) -> None:
         existing_issue_numbers = self.release_notes_dir.get_issue_numbers(exclude_files=staged_files)
@@ -207,12 +210,14 @@ class ReleaseNoteValidator:
                     content_issue_number = match.group(1)
                     print(f"Warning: Filename '{release_note.name}' is missing a valid issue number, "
                           f"but content has the issue number '{content_issue_number}'.")
+                self.warnings_found = True
                 continue
 
             valid_content = release_note.validate_content()
             for issue_number in release_note.get_all_issue_numbers():
                 self._warn_duplicates(issue_number, release_note, existing_issue_numbers)
             if not valid_content:
+                self.warnings_found = True
                 continue
             self._warn_github_issue_not_found(release_note.issue_number, release_note)
 
@@ -224,6 +229,10 @@ def main() -> None:
         return
     validator = ReleaseNoteValidator(RELEASE_NOTES_DIR, REPO_URL)
     validator.validate(staged_files)
+
+    if validator.warnings_found:
+        exit(1)
+    exit(0)
 
 
 if __name__ == "__main__":
