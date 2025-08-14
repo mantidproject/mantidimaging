@@ -117,11 +117,26 @@ class GitHubIssueChecker:
 
     def __init__(self, repo_url: str) -> None:
         self.repo_url = repo_url
+        self.network_available = False
+        self._check_network_availability()
+
+    def _check_network_availability(self) -> None:
+        """
+        Set nework availability based on connectivity to the GitHub repository.
+        """
+        try:
+            response = requests.get("https://github.com", timeout=5)
+            self.network_available = response.status_code == 200
+        except requests.RequestException:
+            self.network_available = False
+            print("Warning: Network unavailable, skipping GitHub issue existence checks for all files.")
 
     def check_issue_exists(self, issue_number: str) -> bool:
         """
         Check if a GitHub issu or PR exists based on a given issue number.
         """
+        if not self.network_available:
+            return False
         url_issue = f"{self.repo_url}/issues/{issue_number}"
         try:
             response = requests.get(url_issue, timeout=5)
