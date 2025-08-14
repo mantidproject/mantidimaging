@@ -10,7 +10,7 @@ import re
 import requests
 import subprocess
 
-RELEASE_NOTES_DIR = "docs/release_notes/next"
+RELEASE_NOTES_DIR: Path = Path("docs/release_notes/next")
 REPO_URL = "https://github.com/mantidproject/mantidimaging"
 
 
@@ -90,11 +90,11 @@ class FindStagedReleaseNotes:
     """
     Find staged release notes in a given target directory.
     """
+    
+    def __init__(self, target_directory: Path) -> None:
+        self.target_directory: Path = target_directory
 
-    def __init__(self, target_directory: str) -> None:
-        self.target_directory = target_directory
-
-    def get_staged_files(self) -> list[str]:
+    def get_staged_files(self) -> list[Path]:
         """
         Returns a list of file paths that are staged for commit from the target directory.
         """
@@ -104,8 +104,8 @@ class FindStagedReleaseNotes:
         # Convert staged files to a list of path objects, then filter by target directory
         stage_files = [Path(file.strip()) for file in result.stdout.splitlines()]
         release_notes = [
-            str(file) for file in stage_files
-            if self.target_directory in file.parents or file.parent == Path(self.target_directory)
+            file for file in stage_files
+            if self.target_directory in file.parents or file.parent == self.target_directory
         ]
         return release_notes
 
@@ -136,8 +136,8 @@ class ReleaseNoteDirectory:
     Manages a directory of release notes, providing methods to list files and check for issue numbers.
     """
 
-    def __init__(self, directory: str) -> None:
-        self.directory = Path(directory)
+    def __init__(self, directory: Path) -> None:
+        self.directory: Path = directory
 
     def list_files(self, exclude_files: list[Path] = None) -> list[ReleaseNote]:
         """
@@ -164,7 +164,7 @@ class ReleaseNoteValidator:
     Centralise all validation logic to check the format of release notes.
     """
 
-    def __init__(self, release_notes_dir: str, repo_url: str) -> None:
+    def __init__(self, release_notes_dir: Path, repo_url: str) -> None:
         self.release_notes_dir = ReleaseNoteDirectory(release_notes_dir)
         self.issue_checker = GitHubIssueChecker(repo_url)
 
@@ -179,11 +179,10 @@ class ReleaseNoteValidator:
         if issue_number and not self.issue_checker.check_issue_exists(issue_number):
             print(f"Warning: Issue number '{issue_number}' in {note.name} does not exist on GitHub.")
 
-    def validate(self, staged_files: list[str]) -> None:
-        staged_filepaths = [Path(file) for file in staged_files]
-        existing_issue_numbers = self.release_notes_dir.get_issue_numbers(exclude_files=staged_filepaths)
+    def validate(self, staged_files: list[Path]) -> None:
+        existing_issue_numbers = self.release_notes_dir.get_issue_numbers(exclude_files=staged_files)
 
-        for file in staged_filepaths:
+        for file in staged_files:
             release_note = ReleaseNote(file)
             valid_filename = release_note.validate_filename()
 
@@ -204,12 +203,10 @@ class ReleaseNoteValidator:
 
 
 def main() -> None:
-    staged_files = [Path(file) for file in FindStagedReleaseNotes(RELEASE_NOTES_DIR).get_staged_files()]
-
+    staged_files = FindStagedReleaseNotes(RELEASE_NOTES_DIR).get_staged_files()
     if not staged_files:
         print("No staged release notes found.")
         return
-
     validator = ReleaseNoteValidator(RELEASE_NOTES_DIR, REPO_URL)
     validator.validate(staged_files)
 
