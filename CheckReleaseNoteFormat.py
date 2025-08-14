@@ -14,6 +14,25 @@ RELEASE_NOTES_DIR: Path = Path("docs/release_notes/next")
 REPO_URL = "https://github.com/mantidproject/mantidimaging"
 
 
+class WarningCollector:
+    """Collect warnings during the validation process."""
+    _instance: WarningCollector | None = None
+    warnings: list[str]
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.warnings = []
+        return cls._instance
+
+    def warn(self, message: str) -> None:
+        self.warnings.append(message)
+
+    def print_warnings(self) -> None:
+        if self.warnings:
+            print("\n".join(self.warnings))
+
+
 class ReleaseNote:
     """
     Represents a release note file with its properties and validation methods.
@@ -22,19 +41,20 @@ class ReleaseNote:
     CONTENT_PATTERN = re.compile(r"#(\d+):\s+.+")  # Matches "#1234: Some description"
 
     def __init__(self, filepath: Path) -> None:
-        self.filepath = filepath
-        self.name = filepath.name
-        self.prefix = None
-        self.issue_number = None
-        self.content_issue_number = None
-        self.content = None
+        self.filepath: Path = filepath
+        self.name: str = filepath.name
+        self.prefix: str | None = None
+        self.issue_number: str | None = None
+        self.content_issue_number: str | None = None
+        self.content: str | None = None
+        self.warning_collector: WarningCollector = WarningCollector()
 
     def validate_filename(self) -> bool:
         match = self.FILENAME_PATTERN.match(self.name)
         if not match:
-            print(f"Warning: Filename '{self.name}' is invalid.\n"
-                  "  Expected format: <fix|dev|feature>-<issue_number>-<description>\n"
-                  "  Example: dev-2769-release_notes_pre-commit")
+            self.warning_collector.warn(f"Warning: Filename '{self.name}' is invalid.\n"
+                                        "  Expected format: <fix|dev|feature>-<issue_number>-<description>\n"
+                                        "  Example: dev-2769-release_notes_pre-commit")
             return False
         self.prefix, self.issue_number = match.group(1), match.group(2)
         return True
@@ -43,7 +63,8 @@ class ReleaseNote:
         try:
             self.content = self.filepath.read_text(encoding='utf-8').strip()
         except (FileNotFoundError, UnicodeDecodeError) as file_error:
-            print(f"Error reading {self.filepath}: {file_error}")
+            self.warning_collector.warn(f"Error reading {self.filepath}: {file_error}. "
+                                        "Please ensure the file exists and is readable before committing.")
             self.content = None
 
     def validate_content(self) -> bool:
@@ -54,18 +75,20 @@ class ReleaseNote:
         if self.content is None:
             self.load_content()
         if self.content is None:
-            print(f"Warning: No content loaded for {self.filepath}.")
             return False
 
         match = self.CONTENT_PATTERN.search(self.content)
         if not match:
-            print(f"Warning: Content in {self.name} does not match required pattern '#<issue_number>: <description>'.")
+            self.warning_collector.warn(
+                f"Warning: Content in {self.name} does not match required pattern '#<issue_number>: <description>'. "
+                "Please ensure the content starts with '#<issue_number>: <description>'.")
             return False
 
         self.content_issue_number = match.group(1)
         if self.content_issue_number != self.issue_number:
-            print(f"Warning: Issue number in content '{self.content_issue_number}' "
-                  f"does not match filename '{self.issue_number}' in {self.name}.")
+            self.warning_collector.warn(
+                f"Warning: Issue number in content '{self.content_issue_number}' "
+                f"does not match filename '{self.issue_number}' in {self.name}. Both should match.")
             return False
 
         return True
@@ -90,7 +113,7 @@ class FindStagedReleaseNotes:
     """
     Find staged release notes in a given target directory.
     """
-    
+
     def __init__(self, target_directory: Path) -> None:
         self.target_directory: Path = target_directory
 
@@ -116,13 +139,14 @@ class GitHubIssueChecker:
     """
 
     def __init__(self, repo_url: str) -> None:
-        self.repo_url = repo_url
-        self.network_available = False
+        self.repo_url: str = repo_url
+        self.network_available: bool = False
+        self.warning_collector: WarningCollector = WarningCollector()
         self._check_network_availability()
 
     def _check_network_availability(self) -> None:
         """
-        Set nework availability based on connectivity to the GitHub repository.
+        Set network availability based on connectivity to the GitHub repository.
         """
         try:
             response = requests.get("https://github.com", timeout=5)
@@ -142,7 +166,8 @@ class GitHubIssueChecker:
             response = requests.get(url_issue, timeout=5)
             return response.status_code == 200
         except requests.RequestException as response_error:
-            print(f"Error checking issue {issue_number}: {response_error}")
+            self.warning_collector.warn(f"Error checking issue {issue_number}: {response_error}. "
+                                        "This is likely due to network issues. Skipping GitHub issue existence checks.")
             return False
 
 
@@ -153,6 +178,7 @@ class ReleaseNoteDirectory:
 
     def __init__(self, directory: Path) -> None:
         self.directory: Path = directory
+        self.warning_collector: WarningCollector = WarningCollector()
 
     def list_files(self, exclude_files: list[Path] = None) -> list[ReleaseNote]:
         """
@@ -180,24 +206,26 @@ class ReleaseNoteValidator:
     """
 
     def __init__(self, release_notes_dir: Path, repo_url: str) -> None:
-        self.release_notes_dir = ReleaseNoteDirectory(release_notes_dir)
-        self.issue_checker = GitHubIssueChecker(repo_url)
-        self.warnings_found = False
+        self.release_notes_dir: ReleaseNoteDirectory = ReleaseNoteDirectory(release_notes_dir)
+        self.issue_checker: GitHubIssueChecker = GitHubIssueChecker(repo_url)
+        self.warning_collector: WarningCollector = WarningCollector()
 
     def _warn_duplicates(self, issue_number: str, note: ReleaseNote, existing_issue_numbers: set[str]) -> None:
         """Check for duplicate issue numbers in the filename and file content"""
         if issue_number and issue_number in existing_issue_numbers:
-            print(f"Warning: Issue number '{issue_number}' in {note.name} is a duplicate of an existing "
-                  f"issue number in the same directory.")
-            self.warnings_found = True
+            self.warning_collector.warn(
+                f"Warning: Issue number '{issue_number}' in {note.name} is a duplicate of an existing "
+                f"issue number in the same directory. Release notes should have unique issue numbers.")
 
     def _warn_github_issue_not_found(self, issue_number: str, note: ReleaseNote) -> None:
         """Check for GitHub issue existence"""
         if issue_number and not self.issue_checker.check_issue_exists(issue_number):
-            print(f"Warning: Issue number '{issue_number}' in {note.name} does not exist on GitHub.")
-            self.warnings_found = True
+            self.warning_collector.warn(
+                f"Warning: Issue number '{issue_number}' in {note.name} does not exist on GitHub. "
+                "Release notes should reference existing issues or PR.")
 
     def validate(self, staged_files: list[Path]) -> None:
+        """ Validate staged release notes for correct format and content."""
         existing_issue_numbers = self.release_notes_dir.get_issue_numbers(exclude_files=staged_files)
 
         for file in staged_files:
@@ -208,21 +236,20 @@ class ReleaseNoteValidator:
                 match = ReleaseNote.CONTENT_PATTERN.search(release_note.content or "")
                 if match:
                     content_issue_number = match.group(1)
-                    print(f"Warning: Filename '{release_note.name}' is missing a valid issue number, "
-                          f"but content has the issue number '{content_issue_number}'.")
-                self.warnings_found = True
+                    self.warning_collector.warn(
+                        f"Warning: Filename '{release_note.name}' is missing a valid issue number, "
+                        f"but content has the issue number '{content_issue_number}'. "
+                        "Both the filename and content should have matching issue numbers.")
                 continue
 
-            valid_content = release_note.validate_content()
+            release_note.validate_content()
             for issue_number in release_note.get_all_issue_numbers():
                 self._warn_duplicates(issue_number, release_note, existing_issue_numbers)
-            if not valid_content:
-                self.warnings_found = True
-                continue
             self._warn_github_issue_not_found(release_note.issue_number, release_note)
 
 
 def main() -> None:
+    warning_collector = WarningCollector()
     staged_files = FindStagedReleaseNotes(RELEASE_NOTES_DIR).get_staged_files()
     if not staged_files:
         print("No staged release notes found.")
@@ -230,7 +257,8 @@ def main() -> None:
     validator = ReleaseNoteValidator(RELEASE_NOTES_DIR, REPO_URL)
     validator.validate(staged_files)
 
-    if validator.warnings_found:
+    if warning_collector.warnings:
+        warning_collector.print_warnings()
         exit(1)
     exit(0)
 
