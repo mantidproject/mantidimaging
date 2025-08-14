@@ -67,7 +67,13 @@ class ReconstructionWindowTest(BaseEyesTest):
 
         self._show_recon_window()
 
-        self.check_target(widget=self.imaging.recon)
+        QApplication.processEvents()
+
+        error_message = self.imaging.recon.statusMessageTextEdit.toPlainText()
+
+        assert "NaN(s) found in the stack" in error_message
+        assert "Zero(es) found in the stack" in error_message
+        assert "Negative value(s) found in the stack" in error_message
 
     def test_reconstruction_window_colour_palette_dialog(self):
         self._load_strict_data_set()
