@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import copy
 import csv
 import threading
 from enum import Enum
@@ -264,38 +265,34 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         queue = roi_to_process_queue
         mask = image_nan_mask_dict
         spec_data_dict = spectrum_data_dict
-        with self.spectrum_calculation_lock:
-            roi_name = list(queue.keys())[0]
-            roi = queue[roi_name]
-            chunk_size = 100
-            if chunk_size > 0:
-                nanInds = np.argwhere(np.isnan(mask[roi_name]))
-                chunk_start = int(nanInds[0, 0])
-                if len(nanInds) > chunk_size:
-                    chunk_end = int(nanInds[chunk_size, 0])
-                else:
-                    chunk_end = int(nanInds[-1, 0]) + 1
+        roi_name = list(queue.keys())[0]
+        roi = queue[roi_name]
+        chunk_size = 100
+        if chunk_size > 0:
+            nanInds = np.argwhere(np.isnan(mask[roi_name]))
+            chunk_start = int(nanInds[0, 0])
+            if len(nanInds) > chunk_size:
+                chunk_end = int(nanInds[chunk_size, 0])
             else:
-                chunk_start, chunk_end = (0, -1)
+                chunk_end = int(nanInds[-1, 0]) + 1
+        else:
+            chunk_start, chunk_end = (0, -1)
 
-            sample_roi = roi.as_sensible_roi()
-            open_beam_roi = self.view.get_open_beam_roi()
-            spectrum = self.model.get_spectrum(sample_roi,
-                                               self.spectrum_mode,
-                                               self.view.shuttercount_norm_enabled(),
-                                               chunk_start,
-                                               chunk_end,
-                                               open_beam_roi=open_beam_roi)
+        sample_roi = roi.as_sensible_roi()
+        open_beam_roi = self.view.get_open_beam_roi()
+        spectrum = self.model.get_spectrum(sample_roi,
+                                           self.spectrum_mode,
+                                           self.view.shuttercount_norm_enabled(),
+                                           chunk_start,
+                                           chunk_end,
+                                           open_beam_roi=open_beam_roi)
 
-            spectrum = self.model.get_spectrum(roi.as_sensible_roi(), self.spectrum_mode,
-                                               self.view.shuttercount_norm_enabled(), chunk_start, chunk_end)
-
-            for i in range(len(spectrum)):
-                np.put(spec_data_dict[roi_name], chunk_start + i, spectrum[i])
-                if np.isnan(spectrum[i]):
-                    mask[roi_name][chunk_start + i] = np.ma.masked
-                else:
-                    np.put(mask[roi_name], chunk_start + i, spectrum[i])
+        for i in range(len(spectrum)):
+            np.put(spec_data_dict[roi_name], chunk_start + i, spectrum[i])
+            if np.isnan(spectrum[i]):
+                mask[roi_name][chunk_start + i] = np.ma.masked
+            else:
+                np.put(mask[roi_name], chunk_start + i, spectrum[i])
 
         return queue, mask, spec_data_dict
 
@@ -306,9 +303,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.thread = TaskWorkerThread()
         self.thread.task_function = self.run_spectrum_calculation
         self.thread.kwargs = {
-            "roi_to_process_queue": self.roi_to_process_queue,
-            "image_nan_mask_dict": self.image_nan_mask_dict,
-            "spectrum_data_dict": self.view.spectrum_widget.spectrum_data_dict
+            "roi_to_process_queue": self.roi_to_process_queue.copy(),
+            "image_nan_mask_dict": self.image_nan_mask_dict.copy(),
+            "spectrum_data_dict": copy.deepcopy(self.view.spectrum_widget.spectrum_data_dict)
         }
 
         self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
