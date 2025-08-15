@@ -12,10 +12,10 @@ from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
 from mantidimaging.gui.widgets.indicator_icon.view import IndicatorIconView
 from mantidimaging.core.utility import finder
 
-OVERLAY_COLOUR_NAN = [255, 0, 200, 255]
-OVERLAY_COLOUR_ZERO = [255, 255, 0, 255]
-OVERLAY_COLOUR_NEGATIVE = [255, 170, 0, 255]
-OVERLAY_COLOUR_MESSAGE = [0, 128, 255, 255]
+OVERLAY_COLOUR_NAN = [200, 0, 200, 255]
+OVERLAY_COLOUR_ZERO = [255, 140, 0, 255]
+OVERLAY_COLOUR_NEGATIVE = [0, 180, 0, 255]
+OVERLAY_COLOUR_MESSAGE = [0, 120, 255, 255]
 
 
 class BadDataCheck:
