@@ -1,0 +1,1 @@
+#2640: Create a Pre-Commit check that validates the format of a release notes' filename and contents. The Pre-commit also checks for duplicate issue/PR numbers in the same directory and validates that the issue number matches an existing issue/PR in the remote repository.
