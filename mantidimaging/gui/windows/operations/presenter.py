@@ -277,7 +277,7 @@ class FiltersWindowPresenter(BasePresenter):
         stack_choice = StackChoicePresenter(self.original_images_stack[stack_uuid], new_stack, self)
         del self.original_images_stack[stack_uuid]
         if self.model.show_negative_overlay():
-            stack_choice.enable_nonpositive_check()
+            stack_choice.enable_value_check()
         stack_choice.show()
 
         while not stack_choice.done:

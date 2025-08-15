@@ -22,7 +22,7 @@ after_pen = (0, 200, 0)
 diff_pen = (0, 0, 200)
 
 OVERLAY_THRESHOLD = 1e-3
-OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
+OVERLAY_COLOUR_DIFFERENCE = [0, 255, 255, 255]
 
 
 def _data_valid_for_histogram(data) -> bool:
@@ -151,13 +151,13 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_diff_overlay.setLookupTable(lut)
 
     def add_negative_overlay(self):
-        self.imageview_after.enable_nonpositive_check()
+        self.imageview_after.enable_value_check()
 
     def hide_difference_overlay(self):
         self.image_diff_overlay.setVisible(False)
 
     def hide_negative_overlay(self):
-        self.imageview_after.enable_nonpositive_check(False)
+        self.imageview_after.enable_value_check(False)
 
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox
