@@ -2,23 +2,21 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
-
-from math import degrees
 from typing import TYPE_CHECKING
 
-from matplotlib.figure import Figure
+import numpy
+from math import degrees
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.data.geometry import Geometry
-from mantidimaging.core.utility.data_containers import ScalarCoR
+from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.geometry.model import GeometryWindowModel
-
-from cil.utilities.display import show_geometry
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.geometry.view import GeometryWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main import MainWindowView
+
+# @dataclass
 
 
 class GeometryWindowPresenter(BasePresenter):
@@ -30,29 +28,22 @@ class GeometryWindowPresenter(BasePresenter):
         self.model = GeometryWindowModel()
         self.main_window = main_window
 
-        # self._connect_signals()
-
     def handle_stack_changed(self) -> None:
+        print("HANDLE STACK CHANGED CALL")
+
         current_stack = self.main_window.get_stack(self.view.current_stack)
 
         if current_stack.geometry is None:
-            self.handle_no_geometry_exists()
+            self.set_default_new_parameters(current_stack)
+            self.view.set_widget_stack_page(1)
         else:
-            self.handle_geometry_exists(current_stack)
+            self.update_parameters(current_stack)
+            self.view.set_widget_stack_page(0)
 
-        self.update_plot(current_stack)
-
-    def handle_geometry_exists(self, stack: ImageStack) -> None:
-        self.update_parameters(stack)
-        self.view.set_widget_stack_page(0)
-
-    def handle_no_geometry_exists(self) -> None:
-        self.view.set_widget_stack_page(1)
+        self.refresh_plot(current_stack)
 
     def update_parameters(self, stack: ImageStack) -> None:
-        geometry_type = "N/A"
-        if stack.geometry is not None:
-            geometry_type = f"{stack.geometry.geom_type}{stack.geometry.dimension}"
+        geometry_type = f"{stack.geometry.geom_type}{stack.geometry.dimension}"
 
         angle_range = "N/A"
         real_projection_angles = stack.real_projection_angles()
@@ -61,29 +52,23 @@ class GeometryWindowPresenter(BasePresenter):
             max_angle = degrees(real_projection_angles.value[-1])
             angle_range = f"{min_angle:.2f}° - {max_angle:.2f}°"
 
-        mi_cor = .0
-        mi_tilt = .0
-        if stack.geometry is not None:
-            mi_cor = stack.geometry.cor.value
-            mi_tilt = stack.geometry.tilt
-            print(f"Got COR and TILT from stack: {mi_cor}, {mi_tilt}")
+        mi_cor = stack.geometry.cor.value
+        mi_tilt = stack.geometry.tilt
 
         self.view.type = geometry_type
         self.view.angles = angle_range
         self.view.rotation_axis = mi_cor
         self.view.tilt = mi_tilt
 
-    def update_plot(self, stack: ImageStack) -> None:
-        geometry = stack.geometry
+    def set_default_new_parameters(self, stack: ImageStack) -> None:
+        default_cor = stack.width / 2
 
-        if geometry is None:
-            self.view.clear_plot()
-            return
+        self.view.new_cor = default_cor
+        self.view.new_tilt = .0
+        self.view.new_min_angle = 0
+        self.view.new_max_angle = 360
 
-        figure: Figure = show_geometry(geometry).figure
-        self.view.update_plot(figure)
-
-    def handle_parameter_updates(self):
+    def handle_parameter_updates(self) -> None:
         updated_cor = ScalarCoR(self.view.rotation_axis)
         updated_tilt = self.view.tilt
 
@@ -91,10 +76,29 @@ class GeometryWindowPresenter(BasePresenter):
 
         current_stack.geometry.set_geometry_from_cor_tilt(updated_cor, updated_tilt)
 
-        self.update_plot(current_stack)
+        self.refresh_plot(current_stack)
 
-    def handle_create_geometry(self):
-        new_cor = self.view.new_cor
+    def refresh_plot(self, stack: ImageStack) -> None:
+        figure = self.model.generate_figure(stack)
+
+        if figure is None:
+            self.view.clear_plot()
+        else:
+            self.view.refresh_plot(figure)
+
+    def handle_create_new_geometry(self) -> None:
+        stack = self.main_window.get_stack(self.view.current_stack)
+
+        new_cor = ScalarCoR(self.view.new_cor)
         new_tilt = self.view.new_tilt
         new_min_angle = self.view.new_min_angle
         new_max_angle = self.view.new_max_angle
+
+        new_angles = ProjectionAngles(numpy.linspace(new_min_angle, new_max_angle, stack.num_projections))
+        stack.set_projection_angles(new_angles)
+        stack.set_geometry()
+        stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
+
+        self.handle_stack_changed()
+
+

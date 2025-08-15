@@ -4,12 +4,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-import io
 from uuid import UUID
 
-import numpy
-
-from PyQt5.QtCore import Qt
+from PyQt5 import QtGui
+from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import (
     QScrollArea,
     QFrame,
@@ -21,33 +20,38 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QSizePolicy,
-    QSpacerItem,
     QComboBox,
     QPushButton,
     QStackedWidget,
+    QApplication,
+    QStyle,
 )
-from pyqtgraph.dockarea.Container import StackedWidget
+
+import matplotlib
+from matplotlib import pyplot
+from matplotlib.figure import Figure
+
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qtagg import (
+    FigureCanvasQTAgg as FigureCanvas,
+    NavigationToolbar2QT as NavigationToolbar
+)
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from mantidimaging.gui.windows.geometry.presenter import GeometryWindowPresenter
 
-## EXPERIMENTAL
-import matplotlib
-
-matplotlib.use('Qt5Agg')
-from matplotlib.backends.backend_qtagg import (FigureCanvasQTAgg as FigureCanvas, NavigationToolbar2QT as
-                                               NavigationToolbar)
-from matplotlib.figure import Figure
-
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
 
+class CustomRangeSpinBox(QDoubleSpinBox):
+    def __init__(self, min: int = -10000, max: int = 10000, parent=None):
+        super().__init__(parent)
+        self.setRange(min,max)
 
 class GeometryWindowView(BaseMainWindowView):
 
     def __init__(self, main_window: MainWindowView):
-        # super().__init__(None, 'gui/ui/geometry_window.ui')
         super().__init__(parent=None)
 
         self.main_window = main_window
@@ -56,158 +60,229 @@ class GeometryWindowView(BaseMainWindowView):
         self._init_window()
         self._init_widgets()
         self._init_layout()
-        self._connect_signals()
+
+        self._init_stack_selector()
+        self._init_connect_signals()
+
+    # ------------ INITIALISATION METHODS ------------
 
     def _init_window(self) -> None:
         self.setWindowTitle("Geometry")
         self.resize(1300, 800)
 
     def _init_widgets(self) -> None:
-        ## Parameters pane
+        ## Left pane
 
         self.stackSelector = DatasetSelectorWidgetView(self)
 
-        self.stackedWidget = QStackedWidget()
+        self.geometryPagesWidget = QStackedWidget()
 
         # Parameters page
 
         self.typeDisplay = QLabel("N/A")
         self.angleDisplay = QLabel("N/A")
-        self.corSpinBox = QDoubleSpinBox()
-        self.tiltSpinBox = QDoubleSpinBox()
+        self.corSpinBox = CustomRangeSpinBox()
+        self.tiltSpinBox = CustomRangeSpinBox(-45, 45)
 
         # New Geometry page
 
-        self.typeSelector = QComboBox()
-        self.minAngleSpinBox = QDoubleSpinBox()
-        self.maxAngleSpinBox = QDoubleSpinBox()
+        self.geomTypeSelector = QComboBox()
+        self.minAngleSpinBox = CustomRangeSpinBox(-360, 360)
+        self.maxAngleSpinBox = CustomRangeSpinBox(-360, 360)
         self.loadAnglesButton = QPushButton("Load Angles from File")
-        self.newCorSpinBox = QDoubleSpinBox()
-        self.newTiltSpinBox = QDoubleSpinBox()
+        self.newCorSpinBox = CustomRangeSpinBox()
+        self.newTiltSpinBox = CustomRangeSpinBox(-45, 45)
         self.createGeometryButton = QPushButton("Create Geometry")
 
         ## Visualiser pane
 
         self.figureCanvas = FigureCanvas()
-        self.figureToolbar = NavigationToolbar(self.figureCanvas, self)
+        # self.figureToolbar = NavigationToolbar(self.figureCanvas, self)
 
     def _init_layout(self) -> None:
-        central_container = QWidget()
-        self.setCentralWidget(central_container)
-        main_layout = QHBoxLayout(central_container)
+        central_container = QWidget(self)
+        central_layout = QHBoxLayout(central_container)
 
-        main_layout.addWidget(self._build_left_pane())
-        main_layout.addWidget(self._build_plot_visualiser())
+        central_layout.addWidget(self._build_left_pane())
+        central_layout.addWidget(self._build_plot_visualiser())
+
+        self.setCentralWidget(central_container)
 
     def _build_left_pane(self) -> QWidget:
         left_scroll_area = QScrollArea()
         left_scroll_area.setFrameShape(QFrame.NoFrame)
         left_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         left_scroll_area.setWidgetResizable(True)
+        left_scroll_area.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred))
 
         left_container = QWidget()
-        left_scroll_area.setWidget(left_container)
-
         left_layout = QVBoxLayout(left_container)
-        left_layout.setContentsMargins(9, 9, 9, 9)
-        left_layout.setSpacing(9)
 
-        self.stackedWidget.addWidget(self._build_parameters_page())  # page 0 (Geometry exists)
-        self.stackedWidget.addWidget(self._build_new_geometry_page())  # page 1 (Geometry doesn't exist)
-        self.stackedWidget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-
-        left_layout.addWidget(self._build_data_group())
-        left_layout.addWidget(self.stackedWidget)
+        left_layout.addWidget(self._build_imagestack_selector_group())
+        left_layout.addWidget(self._build_geometry_pages_widget())
         left_layout.addStretch()
 
+        left_scroll_area.setWidget(left_container)
         return left_scroll_area
 
-    def _build_data_group(self) -> QWidget:
-        data_group = QGroupBox("Data")
-        data_layout = QFormLayout(data_group)
-        data_layout.addRow(self.stackSelector)
+    def _build_imagestack_selector_group(self) -> QWidget:
+        stack_selector_group = QGroupBox("Stack")
+        stack_selector_layout = QFormLayout(stack_selector_group)
+        stack_selector_layout.addRow(self.stackSelector)
 
-        self.stackSelector.presenter.show_stacks = True
-        self.stackSelector.stack_selected_uuid.connect(self.presenter.handle_stack_changed)
-        self.stackSelector.subscribe_to_main_window(self.main_window)
-        # self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_CURRENT_STACK))
-        self.stackSelector.select_eligible_stack()
+        return stack_selector_group
 
-        return data_group
+    def _build_geometry_pages_widget(self) -> QWidget:
+        self.geometryPagesWidget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 
-    def _build_parameters_page(self) -> QWidget:
-        params_group = QGroupBox("Parameters")
-        params_group.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        parameters_layout = QFormLayout(params_group)
-        # parameters_layout.setContentsMargins(9, 9, 9, 9)
-        parameters_layout.addRow(QLabel("Type:"), self.typeDisplay)
-        parameters_layout.addRow(QLabel("Angles:"), self.angleDisplay)
-        parameters_layout.addRow(QLabel("COR:"), self.corSpinBox)
-        parameters_layout.addRow(QLabel("Tilt:"), self.tiltSpinBox)
+        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())  # page 0 (Geometry exists)
+        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())  # page 1 (Geometry doesn't exist)
 
-        return params_group
+        return self.geometryPagesWidget
+
+    def _build_geometry_data_display_page(self) -> QWidget:
+        data_display_page = QWidget()
+        data_display_layout = QVBoxLayout(data_display_page)
+
+        data_display_layout.addWidget(self._build_data_display_group())
+        data_display_layout.addStretch()
+
+        return data_display_page
+
+    def _build_data_display_group(self) -> QWidget:
+        data_display_group = QGroupBox("Geometry Data")
+        data_display_group.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        data_display_group_layout = QFormLayout(data_display_group)
+
+        data_display_group_layout.addRow(QLabel("Type:"), self.typeDisplay)
+        data_display_group_layout.addRow(QLabel("Angles:"), self.angleDisplay)
+        data_display_group_layout.addRow(QLabel("COR:"), self.corSpinBox)
+        data_display_group_layout.addRow(QLabel("Tilt:"), self.tiltSpinBox)
+
+        return data_display_group
 
     def _build_new_geometry_page(self) -> QWidget:
         new_geometry_page = QWidget()
-        new_geometry_page.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        new_geometry_page_layout = QVBoxLayout(new_geometry_page)
+        new_geometry_layout = QVBoxLayout(new_geometry_page)
 
-        self.typeSelector.addItem("Parallel 3D")
-        self.typeSelector.addItem("Conebeam 3D")
-
-        new_geometry_group = QGroupBox("New Geometry")
-        new_geometry_form = QFormLayout(new_geometry_group)
-        new_geometry_form.addRow(QLabel("Type:"), self.typeSelector)
-        #new_geometry_form.addRow()
-        new_geometry_form.addRow(QLabel("Angles:"), QLabel("Min: - Max:"))
-        new_geometry_form.addRow(self.loadAnglesButton)
-        #new_geometry_form.addRow()
-        new_geometry_form.addRow(QLabel("COR:"), self.newCorSpinBox)
-        new_geometry_form.addRow(QLabel("Tilt:"), self.newTiltSpinBox)
-
-        new_geometry_page_layout.addWidget(QLabel("! No Geometry for selected stack"))
-        new_geometry_page_layout.addWidget(new_geometry_group)
-        new_geometry_page_layout.addWidget(self.createGeometryButton)
+        new_geometry_layout.addWidget(self._build_warning_message())
+        new_geometry_layout.addWidget(self._build_new_params_group())
+        new_geometry_layout.addWidget(self.createGeometryButton)
+        new_geometry_layout.addStretch()
 
         return new_geometry_page
 
+    def _build_warning_message(self) -> QWidget:
+        style = QApplication.style()
+        font_pt = self.font().pointSizeF()
+        icon_size = int(font_pt * 1.8)
+        pixmap = style.standardIcon(QStyle.SP_MessageBoxWarning).pixmap(icon_size, icon_size)
+
+        icon = QLabel()
+        icon.setPixmap(pixmap)
+        icon.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        text = QLabel("No Geometry for selected stack")
+        text.setWordWrap(True)
+        text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        warning_message = QWidget()
+        warning_layout = QHBoxLayout(warning_message)
+        warning_layout.setContentsMargins(4, 2, 4, 2)
+        warning_layout.setSpacing(8)
+        warning_layout.addWidget(icon)
+        warning_layout.addWidget(text)
+
+        return warning_message
+
+    def _build_new_params_group(self) -> QWidget:
+        new_params_group = QGroupBox("New Geometry")
+        new_params_layout = QFormLayout(new_params_group)
+
+        self.geomTypeSelector.addItem("Parallel 3D")
+        self.geomTypeSelector.addItem("Conebeam 3D")
+
+        new_params_layout.addRow(QLabel("Type:"), self.geomTypeSelector)
+        new_params_layout.addRow(self._build_angle_range_container())
+        new_params_layout.addRow(QLabel(""), self.loadAnglesButton)
+        new_params_layout.addRow(QLabel("COR:"), self.newCorSpinBox)
+        new_params_layout.addRow(QLabel("Tilt:"), self.newTiltSpinBox)
+
+        return new_params_group
+
+    def _build_angle_range_container(self) -> QWidget:
+        angle_range_container = QWidget()
+        angle_range_layout = QHBoxLayout(angle_range_container)
+
+        angle_range_layout.addWidget(QLabel("Angles:"))
+        angle_range_layout.addWidget(QLabel("Min"))
+        angle_range_layout.addWidget(self.minAngleSpinBox)
+        angle_range_layout.addWidget(QLabel("Max"))
+        angle_range_layout.addWidget(self.maxAngleSpinBox)
+
+        return angle_range_container
+
     def _build_plot_visualiser(self) -> QWidget:
         plot_visualiser = QWidget()
-        image_layout = QVBoxLayout(plot_visualiser)
-        image_layout.setSpacing(0)
-        image_layout.setSizeConstraint(image_layout.SetMaximumSize)
-
-        image_layout.addWidget(self.figureCanvas)
-        image_layout.addWidget(self.figureToolbar)
+        visualiser_layout = QVBoxLayout(plot_visualiser)
+        visualiser_layout.addWidget(self.figureCanvas)
+        # visualiser_layout.addWidget(self.figureToolbar)
 
         return plot_visualiser
 
-    def _connect_signals(self) -> None:
-        self.createGeometryButton.clicked.connect(self.presenter.handle_create_geometry)
+    def _init_stack_selector(self) -> None:
+        # These stackSelector operations need to happen in this order
+        self.stackSelector.presenter.show_stacks = True
+        self.stackSelector.stack_selected_uuid.connect(self.presenter.handle_stack_changed)
+        self.stackSelector.subscribe_to_main_window(self.main_window)
+        self.stackSelector.select_eligible_stack()
+
+    def _init_connect_signals(self) -> None:
+        self.createGeometryButton.clicked.connect(self.presenter.handle_create_new_geometry)
         self.corSpinBox.valueChanged.connect(self.presenter.handle_parameter_updates)
         self.tiltSpinBox.valueChanged.connect(self.presenter.handle_parameter_updates)
 
+    # ------------ PUBLIC API ------------
+
     def set_widget_stack_page(self, index: int) -> None:
-        self.stackedWidget.setCurrentIndex(index)
+        self.geometryPagesWidget.setCurrentIndex(index)
 
-        page = self.stackedWidget.widget(index)
-        if not page:
-            return
-        hint = page.sizeHint()
-        self.stackedWidget.setMinimumSize(hint)
-        # self.stackedWidget.setFixedSize(self.stackedWidget.)
-        self.stackedWidget.updateGeometry()
-        self.stackedWidget.adjustSize()
-
-    def update_plot(self, figure: Figure) -> None:
-        self.figureCanvas.figure.clear()
-        self.figureCanvas.figure = figure
+    def refresh_plot(self, figure: Figure) -> None:
+        # Clear the plot otherwise pyplot retains the previous figure, leaking memory
+        self.clear_plot()
         figure.set_canvas(self.figureCanvas)
+
+        self.figureCanvas.figure = figure
         self.figureCanvas.draw_idle()
+        # self.figureCanvas.updateGeometry()
+
+        # Trigger a fake resize to manually fit the Canvas within the PyQT window, preventing clipping
+
+        # Solution #1
+        # self.adjustSize()
+
+        # Soluton #2 (might work best despite being janky)
+        old_size = self.size()
+        self.adjustSize()
+        self.resize(old_size)
+
+        # Solution #3
+        # self.figureCanvas.adjustSize()
+        # self.figureCanvas.show()
+
+        # Solution #4 (doesn't work)
+        self.resize(self.size())
+
+        # Solution #5
+        # QApplication.postEvent(self, QResizeEvent(self.size(), self.size()))
 
     def clear_plot(self) -> None:
-        self.figureCanvas.figure.clear()
-        self.figureCanvas.draw()
+        if self.figureCanvas.figure is not None:
+            pyplot.close(self.figureCanvas.figure)
+            self.figureCanvas.figure.clear()
+            self.figureCanvas.draw_idle()
+
+    # ------------ PROPERTY ACCESSORS ------------
 
     @property
     def current_stack(self) -> UUID | None:
@@ -247,23 +322,23 @@ class GeometryWindowView(BaseMainWindowView):
 
     @property
     def new_type(self) -> str:
-        return self.typeSelector.currentText()
+        return self.geomTypeSelector.currentText()
 
     @property
     def new_min_angle(self) -> float:
-        return self.minAnglesSpinBox.value()
+        return self.minAngleSpinBox.value()
 
     @new_min_angle.setter
     def new_min_angle(self, value) -> None:
-        self.minAnglesSpinBox.setValue(value)
+        self.minAngleSpinBox.setValue(value)
 
     @property
     def new_max_angle(self) -> float:
-        return self.maxAnglesSpinBox.value()
+        return self.maxAngleSpinBox.value()
 
     @new_max_angle.setter
     def new_max_angle(self, value) -> None:
-        self.maxAnglesSpinBox.setValue(value)
+        self.maxAngleSpinBox.setValue(value)
 
     @property
     def new_cor(self) -> float:
