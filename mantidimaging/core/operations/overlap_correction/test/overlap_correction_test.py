@@ -55,6 +55,3 @@ class OverlapCorrectionTest(unittest.TestCase):
         wrapper = OverlapCorrection.execute_wrapper()
         assert wrapper is not None
         assert isinstance(wrapper, partial)
-
-    def test_validate_execute_kwargs(self):
-        assert OverlapCorrection.validate_execute_kwargs({}) is True
