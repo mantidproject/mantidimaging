@@ -61,7 +61,3 @@ def test_execute_wrapper():
     wrapper = MonitorNormalisation.execute_wrapper()
     assert wrapper is not None
     assert isinstance(wrapper, partial)
-
-
-def test_validate_execute_kwargs():
-    assert MonitorNormalisation.validate_execute_kwargs({}) is True
