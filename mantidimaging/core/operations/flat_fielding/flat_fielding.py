@@ -264,7 +264,7 @@ class FlatFieldFilter(BaseFilter):
                        use_dark=use_dark)
 
     @staticmethod
-    def validate_execute_kwargs(kwargs):
+    def validate_execute_kwargs(kwargs, images):
         # Validate something is in both path text inputs
         if 'selected_flat_fielding_widget' not in kwargs:
             return False

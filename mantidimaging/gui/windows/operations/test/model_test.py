@@ -46,7 +46,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         orig_exec, orig_validate = f.execute_wrapper, f.validate_execute_kwargs
         self.model.setup_filter("", {})
         f.execute_wrapper = lambda: execute_mock
-        f.validate_execute_kwargs = lambda _: True
+        f.validate_execute_kwargs = lambda _, __: True
 
         return orig_exec, orig_validate
 

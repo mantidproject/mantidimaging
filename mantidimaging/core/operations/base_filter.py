@@ -88,7 +88,7 @@ class BaseFilter:
         return {}
 
     @staticmethod
-    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
+    def validate_execute_kwargs(kwargs: dict[str, Any], images: ImageStack) -> bool:
         return True
 
     @staticmethod
