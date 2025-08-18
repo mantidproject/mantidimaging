@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from functools import partial
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from collections.abc import Callable
 
 import numpy as np
@@ -61,7 +61,3 @@ class MonitorNormalisation(BaseFilter):
     @staticmethod
     def execute_wrapper(*args) -> partial:
         return partial(MonitorNormalisation.filter_func)
-
-    @staticmethod
-    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
-        return True
