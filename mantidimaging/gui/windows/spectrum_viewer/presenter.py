@@ -690,6 +690,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         fit = self.model.fitting_engine.model.evaluate(xvals, params)
         self.view.fittingDisplayWidget.show_fit_line(xvals, fit, color=(0, 128, 255), label="fit", initial=False)
 
+    def on_export_tab_changed(self, index: int):
+        tab_name = self.view.export_tab_widget.tabText(index)
+        if tab_name == "Image":
+            self.update_export_image_view()
+
+    def update_export_image_view(self):
+        image = self.model.get_export_image()
+        if image is not None:
+            self.view.export_image_widget.update_image(image)
+
     def handle_export_table(self) -> None:
         """
         Export the ROI fitting results table to CSV.

@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import QtWidgets
 from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
+from PyQt5.QtWidgets import (QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QModelIndex
 from logging import getLogger
 
@@ -25,6 +25,7 @@ from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import Fi
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget import FitExportFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget import ExportDataTableWidget
+from mantidimaging.gui.widgets.spectrum_widgets.export_image_widget import ExportImageViewWidget
 
 import numpy as np
 
@@ -132,14 +133,24 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.roi_form.exportButton.clicked.connect(self.presenter.handle_export_csv)
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
-        self.exportDataTableWidget = ExportDataTableWidget()
-        self.exportLayout.addWidget(self.exportDataTableWidget)
 
         self.roi_form.table_view.clicked.connect(self.handle_table_click)
 
         self.roi_form.roi_properties_widget.roi_changed.connect(self.presenter.do_adjust_roi)
 
         self.spectrum_widget.roi_changed.connect(self.set_roi_properties)
+
+        self.export_display_tabs = QTabWidget(self)
+        self.export_table_widget = ExportDataTableWidget()
+        self._export_image_widget = ExportImageViewWidget(self)
+
+        self.export_display_tabs.addTab(self.export_table_widget, "Table")
+        self.export_display_tabs.addTab(self._export_image_widget, "Image")
+
+        self.exportLayout.addWidget(self.export_display_tabs)
+        self.export_tab_widget = self.export_display_tabs
+        self.exportDataTableWidget = self.export_table_widget
+        self.export_tab_widget.currentChanged.connect(self.presenter.on_export_tab_changed)
 
         self.experimentSetupFormWidget = ExperimentSetupFormWidget(self.experimentSetupGroupBox)
         self.experimentSetupFormWidget.flight_path = 56.4
@@ -270,7 +281,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return None
 
     def update_export_table(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
-        self.exportDataTableWidget.update_roi_data(roi_name, params, status)
+        self.export_table_widget.update_roi_data(roi_name, params, status)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
@@ -409,6 +420,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.disable_roi_properties()
         else:
             self.set_roi_properties()
+
+    @property
+    def export_image_widget(self):
+        return self._export_image_widget
 
     @property
     def transmission_error_mode(self) -> str:

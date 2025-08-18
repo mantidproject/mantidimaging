@@ -206,6 +206,24 @@ class SpectrumViewerWindowModel:
             return "Stack shapes must match"
         return ""
 
+    def get_export_image(self) -> np.ndarray | None:
+        """Return a 2D image to preview in Export > Image."""
+        def to_2d(stack) -> np.ndarray | None:
+            arr = getattr(stack, "data", None)
+            if arr is None:
+                return None
+            if arr.ndim == 2:
+                return arr
+            if arr.ndim == 3:
+                return arr.mean(axis=0)
+            return None
+        for src in (getattr(self, "normalised_stack", None),
+                    getattr(self, "sample_stack", None)):
+            img = to_2d(src)
+            if img is not None:
+                return img
+        return None
+
     def shuttercount_issue(self) -> str:
         """
         Return an error message if there is an issue with the shutter count data.
