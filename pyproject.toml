@@ -12,7 +12,7 @@ ignore = ["UP014"]
 
 [tool.pyright]
 typeCheckingMode = "basic"
-reportMissingImports = false
+reportMissingImports = true
 pythonVersion = "3.12"
 include = ["mantidimaging/**/*.py"]
 exclude =  ["tests/**/*.py", "test/**/*.py", "**/*test.py"]
