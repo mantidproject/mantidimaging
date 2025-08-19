@@ -330,7 +330,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self._last_logged_roi_coords = coords
 
     def thread_finished_processing(self, thread: TaskWorkerThread) -> None:
-        if thread is not None:
+        if thread.result is not None:
             spectrum = thread.result
             roi_name = thread.kwargs["roi"].name
             chunk_start = thread.kwargs["chunk_start"]
