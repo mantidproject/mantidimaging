@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import copy
 import csv
 import threading
 from enum import Enum
@@ -261,12 +260,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
-    def run_spectrum_calculation(self, roi_to_process_queue, image_nan_mask_dict, spectrum_data_dict):
-        queue = roi_to_process_queue
-        mask = image_nan_mask_dict
-        spec_data_dict = spectrum_data_dict
+    def run_spectrum_calculation(self, roi: SpectrumROI, open_beam_roi: SensibleROI | None, spec_mode: SpecType,
+                                 shutter_norm: bool, chunk_start: int, chunk_end: int) -> np.ndarray:
+        spectrum = self.model.get_spectrum(roi.as_sensible_roi(),
+                                           spec_mode,
+                                           shutter_norm,
+                                           chunk_start,
+                                           chunk_end,
+                                           open_beam_roi=open_beam_roi)
+        return spectrum
+
+    def spectrum_calculation_setup(self) -> tuple[int, int]:
+        queue = self.roi_to_process_queue
+        mask = self.image_nan_mask_dict
         roi_name = list(queue.keys())[0]
-        roi = queue[roi_name]
         chunk_size = 100
         if chunk_size > 0:
             nanInds = np.argwhere(np.isnan(mask[roi_name]))
@@ -278,36 +285,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             chunk_start, chunk_end = (0, -1)
 
-        sample_roi = roi.as_sensible_roi()
-        open_beam_roi = self.view.get_open_beam_roi()
-        spectrum = self.model.get_spectrum(sample_roi,
-                                           self.spectrum_mode,
-                                           self.view.shuttercount_norm_enabled(),
-                                           chunk_start,
-                                           chunk_end,
-                                           open_beam_roi=open_beam_roi)
-
-        for i in range(len(spectrum)):
-            np.put(spec_data_dict[roi_name], chunk_start + i, spectrum[i])
-            if np.isnan(spectrum[i]):
-                mask[roi_name][chunk_start + i] = np.ma.masked
-            else:
-                np.put(mask[roi_name], chunk_start + i, spectrum[i])
-
-        return queue, mask, spec_data_dict
+        return chunk_start, chunk_end
 
     def handle_roi_moved(self) -> None:
         """
         Handle changes to any ROI position and size.
         """
+        chunk_start, chunk_end = self.spectrum_calculation_setup()
         self.thread = TaskWorkerThread()
         self.thread.task_function = self.run_spectrum_calculation
         self.thread.kwargs = {
-            "roi_to_process_queue": self.roi_to_process_queue.copy(),
-            "image_nan_mask_dict": self.image_nan_mask_dict.copy(),
-            "spectrum_data_dict": copy.deepcopy(self.view.spectrum_widget.spectrum_data_dict)
+            "roi": list(self.roi_to_process_queue.values())[0],
+            "open_beam_roi": self.view.get_open_beam_roi(),
+            "spec_mode": self.spectrum_mode,
+            "shutter_norm": self.view.shuttercount_norm_enabled(),
+            "chunk_start": chunk_start,
+            "chunk_end": chunk_end
         }
-
         self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
 
@@ -315,8 +309,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if thread.error is not None:
             raise thread.error
         if self.thread.result is not None:
-            (self.roi_to_process_queue, self.image_nan_mask_dict,
-             self.view.spectrum_widget.spectrum_data_dict) = self.thread.result
+            self.thread_finished_processing(self.thread)
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
         if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
@@ -335,6 +328,20 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             LOG.info("ROI moved: name=%s, new coords=Left: %d, Top: %d, Right: %d, Bottom: %d", self.changed_roi.name,
                      *coords)
             self._last_logged_roi_coords = coords
+
+    def thread_finished_processing(self, thread: TaskWorkerThread) -> None:
+        if thread is not None:
+            spectrum = thread.result
+            roi_name = thread.kwargs["roi"].name
+            chunk_start = thread.kwargs["chunk_start"]
+            spectrum_data_dict = self.view.spectrum_widget.spectrum_data_dict[roi_name]
+            if spectrum_data_dict is not None:
+                for i in range(len(spectrum)):
+                    np.put(spectrum_data_dict, chunk_start + i, spectrum[i])
+                    if np.isnan(spectrum[i]):
+                        self.image_nan_mask_dict[roi_name][chunk_start + i] = np.ma.masked
+                    else:
+                        np.put(self.image_nan_mask_dict[roi_name], chunk_start + i, spectrum[i])
 
     def try_next_mean_chunk(self) -> None:
         if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():
