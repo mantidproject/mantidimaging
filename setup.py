@@ -20,30 +20,63 @@ versions = SourceFileLoader('versions', str(THIS_PATH / 'mantidimaging' / '__ini
 
 
 class GenerateReleaseNotes(Command):
-    description = "Generate release notes"
-    user_options = []
+    """Generate release notes from the `docs/ext/release_notes.py` file."""
+    description = ("Generate release notes\n"
+                   "Usage:\n"
+                   "  python setup.py release_notes [--in-place=True|False] [--version=V.V.V]\n"
+                   "Options:\n"
+                   "  --in-place   Write release notes to docs/release_notes/<version>.rst (default: False)\n"
+                   "  --version    Version string for output file (required if --in-place=True)\n"
+                   "  -h, --help   Show this help message and exit\n"
+                   "Examples:\n"
+                   "  python setup.py release_notes\n"
+                   "  python setup.py release_notes --in-place=True --version=3.0.0\n")
+    user_options = [
+        ("in-place=", None, "Write release notes to docs/release_notes/<version>.rst (default: False)"),
+        ("version=", None, "Version string for output file (required if --in-place=True)"),
+        ("help", "h", "Show this help message and exit"),
+    ]
 
-    def initialize_options(self):
-        pass
+    def initialize_options(self) -> None:
+        self.in_place = False
+        self.version = None
+        self.help = False
 
-    def finalize_options(self):
-        pass
+    def finalize_options(self) -> None:
+        """Convert string to bool if passed as a string"""
+        if isinstance(self.in_place, str):
+            self.in_place = self.in_place.lower() in ("true", "1", "yes")
+        if self.in_place and not self.version:
+            raise ValueError("--version is required when --in-place=True")
 
-    def run(self):
+    def run(self) -> None:
         spec = importlib.util.spec_from_file_location('release_notes',
                                                       str(THIS_PATH / 'docs' / 'ext' / 'release_notes.py'))
         release_notes = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(release_notes)
 
-        print("\nNew Features\n------------")
-        for line in release_notes.ReleaseNotes.make_rst("feature"):
-            print(line)
-        print("\nFixes\n-----")
-        for line in release_notes.ReleaseNotes.make_rst("fix"):
-            print(line)
-        print("\nDeveloper Changes\n-----------------")
-        for line in release_notes.ReleaseNotes.make_rst("dev"):
-            print(line)
+        output_lines = []
+
+        if self.in_place:
+            title = f"Mantid Imaging {self.version}"
+            output_lines.append(title)
+            output_lines.append("=" * len(title))
+
+        output_lines.append("\nNew Features\n------------")
+        output_lines.extend(release_notes.ReleaseNotes.make_rst("feature"))
+        output_lines.append("\nFixes\n-----")
+        output_lines.extend(release_notes.ReleaseNotes.make_rst("fix"))
+        output_lines.append("\nDeveloper Changes\n-----------------")
+        output_lines.extend(release_notes.ReleaseNotes.make_rst("dev"))
+
+        if self.in_place:
+            output_path = THIS_PATH / "docs" / "release_notes" / f"{self.version}.rst"
+            with open(output_path, "x", encoding="utf-8") as file:
+                file.write("\n".join(output_lines))
+            print(f"Release notes written to {output_path}")
+        else:
+            for line in output_lines:
+                print(line)
 
 
 class CompilePyQtUiFiles(Command):
