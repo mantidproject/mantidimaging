@@ -46,7 +46,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         orig_exec, orig_validate = f.execute_wrapper, f.validate_execute_kwargs
         self.model.setup_filter("", {})
         f.execute_wrapper = lambda: execute_mock
-        f.validate_execute_kwargs = lambda _, __: True
+        f.validate_execute_kwargs = lambda _, __: None
 
         return orig_exec, orig_validate
 
@@ -144,6 +144,7 @@ class FiltersWindowModelTest(unittest.TestCase):
         selected_filter_mock.__name__ = mock.Mock()
         selected_filter_mock.__name__.return_value = "Test filter"
         selected_filter_mock.filter_name.return_value = "Test filter"
+        selected_filter_mock.validate_execute_kwargs.return_value = None
         progress_mock = mock.Mock()
 
         callback_mock = mock.Mock()
