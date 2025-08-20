@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
-import numpy as np
 from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QFont, QPalette, QColor
 from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
@@ -18,7 +17,6 @@ from qt_material import apply_stylesheet
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
-from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.core.utility.progress_reporting.progress import TaskCancelled
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
@@ -208,8 +206,6 @@ class MainWindowPresenter(BasePresenter):
         """
         self.update_dataset_tree()
         self.create_dataset_stack_visualisers(dataset)
-        if dataset.sample:
-            self.add_alternative_180_if_required(dataset)
 
     def _create_and_tabify_stack_window(self, images: ImageStack) -> None:
         """
@@ -228,22 +224,6 @@ class MainWindowPresenter(BasePresenter):
 
     def get_all_180_projections(self) -> list[ImageStack]:
         return self.model.proj180s
-
-    def add_alternative_180_if_required(self, dataset: Dataset) -> None:
-        """
-        Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
-        :param dataset: The loaded dataset.
-        """
-        assert dataset.sample is not None
-        if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
-            return
-        else:
-            closest_projection, diff = find_projection_closest_to_180(dataset.sample.projections,
-                                                                      dataset.sample.projection_angles().value)
-            if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
-                proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
-                self.add_images_to_existing_dataset(dataset.id, proj180deg, "proj_180")
 
     def create_dataset_stack_visualisers(self, dataset: Dataset) -> None:
         """Creates StackVisualiserView widgets for a new dataset and tabifies them."""

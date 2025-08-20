@@ -79,6 +79,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.main_window.stack_modified.connect(self.handle_stack_modified)
         self.stack_modified_pending = False
         self.stack_selection_change_pending = False
+        self._correlate_proj1_idx = 0
+        self._correlate_proj2_idx = 180
 
     def notify(self, notification, slice_idx=None):
         try:
@@ -118,6 +120,12 @@ class ReconstructWindowPresenter(BasePresenter):
                 self._auto_find_minimisation_square_sum()
         except Exception as err:
             self.show_error(err, traceback.format_exc())
+
+    def set_correlate_projection_1(self, idx: int) -> None:
+        self._correlate_proj1_idx = idx
+
+    def set_correlate_projection_2(self, idx: int) -> None:
+        self._correlate_proj2_idx = idx
 
     def do_algorithm_changed(self) -> None:
         alg_name = self.view.algorithm_name
@@ -442,12 +450,20 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self) -> None:
-        if not self.model.images.has_proj180deg():
-            self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
-                                          "projection set. Please load a 180 projection manually.")
+        if self.model.images is None:
+            self.view.show_error_dialog("No image stack loaded.")
+            return
+
+        angle1 = self._correlate_proj1_idx
+        angle2 = self._correlate_proj2_idx
+        angles = self.model.images.projection_angles()
+
+        if abs((angles[angle1] - angles[angle2]) % 360 - 180) > 0.1:
+            self.view.show_error_dialog("Selected projections are not 180° apart.")
             return
 
         self.recon_is_running = True
+        self.view.set_correlate_buttons_enabled(False)
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
