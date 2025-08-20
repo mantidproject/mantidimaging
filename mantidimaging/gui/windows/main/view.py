@@ -179,6 +179,7 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_screen = self.welcome_presenter.view
         self.welcome_screen.closed.connect(self.close_welcome_screen)
         self.welcome_dock = QDockWidget("About Mantid Imaging", self)
+        assert self.welcome_dock is not None
         self.welcome_dock.setWidget(self.welcome_screen)
         self._hide_dock_widget_title(self.welcome_dock)
         self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
@@ -285,6 +286,7 @@ class MainWindowView(BaseMainWindowView):
 
     def show_image_load_dialog(self) -> None:
         self.image_load_dialog = ImageLoadDialog(self)
+        assert self.image_load_dialog is not None
         self.image_load_dialog.show()
 
     def show_image_load_dialog_with_path(self, file_path: Path) -> bool:
@@ -296,12 +298,14 @@ class MainWindowView(BaseMainWindowView):
             sample_file = find_first_file_that_is_possibly_a_sample(file_path.parent)
         if sample_file is not None:
             self.image_load_dialog = ImageLoadDialog(self)
+            assert self.image_load_dialog is not None
             self.image_load_dialog.presenter.do_update_sample(str(sample_file))
             self.image_load_dialog.show()
         return sample_file is not None
 
     def show_nexus_load_dialog(self) -> None:
         self.nexus_load_dialog = NexusLoadDialog(self)
+        assert self.nexus_load_dialog is not None
         self.nexus_load_dialog.show()
 
     def show_wizard(self) -> None:
@@ -448,15 +452,18 @@ class MainWindowView(BaseMainWindowView):
 
     def show_image_save_dialog(self) -> None:
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
+        assert self.image_save_dialog is not None
         self.image_save_dialog.show()
 
     def show_nexus_save_dialog(self) -> None:
         self.nexus_save_dialog = NexusSaveDialog(self, self.presenter.datasets)
+        assert self.nexus_save_dialog is not None
         self.nexus_save_dialog.show()
 
     def show_settings_window(self) -> None:
-        if not self.settings_window:
+        if self.settings_window is not None:
             self.settings_window = SettingsWindowView(self)
+            assert self.settings_window is not None
             self.settings_window.show()
         else:
             self.settings_window.activateWindow()
@@ -468,6 +475,7 @@ class MainWindowView(BaseMainWindowView):
 
         if not self.recon:
             self.recon = ReconstructWindowView(self)
+            assert self.recon is not None
             self.recon.show()
         else:
             self.recon.activateWindow()
@@ -477,6 +485,7 @@ class MainWindowView(BaseMainWindowView):
     def show_filters_window(self) -> None:
         if not self.filters:
             self.filters = FiltersWindowView(self)
+            assert self.filters is not None
             self.filters.filter_applied.connect(self.stack_modified.emit)
             self.filters.show()
         else:
@@ -486,6 +495,7 @@ class MainWindowView(BaseMainWindowView):
     def show_spectrum_viewer_window(self) -> None:
         if not self.spectrum_viewer:
             self.spectrum_viewer = SpectrumViewerWindowView(self)
+            assert self.spectrum_viewer is not None
             self.spectrum_viewer.show()
         else:
             self.spectrum_viewer.activateWindow()
@@ -695,6 +705,7 @@ class MainWindowView(BaseMainWindowView):
         :param position: The position of the cursor when the menu was opened relative to the main window.
         """
         self.menuTreeView = QMenu()
+        assert self.menuTreeView is not None
 
         if self.dataset_tree_widget.itemAt(position) is not None:
             if (self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids
@@ -797,6 +808,7 @@ class MainWindowView(BaseMainWindowView):
         if dataset is None:
             raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
         self.add_to_dataset_dialog = AddImagesToDatasetDialog(self, dataset_id, dataset.name)
+        assert self.add_to_dataset_dialog is not None
         self.add_to_dataset_dialog.show()
 
     def _on_tab_bar_clicked(self, stack: StackVisualiserView) -> None:
@@ -806,6 +818,7 @@ class MainWindowView(BaseMainWindowView):
                                stack_data_type: str) -> None:
         self.move_stack_dialog = MoveStackDialog(self, origin_dataset_id, stack_id, origin_dataset_name,
                                                  stack_data_type)
+        assert self.move_stack_dialog is not None
         self.move_stack_dialog.show()
 
     def show_stack_properties_dialog(self, stack_id: uuid.UUID, origin_dataset: Dataset, stack_data_type: str) -> None:

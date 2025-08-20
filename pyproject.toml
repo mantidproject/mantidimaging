@@ -18,7 +18,6 @@ exclude =  ["tests/**/*.py", "test/**/*.py", "**/*test.py"]
 reportMissingTypeStubs = false
 reportAttributeAccessIssue = false
 reportOptionalCall = false
-reportOptionalMemberAccess = false
 reportCallIssue = false
 reportArgumentType = false
 reportIndexIssue = false
