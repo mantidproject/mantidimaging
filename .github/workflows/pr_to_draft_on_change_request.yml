@@ -15,4 +15,5 @@ jobs:
       - name: Convert PR to Draft
         uses: JackEAllen/DraftOnChangeRequested@v1.0.0
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ACTION_CONVERT_TO_DRAFT }}
+          
