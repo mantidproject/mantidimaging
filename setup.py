@@ -195,7 +195,7 @@ setup(
     },
     entry_points={
         "console_scripts":
-        ["mantidimaging-ipython = mantidimaging.ipython:main", "mantidimaging = mantidimaging.main:main"],
+        ["mantidimaging = mantidimaging.main:main"],
     },
     url="https://github.com/mantidproject/mantidimaging",
     license="GPL-3.0",
