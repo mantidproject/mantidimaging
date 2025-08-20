@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from collections.abc import Callable
 
 import numpy as np
@@ -37,7 +37,7 @@ class MonitorNormalisation(BaseFilter):
         if images.num_projections == 1:
             # we can't really compute the preview as the image stack copy
             # passed in doesn't have the logfile in it
-            raise RuntimeError("No logfile available for this stack.")
+            return images
 
         counts = images.counts()
         if counts is None:
@@ -61,3 +61,13 @@ class MonitorNormalisation(BaseFilter):
     @staticmethod
     def execute_wrapper(*args) -> partial:
         return partial(MonitorNormalisation.filter_func)
+
+    @staticmethod
+    def validate_execute_kwargs(kwargs: dict[str, Any], images: ImageStack) -> str | None:
+        counts = images.counts()
+        if counts is None:
+            return "Image stack has no counts. Ensure these have been loaded with a log file"
+
+        if counts.value.size != images.num_projections:
+            return "Number of entries in counts does not match number of images"
+        return None
