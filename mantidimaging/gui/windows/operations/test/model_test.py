@@ -153,7 +153,6 @@ class FiltersWindowModelTest(unittest.TestCase):
         self.model.selected_filter = selected_filter_mock
         self.model.apply_to_images(images, progress=progress_mock)
 
-        selected_filter_mock.validate_execute_kwargs.assert_called_once()
         callback_mock.assert_called_once_with(images, progress=progress_mock)
 
     def test_get_filter_module_name(self):

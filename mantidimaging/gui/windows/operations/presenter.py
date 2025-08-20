@@ -386,6 +386,7 @@ class FiltersWindowPresenter(BasePresenter):
         # Take copies for display to prevent issues when shared memory is cleaned
         before_image = np.copy(subset.data.squeeze(squeeze_axis))
         try:
+            self.model.validate_kwargs(self.stack)
             self.model.apply_to_images(subset, is_preview=True)
         except Exception as e:
             msg = f"Error applying filter for preview: {e}"
