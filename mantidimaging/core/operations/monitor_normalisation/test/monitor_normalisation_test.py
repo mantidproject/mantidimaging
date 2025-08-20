@@ -20,13 +20,13 @@ class MonitorNormalisationTest(unittest.TestCase):
         images = generate_images((1, 1, 1))
         images._log_file = mock.Mock()
         images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections))))
-        npt.assert_raises(RuntimeError, MonitorNormalisation.filter_func, images)
+        self.assertRaises(RuntimeError, MonitorNormalisation.filter_func, images)
 
     def test_no_counts(self):
         images = generate_images((2, 2, 2))
         images._log_file = mock.Mock()
         images._log_file.counts = mock.Mock(return_value=None)
-        npt.assert_raises(RuntimeError, MonitorNormalisation.filter_func, images)
+        self.assertRaises(RuntimeError, MonitorNormalisation.filter_func, images)
 
     def test_execute(self):
         images = generate_images()
@@ -36,6 +36,7 @@ class MonitorNormalisationTest(unittest.TestCase):
         original = images.copy()
         MonitorNormalisation.filter_func(images)
         images._log_file.counts.assert_called_once()
+        self.assertEqual(original.data.shape, original.data.shape)
         assert_not_equals(original.data, images.data)
 
     def test_execute2(self):
@@ -54,9 +55,9 @@ class MonitorNormalisationTest(unittest.TestCase):
         npt.assert_equal(original.data, images.data)
 
     def test_register_gui(self):
-        assert MonitorNormalisation.register_gui(None, None, None) == {}
+        self.assertEqual(MonitorNormalisation.register_gui(None, None, None), {})
 
     def test_execute_wrapper(self):
         wrapper = MonitorNormalisation.execute_wrapper()
-        assert wrapper is not None
-        assert isinstance(wrapper, partial)
+        self.assertIsNotNone(wrapper)
+        self.assertIsInstance(wrapper, partial)
