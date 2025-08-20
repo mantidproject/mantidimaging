@@ -528,6 +528,25 @@
                   
   <section id="developer-conventions">
 <h1>Developer Conventions<a class="headerlink" href="#developer-conventions" title="Link to this heading">#</a></h1>
+<section id="code-style">
+<h2>Code Style<a class="headerlink" href="#code-style" title="Link to this heading">#</a></h2>
+<p>Code should follow the <a class="reference external" href="https://peps.python.org/pep-0008/">PEP8 standard</a> where practical in most of the code. In most cases this is enforced using <code class="code docutils literal notranslate"><span class="pre">yapf</span></code>.</p>
+<p>The exception to this rule is around Qt objects. There are some cases where we must use <a class="reference external" href="https://wiki.qt.io/Qt_Coding_Style">Qt Coding Style</a> to interface with existing Qt objects. For better consistency and to make Qt objects more obvious in the code, we use Qt style for class member variables that are QObjects or QWidgets. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ThingWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doThingButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">some_value</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">showEvent</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="c1"># method name needs to match Qt method</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_thing</span><span class="p">(</span><span class="o">...</span><span class="p">):</span> <span class="c1"># something we have defined</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>For GUI components we use the Model-View-Presenter pattern.</p>
+</section>
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">#</a></h2>
 <p>Mantid Imaging makes use of a number of python modules. To ensure that these get installed for users they can be listed as dependencies.</p>
@@ -706,6 +725,7 @@ To improve accessibility to your PR further, it is also important that you provi
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-style">Code Style</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dependencies">Dependencies</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-control">Version Control</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#issues">Issues</a></li>
