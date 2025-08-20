@@ -9,8 +9,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import QtWidgets
 from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction, QSplitter,
-                             QTabWidget)
+from PyQt5.QtWidgets import (QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QModelIndex
 from logging import getLogger
 
@@ -26,6 +25,7 @@ from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import Fi
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget import FitExportFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget import ExportDataTableWidget
+from mantidimaging.gui.widgets.spectrum_widgets.export_image_widget import ExportImageViewWidget
 
 import numpy as np
 
@@ -64,14 +64,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.main_window = main_window
 
-        splitter = self.findChild(QSplitter, "splitter")
-        sidebar = self.findChild(QTabWidget, "formTabs")
-
-        if splitter and sidebar:
-            # prevent collapsing
-            splitter.setCollapsible(0, False)  # set sidebar index
-            splitter.setCollapsible(1, False)  # set main area index
-
         icon_path = (finder.ROOT_PATH / "gui" / "ui" / "images" / "exclamation-triangle-red.png").as_posix()
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
 
@@ -97,6 +89,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.scalable_roi_widget = FittingParamFormWidget(self.presenter)
         self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
+
+        self.export_display_tabs = QTabWidget(self)
+        self.exportDataTableWidget = ExportDataTableWidget()
+        self.export_display_tabs.addTab(self.exportDataTableWidget, "Table")
+
+        self._export_image_widget = ExportImageViewWidget(self)
+        self.export_display_tabs.addTab(self._export_image_widget, "Image")
+        self.exportLayout.addWidget(self.export_display_tabs)
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
@@ -141,8 +141,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.roi_form.exportButton.clicked.connect(self.presenter.handle_export_csv)
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
-        self.exportDataTableWidget = ExportDataTableWidget()
-        self.exportLayout.addWidget(self.exportDataTableWidget)
 
         self.roi_form.table_view.clicked.connect(self.handle_table_click)
 
