@@ -246,9 +246,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
-    def run_spectrum_calculation(self, roi: SpectrumROI, spec_mode: SpecType, chunk_start: int,
-                                 chunk_end: int) -> np.ndarray:
-        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), spec_mode, self.view.shuttercount_norm_enabled(),
+    def run_spectrum_calculation(self, roi: SpectrumROI, spec_mode: SpecType, shuttercount_norm_enabled: bool,
+                                 chunk_start: int, chunk_end: int) -> np.ndarray:
+        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), spec_mode, shuttercount_norm_enabled,
                                            chunk_start, chunk_end)
         return spectrum
 
@@ -278,6 +278,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.thread.kwargs = {
             "roi": list(self.roi_to_process_queue.values())[0],
             "spec_mode": self.spectrum_mode,
+            "shuttercount_norm_enabled": self.view.shuttercount_norm_enabled(),
             "chunk_start": chunk_start,
             "chunk_end": chunk_end
         }
