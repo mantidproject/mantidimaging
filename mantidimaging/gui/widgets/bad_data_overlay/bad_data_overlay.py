@@ -22,26 +22,16 @@ OVERLAY_COLOUR_MESSAGE = [0, 120, 255, 255]
 
 def _is_zero(data: np.ndarray) -> np.ndarray:
     """
-    Check for zero values, excluding NaN
+    Check for zero values
     """
-    data = np.asarray(data, dtype=float)
-    return (data == 0) & ~np.isnan(data)
+    return data == 0
 
 
 def _is_negative(data: np.ndarray) -> np.ndarray:
     """
-    Check for negative values, excluding NaN
+    Check for negative values
     """
-    data = np.asarray(data, dtype=float)
-    return (data < 0) & ~np.isnan(data)
-
-
-def _is_nan(data: np.ndarray) -> np.ndarray:
-    """
-    Check for NaN values
-    """
-    data = np.asarray(data, dtype=float)
-    return np.isnan(data)
+    return data < 0
 
 
 @dataclass(frozen=True)
@@ -56,7 +46,6 @@ class CheckConfig:
 VALUE_CHECKS: Final[tuple[CheckConfig, ...]] = (
     CheckConfig("zero", OVERLAY_COLOUR_ZERO, 1, _is_zero, "Zero values"),
     CheckConfig("negative", OVERLAY_COLOUR_NEGATIVE, 2, _is_negative, "Negative values"),
-    CheckConfig("nan", OVERLAY_COLOUR_NAN, 3, _is_nan, "Invalid values: Not a number"),
 )
 
 
