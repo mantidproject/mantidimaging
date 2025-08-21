@@ -248,8 +248,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def run_spectrum_calculation(self, roi: SpectrumROI, spec_mode: SpecType, shuttercount_norm_enabled: bool,
                                  chunk_start: int, chunk_end: int) -> np.ndarray:
-        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), spec_mode, shuttercount_norm_enabled,
-                                           chunk_start, chunk_end)
+        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), spec_mode, shuttercount_norm_enabled, chunk_start,
+                                           chunk_end)
         return spectrum
 
     def spectrum_calculation_setup(self) -> tuple[int, int]:
