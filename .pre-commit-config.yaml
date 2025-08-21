@@ -16,6 +16,15 @@ repos:
         entry: python -m CheckLicensesInFiles
         language: python
         types: [python]
+-   repo: local
+    hooks:
+    -   id: check-release-notes-format
+        name: Check Release Notes Format
+        description: Validate release note filename and contents format before commit
+        entry: python  -m CheckReleaseNoteFormat
+        language: python
+        files: ^docs/release_notes/next/
+        additional_dependencies: [requests]
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v1.17.1'
     hooks:

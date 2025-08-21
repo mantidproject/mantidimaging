@@ -6,10 +6,12 @@ from pathlib import Path
 import unittest
 from unittest import mock
 
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog, QDialog
 import pytest
+from mantidimaging.test_helpers.qt_test_message_handler import qt_message_handler
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 from mantidimaging.gui.windows.main import MainWindowView
@@ -23,6 +25,8 @@ git clone https://github.com/mantidproject/mantidimaging-data.git"""
 
 SHOW_DELAY = 10  # Can be increased to watch tests
 SHORT_DELAY = 100
+
+QtCore.qInstallMessageHandler(qt_message_handler)
 
 
 @mock_versions
