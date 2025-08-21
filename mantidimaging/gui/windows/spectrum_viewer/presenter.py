@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import csv
-import threading
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING
@@ -71,8 +70,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
-
-        self.spectrum_calculation_lock = threading.Lock()
 
     def handle_stack_modified(self) -> None:
         """
