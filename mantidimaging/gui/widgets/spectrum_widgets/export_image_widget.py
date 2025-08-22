@@ -10,7 +10,6 @@ import pyqtgraph as pg
 class ExportImageViewWidget(QWidget):
     """
     Minimal image preview widget for the Export tab.
-
     """
 
     def __init__(self, parent: QWidget | None) -> None:
@@ -40,3 +39,8 @@ class ExportImageViewWidget(QWidget):
     def clear(self) -> None:
         """Show a blank canvas."""
         self.image_view.setImage(np.zeros((1, 1), dtype=np.float32), autoLevels=True)
+
+    @property
+    def image_data(self) -> np.ndarray | None:
+        """Return the currently displayed image array, or None."""
+        return getattr(self.image_view.imageItem, "image", None)

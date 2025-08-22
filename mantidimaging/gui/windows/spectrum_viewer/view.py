@@ -97,6 +97,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self._export_image_widget = ExportImageViewWidget(self)
         self.export_display_tabs.addTab(self._export_image_widget, "Image")
         self.exportLayout.addWidget(self.export_display_tabs)
+        export_image = self.spectrum_widget.image.image_item.image
+        if export_image is not None:
+            self._export_image_widget.update_image(export_image)
+        self.spectrum_widget.image.image_item.sigImageChanged.connect(
+            lambda: self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image))
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
