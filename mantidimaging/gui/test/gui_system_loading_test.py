@@ -22,7 +22,7 @@ from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
 
 class TestGuiSystemLoading(GuiSystemBase):
-    leak_count_limit = 10
+    leak_count_limit = 2
 
     def setUp(self) -> None:
         super().setUp()
@@ -159,6 +159,7 @@ class TestGuiSystemLoading(GuiSystemBase):
             wait_until(lambda: mock_save.call_count == 1)
             # Confirm that save has been called only once
             mock_save.assert_called_once()
+            mock_save.reset_mock()
 
     def test_save_nexus(self):
         self._load_data_set()
@@ -177,6 +178,8 @@ class TestGuiSystemLoading(GuiSystemBase):
             wait_until(lambda: mock_save.call_count == 1)
             # Confirm that save has been called only once
             mock_save.assert_called_once()
+            # reset the mocked nexus_save to release references to ImageStack objects
+            mock_save.reset_mock()
 
     @parameterized.expand([
         (None, 100),
