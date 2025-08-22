@@ -22,5 +22,4 @@ Submodules
    :maxdepth: 3
 
    mantidimaging.helper
-   mantidimaging.ipython
    mantidimaging.main

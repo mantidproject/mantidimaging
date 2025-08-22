@@ -1,7 +1,0 @@
-mantidimaging.ipython module
-============================
-
-.. automodule:: mantidimaging.ipython
-   :members:
-   :show-inheritance:
-   :undoc-members:
