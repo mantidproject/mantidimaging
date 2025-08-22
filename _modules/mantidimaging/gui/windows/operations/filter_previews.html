@@ -498,7 +498,7 @@
 <span class="n">diff_pen</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 
 <span class="n">OVERLAY_THRESHOLD</span> <span class="o">=</span> <span class="mf">1e-3</span>
-<span class="n">OVERLAY_COLOUR_DIFFERENCE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
+<span class="n">OVERLAY_COLOUR_DIFFERENCE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_data_valid_for_histogram</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -655,7 +655,7 @@
 <div class="viewcode-block" id="FilterPreviews.add_negative_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.add_negative_overlay">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_value_check</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.hide_difference_overlay">
@@ -667,7 +667,7 @@
 <div class="viewcode-block" id="FilterPreviews.hide_negative_overlay">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.filter_previews.html#mantidimaging.gui.windows.operations.filter_previews.FilterPreviews.hide_negative_overlay">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">hide_negative_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_nonpositive_check</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageview_after</span><span class="o">.</span><span class="n">enable_value_check</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FilterPreviews.auto_range">
