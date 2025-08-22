@@ -6,6 +6,7 @@ from unittest import mock
 import numpy as np
 import numpy.testing as npt
 
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
@@ -37,21 +38,23 @@ class PolyfitCorrelationTest(unittest.TestCase):
     def test_find_center(self):
         images = generate_images((10, 10, 10))
         images.data[0] = np.identity(10)
-        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
+        images.data[1] = np.fliplr(images.data[0])
+        images.set_projection_angles(ProjectionAngles(np.array([0, 180] + [0] * 8)))
         mock_progress = mock.create_autospec(Progress, instance=True)
-        res_cor, res_tilt = find_center(images, mock_progress)
-        assert mock_progress.update.call_count == 11
+        res_cor, res_tilt = find_center(images, 0, 1, mock_progress)
+        assert mock_progress.update.call_count == images.height + 1
         assert res_cor.value == 5.0, f"Found {res_cor.value}"
-        assert res_tilt.value == 0.0, f"Found {res_tilt.value}"
+        assert abs(res_tilt.value) < 1e-6, f"Found {res_tilt.value}"
 
     def test_find_center_offset(self):
         images = generate_images((10, 10, 10))
         images.data[0] = np.identity(10)
-        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
-        self.crop_images(images, (2, 10, 0, 10))
-        self.crop_images(images.proj180deg, (2, 10, 0, 10))
+        images.data[1] = np.fliplr(images.data[0])
+        self.crop_images(images, (2, 10, 0, 10))  # Crops to 8 rows
+        images.set_projection_angles(ProjectionAngles(np.array([0, 180] + [0] * 8)))
         mock_progress = mock.create_autospec(Progress, instance=True)
-        res_cor, res_tilt = find_center(images, mock_progress)
+        res_cor, res_tilt = find_center(images, 0, 1, mock_progress)
+        assert mock_progress.update.call_count == images.height + 1
         assert res_cor.value == 4.0, f"Found {res_cor.value}"
         assert abs(res_tilt.value) < 1e-6, f"Found {res_tilt.value}"
 

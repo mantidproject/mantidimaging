@@ -453,12 +453,13 @@ class ReconstructWindowPresenter(BasePresenter):
         if self.model.images is None:
             self.view.show_error_dialog("No image stack loaded.")
             return
+        projection_index_1 = self._correlate_proj1_idx
+        projection_index_2 = self._correlate_proj2_idx
+        projection_angles = self.model.images.projection_angles()
 
-        angle1 = self._correlate_proj1_idx
-        angle2 = self._correlate_proj2_idx
-        angles = self.model.images.projection_angles()
-
-        if abs((angles[angle1] - angles[angle2]) % 360 - 180) > 0.1:
+        # Validate projections are 180° apart (within small tolerance)
+        angle_diff = abs((projection_angles[projection_index_1] - projection_angles[projection_index_2]) % 360)
+        if abs(angle_diff - 180) > 0.1:
             self.view.show_error_dialog("Selected projections are not 180° apart.")
             return
 
