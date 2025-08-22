@@ -89,8 +89,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
-        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
-                                self.view.shuttercount_norm_enabled())
+        sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
+        open_beam_roi = self.view.get_open_beam_roi()
+        self.model.get_spectrum(sample_roi,
+                                self.spectrum_mode,
+                                self.view.shuttercount_norm_enabled(),
+                                open_beam_roi=open_beam_roi)
         self.reset_units_menu()
 
         self.handle_tof_unit_change()
@@ -98,8 +102,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.redraw_all_rois()
 
     def initial_roi_calc(self):
-        spectrum = self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]),
-                                           self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
+        open_beam_roi = self.view.get_open_beam_roi()
+        spectrum = self.model.get_spectrum(sample_roi,
+                                           self.spectrum_mode,
+                                           self.view.shuttercount_norm_enabled(),
+                                           open_beam_roi=open_beam_roi)
+
         self.view.set_spectrum("roi", spectrum)
         self.set_default_fitting_region()
 
@@ -123,6 +132,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.do_remove_roi()
         self.view.table_view.clear_table()
         self.model.spectrum_cache.clear()
+
         if uuid is None:
             self.model.set_stack(None)
             self.view.clear()
@@ -130,8 +140,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
-        self.model.get_spectrum(SensibleROI.from_list([0, 0, *self.model.get_image_shape()]), self.spectrum_mode,
-                                self.view.shuttercount_norm_enabled())
+        sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
+        open_beam_roi = self.view.get_open_beam_roi()
+        self.model.get_spectrum(sample_roi,
+                                self.spectrum_mode,
+                                self.view.shuttercount_norm_enabled(),
+                                open_beam_roi=open_beam_roi)
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
         self.handle_tof_unit_change()
@@ -257,8 +271,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             chunk_start, chunk_end = (0, -1)
 
-        spectrum = self.model.get_spectrum(roi.as_sensible_roi(), self.spectrum_mode,
-                                           self.view.shuttercount_norm_enabled(), chunk_start, chunk_end)
+        sample_roi = roi.as_sensible_roi()
+        open_beam_roi = self.view.get_open_beam_roi()
+        spectrum = self.model.get_spectrum(sample_roi,
+                                           self.spectrum_mode,
+                                           self.view.shuttercount_norm_enabled(),
+                                           chunk_start,
+                                           chunk_end,
+                                           open_beam_roi=open_beam_roi)
 
         for i in range(len(spectrum)):
             np.put(self.view.spectrum_widget.spectrum_data_dict[roi_name], chunk_start + i, spectrum[i])
@@ -345,9 +365,29 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Redraw the spectrum with the given name
         """
-        roi = self.view.spectrum_widget.get_roi(name)
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        sample_roi = self.view.spectrum_widget.get_roi(name)
+        open_beam_roi = self._resolve_open_beam_roi()
+
+        spectrum = self.model.get_spectrum(
+            sample_roi,
+            self.spectrum_mode,
+            self.view.shuttercount_norm_enabled(),
+            open_beam_roi=open_beam_roi,
+        )
+
         self.view.set_spectrum(name, spectrum)
+
+    def _resolve_open_beam_roi(self) -> SensibleROI | None:
+        """
+        Return the chosen open-beam ROI from the dropdown, or None to use the same ROI.
+        """
+        choice = self.view.get_open_beam_roi_choice()
+        if choice == "Use same ROI":
+            return None
+        return self.view.spectrum_widget.get_roi(choice)
+
+    def handle_open_beam_roi_choice_changed(self) -> None:
+        self.redraw_all_rois()
 
     def redraw_all_rois(self) -> None:
         """
@@ -488,9 +528,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Add the RITS ROI to the spectrum widget and initialize it with default dimensions.
         """
         roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
+        open_beam_roi = self._resolve_open_beam_roi()
         self.view.spectrum_widget.add_roi(roi, ROI_RITS)
-        self.view.set_spectrum(ROI_RITS,
-                               self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
+        spectrum = self.model.get_spectrum(
+            roi,
+            self.spectrum_mode,
+            self.view.shuttercount_norm_enabled(),
+            open_beam_roi=open_beam_roi,
+        )
+        self.view.set_spectrum(ROI_RITS, spectrum)
         self.view.set_roi_visibility_flags(ROI_RITS, visible=False)
 
     def do_add_roi_to_table(self, roi_name: str) -> None:

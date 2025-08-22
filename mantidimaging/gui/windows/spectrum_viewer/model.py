@@ -222,13 +222,18 @@ class SpectrumViewerWindowModel:
                      mode: SpecType,
                      normalise_with_shuttercount: bool = False,
                      chunk_start: int = 0,
-                     chunk_end: int | None = None) -> np.ndarray:
-        if (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache.keys():
-            return self.spectrum_cache[(*roi, mode, normalise_with_shuttercount)]
+                     chunk_end: int | None = None,
+                     open_beam_roi: SensibleROI | None = None) -> np.ndarray:
 
+        if open_beam_roi is None:
+            open_beam_roi = roi
+
+        cache_key = (*roi, *open_beam_roi, mode, normalise_with_shuttercount)
+
+        if cache_key in self.spectrum_cache:
+            return self.spectrum_cache[cache_key]
         if self._stack is None:
             return np.array([])
-
         if self.presenter.initial_sample_change:
             return np.zeros(self._stack.data.shape[0])
 
@@ -240,13 +245,13 @@ class SpectrumViewerWindowModel:
             return np.array([])
 
         if mode == SpecType.OPEN:
-            open_spectrum = self.get_stack_spectrum(self._normalise_stack, roi, chunk_start, chunk_end)
+            open_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
             return open_spectrum
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
                 return np.array([])
             roi_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
-            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, roi, chunk_start, chunk_end)
+            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
         spectrum = np.divide(roi_spectrum,
                              roi_norm_spectrum,
                              out=np.zeros_like(roi_spectrum),
@@ -254,14 +259,24 @@ class SpectrumViewerWindowModel:
         if normalise_with_shuttercount:
             average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
             spectrum = spectrum / average_shuttercount
+        if chunk_start == 0 and chunk_end is None:
+            self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi=open_beam_roi)
 
-        LOG.debug("Computing spectrum: ROI=%s, mode=%s, cached=%s", roi, mode.name,
-                  (*roi, mode, normalise_with_shuttercount) in self.spectrum_cache)
+        LOG.debug("Computing spectrum: ROI=%s, Open ROI=%s, mode=%s, cached=%s", roi, open_beam_roi, mode.name,
+                  cache_key in self.spectrum_cache)
 
         return spectrum
 
-    def store_spectrum(self, roi: SensibleROI, mode: SpecType, normalise_with_shuttercount: bool, spectrum: np.ndarray):
-        params = (*roi, mode, normalise_with_shuttercount)
+    def store_spectrum(self,
+                       roi: SensibleROI,
+                       mode: SpecType,
+                       normalise_with_shuttercount: bool,
+                       spectrum: np.ndarray,
+                       open_beam_roi: SensibleROI | None = None) -> None:
+        if open_beam_roi is None:
+            open_beam_roi = roi
+        params = (*roi, *open_beam_roi, mode, normalise_with_shuttercount)
+
         if len(self.spectrum_cache) > 99:
             full_width, full_height = self.get_image_shape()
             full_size = (0, 0, full_width, full_height)

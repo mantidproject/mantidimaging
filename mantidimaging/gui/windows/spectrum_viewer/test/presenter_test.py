@@ -386,6 +386,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         type(self.view.table_view).current_roi_name = mock.PropertyMock(return_value="roi_1")
         self.view.roiSelectionWidget = mock.Mock()
         type(self.view.roiSelectionWidget).current_roi_name = mock.PropertyMock(return_value="roi_1")
+        self.view.get_open_beam_roi = mock.Mock(return_value=None)
         roi_mock = mock.Mock()
         roi_mock.name = "roi_1"
         roi_mock.as_sensible_roi.return_value = SensibleROI(10, 10, 20, 30)
@@ -416,10 +417,12 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         roi_data = {"all": SensibleROI(0, 0, 10, 8), "roi": SensibleROI(1, 4, 3, 2)}
         self.view.spectrum_widget.roi_dict = {roi: mock.Mock() for roi in rois}
         self.view.spectrum_widget.get_roi = mock.Mock(side_effect=roi_data.get)
+        self.view.get_open_beam_roi_choice = mock.Mock(return_value="roi")
+
         self.presenter.model.get_spectrum = mock.Mock()
         self.presenter.redraw_all_rois()
 
-        self.view.spectrum_widget.get_roi.assert_has_calls([mock.call(roi) for roi in rois])
+        self.view.spectrum_widget.get_roi.assert_has_calls([mock.call(roi) for roi in rois], any_order=True)
         self.view.set_spectrum.assert_has_calls([mock.call(roi, mock.ANY) for roi in rois], any_order=True)
 
     def test_WHEN_roi_clicked_THEN_roi_properties_set(self):
