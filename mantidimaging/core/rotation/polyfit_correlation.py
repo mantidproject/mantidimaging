@@ -32,15 +32,17 @@ def find_center(images: ImageStack, idx1: int, idx2: int, progress: Progress) ->
     if images is None:
         raise ValueError("Image stack cannot be None")
 
+    # Ensure selected projections are approximately 180° apart to allow meaningful correlation
     angles = images.projection_angles().value
     angle_diff = abs((angles[idx1] - angles[idx2]) % 360)
     if not (abs(angle_diff - 180) < 0.1):  # 0.1° tolerance
         raise ValueError(f"Selected projections must be 180° apart. Got: {angle_diff:.2f}°.")
 
     # Extract projections and flip the second
-    proj1 = images.projection(idx1)
-    proj2 = np.fliplr(images.projection(idx2))
+    original_projection = images.projection(idx1)
+    flipped_projection = np.fliplr(images.projection(idx2))
 
+    # Assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
     shift = pu.create_array((images.height, ), dtype=np.float32)
     search_range = get_search_range(images.width)
@@ -49,29 +51,22 @@ def find_center(images: ImageStack, idx1: int, idx2: int, progress: Progress) ->
     shared_search_range = pu.create_array((len(search_range), ), dtype=np.int32)
     shared_search_range.array[:] = np.asarray(search_range, dtype=np.int32)
 
-    # Copy to shared memory
+    # Copy projections to shared memory
     shared_projections = pu.create_array((2, images.height, images.width), dtype=np.float32)
-    shared_projections.array[0][:] = proj1
-    shared_projections.array[1][:] = proj2
-
+    shared_projections.array[0][:] = original_projection
+    shared_projections.array[1][:] = flipped_projection
     params = {'image_width': images.width}
-    ps.run_compute_func(
-        compute_correlation_error,
-        len(search_range),
-        [min_corr_err, shared_projections, shared_search_range],
-        params,
-        progress=progress,
-    )
-
+    ps.run_compute_func(compute_correlation_error,len(search_range),
+                        [min_corr_err, shared_projections, shared_search_range], params, progress=progress, )
     _find_shift(images, search_range, min_corr_err.array, shift.array)
-
     m, q = np.polyfit(slices, shift.array, deg=1)
     LOG.debug(f"Linear fit: m={m:.5f}, q={q:.5f}")
-
     theta = Degrees(np.rad2deg(np.arctan(0.5 * m)))
     offset = float(np.round(m * images.height * 0.5 + q) * 0.5)
     LOG.info(f"Computed CoR offset: {-offset:.3f}, tilt: {theta}")
+
     return ScalarCoR(images.h_middle - offset), theta
+
 
 
 def compute_correlation_error(index: int, arrays: list[NDArray[np.float32]], params: dict[str, int]) -> None:
