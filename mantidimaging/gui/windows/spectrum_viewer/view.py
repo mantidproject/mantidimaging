@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import QtWidgets
 from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import (QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
+from PyQt5.QtWidgets import (QSplitter, QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox, QActionGroup, QAction)
 from PyQt5.QtCore import QModelIndex
 from logging import getLogger
 
@@ -63,6 +63,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         super().__init__(None, 'gui/ui/spectrum_viewer.ui')
 
         self.main_window = main_window
+        splitter = self.findChild(QSplitter, "splitter")
+        sidebar = self.findChild(QTabWidget, "formTabs")
+
+        if splitter and sidebar:
+            # prevent collapsing
+            splitter.setCollapsible(0, False)  # set sidebar index
+            splitter.setCollapsible(1, False)  # set main area index
 
         icon_path = (finder.ROOT_PATH / "gui" / "ui" / "images" / "exclamation-triangle-red.png").as_posix()
         self.normalise_error_icon_pixmap = QPixmap(icon_path)
