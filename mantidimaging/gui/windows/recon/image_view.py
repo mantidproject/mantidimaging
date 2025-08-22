@@ -48,8 +48,8 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.enable_nan_check()
         self.imageview_sinogram.enable_nan_check()
         self.imageview_recon.enable_nan_check()
-        self.imageview_projection.enable_nonpositive_check()
-        self.imageview_sinogram.enable_nonpositive_check()
+        self.imageview_projection.enable_value_check()
+        self.imageview_sinogram.enable_value_check()
 
     def cleanup(self) -> None:
         self.imageview_projection.cleanup()

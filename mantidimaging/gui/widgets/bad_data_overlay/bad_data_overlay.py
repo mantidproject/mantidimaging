@@ -4,17 +4,49 @@ from __future__ import annotations
 
 from abc import abstractmethod, ABC
 from collections.abc import Callable
+from typing import Final
 
 import numpy as np
 from pyqtgraph import ColorMap, ImageItem, ViewBox
+from dataclasses import dataclass
 
 from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
 from mantidimaging.gui.widgets.indicator_icon.view import IndicatorIconView
 from mantidimaging.core.utility import finder
 
-OVERLAY_COLOUR_NAN = [255, 0, 0, 255]
-OVERLAY_COLOUR_NONPOSITVE = [255, 192, 0, 255]
-OVERLAY_COLOUR_MESSAGE = [255, 0, 0, 255]
+OVERLAY_COLOUR_NAN = [200, 0, 200, 255]
+OVERLAY_COLOUR_ZERO = [255, 140, 0, 255]
+OVERLAY_COLOUR_NEGATIVE = [0, 180, 0, 255]
+OVERLAY_COLOUR_MESSAGE = [0, 120, 255, 255]
+
+
+def _is_zero(data: np.ndarray) -> np.ndarray:
+    """
+    Check for zero values
+    """
+    return data == 0
+
+
+def _is_negative(data: np.ndarray) -> np.ndarray:
+    """
+    Check for negative values
+    """
+    return data < 0
+
+
+@dataclass(frozen=True)
+class CheckConfig:
+    name: str
+    color: list[int]
+    position: int
+    check_function: Callable[[np.ndarray], np.ndarray]
+    message: str
+
+
+VALUE_CHECKS: Final[tuple[CheckConfig, ...]] = (
+    CheckConfig("zero", OVERLAY_COLOUR_ZERO, 1, _is_zero, "Zero values"),
+    CheckConfig("negative", OVERLAY_COLOUR_NEGATIVE, 2, _is_negative, "Negative values"),
+)
 
 
 class BadDataCheck:
@@ -80,21 +112,23 @@ class BadDataOverlay(ABC, metaclass=_metaclass_sip_abc):
     def viewbox(self) -> ViewBox:
         ...
 
+    def enable_value_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
+        """
+        Enable or disable all values checks (zero, negative, NaN)
+        """
+        if enable:
+            for config in VALUE_CHECKS:
+                self.enable_check(config.name, config.color, config.position, config.check_function, config.message,
+                                  actions)
+        else:
+            for config in VALUE_CHECKS:
+                self.disable_check(config.name)
+
     def enable_nan_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
         if enable:
             self.enable_check("nan", OVERLAY_COLOUR_NAN, 0, np.isnan, "Invalid values: Not a number", actions)
         else:
             self.disable_check("nan")
-
-    def enable_nonpositive_check(self, enable: bool = True, actions: list[tuple[str, Callable]] | None = None) -> None:
-        if enable:
-
-            def is_non_positive(data):
-                return data <= 0
-
-            self.enable_check("nonpos", OVERLAY_COLOUR_NONPOSITVE, 1, is_non_positive, "Non-positive values", actions)
-        else:
-            self.disable_check("nonpos")
 
     def enable_check(self, name: str, color: list[int], pos: int, func: Callable, message: str,
                      actions: list[tuple[str, Callable]] | None) -> None:
