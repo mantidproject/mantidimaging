@@ -115,7 +115,3 @@ class RescaleFilter(BaseFilter):
             max_output = 2147483647.0
 
         return partial(RescaleFilter.filter_func, min_input=min_input, max_input=max_input, max_output=max_output)
-
-    @staticmethod
-    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
-        return True

@@ -20,13 +20,24 @@ class MonitorNormalisationTest(unittest.TestCase):
         images = generate_images((1, 1, 1))
         images._log_file = mock.Mock()
         images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections))))
-        self.assertRaises(RuntimeError, MonitorNormalisation.filter_func, images)
+        result = MonitorNormalisation.filter_func(images)
+        self.assertIs(images, result)
 
     def test_no_counts(self):
         images = generate_images((2, 2, 2))
         images._log_file = mock.Mock()
         images._log_file.counts = mock.Mock(return_value=None)
+
+        self.assertIn("no counts", MonitorNormalisation.validate_execute_kwargs({}, images))
         self.assertRaises(RuntimeError, MonitorNormalisation.filter_func, images)
+
+    def test_wrong_number_of_counts(self):
+        images = generate_images()
+        images._log_file = mock.Mock()
+        images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections + 1))))
+
+        self.assertIn("counts does not match number of images", MonitorNormalisation.validate_execute_kwargs({},
+                                                                                                             images))
 
     def test_execute(self):
         images = generate_images()
@@ -34,8 +45,9 @@ class MonitorNormalisationTest(unittest.TestCase):
         images._log_file.counts = mock.Mock(return_value=Counts(np.sin(np.linspace(0, 1, images.num_projections))))
 
         original = images.copy()
+        self.assertIsNone(MonitorNormalisation.validate_execute_kwargs({}, images))
         MonitorNormalisation.filter_func(images)
-        images._log_file.counts.assert_called_once()
+        images._log_file.counts.assert_called()
         self.assertEqual(original.data.shape, original.data.shape)
         assert_not_equals(original.data, images.data)
 
@@ -51,7 +63,7 @@ class MonitorNormalisationTest(unittest.TestCase):
 
         original = images.copy()
         MonitorNormalisation.filter_func(images)
-        images._log_file.counts.assert_called_once()
+        images._log_file.counts.assert_called()
         npt.assert_equal(original.data, images.data)
 
     def test_register_gui(self):

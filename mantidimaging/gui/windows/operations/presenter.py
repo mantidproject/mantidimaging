@@ -354,6 +354,9 @@ class FiltersWindowPresenter(BasePresenter):
         self.model.do_apply_filter_sync(apply_to, partial(self._post_filter, apply_to))
 
     def do_update_previews(self) -> None:
+        if not self.view.window_ready:
+            return
+
         if self.stack is None:
             self.view.clear_previews()
             return
@@ -383,8 +386,8 @@ class FiltersWindowPresenter(BasePresenter):
         # Take copies for display to prevent issues when shared memory is cleaned
         before_image = np.copy(subset.data.squeeze(squeeze_axis))
         try:
-            if self.model.filter_widget_kwargs:
-                self.model.apply_to_images(subset, is_preview=True)
+            self.model.validate_kwargs(self.stack)
+            self.model.apply_to_images(subset, is_preview=True)
         except Exception as e:
             msg = f"Error applying filter for preview: {e}"
             self.show_error(msg, traceback.format_exc())
