@@ -129,20 +129,24 @@ def augment_test_setup_methods(cls, setup=None, teardown=None, setup_class=None,
         pass
 
     def setUp(self):
-        setup(self)
-        setup_orig(self)
+        if setup:
+            setup(self)
+            setup_orig(self)
 
     def tearDown(self):
         teardown_orig(self)
-        teardown(self)
+        if teardown:
+            teardown(self)
 
     def setUpClass(cls):
-        setup_class()
-        setup_class_orig()
+        if setup_class:
+            setup_class()
+            setup_class_orig()
 
     def tearDownClass(cls):
-        teardown_class()
-        teardown_class_orig()
+        if teardown_class:
+            teardown_class()
+            teardown_class_orig()
 
     if setup:
         setup_orig = cls.setUp if hasattr(cls, 'setUp') else do_nothing
