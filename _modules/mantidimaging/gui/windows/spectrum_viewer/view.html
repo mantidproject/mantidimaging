@@ -491,6 +491,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">finder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">allowed_modes</span>
@@ -611,6 +612,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_button_enabled</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Use same ROI&quot;</span><span class="p">)</span>
+
+        <span class="n">row_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Normalise against:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+        <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="p">)</span>
+        <span class="n">row_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">image_left_vlayout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optionsLayout</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">image_left_vlayout</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normaliseStackSelector</span><span class="p">)</span>
+        <span class="n">image_left_vlayout</span><span class="o">.</span><span class="n">insertLayout</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">row_layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_open_beam_roi_choice_changed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">exportTabs</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_export_tab_change</span><span class="p">)</span>
 
         <span class="c1"># ROI action buttons</span>
@@ -886,13 +900,39 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="SpectrumViewerWindowView.get_open_beam_roi_choice">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_open_beam_roi_choice">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_open_beam_roi_choice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowView.get_open_beam_roi">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_open_beam_roi">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_open_beam_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">choice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_open_beam_roi_choice</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">&quot;Use same ROI&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="SpectrumViewerWindowView.update_roi_dropdown">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_dropdown">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates the ROI dropdown menu with the available ROIs. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates the ROI dropdown menus with the available ROIs. &quot;&quot;&quot;</span>
         <span class="n">roi_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">update_roi_list</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">set_roi_names</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Use same ROI&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">roi_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;rits_roi&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">idx</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI dropdown updated in view&quot;</span><span class="p">)</span></div>
 
 
