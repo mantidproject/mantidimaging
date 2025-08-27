@@ -151,13 +151,13 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.image_diff_overlay.setLookupTable(lut)
 
     def add_negative_overlay(self):
-        self.imageview_after.enable_nonpositive_check()
+        self.imageview_after.enable_value_check()
 
     def hide_difference_overlay(self):
         self.image_diff_overlay.setVisible(False)
 
     def hide_negative_overlay(self):
-        self.imageview_after.enable_nonpositive_check(False)
+        self.imageview_after.enable_value_check(False)
 
     def auto_range(self):
         # This will cause the previews to all show by just causing autorange on self.imageview_before.viewbox
