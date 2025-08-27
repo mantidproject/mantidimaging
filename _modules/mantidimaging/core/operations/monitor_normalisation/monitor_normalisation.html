@@ -517,7 +517,7 @@
         <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">num_projections</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># we can&#39;t really compute the preview as the image stack copy</span>
             <span class="c1"># passed in doesn&#39;t have the logfile in it</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No logfile available for this stack.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">images</span>
 
         <span class="n">counts</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">counts</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -555,8 +555,14 @@
 <div class="viewcode-block" id="MonitorNormalisation.validate_execute_kwargs">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.monitor_normalisation.monitor_normalisation.html#mantidimaging.core.operations.monitor_normalisation.monitor_normalisation.MonitorNormalisation.validate_execute_kwargs">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">counts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Image stack has no counts. Ensure these have been loaded with a log file&quot;</span>
+
+        <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">images</span><span class="o">.</span><span class="n">num_projections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Number of entries in counts does not match number of images&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 </div>
 
 </pre></div>

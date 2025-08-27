@@ -513,6 +513,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">FiltersWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
     <span class="n">auto_update_triggered</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
     <span class="n">filter_applied</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">window_ready</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="n">splitter</span><span class="p">:</span> <span class="n">QSplitter</span>
     <span class="n">collapseToggleButton</span><span class="p">:</span> <span class="n">QPushButton</span>
@@ -591,6 +592,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_filters_section</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_filter_selection</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_ready</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="FiltersWindowView.closeEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.closeEvent">[docs]</a>

@@ -756,19 +756,19 @@
 <div class="viewcode-block" id="FlatFieldFilter.validate_execute_kwargs">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.flat_fielding.flat_fielding.html#mantidimaging.core.operations.flat_fielding.flat_fielding.FlatFieldFilter.validate_execute_kwargs">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Validate something is in both path text inputs</span>
         <span class="k">if</span> <span class="s1">&#39;selected_flat_fielding_widget&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="s2">&quot;Not all required parameters specified&quot;</span>
 
         <span class="k">if</span> <span class="s1">&#39;flat_before_widget&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="s1">&#39;dark_before_widget&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span>\
                 <span class="s1">&#39;flat_after_widget&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="s1">&#39;dark_after_widget&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="s2">&quot;Not all required parameters specified&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;flat_before_widget&quot;</span><span class="p">],</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;flat_after_widget&quot;</span><span class="p">],</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dark_before_widget&quot;</span><span class="p">],</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dark_after_widget&quot;</span><span class="p">],</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="FlatFieldFilter.group_name">
