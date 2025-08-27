@@ -46,7 +46,6 @@ def find_center(images: ImageStack, idx1: int, idx2: int, progress: Progress) ->
     slices = np.arange(images.height)
     shift = pu.create_array((images.height, ), dtype=np.float32)
     search_range = get_search_range(images.width)
-
     min_corr_err = pu.create_array((len(search_range), images.height), dtype=np.float32)
     shared_search_range = pu.create_array((len(search_range), ), dtype=np.int32)
     shared_search_range.array[:] = np.asarray(search_range, dtype=np.int32)
