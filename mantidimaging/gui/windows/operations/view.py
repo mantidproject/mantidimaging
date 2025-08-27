@@ -35,6 +35,7 @@ def _strip_filter_name(filter_name: str):
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = pyqtSignal()
     filter_applied = pyqtSignal()
+    window_ready = False
 
     splitter: QSplitter
     collapseToggleButton: QPushButton
@@ -113,6 +114,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
         self.handle_filter_selection("")
+        self.window_ready = True
 
     def closeEvent(self, e):
         if self.presenter.filter_is_running:

@@ -21,6 +21,7 @@ before_pen = (200, 0, 0)
 after_pen = (0, 200, 0)
 diff_pen = (0, 0, 200)
 
+
 OVERLAY_THRESHOLD = 1e-6
 OVERLAY_COLOUR_DIFFERENCE = [0, 255, 0, 255]
 

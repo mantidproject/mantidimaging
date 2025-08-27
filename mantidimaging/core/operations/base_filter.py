@@ -88,8 +88,15 @@ class BaseFilter:
         return {}
 
     @staticmethod
-    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
-        return True
+    def validate_execute_kwargs(kwargs: dict[str, Any], images: ImageStack) -> str | None:
+        """
+        Check operation parameters to highlight issues that need to be caught before calling filter_func()
+
+        The method also has access to the ImageStack so it can check dimensions and metadata if needed.
+
+        :return: None if no issues, a string message if the is a problem
+        """
+        return None
 
     @staticmethod
     def group_name() -> FilterGroup:

@@ -1,0 +1,1 @@
+2326: Updated the code to display warnings for zero, negative, and NaN values using user-friendly colors in the operation and reconstruction windows.

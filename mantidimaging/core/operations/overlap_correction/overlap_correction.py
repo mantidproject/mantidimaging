@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 
@@ -75,10 +75,6 @@ class OverlapCorrection(BaseFilter):
     @staticmethod
     def execute_wrapper(*args) -> partial:
         return partial(OverlapCorrection.filter_func)
-
-    @staticmethod
-    def validate_execute_kwargs(kwargs: dict[str, Any]) -> bool:
-        return True
 
     @staticmethod
     def get_shutters(data_dir: Path) -> list[ShutterInfo]:

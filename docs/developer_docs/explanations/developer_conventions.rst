@@ -1,6 +1,27 @@
 Developer Conventions
 =====================
 
+Code Style
+----------
+
+Code should follow the `PEP8 standard <https://peps.python.org/pep-0008/>`_ where practical in most of the code. In most cases this is enforced using :code:`yapf`.
+
+The exception to this rule is around Qt objects. There are some cases where we must use `Qt Coding Style <https://wiki.qt.io/Qt_Coding_Style>`_ to interface with existing Qt objects. For better consistency and to make Qt objects more obvious in the code, we use Qt style for class member variables that are QObjects or QWidgets. For example::
+
+    class ThingWindowView(BaseMainWindowView):
+        def __init__(...):
+            ...
+            self.doThingButton = QPushButton()
+            self.some_value = 4
+
+        def showEvent(...): # method name needs to match Qt method
+            ...
+
+        def do_thing(...): # something we have defined
+            ...
+
+For GUI components we use the Model-View-Presenter pattern.
+
 Dependencies
 ------------
 
@@ -135,7 +156,7 @@ Labelling your PR can provide a little more context by describing the category o
 If your PR changes only change a tiny part of the codebase and may not even have an associated issue, this could be considered as a flash PR. Please add "Flash PR" to the start of the PR title if this is the case and add to the project "`Mantid Imaging Work <https://github.com/orgs/mantidproject/projects/13/views/6>`_", making sure to also add to the correct column on the project board which will likely be "review".
 
 Reviewing a Pull Request
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 When reviewing a pull request (PR), it is important to provide constructive feedback. Feedback should be clear, concise and actionable. It is important to remember that the goal of a review is to improve the codebase, and not to criticise the author. It is also important to understand that the author may not have the same context as you and may have made a mistake or oversight that you have not. It is important to be patient and understanding when reviewing a PR as the author may have a different perspective on the issue than you do or different experience level.
 
@@ -163,7 +184,7 @@ When reviewing a PR, there are many things to consider and in turn miss which co
 
 
 Pull Requests which Include GUI Changes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If a PR includes changes to the GUI which either cause existing `Applitools <https://applitools.com/?utm_term=applitools&utm_source=google&utm_medium=paid-search&utm_content=free-account&utm_campaign=brand-primary&gad_source=1&gclid=Cj0KCQiAs5i8BhDmARIsAGE4xHyZndsp3CxcVYs5wPG6lw-ZiXpvWt3MDlnWfmCOzbMKWDkZExP7_5saAmmgEALw_wcB>`_ screenshot tests to fail or adds new screenshot tests, please ensure you follow the below instructions to merge the new screenshot tests into the default branch:
 
