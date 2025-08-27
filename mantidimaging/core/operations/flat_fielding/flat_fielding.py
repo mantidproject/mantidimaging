@@ -264,19 +264,19 @@ class FlatFieldFilter(BaseFilter):
                        use_dark=use_dark)
 
     @staticmethod
-    def validate_execute_kwargs(kwargs):
+    def validate_execute_kwargs(kwargs: dict[str, Any], images: ImageStack) -> str | None:
         # Validate something is in both path text inputs
         if 'selected_flat_fielding_widget' not in kwargs:
-            return False
+            return "Not all required parameters specified"
 
         if 'flat_before_widget' not in kwargs and 'dark_before_widget' not in kwargs or\
                 'flat_after_widget' not in kwargs and 'dark_after_widget' not in kwargs:
-            return False
+            return "Not all required parameters specified"
         assert isinstance(kwargs["flat_before_widget"], DatasetSelectorWidgetView)
         assert isinstance(kwargs["flat_after_widget"], DatasetSelectorWidgetView)
         assert isinstance(kwargs["dark_before_widget"], DatasetSelectorWidgetView)
         assert isinstance(kwargs["dark_after_widget"], DatasetSelectorWidgetView)
-        return True
+        return None
 
     @staticmethod
     def group_name() -> FilterGroup:

@@ -120,13 +120,11 @@ class FiltersWindowModel:
         it to the function that actually processes the images.
         """
         for stack in stacks:
+            self.validate_kwargs(stack)
             self.apply_to_images(stack, progress=progress)
 
     def apply_to_images(self, images: ImageStack, progress=None, is_preview=False) -> None:
         input_kwarg_widgets = self.filter_widget_kwargs.copy()
-        # Validate required kwargs are supplied so pre-processing does not happen unnecessarily
-        if not self.selected_filter.validate_execute_kwargs(input_kwarg_widgets):
-            raise ValueError("Not all required parameters specified")
 
         # Run filter
         exec_func = self.selected_filter.execute_wrapper(**input_kwarg_widgets)
@@ -148,6 +146,14 @@ class FiltersWindowModel:
             self.selected_filter.filter_name,
             *exec_func.args,
             **exec_func.keywords)
+
+    def validate_kwargs(self, images: ImageStack) -> None:
+        """
+        Validate required kwargs are supplied so pre-processing does not happen unnecessarily
+        """
+        input_kwarg_widgets = self.filter_widget_kwargs.copy()
+        if (message := self.selected_filter.validate_execute_kwargs(input_kwarg_widgets, images)) is not None:
+            raise ValueError(f"Issue with operation inputs: {message}")
 
     def do_apply_filter(self, stacks: list[ImageStack], post_filter: Callable[[Any], None]):
         """
