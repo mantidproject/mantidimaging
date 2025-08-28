@@ -35,7 +35,7 @@ class StackPropertiesDialog(BaseDialogView):
 
         self.geometry_type = "N/A"
         if self.stack.geometry is not None:
-            self.geometry_type = f"{self.stack.geometry.geom_type}{self.stack.geometry.dimension}"
+            self.geometry_type = self.stack.geometry.type.value
 
         self.angle_range = "N/A"
         real_projection_angles = self.stack.real_projection_angles()
