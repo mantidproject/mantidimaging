@@ -253,7 +253,7 @@ class MainWindowView(BaseMainWindowView):
         self.model_changed.connect(self.update_shortcuts)
 
         self.actionResetLayout = QAction("Reset Layout", self)
-        self.actionResetLayout.setShortcut("Ctrl+Shift+R")  
+        self.actionResetLayout.setShortcut("Ctrl+Shift+R")
         self.actionResetLayout.triggered.connect(self.reset_layout)
 
         # Add to View menu (check if it exists first)
