@@ -252,6 +252,18 @@ class MainWindowView(BaseMainWindowView):
 
         self.model_changed.connect(self.update_shortcuts)
 
+        self.actionResetLayout = QAction("Reset Layout", self)
+        self.actionResetLayout.setShortcut("Ctrl+Shift+R")  
+        self.actionResetLayout.triggered.connect(self.reset_layout)
+
+        # Add to View menu (check if it exists first)
+        if hasattr(self, 'menuView'):
+            self.menuView.addAction(self.actionResetLayout)
+        else:
+            # Create View menu if it doesn't exist
+            self.menuView = self.menuBar().addMenu("View")
+            self.menuView.addAction(self.actionResetLayout)
+
     def populate_image_menu(self) -> None:
         self.menuImage.clear()
         current_stack = self.current_showing_stack()
@@ -813,3 +825,33 @@ class MainWindowView(BaseMainWindowView):
         assert stack is not None
         stack_properties_dialog = StackPropertiesDialog(self, stack, origin_dataset, stack_data_type)
         stack_properties_dialog.show()
+
+    def reset_layout(self):
+        """Close and reopen all stacks, showing critical GUI errors if something goes wrong."""
+        try:
+            # Close all open stack windows
+            for vis in list(self.presenter.stack_visualisers.values()):
+                vis.close()
+            self.presenter.stack_visualisers.clear()
+
+            # Get all stacks
+            stacks = self.get_all_stacks()
+            if not stacks:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    "No stacks detected."
+                )
+                return
+
+            # Recreate all stacks
+            for stack in stacks:
+                self.create_new_stack(stack)
+
+        except (AttributeError, RuntimeError, TypeError) as unexpected_error:
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Reset Layout could not completely reset the stacks.\n\nDetails: {unexpected_error}"
+            )
+
