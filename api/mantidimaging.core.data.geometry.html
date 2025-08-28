@@ -586,6 +586,30 @@
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.data.geometry.Geometry.tilt" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.core.data.geometry.Geometry.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mantidimaging.core.data.geometry.GeometryType" title="mantidimaging.core.data.geometry.GeometryType"><span class="pre">GeometryType</span></a></em><a class="headerlink" href="#mantidimaging.core.data.geometry.Geometry.type" title="Link to this definition">#</a></dt>
+<dd><p>Returns the MI Geometry type.</p>
+<p>Wraps CIL <cite>AcquisitionGeometry</cite>’s internal data based on the types currently supported by Mantid Imaging.</p>
+<p>:return (GeometryType) : The MI Geometry enum with a display-friendly value field.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.data.geometry.GeometryType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.data.geometry.</span></span><span class="sig-name descname"><span class="pre">GeometryType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/data/geometry.html#GeometryType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.geometry.GeometryType" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.data.geometry.GeometryType.CONE3D">
+<span class="sig-name descname"><span class="pre">CONE3D</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Cone</span> <span class="pre">3D'</span></em><a class="headerlink" href="#mantidimaging.core.data.geometry.GeometryType.CONE3D" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.data.geometry.GeometryType.PARALLEL3D">
+<span class="sig-name descname"><span class="pre">PARALLEL3D</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Parallel</span> <span class="pre">3D'</span></em><a class="headerlink" href="#mantidimaging.core.data.geometry.GeometryType.PARALLEL3D" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -642,6 +666,12 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.is_parallel"><code class="docutils literal notranslate"><span class="pre">Geometry.is_parallel</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt"><code class="docutils literal notranslate"><span class="pre">Geometry.set_geometry_from_cor_tilt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.tilt"><code class="docutils literal notranslate"><span class="pre">Geometry.tilt</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.type"><code class="docutils literal notranslate"><span class="pre">Geometry.type</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.GeometryType"><code class="docutils literal notranslate"><span class="pre">GeometryType</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.GeometryType.CONE3D"><code class="docutils literal notranslate"><span class="pre">GeometryType.CONE3D</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.GeometryType.PARALLEL3D"><code class="docutils literal notranslate"><span class="pre">GeometryType.PARALLEL3D</span></code></a></li>
 </ul>
 </li>
 </ul>

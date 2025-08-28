@@ -478,10 +478,19 @@
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">tan</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">degrees</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionGeometry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span>
+
+
+<div class="viewcode-block" id="GeometryType">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.GeometryType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GeometryType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">PARALLEL3D</span> <span class="o">=</span> <span class="s2">&quot;Parallel 3D&quot;</span>
+    <span class="n">CONE3D</span> <span class="o">=</span> <span class="s2">&quot;Cone 3D&quot;</span></div>
+
 
 
 <div class="viewcode-block" id="Geometry">
@@ -562,7 +571,21 @@
         <span class="n">tilt_radians</span> <span class="o">=</span> <span class="o">-</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tilt</span><span class="p">)</span>
         <span class="n">cor</span> <span class="o">=</span> <span class="n">midpoint_cor</span> <span class="o">-</span> <span class="n">pixel_y_midpoint</span> <span class="o">*</span> <span class="n">tan</span><span class="p">(</span><span class="n">tilt_radians</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GeometryType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the MI Geometry type.</span>
+
+<span class="sd">        Wraps CIL `AcquisitionGeometry`&#39;s internal data based on the types currently supported by Mantid Imaging.</span>
+
+<span class="sd">        :return (GeometryType) : The MI Geometry enum with a display-friendly value field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;parallel&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span></div>
 
 </pre></div>
 
