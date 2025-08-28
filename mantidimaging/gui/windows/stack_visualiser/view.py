@@ -61,7 +61,8 @@ class StackVisualiserView(QDockWidget):
                          ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
                          ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
                          ("Change window name", self.change_window_name_clicked),
-                         ("Goto projection", self.goto_projection), ("Goto angle", self.goto_angle)]
+                         ("Goto projection", self.goto_projection), ("Goto angle", self.goto_angle),
+                         ("Reset main window layout", self._main_window.reset_layout)]
         self._context_actions = self.build_context_menu()
 
         self.image_view = MIImageView(self)
