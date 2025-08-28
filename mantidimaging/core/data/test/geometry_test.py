@@ -11,7 +11,7 @@ import numpy.testing as npt
 
 from parameterized import parameterized
 
-from mantidimaging.core.data.geometry import Geometry
+from mantidimaging.core.data.geometry import Geometry, GeometryType
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
@@ -159,3 +159,12 @@ class GeometryTest(unittest.TestCase):
 
         self.assertAlmostEqual(cil_offset, expected_cil_offset, places=6)
         self.assertAlmostEqual(cil_angle, tilt, places=6)
+
+    def test_geometry_type(self):
+        """
+        Tests that the correct geometry type is returned.
+        """
+        num_pixels = (256, 512)
+        pixel_size = (1., 1.)
+        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        self.assertEqual(geo.type, GeometryType.PARALLEL3D)

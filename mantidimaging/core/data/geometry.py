@@ -2,10 +2,16 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from enum import Enum
 from math import tan, radians, degrees
 
 from cil.framework import AcquisitionGeometry
 from mantidimaging.core.utility.data_containers import ScalarCoR
+
+
+class GeometryType(Enum):
+    PARALLEL3D = "Parallel 3D"
+    CONE3D = "Cone 3D"
 
 
 class Geometry(AcquisitionGeometry):
@@ -82,3 +88,17 @@ class Geometry(AcquisitionGeometry):
         cor = midpoint_cor - pixel_y_midpoint * tan(tilt_radians)
 
         return ScalarCoR(cor)
+
+    @property
+    def type(self) -> GeometryType:
+        """
+        Returns the MI Geometry type.
+
+        Wraps CIL `AcquisitionGeometry`'s internal data based on the types currently supported by Mantid Imaging.
+
+        :return (GeometryType) : The MI Geometry enum with a display-friendly value field.
+        """
+        if self.config.system.geometry == "parallel":
+            return GeometryType.PARALLEL3D
+        else:
+            return GeometryType.CONE3D
