@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.spectrum\_widgets.export\_image\_widget module
+========================================================================
+
+.. automodule:: mantidimaging.gui.widgets.spectrum_widgets.export_image_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

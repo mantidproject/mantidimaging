@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget module &#8212; MantidImaging 3.0.0a1 documentation</title>
+    <title>mantidimaging.gui.widgets.spectrum_widgets.export_image_widget module &#8212; MantidImaging 3.0.0a1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.widgets.spectrum_widgets.export_image_widget';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -58,8 +58,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html" />
-    <link rel="prev" title="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.html" />
+    <link rel="next" title="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.html" />
+    <link rel="prev" title="mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget module" href="mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0" />
@@ -535,7 +535,7 @@
     
     <li class="breadcrumb-item"><a href="mantidimaging.gui.widgets.spectrum_widgets.html" class="nav-link">mantidimaging.gui.widgets.spectrum_widgets package</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget module</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.gui.widgets.spectrum_widgets.export_image_widget module</span></li>
   </ul>
 </nav>
 </div>
@@ -552,28 +552,29 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget">
-<span id="mantidimaging-gui-widgets-spectrum-widgets-export-settings-widget-module"></span><h1>mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget module<a class="headerlink" href="#module-mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget" title="Link to this heading">#</a></h1>
+  <section id="module-mantidimaging.gui.widgets.spectrum_widgets.export_image_widget">
+<span id="mantidimaging-gui-widgets-spectrum-widgets-export-image-widget-module"></span><h1>mantidimaging.gui.widgets.spectrum_widgets.export_image_widget module<a class="headerlink" href="#module-mantidimaging.gui.widgets.spectrum_widgets.export_image_widget" title="Link to this heading">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.</span></span><span class="sig-name descname"><span class="pre">FitExportFormWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.</span></span><span class="sig-name descname"><span class="pre">ExportImageViewWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_image_widget.html#ExportImageViewWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
-<p>Export Format and Export Area dropdowns.</p>
+<p>Minimal image preview widget for the Export tab.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_area">
-<span class="sig-name descname"><span class="pre">selected_area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.selected_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_area" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format">
-<span class="sig-name descname"><span class="pre">selected_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.selected_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_roi_names">
-<span class="sig-name descname"><span class="pre">set_roi_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.set_roi_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_roi_names" title="Link to this definition">#</a></dt>
-<dd><p>Update ROI dropdown list dynamically.</p>
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_image_widget.html#ExportImageViewWidget.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.clear" title="Link to this definition">#</a></dt>
+<dd><p>Show a blank canvas.</p>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.image_data">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.image_data" title="Link to this definition">#</a></dt>
+<dd><p>Return the currently displayed image array, or None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.update_image">
+<span class="sig-name descname"><span class="pre">update_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoLevels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_image_widget.html#ExportImageViewWidget.update_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.update_image" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -590,20 +591,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.html"
+       href="mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.export_image_widget module</p>
+        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html"
+       href="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget module</p>
+        <p class="prev-next-title">mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -626,10 +627,10 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_area"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.selected_area()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.selected_format()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_roi_names"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.set_roi_names()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget"><code class="docutils literal notranslate"><span class="pre">ExportImageViewWidget</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.clear"><code class="docutils literal notranslate"><span class="pre">ExportImageViewWidget.clear()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.image_data"><code class="docutils literal notranslate"><span class="pre">ExportImageViewWidget.image_data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.update_image"><code class="docutils literal notranslate"><span class="pre">ExportImageViewWidget.update_image()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -639,7 +640,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/api/mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.rst.txt"
+      <li><a href="../_sources/api/mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
