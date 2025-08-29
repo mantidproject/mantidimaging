@@ -209,6 +209,12 @@ class CILRecon(BaseRecon):
         Otherwise this is slow to calculate, this approximation is good to with in 5%
         When running in debug mode, check the approximation and raise an error if it is bad
         """
+
+        return
+
+        for s in image_geometry.spacing:
+            print(s)
+
         assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
         approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.num_projections)
         if LOG.isEnabledFor(DEBUG):

@@ -38,9 +38,14 @@ class Geometry(AcquisitionGeometry):
         :type units: str
         """
         super().__init__()
-        parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
-        self.config = parallel_3d.config
-        self.is_parallel = True
+        # parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
+        conebeam_3d = self.create_Cone3D(*args,
+                                         source_position=[0, -500, 0],
+                                         detector_position=[0, 500, 0],
+                                         units=units,
+                                         **kwargs)
+        self.config = conebeam_3d.config
+        self.is_parallel = False
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
