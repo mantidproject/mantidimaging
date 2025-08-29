@@ -35,6 +35,7 @@ from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
 from mantidimaging.gui.windows.recon import ReconstructWindowView
+from mantidimaging.gui.windows.geometry import GeometryWindowView
 from mantidimaging.gui.windows.settings.view import SettingsWindowView
 from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView
 from mantidimaging.gui.windows.live_viewer.view import LiveViewerWindowView
@@ -83,6 +84,7 @@ class MainWindowView(BaseMainWindowView):
 
     actionRecon: QAction
     actionFilters: QAction
+    actionGeometry: QAction
     actionCompareImages: QAction
     actionSpectrumViewer: QAction
     actionLiveViewer: QAction
@@ -99,6 +101,7 @@ class MainWindowView(BaseMainWindowView):
 
     filters: FiltersWindowView | None = None
     recon: ReconstructWindowView | None = None
+    geometry: GeometryWindowView | None = None
     spectrum_viewer: SpectrumViewerWindowView | None = None
     live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
@@ -244,6 +247,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionFilters.triggered.connect(self.show_filters_window)
         self.actionRecon.triggered.connect(self.show_recon_window)
+        self.actionGeometry.triggered.connect(self.show_geometry_window)
         self.actionSpectrumViewer.triggered.connect(self.show_spectrum_viewer_window)
         self.actionLiveViewer.triggered.connect(self.live_view_choose_directory)
         self.actionSettings.triggered.connect(self.show_settings_window)
@@ -474,6 +478,17 @@ class MainWindowView(BaseMainWindowView):
             self.recon.raise_()
             self.recon.show()
 
+    def show_geometry_window(self) -> None:
+        self.close_welcome_screen()
+
+        if not self.geometry:
+            self.geometry = GeometryWindowView(self)
+            self.geometry.show()
+        else:
+            self.geometry.activateWindow()
+            self.geometry.raise_()
+            self.geometry.show()
+
     def show_filters_window(self) -> None:
         if not self.filters:
             self.filters = FiltersWindowView(self)
@@ -584,6 +599,8 @@ class MainWindowView(BaseMainWindowView):
             # Close additional windows which do not have the MainWindow as parent
             if self.recon:
                 self.recon.close()
+            if self.geometry:
+                self.geometry.close()
             while self.live_viewer_list:
                 self.live_viewer_list[-1].close()
             if self.spectrum_viewer:
