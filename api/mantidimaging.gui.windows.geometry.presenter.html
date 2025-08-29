@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.gui.gui module &#8212; MantidImaging 3.0.0a1 documentation</title>
+    <title>mantidimaging.gui.windows.geometry.presenter module &#8212; MantidImaging 3.0.0a1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.gui';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.gui.windows.geometry.presenter';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -58,8 +58,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.helper module" href="mantidimaging.helper.html" />
-    <link rel="prev" title="mantidimaging.gui.windows.wizard.view module" href="mantidimaging.gui.windows.wizard.view.html" />
+    <link rel="next" title="mantidimaging.gui.windows.geometry.view module" href="mantidimaging.gui.windows.geometry.view.html" />
+    <link rel="prev" title="mantidimaging.gui.windows.geometry.model module" href="mantidimaging.gui.windows.geometry.model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0" />
@@ -529,7 +529,13 @@
     
     <li class="breadcrumb-item"><a href="mantidimaging.gui.html" class="nav-link">mantidimaging.gui package</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.gui.gui module</span></li>
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.gui.windows.html" class="nav-link">mantidimaging.gui.windows package</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.gui.windows.geometry.html" class="nav-link">mantidimaging.gui.windows.geometry package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.gui.windows.geometry.presenter module</span></li>
   </ul>
 </nav>
 </div>
@@ -546,8 +552,49 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="mantidimaging-gui-gui-module">
-<h1>mantidimaging.gui.gui module<a class="headerlink" href="#mantidimaging-gui-gui-module" title="Link to this heading">#</a></h1>
+  <section id="module-mantidimaging.gui.windows.geometry.presenter">
+<span id="mantidimaging-gui-windows-geometry-presenter-module"></span><h1>mantidimaging.gui.windows.geometry.presenter module<a class="headerlink" href="#module-mantidimaging.gui.windows.geometry.presenter" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.geometry.presenter.</span></span><span class="sig-name descname"><span class="pre">GeometryWindowPresenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeometryWindowView</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MainWindowView</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.presenter.html#mantidimaging.gui.mvp_base.presenter.BasePresenter" title="mantidimaging.gui.mvp_base.presenter.BasePresenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePresenter</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_create_new_geometry">
+<span class="sig-name descname"><span class="pre">handle_create_new_geometry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter.handle_create_new_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_create_new_geometry" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_parameter_updates">
+<span class="sig-name descname"><span class="pre">handle_parameter_updates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter.handle_parameter_updates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_parameter_updates" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_stack_changed">
+<span class="sig-name descname"><span class="pre">handle_stack_changed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter.handle_stack_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_stack_changed" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.refresh_plot">
+<span class="sig-name descname"><span class="pre">refresh_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter.refresh_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.refresh_plot" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.set_default_new_parameters">
+<span class="sig-name descname"><span class="pre">set_default_new_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter.set_default_new_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.set_default_new_parameters" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.update_parameters">
+<span class="sig-name descname"><span class="pre">update_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/presenter.html#GeometryWindowPresenter.update_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.update_parameters" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.view">
+<span class="sig-name descname"><span class="pre">view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">GeometryWindowView</span></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.view" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -561,20 +608,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.gui.windows.wizard.view.html"
+       href="mantidimaging.gui.windows.geometry.model.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.gui.windows.wizard.view module</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.geometry.model module</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.helper.html"
+       href="mantidimaging.gui.windows.geometry.view.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.helper module</p>
+        <p class="prev-next-title">mantidimaging.gui.windows.geometry.view module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -590,10 +637,31 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_create_new_geometry"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.handle_create_new_geometry()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_parameter_updates"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.handle_parameter_updates()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.handle_stack_changed"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.handle_stack_changed()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.refresh_plot"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.refresh_plot()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.set_default_new_parameters"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.set_default_new_parameters()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.update_parameters"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.update_parameters()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.view"><code class="docutils literal notranslate"><span class="pre">GeometryWindowPresenter.view</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/api/mantidimaging.gui.gui.rst.txt"
+      <li><a href="../_sources/api/mantidimaging.gui.windows.geometry.presenter.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

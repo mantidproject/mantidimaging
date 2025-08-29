@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 3
 
    mantidimaging.gui.windows.add_images_to_dataset_dialog
+   mantidimaging.gui.windows.geometry
    mantidimaging.gui.windows.image_load_dialog
    mantidimaging.gui.windows.live_viewer
    mantidimaging.gui.windows.main

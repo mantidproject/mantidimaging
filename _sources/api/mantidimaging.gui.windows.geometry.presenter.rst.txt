@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.geometry.presenter module
+===================================================
+
+.. automodule:: mantidimaging.gui.windows.geometry.presenter
+   :members:
+   :show-inheritance:
+   :undoc-members:
