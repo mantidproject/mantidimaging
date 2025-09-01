@@ -837,11 +837,7 @@ class MainWindowView(BaseMainWindowView):
             # Get all stacks
             stacks = self.get_all_stacks()
             if not stacks:
-                QMessageBox.critical(
-                    self,
-                    "Error",
-                    "No stacks detected."
-                )
+                QMessageBox.critical(self, "Error", "No stacks detected.")
                 return
 
             # Recreate all stacks
@@ -849,9 +845,5 @@ class MainWindowView(BaseMainWindowView):
                 self.create_new_stack(stack)
 
         except (AttributeError, RuntimeError, TypeError) as unexpected_error:
-            QMessageBox.critical(
-                self,
-                "Error",
-                f"Reset Layout could not completely reset the stacks.\n\nDetails: {unexpected_error}"
-            )
-
+            QMessageBox.critical(self, "Error",
+                                 f"Reset Layout could not completely reset the stacks.\n\nDetails: {unexpected_error}")
