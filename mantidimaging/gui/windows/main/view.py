@@ -79,6 +79,7 @@ class MainWindowView(BaseMainWindowView):
     menuWorkflow: QMenu
     menuImage: QMenu
     menuHelp: QMenu
+    menuView: QMenu
     menuTreeView: QMenu | None = None
 
     actionRecon: QAction
@@ -117,6 +118,8 @@ class MainWindowView(BaseMainWindowView):
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
+
+        self.menuView = self.menuBar().addMenu("View")
 
         self.setWindowTitle("Mantid Imaging")
 
@@ -256,13 +259,13 @@ class MainWindowView(BaseMainWindowView):
         self.actionResetLayout.setShortcut("Ctrl+Shift+R")
         self.actionResetLayout.triggered.connect(self.reset_layout)
 
-        # Add to View menu (check if it exists first)
-        if hasattr(self, 'menuView'):
-            self.menuView.addAction(self.actionResetLayout)
-        else:
-            # Create View menu if it doesn't exist
-            self.menuView = self.menuBar().addMenu("View")
-            self.menuView.addAction(self.actionResetLayout)
+        # Add Reset Layout action
+        self.actionResetLayout = QAction("Reset Layout", self)
+        self.actionResetLayout.setShortcut("Ctrl+Shift+R")
+        self.actionResetLayout.triggered.connect(self.reset_layout)
+
+        # Add to View menu (menuView always exists now)
+        self.menuView.addAction(self.actionResetLayout)
 
     def populate_image_menu(self) -> None:
         self.menuImage.clear()
