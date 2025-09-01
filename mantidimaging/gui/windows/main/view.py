@@ -830,7 +830,7 @@ class MainWindowView(BaseMainWindowView):
         stack_properties_dialog.show()
 
     def reset_layout(self):
-        """Close and reopen all stacks, showing critical GUI errors if something goes wrong."""
+        """Close and reopen all stacks, showing critical GUI errors for unsuccessful actions."""
         try:
             # Close all open stack windows
             for vis in list(self.presenter.stack_visualisers.values()):
