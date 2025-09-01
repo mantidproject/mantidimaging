@@ -229,23 +229,28 @@ class SpectrumViewerWindowModel:
             open_beam_roi = roi
 
         cache_key = (*roi, *open_beam_roi, mode, normalise_with_shuttercount)
-
         if cache_key in self.spectrum_cache:
             return self.spectrum_cache[cache_key]
         if self._stack is None:
             return np.array([])
         if self.presenter.initial_sample_change:
             return np.zeros(self._stack.data.shape[0])
-
+        is_full = (chunk_start == 0) and (chunk_end is None or chunk_end >= self._stack.data.shape[0])
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
+            if is_full:
+                self.store_spectrum(roi,
+                                    mode,
+                                    normalise_with_shuttercount,
+                                    sample_spectrum,
+                                    open_beam_roi=open_beam_roi)
             return sample_spectrum
-
         if self._normalise_stack is None:
             return np.array([])
-
         if mode == SpecType.OPEN:
             open_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
+            if is_full:
+                self.store_spectrum(roi, mode, normalise_with_shuttercount, open_spectrum, open_beam_roi=open_beam_roi)
             return open_spectrum
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
@@ -259,12 +264,10 @@ class SpectrumViewerWindowModel:
         if normalise_with_shuttercount:
             average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
             spectrum = spectrum / average_shuttercount
-        if chunk_start == 0 and chunk_end is None:
+        if is_full:
             self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi=open_beam_roi)
-
         LOG.debug("Computing spectrum: ROI=%s, Open ROI=%s, mode=%s, cached=%s", roi, open_beam_roi, mode.name,
                   cache_key in self.spectrum_cache)
-
         return spectrum
 
     def store_spectrum(self,

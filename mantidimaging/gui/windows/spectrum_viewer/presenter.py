@@ -246,15 +246,25 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.roi_form.roi_properties_widget.update_roi_limits(roi.as_sensible_roi())
         run_thread_check = not bool(self.roi_to_process_queue)
         self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
+        roi_key = roi.as_sensible_roi()
+        open_beam_roi = getattr(self, "_resolve_open_beam_roi", lambda: None)() or roi_key
+        cached = self.model.spectrum_cache.get(
+            (*roi_key, *open_beam_roi, self.spectrum_mode, self.view.shuttercount_norm_enabled()))
+        if cached is not None:
+            self.view.spectrum_widget.spectrum_data_dict[roi.name] = cached.copy()
+            self.image_nan_mask_dict[roi.name] = np.ma.asarray(cached.copy())
+            self.view.show_visible_spectrums()
+            self.view.spectrum_widget.spectrum.update()
+            self.update_roi_on_fitting_thumbnail()
+            return
         spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
         if spectrum is not None:
             self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
         self.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
-        if run_thread_check:
-            if not self.handle_roi_change_timer.isActive():
-                self.handle_roi_change_timer.start(500)
+        if run_thread_check and not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
     def run_spectrum_calculation(self):
@@ -291,9 +301,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Handle changes to any ROI position and size.
         """
+        self.stop_next_chunk = False
         self.thread = TaskWorkerThread()
         self.thread.task_function = self.run_spectrum_calculation
-
         self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
 
@@ -302,15 +312,24 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             raise thread.error
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
-        if np.isnan(self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]).any():
-            self.try_next_mean_chunk()
-        else:
-            self.roi_to_process_queue.pop(list(self.roi_to_process_queue.keys())[0])
-        if len(self.roi_to_process_queue) > 0:
-            self.try_next_mean_chunk()
-        else:
-            self.view.show_visible_spectrums()
-            self.view.spectrum_widget.spectrum.update()
+        if self.roi_to_process_queue:
+            current_name = list(self.roi_to_process_queue.keys())[0]
+            if np.isnan(self.image_nan_mask_dict[current_name]).any():
+                self.try_next_mean_chunk()
+            else:
+                open_beam_roi = getattr(self, "_resolve_open_beam_roi",
+                                        lambda: None)() or self.changed_roi.as_sensible_roi()
+                self.model.store_spectrum(self.changed_roi.as_sensible_roi(),
+                                          self.spectrum_mode,
+                                          self.view.shuttercount_norm_enabled(),
+                                          self.view.spectrum_widget.spectrum_data_dict[current_name],
+                                          open_beam_roi=open_beam_roi)
+                self.roi_to_process_queue.pop(current_name)
+            if len(self.roi_to_process_queue) > 0:
+                self.try_next_mean_chunk()
+            else:
+                self.view.show_visible_spectrums()
+                self.view.spectrum_widget.spectrum.update()
 
         roi = self.changed_roi.as_sensible_roi()
         coords = (roi.left, roi.top, roi.right, roi.bottom)
@@ -320,16 +339,24 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self._last_logged_roi_coords = coords
 
     def try_next_mean_chunk(self) -> None:
-        if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():
+        if not self.roi_to_process_queue:
             return
-        spectrum = self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]
+        roi_name = list(self.roi_to_process_queue.keys())[0]
+        if roi_name not in self.view.spectrum_widget.spectrum_data_dict:
+            return
+        spectrum = self.image_nan_mask_dict[roi_name]
         if spectrum is not None:
             if np.isnan(spectrum).any():
                 if not self.handle_roi_change_timer.isActive():
                     self.handle_roi_change_timer.start(10)
             else:
-                self.model.store_spectrum(self.changed_roi.as_sensible_roi(), self.spectrum_mode,
-                                          self.view.shuttercount_norm_enabled(), spectrum)
+                open_beam_roi = getattr(self, "_resolve_open_beam_roi",
+                                        lambda: None)() or self.changed_roi.as_sensible_roi()
+                self.model.store_spectrum(self.changed_roi.as_sensible_roi(),
+                                          self.spectrum_mode,
+                                          self.view.shuttercount_norm_enabled(),
+                                          spectrum,
+                                          open_beam_roi=open_beam_roi)
 
     def handle_roi_clicked(self, roi: SpectrumROI) -> None:
         if not roi.name == ROI_RITS:
