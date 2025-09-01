@@ -10,7 +10,6 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
-from ...data import ImageStack
 from ...utility.progress_reporting import Progress
 
 

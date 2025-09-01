@@ -55,8 +55,13 @@ def find_center(images: ImageStack, idx1: int, idx2: int, progress: Progress) ->
     shared_projections.array[0][:] = original_projection
     shared_projections.array[1][:] = flipped_projection
     params = {'image_width': images.width}
-    ps.run_compute_func(compute_correlation_error,len(search_range),
-                        [min_corr_err, shared_projections, shared_search_range], params, progress=progress, )
+    ps.run_compute_func(
+        compute_correlation_error,
+        len(search_range),
+        [min_corr_err, shared_projections, shared_search_range],
+        params,
+        progress=progress,
+    )
     _find_shift(images, search_range, min_corr_err.array, shift.array)
     m, q = np.polyfit(slices, shift.array, deg=1)
     LOG.debug(f"Linear fit: m={m:.5f}, q={q:.5f}")
@@ -65,7 +70,6 @@ def find_center(images: ImageStack, idx1: int, idx2: int, progress: Progress) ->
     LOG.info(f"Computed CoR offset: {-offset:.3f}, tilt: {theta}")
 
     return ScalarCoR(images.h_middle - offset), theta
-
 
 
 def compute_correlation_error(index: int, arrays: list[NDArray[np.float32]], params: dict[str, int]) -> None:
