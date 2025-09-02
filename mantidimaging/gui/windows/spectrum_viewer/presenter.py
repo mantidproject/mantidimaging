@@ -696,9 +696,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             roi = self.view.spectrum_widget.get_roi(roi_name)
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
             xvals = self.model.tof_data
-            result = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params)
-            self.view.scalable_roi_widget.set_fitted_parameter_values(result)
-            self.show_fit(list(result.values()))
+            fit_params, chi2 = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params)
+            self.view.scalable_roi_widget.set_fitted_parameter_values(fit_params)
+            self.view.scalable_roi_widget.set_fit_quality(chi2)
+            self.show_fit(list(fit_params.values()))
 
     def show_initial_fit(self) -> None:
         """
@@ -716,17 +717,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                      initial=True)
 
     def run_region_fit(self) -> None:
-        result = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(), self.model.tof_data,
-                                        self.view.scalable_roi_widget.get_initial_param_values())
-
+        result, chi2 = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(),
+                                              self.model.tof_data,
+                                              self.view.scalable_roi_widget.get_initial_param_values())
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
+        self.view.scalable_roi_widget.set_chi_squared(chi2)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
-        LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
+        LOG.info("Fit completed for ROI=%s, params=%s, chi²=%.4f", roi_name, result, chi2)
 
     def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
-                          init_params: list[float]) -> dict[str, float]:
+                          init_params: list[float]) -> tuple[dict[str, float], float]:
         fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
         xvals = tof_data[fitting_slice]
         yvals = spectrum[fitting_slice]
@@ -742,15 +744,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             fitting_region = self.view.get_fitting_region()
             try:
-                result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
+                result, chi2 = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
                 status = "Fitted"
             except (ValueError, BadFittingRoiError) as e:
                 LOG.warning(f"Failed to find fit for {roi_name}: {e}")
-                result = {param_name: 0 for param_name in self.model.fitting_engine.get_parameter_names()}
+                param_names = self.model.fitting_engine.get_parameter_names()
+                result = {param_name: 0 for param_name in param_names}
+                chi2 = float('nan')
                 status = "Failed"
-
             self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status=status)
-            LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
+            LOG.info("Fit completed for ROI=%s, params=%s, chi²=%.2f", roi_name, result, chi2)
 
     def show_fit(self, params: list[float]) -> None:
         xvals = self.model.tof_data

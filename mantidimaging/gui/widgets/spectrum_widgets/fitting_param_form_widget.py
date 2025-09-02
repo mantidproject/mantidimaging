@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 
+import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
 from PyQt5.QtGui import QDoubleValidator
 
@@ -42,6 +43,9 @@ class FittingParamFormWidget(QWidget):
         self.layout().addWidget(self.run_fit_button)
         self.run_fit_button.clicked.connect(self.presenter.run_region_fit)
         self._param_values_logged = False
+
+        self.chi2_label = QLabel("Fitting Quality (χ²): N/A")
+        main_layout.addWidget(self.chi2_label)
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -101,3 +105,9 @@ class FittingParamFormWidget(QWidget):
             self.params_layout.layout().removeItem(row_layout)
         self._rows.clear()
         LOG.debug("Parameter form rows cleared")
+
+    def set_chi_squared(self, chi2: float) -> None:
+        if np.isnan(chi2) or np.isinf(chi2):
+            self.chi2_label.setText("Fitting Quality (χ²): N/A")
+        else:
+            self.chi2_label.setText(f"Fitting Quality (χ²): {chi2:.2f}")
