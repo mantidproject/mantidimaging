@@ -17,6 +17,7 @@ from qt_material import apply_stylesheet
 
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
+from mantidimaging.core.fitting.bounding_box import get_bounding_box
 from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
 from mantidimaging.core.io.utility import find_projection_closest_to_180, THRESHOLD_180
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -194,6 +195,7 @@ class MainWindowPresenter(BasePresenter):
 
         if task.was_successful():
             self._add_dataset_to_view(task.result)
+            print(f"{get_bounding_box(task.result.sample)=}")
             self.view.model_changed.emit()
             task.result = None
             self._open_window_if_not_open()
