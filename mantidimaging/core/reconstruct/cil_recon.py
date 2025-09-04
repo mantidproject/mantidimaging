@@ -5,6 +5,8 @@ from __future__ import annotations
 import time
 from logging import getLogger, DEBUG
 from math import sqrt, ceil
+
+from cil.processors import TransmissionAbsorptionConverter
 from packaging.version import parse
 from threading import Lock
 from typing import TYPE_CHECKING
@@ -16,7 +18,8 @@ from cil.optimisation.algorithms import PDHG, SPDHG, Algorithm
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
 
-from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function
+from cil.optimisation.functions import MixedL21Norm, L2NormSquared, BlockFunction, ZeroFunction, IndicatorBox, Function, \
+    L1Norm
 from cil.optimisation.utilities.callbacks import Callback
 from cil.plugins.astra.operators import ProjectionOperator
 import cil.version
@@ -137,6 +140,8 @@ class CILRecon(BaseRecon):
         else:
             # Define Function G simply as zero
             G = ZeroFunction()
+
+        G = 0.01 * L1Norm()
 
         return (K, F, G)
 
@@ -413,6 +418,8 @@ class CILRecon(BaseRecon):
 
             data = CILRecon.get_data(BaseRecon.prepare_sinogram(images.data, recon_params), images.geometry,
                                      recon_params, num_subsets)
+            
+            # data = TransmissionAbsorptionConverter()(data)
 
             if recon_params.regulariser == 'TV':
                 K, F, G = CILRecon.set_up_TV_regularisation(ig, data, recon_params)
@@ -431,6 +438,9 @@ class CILRecon(BaseRecon):
                 normK = K.norm()
                 sigma = 1
                 tau = 1 / (sigma * normK**2)
+
+                # print("DATA: F: {}, G: {}, K: {}".format(F, G, K))
+
                 algo = PDHG(f=F,
                             g=G,
                             operator=K,

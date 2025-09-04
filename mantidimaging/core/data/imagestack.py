@@ -12,7 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
-from mantidimaging.core.data.geometry import Geometry
+from mantidimaging.core.data.geometry import Geometry, GeometryType
 from mantidimaging.core.data.utility import mark_cropped
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.parallel import utility as pu
@@ -416,11 +416,11 @@ class ImageStack:
             if num > 1000:
                 raise ValueError(f"Could not make unique name for: {name}")
 
-    def set_geometry(self) -> None:
+    def set_geometry(self, type: GeometryType) -> None:
         """
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
-        self.geometry = Geometry(num_pixels=(self.width, self.height), pixel_size=(1., 1.))
+        self.geometry = Geometry(type=type, num_pixels=(self.width, self.height), pixel_size=(1., 1.))
         self.set_geometry_angles()
         self.set_geometry_panels()
 

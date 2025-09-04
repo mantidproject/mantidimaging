@@ -96,6 +96,11 @@ class GeometryWindowView(BaseMainWindowView):
 
         self.figureCanvas = FigureCanvas()
 
+        # --- DEBUG
+
+        self.detectorPosBox = CustomRangeSpinBox()
+        self.sourcePosBox = CustomRangeSpinBox()
+
     def _init_layout(self) -> None:
         central_container = QWidget(self)
         central_layout = QHBoxLayout(central_container)
@@ -155,6 +160,8 @@ class GeometryWindowView(BaseMainWindowView):
         data_display_group_layout.addRow(QLabel("Angles:"), self.angleDisplay)
         data_display_group_layout.addRow(QLabel("COR:"), self.corSpinBox)
         data_display_group_layout.addRow(QLabel("Tilt:"), self.tiltSpinBox)
+        data_display_group_layout.addRow(QLabel("Detector Pos:"), self.detectorPosBox)
+        data_display_group_layout.addRow(QLabel("Source Pos:"), self.sourcePosBox)
 
         return data_display_group
 
@@ -197,7 +204,7 @@ class GeometryWindowView(BaseMainWindowView):
         new_params_layout = QFormLayout(new_params_group)
 
         self.geomTypeSelector.addItem("Parallel 3D")
-        # self.geomTypeSelector.addItem("Conebeam 3D")
+        self.geomTypeSelector.addItem("Cone 3D")
 
         new_params_layout.addRow(QLabel("Type:"), self.geomTypeSelector)
         new_params_layout.addRow(self._build_angle_range_container())
@@ -238,6 +245,8 @@ class GeometryWindowView(BaseMainWindowView):
         self.createGeometryButton.clicked.connect(self.presenter.handle_create_new_geometry)
         self.corSpinBox.valueChanged.connect(self.presenter.handle_parameter_updates)
         self.tiltSpinBox.valueChanged.connect(self.presenter.handle_parameter_updates)
+        self.detectorPosBox.valueChanged.connect(self.presenter.handle_parameter_updates)
+        self.sourcePosBox.valueChanged.connect(self.presenter.handle_parameter_updates)
 
     # ------------ PUBLIC API ------------
 
@@ -300,6 +309,22 @@ class GeometryWindowView(BaseMainWindowView):
     @tilt.setter
     def tilt(self, value) -> None:
         self.tiltSpinBox.setValue(value)
+
+    @property
+    def detector_position(self) -> float:
+        return self.detectorPosBox.value()
+
+    @detector_position.setter
+    def detector_position(self, value) -> None:
+        self.detectorPosBox.setValue(value)
+
+    @property
+    def source_position(self) -> float:
+        return self.sourcePosBox.value()
+
+    @source_position.setter
+    def source_position(self, value) -> None:
+        self.sourcePosBox.setValue(value)
 
     @property
     def new_type(self) -> str:

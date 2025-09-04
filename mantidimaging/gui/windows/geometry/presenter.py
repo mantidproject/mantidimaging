@@ -4,10 +4,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-import numpy
+import numpy as np
 from math import degrees
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.data.imagestack import StackNotFoundError
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -30,7 +31,10 @@ class GeometryWindowPresenter(BasePresenter):
     def handle_stack_changed(self) -> None:
         current_stack_uuid = self.view.current_stack
         if current_stack_uuid is None:
-            raise StackNotFoundError("Selected UUID is invalid")
+            # Stack has likely been cleared from the main window
+            self.view.clear_plot()
+            self.view.set_widget_stack_page(0)
+            return
 
         current_stack = self.main_window.get_stack(current_stack_uuid)
         if current_stack is None:
@@ -49,7 +53,7 @@ class GeometryWindowPresenter(BasePresenter):
         if stack.geometry is None:
             raise RuntimeError("Attempted to update parameters for ImageStack without geometry")
 
-        geometry_type = f"{stack.geometry.geom_type}{stack.geometry.dimension}"
+        geometry_type = stack.geometry.type.value
 
         angle_range = "N/A"
         real_projection_angles = stack.real_projection_angles()
@@ -66,6 +70,9 @@ class GeometryWindowPresenter(BasePresenter):
         self.view.rotation_axis = mi_cor
         self.view.tilt = mi_tilt
 
+        self.view.source_position = stack.geometry.source_position
+        self.view.detector_position = stack.geometry.detector_position
+
     def set_default_new_parameters(self, stack: ImageStack) -> None:
         default_cor = stack.width / 2
 
@@ -78,9 +85,14 @@ class GeometryWindowPresenter(BasePresenter):
         updated_cor = ScalarCoR(self.view.rotation_axis)
         updated_tilt = self.view.tilt
 
+        updated_source_pos = self.view.source_position
+        updated_detector_pos = self.view.detector_position
+
         stack = self._get_current_stack_with_assert()
         assert stack.geometry is not None
+        
         stack.geometry.set_geometry_from_cor_tilt(updated_cor, updated_tilt)
+        stack.geometry.set_source_detector_positions(updated_source_pos, updated_detector_pos)
 
         self.refresh_plot(stack)
 
@@ -95,14 +107,20 @@ class GeometryWindowPresenter(BasePresenter):
     def handle_create_new_geometry(self) -> None:
         stack = self._get_current_stack_with_assert()
 
+        new_type = self.view.new_type
         new_cor = ScalarCoR(self.view.new_rotation_axis)
         new_tilt = self.view.new_tilt
         new_min_angle = self.view.new_min_angle
         new_max_angle = self.view.new_max_angle
 
-        new_angles = ProjectionAngles(numpy.linspace(new_min_angle, new_max_angle, stack.num_projections))
+        new_angles = ProjectionAngles(np.linspace(np.deg2rad(new_min_angle), np.deg2rad(new_max_angle), stack.num_projections))
         stack.set_projection_angles(new_angles)
-        stack.set_geometry()
+        
+        geometry_type = GeometryType.PARALLEL3D
+        if new_type == "Cone 3D":
+            geometry_type = GeometryType.CONE3D
+        
+        stack.set_geometry(geometry_type)
         assert stack.geometry is not None
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
 
