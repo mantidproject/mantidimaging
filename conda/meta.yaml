@@ -40,6 +40,7 @@ requirements:
     - pyqtgraph=0.13.7
     - qt-material=2.14
     - darkdetect=0.8.0
+    - ccpi-viewer=25.0.*
     - qt-gtk-platformtheme # [linux]
 
 
