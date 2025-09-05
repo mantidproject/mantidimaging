@@ -334,9 +334,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.normalise_error_issue and self.normalisation_enabled():
             self.normaliseErrorIcon.setPixmap(self.normalise_error_icon_pixmap)
             self.normaliseErrorIcon.setToolTip(self.normalise_error_issue)
+            for roi_name in self.table_view.get_roi_names():
+                self.set_roi_visibility_flags(roi_name, visible=False)
         else:
             self.normaliseErrorIcon.setPixmap(QPixmap())
             self.normaliseErrorIcon.setToolTip("")
+            for roi_name in self.table_view.get_roi_names():
+                self.set_roi_visibility_flags(roi_name, visible=True)
+                self.presenter.redraw_spectrum(roi_name)
 
     def normalisation_enabled(self) -> bool:
         return self.normaliseCheckBox.isChecked()
