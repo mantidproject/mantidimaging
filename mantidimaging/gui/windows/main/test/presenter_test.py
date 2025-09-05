@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import unittest
 import uuid
-from pathlib import Path
 
 from unittest import mock
-from unittest.mock import patch, call
+from unittest.mock import call
 
 import numpy as np
 from parameterized import parameterized
@@ -147,28 +146,7 @@ class MainWindowPresenterTest(unittest.TestCase):
             ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
 
         self.view.ask_to_use_closest_to_180.return_value = False
-
         self.dataset.sample.proj180deg = None
-        self.presenter.add_alternative_180_if_required(self.dataset)
-
-    def test_threshold_180_is_separate_data(self):
-        self.model.datasets[self.dataset.id] = self.dataset
-        self.dataset.sample.set_projection_angles(
-            ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
-
-        self.presenter.get_stack_visualiser = mock.Mock()
-        self.presenter._create_and_tabify_stack_window = mock.Mock()
-        self.dataset.sample.proj180deg = None
-        self.presenter.add_alternative_180_if_required(self.dataset)
-
-        self.assertIsNone(self.dataset.proj180deg.data.base)
-
-    def test_create_new_stack_dataset_and_reject_180(self):
-        self.view.ask_to_use_closest_to_180.return_value = False
-
-        self.dataset.sample.proj180deg = None
-        self.presenter.add_alternative_180_if_required(self.dataset)
-        self.assertIsNone(self.dataset.proj180deg)
 
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
@@ -184,8 +162,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.wizard_action_show_reconstruction()
         self.view.show_recon_window.assert_called_once()
 
-    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_alternative_180_if_required")
-    def test_nexus_load_success_calls_show_information(self, _):
+    def test_nexus_load_success_calls_show_information(self):
         self.view.nexus_load_dialog = mock.Mock()
         data_title = "data tile"
         self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
@@ -425,15 +402,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter._add_dataset_to_view.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
-
-    @patch("mantidimaging.gui.windows.main.presenter.find_projection_closest_to_180")
-    def test_no_need_for_alternative_180(self, find_180_mock: mock.Mock):
-        dataset = Dataset(sample=generate_images())
-        dataset.proj180deg = generate_images((1, 20, 20))
-        dataset.proj180deg.filenames = [Path("filename")]
-
-        self.presenter.add_alternative_180_if_required(dataset)
-        find_180_mock.assert_not_called()
 
     def test_create_mixed_dataset_stack_windows(self):
         n_stacks = 3
