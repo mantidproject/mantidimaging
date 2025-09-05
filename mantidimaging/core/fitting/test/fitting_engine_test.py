@@ -41,6 +41,6 @@ class FittingEngineTest(unittest.TestCase):
         xvals = np.linspace(1, 10, 20)
         yvals = 3.1 * xvals + 2.7
 
-        result = self.engine.find_best_fit(xvals, yvals, [1, 1])
-        self.assertAlmostEqual(result['a'], 3.1, 4)
-        self.assertAlmostEqual(result['b'], 2.7, 4)
+        fit_params, chi2 = self.engine.find_best_fit(xvals, yvals, [1, 1])
+        self.assertAlmostEqual(fit_params['a'], 3.1, 4)
+        self.assertAlmostEqual(fit_params['b'], 2.7, 4)
