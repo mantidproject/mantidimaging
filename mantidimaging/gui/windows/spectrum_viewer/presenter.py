@@ -665,10 +665,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.scalable_roi_widget.set_parameter_values(init_params)
 
         self.view.fittingDisplayWidget.set_plot_mode("initial")
-
         self.show_initial_fit()
+
         roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=init_params, status="Initial")
+        self.view.scalable_roi_widget.set_chi_squared(float("nan"))
+        self.view.exportDataTableWidget.update_roi_data(
+            roi_name=roi_name,
+            params=init_params,
+            status="Initial",
+            chi2=None,
+        )
 
     def _plot_initial_fit(self) -> None:
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
@@ -724,7 +730,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.scalable_roi_widget.set_chi_squared(chi2)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
+        self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted", chi2=chi2)
         LOG.info("Fit completed for ROI=%s, params=%s, chi²=%.4f", roi_name, result, chi2)
 
     def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
@@ -752,7 +758,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 result = {param_name: 0 for param_name in param_names}
                 chi2 = float('nan')
                 status = "Failed"
-            self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status=status)
+            self.view.exportDataTableWidget.update_roi_data(
+                roi_name=roi_name,
+                params=result,
+                status=status,
+                chi2=chi2,
+            )
             LOG.info("Fit completed for ROI=%s, params=%s, chi²=%.2f", roi_name, result, chi2)
 
     def show_fit(self, params: list[float]) -> None:
