@@ -1,1 +1,1 @@
-#2057: Added support for resetting the GUI to its default layout including floating windows, via both the View menu and the right-click menu.
+#2057: Updated the code to allow resetting the GUI to the default layout, including floating windows, through both the View menu and the right-click menu.
