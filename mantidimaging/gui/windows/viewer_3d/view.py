@@ -17,10 +17,7 @@ class MI3DViewer(QMainWindow):
         self.vtk_widget = QVTKRenderWindowInteractor(central_widget)
 
         # Set up the CIL Viewer
-        self.viewer = CILViewer(
-            renWin=self.vtk_widget.GetRenderWindow(),
-            iren=self.vtk_widget
-        )
+        self.viewer = CILViewer(renWin=self.vtk_widget.GetRenderWindow(), iren=self.vtk_widget)
 
         # Add the VTK widget to the layout
         layout.addWidget(self.vtk_widget)

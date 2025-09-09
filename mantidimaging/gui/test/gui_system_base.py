@@ -143,7 +143,7 @@ class GuiSystemBase(unittest.TestCase):
 
     def _open_spectrum_viewer(self):
         self.main_window.actionSpectrumViewer.trigger()
-    
+
     def _open_view_3d(self):
         self.main_window.actionViewer3d.trigger()
 
