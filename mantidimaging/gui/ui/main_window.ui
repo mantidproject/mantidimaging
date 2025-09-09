@@ -62,6 +62,7 @@
     <addaction name="actionGeometry"/>
     <addaction name="actionCompareImages"/>
     <addaction name="actionSpectrumViewer"/>
+    <addaction name="actionViewer3d"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -248,6 +249,11 @@
   <action name="actionSpectrumViewer">
    <property name="text">
     <string>Spectrum Viewer</string>
+   </property>
+  </action>
+  <action name="actionViewer3d">
+   <property name="text">
+    <string>3D Viewer</string>
    </property>
   </action>
   <action name="actionLiveViewer">
