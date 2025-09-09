@@ -504,3 +504,51 @@ class MainWindowViewTest(unittest.TestCase):
         self.view.live_view_choose_directory()
 
         mock_show_live_viewer.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
+    def test_reset_layout_no_stacks_shows_error(self, mock_qmb: mock.Mock):
+        # Make get_all_stacks return empty
+        self.view.get_all_stacks = mock.Mock(return_value=[])  # type: ignore[method-assign]
+
+        self.view.reset_layout()
+
+        mock_qmb.critical.assert_called_once_with(self.view, "Error", "No stacks detected.")
+
+    def test_reset_layout_recreates_stacks(self):
+        # Fake stacks to recreate
+        fake_stacks = [mock.Mock(), mock.Mock(), mock.Mock()]
+        self.view.get_all_stacks = mock.Mock(return_value=fake_stacks)
+        self.view.create_new_stack = mock.Mock()
+
+        # Mock existing stack_visualisers
+        old1, old2 = mock.Mock(), mock.Mock()
+        self.presenter.stack_visualisers = {"a": old1, "b": old2}
+
+        self.view.reset_layout()
+
+        # Close created stack visualisers
+        old1.close.assert_called_once()
+        old2.close.assert_called_once()
+
+        # stack_visualisers cleared
+        self.assertEqual(self.presenter.stack_visualisers, {})
+
+        # create_new_stack called for each new stack
+        self.assertEqual(self.view.create_new_stack.call_count, len(fake_stacks))
+        for stack in fake_stacks:
+            self.view.create_new_stack.assert_any_call(stack)
+
+    @mock.patch("mantidimaging.gui.windows.main.view.QMessageBox")
+    def test_reset_layout_handles_exceptions(self, mock_qmb: mock.Mock):
+        # Force an exception inside reset_layout
+        self.view.get_all_stacks = mock.Mock(side_effect=AttributeError("fail"))  # type: ignore[method-assign]
+
+        self.view.reset_layout()
+
+        # Ensure critical error dialog is shown
+        mock_qmb.critical.assert_called_once()
+        args = mock_qmb.critical.call_args[0]
+        self.assertIn(
+            "Reset Layout could not completely reset the stacks",
+            args[2],
+        )
