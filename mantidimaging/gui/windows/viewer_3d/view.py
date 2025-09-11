@@ -11,31 +11,31 @@ class MI3DViewer(QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.init_layout()
+        self.init_viewer()
+        self.init_window()
 
-        # Set up the central widget and layout
-        central_widget = QWidget(self)
-        layout = QVBoxLayout(central_widget)
-        layout.setContentsMargins(0, 0, 0, 0)
+    # Set up the central widget and layout
+    def init_layout(self):
+        self.central_widget = QWidget(self)
+        self.layout = QVBoxLayout(self.central_widget)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.setCentralWidget(self.central_widget)
 
-        # Set up the VTK render window interactor
-        self.vtk_widget = QVTKRenderWindowInteractor(central_widget)
-
-        # Set up the CIL Viewer
+    # Set up the VTK render window interactor and the CIL Viewer
+    def init_viewer(self):
+        self.vtk_widget = QVTKRenderWindowInteractor(self.central_widget)
         self.viewer = CILViewer(renWin=self.vtk_widget.GetRenderWindow(), iren=self.vtk_widget)
-
-        # Add the VTK widget to the layout
-        layout.addWidget(self.vtk_widget)
-        self.setCentralWidget(central_widget)
-
-        # Initialize the VTK widget
+        self.layout.addWidget(self.vtk_widget)
         self.vtk_widget.Initialize()
 
-        # Set window properties
+    # Set window properties
+    def init_window(self):
         self.setWindowTitle("Mantid Imaging - 3D Viewer")
         self.resize(800, 600)
         self.show()
 
+    # Clean up VTK resources on close
     def closeEvent(self, event):
-        # Clean up VTK resources
         self.vtk_widget.Finalize()
         super().closeEvent(event)
