@@ -1,0 +1,15 @@
+mantidimaging.gui.windows.viewer\_3d package
+============================================
+
+.. automodule:: mantidimaging.gui.windows.viewer_3d
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.viewer_3d.view
