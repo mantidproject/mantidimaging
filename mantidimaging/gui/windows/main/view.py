@@ -34,6 +34,7 @@ from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
+from mantidimaging.gui.windows.viewer_3d.view import MI3DViewer
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.geometry import GeometryWindowView
 from mantidimaging.gui.windows.settings.view import SettingsWindowView
@@ -88,6 +89,7 @@ class MainWindowView(BaseMainWindowView):
     actionGeometry: QAction
     actionCompareImages: QAction
     actionSpectrumViewer: QAction
+    actionViewer3d: QAction
     actionLiveViewer: QAction
     actionSampleLoadLog: QAction
     actionShutterCounts: QAction
@@ -252,6 +254,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionRecon.triggered.connect(self.show_recon_window)
         self.actionGeometry.triggered.connect(self.show_geometry_window)
         self.actionSpectrumViewer.triggered.connect(self.show_spectrum_viewer_window)
+        self.actionViewer3d.triggered.connect(self.open_3d_viewer)
         self.actionLiveViewer.triggered.connect(self.live_view_choose_directory)
         self.actionSettings.triggered.connect(self.show_settings_window)
 
@@ -521,6 +524,10 @@ class MainWindowView(BaseMainWindowView):
             self.spectrum_viewer.activateWindow()
             self.spectrum_viewer.raise_()
             self.spectrum_viewer.show()
+
+    def open_3d_viewer(self):
+        self.viewer3d = MI3DViewer(self)
+        self.viewer3d.show()
 
     def live_view_choose_directory(self) -> None:
         caption = "Choose live data directory"
