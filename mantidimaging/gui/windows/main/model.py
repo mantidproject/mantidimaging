@@ -36,6 +36,9 @@ class MainWindowModel:
                     return image
         return None
 
+    # DEBUG: --------------------- THE TWO LOADING FUNCTIONS ARE HERE
+
+    # LOADS WHOLE DATASET
     def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> Dataset:
 
         def load(im_param: ImageParameters) -> ImageStack:
@@ -48,11 +51,11 @@ class MainWindowModel:
         sample.pixel_size = parameters.pixel_size
 
         for file_type in [
-                FILE_TYPES.FLAT_BEFORE,
-                FILE_TYPES.FLAT_AFTER,
-                FILE_TYPES.DARK_BEFORE,
-                FILE_TYPES.DARK_AFTER,
-                FILE_TYPES.PROJ_180,
+            FILE_TYPES.FLAT_BEFORE,
+            FILE_TYPES.FLAT_AFTER,
+            FILE_TYPES.DARK_BEFORE,
+            FILE_TYPES.DARK_AFTER,
+            FILE_TYPES.PROJ_180,
         ]:
             if im_param := parameters.image_stacks.get(file_type):
                 image_stack = load(im_param)
@@ -61,11 +64,14 @@ class MainWindowModel:
         self.datasets[ds.id] = ds
         return ds
 
+    # DEBUG: LOADS IMAGES (SINGLE STACK AS DATASET)
     def load_image_stack_to_new_dataset(self, file_path: str, progress: Progress) -> Dataset:
         images = self.load_image_stack(file_path, progress)
         ds = Dataset(stacks=[images], name=images.name)
         self.datasets[ds.id] = ds
         return ds
+
+    # DEBUG: ---------------------
 
     def load_image_stack(self, file_path: str, progress: Progress) -> ImageStack:
         group = FilenameGroup.from_file(Path(file_path))

@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import enum
+import os
 import traceback
 from enum import auto, Enum
 from logging import getLogger
@@ -80,11 +81,35 @@ class NexusLoadPresenter:
         except RuntimeError as err:
             self.view.show_exception(str(err), traceback.format_exc())
 
+# DEBUG: ----------- Data gets loaded here
+
     def scan_nexus_file(self) -> None:
         """
         Try to open the NeXus file and display its contents on the view.
         """
         file_path = self.view.filePathLineEdit.text()
+        file_path_2 = file_path
+
+        try:
+            from cil.io import NEXUSDataReader
+            reader = NEXUSDataReader()
+            print(f"DEBUG: File path is 2 {file_path}")
+            reader.set_up(file_path_2)
+            acquisition_data = reader.read()
+            acquisition_geometry = acquisition_data.geometry
+            print(acquisition_geometry)
+            from math import degrees
+            tilt: float = -degrees(acquisition_geometry.get_centre_of_rotation()["angle"][0])
+            offset = acquisition_geometry.get_centre_of_rotation()["offset"][0]
+
+            type = acquisition_geometry.config.system.geometry
+            dimension = acquisition_geometry.config.system.dimension
+            print(f"DEBUG: type is {type}{dimension}")
+            print(f"DEBUG: Got geometry with offset {offset} and Tilt {tilt}")
+
+        except OSError:
+            print(f"DEBUG: Unable to read NeXus data from {file_path_2}")
+
         try:
             with h5py.File(file_path, "r") as self.nexus_file:
                 self.tomo_entry = self._look_for_nxtomo_entry()
@@ -122,11 +147,14 @@ class NexusLoadPresenter:
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
+
         except OSError:
             unable_message = f"Unable to read NeXus data from {file_path}"
             logger.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
+
+    # DEBUG: -----------
 
     def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> np.ndarray | None:
         """
@@ -302,6 +330,8 @@ class NexusLoadPresenter:
             logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
+# DEBUG: -------------- Dataset gets built here from data loaded earlier
+
     def get_dataset(self) -> tuple[Dataset, str]:
         """
         Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.
@@ -326,6 +356,8 @@ class NexusLoadPresenter:
         self._add_recons_to_dataset(ds)
 
         return ds, self.title
+
+    # DEBUG: --------------
 
     def _create_sample_images(self) -> ImageStack:
         """
