@@ -388,6 +388,9 @@ class ImageStack:
                           Only used when the angles are generated, if they are provided
                           via a log or a file the argument will be ignored.
         """
+        
+        self.
+        
         projection_angles = self.real_projection_angles()
         if projection_angles is not None:
             return projection_angles
