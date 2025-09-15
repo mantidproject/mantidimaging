@@ -773,12 +773,26 @@
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.run_spectrum_calculation">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.run_spectrum_calculation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run_spectrum_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">roi_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_to_process_queue</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_to_process_queue</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_spectrum_calculation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SpectrumROI</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">:</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spec_mode</span><span class="p">:</span> <span class="n">SpecType</span><span class="p">,</span>
+                                 <span class="n">shutter_norm</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">as_sensible_roi</span><span class="p">(),</span>
+                                           <span class="n">spec_mode</span><span class="p">,</span>
+                                           <span class="n">shutter_norm</span><span class="p">,</span>
+                                           <span class="n">chunk_start</span><span class="p">,</span>
+                                           <span class="n">chunk_end</span><span class="p">,</span>
+                                           <span class="n">open_beam_roi</span><span class="o">=</span><span class="n">open_beam_roi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spectrum</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.spectrum_calculation_setup">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.spectrum_calculation_setup">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_calculation_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_to_process_queue</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span>
+        <span class="n">roi_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="k">if</span> <span class="n">chunk_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">nanInds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]))</span>
+            <span class="n">nanInds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]))</span>
             <span class="n">chunk_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nanInds</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nanInds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">chunk_size</span><span class="p">:</span>
                 <span class="n">chunk_end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nanInds</span><span class="p">[</span><span class="n">chunk_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -787,21 +801,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">sample_roi</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">as_sensible_roi</span><span class="p">()</span>
-        <span class="n">open_beam_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_open_beam_roi</span><span class="p">()</span>
-        <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">sample_roi</span><span class="p">,</span>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">(),</span>
-                                           <span class="n">chunk_start</span><span class="p">,</span>
-                                           <span class="n">chunk_end</span><span class="p">,</span>
-                                           <span class="n">open_beam_roi</span><span class="o">=</span><span class="n">open_beam_roi</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)):</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">],</span> <span class="n">chunk_start</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">][</span><span class="n">chunk_start</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">],</span> <span class="n">chunk_start</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_roi_moved">
@@ -810,9 +810,17 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle changes to any ROI position and size.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_calculation_setup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="n">TaskWorkerThread</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">task_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_spectrum_calculation</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;roi&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_to_process_queue</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;open_beam_roi&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_open_beam_roi</span><span class="p">(),</span>
+            <span class="s2">&quot;spec_mode&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span>
+            <span class="s2">&quot;shutter_norm&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">(),</span>
+            <span class="s2">&quot;chunk_start&quot;</span><span class="p">:</span> <span class="n">chunk_start</span><span class="p">,</span>
+            <span class="s2">&quot;chunk_end&quot;</span><span class="p">:</span> <span class="n">chunk_end</span>
+        <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
@@ -822,6 +830,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">thread_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">thread</span><span class="o">.</span><span class="n">error</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thread_finished_processing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_visible_spectrums</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_to_process_queue</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
@@ -840,6 +850,23 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ROI moved: name=</span><span class="si">%s</span><span class="s2">, new coords=Left: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_roi</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                      <span class="o">*</span><span class="n">coords</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_last_logged_roi_coords</span> <span class="o">=</span> <span class="n">coords</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.thread_finished_processing">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.thread_finished_processing">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">thread_finished_processing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spectrum</span> <span class="o">=</span> <span class="n">thread</span><span class="o">.</span><span class="n">result</span>
+            <span class="n">roi_name</span> <span class="o">=</span> <span class="n">thread</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;roi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">chunk_start</span> <span class="o">=</span> <span class="n">thread</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;chunk_start&quot;</span><span class="p">]</span>
+            <span class="n">spectrum_data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">spectrum_data_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)):</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">spectrum_data_dict</span><span class="p">,</span> <span class="n">chunk_start</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">][</span><span class="n">chunk_start</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_nan_mask_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">],</span> <span class="n">chunk_start</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.try_next_mean_chunk">
