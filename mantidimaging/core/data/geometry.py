@@ -76,10 +76,29 @@ class Geometry(AcquisitionGeometry):
 
         self.set_centre_of_rotation(offset=offset, angle=-tilt, angle_units='degree')
 
-    @property
-    def tilt(self) -> float:
-        tilt: float = self.get_centre_of_rotation()['angle'][0]
-        return -degrees(tilt)
+    def get_cor_at_slice_index(self, slice_idx: int) -> ScalarCoR:
+        """
+        Returns a single scalar cor at the specified index
+
+        :param slice_idx: The slice index.
+        :return: ScalarCoR object with cor at the specified index
+        """
+        gradient = -tan(radians(self.tilt))
+        cor = (gradient * slice_idx) + self.cor.value
+        return ScalarCoR(cor)
+
+    def get_all_cors(self) -> list[ScalarCoR]:
+        """
+        Returns all cors across How many cors will be generated,
+                             this should be equal to the image height
+                             (i.e. number of sinograms that will be reconstructed)
+        :return: List of cors for every slice of the image height
+        """
+        cors = []
+        image_height = self.config.panel.num_pixels[1]
+        for i in range(image_height):
+            cors.append(self.get_cor_at_slice_index(i))
+        return cors
 
     @property
     def cor(self) -> ScalarCoR:
@@ -98,6 +117,22 @@ class Geometry(AcquisitionGeometry):
         cor = midpoint_cor - pixel_y_midpoint * tan(tilt_radians)
 
         return ScalarCoR(cor)
+
+    @cor.setter
+    def cor(self, cor: ScalarCoR) -> None:
+        self.set_geometry_from_cor_tilt(cor=cor, tilt=self.tilt)
+
+    @property
+    def tilt(self) -> float:
+        """
+        Returns the tilt in degrees
+        """
+        tilt: float = self.get_centre_of_rotation()['angle'][0]
+        return -degrees(tilt)
+
+    @tilt.setter
+    def tilt(self, tilt: float) -> None:
+        self.set_geometry_from_cor_tilt(cor=self.cor, tilt=tilt)
 
     @property
     def type(self) -> GeometryType:
