@@ -132,6 +132,7 @@ class SpectrumViewerWindowModel:
 
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
+        self.spectrum_cache.clear()
         if normalise_stack is not None:
             LOG.info("Normalisation stack set: shape=%s", normalise_stack.data.shape)
         else:
