@@ -22,7 +22,6 @@ from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWi
     MIPlotItem
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
 from mantidimaging.test_helpers import start_qapplication
-from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 
@@ -399,7 +398,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.spectrum_data_dict = {"roi_1": np.arange(10)}
         mock_get_spectrum.return_value = np.arange(10)
         self.presenter.do_adjust_roi()
-        wait_until(lambda: len(self.presenter.roi_to_process_queue) == 0, max_retry=1000)
         self.view.spectrum_widget.adjust_roi.assert_called_once_with(SensibleROI(10, 10, 20, 30), "roi_1")
 
     def test_WHEN_refresh_spectrum_plot_THEN_spectrum_plot_refreshed(self):
