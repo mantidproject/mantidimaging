@@ -246,21 +246,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
         self.view.roi_form.roi_properties_widget.update_roi_limits(roi.as_sensible_roi())
-
         sample_roi = roi.as_sensible_roi()
         open_beam_roi = self.view.get_open_beam_roi() or sample_roi
         cache_key = (*sample_roi, *open_beam_roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         cached = self.model.spectrum_cache.get(cache_key)
         if cached is not None:
             self.view.set_spectrum(roi.name, cached)
-            self.roi_to_process_queue.pop(roi.name, None)
-            if not self.roi_to_process_queue and self.handle_roi_change_timer.isActive():
-                self.handle_roi_change_timer.stop()
-            self.update_roi_on_fitting_thumbnail()
-            return
-        existing = self.view.spectrum_widget.spectrum_data_dict.get(roi.name)
-        if isinstance(existing, np.ndarray) and existing.size and not np.isnan(existing).any():
-            self.view.set_spectrum(roi.name, existing)
             self.roi_to_process_queue.pop(roi.name, None)
             if not self.roi_to_process_queue and self.handle_roi_change_timer.isActive():
                 self.handle_roi_change_timer.stop()
