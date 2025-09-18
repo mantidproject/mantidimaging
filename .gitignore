@@ -123,3 +123,6 @@ ENV/
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+#Temporarily ignore pixi lock files while we transition away from Conda
+pixi.lock

@@ -1,0 +1,362 @@
+[project]
+name = "mantidimaging"
+version = "3.1.0"
+description = "Graphical toolkit for tomography and time-of-flight imaging"
+authors = [
+    "JackEAllen, Dolica Akello-Egwel, Hussam Alhassan, RachelBaust, James Cornal, Martyn Gigg, Despina Ioannide, Samuel Jones, Rasmia Kulan, Ashley Meigh, Daniel Nixon, Samuel Stock, Will Taylor, Sam Tygier",
+]
+channels = [
+    "conda-forge",
+    "astra-toolbox",
+    "ccpi",
+    "algotom",
+    "https://software.repos.intel.com/python/conda",
+]
+platforms = ["linux-64", "win-64"]
+
+[environments]
+# ToDo Cut down on environments as this can be significantly simplified
+default = ["runtime", "dev", "test", "lint"]
+default-gpu = ["runtime", "gpu-verify", "dev", "test", "lint"]
+
+build = ["runtime", "build"]
+build-cpu = ["runtime", "runtime-cpu", "build"]
+build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
+
+dev = ["runtime", "runtime-gpu", "dev", "test", "lint"]
+dev-cpu = ["runtime", "runtime-cpu", "dev", "test", "lint"]
+dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
+
+# Base dependencies (shared across environments)
+[dependencies]
+numexpr = "*"
+
+# Testing packages
+[feature.test.dependencies]
+pytest = "7.4.*"
+pytest-cov = "4.1.*"
+pytest-randomly = "3.15.*"
+pytest-xdist = "3.3.*"
+testfixtures = "7.2.*"
+pyfakefs = "5.3.*"
+parameterized = "0.9.*"
+
+# Linting packages
+[feature.lint.dependencies]
+mypy = "==1.17"
+pyright = "==1.1.391"
+yapf = "0.43.*"
+ruff = "0.3.7.*"
+types-requests = "*"
+types-pyyaml = "*"
+types-docutils = "*"
+
+# Packages required for development and building
+[feature.dev.dependencies]
+pip = "*"
+gitpython = "3.1.*"
+coverage = ">=7.0,<7.6"
+coveralls = "4.0.*"
+pyinstaller = "6.14.*"
+make = "==4.3"
+pre-commit = "3.5.*"
+sphinx = "8.2.*"
+pydata-sphinx-theme = "0.16.*"
+sphinx-copybutton = "0.5.*"
+sphinx-design = "0.6.*"
+attrs = ">=19.2.0,<23"         # Pinned due to conflict when installing eyes
+
+# pypi only packages for development (not available via conda)
+[feature.dev.pypi-dependencies]
+eyes-images = "==5.23.*"
+
+# Core Python packages required at runtime
+[feature.runtime.dependencies]
+python = "3.12.*"
+pip = "*"
+darkdetect = "0.8.0.*"
+numba = "0.61.*"
+vtk = "*"
+ccpi-viewer = "25.0.*"
+astropy = "7.1.*"
+scipy = "1.14.*"
+scikit-image = "0.25.*"
+tifffile = "2023.7.18.*"
+imagecodecs = "2023.9.18.*"
+numpy = "1.26.*"
+algotom = "1.6.*"
+tomopy = "1.12.*"
+requests = "2.32.*"
+h5py = "3.13.*"
+hdf5 = ">=1.14.2,<1.15"
+psutil = "5.9.*"
+cil = "25.0.*"
+ccpi-regulariser = "*"
+jenkspy = "0.4.*"
+pyqt = "5.15.*"
+pyqtgraph = "0.13.7.*"
+qt-material = "2.14.*"
+qt-main = "5.15.8.*"
+
+# GPU-specific packages - common
+[feature.runtime-gpu.dependencies]
+cudatoolkit = "11.8.*"
+cupy = "12.3.*"
+
+# Linux GPU - astra 2.1.0 available
+[feature.runtime-gpu.target.linux-64.dependencies]
+astra-toolbox = { version = "2.1.0.*", build = "cuda*" }
+libastra = { version = "2.1.0.*", build = "cuda*" }
+
+# Windows GPU
+[feature.runtime-gpu.target.win-64.dependencies]
+astra-toolbox = ">=2.1.0"
+libastra = ">=2.1.0"
+
+# CPU-specific packages (non-CUDA builds)
+[feature.runtime-cpu.target.linux-64.dependencies]
+astra-toolbox = "2.1.0.*"
+libastra = "2.1.0.*"
+
+# Windows CPU - specific build hash required for astra-toolbox
+[feature.runtime-cpu.target.win-64.dependencies]
+astra-toolbox = { version = "2.1.0.*", build = "py312h6965d8f_5" }
+libastra = { version = "2.1.0.*" }
+
+# GPU verification feature - adds __cuda requirement
+[feature.gpu-verify.system-requirements]
+cuda = "11.8"
+
+# Virtual package to ensure CUDA is available on GPU systems - needed for windows, unsure about linux
+[feature.gpu-verify.target.win-64.dependencies]
+__cuda = "11.8.*"
+
+# Packages required for building and uploading conda packages
+[feature.build.dependencies]
+boa = "*"
+anaconda-client = "*"
+conda-build = "*"
+
+# Set environment variables for development environment during environment activation
+[feature.dev.activation.env]
+SOURCE_DIRS = "mantidimaging scripts docs/ext/"
+APPLITOOLS_API_KEY = "local"
+CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
+
+# Set environment variables for build environment during environment activation
+[feature.build.activation.env]
+UPLOAD_USER = "mantidimaging"
+AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
+
+# Linux specific dependencies (to get Qt platform theme working)
+[target.linux-64.dependencies]
+qt-gtk-platformtheme = "5.15.8.*"
+
+# Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
+[target.win-64.dependencies]
+vs2015_runtime = "*"
+intel-openmp = "*"
+ipp = { version = "2021.12.*", channel = "https://software.repos.intel.com/python/conda" }
+
+# Platform specific system and screenshot base tasks
+[target.linux-64.tasks.test-system-base]
+cmd = [
+    "bash",
+    "-c",
+    """
+    mkdir -p system_tests_output
+    APPLITOOLS_IMAGE_DIR=system_tests_output TEST_RESULT_DIR=system_tests_output xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/
+    """,
+]
+
+[target.linux-64.tasks.test-system-show-base]
+cmd = [
+    "bash",
+    "-c",
+    """
+    mkdir -p system_tests_output
+    APPLITOOLS_IMAGE_DIR=system_tests_output TEST_RESULT_DIR=system_tests_output python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests-show mantidimaging/gui/test/
+    """,
+]
+
+[target.linux-64.tasks.test-screenshots-base]
+cmd = [
+    "bash",
+    "-c",
+    """
+    mkdir -p screenshot_tests_output
+    echo "Screenshots directory: screenshot_tests_output"
+    APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=screenshot_tests_output xvfb-run --auto-servernum pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
+    echo "Screenshots written to screenshot_tests_output"
+    """,
+]
+
+[target.win-64.tasks.test-system-base]
+cmd = [
+    "cmd",
+    "/c",
+    "mkdir system_tests_output 2>nul & set TEST_RESULT_DIR=system_tests_output & set APPLITOOLS_IMAGE_DIR=system_tests_output & python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/",
+]
+description = "Run system tests (Windows)"
+
+[target.win-64.tasks.test-screenshots-base]
+cmd = [
+    "cmd",
+    "/c",
+    "mkdir screenshot_tests_output 2>nul & set APPLITOOLS_API_KEY=local & set APPLITOOLS_IMAGE_DIR=%CD%\\screenshot_tests_output & pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests",
+]
+
+[target.win-64.tasks.test-system-show-base]
+cmd = [
+    "cmd",
+    "/c",
+    "mkdir system_tests_output 2>nul & set TEST_RESULT_DIR=system_tests_output & set APPLITOOLS_IMAGE_DIR=system_tests_output & python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests-show mantidimaging/gui/test/",
+]
+
+# System test variants for CPU and GPU
+[tasks.test-system-cpu]
+depends-on = [{ task = "test-system-base", environment = "dev-cpu" }]
+description = "Run system tests (CPU)"
+
+[tasks.test-system-gpu]
+depends-on = [{ task = "test-system-base", environment = "dev-gpu" }]
+description = "Run system tests (GPU)"
+
+[tasks.test-system-show-cpu]
+depends-on = [{ task = "test-system-show-base", environment = "dev-cpu" }]
+description = "Run system tests with GUI display (CPU)"
+
+[tasks.test-system-show-gpu]
+depends-on = [{ task = "test-system-show-base", environment = "dev-gpu" }]
+description = "Run system tests with GUI display (GPU)"
+
+[tasks.test-screenshots-cpu]
+depends-on = [{ task = "test-screenshots-base", environment = "dev-cpu" }]
+description = "Run screenshot tests (CPU)"
+
+[tasks.test-screenshots-gpu]
+depends-on = [{ task = "test-screenshots-base", environment = "dev-gpu" }]
+description = "Run screenshot tests (GPU)"
+
+[feature.dev.tasks]
+#Run Mantid Imaging Application
+MI-base =  { cmd = "python -m mantidimaging", description = "Launch Mantid Imaging GUI" }
+MI-cpu = { depends-on = [{ task = "MI-base", environment = "dev-cpu" }] }
+MI-gpu = { depends-on = [{ task = "MI-base", environment = "dev-gpu" }] }
+
+MI-debug-base = { cmd = "python -X faulthandler -W default -m mantidimaging --log-level DEBUG", description = "Launch Mantid Imaging GUI in debug mode" }
+MI-debug-cpu = { depends-on = [{ task = "MI-debug-base", environment = "dev-cpu" }] }
+MI-debug-gpu = { depends-on = [{ task = "MI-debug-base", environment = "dev-gpu" }] }
+
+# Tests
+test-base = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", description = "Run test suite in parallel" }
+test-cpu = { depends-on = [{ task = "test-base", environment = "dev-cpu" }] }
+test-gpu = { depends-on = [{ task = "test-base", environment = "dev-gpu" }] }
+
+# Tests with verbose output
+test-verbose = { cmd = "python -m pytest -vs -o log_cli=true", description = "Run tests with verbose output" }
+test-verbose-cpu = { depends-on = [{ task = "test-verbose", environment = "dev-cpu" }] }
+test-verbose-gpu = { depends-on = [{ task = "test-verbose", environment = "dev-gpu" }] }
+
+# Tests without GUI (suitable for CI)
+test-nogui = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Run tests without GUI (suitable for CI)" }
+test-nogui-cpu = { depends-on = [{ task = "test-nogui", environment = "dev-cpu" }] }
+test-nogui-gpu = { depends-on = [{ task = "test-nogui", environment = "dev-gpu" }] }
+
+# Tests without GUI and with verbose output (suitable for CI)
+test-nogui-verbose = { cmd = "python -m pytest -vs -o log_cli=true -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }  , description = "Run tests without GUI (suitable for CI) with verbose output" }
+test-nogui-verbose-cpu = { depends-on = [{ task = "test-nogui-verbose", environment = "dev-cpu" }] }
+test-nogui-verbose-gpu = { depends-on = [{ task = "test-nogui-verbose", environment = "dev-gpu" }] }
+
+# PyInstaller packaging tasks
+package-pyinstaller-base = { cmd = "python PackageWithPyInstaller.py", cwd = "packaging", description = "Build PyInstaller package" }
+package-pyinstaller-cpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-cpu" }], description = "Build PyInstaller package (CPU)" }
+package-pyinstaller-gpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-gpu" }], description = "Build PyInstaller package (GPU)" }
+
+# Static Analysis Checks
+mypy = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true"
+pyright = "python -m pyright $SOURCE_DIRS"
+yapf = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS"
+yapf-apply = "python -m yapf -i --parallel --recursive $SOURCE_DIRS"
+ruff = "ruff check $SOURCE_DIRS || true"
+
+# Combined checks
+typecheck = { depends-on = ["mypy", "pyright"] }
+check = { depends-on = [
+    "ruff",
+    "yapf",
+    "typecheck",
+    "test",
+], description = "Run all quality checks" }
+
+# Documentation
+build-docs = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/_build/html", cwd = "." }
+release-notes = "python setup.py release_notes"
+
+# Cross-platform Tasks for building and uploading conda packages
+#
+# Build tasks requiring authentication check usage require environment variables:
+#   export UPLOAD_USER="mantidimaging"
+#   export ANACONDA_API_TOKEN="your-token-here"
+#
+# Local builds (no authentication):
+#   pixi run build-conda-package-cpu
+#   pixi run build-conda-package-gpu
+#
+# Authenticated builds (upload to Anaconda):
+#   pixi run build-conda-package-nightly-cpu  # Uploads to nightly channel
+#   pixi run build-conda-package-nightly-gpu  # Uploads to nightly channel
+#   pixi run build-conda-package-release-cpu  # Uploads to main channel
+#   pixi run build-conda-package-release-gpu  # Uploads to main channel
+[feature.build.tasks]
+# Check required environment variables for upload
+check-upload-user = "python -c \"import os, sys; sys.exit(0 if os.environ.get('UPLOAD_USER') else (print('Environment variable UPLOAD_USER not set!', file=sys.stderr) or 1))\""
+check-anaconda-api = "python -c \"import os, sys; sys.exit(0 if os.environ.get('ANACONDA_API_TOKEN') else (print('Environment variable ANACONDA_API_TOKEN not set!', file=sys.stderr) or 1))\""
+
+# Base build commands (no authentication needed)
+build-conda-package-base = "conda config --env --add channels mantidimaging/label/unstable && conda config --env --add channels conda-forge && conda config --env --add channels astra-toolbox && conda config --env --add channels ccpi && conda config --env --add channels algotom && conda config --env --add channels https://software.repos.intel.com/python/conda/ && conda mambabuild conda --label unstable"
+
+# Build with authentication (for nightly/release)
+build-conda-package-nightly-base = "python -c \"import os, subprocess, sys; user = os.environ.get('UPLOAD_USER', ''); token = os.environ.get('ANACONDA_API_TOKEN', ''); cmd = ['conda-build', 'conda', '--user', user, '--token', token, '--label', 'nightly']; sys.exit(subprocess.call(cmd))\""
+build-conda-package-release-base = "python -c \"import os, subprocess, sys; user = os.environ.get('UPLOAD_USER', ''); token = os.environ.get('ANACONDA_API_TOKEN', ''); cmd = ['conda-build', 'conda', '--user', user, '--token', token]; sys.exit(subprocess.call(cmd))\""
+
+# CPU and GPU build task variants
+[tasks.build-conda-package-cpu]
+depends-on = [{ task = "build-conda-package-base", environment = "build-cpu" }]
+description = "Build conda package (CPU) - no upload"
+
+[tasks.build-conda-package-gpu]
+depends-on = [{ task = "build-conda-package-base", environment = "build-gpu" }]
+description = "Build conda package (GPU) - no upload"
+
+[tasks.build-conda-package-nightly-cpu]
+depends-on = [
+    { task = "check-upload-user", environment = "build-cpu" },
+    { task = "check-anaconda-api", environment = "build-cpu" },
+    { task = "build-conda-package-nightly-base", environment = "build-cpu" }
+]
+description = "Build nightly conda package (CPU)"
+
+[tasks.build-conda-package-nightly-gpu]
+depends-on = [
+    { task = "check-upload-user", environment = "build-gpu" },
+    { task = "check-anaconda-api", environment = "build-gpu" },
+    { task = "build-conda-package-nightly-base", environment = "build-gpu" }
+]
+description = "Build nightly conda package (GPU)"
+
+[tasks.build-conda-package-release-cpu]
+depends-on = [
+    { task = "check-upload-user", environment = "build-cpu" },
+    { task = "check-anaconda-api", environment = "build-cpu" },
+    { task = "build-conda-package-release-base", environment = "build-cpu" }
+]
+description = "Build release conda package (CPU)"
+
+[tasks.build-conda-package-release-gpu]
+depends-on = [
+    { task = "check-upload-user", environment = "build-gpu" },
+    { task = "check-anaconda-api", environment = "build-gpu" },
+    { task = "build-conda-package-release-base", environment = "build-gpu" }
+]
+description = "Build release conda package (GPU)"
