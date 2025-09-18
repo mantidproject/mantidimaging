@@ -23,6 +23,7 @@ from cil.plugins.astra.operators import ProjectionOperator
 import cil.version
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
@@ -30,7 +31,7 @@ from mantidimaging.core.utility.size_calculator import full_size_KB
 from mantidimaging.core.utility.memory_usage import system_free_memory
 
 if TYPE_CHECKING:
-    from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
+    from mantidimaging.core.utility.data_containers import ReconstructionParameters
 
 try:
     # COMPAT: CIL < 24.2 has DataOrder with handy enums. Afterwards we need AcquisitionDimension.get_order_for_engine()
@@ -254,15 +255,20 @@ class CILRecon(BaseRecon):
                                   sinogram_order=True)
 
     @staticmethod
-    def single_sino(sino: np.ndarray,
-                    cor: ScalarCoR,
-                    proj_angles: ProjectionAngles,
+    def single_sino(images: ImageStack,
+                    slice_idx: int,
                     recon_params: ReconstructionParameters,
                     progress: Progress | None = None) -> np.ndarray:
         """
         Reconstruct a single slice from a single sinogram. Used for the preview and the single slice button.
         Should return a numpy array,
         """
+
+        assert (images.geometry is not None)
+        sino = images.sino(slice_idx)
+        cor = images.geometry.get_cor_at_slice_index(slice_idx)
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+        geom_type = images.geometry.type
 
         num_iter = recon_params.num_iter
         num_subsets = ceil(sino.shape[0] / recon_params.projections_per_subset)
@@ -284,8 +290,12 @@ class CILRecon(BaseRecon):
             pixel_size = 1.
             rot_pos_x = (cor.value - pixel_num_h / 2) * pixel_size
 
-            # TODO: Once we start passing the ImageStack to reconstruction, create the correct type based on Geometry
-            ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
+            if geom_type == GeometryType.PARALLEL3D:
+                ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
+            else:
+                source_pos = images.geometry.source_position
+                detector_pos = images.geometry.detector_position
+                ag = AcquisitionGeometry.create_Cone2D([0, source_pos, 0], [0, detector_pos, 0])
 
             ag.set_panel(pixel_num_h, pixel_size=pixel_size)
             ag.set_labels(DataOrder.ASTRA_AG_LABELS)
@@ -344,14 +354,12 @@ class CILRecon(BaseRecon):
 
     @staticmethod
     def full(images: ImageStack,
-             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Progress | None = None) -> ImageStack:
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
         :param images: Array of sinogram images
-        :param cors: Array of centre of rotation values
         :param recon_params: Reconstruction Parameters
         :param progress: Optional progress reporter
         :return: 3D image data for reconstructed volume
@@ -394,9 +402,6 @@ class CILRecon(BaseRecon):
                      f"Non-negative {recon_params.non_negative},"
                      f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
             progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
-
-            if recon_params.tilt is None:
-                raise ValueError("recon_params.tilt is not set")
 
             if images.geometry is None:
                 raise ValueError("images.geometry is not set")
