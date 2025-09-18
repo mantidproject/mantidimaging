@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QComboBox)
 from PyQt5.QtGui import QDoubleValidator
+from PyQt5.QtCore import pyqtSignal
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
@@ -18,6 +19,7 @@ class FittingParamFormWidget(QWidget):
     """
     Scalable widget to display ROI parameters with Initial and Final values.
     """
+    metric_changed = pyqtSignal(str)
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
@@ -46,6 +48,18 @@ class FittingParamFormWidget(QWidget):
 
         self.chi2_label = QLabel("Fitting Quality (χ²): N/A")
         main_layout.addWidget(self.chi2_label)
+        self.metric_picker = QComboBox(self)
+        self.metric_picker.addItems([
+            "χ² (SSE)",
+            "Reduced χ² (unweighted)",
+            "Reduced χ² (σ-weighted)",
+        ])
+        try:
+            self.metric_picker.setCurrentIndex(1)
+        except Exception:
+            pass
+        self.metric_picker.currentTextChanged.connect(self.metric_changed)
+        main_layout.addWidget(self.metric_picker)
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -111,3 +125,11 @@ class FittingParamFormWidget(QWidget):
             self.chi2_label.setText("Fitting Quality (χ²): N/A")
         else:
             self.chi2_label.setText(f"Fitting Quality (χ²): {chi2:.2f}")
+    set_fit_quality = set_chi_squared
+
+    def current_metric(self) -> str:
+        """Return the currently selected metric label from the picker."""
+        try:
+            return self.metric_picker.currentText()
+        except Exception:
+            return "χ² (SSE)"
