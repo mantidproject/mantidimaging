@@ -6,7 +6,7 @@ import unittest
 from unittest import mock
 from unittest.mock import call
 
-from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters, Degrees
+from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogPresenter
 import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.gui.dialogs.cor_inspection.presenter import Notification
@@ -19,7 +19,7 @@ class CORInspectionDialogPresenterTest(unittest.TestCase):
     def setUp(self, model) -> None:
         self.view = mock.MagicMock()
         self.model = model.return_value
-        self.recon_params = ReconstructionParameters("", "", 0, ScalarCoR(2), Degrees(2), 2, 2)
+        self.recon_params = ReconstructionParameters("", "", 0, 2, 2)
         self.presenter = CORInspectionDialogPresenter(self.view, th.generate_images(), 5, ScalarCoR(2),
                                                       self.recon_params, False)
 

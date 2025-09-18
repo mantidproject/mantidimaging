@@ -14,7 +14,7 @@ from scipy.optimize import minimize
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.cuda_check import CudaChecker
-from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles, ReconstructionParameters
+from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 from mantidimaging.core.utility.progress_reporting import Progress
 
 LOG = getLogger(__name__)
@@ -48,7 +48,7 @@ def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[tupl
     rec_id = None
     alg_id = None
     try:
-        proj_type = 'cuda' if CudaChecker().cuda_is_present() else 'line'
+        proj_type = "cuda" if CudaChecker().cuda_is_present() else "line"
         LOG.debug(f"Using projection type {proj_type}")
 
         proj_id = astra.create_projector(proj_type, proj_geom, vol_geom)
@@ -92,24 +92,31 @@ class AstraRecon(BaseRecon):
         Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
         """
 
-        proj_angles = images.projection_angles(recon_params.max_projection_angle)
-
         def get_sumsq(image: np.ndarray) -> float:
             return float(np.sum(image**2))
 
         def minimizer_function(cor: float | np.ndarray) -> float:
             if isinstance(cor, np.ndarray):
                 cor = float(cor[0])
-            return -get_sumsq(AstraRecon.single_sino(images.sino(slice_idx), ScalarCoR(cor), proj_angles, recon_params))
+                assert (images.geometry is not None)
+                images.geometry.cor = ScalarCoR(cor)
+            return -get_sumsq(AstraRecon.single_sino(images, slice_idx, recon_params))
 
         return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
 
     @staticmethod
-    def single_sino(sino: np.ndarray,
-                    cor: ScalarCoR,
-                    proj_angles: ProjectionAngles,
-                    recon_params: ReconstructionParameters,
-                    progress: Progress | None = None) -> np.ndarray:
+    def single_sino(
+        images: ImageStack,
+        slice_idx: int,
+        recon_params: ReconstructionParameters,
+        progress: Progress | None = None,
+    ) -> np.ndarray:
+
+        assert (images.geometry is not None)
+        sino = images.sino(slice_idx)
+        cor = images.geometry.get_cor_at_slice_index(slice_idx)
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
         sino = BaseRecon.prepare_sinogram(sino, recon_params)
@@ -130,7 +137,6 @@ class AstraRecon(BaseRecon):
 
     @staticmethod
     def full(images: ImageStack,
-             cors: list[ScalarCoR],
              recon_params: ReconstructionParameters,
              progress: Progress | None = None) -> ImageStack:
         progress = Progress.ensure_instance(progress, num_steps=images.height)
@@ -138,9 +144,8 @@ class AstraRecon(BaseRecon):
         output_images: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Volume Reconstruction', **recon_params.to_dict())
 
-        proj_angles = images.projection_angles(recon_params.max_projection_angle)
         for i in range(images.height):
-            output_images.data[i] = AstraRecon.single_sino(images.sino(i), cors[i], proj_angles, recon_params)
+            output_images.data[i] = AstraRecon.single_sino(images, i, recon_params)
             progress.update(1, "Reconstructed slice")
 
         return output_images

@@ -55,6 +55,7 @@ class ReconstructionWindowTest(BaseEyesTest):
 
     def test_negative_nan_overlay(self):
         images = generate_images(seed=10)
+        images.create_geometry()
         images.name = "bad_data"
         ds = Dataset(stacks=[images])
         self.imaging.presenter.model.add_dataset_to_model(ds)
