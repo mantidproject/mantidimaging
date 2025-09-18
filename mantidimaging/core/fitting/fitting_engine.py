@@ -22,15 +22,23 @@ class FittingEngine:
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return self.model.get_init_params_from_roi(region)
 
-    def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray,
-                      initial_params: list[float]) -> tuple[dict[str, float], float]:
+    def find_best_fit(
+        self,
+        xdata: np.ndarray,
+        ydata: np.ndarray,
+        initial_params: list[float],
+        sigma: np.ndarray | None = None,
+    ) -> tuple[dict[str, float], float, float]:
         """
-        Perform a model fit and return the fitted parameters and chi-squared value.
+        Perform a model fit and return the fitted parameters, unweighted SSE,
+        and sigma-weighted SSE.
 
         :param xdata: TOF data (independent variable)
         :param ydata: Spectrum data (dependent variable)
         :param initial_params: Initial parameter estimates
-        :return: (fit_params, chi_squared)
+        :param sigma: Optional per-point uncertainties (same length as ydata).
+                      If None, fall back to sqrt(ydata) with floor at 1.
+        :return: (fit_params, sse, weighted_sse)
         """
         additional_params: list[float] = self.model.prefitting(xdata, ydata, initial_params)
         fit_param_count = len(initial_params) - len(additional_params)
@@ -46,5 +54,12 @@ class FittingEngine:
         all_params: list[float] = list(result.x) + additional_params
         fit_params: dict[str, float] = dict(zip(all_param_names, all_params, strict=True))
         final_residuals = self.model.evaluate(xdata, all_params) - ydata
-        chi2: float = float(np.sum(final_residuals**2))
-        return fit_params, chi2
+        sse: float = float(np.sum(final_residuals**2))
+
+        # Poisson
+        if sigma is None:
+            sigma = np.sqrt(np.clip(ydata, a_min=1.0, a_max=None))
+        sigma = np.asarray(sigma, dtype=float)
+        weighted_sse: float = float(np.sum((final_residuals / sigma)**2))
+
+        return fit_params, sse, weighted_sse
