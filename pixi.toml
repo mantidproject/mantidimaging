@@ -1,0 +1,234 @@
+[project]
+name = "mantidimaging"
+version = "3.1.0"
+description = "Graphical toolkit for tomography and time-of-flight imaging"
+authors = [
+    "JackEAllen, Dolica Akello-Egwel, Hussam Alhassan, RachelBaust, James Cornal, Martyn Gigg, Despina Ioannide, Samuel Jones, Rasmia Kulan, Ashley Meigh, Daniel Nixon, Samuel Stock, Will Taylor, Sam Tygier",
+]
+channels = [
+    "mantidimaging/label/unstable",
+    "conda-forge",
+    "astra-toolbox",
+    "ccpi",
+    "algotom",
+    "https://software.repos.intel.com/python/conda",
+]
+platforms = ["linux-64", "win-64"]
+
+[environments]
+build = ["runtime", "build"]
+dev = ["dev", "test", "lint"]
+default = ["dev", "test", "lint"]
+
+# Base dependencies (shared across environments)
+[dependencies]
+mantidimaging = ">=2.5.0"
+numexpr = { channel = "conda-forge" }
+ipp = "2021.12.*"
+
+[feature.test.dependencies]
+pytest = "7.4.*"
+pytest-cov = "4.1.*"
+pytest-randomly = "3.15.*"
+pytest-xdist = "3.3.*"
+testfixtures = "7.2.*"
+pyfakefs = "5.3.*"
+parameterized = "0.9.*"
+
+[feature.lint.dependencies]
+mypy = "==1.17"
+pyright = "==1.1.391"
+yapf = "0.43.*"
+ruff = "0.3.7.*"
+types-requests = "*"
+types-pyyaml = "*"
+types-docutils = "*"
+
+[feature.dev.dependencies]
+pip = "*"
+gitpython = "3.1.*"
+coverage = "7.3.*"
+coveralls = "4.0.*"
+pyinstaller = "6.14.*"
+make = "==4.3"
+pre-commit = "3.5.*"
+sphinx = "8.2.*"
+pydata-sphinx-theme = "0.16.*"
+sphinx-copybutton = "0.5.*"
+sphinx-design = "0.6.*"
+attrs = ">=19.2.0,<23"         # Pinned due to conflict when installing eyes
+
+[feature.dev.pypi-dependencies]
+eyes-images = "==5.23.*"
+
+# Core Python packages
+[feature.runtime.dependencies]
+python = "3.12.*"
+pip = "*"
+astropy = "7.1.*"
+scipy = "1.14.*"
+scikit-image = "0.25.*"
+tifffile = "2023.7.18.*"
+imagecodecs = "2023.9.18.*"
+numpy = "1.26.*"
+algotom = "1.6.*"
+tomopy = "1.12.*"
+requests = "2.32.*"
+h5py = "3.9.*"
+hdf5 = "1.14.2.*"
+psutil = "5.9.*"
+cil = "25.0.*"
+ccpi-regulariser = "*"
+jenkspy = "0.4.*"
+pyqt = "5.15.*"
+pyqtgraph = "0.13.7.*"
+qt-material = "2.14.*"
+darkdetect = "0.8.0.*"
+cudatoolkit = "11.8.*"
+# cudatoolkit = { version = "11.8.*", channel = "nvidia" }
+cupy = "12.3.*"
+# astra-toolbox = { version = "2.1.*", build = "py310h7b2d6b3_0_cuda105", channel = "astra-toolbox" }
+# astra-toolbox = { version = "2.1.*", build = "py310h7b2d6b3_0_cuda105", channel = "conda-forge" }
+# astra-toolbox = { version = "2.1.0", build = "cudapy312*", channel = "conda-forge" }
+astra-toolbox = "2.1.0.*"
+
+[target.linux-64.dependencies]
+qt-gtk-platformtheme = "*"
+astra-toolbox = ">=2.1,<2.2"
+
+[feature.build.dependencies]
+boa = "*"
+anaconda-client = "*"
+conda-build = "*"
+
+# Set environment variables
+[feature.dev.activation.env]
+SOURCE_DIRS = "mantidimaging scripts docs/ext/"
+APPLITOOLS_API_KEY = "local"
+CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
+
+[feature.build.activation.env]
+UPLOAD_USER = "mantidimaging"
+AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
+
+[target.win-64.dependencies]
+vs2015_runtime = "*"
+intel-openmp = "*"
+# cuda-version = "11.8.*"
+# libastra = { version = ">=2.1,<2.2", channel = "astra-toolbox" }
+# libastra = { version = "2.1.0.*", build = "cuda11.8hb8fb34d_111", channel = "conda-forge" }
+libastra = "2.1.0.*"
+# astra-toolbox = { version = "2.1.0.*", build = "cudapy312*", channel = "conda-forge" }
+astra-toolbox = "2.1.0.*"
+# libastra = ">=2.1,<2.2"
+# astra-toolbox = ">=2.1,<2.2"
+
+# Platform specific tasks
+[target.linux-64.tasks.test-system]
+cmd = [
+    "bash", "-c", """
+    mkdir -p system_tests_output
+    APPLITOOLS_IMAGE_DIR=system_tests_output TEST_RESULT_DIR=system_tests_output xvfb-run --auto-servernum python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/
+    """
+]
+[target.linux-64.tasks.test-system-show]
+cmd = [
+    "bash", "-c", """
+    mkdir -p system_tests_output
+    APPLITOOLS_IMAGE_DIR=system_tests_output TEST_RESULT_DIR=system_tests_output python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests-show mantidimaging/gui/test/
+    """
+]
+
+[target.linux-64.tasks.test-screenshots]
+cmd = [
+    "bash", "-c", """
+    mkdir -p screenshot_tests_output
+    echo "Screenshots directory: screenshot_tests_output"
+    APPLITOOLS_API_KEY=local APPLITOOLS_IMAGE_DIR=screenshot_tests_output xvfb-run --auto-servernum pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
+    echo "Screenshots written to screenshot_tests_output"
+    """
+]
+
+[target.win-64.tasks.test-screenshots]
+cmd = """
+if not exist "screenshot_tests_output" mkdir "screenshot_tests_output"
+echo Screenshots directory: screenshot_tests_output
+set APPLITOOLS_API_KEY=local
+set APPLITOOLS_IMAGE_DIR=screenshot_tests_output
+pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
+echo Screenshots written to screenshot_tests_output
+"""
+
+[target.win-64.tasks.test-system]
+cmd = """
+if not exist "system_tests_output" mkdir "system_tests_output"
+set TEST_RESULT_DIR=system_tests_output
+set APPLITOOLS_IMAGE_DIR=system_tests_output
+python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/
+"""
+
+[target.win-64.tasks.test-system-show]
+cmd = """
+if not exist "system_tests_output" mkdir "system_tests_output"
+set TEST_RESULT_DIR=system_tests_output
+set APPLITOOLS_IMAGE_DIR=system_tests_output
+python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests-show mantidimaging/gui/test/
+"""
+
+[feature.build.tasks]
+check-upload-user = """
+if [ -z "$UPLOAD_USER" ]; then 
+    echo "Environment variable UPLOAD_USER not set!"
+    exit 1
+fi
+"""
+
+check-anaconda-api = """
+if [ -z "$ANACONDA_API_TOKEN" ]; then 
+    echo "Environment variable ANACONDA_API_TOKEN not set!"
+    exit 1
+fi
+"""
+
+# CPU-only builds with proper channel setup
+build-conda-package = "conda config --env --add channels mantidimaging/label/unstable && conda config --env --add channels conda-forge && conda config --env --add channels astra-toolbox && conda config --env --add channels ccpi && conda config --env --add channels algotom && conda config --env --add channels https://software.repos.intel.com/python/conda/ && conda mambabuild conda --label unstable"
+build-conda-package-nightly = { cmd = "conda-build conda $AUTHENTICATION_PARAMS --label nightly", depends-on = [
+    "check-upload-user",
+    "check-anaconda-api",
+] }
+build-conda-package-release = { cmd = "conda-build conda $AUTHENTICATION_PARAMS", depends-on = [
+    "check-upload-user",
+    "check-anaconda-api",
+] }
+
+[feature.dev.tasks]
+#Run MI
+MI = { cmd = "python -m mantidimaging", description = "Launch Mantid Imaging GUI" }
+MI_debug = "python -X faulthandler -W default -m mantidimaging --log-level DEBUG"
+debug-env = { cmd = "python scripts/debug_env.py", description = "Debug environment variables and CUDA/Astra detection" }
+
+# Tests
+test = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", description = "Run test suite in parallel" }
+test-verbose = "python -m pytest -vs -o log_cli=true"
+test-nogui = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" } }
+test-nogui-verbose = { cmd = "python -m pytest -vs -o log_cli=true -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" } }
+
+# Static Analysis Checks
+mypy = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true"
+pyright = "python -m pyright $SOURCE_DIRS"
+yapf = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS"
+yapf-apply = "python -m yapf -i --parallel --recursive $SOURCE_DIRS"
+ruff = "ruff check $SOURCE_DIRS || true"
+
+# combined checks
+typecheck = { depends-on = ["mypy", "pyright"] }
+check = { depends-on = [
+    "ruff",
+    "yapf",
+    "typecheck",
+    "test",
+], description = "Run all quality checks" }
+
+# Documentation
+build-docs = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/_build/html", cwd = "." }
+release-notes = "python setup.py release_notes"
