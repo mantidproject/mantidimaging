@@ -707,13 +707,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
             metric_label = self.view.scalable_roi_widget.current_metric()
             N, p = len(xvals), len(fit_params)
-            chi2_disp = self._compute_quality_metric(
-                metric_label,
-                sse=sse,
-                N=N,
-                p=p,
-                weighted_sse=weighted_sse,
-            )
+            chi2_disp = self._compute_quality_metric(metric_label, sse=sse, N=N, p=p, weighted_sse=weighted_sse)
             self.view.scalable_roi_widget.set_chi_squared(chi2_disp)
             # cache
             self._last_fit_info[roi_name] = {
@@ -721,7 +715,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 "weighted_sse": float(weighted_sse),
                 "N": N,
                 "p": p,
-                "params": fit_params,
+                "params": fit_params
             }
             self.show_fit(list(fit_params.values()))
 
@@ -739,6 +733,54 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                      color=(128, 128, 128),
                                                      label="initial",
                                                      initial=True)
+
+    def run_region_fit(self) -> None:
+        """
+        Run a fit on the currently selected ROI and update the GUI/export table.
+        """
+
+        result, sse, weighted_sse = self.fit_single_region(
+            self.fitting_spectrum,
+            self.view.get_fitting_region(),
+            self.model.tof_data,
+            self.view.scalable_roi_widget.get_initial_param_values(),
+        )
+        self.view.scalable_roi_widget.set_fitted_parameter_values(result)
+        fitting_region = self.view.get_fitting_region()
+        xmin, xmax = fitting_region[0], fitting_region[1]
+        i0, i1 = np.searchsorted(self.model.tof_data, (xmin, xmax))
+        N, p = i1 - i0, len(result)
+        metric_label = self.view.scalable_roi_widget.current_metric()
+        chi2_disp = self._compute_quality_metric(
+            metric_label,
+            sse=sse,
+            N=N,
+            p=p,
+            weighted_sse=weighted_sse,
+        )
+
+        self.view.scalable_roi_widget.set_chi_squared(chi2_disp)
+        self.show_fit(list(result.values()))
+        roi_name = self.view.roiSelectionWidget.current_roi_name
+        self.view.exportDataTableWidget.update_roi_data(
+            roi_name=roi_name,
+            params=result,
+            status="Fitted",
+            chi2=chi2_disp,
+        )
+        self._last_fit_info[roi_name] = {
+            "sse": float(sse),
+            "weighted_sse": float(weighted_sse),
+            "N": N,
+            "p": p,
+            "params": result,
+        }
+        LOG.info(
+            "Fit completed for ROI=%s, params=%s, chi2=%.2f",
+            roi_name,
+            result,
+            chi2_disp,
+        )
 
     def fit_single_region(
         self,
@@ -759,13 +801,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
             if roi_name == "rits_roi":
                 continue
-
             roi = roi_widget.as_sensible_roi()
-            spectrum = self.model.get_spectrum(
-                roi,
-                self.spectrum_mode,
-                self.view.shuttercount_norm_enabled(),
-            )
+            spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             fitting_region = self.view.get_fitting_region()
             try:
                 result, sse, weighted_sse = self.fit_single_region(spectrum, fitting_region, self.model.tof_data,
@@ -794,6 +831,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 status=status,
                 chi2=chi2_disp,
             )
+
             # cache
             self._last_fit_info[roi_name] = {
                 "sse": float(sse),
@@ -809,54 +847,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 result,
                 chi2_disp,
             )
-
-    def run_region_fit(self) -> None:
-        """
-        Run a fit on the currently selected ROI and update the GUI/export table.
-        """
-
-        result, sse, weighted_sse = self.fit_single_region(
-            self.fitting_spectrum,
-            self.view.get_fitting_region(),
-            self.model.tof_data,
-            self.view.scalable_roi_widget.get_initial_param_values(),
-        )
-        self.view.scalable_roi_widget.set_fitted_parameter_values(result)
-        fitting_region = self.view.get_fitting_region()
-        xmin, xmax = fitting_region[0], fitting_region[1]
-        i0, i1 = np.searchsorted(self.model.tof_data, (xmin, xmax))
-        N, p = i1 - i0, len(result)
-
-        metric_label = self.view.scalable_roi_widget.current_metric()
-        chi2_disp = self._compute_quality_metric(
-            metric_label,
-            sse=sse,
-            N=N,
-            p=p,
-            weighted_sse=weighted_sse,
-        )
-        self.view.scalable_roi_widget.set_chi_squared(chi2_disp)
-        self.show_fit(list(result.values()))
-        roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=result,
-            status="Fitted",
-            chi2=chi2_disp,
-        )
-        self._last_fit_info[roi_name] = {
-            "sse": float(sse),
-            "weighted_sse": float(weighted_sse),
-            "N": N,
-            "p": p,
-            "params": result,
-        }
-        LOG.info(
-            "Fit completed for ROI=%s, params=%s, chi2=%.2f",
-            roi_name,
-            result,
-            chi2_disp,
-        )
 
     def show_fit(self, params: list[float]) -> None:
         xvals = self.model.tof_data

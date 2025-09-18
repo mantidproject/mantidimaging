@@ -125,6 +125,7 @@ class FittingParamFormWidget(QWidget):
             self.chi2_label.setText("Fitting Quality (χ²): N/A")
         else:
             self.chi2_label.setText(f"Fitting Quality (χ²): {chi2:.2f}")
+
     set_fit_quality = set_chi_squared
 
     def current_metric(self) -> str:
