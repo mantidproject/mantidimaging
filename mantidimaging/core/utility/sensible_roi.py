@@ -45,3 +45,22 @@ class SensibleROI(Iterable[int]):
     @property
     def height(self) -> int:
         return self.bottom - self.top
+
+
+class ROIBinner:
+
+    def __init__(self, roi: SensibleROI, step_size: int, bin_size: int):
+        self.roi = roi
+        self.step_size = step_size
+        self.bin_size = bin_size
+
+        self.left_indexes = range(self.roi.left, self.roi.right - self.bin_size + 1, self.step_size)
+        self.top_indexes = range(self.roi.top, self.roi.bottom - self.bin_size + 1, self.step_size)
+
+    def lengths(self) -> tuple[int, int]:
+        return len(self.left_indexes), len(self.top_indexes)
+
+    def get_sub_roi(self, i: int, j: int) -> SensibleROI:
+        left = self.left_indexes[i]
+        top = self.top_indexes[j]
+        return SensibleROI(left, top, left + self.bin_size, top + self.bin_size)
