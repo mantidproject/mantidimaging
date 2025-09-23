@@ -2,28 +2,20 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
-from collections.abc import Iterator
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 
-@dataclass
-class SensibleROI(Iterable):
-    __slots__ = ("left", "top", "right", "bottom")
-    left: int
-    top: int
-    right: int
-    bottom: int
-
-    def __init__(self, left=0, top=0, right=0, bottom=0):
-        self.left = left
-        self.top = top
-        self.right = right
-        self.bottom = bottom
+@dataclass(slots=True)
+class SensibleROI(Iterable[int]):
+    left: int = 0
+    top: int = 0
+    right: int = 0
+    bottom: int = 0
 
     @staticmethod
     def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> SensibleROI:
