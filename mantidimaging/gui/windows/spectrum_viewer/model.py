@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict, Final
 
 import numpy as np
-from math import ceil
 
 from logging import getLogger
 from mantidimaging.core.data.imagestack import ImageStack
@@ -16,7 +15,7 @@ from mantidimaging.core.fitting.fitting_functions import ErfStepFunction
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.unit_conversion import UnitConversion
 
@@ -502,26 +501,18 @@ class SpectrumViewerWindowModel:
         Returns:
         None
         """
-        left, top, right, bottom = roi
-        x_iterations = min(ceil((right - left) / step), ceil((right - left - bin_size) / step) + 1)
-        y_iterations = min(ceil((bottom - top) / step), ceil((bottom - top - bin_size) / step) + 1)
+
+        binner = ROIBinner(roi, step_size=step, bin_size=bin_size)
+        x_iterations, y_iterations = binner.lengths()
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
 
         self.validate_bin_and_step_size(roi, bin_size, step)
         for y in range(y_iterations):
-            sub_top = top + y * step
-            sub_bottom = min(sub_top + bin_size, bottom)
             for x in range(x_iterations):
-                sub_left = left + x * step
-                sub_right = min(sub_left + bin_size, right)
-                sub_roi = SensibleROI.from_list([sub_left, sub_top, sub_right, sub_bottom])
+                sub_roi = binner.get_sub_roi(x, y)
                 path = directory / f"rits_image_{x}_{y}.dat"
                 self.save_rits_roi(path, error_mode, sub_roi, normalise)
                 progress.update()
-                if sub_right == right:
-                    break
-            if sub_bottom == bottom:
-                break
 
     def get_stack_time_of_flight(self) -> np.ndarray:
         if self._stack is None or self._stack.log_file is None:
