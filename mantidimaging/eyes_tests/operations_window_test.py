@@ -32,13 +32,13 @@ class OperationsWindowTest(BaseEyesTest):
 
         self.imaging.show_filters_window()
         QApplication.processEvents()
-        self.imaging.filters.ask_confirmation = mock.MagicMock()
+        self.imaging.show_question_dialog = mock.MagicMock()
         self.imaging.filters.safeApply.setChecked(False)
         self.imaging.filters.applyButton.click()
         QApplication.processEvents()
 
         self.check_target(widget=self.imaging.filters)
-        self.imaging.filters.ask_confirmation.assert_not_called()
+        self.imaging.show_question_dialog.assert_not_called()
 
     def test_operations_crop_coordinates_parameters(self):
         self._load_strict_data_set()

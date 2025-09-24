@@ -230,7 +230,7 @@ class MainWindowView(BaseMainWindowView):
         if self.welcome_dock:
             self.welcome_dock.setVisible(True)
 
-            if self.presenter.have_active_stacks:
+            if self.presenter.has_active_stacks:
                 self.presenter._tabify_stack_window(self.welcome_dock)
 
     def setup_shortcuts(self) -> None:
@@ -606,17 +606,10 @@ class MainWindowView(BaseMainWindowView):
         """
         should_close = True
 
-        if self.presenter.have_active_stacks and self.open_dialogs:
-            # Show confirmation box asking if the user really wants to quit if
-            # they have data loaded
-            msg_box = QMessageBox.question(self,
-                                           "Quit",
-                                           "Are you sure you want to quit with loaded data?",
-                                           defaultButton=QMessageBox.No)
-            should_close = msg_box == QMessageBox.Yes
+        if self.presenter.has_active_stacks and self.open_dialogs:
+            should_close = self.show_question_dialog("Quit", "Are you sure you want to quit with loaded data?")
 
         if should_close:
-            # Pass close event to parent
             super().closeEvent(event)
             # Close additional windows which do not have the MainWindow as parent
             if self.recon:
@@ -691,10 +684,11 @@ class MainWindowView(BaseMainWindowView):
         :return: True if the answer wants to use the closest projection, False otherwise.
         """
         diff_deg = round(np.rad2deg(diff_rad), 2)
-        return QMessageBox.Yes == QMessageBox.question(
-            self, "180 Projection",
+        response = self.show_question_dialog(
+            "180 Projection",
             f"Unable to find a 180 degree projection. The closest projection is {str(diff_deg)} degrees away from 180. "
             f"Use anyway?")
+        return response
 
     def clear_dataset_tree_widget(self) -> None:
         self.dataset_tree_widget.clear()

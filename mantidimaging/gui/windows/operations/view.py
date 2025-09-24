@@ -5,8 +5,8 @@ import functools
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QMessageBox, QPushButton, QSizePolicy,
-                             QSplitter, QStyle, QVBoxLayout)
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
+                             QVBoxLayout)
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -229,10 +229,6 @@ class FiltersWindowView(BaseMainWindowView):
             open_user_operation_docs(filter_name)
         except RuntimeError as err:
             self.show_error_dialog(str(err))
-
-    def ask_confirmation(self, msg: str):
-        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
-        return response == QMessageBox.Ok
 
     def _update_apply_all_button(self, filter_name):
         list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding"]

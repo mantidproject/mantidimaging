@@ -218,12 +218,13 @@ class FiltersWindowPresenter(BasePresenter):
                 self.set_preview_image_index(0)
 
     def filter_uses_parameter(self, parameter):
-        return parameter in self.model.params_needed_from_stack.values() if \
-            self.model.params_needed_from_stack is not None else False
+        return (parameter in self.model.params_needed_from_stack.values()
+                if self.model.params_needed_from_stack is not None else False)
 
     def do_apply_filter(self):
         if self._already_run_flat_fielding():
-            if not self.view.ask_confirmation(REPEAT_FLAT_FIELDING_MSG):
+            user_confirmed = self.view.show_question_dialog("Confirm action", REPEAT_FLAT_FIELDING_MSG)
+            if not user_confirmed:
                 return
 
         if self.view.safeApply.isChecked():
@@ -231,16 +232,19 @@ class FiltersWindowPresenter(BasePresenter):
                 self.original_images_stack = {self.stack.id: self.stack.copy()}
 
         # if is a 180degree stack and a user says no, cancel apply filter.
-        if self.is_a_proj180deg(self.stack) and not self.view.ask_confirmation(APPLY_TO_180_MSG):
-            return
+        if self.is_a_proj180deg(self.stack):
+            user_confirmed = self.view.show_question_dialog("Confirm action", APPLY_TO_180_MSG)
+            if not user_confirmed:
+                return
 
         apply_to = [self.stack]
 
         self._do_apply_filter(apply_to)
 
     def do_apply_filter_to_dataset(self):
-        if not self.view.ask_confirmation(
-                "Apply this filter to the dataset of the SELECTED stack in the Operations window?"):
+        user_confirmed = self.view.show_question_dialog(
+            "Confirm action", "Apply this filter to the dataset of the SELECTED stack in the Operations window?")
+        if not user_confirmed:
             return
 
         selected_stack = self.stack

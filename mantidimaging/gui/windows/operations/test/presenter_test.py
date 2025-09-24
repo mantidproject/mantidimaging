@@ -81,13 +81,13 @@ class FiltersWindowPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.utility.common.operation_in_progress")
     @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowModel.do_apply_filter")
     def test_apply_filter_to_dataset(self, apply_filter_mock, _):
-        self.view.ask_confirmation.return_value = False
+        self.view.show_question_dialog.return_value = False
         self.presenter.stack = mock.Mock()
         self.presenter.do_apply_filter_to_dataset()
-        self.view.ask_confirmation.assert_called_once()
+        self.view.show_question_dialog.assert_called_once()
 
-        self.view.ask_confirmation.reset_mock()
-        self.view.ask_confirmation.return_value = True
+        self.view.show_question_dialog.reset_mock()
+        self.view.show_question_dialog.return_value = True
 
         mock_stack = mock.Mock()
         self.presenter.stack = mock_stack
@@ -383,7 +383,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
-        self.view.ask_confirmation.assert_called_once_with(REPEAT_FLAT_FIELDING_MSG)
+        self.view.show_question_dialog.assert_called_once_with("Confirm action", REPEAT_FLAT_FIELDING_MSG)
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_warning_when_flat_fielding_isnt_run(self, _):
@@ -394,7 +394,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = mock.MagicMock()
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
-        self.view.ask_confirmation.assert_not_called()
+        self.view.show_question_dialog.assert_not_called()
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_warning_when_flat_fielding_is_first_operation(self, _):
@@ -406,7 +406,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = mock.MagicMock()
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
-        self.view.ask_confirmation.assert_not_called()
+        self.view.show_question_dialog.assert_not_called()
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_warning_when_flat_fielding_is_run_for_first_time(self, _):
@@ -418,7 +418,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Remove Outliers"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
         self.presenter.do_apply_filter()
-        self.view.ask_confirmation.assert_not_called()
+        self.view.show_question_dialog.assert_not_called()
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.operation_in_progress")
     def test_no_operation_run_when_user_cancels_flat_fielding(self, _):
@@ -429,7 +429,7 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.stack = mock.MagicMock()
         self.presenter.stack.metadata = {OPERATION_HISTORY: [{OPERATION_DISPLAY_NAME: "Flat-fielding"}]}
         self.presenter._do_apply_filter = mock.MagicMock()
-        self.view.ask_confirmation.return_value = False
+        self.view.show_question_dialog.return_value = False
         self.presenter.do_apply_filter()
         self.presenter._do_apply_filter.assert_not_called()
 

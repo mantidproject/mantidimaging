@@ -41,15 +41,12 @@ def execute() -> None:
         if sys.platform == 'linux':
             memory_to_clean = pm.find_memory_from_previous_process_linux()
             if memory_to_clean:
-                # Show confirmation box asking if the user wants to clear the shared memory
-                msg_box = QMessageBox.question(application_window,
-                                               "Clean Up Shared Memory",
-                                               "Mantid Imaging has found shared memory objects that appear to be from "
-                                               "a previous instance of the application. This is likely either because"
-                                               " Mantid Imaging did not close properly, or due to a bug."
-                                               "\n\nDo you want these to be automatically cleaned now?",
-                                               defaultButton=QMessageBox.No)
-                if msg_box == QMessageBox.Yes:
+                should_clear_memory = application_window.show_question_dialog(
+                    "Clean Up Shared Memory", "Mantid Imaging has found shared memory objects that appear to be from "
+                    "a previous instance of the application. This is likely either because"
+                    " Mantid Imaging did not close properly, or due to a bug."
+                    "\n\nDo you want these to be automatically cleaned now?")
+                if should_clear_memory:
                     pm.free_shared_memory_linux(memory_to_clean)
                     done = QMessageBox(application_window)
                     done.setWindowTitle("Clean Up Shared Memory")
