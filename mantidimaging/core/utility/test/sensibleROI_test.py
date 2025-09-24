@@ -128,6 +128,23 @@ class ROIBinnerTest(unittest.TestCase):
                 self.assertTrue(roi.top <= sub_roi.top <= roi.bottom)
                 self.assertTrue(roi.top <= sub_roi.bottom <= roi.bottom)
 
+    def test_WHEN_index_out_of_range_THEN_exception_raised(self):
+        binner = ROIBinner(SensibleROI(10, 10, 15, 20), 2, 2)
+        self.assertEqual(binner.lengths(), (2, 5))
+        self.assertIsInstance(binner.get_sub_roi(0, 0), SensibleROI)
+        self.assertIsInstance(binner.get_sub_roi(1, 4), SensibleROI)
+        self.assertRaises(IndexError, binner.get_sub_roi, 2, 1)
+        self.assertRaises(IndexError, binner.get_sub_roi, 1, 5)
+
+    def test_dont_allow_modification(self):
+        binner = ROIBinner(SensibleROI(10, 10, 15, 20), 2, 2)
+        with self.assertRaises(AttributeError):
+            binner.roi = SensibleROI(1, 1, 2, 2)
+        with self.assertRaises(AttributeError):
+            binner.step_size = 3
+        with self.assertRaises(AttributeError):
+            binner.bin_size = 4
+
 
 if __name__ == '__main__':
     unittest.main()

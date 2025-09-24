@@ -50,12 +50,12 @@ class SensibleROI(Iterable[int]):
 class ROIBinner:
 
     def __init__(self, roi: SensibleROI, step_size: int, bin_size: int):
-        self.roi = roi
-        self.step_size = step_size
-        self.bin_size = bin_size
+        self._roi = roi
+        self._step_size = step_size
+        self._bin_size = bin_size
 
-        self.left_indexes = range(self.roi.left, self.roi.right - self.bin_size + 1, self.step_size)
-        self.top_indexes = range(self.roi.top, self.roi.bottom - self.bin_size + 1, self.step_size)
+        self.left_indexes = range(roi.left, roi.right - bin_size + 1, step_size)
+        self.top_indexes = range(roi.top, roi.bottom - bin_size + 1, step_size)
 
     def lengths(self) -> tuple[int, int]:
         return len(self.left_indexes), len(self.top_indexes)
@@ -64,3 +64,15 @@ class ROIBinner:
         left = self.left_indexes[i]
         top = self.top_indexes[j]
         return SensibleROI(left, top, left + self.bin_size, top + self.bin_size)
+
+    @property
+    def roi(self) -> SensibleROI:
+        return self._roi
+
+    @property
+    def step_size(self) -> int:
+        return self._step_size
+
+    @property
+    def bin_size(self) -> int:
+        return self._bin_size
