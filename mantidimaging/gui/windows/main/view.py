@@ -108,6 +108,7 @@ class MainWindowView(BaseMainWindowView):
     spectrum_viewer: SpectrumViewerWindowView | None = None
     live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
+    viewer3d: MI3DViewer | None = None
     welcome_presenter: WelcomeScreenPresenter | None = None
     welcome_dock: QDockWidget | None = None
 
