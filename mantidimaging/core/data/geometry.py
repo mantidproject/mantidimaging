@@ -15,11 +15,13 @@ class GeometryType(Enum):
 
 
 class Geometry(AcquisitionGeometry):
-    is_parallel: bool = False
 
     def __init__(self,
+                 type: GeometryType = GeometryType.PARALLEL3D,
                  num_pixels: list | tuple = (10, 10),
                  pixel_size: list | tuple = (1., 1.),
+                 source_position: list | tuple = (0, -1, 0),
+                 detector_position: list | tuple = (0, 1, 0),
                  angle_unit: str = "radian",
                  units: str = "default",
                  *args,
@@ -38,9 +40,17 @@ class Geometry(AcquisitionGeometry):
         :type units: str
         """
         super().__init__()
-        parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
-        self.config = parallel_3d.config
-        self.is_parallel = True
+
+        if type == GeometryType.PARALLEL3D:
+            parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
+            self.config = parallel_3d.config
+        else:
+            conebeam_3d = self.create_Cone3D(*args,
+                                             source_position=source_position,
+                                             detector_position=detector_position,
+                                             units=units,
+                                             **kwargs)
+            self.config = conebeam_3d.config
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)

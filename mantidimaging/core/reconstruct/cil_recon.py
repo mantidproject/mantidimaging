@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from logging import getLogger, DEBUG
 from math import sqrt, ceil
+
 from packaging.version import parse
 from threading import Lock
 from typing import TYPE_CHECKING
@@ -209,7 +210,11 @@ class CILRecon(BaseRecon):
         Otherwise this is slow to calculate, this approximation is good to with in 5%
         When running in debug mode, check the approximation and raise an error if it is bad
         """
-        assert all(s == 1.0 for s in image_geometry.spacing), "Norm approximations assume voxel size == 1"
+
+        if not all(s == 1.0 for s in image_geometry.spacing):
+            LOG.debug("Voxel spacing not equal to 1, cannot use fast approximate norm")
+            return
+
         approx_a2d_norm = sqrt(image_geometry.voxel_num_x * acquisition_data.num_projections)
         if LOG.isEnabledFor(DEBUG):
             num_a2d_norm = A2d.PowerMethod(A2d, max_iteration=100)
@@ -278,6 +283,8 @@ class CILRecon(BaseRecon):
             pixel_num_h = sino.shape[1]
             pixel_size = 1.
             rot_pos_x = (cor.value - pixel_num_h / 2) * pixel_size
+
+            # TODO: Once we start passing the ImageStack to reconstruction, create the correct type based on Geometry
             ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
 
             ag.set_panel(pixel_num_h, pixel_size=pixel_size)
