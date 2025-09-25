@@ -102,3 +102,24 @@ class Geometry(AcquisitionGeometry):
             return GeometryType.PARALLEL3D
         else:
             return GeometryType.CONE3D
+
+    def set_source_detector_positions(self, source_pos: float, detector_pos: float) -> None:
+        if source_pos != 0 and self.type == GeometryType.CONE3D:
+            self.config.system.source.position = [0, source_pos, 0]
+
+        if detector_pos != 0 and self.type == GeometryType.CONE3D:
+            self.config.system.detector.position = [0, detector_pos, 0]
+
+    @property
+    def source_position(self) -> float:
+        source_pos = 0
+        if self.type == GeometryType.CONE3D:
+            source_pos = self.config.system.source.position[1]
+        return source_pos
+
+    @property
+    def detector_position(self) -> float:
+        detector_pos = 0
+        if self.type == GeometryType.CONE3D:
+            detector_pos = self.config.system.detector.position[1]
+        return detector_pos
