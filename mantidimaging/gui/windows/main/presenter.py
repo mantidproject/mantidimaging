@@ -395,7 +395,7 @@ class MainWindowPresenter(BasePresenter):
         return {stack_id: stack for (stack_id, stack) in self.stack_visualisers.items() if stack.isVisible()}
 
     @property
-    def have_active_stacks(self) -> bool:
+    def has_active_stacks(self) -> bool:
         return len(self.active_stacks) > 0
 
     def get_stack_with_images(self, images: ImageStack) -> StackVisualiserView:

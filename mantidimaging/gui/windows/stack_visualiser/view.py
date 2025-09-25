@@ -207,10 +207,6 @@ class StackVisualiserView(QDockWidget):
             self.presenter.images._is_sinograms = False if item == "projections" else True
             self._main_window.stack_modified.emit()
 
-    def ask_confirmation(self, msg: str) -> bool:
-        response = QMessageBox.question(self, "Confirm action", msg, QMessageBox.Ok | QMessageBox.Cancel)  # type:ignore
-        return response == QMessageBox.Ok
-
     def cleanup(self):
         self._main_window.stack_modified.disconnect(self.connection_stack_modified)
         self.presenter = None

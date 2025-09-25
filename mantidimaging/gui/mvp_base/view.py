@@ -54,6 +54,17 @@ class BaseMainWindowView(QMainWindow):
         LOG.warning(f"show_warning_dialog(): {msg}")
         QMessageBox.warning(self, "Warning", str(msg))
 
+    def show_question_dialog(self, title: str, msg: str) -> bool:
+        """
+        Shows a question dialog box. Returns true if the user selects "OK", false otherwise.
+
+        :param title: The title of the question dialog.
+        :param msg: The message to show.
+        :return: True if the user selects "OK", false otherwise.
+        """
+        response = QMessageBox.question(self, title, msg)
+        return response == QMessageBox.Yes
+
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
         if not self._has_shown:
