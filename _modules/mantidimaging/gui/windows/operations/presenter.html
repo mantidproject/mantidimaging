@@ -719,15 +719,16 @@
 <div class="viewcode-block" id="FiltersWindowPresenter.filter_uses_parameter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.filter_uses_parameter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_uses_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">params_needed_from_stack</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">params_needed_from_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">params_needed_from_stack</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">params_needed_from_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowPresenter.do_apply_filter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_already_run_flat_fielding</span><span class="p">():</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_confirmation</span><span class="p">(</span><span class="n">REPEAT_FLAT_FIELDING_MSG</span><span class="p">):</span>
+            <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">&quot;Confirm action&quot;</span><span class="p">,</span> <span class="n">REPEAT_FLAT_FIELDING_MSG</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user_confirmed</span><span class="p">:</span>
                 <span class="k">return</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
@@ -735,8 +736,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">original_images_stack</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">copy</span><span class="p">()}</span>
 
         <span class="c1"># if is a 180degree stack and a user says no, cancel apply filter.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_a_proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_confirmation</span><span class="p">(</span><span class="n">APPLY_TO_180_MSG</span><span class="p">):</span>
-            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_a_proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">):</span>
+            <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">&quot;Confirm action&quot;</span><span class="p">,</span> <span class="n">APPLY_TO_180_MSG</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">user_confirmed</span><span class="p">:</span>
+                <span class="k">return</span>
 
         <span class="n">apply_to</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">]</span>
 
@@ -746,8 +749,9 @@
 <div class="viewcode-block" id="FiltersWindowPresenter.do_apply_filter_to_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_confirmation</span><span class="p">(</span>
-                <span class="s2">&quot;Apply this filter to the dataset of the SELECTED stack in the Operations window?&quot;</span><span class="p">):</span>
+        <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span>
+            <span class="s2">&quot;Confirm action&quot;</span><span class="p">,</span> <span class="s2">&quot;Apply this filter to the dataset of the SELECTED stack in the Operations window?&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_confirmed</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">selected_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span>
