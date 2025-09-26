@@ -12,5 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 3
 
+   mantidimaging.core.fitting.bounding_box
    mantidimaging.core.fitting.fitting_engine
    mantidimaging.core.fitting.fitting_functions
