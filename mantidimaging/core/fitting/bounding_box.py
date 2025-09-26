@@ -36,4 +36,4 @@ def get_bounding_box(stack: ImageStack) -> SensibleROI:
     left_bound = find_bound(all_col_mean) + edge_clip
     right_bound = find_bound(all_col_mean_flipped) + edge_clip
 
-    return SensibleROI(left_bound, top_bound, width - right_bound, height - bottom_bound)
+    return SensibleROI(int(left_bound), int(top_bound), int(width - right_bound), int(height - bottom_bound))
