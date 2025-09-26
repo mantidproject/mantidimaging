@@ -30,7 +30,7 @@ requirements:
     - cupy=12.3.*
     - astra-toolbox=2.1.0=cuda*
     - requests=2.32.*
-    - h5py=3.9.*
+    - h5py=3.13.*
     - hdf5>=1.14.2,<1.15
     - psutil=5.9.*
     - cil=25.0.*
