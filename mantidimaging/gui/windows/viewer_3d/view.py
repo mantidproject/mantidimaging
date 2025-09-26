@@ -43,7 +43,7 @@ class MI3DViewerWindowView(BaseMainWindowView):
         self.viewer = CILViewer(renWin=self.vtk_widget.GetRenderWindow(), iren=self.vtk_widget)
         self.vtk_widget.Initialize()
 
-    # Set up the central widget and layout, and add the viewer
+    # Set up the central widget and layout, add the viewer and stack selector
     def _init_layout(self):
         self.central_widget = QWidget(self)
         self.layout = QVBoxLayout(self.central_widget)
@@ -83,7 +83,6 @@ class MI3DViewerWindowView(BaseMainWindowView):
     def _cleanup_resources(self, event):
         self.stackSelector.unsubscribe_from_main_window()
         self.vtk_widget.Finalize()
-        print("VTK resources finalized.")
         super().closeEvent(event)
 
     @property
