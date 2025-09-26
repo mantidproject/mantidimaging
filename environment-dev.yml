@@ -8,6 +8,7 @@ channels:
 dependencies:
   - mantidimaging>=3.0.0,<3.1.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
+  - numba==0.61.* # https://github.com/numba/numba/issues/10239
   - pip
   - pip:
       - eyes-images==5.23.*
