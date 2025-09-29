@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QMessageBox
+from PyQt5.QtCore import QTimer
 from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from ccpi.viewer.CILViewer import CILViewer
 from ccpi.viewer.utils.conversion import Converter
@@ -43,7 +44,7 @@ class MI3DViewerWindowView(BaseMainWindowView):
         """
         self.vtk_widget = QVTKRenderWindowInteractor()
         self.viewer = CILViewer(renWin=self.vtk_widget.GetRenderWindow(), iren=self.vtk_widget)
-        self.vtk_widget.Initialize()
+        QTimer.singleShot(0, self.vtk_widget.Initialize)
 
     def _init_layout(self):
         """
