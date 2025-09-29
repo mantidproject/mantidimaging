@@ -646,7 +646,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def do_adjust_roi(self) -> None:
         new_roi = self.view.roi_form.roi_properties_widget.to_roi()
-        roi_name = self.view.table_view.current_roi_name
+        if self.export_mode == ExportMode.ROI_MODE:
+            roi_name = self.view.table_view.current_roi_name
+        elif self.export_mode == ExportMode.IMAGE_MODE:
+            roi_name = "rits_roi"
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
         self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
