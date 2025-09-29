@@ -1,11 +1,12 @@
 {
-  "python.linting.flake8Args": ["--max-line-length=120"],
+  "python.linting.flake8Args": [
+    "--max-line-length=120"
+  ],
   "python.linting.mypyEnabled": true,
-  "python.sortImports.args": ["--line-width=120"],
+  "python.sortImports.args": [
+    "--line-width=120"
+  ],
   "editor.formatOnSave": true,
   "python.formatting.provider": "yapf",
   "restructuredtext.confPath": "${workspaceFolder}/docs",
-  "python-envs.defaultEnvManager": "ms-python.python:conda",
-  "python-envs.defaultPackageManager": "ms-python.python:conda",
-  "python-envs.pythonProjects": []
 }
