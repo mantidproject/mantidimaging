@@ -34,7 +34,7 @@ from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
-from mantidimaging.gui.windows.viewer_3d.view import MI3DViewer
+from mantidimaging.gui.windows.viewer_3d.view import MI3DViewerWindowView as MI3DViewer
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.geometry import GeometryWindowView
 from mantidimaging.gui.windows.settings.view import SettingsWindowView
@@ -108,6 +108,7 @@ class MainWindowView(BaseMainWindowView):
     spectrum_viewer: SpectrumViewerWindowView | None = None
     live_viewer_list: list[LiveViewerWindowView] = []
     settings_window: SettingsWindowView | None = None
+    viewer3d: MI3DViewer | None = None
     welcome_presenter: WelcomeScreenPresenter | None = None
     welcome_dock: QDockWidget | None = None
 
@@ -624,6 +625,8 @@ class MainWindowView(BaseMainWindowView):
                 self.filters.close()
             if self.settings_window:
                 self.settings_window.close()
+            if self.viewer3d:
+                self.viewer3d.close()
 
         else:
             # Ignore the close event, keeping window open
