@@ -21,9 +21,12 @@ class MI3DViewerPresenter(BasePresenter):
         self.main_window = main_window
 
     def handle_stack_change(self) -> None:
+        """
+        Handle the event when the selected stack changes.
+        """
         current_stack_uuid = self.view.current_stack
         current_stack = self.main_window.get_stack(current_stack_uuid)
         if current_stack is None:
             raise StackNotFoundError("No ImageStack found for UUID")
         array3d: np.ndarray = current_stack.data
-        self.view._update_viewer(array3d)
+        self.view.update_viewer(array3d)
