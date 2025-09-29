@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QApplication, QLineEdit
 
 from logging import getLogger
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.fitting.bounding_box import get_bounding_box
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
@@ -486,9 +487,9 @@ class FiltersWindowPresenter(BasePresenter):
         if self.stack is None:
             return
 
-        x = self.stack.data.shape[1] // 2
-        y = self.stack.data.shape[2] // 2
-        crop_string = ", ".join(["0", "0", str(y), str(x)])
+        crop_roi = get_bounding_box(self.stack)
+
+        crop_string = crop_roi.to_list_string()
         roi_field.setText(crop_string)
 
     def _show_negative_values_error(self, negative_stacks: list[ImageStack]):
