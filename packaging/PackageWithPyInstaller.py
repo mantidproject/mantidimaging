@@ -9,7 +9,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from PyInstaller.utils.hooks import conda_support, collect_data_files
+from PyInstaller.utils.hooks import conda_support, collect_data_files, collect_submodules, collect_dynamic_libs
 import PyInstaller.__main__
 
 
@@ -99,6 +99,8 @@ def add_hidden_imports(run_options):
         'cupy_backends.cuda.stream', 'fastrlock', 'fastrlock.rlock'
     ]
 
+    imports.extend(_collect_imagecodecs_components(run_options))
+
     # Operations modules must be added as hidden imports because most are imported programmatically in MantidImaging
     path_to_operations = Path(__file__).parent.parent.joinpath('mantidimaging/core/operations')
     # COMPAT python 3.10 won't accept a Path: github.com/python/cpython/issues/88227
@@ -117,6 +119,39 @@ def add_hidden_imports(run_options):
     run_options.extend(add_conda_dynamic_libs('cupy', 'nvrtc'))
     run_options.extend(add_conda_dynamic_libs('libcurl', 'ssl'))
     run_options.extend(add_conda_dynamic_libs('libcurl', 'crypto'))
+
+
+def _collect_imagecodecs_components(run_options):
+    """Define and collect imagecodecs components"""
+    imports = [
+        f'imagecodecs.{codec}'
+        for codec in ['_packbits', '_lzw', '_deflate', '_none', '_zlib', '_jpeg', '_png', '_tiff']
+    ]
+
+    operations = [('submodules', collect_submodules, lambda data: imports.extend(data)),
+                  ('dynamic libraries', collect_dynamic_libs, lambda data: _add_binaries(run_options, data)),
+                  ('data files', collect_data_files, lambda data: _add_data_files(run_options, data))]
+
+    for name, collector, handler in operations:
+        try:
+            data = collector('imagecodecs')
+            handler(data)
+        except Exception as e:
+            logging.warning(f"Warning: Could not collect imagecodecs {name}: {e}")
+
+    return imports
+
+
+def _add_binaries(run_options, binaries):
+    """Add binary files to PyInstaller options."""
+    for src, destination in binaries:
+        run_options.append(f'--add-binary={src}{os.pathsep}{destination}')
+
+
+def _add_data_files(run_options, data_files):
+    """Add data files to PyInstaller options."""
+    for src, destination in data_files:
+        run_options.append(f'--add-data={src}{os.pathsep}{destination}')
 
 
 def add_missing_submodules(run_options):
