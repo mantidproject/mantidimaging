@@ -2,28 +2,20 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
-from collections.abc import Iterator
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 
 
-@dataclass
-class SensibleROI(Iterable):
-    __slots__ = ("left", "top", "right", "bottom")
-    left: int
-    top: int
-    right: int
-    bottom: int
-
-    def __init__(self, left=0, top=0, right=0, bottom=0):
-        self.left = left
-        self.top = top
-        self.right = right
-        self.bottom = bottom
+@dataclass(slots=True)
+class SensibleROI(Iterable[int]):
+    left: int = 0
+    top: int = 0
+    right: int = 0
+    bottom: int = 0
 
     @staticmethod
     def from_points(position: CloseEnoughPoint, size: CloseEnoughPoint) -> SensibleROI:
@@ -53,3 +45,34 @@ class SensibleROI(Iterable):
     @property
     def height(self) -> int:
         return self.bottom - self.top
+
+
+class ROIBinner:
+
+    def __init__(self, roi: SensibleROI, step_size: int, bin_size: int):
+        self._roi = roi
+        self._step_size = step_size
+        self._bin_size = bin_size
+
+        self.left_indexes = range(roi.left, roi.right - bin_size + 1, step_size)
+        self.top_indexes = range(roi.top, roi.bottom - bin_size + 1, step_size)
+
+    def lengths(self) -> tuple[int, int]:
+        return len(self.left_indexes), len(self.top_indexes)
+
+    def get_sub_roi(self, i: int, j: int) -> SensibleROI:
+        left = self.left_indexes[i]
+        top = self.top_indexes[j]
+        return SensibleROI(left, top, left + self.bin_size, top + self.bin_size)
+
+    @property
+    def roi(self) -> SensibleROI:
+        return self._roi
+
+    @property
+    def step_size(self) -> int:
+        return self._step_size
+
+    @property
+    def bin_size(self) -> int:
+        return self._bin_size

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import unittest
 
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from parameterized import parameterized
+
+from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 
 
 class CloseEnoughPoint:
@@ -66,6 +68,82 @@ class SensibleROITestCase(unittest.TestCase):
     def test_height(self):
         roi = SensibleROI(1, 2, 4, 6)
         self.assertEqual(roi.height, 4)
+
+
+class ROIBinnerTest(unittest.TestCase):
+
+    def test_get_length(self):
+        roi = SensibleROI(1, 10, 15, 20)
+        step_size = 1
+        bin_size = 1
+        binner = ROIBinner(roi, step_size, bin_size)
+        self.assertEqual(binner.lengths(), (14, 10))
+
+    @parameterized.expand([
+        (4, 1, 4),
+        (4, 2, 2),
+        (4, 4, 1),
+        (5, 2, 3),
+        (6, 2, 3),
+    ])
+    def test_length_step(self, width, step_size, expected_len):
+        for start in [0, 1, 10]:
+            roi = SensibleROI(start, start, start + width, start + width)
+            bin_size = 1
+            binner = ROIBinner(roi, step_size, bin_size)
+            self.assertEqual(binner.lengths(), (expected_len, expected_len))
+
+    @parameterized.expand([
+        (1, 1, 10),
+        (2, 2, 5),
+        (1, 2, 9),
+        (3, 3, 3),
+        (3, 4, 3),
+    ])
+    def test_length_width(self, step_size, bin_size, expected_len):
+        width = 10
+        for start in [0, 1, 10]:
+            roi = SensibleROI(start, start, start + width, start + width)
+            binner = ROIBinner(roi, step_size, bin_size)
+            self.assertEqual(binner.lengths(), (expected_len, expected_len))
+
+    @parameterized.expand([(0, 0, SensibleROI(1, 2, 4, 5)), (0, 1, SensibleROI(1, 4, 4, 7)),
+                           (1, 0, SensibleROI(3, 2, 6, 5))])
+    def test_get_sub_roi(self, i, j, sub_roi):
+        roi = SensibleROI(1, 2, 15, 20)
+        binner = ROIBinner(roi, 2, 3)
+
+        self.assertEqual(binner.get_sub_roi(i, j), sub_roi)
+
+    def test_all_rois(self):
+        roi = SensibleROI(100, 200, 120, 225)
+        binner = ROIBinner(roi, 4, 5)
+        sub_w, sub_h = binner.lengths()
+        self.assertEqual((sub_w, sub_h), (4, 6))
+        for i in range(sub_w):
+            for j in range(sub_h):
+                sub_roi = binner.get_sub_roi(i, j)
+                self.assertTrue(roi.left <= sub_roi.left <= roi.right)
+                self.assertTrue(roi.left <= sub_roi.right <= roi.right)
+                self.assertTrue(roi.top <= sub_roi.top <= roi.bottom)
+                self.assertTrue(roi.top <= sub_roi.bottom <= roi.bottom)
+
+    def test_WHEN_index_out_of_range_THEN_exception_raised(self):
+        binner = ROIBinner(SensibleROI(10, 10, 15, 20), 2, 2)
+        self.assertEqual(binner.lengths(), (2, 5))
+        self.assertIsInstance(binner.get_sub_roi(0, 0), SensibleROI)
+        self.assertIsInstance(binner.get_sub_roi(1, 4), SensibleROI)
+        self.assertRaises(IndexError, binner.get_sub_roi, 2, 1)
+        self.assertRaises(IndexError, binner.get_sub_roi, 1, 5)
+
+    def test_dont_allow_modification(self):
+        binner = ROIBinner(SensibleROI(10, 10, 15, 20), 2, 2)
+        with self.assertRaises(AttributeError):
+            binner.roi = SensibleROI(1, 1, 2, 2)
+        with self.assertRaises(AttributeError):
+            binner.step_size = 3
+        with self.assertRaises(AttributeError):
+            binner.bin_size = 4
 
 
 if __name__ == '__main__':
