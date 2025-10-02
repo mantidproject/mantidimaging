@@ -1,0 +1,1 @@
+#2870: Fixes a bug in Pyinstaller where image codec modules were not being explicitly imported, leading to missing codecs in the packaged application due to automatic delayed imports did not include them.
