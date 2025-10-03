@@ -23,8 +23,8 @@ class CORInspectionDialogModel:
 
     def __init__(self, images: ImageStack, slice_idx: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
-        self.image_width = images.width
-        self.sino = images.sino(slice_idx)
+        self.images = images
+        self.slice_idx = slice_idx
 
         # Initial parameters
         if iters_mode:
@@ -35,7 +35,7 @@ class CORInspectionDialogModel:
             self._divide_step = self._divide_iters_step
         else:
             self.centre_value = initial_cor.value
-            self.step = self.image_width * 0.05
+            self.step = self.images.width * 0.05
             self._recon_preview = self._recon_cor_preview
             self._divide_step = self._divide_cor_step
 
@@ -82,17 +82,19 @@ class CORInspectionDialogModel:
             return self.centre_value + self.step
 
     def _recon_cor_preview(self, image: ImageType) -> np.ndarray:
-        cor = ScalarCoR(self.cor(image))
-        return self.reconstructor.single_sino(self.sino, cor, self.proj_angles, self.recon_params)
+        assert (self.images.geometry is not None)
+        self.images.geometry.cor = ScalarCoR(self.cor(image))
+        return self.reconstructor.single_sino(self.images, self.slice_idx, self.recon_params)
 
     def _recon_iters_preview(self, image: ImageType) -> np.ndarray:
         iters = self.iterations(image)
         new_params = replace(self.recon_params, num_iter=int(iters))
-        return self.reconstructor.single_sino(self.sino, self.initial_cor, self.proj_angles, new_params)
+        return self.reconstructor.single_sino(self.images, self.slice_idx, new_params)
 
     def recon_preview(self, image: ImageType) -> np.ndarray:
         return self._recon_preview(image)
 
     @property
     def cor_extents(self) -> tuple[int, int]:
-        return 0, self.sino.shape[1] - 1
+        sino = self.images.sino(self.slice_idx)
+        return 0, sino.shape[1] - 1

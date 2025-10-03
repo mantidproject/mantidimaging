@@ -13,7 +13,7 @@ from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
 
 if TYPE_CHECKING:
-    from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
+    from mantidimaging.core.utility.data_containers import ReconstructionParameters
 
 LOG = getLogger(__name__)
 tomopy = safe_import('tomopy')
@@ -32,12 +32,16 @@ class TomopyRecon(BaseRecon):
                                   sinogram_order=True)
 
     @staticmethod
-    def single_sino(sino: np.ndarray,
-                    cor: ScalarCoR,
-                    proj_angles: ProjectionAngles,
+    def single_sino(images: ImageStack,
+                    slice_idx: int,
                     recon_params: ReconstructionParameters,
                     progress: Progress | None = None) -> np.ndarray:
-        sino = BaseRecon.prepare_sinogram(sino, recon_params)
+
+        assert (images.geometry is not None)
+        sino = BaseRecon.prepare_sinogram(images.sino(slice_idx), recon_params)
+        cor = images.geometry.get_cor_at_slice_index(slice_idx)
+        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
                               theta=proj_angles.value,
@@ -48,10 +52,7 @@ class TomopyRecon(BaseRecon):
         return volume[0]
 
     @staticmethod
-    def full(images: ImageStack,
-             cors: list[ScalarCoR],
-             recon_params: ReconstructionParameters,
-             progress: Progress | None = None):
+    def full(images: ImageStack, recon_params: ReconstructionParameters, progress: Progress | None = None):
         """
         Performs a volume reconstruction using sample data provided as sinograms.
 
@@ -63,6 +64,9 @@ class TomopyRecon(BaseRecon):
         :return: 3D image data for reconstructed volume
         """
         progress = Progress.ensure_instance(progress, task_name='TomoPy reconstruction')
+
+        assert (images.geometry is not None)
+        cors = images.geometry.get_all_cors()
 
         import multiprocessing
         ncores = multiprocessing.cpu_count()

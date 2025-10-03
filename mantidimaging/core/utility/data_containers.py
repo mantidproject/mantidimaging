@@ -99,8 +99,6 @@ class ReconstructionParameters:
     algorithm: str
     filter_name: str
     num_iter: int = 1
-    cor: ScalarCoR | None = None
-    tilt: Degrees | None = None
     pixel_size: float = 0.0
     alpha: float = 0.0
     gamma: float = 1.0
@@ -117,8 +115,6 @@ class ReconstructionParameters:
             'algorithm': self.algorithm,
             'filter_name': self.filter_name,
             'num_iter': self.num_iter,
-            'cor': str(self.cor),
-            'tilt': str(self.tilt),
             'pixel_size': self.pixel_size,
             'alpha': self.alpha,
             'gamma': self.gamma,

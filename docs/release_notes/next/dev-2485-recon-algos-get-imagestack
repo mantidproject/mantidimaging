@@ -1,0 +1,1 @@
+#2485: Updated reconstruction algorithms to accept an ImageStack object, extracting data at point of use.

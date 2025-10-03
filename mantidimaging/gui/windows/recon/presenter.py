@@ -267,21 +267,20 @@ class ReconstructWindowPresenter(BasePresenter):
                               tracker=self.async_tracker,
                               cancelable=True)
 
-    def _get_reconstruct_slice(self, cor, slice_idx: int, call_back: Callable[[TaskWorkerThread], None]) -> None:
-        # If no COR is provided and there are regression results then calculate
-        # the COR for the selected preview slice
-        cor = self.model.get_me_a_cor(cor)
-        start_async_task_view(self.view,
-                              self.model.run_preview_recon,
-                              call_back, {
-                                  'slice_idx': slice_idx,
-                                  'cor': cor,
-                                  'recon_params': self.view.recon_params()
-                              },
-                              tracker=self.async_tracker,
-                              cancelable=True)
+    def _get_reconstruct_slice(self, slice_idx: int, call_back: Callable[[TaskWorkerThread], None]) -> None:
+        start_async_task_view(
+            self.view,
+            self.model.run_preview_recon,
+            call_back,
+            {
+                'slice_idx': slice_idx,
+                # 'cor': cor,
+                'recon_params': self.view.recon_params()
+            },
+            tracker=self.async_tracker,
+            cancelable=True)
 
-    def _get_slice_index(self, slice_idx: int | None) -> int:
+    def _get_preview_slice_index(self, slice_idx: int | None) -> int:
         if slice_idx is None:
             slice_idx = self.model.preview_slice_idx
         else:
@@ -289,7 +288,6 @@ class ReconstructWindowPresenter(BasePresenter):
         return slice_idx
 
     def do_preview_reconstruct_slice(self,
-                                     cor=None,
                                      slice_idx: int | None = None,
                                      force_update: bool = False,
                                      reset_roi: bool = False) -> None:
@@ -297,11 +295,12 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.reset_recon_and_sino_previews()
             return
 
-        slice_idx = self._get_slice_index(slice_idx)
+        slice_idx = self._get_preview_slice_index(slice_idx)
+
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         if self.view.is_auto_update_preview() or force_update:
             on_preview_complete = partial(self._on_preview_reconstruct_slice_done, reset_roi=reset_roi)
-            self._get_reconstruct_slice(cor, slice_idx, on_preview_complete)
+            self._get_reconstruct_slice(slice_idx, on_preview_complete)
 
     def _on_preview_reconstruct_slice_done(self, task: TaskWorkerThread, reset_roi: bool = False) -> None:
         if task.error is not None:
@@ -314,10 +313,10 @@ class ReconstructWindowPresenter(BasePresenter):
             # will still be available after this function ends
             self.view.update_recon_preview(np.copy(images.data[0]), reset_roi)
 
-    def do_stack_reconstruct_slice(self, cor=None, slice_idx: int | None = None) -> None:
+    def do_stack_reconstruct_slice(self) -> None:
         self.view.set_recon_buttons_enabled(False)
-        slice_idx = self._get_slice_index(slice_idx)
-        self._get_reconstruct_slice(cor, slice_idx, self._on_stack_reconstruct_slice_done)
+        slice_idx = self._get_preview_slice_index(None)
+        self._get_reconstruct_slice(slice_idx, self._on_stack_reconstruct_slice_done)
 
     def _on_stack_reconstruct_slice_done(self, task: TaskWorkerThread):
         if task.error is not None:
@@ -327,7 +326,7 @@ class ReconstructWindowPresenter(BasePresenter):
         try:
             assert task.result is not None
             images: ImageStack = task.result
-            slice_idx = self._get_slice_index(None)
+            slice_idx = self._get_preview_slice_index(None)
             if images is not None:
                 source_id = self.model.stack_id
                 assert source_id is not None

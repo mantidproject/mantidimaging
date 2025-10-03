@@ -461,8 +461,6 @@ class ReconstructWindowView(BaseMainWindowView):
         return ReconstructionParameters(algorithm=self.algorithm_name,
                                         filter_name=self.filter_name,
                                         num_iter=self.num_iter,
-                                        cor=ScalarCoR(self.rotation_centre),
-                                        tilt=Degrees(self.tilt),
                                         pixel_size=self.pixel_size,
                                         alpha=self.alpha,
                                         gamma=self.gamma,

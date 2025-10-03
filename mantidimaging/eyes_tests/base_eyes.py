@@ -135,6 +135,7 @@ class BaseEyesTest(unittest.TestCase):
         filename_group.find_all_files()
         image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
         dataset = Dataset(sample=image_stack)
+        image_stack.create_geometry()
         image_stack.name = "Stack 1"
         self.imaging.presenter.model.add_dataset_to_model(dataset)
         self.imaging.presenter._add_dataset_to_view(dataset)
