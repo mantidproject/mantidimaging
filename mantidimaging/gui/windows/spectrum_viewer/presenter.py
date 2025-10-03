@@ -183,8 +183,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         if normalise_uuid is None:
             self.model.set_normalise_stack(None)
+            self.model.spectrum_cache.clear()
             return
         self.model.set_normalise_stack(self.main_window.get_stack(normalise_uuid))
+        self.model.spectrum_cache.clear()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.set_shuttercount_error()
         if self.view.normalisation_enabled():
@@ -244,17 +246,26 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
         self.view.roi_form.roi_properties_widget.update_roi_limits(roi.as_sensible_roi())
+        sample_roi = roi.as_sensible_roi()
+        open_beam_roi = self.view.get_open_beam_roi() or sample_roi
+        cache_key = (*sample_roi, *open_beam_roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        cached = self.model.spectrum_cache.get(cache_key)
+        if cached is not None:
+            self.view.set_spectrum(roi.name, cached)
+            self.roi_to_process_queue.pop(roi.name, None)
+            if not self.roi_to_process_queue and self.handle_roi_change_timer.isActive():
+                self.handle_roi_change_timer.stop()
+            self.update_roi_on_fitting_thumbnail()
+            return
         run_thread_check = not bool(self.roi_to_process_queue)
-        self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
-        spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
-        if spectrum is not None:
-            self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
+        self.roi_to_process_queue[roi.name] = roi
+        frame_count = self.model.get_number_of_images_in_stack()
+        self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(frame_count, np.nan))
         self.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()
-        if run_thread_check:
-            if not self.handle_roi_change_timer.isActive():
-                self.handle_roi_change_timer.start(500)
+        if run_thread_check and not self.handle_roi_change_timer.isActive():
+            self.handle_roi_change_timer.start(500)
         self.update_roi_on_fitting_thumbnail()
 
     def run_spectrum_calculation(self, roi: SpectrumROI, open_beam_roi: SensibleROI | None, spec_mode: SpecType,
@@ -645,10 +656,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     self.check_action(action, False)
 
     def do_adjust_roi(self) -> None:
+        name = self.view.table_view.current_roi_name
         new_roi = self.view.roi_form.roi_properties_widget.to_roi()
-        roi_name = self.view.table_view.current_roi_name
-        self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
-        self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
+        self.view.spectrum_widget.adjust_roi(new_roi, name)
+        roi_obj = self.view.spectrum_widget.roi_dict[name]
+        roi_obj.sensible_roi = new_roi
+        self.changed_roi = roi_obj
+        self.handle_notify_roi_moved(self.changed_roi)
 
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
