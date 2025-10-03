@@ -15,11 +15,13 @@ class GeometryType(Enum):
 
 
 class Geometry(AcquisitionGeometry):
-    is_parallel: bool = False
 
     def __init__(self,
+                 type: GeometryType = GeometryType.PARALLEL3D,
                  num_pixels: list | tuple = (10, 10),
                  pixel_size: list | tuple = (1., 1.),
+                 source_position: list | tuple = (0, -1, 0),
+                 detector_position: list | tuple = (0, 1, 0),
                  angle_unit: str = "radian",
                  units: str = "default",
                  *args,
@@ -38,9 +40,17 @@ class Geometry(AcquisitionGeometry):
         :type units: str
         """
         super().__init__()
-        parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
-        self.config = parallel_3d.config
-        self.is_parallel = True
+
+        if type == GeometryType.PARALLEL3D:
+            parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
+            self.config = parallel_3d.config
+        else:
+            conebeam_3d = self.create_Cone3D(*args,
+                                             source_position=source_position,
+                                             detector_position=detector_position,
+                                             units=units,
+                                             **kwargs)
+            self.config = conebeam_3d.config
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
@@ -102,3 +112,24 @@ class Geometry(AcquisitionGeometry):
             return GeometryType.PARALLEL3D
         else:
             return GeometryType.CONE3D
+
+    def set_source_detector_positions(self, source_pos: float, detector_pos: float) -> None:
+        if source_pos != 0 and self.type == GeometryType.CONE3D:
+            self.config.system.source.position = [0, source_pos, 0]
+
+        if detector_pos != 0 and self.type == GeometryType.CONE3D:
+            self.config.system.detector.position = [0, detector_pos, 0]
+
+    @property
+    def source_position(self) -> float:
+        source_pos = 0
+        if self.type == GeometryType.CONE3D:
+            source_pos = self.config.system.source.position[1]
+        return source_pos
+
+    @property
+    def detector_position(self) -> float:
+        detector_pos = 0
+        if self.type == GeometryType.CONE3D:
+            detector_pos = self.config.system.detector.position[1]
+        return detector_pos

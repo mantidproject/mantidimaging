@@ -29,6 +29,8 @@ import matplotlib
 from matplotlib import pyplot
 from matplotlib.figure import Figure
 
+from mantidimaging.core.data.geometry import GeometryType
+
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
@@ -75,6 +77,12 @@ class GeometryWindowView(BaseMainWindowView):
         self.angleDisplay = QLabel("N/A")
         self.corSpinBox = CustomRangeSpinBox()
         self.tiltSpinBox = CustomRangeSpinBox(-45, 45)
+        self.sourcePosBox = CustomRangeSpinBox()
+        self.detectorPosBox = CustomRangeSpinBox()
+        self.conversionTypeSelector = QComboBox()
+        self.convertGeometryButton = QPushButton("Convert")
+
+        # New Geometry page
 
         self.geomTypeSelector = QComboBox()
         self.minAngleSpinBox = CustomRangeSpinBox(-360, 360)
@@ -82,6 +90,8 @@ class GeometryWindowView(BaseMainWindowView):
         self.loadAnglesButton = QPushButton("Load Angles from File")
         self.newCorSpinBox = CustomRangeSpinBox()
         self.newTiltSpinBox = CustomRangeSpinBox(-45, 45)
+        self.newSourcePosBox = CustomRangeSpinBox()
+        self.newDetectorPosBox = CustomRangeSpinBox()
         self.createGeometryButton = QPushButton("Create Geometry")
 
         self.figureCanvas = FigureCanvas()
@@ -122,27 +132,17 @@ class GeometryWindowView(BaseMainWindowView):
     def _build_geometry_pages_widget(self) -> QWidget:
         self.geometryPagesWidget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
 
-        self.geometryPagesWidget.addWidget(self._build_no_stack_data_page())  # page 0 (Empty / no ImageStack)
-        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())  # page 1 (Geometry exists)
-        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())  # page 2 (Geometry doesn't exist)
+        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())  # page 0 (Geometry exists)
+        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())  # page 1 (Geometry doesn't exist)
 
         return self.geometryPagesWidget
-
-    def _build_no_stack_data_page(self):
-        no_stack_data_page = QWidget()
-        no_stack_data_layout = QVBoxLayout(no_stack_data_page)
-
-        warning_message = "No stack data available"
-        no_stack_data_layout.addWidget(self._build_warning_message(warning_message))
-        no_stack_data_layout.addStretch()
-
-        return no_stack_data_page
 
     def _build_geometry_data_display_page(self) -> QWidget:
         data_display_page = QWidget()
         data_display_layout = QVBoxLayout(data_display_page)
 
         data_display_layout.addWidget(self._build_data_display_group())
+        data_display_layout.addWidget(self._build_geometry_conversion_group())
         data_display_layout.addStretch()
 
         return data_display_page
@@ -156,22 +156,36 @@ class GeometryWindowView(BaseMainWindowView):
         data_display_group_layout.addRow(QLabel("Angles:"), self.angleDisplay)
         data_display_group_layout.addRow(QLabel("COR:"), self.corSpinBox)
         data_display_group_layout.addRow(QLabel("Tilt:"), self.tiltSpinBox)
+        data_display_group_layout.addRow(QLabel("Source Pos:"), self.sourcePosBox)
+        data_display_group_layout.addRow(QLabel("Detector Pos:"), self.detectorPosBox)
 
         return data_display_group
+
+    def _build_geometry_conversion_group(self) -> QWidget:
+        conversion_group = QGroupBox("Convert Geometry")
+        conversion_group.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        conversion_group_layout = QFormLayout(conversion_group)
+
+        for supported_type in GeometryType:
+            self.conversionTypeSelector.addItem(supported_type.value)
+
+        conversion_group_layout.addRow(QLabel("To:"), self.conversionTypeSelector)
+        conversion_group_layout.addRow(self.convertGeometryButton)
+
+        return conversion_group
 
     def _build_new_geometry_page(self) -> QWidget:
         new_geometry_page = QWidget()
         new_geometry_layout = QVBoxLayout(new_geometry_page)
 
-        warning_message = "No Geometry for selected stack"
-        new_geometry_layout.addWidget(self._build_warning_message(warning_message))
+        new_geometry_layout.addWidget(self._build_warning_message())
         new_geometry_layout.addWidget(self._build_new_params_group())
         new_geometry_layout.addWidget(self.createGeometryButton)
         new_geometry_layout.addStretch()
 
         return new_geometry_page
 
-    def _build_warning_message(self, message: str) -> QWidget:
+    def _build_warning_message(self) -> QWidget:
         style = QApplication.style()
         font_pt = self.font().pointSizeF()
         icon_size = int(font_pt * 1.8)
@@ -181,7 +195,7 @@ class GeometryWindowView(BaseMainWindowView):
         icon.setPixmap(pixmap)
         icon.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        text = QLabel(message)
+        text = QLabel("No Geometry for selected stack")
         text.setWordWrap(True)
         text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
@@ -198,14 +212,16 @@ class GeometryWindowView(BaseMainWindowView):
         new_params_group = QGroupBox("New Geometry")
         new_params_layout = QFormLayout(new_params_group)
 
-        self.geomTypeSelector.addItem("Parallel 3D")
-        # self.geomTypeSelector.addItem("Conebeam 3D")
+        for supported_type in GeometryType:
+            self.geomTypeSelector.addItem(supported_type.value)
 
         new_params_layout.addRow(QLabel("Type:"), self.geomTypeSelector)
         new_params_layout.addRow(self._build_angle_range_container())
         new_params_layout.addRow(QLabel(""), self.loadAnglesButton)
         new_params_layout.addRow(QLabel("COR:"), self.newCorSpinBox)
         new_params_layout.addRow(QLabel("Tilt:"), self.newTiltSpinBox)
+        new_params_layout.addRow(QLabel("Source Position:"), self.newSourcePosBox)
+        new_params_layout.addRow(QLabel("Detector Position:"), self.newDetectorPosBox)
 
         return new_params_group
 
@@ -213,7 +229,6 @@ class GeometryWindowView(BaseMainWindowView):
         angle_range_container = QWidget()
         angle_range_layout = QHBoxLayout(angle_range_container)
 
-        angle_range_layout.addWidget(QLabel("Angles:"))
         angle_range_layout.addWidget(QLabel("Min"))
         angle_range_layout.addWidget(self.minAngleSpinBox)
         angle_range_layout.addWidget(QLabel("Max"))
@@ -237,9 +252,12 @@ class GeometryWindowView(BaseMainWindowView):
         self.stackSelector.select_eligible_stack()
 
     def _init_connect_signals(self) -> None:
-        self.createGeometryButton.clicked.connect(self.presenter.handle_create_new_geometry)
         self.corSpinBox.valueChanged.connect(self.presenter.handle_parameter_updates)
         self.tiltSpinBox.valueChanged.connect(self.presenter.handle_parameter_updates)
+        self.detectorPosBox.valueChanged.connect(self.presenter.handle_parameter_updates)
+        self.sourcePosBox.valueChanged.connect(self.presenter.handle_parameter_updates)
+        self.createGeometryButton.clicked.connect(self.presenter.handle_create_new_geometry)
+        self.convertGeometryButton.clicked.connect(self.presenter.handle_convert_geometry)
 
     def set_widget_stack_page(self, index: int) -> None:
         self.geometryPagesWidget.setCurrentIndex(index)
@@ -300,6 +318,22 @@ class GeometryWindowView(BaseMainWindowView):
         self.tiltSpinBox.setValue(value)
 
     @property
+    def source_position(self) -> float:
+        return self.sourcePosBox.value()
+
+    @source_position.setter
+    def source_position(self, value) -> None:
+        self.sourcePosBox.setValue(value)
+
+    @property
+    def detector_position(self) -> float:
+        return self.detectorPosBox.value()
+
+    @detector_position.setter
+    def detector_position(self, value) -> None:
+        self.detectorPosBox.setValue(value)
+
+    @property
     def new_type(self) -> str:
         return self.geomTypeSelector.currentText()
 
@@ -334,3 +368,23 @@ class GeometryWindowView(BaseMainWindowView):
     @new_tilt.setter
     def new_tilt(self, value) -> None:
         self.newTiltSpinBox.setValue(value)
+
+    @property
+    def new_source_position(self) -> float:
+        return self.newSourcePosBox.value()
+
+    @new_source_position.setter
+    def new_source_position(self, value) -> None:
+        self.newSourcePosBox.setValue(value)
+
+    @property
+    def new_detector_position(self) -> float:
+        return self.newDetectorPosBox.value()
+
+    @new_detector_position.setter
+    def new_detector_position(self, value) -> None:
+        self.newDetectorPosBox.setValue(value)
+
+    @property
+    def conversion_type(self) -> str:
+        return self.conversionTypeSelector.currentText()

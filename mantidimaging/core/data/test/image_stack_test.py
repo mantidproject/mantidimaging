@@ -188,7 +188,7 @@ class ImageStackTest(unittest.TestCase):
     def test_data_set(self):
         data = generate_images().data
         images = ImageStack(data=data)
-        images.set_geometry()
+        images.create_geometry()
 
         num_pixels = (512, 512)
         pixel_size = (2., 2.)
@@ -247,7 +247,7 @@ class ImageStackTest(unittest.TestCase):
 
     def test_set_angles_geometry(self):
         images = generate_images()
-        images.set_geometry()
+        images.create_geometry()
         angles = range(0, 10)
         angle_unit = "radian"
         pangles = ProjectionAngles(list(angles))
@@ -359,7 +359,7 @@ class ImageStackTest(unittest.TestCase):
     def test_default_geometry(self):
         data = generate_images().data
         images = ImageStack(data=data)
-        images.set_geometry()
+        images.create_geometry()
         num_pixels = images.width, images.height
         pixel_size = (1., 1.)
         npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
@@ -369,7 +369,7 @@ class ImageStackTest(unittest.TestCase):
     def test_proj_180_degree_shape_matches_images(self, _, height, width, proj180_height, proj180_width, expected):
         data = generate_images().data
         images = ImageStack(data=data)
-        images.set_geometry()
+        images.create_geometry()
         angles = range(0, 360)
         angle_unit = "radian"
         pixel_size = (1., 1.)
@@ -389,7 +389,7 @@ class ImageStackTest(unittest.TestCase):
     def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
         data = generate_images().data
         images = ImageStack(data=data)
-        images.set_geometry()
+        images.create_geometry()
         images.has_proj180deg = mock.MagicMock(return_value=False)
 
         self.assertFalse(images.proj_180_degree_shape_matches_images())

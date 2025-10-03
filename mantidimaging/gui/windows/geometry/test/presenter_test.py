@@ -40,6 +40,7 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.view.new_min_angle = 0
         self.view.new_max_angle = 0
         self.view.current_stack = self.uuid
+        self.view.conversion_type = "Parallel 3D"
 
     def reset_new_stack(self):
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
@@ -48,7 +49,7 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.reset_new_stack()
         test_stack = self.main_window.get_stack()
         test_stack.set_projection_angles(ProjectionAngles(numpy.linspace(0, 360, test_stack.num_projections)))
-        test_stack.set_geometry()
+        test_stack.create_geometry()
         self.presenter.update_parameters(test_stack)
         test_geometry_type = GeometryType.PARALLEL3D.value
         self.assertEqual(self.view.type, test_geometry_type)
@@ -62,6 +63,15 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.presenter.set_default_new_parameters(stack=test_stack)
         self.presenter.handle_create_new_geometry()
         self.assertIsNotNone(test_stack.geometry)
+
+    def test_converting_geometry(self):
+        self.reset_new_stack()
+        test_stack = self.main_window.get_stack()
+        test_stack.create_geometry()
+        self.assertEqual(test_stack.geometry.type, GeometryType.PARALLEL3D)
+        self.view.conversion_type = "Cone 3D"
+        self.presenter.handle_convert_geometry()
+        self.assertEqual(test_stack.geometry.type, GeometryType.CONE3D)
 
     def test_changing_cor_tilt_updates_geometry(self):
         self.presenter.handle_create_new_geometry()

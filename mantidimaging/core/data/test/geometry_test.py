@@ -23,7 +23,7 @@ class GeometryTest(unittest.TestCase):
         """
         geo = Geometry()
 
-        self.assertTrue(geo.is_parallel)
+        self.assertTrue(geo.type == GeometryType.PARALLEL3D)
         npt.assert_array_equal(geo.config.system.ray.direction, np.array([0, 1, 0]))
         npt.assert_array_equal(geo.config.system.detector.position, np.array([0, 0, 0]))
         npt.assert_array_equal(geo.config.system.detector._direction_x, np.array([1, 0, 0]))
