@@ -103,3 +103,12 @@ Developer Changes
 - `#2444 <https://github.com/mantidproject/mantidimaging/issues/2444>`_: Ruff rule to check for missing __init__.py files
 - `#2552 <https://github.com/mantidproject/mantidimaging/issues/2552>`_: Replaced "Apply to all stacks" button with "Apply to Dataset", which only applies the operation to the selected dataset.
 - `#2609 <https://github.com/mantidproject/mantidimaging/issues/2609>`_: Refactor release_notes.py script to add reST GitHub Issue links to allow users to find the associated issue or PR for additional context.
+
+Bugfix release 3.0.1
+--------------------
+
+This fixes several small issues
+- `#2870 <https://github.com/mantidproject/mantidimaging/issues/2870>`_: Imagecodecs not picked up by Pyinstaller for Windows Builds of MI
+- `#2753 <https://github.com/mantidproject/mantidimaging/issues/2753>`_: Loaded Projection Angles not shown on interface
+- `#2803 <https://github.com/mantidproject/mantidimaging/issues/2803>`_: Display of 'difference' overlayed on image
+- `#2867 <https://github.com/mantidproject/mantidimaging/issues/2867>`_: Pin numba to 0.61 to avoid incompatibility with coverage
