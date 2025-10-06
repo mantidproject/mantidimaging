@@ -9,6 +9,8 @@ import pkgutil
 import subprocess
 import sys
 from pathlib import Path
+
+import imagecodecs
 from PyInstaller.utils.hooks import conda_support, collect_data_files
 import PyInstaller.__main__
 
@@ -42,6 +44,8 @@ def add_hidden_imports(run_options):
         # https://github.com/mantidproject/mantidimaging/issues/2298
         if "test.support" not in ops_module:
             imports.append(f'mantidimaging.core.operations.{ops_module}')
+
+    imports.extend(["imagecodecs." + x for x in imagecodecs._extensions()] + ["imagecodecs._shared"])
 
     run_options.extend([f'--hidden-import={name}' for name in imports])
 
