@@ -47,19 +47,10 @@ class FittingParamFormWidget(QWidget):
         self._param_values_logged = False
 
         self.chi2_label = QLabel("Fitting Quality (χ²): N/A")
-        main_layout.addWidget(self.chi2_label)
-        self.metric_picker = QComboBox(self)
-        self.metric_picker.addItems([
-            "χ² (SSE)",
-            "Reduced χ² (unweighted)",
-            "Reduced χ² (σ-weighted)",
-        ])
-        try:
-            self.metric_picker.setCurrentIndex(1)
-        except Exception:
-            pass
-        self.metric_picker.currentTextChanged.connect(self.metric_changed)
-        main_layout.addWidget(self.metric_picker)
+        self.rss_label = QLabel("RSS: N/A")
+        self.reduced_rss_label = QLabel("RSS/DoF: N/A")
+        main_layout.addWidget(self.rss_label)
+        main_layout.addWidget(self.reduced_rss_label)
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -89,7 +80,7 @@ class FittingParamFormWidget(QWidget):
     def set_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
             row = self._rows[name]
-            row[2].setText(f"{value:f}")
+            row[2].setText(f"{value:.2f}")
 
         if not self._param_values_logged:
             LOG.info("Final fit parameter values updated: %s", values)
@@ -98,7 +89,7 @@ class FittingParamFormWidget(QWidget):
     def set_fitted_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
             row = self._rows[name]
-            row[3].setText(f"{value:f}")
+            row[3].setText(f"{value:.2f}")
         LOG.debug("Final fit parameter values updated: %s", values)
 
     def get_initial_param_values(self) -> list[float]:
@@ -120,13 +111,16 @@ class FittingParamFormWidget(QWidget):
         self._rows.clear()
         LOG.debug("Parameter form rows cleared")
 
-    def set_chi_squared(self, chi2: float) -> None:
-        if np.isnan(chi2) or np.isinf(chi2):
-            self.chi2_label.setText("Fitting Quality (χ²): N/A")
-        else:
-            self.chi2_label.setText(f"Fitting Quality (χ²): {chi2:.2f}")
-
-    set_fit_quality = set_chi_squared
+    def set_fit_quality(self, rss: float, rss_per_dof: float) -> None:
+        """
+        Update the fit quality display with raw and reduced residual sum of squares.
+        """
+        if not np.isfinite(rss):
+            self.rss_label.setText("RSS: N/A")
+            self.reduced_rss_label.setText("RSS/DoF: N/A")
+            return
+        self.rss_label.setText(f"RSS: {rss:.2g}")
+        self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
 
     def current_metric(self) -> str:
         """Return the currently selected metric label from the picker."""

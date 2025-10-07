@@ -27,39 +27,36 @@ class FittingEngine:
         xdata: np.ndarray,
         ydata: np.ndarray,
         initial_params: list[float],
-        sigma: np.ndarray | None = None,
     ) -> tuple[dict[str, float], float, float]:
         """
-        Perform a model fit and return the fitted parameters, unweighted SSE,
-        and sigma-weighted SSE.
+        Fit the model to the given spectrum using unweighted least squares.
 
-        :param xdata: TOF data (independent variable)
-        :param ydata: Spectrum data (dependent variable)
-        :param initial_params: Initial parameter estimates
-        :param sigma: Optional per-point uncertainties (same length as ydata).
-                      If None, fall back to sqrt(ydata) with floor at 1.
-        :return: (fit_params, sse, weighted_sse)
+        Returns:
+            - fit_params: dictionary of parameter names → fitted values
+            - rss: residual sum of squares (Σ(residual²))
+            - reduced_rss: rss / degrees of freedom, where DoF = N - p
+
+        Notes:
+            Uses the Nelder–Mead minimizer on the unweighted residuals.
+            This is equivalent to minimizing χ² without weighting.
         """
-        additional_params: list[float] = self.model.prefitting(xdata, ydata, initial_params)
-        fit_param_count = len(initial_params) - len(additional_params)
-        params_to_fit: np.ndarray = np.array(initial_params[:fit_param_count])
 
-        def chi_squared(params_subset: list[float]) -> float:
+        additional_params = self.model.prefitting(xdata, ydata, initial_params)
+        fit_param_count = len(initial_params) - len(additional_params)
+        params_to_fit = np.array(initial_params[:fit_param_count])
+
+        def residual_sum_squares(params_subset: list[float]) -> float:
             full_params = list(params_subset) + additional_params
             residuals = self.model.evaluate(xdata, full_params) - ydata
-            return float(np.sum(residuals**2))
+            return float(np.sum(residuals ** 2))
 
-        result = minimize(chi_squared, params_to_fit, method="Nelder-Mead")
+        result = minimize(residual_sum_squares, params_to_fit, method="Nelder-Mead")
         all_param_names = self.model.get_parameter_names()
-        all_params: list[float] = list(result.x) + additional_params
-        fit_params: dict[str, float] = dict(zip(all_param_names, all_params, strict=True))
-        final_residuals = self.model.evaluate(xdata, all_params) - ydata
-        sse: float = float(np.sum(final_residuals**2))
+        all_params = list(result.x) + additional_params
+        fit_params = dict(zip(all_param_names, all_params, strict=True))
+        rss = float(result.fun)
+        n_points = ydata.size
+        dof = max(n_points - len(all_params), 1)
+        reduced_rss = rss / dof
 
-        # Poisson
-        if sigma is None:
-            sigma = np.sqrt(np.clip(ydata, a_min=1.0, a_max=None))
-        sigma = np.asarray(sigma, dtype=float)
-        weighted_sse: float = float(np.sum((final_residuals / sigma)**2))
-
-        return fit_params, sse, weighted_sse
+        return fit_params, rss, reduced_rss
