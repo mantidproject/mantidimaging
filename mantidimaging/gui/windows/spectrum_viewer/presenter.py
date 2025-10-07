@@ -725,8 +725,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.exportDataTableWidget.update_roi_data(roi_name=roi_name, params=result, status="Fitted")
         LOG.info("Fit completed for ROI=%s, params=%s", roi_name, result)
 
-    def fit_single_region(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
-                          init_params: list[float], bounds: list[tuple[float | None, float | None]] | None = None) -> dict[str, float]:
+    def fit_single_region(self,
+                          spectrum: np.ndarray,
+                          fitting_region: FittingRegion,
+                          tof_data: np.ndarray,
+                          init_params: list[float],
+                          bounds: list[tuple[float | None, float | None]] | None = None) -> dict[str, float]:
         fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
         xvals = tof_data[fitting_slice]
         yvals = spectrum[fitting_slice]

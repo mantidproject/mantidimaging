@@ -22,13 +22,16 @@ class FittingEngine:
     def get_init_params_from_roi(self, region: FittingRegion) -> dict[str, float]:
         return self.model.get_init_params_from_roi(region)
 
-    def find_best_fit(self, xdata: np.ndarray, ydata: np.ndarray, initial_params: list[float], params_bounds: list[tuple[float | None, float | None]] | None = None) -> dict[str, float]:
+    def find_best_fit(self,
+                      xdata: np.ndarray,
+                      ydata: np.ndarray,
+                      initial_params: list[float],
+                      params_bounds: list[tuple[float | None, float | None]] | None = None) -> dict[str, float]:
         additional_params = self.model.prefitting(xdata, ydata, initial_params)
         number_params_to_fit = len(initial_params) - len(additional_params)
         params_to_fit = initial_params[:number_params_to_fit]
         if params_bounds:
             params_bounds = params_bounds[:number_params_to_fit]
-
 
         def f(params_to_fit):
             if additional_params:
