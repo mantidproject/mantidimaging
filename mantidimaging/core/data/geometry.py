@@ -94,11 +94,8 @@ class Geometry(AcquisitionGeometry):
                              (i.e. number of sinograms that will be reconstructed)
         :return: List of cors for every slice of the image height
         """
-        cors = []
         image_height = self.config.panel.num_pixels[1]
-        for i in range(image_height):
-            cors.append(self.get_cor_at_slice_index(i))
-        return cors
+        return [self.get_cor_at_slice_index(i) for i in range(image_height)]
 
     @property
     def cor(self) -> ScalarCoR:

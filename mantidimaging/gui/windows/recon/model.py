@@ -150,7 +150,6 @@ class ReconstructWindowModel:
         LOG.info("Starting full reconstruction: algorithm=%s, slices=%d", recon_params.algorithm, self.images.height)
 
         reconstructor = get_reconstructor_for(recon_params.algorithm)
-        # get the image height based on the current ROI # TODO: Is this significant?
 
         recon = reconstructor.full(images, recon_params, progress)
         recon = self._apply_pixel_size(recon, recon_params, progress)

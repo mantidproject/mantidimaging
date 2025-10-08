@@ -92,17 +92,27 @@ class AstraRecon(BaseRecon):
         Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
         """
 
+        assert (images.geometry is not None)
+        original_cor = images.geometry.cor
+        original_tilt = images.geometry.tilt
+
         def get_sumsq(image: np.ndarray) -> float:
             return float(np.sum(image**2))
 
-        def minimizer_function(cor: float | np.ndarray) -> float:
-            if isinstance(cor, np.ndarray):
-                cor = float(cor[0])
-                assert (images.geometry is not None)
-                images.geometry.cor = ScalarCoR(cor)
+        def minimizer_function(cor: float) -> float:
+            assert (images.geometry is not None)
+            # A tilt of 0 is set to get the same CoR for any slice in single_sino(). See #2856
+            images.geometry.set_geometry_from_cor_tilt(ScalarCoR(cor), 0)
             return -get_sumsq(AstraRecon.single_sino(images, slice_idx, recon_params))
 
-        return minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
+        if isinstance(start_cor, np.ndarray):
+            start_cor = float(start_cor[0])
+
+        minimized_cor = minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
+        images.geometry.cor = original_cor
+        images.geometry.tilt = original_tilt
+
+        return minimized_cor
 
     @staticmethod
     def single_sino(
