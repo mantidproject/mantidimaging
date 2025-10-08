@@ -536,11 +536,11 @@
 </div>
 <p>These options:</p>
 <ul class="simple">
-<li><p>Enable the <a class="reference external" href="https://docs.python.org/3/library/faulthandler.html#module-faulthandler" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">faulthandler</span></code></a> to dump a traceback in the event of python crash.</p></li>
-<li><p>Cause python <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> to be printed.</p></li>
-<li><p>Set the Mantid Imaging <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">log</span> <span class="pre">level</span></code></a> to DEBUG.</p></li>
+<li><p>Enable the <a class="reference external" href="https://docs.python.org/3/library/faulthandler.html#module-faulthandler" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">faulthandler</span></code></a> to dump a traceback in the event of python crash.</p></li>
+<li><p>Cause python <a class="reference external" href="https://docs.python.org/3/library/warnings.html#module-warnings" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">warnings</span></code></a> to be printed.</p></li>
+<li><p>Set the Mantid Imaging <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">log</span> <span class="pre">level</span></code></a> to DEBUG.</p></li>
 </ul>
-<p>Logs are written using the Python <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module. Mantid Imaging files should access the logger using:</p>
+<p>Logs are written using the Python <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module. Mantid Imaging files should access the logger using:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="o">...</span>
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>

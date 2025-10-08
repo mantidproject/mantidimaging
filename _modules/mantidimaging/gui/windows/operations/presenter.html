@@ -491,6 +491,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.bounding_box</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_bounding_box</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operation_history.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATION_HISTORY</span><span class="p">,</span> <span class="n">OPERATION_DISPLAY_NAME</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
@@ -1014,9 +1015,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
-        <span class="n">crop_string</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)])</span>
+        <span class="n">crop_roi</span> <span class="o">=</span> <span class="n">get_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
+
+        <span class="n">crop_string</span> <span class="o">=</span> <span class="n">crop_roi</span><span class="o">.</span><span class="n">to_list_string</span><span class="p">()</span>
         <span class="n">roi_field</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">crop_string</span><span class="p">)</span></div>
 
 
