@@ -14,6 +14,7 @@ from unittest.mock import DEFAULT, Mock
 from parameterized import parameterized
 
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
 from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
@@ -454,20 +455,14 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.init_roi_field(mock_roi_field)
         mock_roi_field.setText.assert_not_called()
 
-    def test_init_roi_field_called_with_smaller_values_if_image_is_greater_than_200_by_200(self):
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.get_bounding_box")
+    def test_init_roi_field_called_with_auto_bounding_box(self, mock_bounding_box):
         mock_roi_field = mock.Mock()
+        mock_bounding_box.return_value = SensibleROI(0, 0, 100, 100)
         self.presenter.stack = mock.Mock()
         self.presenter.stack.data = np.ones((2, 201, 201))
         self.presenter.init_roi_field(mock_roi_field)
-        mock_roi_field.setText.assert_called_once_with("0, 0, 100, 100")
-
-    @parameterized.expand([(190, 201, "0, 0, 100, 95"), (201, 80, "0, 0, 40, 100"), (200, 200, "0, 0, 100, 100")])
-    def test_set_text_called_when_image_not_greater_than_200_by_200(self, shape_x, shape_y, expected):
-        mock_roi_field = mock.Mock()
-        self.presenter.stack = mock.Mock()
-        self.presenter.stack.data = np.ones((2, shape_x, shape_y))
-        self.presenter.init_roi_field(mock_roi_field)
-        mock_roi_field.setText.assert_called_once_with(expected)
+        assert_called_once_with(mock_roi_field.setText, "0, 0, 100, 100")
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
