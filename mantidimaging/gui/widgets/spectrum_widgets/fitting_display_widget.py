@@ -97,7 +97,10 @@ class FittingDisplayWidget(QWidget):
             self.spectrum_plot.set_unit_range_label(*value_range, unit_label=unit_label)
 
     def set_default_region_if_needed(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
-        """Position the ROI centrally over the plotted data, if valid data and not in existing region"""
+        """Position the ROI centrally over the plotted data, if valid data and not in existing region
+        We define valid data as a spectrum which is non-zero in length and does not consist of nans or zeros
+        We check for lengths == 1 to prevent the fitting region being shown for single-image ImageStacks, e.g. Flats
+        """
         if (y_data.size == 0 or x_data.size == 0 or np.all(np.isnan(y_data)) or np.all(y_data == 0)
                 or (x_data.size == 1 and y_data.size == 1)):
             self.fitting_region.hide()
