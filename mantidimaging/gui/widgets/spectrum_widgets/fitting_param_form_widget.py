@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 LOG = getLogger(__name__)
 
-BoundType = tuple[float, float] | tuple[None, float] | tuple[float, None] | tuple[None, None]
+BoundType = tuple[float | None, float | None]
 
 
 class FittingParamFormWidget(QWidget):
