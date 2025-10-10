@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import enum
-import os
 import traceback
 from enum import auto, Enum
 from logging import getLogger
@@ -11,6 +10,8 @@ from typing import TYPE_CHECKING
 
 import h5py
 import numpy as np
+
+from cil.io import NEXUSDataReader
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset
@@ -21,7 +22,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog  # pragma: no cover
 
-logger = getLogger(__name__)
+LOG = getLogger(__name__)
 
 
 class Notification(Enum):
@@ -88,27 +89,6 @@ class NexusLoadPresenter:
         Try to open the NeXus file and display its contents on the view.
         """
         file_path = self.view.filePathLineEdit.text()
-        file_path_2 = file_path
-
-        try:
-            from cil.io import NEXUSDataReader
-            reader = NEXUSDataReader()
-            print(f"DEBUG: File path is 2 {file_path}")
-            reader.set_up(file_path_2)
-            acquisition_data = reader.read()
-            acquisition_geometry = acquisition_data.geometry
-            print(acquisition_geometry)
-            from math import degrees
-            tilt: float = -degrees(acquisition_geometry.get_centre_of_rotation()["angle"][0])
-            offset = acquisition_geometry.get_centre_of_rotation()["offset"][0]
-
-            type = acquisition_geometry.config.system.geometry
-            dimension = acquisition_geometry.config.system.dimension
-            print(f"DEBUG: type is {type}{dimension}")
-            print(f"DEBUG: Got geometry with offset {offset} and Tilt {tilt}")
-
-        except OSError:
-            print(f"DEBUG: Unable to read NeXus data from {file_path_2}")
 
         try:
             with h5py.File(file_path, "r") as self.nexus_file:
@@ -132,7 +112,7 @@ class NexusLoadPresenter:
                     return
 
                 if "units" not in self.rotation_angles.attrs.keys():
-                    logger.warning("No unit information found for rotation angles. Will infer from array values.")
+                    LOG.warning("No unit information found for rotation angles. Will infer from array values.")
                     degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
                     degrees = "deg" in str(self.rotation_angles.attrs["units"])
@@ -150,9 +130,28 @@ class NexusLoadPresenter:
 
         except OSError:
             unable_message = f"Unable to read NeXus data from {file_path}"
-            logger.error(unable_message)
+            LOG.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
+
+        # Try to read geometry if Nexus file is in CIL format
+        try:
+            reader = NEXUSDataReader()
+            reader.set_up(file_path)
+            acquisition_geometry = reader.get_geometry()
+            assert (self.data is not None and self.data.sample is not None)
+            self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
+
+            # tilt: float = -degrees(acquisition_geometry.get_centre_of_rotation()["angle"][0])
+            # offset = acquisition_geometry.get_centre_of_rotation()["offset"][0]
+
+            # type = acquisition_geometry.config.system.geometry
+            # dimension = acquisition_geometry.config.system.dimension
+            # print(f"DEBUG: type is {type}{dimension}")
+            # print(f"DEBUG: Got geometry with offset {offset} and Tilt {tilt}")
+
+        except OSError:
+            LOG.info("NeXus file {file_path} does not contain CIL acquisition geometry data")
 
     # DEBUG: -----------
 
@@ -186,10 +185,10 @@ class NexusLoadPresenter:
         """
         if "rotation_angle" in field:
             error_msg = _missing_data_message(field)
-            logger.warning(error_msg)
+            LOG.warning(error_msg)
         else:
             error_msg = _missing_data_message("required " + field)
-            logger.error(error_msg)
+            LOG.error(error_msg)
 
         self.view.show_data_error(error_msg)
 
@@ -327,8 +326,9 @@ class NexusLoadPresenter:
         try:
             return self.tomo_entry["title"][0].decode("UTF-8")
         except (KeyError, ValueError):
-            logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
+            LOG.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
+
 
 # DEBUG: -------------- Dataset gets built here from data loaded earlier
 
