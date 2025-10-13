@@ -633,7 +633,13 @@ document.write(`
 <div class="viewcode-block" id="MainWindowPresenter.add_log_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_log_to_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_log_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span>
+
+        <span class="n">image_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">image_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">real_projection_angles</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.add_shuttercounts_to_sample">
@@ -964,7 +970,8 @@ document.write(`
 <div class="viewcode-block" id="MainWindowPresenter.add_projection_angles_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_projection_angles_to_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.load_stacks_from_folder">
