@@ -474,12 +474,11 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
                 "a": 4.0,
             },
             0.0,
+            0.0,
         ))
         self.view.scalable_roi_widget.set_fitted_parameter_values = mock.Mock()
         self.view.fittingDisplayWidget.is_initial_fit_visible.return_value = is_initial_fit_visible
-
         self.presenter.on_initial_params_edited()
-
         if expect_plot_initial:
             self.presenter._plot_initial_fit.assert_called_once()
             self.view.fittingDisplayWidget.show_fit_line.assert_not_called()
@@ -496,7 +495,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
                 "mu": 1.0,
                 "sigma": 2.0,
                 "h": 3.0,
-                "a": 4.0
+                "a": 4.0,
             })
 
     @parameterized.expand([
