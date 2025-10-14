@@ -48,7 +48,7 @@ class FittingEngine:
         def residual_sum_squares(params_subset: list[float]) -> float:
             full_params = list(params_subset) + additional_params
             residuals = self.model.evaluate(xdata, full_params) - ydata
-            return float(np.sum(residuals ** 2))
+            return float(np.sum(residuals**2))
 
         result = minimize(residual_sum_squares, params_to_fit, method="Nelder-Mead")
         all_param_names = self.model.get_parameter_names()

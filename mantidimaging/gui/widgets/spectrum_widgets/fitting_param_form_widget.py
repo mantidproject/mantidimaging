@@ -46,9 +46,9 @@ class FittingParamFormWidget(QWidget):
         self.run_fit_button.clicked.connect(self.presenter.run_region_fit)
         self._param_values_logged = False
 
-        self.chi2_label = QLabel("Fitting Quality (χ²): N/A")
-        self.rss_label = QLabel("RSS: N/A")
-        self.reduced_rss_label = QLabel("RSS/DoF: N/A")
+        self.chi2_label = QLabel("Fitting Quality (χ²):")
+        self.rss_label = QLabel("RSS:")
+        self.reduced_rss_label = QLabel("RSS/DoF:")
         main_layout.addWidget(self.rss_label)
         main_layout.addWidget(self.reduced_rss_label)
 
@@ -116,8 +116,8 @@ class FittingParamFormWidget(QWidget):
         Update the fit quality display with raw and reduced residual sum of squares.
         """
         if not np.isfinite(rss):
-            self.rss_label.setText("RSS: N/A")
-            self.reduced_rss_label.setText("RSS/DoF: N/A")
+            self.rss_label.setText("RSS:")
+            self.reduced_rss_label.setText("RSS/DoF:")
             return
         self.rss_label.setText(f"RSS: {rss:.2g}")
         self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")

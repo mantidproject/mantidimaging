@@ -776,11 +776,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, reduced_rss)
 
     def fit_single_region(
-            self,
-            spectrum: np.ndarray,
-            fitting_region: FittingRegion,
-            tof_data: np.ndarray,
-            init_params: list[float],
+        self,
+        spectrum: np.ndarray,
+        fitting_region: FittingRegion,
+        tof_data: np.ndarray,
+        init_params: list[float],
     ) -> tuple[dict[str, float], float, float]:
         """Run fit on a single ROI region and return (params, RSS, RSS/DoF)."""
         fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
@@ -807,9 +807,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             fitting_region = self.view.get_fitting_region()
 
             try:
-                result, rss, rss_per_dof = self.fit_single_region(
-                    spectrum, fitting_region, self.model.tof_data, init_params
-                )
+                result, rss, rss_per_dof = self.fit_single_region(spectrum, fitting_region, self.model.tof_data,
+                                                                  init_params)
                 i0, i1 = np.searchsorted(self.model.tof_data, (fitting_region[0], fitting_region[1]))
                 N, p = i1 - i0, len(result)
                 status = "Fitted"
