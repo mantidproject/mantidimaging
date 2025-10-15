@@ -3,17 +3,15 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QMessageBox
 from PyQt5.QtCore import QTimer
-from vtkmodules.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from ccpi.viewer.CILViewer import CILViewer
 from ccpi.viewer.utils.conversion import Converter
 
+from ccpi.viewer.QCILViewerWidget import QCILViewerWidget
+from ccpi.viewer import viewer3D
+
 from .presenter import MI3DViewerPresenter
-
 from logging import getLogger
-
 import numpy as np
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -40,10 +38,12 @@ class MI3DViewerWindowView(BaseMainWindowView):
 
     def _init_viewer(self):
         """
-        Initialize the VTK render window interactor and the CIL Viewer.
+        Initialize the embedded QCIL 3D viewer widget.
         """
-        self.vtk_widget = QVTKRenderWindowInteractor()
-        self.viewer = CILViewer(renWin=self.vtk_widget.GetRenderWindow(), iren=self.vtk_widget)
+        self.frame = QCILViewerWidget(parent=self, viewer=viewer3D, shape=(800, 600))
+        self.viewer = self.frame.viewer
+        self.vtk_widget = self.frame.vtkWidget
+
         QTimer.singleShot(0, self.vtk_widget.Initialize)
 
     def _init_layout(self):
@@ -53,7 +53,7 @@ class MI3DViewerWindowView(BaseMainWindowView):
         self.central_widget = QWidget(self)
         self.layout = QVBoxLayout(self.central_widget)
         self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.addWidget(self.vtk_widget)
+        self.layout.addWidget(self.frame)
         self.layout.addWidget(self.stackSelector)
         self.setCentralWidget(self.central_widget)
 
