@@ -479,17 +479,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QMessageBox</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTimer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">vtkmodules.qt.QVTKRenderWindowInteractor</span><span class="w"> </span><span class="kn">import</span> <span class="n">QVTKRenderWindowInteractor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ccpi.viewer.CILViewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">CILViewer</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ccpi.viewer.utils.conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">Converter</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">ccpi.viewer.QCILViewerWidget</span><span class="w"> </span><span class="kn">import</span> <span class="n">QCILViewerWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ccpi.viewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">viewer3D</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">MI3DViewerPresenter</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
-
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
@@ -518,10 +516,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize the VTK render window interactor and the CIL Viewer.</span>
+<span class="sd">        Initialize the embedded QCIL 3D viewer widget.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vtk_widget</span> <span class="o">=</span> <span class="n">QVTKRenderWindowInteractor</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span> <span class="o">=</span> <span class="n">CILViewer</span><span class="p">(</span><span class="n">renWin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vtk_widget</span><span class="o">.</span><span class="n">GetRenderWindow</span><span class="p">(),</span> <span class="n">iren</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vtk_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">QCILViewerWidget</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">viewer</span><span class="o">=</span><span class="n">viewer3D</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">viewer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vtk_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">vtkWidget</span>
+
         <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtk_widget</span><span class="o">.</span><span class="n">Initialize</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -531,7 +531,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">central_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">central_widget</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vtk_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">central_widget</span><span class="p">)</span>
 
