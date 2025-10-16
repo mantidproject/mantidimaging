@@ -252,7 +252,7 @@ class CILRecon(BaseRecon):
         assert projection_angles is not None
 
         return tomopy.find_center(images.sinograms,
-                                  images.projection_angles(recon_params.max_projection_angle).value,
+                                  projection_angles.value,
                                   ind=slice_idx,
                                   init=start_cor,
                                   sinogram_order=True)
