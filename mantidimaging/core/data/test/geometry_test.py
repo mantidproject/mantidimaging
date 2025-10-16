@@ -14,6 +14,8 @@ from parameterized import parameterized
 from mantidimaging.core.data.geometry import Geometry, GeometryType
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
+TEST_ANGLES = np.array(range(0, 180))
+
 
 class GeometryTest(unittest.TestCase):
 

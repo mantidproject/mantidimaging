@@ -248,6 +248,9 @@ class CILRecon(BaseRecon):
 
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+        projection_angles = images.projection_angles()
+        assert projection_angles is not None
+
         return tomopy.find_center(images.sinograms,
                                   images.projection_angles(recon_params.max_projection_angle).value,
                                   ind=slice_idx,

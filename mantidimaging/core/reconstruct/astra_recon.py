@@ -92,9 +92,8 @@ class AstraRecon(BaseRecon):
         Larger squared sum -> bigger deviance from the mean, i.e. larger distance between noise and data
         """
 
-        assert (images.geometry is not None)
-        original_cor = images.geometry.cor
-        original_tilt = images.geometry.tilt
+        proj_angles = images.projection_angles()
+        assert proj_angles is not None
 
         def get_sumsq(image: np.ndarray) -> float:
             return float(np.sum(image**2))
@@ -109,8 +108,6 @@ class AstraRecon(BaseRecon):
             start_cor = float(start_cor[0])
 
         minimized_cor = minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
-        images.geometry.cor = original_cor
-        images.geometry.tilt = original_tilt
 
         return minimized_cor
 
@@ -153,6 +150,9 @@ class AstraRecon(BaseRecon):
         output_shape = (images.num_sinograms, images.width, images.width)
         output_images: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
         output_images.record_operation('AstraRecon.full', 'Volume Reconstruction', **recon_params.to_dict())
+
+        proj_angles = images.projection_angles()
+        assert proj_angles is not None
 
         for i in range(images.height):
             output_images.data[i] = AstraRecon.single_sino(images, i, recon_params)

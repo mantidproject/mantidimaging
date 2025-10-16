@@ -130,10 +130,17 @@ class StackVisualiserPresenter(BasePresenter):
 
     def find_image_from_angle(self, selected_angle: float) -> int:
         selected_angle = np.deg2rad(selected_angle)
-        for index, angle in enumerate(self.images.projection_angles().value):
+        projection_angles = self.images.projection_angles()
+        assert projection_angles is not None
+
+        for index, angle in enumerate(projection_angles.value):
             if angle >= selected_angle:
                 return index
-        return len(self.images.projection_angles().value)
+
+        projection_angles = self.images.projection_angles()
+        assert projection_angles is not None
+
+        return len(projection_angles.value)
 
     def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack) -> None:
         self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)
