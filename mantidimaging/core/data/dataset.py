@@ -148,7 +148,7 @@ class Dataset:
     def nexus_rotation_angles(self) -> list[np.ndarray]:
         proj_angles = []
         for image_stack in self._nexus_stack_order:
-            angles = image_stack.real_projection_angles()
+            angles = image_stack.projection_angles()
             proj_angles.append(angles.value if angles else np.zeros(image_stack.num_images))
         return proj_angles
 
