@@ -295,7 +295,6 @@ class IOTest(FileOutputtingTestCase):
             image_stack = th.generate_images()
             image_stack.data *= 12
             image_stacks.append(image_stack)
-            image_stack._projection_angles = image_stack.projection_angles()
 
         sd = Dataset(sample=image_stacks[0],
                      flat_before=image_stacks[1],
@@ -342,7 +341,6 @@ class IOTest(FileOutputtingTestCase):
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
     def test_save_recons_if_present(self, recon_save_mock: mock.Mock):
         sample = _create_sample_with_filename()
-        sample._projection_angles = sample.projection_angles()
 
         sd = Dataset(sample=sample)
         sd.recons.data = [th.generate_images(), th.generate_images()]
@@ -371,7 +369,6 @@ class IOTest(FileOutputtingTestCase):
     def test_dont_save_recons_if_none_present(self, recon_save_mock: mock.Mock):
 
         sample = th.generate_images()
-        sample._projection_angles = sample.projection_angles()
 
         sd = Dataset(sample=sample)
 
