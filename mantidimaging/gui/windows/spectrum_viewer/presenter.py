@@ -130,8 +130,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         else:
             self.view.current_dataset_id = None
 
-        self.do_remove_roi()
-        self.view.table_view.clear_table()
         self.model.spectrum_cache.clear()
 
         if uuid is None:
@@ -141,14 +139,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             return
 
         self.model.set_stack(self.main_window.get_stack(uuid))
-        sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
-        open_beam_roi = self.view.get_open_beam_roi()
-        self.model.get_spectrum(sample_roi,
-                                self.spectrum_mode,
-                                self.view.shuttercount_norm_enabled(),
-                                open_beam_roi=open_beam_roi)
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
+        self.roi_to_process_queue = self.view.spectrum_widget.roi_dict.copy()
+        for roi in self.roi_to_process_queue.values():
+            self.handle_notify_roi_moved(roi)
         self.handle_tof_unit_change()
         normalise_uuid = self.view.get_normalise_stack()
         if normalise_uuid is not None:
@@ -157,8 +152,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
-        self.do_add_roi()
-        self.add_rits_roi()
+        if not self.view.spectrum_widget.roi_dict:
+            self.do_add_roi()
+            self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.set_shuttercount_error()
         self.show_new_sample()
@@ -245,11 +241,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_notify_roi_moved(self, roi: SpectrumROI) -> None:
         self.changed_roi = roi
         self.view.roi_form.roi_properties_widget.update_roi_limits(roi.as_sensible_roi())
-        run_thread_check = not bool(self.roi_to_process_queue)
+        run_thread_check = roi not in self.roi_to_process_queue
         self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
         spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
         if spectrum is not None:
-            self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(spectrum.shape[0], np.nan))
+            self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(self.model.get_stack_length(), np.nan))
         self.clear_spectrum()
         self.view.show_visible_spectrums()
         self.view.spectrum_widget.spectrum.update()

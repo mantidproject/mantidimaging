@@ -587,3 +587,6 @@ class SpectrumViewerWindowModel:
         else:
             self.tof_mode = ToFUnitMode.WAVELENGTH
             self.presenter.change_selected_menu_option("Wavelength")
+
+    def get_stack_length(self):
+        return self._stack.data.shape[0]
