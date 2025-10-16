@@ -129,7 +129,7 @@ class MainWindowPresenter(BasePresenter):
 
         image_stack = self.get_stack(stack_id)
         if image_stack is not None:
-            proj_angles = image_stack.real_projection_angles()
+            proj_angles = image_stack.projection_angles()
             if proj_angles is not None:
                 self.stack_visualisers[stack_id].image_view.angles = proj_angles
 
@@ -238,8 +238,10 @@ class MainWindowPresenter(BasePresenter):
         if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
             return
         else:
+            projection_angles = dataset.sample.projection_angles()
+            assert projection_angles is not None
             closest_projection, diff = find_projection_closest_to_180(dataset.sample.projections,
-                                                                      dataset.sample.projection_angles().value)
+                                                                      projection_angles.value)
             if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
                 _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
                 proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")

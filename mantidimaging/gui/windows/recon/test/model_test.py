@@ -15,8 +15,8 @@ from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as 
 from mantidimaging.core.reconstruct.cil_recon import allowed_recon_kwargs as cil_allowed_kwargs
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
-from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
-from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
+from mantidimaging.gui.windows.recon import ReconstructWindowModel, CorTiltPointQtModel
+from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images, generate_angles
 
 
 class ReconWindowModelTest(unittest.TestCase):
@@ -25,6 +25,9 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
         self.data = ImageStack(data=np.ndarray(shape=(10, 128, 256), dtype=np.float32))
+        test_angles = generate_angles(360, self.data.num_projections)
+        self.data.set_projection_angles(test_angles)
+
         self.model.initial_select_data(self.data)
 
     def test_empty_init(self):
@@ -158,7 +161,7 @@ class ReconWindowModelTest(unittest.TestCase):
             assert self.model.load_allowed_recon_kwargs() == allowed_args
 
     def test_stack_contains_nans_returns_false(self):
-        self.model.images.data = np.array([1, 2, 3])
+        self.model.images.data = np.ones((1, 1, 3))
         self.assertFalse(self.model.stack_contains_nans())
 
     def test_stack_contains_nans_returns_true(self):
@@ -166,17 +169,17 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertTrue(self.model.stack_contains_nans())
 
     def test_stack_contains_zeroes_returns_false(self):
-        self.model.images.data = np.array([1, 2, 3])
+        self.model.images.data = np.ones((1, 1, 3))
         self.assertFalse(self.model.stack_contains_zeroes())
 
     def test_stack_contains_zeroes_returns_true(self):
-        self.model.images.data = np.array([0, 0, 0])
+        self.model.images.data = np.zeros((1, 1, 3))
         self.assertTrue(self.model.stack_contains_zeroes())
 
     def test_stack_contains_negative_values_returns_true(self):
-        self.model.images.data = np.array([-1, 0, 0])
+        self.model.images.data = np.array([[[-1, 0, 0]]])
         self.assertTrue(self.model.stack_contains_negative_values())
 
     def test_stack_contains_negative_values_returns_false(self):
-        self.model.images.data = np.array([0, 0, 0])
+        self.model.images.data = np.zeros((1, 1, 3))
         self.assertFalse(self.model.stack_contains_negative_values())

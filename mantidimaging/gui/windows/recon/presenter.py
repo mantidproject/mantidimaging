@@ -27,6 +27,9 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main import MainWindowView
 
+NO_GEOMETRY_MESSAGE = "Geometry not found for imagestack. Cannot perform reconstruction. Please load or create "\
+    "geometry data."
+
 
 class AutoCorMethod(Enum):
     CORRELATION = auto()
@@ -259,6 +262,10 @@ class ReconstructWindowPresenter(BasePresenter):
         if not self.model.has_results:
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
+        if self.model.images.geometry is None:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
+            return
+
         self.recon_is_running = True
         self.view.set_recon_buttons_enabled(False)
         start_async_task_view(self.view,
@@ -295,6 +302,10 @@ class ReconstructWindowPresenter(BasePresenter):
                                      reset_roi: bool = False) -> None:
         if self.model.images is None:
             self.view.reset_recon_and_sino_previews()
+            return
+
+        if self.model.images.geometry is None:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
             return
 
         slice_idx = self._get_slice_index(slice_idx)
