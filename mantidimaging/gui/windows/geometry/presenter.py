@@ -154,7 +154,12 @@ class GeometryWindowPresenter(BasePresenter):
             return
 
         LOG.debug(f"Converting Geometry from {current_type} to {new_type}")
+
+        existing_angles = stack.projection_angles()
+        assert existing_angles is not None
+
         stack.create_geometry(geom_type=new_type)
+        stack.set_projection_angles(existing_angles)
         self.handle_stack_changed()
 
     def _get_current_stack_with_assert(self) -> ImageStack:

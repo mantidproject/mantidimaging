@@ -83,11 +83,13 @@ class CORInspectionDialogModel:
 
     def _recon_cor_preview(self, image: ImageType) -> np.ndarray:
         cor = ScalarCoR(self.cor(image))
+        assert self.proj_angles is not None
         return self.reconstructor.single_sino(self.sino, cor, self.proj_angles, self.recon_params)
 
     def _recon_iters_preview(self, image: ImageType) -> np.ndarray:
         iters = self.iterations(image)
         new_params = replace(self.recon_params, num_iter=int(iters))
+        assert self.proj_angles is not None
         return self.reconstructor.single_sino(self.sino, self.initial_cor, self.proj_angles, new_params)
 
     def recon_preview(self, image: ImageType) -> np.ndarray:

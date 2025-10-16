@@ -116,6 +116,10 @@ class ReconstructWindowModel:
         # Async task needs a non-None result of some sort
         return True
 
+    @staticmethod
+    def _image_stack_is_recon_ready(images: ImageStack) -> bool:
+        return images is not None and images.projection_angles() is not None
+
     def run_preview_recon(self,
                           slice_idx: int,
                           cor: ScalarCoR,
@@ -123,7 +127,7 @@ class ReconstructWindowModel:
                           progress: Progress | None = None) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
-        if images is None:
+        if not self._image_stack_is_recon_ready(images):
             return None
 
         # Log only if the slice index is different from the previous one
@@ -148,8 +152,9 @@ class ReconstructWindowModel:
     def run_full_recon(self, recon_params: ReconstructionParameters, progress: Progress) -> ImageStack | None:
         # Ensure we have some sample data
         images = self.images
-        if images is None:
+        if not self._image_stack_is_recon_ready(images):
             return None
+
         LOG.info("Starting full reconstruction: algorithm=%s, slices=%d", recon_params.algorithm, self.images.height)
 
         reconstructor = get_reconstructor_for(recon_params.algorithm)
