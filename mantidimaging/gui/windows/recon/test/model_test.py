@@ -159,7 +159,7 @@ class ReconWindowModelTest(unittest.TestCase):
             assert self.model.load_allowed_recon_kwargs() == allowed_args
 
     def test_stack_contains_nans_returns_false(self):
-        self.model.images.data = np.array([1, 2, 3])
+        self.model.images.data = np.ones((1, 1, 3))
         self.assertFalse(self.model.stack_contains_nans())
 
     def test_stack_contains_nans_returns_true(self):
@@ -167,17 +167,17 @@ class ReconWindowModelTest(unittest.TestCase):
         self.assertTrue(self.model.stack_contains_nans())
 
     def test_stack_contains_zeroes_returns_false(self):
-        self.model.images.data = np.array([1, 2, 3])
+        self.model.images.data = np.ones((1, 1, 3))
         self.assertFalse(self.model.stack_contains_zeroes())
 
     def test_stack_contains_zeroes_returns_true(self):
-        self.model.images.data = np.array([0, 0, 0])
+        self.model.images.data = np.zeros((1, 1, 3))
         self.assertTrue(self.model.stack_contains_zeroes())
 
     def test_stack_contains_negative_values_returns_true(self):
-        self.model.images.data = np.array([-1, 0, 0])
+        self.model.images.data = np.array([[[-1, 0, 0]]])
         self.assertTrue(self.model.stack_contains_negative_values())
 
     def test_stack_contains_negative_values_returns_false(self):
-        self.model.images.data = np.array([0, 0, 0])
+        self.model.images.data = np.zeros((1, 1, 3))
         self.assertFalse(self.model.stack_contains_negative_values())
