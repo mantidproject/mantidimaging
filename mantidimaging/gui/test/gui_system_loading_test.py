@@ -220,7 +220,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         image_count, *image_shape = sample.shape
         self.assertEqual(image_shape, [128, 128])
         self.assertEqual(image_count, expected_count)
-        self.assertEqual(len(sample.real_projection_angles().value), expected_count)
+        self.assertEqual(len(sample.projection_angles().value), expected_count)
 
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def test_replace_image_stack(self, mocked_select_file):

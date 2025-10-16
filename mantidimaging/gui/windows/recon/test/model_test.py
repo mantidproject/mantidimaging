@@ -15,8 +15,8 @@ from mantidimaging.core.reconstruct.tomopy_recon import allowed_recon_kwargs as 
 from mantidimaging.core.reconstruct.cil_recon import allowed_recon_kwargs as cil_allowed_kwargs
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import Degrees, ScalarCoR, ReconstructionParameters
-from mantidimaging.gui.windows.recon import (ReconstructWindowModel, CorTiltPointQtModel)
-from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
+from mantidimaging.gui.windows.recon import ReconstructWindowModel, CorTiltPointQtModel
+from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images, generate_angles
 
 
 class ReconWindowModelTest(unittest.TestCase):
@@ -25,6 +25,9 @@ class ReconWindowModelTest(unittest.TestCase):
         self.model = ReconstructWindowModel(CorTiltPointQtModel())
 
         self.data = ImageStack(data=np.ndarray(shape=(10, 128, 256), dtype=np.float32))
+        test_angles = generate_angles(360, self.data.num_projections)
+        self.data.set_projection_angles(test_angles)
+
         self.model.initial_select_data(self.data)
 
     def test_empty_init(self):
@@ -106,7 +109,8 @@ class ReconWindowModelTest(unittest.TestCase):
         expected_cor = ScalarCoR(15)
         expected_recon_params = ReconstructionParameters("FBP_CUDA", "ram-lak")
 
-        self.model.images.create_geometry()
+        test_angles = generate_angles(360, self.model.images.num_projections)
+        self.model.images.create_geometry(test_angles)
         self.model.images.geometry.cor = expected_cor
         self.model.run_preview_recon(expected_idx, expected_recon_params)
 

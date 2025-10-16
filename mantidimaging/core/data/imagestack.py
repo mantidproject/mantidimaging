@@ -413,13 +413,14 @@ class ImageStack:
             if num > 1000:
                 raise ValueError(f"Could not make unique name for: {name}")
 
-    def create_geometry(self, geom_type: GeometryType = GeometryType.PARALLEL3D) -> None:
+    def create_geometry(self, angles: ProjectionAngles, geom_type: GeometryType = GeometryType.PARALLEL3D) -> None:
         """
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
-        self.geometry = Geometry(type=geom_type, num_pixels=(self.width, self.height), pixel_size=(1., 1.))
-        self.set_geometry_angles()
-        self.set_geometry_panels()
+        self.geometry = Geometry(angles.value,
+                                 type=geom_type,
+                                 num_pixels=(self.width, self.height),
+                                 pixel_size=(1., 1.))
 
     def set_geometry_panels(self) -> None:
         """

@@ -16,6 +16,7 @@ from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
 from mantidimaging.gui.windows.recon.presenter import Notifications as PresNotification
+from mantidimaging.test_helpers.unit_test_helper import generate_angles
 
 TEST_PIXEL_SIZE = 1443
 
@@ -27,7 +28,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE
-        self.data.geometry = Geometry(num_pixels=(128, 128), pixel_size=(1., 1.))
+        test_angles = np.linspace(0, np.deg2rad(360), self.data.num_projections)
+        self.data.geometry = Geometry(angles=test_angles, num_pixels=(128, 128), pixel_size=(1., 1.))
 
         self.main_window = mock.MagicMock()
         self.main_window.get_stack.return_value = self.data
@@ -461,6 +463,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         type(self.view).tilt = PropertyMock(return_value=tilt)
         type(self.view).rotation_centre = PropertyMock(return_value=cor)
 
+        test_angles = generate_angles(360, self.data.num_projections)
+        self.data.create_geometry(test_angles)
         self.presenter._update_imagestack_geometry_data()
 
         self.assertAlmostEqual(self.data.geometry.cor.value, cor, places=10)

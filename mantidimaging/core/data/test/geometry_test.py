@@ -23,7 +23,7 @@ class GeometryTest(unittest.TestCase):
         """
         Tests the instantiation of a default Geometry object.
         """
-        geo = Geometry()
+        geo = Geometry(TEST_ANGLES)
 
         self.assertTrue(geo.type == GeometryType.PARALLEL3D)
         npt.assert_array_equal(geo.config.system.ray.direction, np.array([0, 1, 0]))
@@ -45,24 +45,26 @@ class GeometryTest(unittest.TestCase):
         self.assertEqual(geo.get_centre_of_rotation()["angle"], (0.0, "radian"))
 
     @parameterized.expand([
-        ("512x512", Geometry(num_pixels=(512, 512), pixel_size=(2., 2.), angle_unit="degree", units="pixels"), {
-            "num_pixels": (512, 512),
-            "pixel_size": (2., 2.),
-            "angle_unit": "degree",
-            "units": "pixels"
-        }),
-        ("8x8", Geometry(num_pixels=(8, 8), pixel_size=(4., 4.), angle_unit="degree", units="pixels"), {
+        ("512x512",
+         Geometry(TEST_ANGLES, num_pixels=(512, 512), pixel_size=(2., 2.), angle_unit="degree", units="pixels"), {
+             "num_pixels": (512, 512),
+             "pixel_size": (2., 2.),
+             "angle_unit": "degree",
+             "units": "pixels"
+         }),
+        ("8x8", Geometry(TEST_ANGLES, num_pixels=(8, 8), pixel_size=(4., 4.), angle_unit="degree", units="pixels"), {
             "num_pixels": (8, 8),
             "pixel_size": (4., 4.),
             "angle_unit": "degree",
             "units": "pixels"
         }),
-        ("256x128", Geometry(num_pixels=(256, 128), pixel_size=(8., 4.), angle_unit="degree", units="pixels"), {
-            "num_pixels": (256, 128),
-            "pixel_size": (8., 4.),
-            "angle_unit": "degree",
-            "units": "pixels"
-        }),
+        ("256x128",
+         Geometry(TEST_ANGLES, num_pixels=(256, 128), pixel_size=(8., 4.), angle_unit="degree", units="pixels"), {
+             "num_pixels": (256, 128),
+             "pixel_size": (8., 4.),
+             "angle_unit": "degree",
+             "units": "pixels"
+         }),
     ])
     def test_custom_geometry(self, _, geo, expected_values):
         """
@@ -79,7 +81,7 @@ class GeometryTest(unittest.TestCase):
         """
         Tests converting and setting the AcquisitionGeometry centre of rotation value.
         """
-        geo = Geometry()
+        geo = Geometry(TEST_ANGLES)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         self.assertEqual(geo.cor.value, cor.value)
@@ -95,7 +97,7 @@ class GeometryTest(unittest.TestCase):
         num_pixels = (512, 512)
         pixel_size = (1., 1.)
 
-        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo = Geometry(TEST_ANGLES, num_pixels=num_pixels, pixel_size=pixel_size)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         self.assertAlmostEqual(geo.cor.value, cor.value, delta=0.0001)
@@ -111,7 +113,7 @@ class GeometryTest(unittest.TestCase):
         num_pixels = (8, 8)
         pixel_size = (1., 1.)
 
-        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo = Geometry(TEST_ANGLES, num_pixels=num_pixels, pixel_size=pixel_size)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         self.assertEqual(geo.cor.value, cor.value)
@@ -130,7 +132,7 @@ class GeometryTest(unittest.TestCase):
         num_pixels = (128, 128)
         pixel_size = (1., 1.)
 
-        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo = Geometry(TEST_ANGLES, num_pixels=num_pixels, pixel_size=pixel_size)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         cil_offset = geo.get_centre_of_rotation()['offset'][0]
@@ -153,7 +155,7 @@ class GeometryTest(unittest.TestCase):
         num_pixels = (256, 512)
         pixel_size = (1., 1.)
 
-        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo = Geometry(TEST_ANGLES, num_pixels=num_pixels, pixel_size=pixel_size)
         geo.set_geometry_from_cor_tilt(cor, tilt)
 
         cil_offset = geo.get_centre_of_rotation()['offset'][0]
@@ -168,5 +170,5 @@ class GeometryTest(unittest.TestCase):
         """
         num_pixels = (256, 512)
         pixel_size = (1., 1.)
-        geo = Geometry(num_pixels=num_pixels, pixel_size=pixel_size)
+        geo = Geometry(TEST_ANGLES, num_pixels=num_pixels, pixel_size=pixel_size)
         self.assertEqual(geo.type, GeometryType.PARALLEL3D)

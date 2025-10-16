@@ -122,7 +122,8 @@ class AstraRecon(BaseRecon):
         assert (images.geometry is not None)
         sino = images.sino(slice_idx)
         cor = images.geometry.get_cor_at_slice_index(slice_idx)
-        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+        proj_angles = images.projection_angles()
+        assert (proj_angles is not None)
 
         assert sino.ndim == 2, "Sinogram must be a 2D image"
 
