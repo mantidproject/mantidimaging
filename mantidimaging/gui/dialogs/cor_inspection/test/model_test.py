@@ -11,13 +11,13 @@ from mantidimaging.core.utility.data_containers import ScalarCoR, Reconstruction
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
 from mantidimaging.gui.dialogs.cor_inspection.model import INIT_ITERS_CENTRE_VALUE, INIT_ITERS_STEP
 from mantidimaging.gui.dialogs.cor_inspection.types import ImageType
-from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_images_with_geometry
 
 
 class CORInspectionDialogModelTest(unittest.TestCase):
 
     def test_construct(self):
-        images = generate_images()
+        images = generate_images_with_geometry(max_angle=360)
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
         npt.assert_equal(m.sino, images.sino(5))
         self.assertEqual(m.cor_extents, (0, 9))
@@ -108,7 +108,7 @@ class CORInspectionDialogModelTest(unittest.TestCase):
 
     @patch('mantidimaging.gui.dialogs.cor_inspection.model.replace')
     def test_recon_iters_preview(self, replace_mock):
-        images = generate_images()
+        images = generate_images_with_geometry(360)
         m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), True)
 
         m.reconstructor = Mock()
