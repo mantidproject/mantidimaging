@@ -781,12 +781,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         fitting_region: FittingRegion,
         tof_data: np.ndarray,
         init_params: list[float],
+        params_bounds: list[tuple[float | None, float | None]] | None = None,
     ) -> tuple[dict[str, float], float, float]:
-        """Run fit on a single ROI region and return (params, RSS, RSS/DoF)."""
+        """Run a fit on a single ROI region and return (params, RSS, RSS/DoF)."""
         fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
         xvals = tof_data[fitting_slice]
         yvals = spectrum[fitting_slice]
-        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params)
+        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds)
 
     def fit_all_regions(self):
         """

@@ -44,3 +44,21 @@ class FittingEngineTest(unittest.TestCase):
         fit_params, sse, _ = self.engine.find_best_fit(xvals, yvals, [1, 1])
         self.assertAlmostEqual(fit_params['a'], 3.1, 4)
         self.assertAlmostEqual(fit_params['b'], 2.7, 4)
+
+    def test_find_best_fit_with_fixed_bounds(self):
+        xvals = np.linspace(1, 10, 20)
+        yvals = 3.1 * xvals + 2.7
+        bounds = [(0.8, 0.8), (0.99, 0.99)]
+
+        fit_params, _, _ = self.engine.find_best_fit(xvals, yvals, [1, 1], params_bounds=bounds)
+        self.assertEqual(fit_params['a'], bounds[0][0])
+        self.assertEqual(fit_params['b'], bounds[1][0])
+
+    def test_find_best_fit_with_range_bounds(self):
+        xvals = np.linspace(1, 10, 20)
+        yvals = 3.1 * xvals + 2.7
+        bounds = [(0.8, 0.85), (0.9, 0.99)]
+
+        fit_params, _, _ = self.engine.find_best_fit(xvals, yvals, [1, 1], params_bounds=bounds)
+        self.assertTrue(bounds[0][0] <= fit_params['a'] <= bounds[0][1])
+        self.assertTrue(bounds[1][0] <= fit_params['b'] <= bounds[1][1])

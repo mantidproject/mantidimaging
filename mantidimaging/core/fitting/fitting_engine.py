@@ -27,20 +27,26 @@ class FittingEngine:
         xdata: np.ndarray,
         ydata: np.ndarray,
         initial_params: list[float],
+        params_bounds: list[tuple[float | None, float | None]] | None = None,
     ) -> tuple[dict[str, float], float, float]:
         """
         Fit the model to the given spectrum using unweighted least squares.
 
+        Args:
+            xdata: Independent variable (e.g. TOF data)
+            ydata: Dependent variable (spectrum values)
+            initial_params: Initial parameter estimates
+            params_bounds: Optional parameter bounds (min, max) for each variable.
+
         Returns:
-            - fit_params: dictionary of parameter names → fitted values
-            - rss: residual sum of squares (Σ(residual²))
-            - reduced_rss: rss / degrees of freedom, where DoF = N - p
+            fit_params: dictionary of parameter names → fitted values
+            rss: residual sum of squares (Σ(residual²))
+            reduced_rss: rss / degrees of freedom, where DoF = N − p
 
         Notes:
-            Uses the Nelder–Mead minimizer on the unweighted residuals.
-            This is equivalent to minimizing χ² without weighting.
+            Uses the Nelder–Mead minimizer on unweighted residuals.
+            Equivalent to minimizing χ² without weighting.
         """
-
         additional_params = self.model.prefitting(xdata, ydata, initial_params)
         fit_param_count = len(initial_params) - len(additional_params)
         params_to_fit = np.array(initial_params[:fit_param_count])
@@ -50,10 +56,12 @@ class FittingEngine:
             residuals = self.model.evaluate(xdata, full_params) - ydata
             return float(np.sum(residuals**2))
 
-        result = minimize(residual_sum_squares, params_to_fit, method="Nelder-Mead")
+        result = minimize(residual_sum_squares, params_to_fit, method="Nelder-Mead", bounds=params_bounds)
+
         all_param_names = self.model.get_parameter_names()
         all_params = list(result.x) + additional_params
         fit_params = dict(zip(all_param_names, all_params, strict=True))
+
         rss = float(result.fun)
         n_points = ydata.size
         dof = max(n_points - len(all_params), 1)
