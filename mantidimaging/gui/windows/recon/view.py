@@ -537,8 +537,12 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def show_status_message(self, msg: str) -> None:
         """
-        Shows a status message indicating that zero/negative/NaN pixels were found in the stack. If the msg argument is
-        empty then this is taken to mean that no such pixels were found, so the warning message and icon are cleared.
+        Shows a status message in the reconstruction window.
+
+        Typically used to indicate that zero/negative/NaN pixels were found in the stack.
+        If the msg argument is empty then this is taken to mean that no such pixels were found,
+        so the warning message and icon are cleared.
+
         :param msg: The status message.
         """
         self.statusMessageTextEdit.setText(msg)
