@@ -242,7 +242,7 @@ class CILRecon(BaseRecon):
                 # COMPAT CIL < 24.1  - workaround for https://github.com/TomographicImaging/CIL/issues/1445
                 data.geometry = BlockGeometry(*geo)
         else:
-            data.reorder('astra')
+            data.reorder("astra")
 
         return data
 
