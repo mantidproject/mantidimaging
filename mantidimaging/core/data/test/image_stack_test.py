@@ -208,7 +208,7 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images()
         images.log_file = generate_txt_logfile()
         expected = np.deg2rad(np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368]))
-        actual = images.projection_angles(360.0)
+        actual = images.projection_angles()
         self.assertEqual(len(actual.value), len(expected))
         np.testing.assert_equal(actual.value, expected)
 

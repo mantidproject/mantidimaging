@@ -65,13 +65,17 @@ class TomopyRecon(BaseRecon):
         progress = Progress.ensure_instance(progress, task_name='TomoPy reconstruction')
 
         import multiprocessing
+
         ncores = multiprocessing.cpu_count()
+
+        projection_angles = images.projection_angles()
+        assert projection_angles is not None
 
         kwargs = {
             'ncore': ncores,
             'tomo': BaseRecon.prepare_sinogram(images.data, recon_params),
             'sinogram_order': images._is_sinograms,
-            'theta': images.projection_angles(recon_params.max_projection_angle).value,
+            'theta': projection_angles.value,
             'center': [cor.value for cor in cors],
             'algorithm': recon_params.algorithm,
             'filter_name': recon_params.filter_name

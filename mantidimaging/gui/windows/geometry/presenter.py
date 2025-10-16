@@ -59,7 +59,7 @@ class GeometryWindowPresenter(BasePresenter):
         geometry_type = stack.geometry.type.value
 
         angle_range = "N/A"
-        real_projection_angles = stack.real_projection_angles()
+        real_projection_angles = stack.projection_angles()
         if real_projection_angles is not None:
             min_angle = degrees(real_projection_angles.value[0])
             max_angle = degrees(real_projection_angles.value[-1])

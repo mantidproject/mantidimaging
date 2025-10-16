@@ -142,7 +142,7 @@ class ReconstructWindowModel:
         recon: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
         recon.data[0] = reconstructor.single_sino(images.sino(slice_idx),
                                                   cor,
-                                                  images.projection_angles(recon_params.max_projection_angle),
+                                                  images.projection_angles(),
                                                   recon_params,
                                                   progress=progress)
 
