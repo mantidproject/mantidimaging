@@ -1,0 +1,1 @@
+#2886: Use Agg instead of Qt5AGG if QT_QPA_PLATFORM is set to offscreen to enable headless testing
