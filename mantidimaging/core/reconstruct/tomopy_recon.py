@@ -40,7 +40,8 @@ class TomopyRecon(BaseRecon):
         assert (images.geometry is not None)
         sino = BaseRecon.prepare_sinogram(images.sino(slice_idx), recon_params)
         cor = images.geometry.get_cor_at_slice_index(slice_idx)
-        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+        proj_angles = images.projection_angles()
+        assert (proj_angles is not None)
 
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,

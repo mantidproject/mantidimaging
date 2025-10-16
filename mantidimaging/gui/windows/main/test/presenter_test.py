@@ -18,7 +18,7 @@ from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter, MainWindowModel
 from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
-from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset
+from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset, generate_angles
 
 
 class MainWindowPresenterTest(unittest.TestCase):
@@ -166,6 +166,8 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_create_new_stack_dataset_and_reject_180(self):
         self.view.ask_to_use_closest_to_180.return_value = False
 
+        test_angles = generate_angles(360, self.dataset.sample.num_projections)
+        self.dataset.sample.set_projection_angles(test_angles)
         self.dataset.sample.proj180deg = None
         self.presenter.add_alternative_180_if_required(self.dataset)
         self.assertIsNone(self.dataset.proj180deg)
