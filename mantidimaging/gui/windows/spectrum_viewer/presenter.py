@@ -141,6 +141,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_stack(self.main_window.get_stack(uuid))
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
+        if not {
+                name: self.view.spectrum_widget.roi_dict[name]
+                for name in self.view.spectrum_widget.roi_dict if name != 'rits_roi'
+        }:
+            self.do_add_roi()
+            self.add_rits_roi()
         self.roi_to_process_queue = self.view.spectrum_widget.roi_dict.copy()
         for roi in self.roi_to_process_queue.values():
             self.handle_notify_roi_moved(roi)
