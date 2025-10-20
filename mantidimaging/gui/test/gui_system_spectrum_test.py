@@ -37,6 +37,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         wait_until(lambda: self.spectrum_window.spectrum_widget.spectrum_data_dict["roi"] is not None, max_retry=600)
 
     def tearDown(self) -> None:
+        wait_until(lambda: len(self.main_window.spectrum_viewer.presenter.roi_to_process_queue) == 0, max_retry=600)
         self._close_image_stacks()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
