@@ -202,7 +202,7 @@ class ImageStackTest(unittest.TestCase):
 
     def test_create_empty_image_stack(self):
         images = ImageStack.create_empty_image_stack((15, 10, 10), np.float32, {})
-        self.assertEqual(images.data.shape, (15, 10, 10))
+        self.assertEqual(images.shape, (15, 10, 10))
 
     def test_get_projection_angles_from_logfile(self):
         images = generate_images()

@@ -48,7 +48,7 @@ class FlatFieldingTest(unittest.TestCase):
         flat_before.data[:] = 7.
         dark_before.data[:] = 6.
 
-        expected = np.full(images.data.shape, 20.)
+        expected = np.full(images.shape, 20.)
 
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images,
@@ -66,7 +66,7 @@ class FlatFieldingTest(unittest.TestCase):
         flat_after.data[:] = 7.
         dark_after.data[:] = 6.
 
-        expected = np.full(images.data.shape, 20.)
+        expected = np.full(images.shape, 20.)
 
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images,
@@ -87,7 +87,7 @@ class FlatFieldingTest(unittest.TestCase):
         dark_after.data[:] = 7.
         dark_before.data[:] = 5.
 
-        expected = np.full(images.data.shape, 20.)
+        expected = np.full(images.shape, 20.)
 
         # we dont want anything to be cropped out
         result = FlatFieldFilter.filter_func(images,

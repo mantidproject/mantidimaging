@@ -46,7 +46,7 @@ class MonitorNormalisation(BaseFilter):
         normalization_factor = counts.value / counts.value[0]
         params = {'normalization_factor': normalization_factor}
 
-        ps.run_compute_func(MonitorNormalisation.compute_function, images.data.shape[0], images.shared_array, params,
+        ps.run_compute_func(MonitorNormalisation.compute_function, images.shape[0], images.shared_array, params,
                             progress)
         return images
 

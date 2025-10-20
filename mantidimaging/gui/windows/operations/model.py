@@ -137,7 +137,7 @@ class FiltersWindowModel:
 
         if not is_preview:
             LOG.info(f"Starting operation: {self.selected_filter.__name__} "
-                     f"(shape={images.data.shape}, {params})")
+                     f"(shape={images.shape}, {params})")
             perf_logger.info(f"{self.selected_filter.filter_name} completed in {duration:.3f}s")
 
         # store the executed filter in history if it executed successfully

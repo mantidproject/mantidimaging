@@ -368,7 +368,7 @@ class CILRecon(BaseRecon):
         pixel_num_h = images.width
         pixel_num_v = images.height
 
-        projection_size = full_size_KB(images.data.shape, images.dtype)
+        projection_size = full_size_KB(images.shape, images.dtype)
         recon_volume_shape = pixel_num_h, pixel_num_h, pixel_num_v
         recon_volume_size = full_size_KB(recon_volume_shape, images.dtype)
         if recon_params.stochastic:
@@ -388,7 +388,7 @@ class CILRecon(BaseRecon):
 
         with cil_mutex:
             t0 = time.perf_counter()
-            LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.data.shape}"
+            LOG.info(f"Starting 3D PDHG-TV reconstruction: input shape {images.shape}"
                      f"output shape {recon_volume_shape}\n"
                      f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
                      f"Non-negative {recon_params.non_negative},"
@@ -456,7 +456,7 @@ class CILRecon(BaseRecon):
                     volume = algo.solution.as_array()
                 LOG.info(f'Reconstructed 3D volume with shape: {volume.shape}')
             t1 = time.perf_counter()
-            LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.data.shape}")
+            LOG.info(f"full reconstruction time: {t1-t0}s for shape {images.shape}")
             ImageStack(volume).metadata['convergence'] = {'iterations': algo.iterations, 'losses': algo.loss}
             return ImageStack(volume)
 

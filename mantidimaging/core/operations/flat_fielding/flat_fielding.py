@@ -127,9 +127,9 @@ class FlatFieldFilter(BaseFilter):
             if flat_avg.ndim != 2 or dark_avg.ndim != 2:
                 raise ValueError(
                     f"Incorrect shape of the flat image ({flat_avg.shape}) or dark image ({dark_avg.shape}) "
-                    f"which should match the shape of the sample images ({images.data.shape[1:]})")
-            if not (images.data.shape[1:] == flat_avg.shape == dark_avg.shape):
-                raise ValueError(f"Not all images are the expected shape: {images.data.shape[1:]}, instead "
+                    f"which should match the shape of the sample images ({images.shape[1:]})")
+            if not (images.shape[1:] == flat_avg.shape == dark_avg.shape):
+                raise ValueError(f"Not all images are the expected shape: {images.shape[1:]}, instead "
                                  f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
         params = {'flat_avg': flat_avg, 'dark_avg': dark_avg}

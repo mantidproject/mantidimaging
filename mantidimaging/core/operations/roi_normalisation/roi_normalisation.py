@@ -81,7 +81,7 @@ class RoiNormalisationFilter(BaseFilter):
             'normalisation_factors': global_params
         }
 
-        ps.run_compute_func(RoiNormalisationFilter.compute_function, images.data.shape[0], images.shared_array, params)
+        ps.run_compute_func(RoiNormalisationFilter.compute_function, images.shape[0], images.shared_array, params)
 
         h.check_data_stack(images)
 

@@ -49,8 +49,8 @@ class RebinTest(unittest.TestCase):
         images = th.generate_images(dtype=dtype)
         mode = 'reflect'
 
-        expected_x = int(images.data.shape[1] * val)
-        expected_y = int(images.data.shape[2] * val)
+        expected_x = int(images.shape[1] * val)
+        expected_y = int(images.shape[2] * val)
 
         result = RebinFilter.filter_func(images, val, mode)
 
