@@ -50,7 +50,7 @@ class OverlapCorrection(BaseFilter):
         else:
             raise RuntimeError("No loaded Shutter Count file for this stack.")
 
-        output = pu.create_array(images.data.shape, images.dtype)
+        output = pu.create_array(images.shape, images.dtype)
         output.array = execute_single(images.data, shutters, progress)
         images.shared_array = output
         return images

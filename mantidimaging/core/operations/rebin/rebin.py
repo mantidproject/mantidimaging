@@ -46,7 +46,7 @@ class RebinFilter(BaseFilter):
         if isinstance(rebin_param, tuple):
             new_shape = rebin_param
         elif isinstance(rebin_param, (int | float)):
-            current_shape = images.data.shape[1:]
+            current_shape = images.shape[1:]
             new_shape = (int(current_shape[0] * rebin_param), int(current_shape[1] * rebin_param))
         else:
             raise ValueError("Invalid type for rebin_param")
@@ -54,7 +54,7 @@ class RebinFilter(BaseFilter):
         output = _create_reshaped_array(images, rebin_param)
 
         params = {'new_shape': new_shape, 'mode': mode}
-        ps.run_compute_func(RebinFilter.compute_function, images.data.shape[0], [images.shared_array, output], params,
+        ps.run_compute_func(RebinFilter.compute_function, images.shape[0], [images.shared_array, output], params,
                             progress)
         images.shared_array = output
         return images
@@ -147,7 +147,7 @@ class RebinFilter(BaseFilter):
 
 
 def _create_reshaped_array(images, rebin_param):
-    old_shape = images.data.shape
+    old_shape = images.shape
     num_images = old_shape[0]
 
     # use SciPy's calculation to find the expected dimensions

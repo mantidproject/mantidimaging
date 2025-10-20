@@ -137,7 +137,7 @@ class IOTest(FileOutputtingTestCase):
         saver.image_save(expected_images, self.output_directory, out_format=img_format, indices=saver_indices)
         # Assert the expected files exist
         base_name = Path(self.output_directory) / saver.DEFAULT_NAME_PREFIX
-        self.assert_files_exist(base_name, img_format, data_as_stack, expected_images.data.shape[0], saver_indices)
+        self.assert_files_exist(base_name, img_format, data_as_stack, expected_images.shape[0], saver_indices)
 
         # Load the saved file group
         filename = f"{saver.DEFAULT_NAME_PREFIX}_000000.{img_format}"
@@ -158,7 +158,7 @@ class IOTest(FileOutputtingTestCase):
         saver.image_save(images, self.output_directory, out_format=img_format)
         data_as_stack = False
         base_name = Path(self.output_directory) / saver.DEFAULT_NAME_PREFIX
-        self.assert_files_exist(base_name, img_format, data_as_stack, images.data.shape[0])
+        self.assert_files_exist(base_name, img_format, data_as_stack, images.shape[0])
 
         filename = f"{saver.DEFAULT_NAME_PREFIX}_000000.tiff"
         group = FilenameGroup.from_file(Path(self.output_directory) / filename)
