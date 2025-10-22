@@ -790,21 +790,20 @@
                               <span class="n">cancelable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">call_back</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TaskWorkerThread</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># If no COR is provided and there are regression results then calculate</span>
-        <span class="c1"># the COR for the selected preview slice</span>
-        <span class="n">cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_me_a_cor</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span>
-        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
-                              <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">run_preview_recon</span><span class="p">,</span>
-                              <span class="n">call_back</span><span class="p">,</span> <span class="p">{</span>
-                                  <span class="s1">&#39;slice_idx&#39;</span><span class="p">:</span> <span class="n">slice_idx</span><span class="p">,</span>
-                                  <span class="s1">&#39;cor&#39;</span><span class="p">:</span> <span class="n">cor</span><span class="p">,</span>
-                                  <span class="s1">&#39;recon_params&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">recon_params</span><span class="p">()</span>
-                              <span class="p">},</span>
-                              <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">,</span>
-                              <span class="n">cancelable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">call_back</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">TaskWorkerThread</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start_async_task_view</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">run_preview_recon</span><span class="p">,</span>
+            <span class="n">call_back</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;slice_idx&#39;</span><span class="p">:</span> <span class="n">slice_idx</span><span class="p">,</span>
+                <span class="c1"># &#39;cor&#39;: cor,</span>
+                <span class="s1">&#39;recon_params&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">recon_params</span><span class="p">()</span>
+            <span class="p">},</span>
+            <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">,</span>
+            <span class="n">cancelable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_preview_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">slice_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_slice_idx</span>
         <span class="k">else</span><span class="p">:</span>
@@ -814,7 +813,6 @@
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_preview_reconstruct_slice">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_preview_reconstruct_slice">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_preview_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                     <span class="n">cor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                      <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                      <span class="n">force_update</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                                      <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -822,11 +820,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">reset_recon_and_sino_previews</span><span class="p">()</span>
             <span class="k">return</span>
 
-        <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_slice_index</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
+        <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_preview_slice_index</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">update_sinogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">sino</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">is_auto_update_preview</span><span class="p">()</span> <span class="ow">or</span> <span class="n">force_update</span><span class="p">:</span>
             <span class="n">on_preview_complete</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_preview_reconstruct_slice_done</span><span class="p">,</span> <span class="n">reset_roi</span><span class="o">=</span><span class="n">reset_roi</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_reconstruct_slice</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">on_preview_complete</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_reconstruct_slice</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">,</span> <span class="n">on_preview_complete</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_preview_reconstruct_slice_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">,</span> <span class="n">reset_roi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -842,10 +841,10 @@
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.do_stack_reconstruct_slice">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_stack_reconstruct_slice">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">do_stack_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_stack_reconstruct_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_recon_buttons_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_slice_index</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_reconstruct_slice</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_stack_reconstruct_slice_done</span><span class="p">)</span></div>
+        <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_preview_slice_index</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_reconstruct_slice</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_stack_reconstruct_slice_done</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_stack_reconstruct_slice_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">):</span>
@@ -856,7 +855,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
-            <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_slice_index</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">slice_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_preview_slice_index</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">source_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">stack_id</span>
                 <span class="k">assert</span> <span class="n">source_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

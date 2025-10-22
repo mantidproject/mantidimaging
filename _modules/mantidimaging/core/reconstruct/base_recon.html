@@ -488,7 +488,7 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructionParameters</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 
 
@@ -526,19 +526,20 @@
 <div class="viewcode-block" id="BaseRecon.single_sino">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.base_recon.html#mantidimaging.core.reconstruct.base_recon.BaseRecon.single_sino">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">single_sino</span><span class="p">(</span><span class="n">sino</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                    <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
-                    <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">single_sino</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+                    <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                     <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
                     <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reconstruct a single sinogram</span>
 
-<span class="sd">        :param sino: The 2D sinogram as a numpy array</span>
-<span class="sd">        :param cor: Center of rotation for parallel geometry.</span>
-<span class="sd">                    It will be converted to vector geometry before reconstructing</span>
-<span class="sd">        :param proj_angles: Projection angles</span>
+<span class="sd">        :param images: ImageStack containing the sinogram array, COR, and projection angle data</span>
+<span class="sd">        :param slice_idx: The index of the sinogram to reconstruct</span>
 <span class="sd">        :param recon_params: Reconstruction parameters to configure which algorithm/filter/etc is used</span>
+<span class="sd">        :param progress: Optional progress reporter</span>
+
+<span class="sd">        The center of rotation for parallel geometry will be converted to vector geometry before reconstructing</span>
+
 <span class="sd">        :return: 2D image data for reconstructed slice</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Base class call&quot;</span><span class="p">)</span></div>
@@ -548,15 +549,12 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.base_recon.html#mantidimaging.core.reconstruct.base_recon.BaseRecon.full">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
-             <span class="n">cors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">],</span>
              <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
              <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Performs a volume reconstruction using sample data provided as sinograms.</span>
 
-<span class="sd">        :param images: Array of sinogram images</span>
-<span class="sd">        :param cors: Array of centre of rotation values</span>
-<span class="sd">        :param proj_angles: Array of projection angles</span>
+<span class="sd">        :param images: ImageStack containing the sinogram array, COR, and projection angle data</span>
 <span class="sd">        :param recon_params: Reconstruction Parameters</span>
 <span class="sd">        :param progress: Optional progress reporter</span>
 <span class="sd">        :return: 3D image data for reconstructed volume</span>

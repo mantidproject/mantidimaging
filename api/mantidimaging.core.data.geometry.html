@@ -568,6 +568,35 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.geometry.Geometry.get_all_cors">
+<span class="sig-name descname"><span class="pre">get_all_cors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/geometry.html#Geometry.get_all_cors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.geometry.Geometry.get_all_cors" title="Link to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Returns all cors across How many cors will be generated,</dt><dd><p>this should be equal to the image height
+(i.e. number of sinograms that will be reconstructed)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of cors for every slice of the image height</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.data.geometry.Geometry.get_cor_at_slice_index">
+<span class="sig-name descname"><span class="pre">get_cor_at_slice_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/geometry.html#Geometry.get_cor_at_slice_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.geometry.Geometry.get_cor_at_slice_index" title="Link to this definition">#</a></dt>
+<dd><p>Returns a single scalar cor at the specified index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>slice_idx</strong> – The slice index.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ScalarCoR object with cor at the specified index</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt">
 <span class="sig-name descname"><span class="pre">set_geometry_from_cor_tilt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR" title="mantidimaging.core.utility.data_containers.ScalarCoR"><span class="pre">ScalarCoR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/data/geometry.html#Geometry.set_geometry_from_cor_tilt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt" title="Link to this definition">#</a></dt>
 <dd><p>Set’s the geometry’s CIL-convention Offset and Angle from the MI-convention Centre-of-Rotation and Tilt.</p>
@@ -594,7 +623,8 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.core.data.geometry.Geometry.tilt">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.data.geometry.Geometry.tilt" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the tilt in degrees</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.core.data.geometry.Geometry.type">
@@ -674,6 +704,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry"><code class="docutils literal notranslate"><span class="pre">Geometry</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.cor"><code class="docutils literal notranslate"><span class="pre">Geometry.cor</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.detector_position"><code class="docutils literal notranslate"><span class="pre">Geometry.detector_position</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.get_all_cors"><code class="docutils literal notranslate"><span class="pre">Geometry.get_all_cors()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.get_cor_at_slice_index"><code class="docutils literal notranslate"><span class="pre">Geometry.get_cor_at_slice_index()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt"><code class="docutils literal notranslate"><span class="pre">Geometry.set_geometry_from_cor_tilt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.set_source_detector_positions"><code class="docutils literal notranslate"><span class="pre">Geometry.set_source_detector_positions()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.data.geometry.Geometry.source_position"><code class="docutils literal notranslate"><span class="pre">Geometry.source_position</span></code></a></li>

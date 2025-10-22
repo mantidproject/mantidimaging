@@ -613,7 +613,6 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.run_preview_recon">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_preview_recon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                           <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                          <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span>
                           <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
                           <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Ensure we have some sample data</span>
@@ -621,21 +620,19 @@
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="c1"># Log only if the slice index is different from the previous one</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_last_preview_slice_idx&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="n">slice_idx</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running preview reconstruction: slice_idx=</span><span class="si">%d</span><span class="s2">, COR=</span><span class="si">%.3f</span><span class="s2">, algorithm=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">cor</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                     <span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_last_preview_slice_idx</span> <span class="o">=</span> <span class="n">slice_idx</span>
-
         <span class="c1"># Perform single slice reconstruction</span>
         <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
         <span class="n">output_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+
         <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="o">.</span><span class="n">create_empty_image_stack</span><span class="p">(</span><span class="n">output_shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
-        <span class="n">recon</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">sino</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">),</span>
-                                                  <span class="n">cor</span><span class="p">,</span>
-                                                  <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">),</span>
-                                                  <span class="n">recon_params</span><span class="p">,</span>
-                                                  <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+
+        <span class="c1"># Log only if the slice index is different from the previous one</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_last_preview_slice_idx&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="n">slice_idx</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running preview reconstruction: slice_idx=</span><span class="si">%d</span><span class="s2">, COR=</span><span class="si">%.3f</span><span class="s2">, algorithm=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span>
+                     <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_preview_slice_idx</span> <span class="o">=</span> <span class="n">slice_idx</span>
+
+        <span class="n">recon</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
 
         <span class="n">recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">recon</span></div>
@@ -651,9 +648,8 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting full reconstruction: algorithm=</span><span class="si">%s</span><span class="s2">, slices=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
 
         <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
-        <span class="c1"># get the image height based on the current ROI</span>
-        <span class="n">recon</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model</span><span class="o">.</span><span class="n">get_all_cors_from_regression</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">recon_params</span><span class="p">,</span>
-                                   <span class="n">progress</span><span class="p">)</span>
+
+        <span class="n">recon</span> <span class="o">=</span> <span class="n">reconstructor</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="n">recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_pixel_size</span><span class="p">(</span><span class="n">recon</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">recon</span></div>
 
@@ -755,23 +751,27 @@
 <div class="viewcode-block" id="ReconstructWindowModel.auto_find_minimisation_sqsum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_minimisation_sqsum">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">auto_find_minimisation_sqsum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span>
-                                     <span class="n">initial_cor</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+                                     <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Automatically find the COR (Center of Rotation) by minimising the sum of squared differences.</span>
 
 <span class="sd">        :param slices: Slice indices to be reconstructed</span>
 <span class="sd">        :param recon_params: Reconstruction parameters</span>
-<span class="sd">        :param initial_cor: Initial COR values (float for all or list matching slice count)</span>
 <span class="sd">        :param progress: Progress reporter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No image stack loaded; returning default COR=0.0&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
 
+        <span class="n">initial_cor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">slc</span> <span class="ow">in</span> <span class="n">slices</span><span class="p">:</span>
+            <span class="n">initial_cor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_cor_at_slice_index</span><span class="p">(</span><span class="n">slc</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_cor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">initial_cor</span> <span class="o">=</span> <span class="n">initial_cor</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">initial_cor</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of initial COR values must match the number of slices&quot;</span><span class="p">)</span>
+
         <span class="n">reconstructor</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">))</span>
         <span class="n">cors</span> <span class="o">=</span> <span class="p">[]</span>
