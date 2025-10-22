@@ -87,7 +87,7 @@ class RotateStackTest(unittest.TestCase):
 
         images = th.generate_images([5, 6, 7])
         _do_rotation(images, 90, mock.Mock())
-        self.assertNotEqual([5, 7, 6], images.data.shape)
+        self.assertNotEqual([5, 7, 6], images.shape)
 
     def test_WHEN_compute_rotation_called_WITH_angle_THEN_data_aspect_ratio_remains_the_same(self):
         """

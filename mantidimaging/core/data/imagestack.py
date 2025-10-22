@@ -286,6 +286,18 @@ class ImageStack:
         self.set_geometry_panels()
 
     @property
+    def shape(self) -> tuple[int, ...]:
+        return self._shared_array.array.shape
+
+    @property
+    def ndim(self) -> int:
+        return self._shared_array.array.ndim
+
+    @property
+    def size(self) -> int:
+        return self._shared_array.array.size
+
+    @property
     def shared_array(self) -> pu.SharedArray:
         return self._shared_array
 

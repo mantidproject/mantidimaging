@@ -48,7 +48,7 @@ class DivideFilter(BaseFilter):
             value *= 1e-4
 
         params = {'value': value}
-        ps.run_compute_func(DivideFilter.compute_function, images.data.shape[0], images.shared_array, params, progress)
+        ps.run_compute_func(DivideFilter.compute_function, images.shape[0], images.shared_array, params, progress)
 
         return images
 

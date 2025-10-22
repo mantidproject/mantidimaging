@@ -60,8 +60,7 @@ class OutliersFilter(BaseFilter):
             raise ValueError(f'radius parameter must be greater than 0. Value provided was {radius}')
 
         params = {'diff': diff, 'radius': radius, 'mode': mode}
-        ps.run_compute_func(OutliersFilter.compute_function, images.data.shape[0], images.shared_array, params,
-                            progress)
+        ps.run_compute_func(OutliersFilter.compute_function, images.shape[0], images.shared_array, params, progress)
 
         return images
 
