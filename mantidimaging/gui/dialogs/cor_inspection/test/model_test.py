@@ -18,8 +18,10 @@ class CORInspectionDialogModelTest(unittest.TestCase):
 
     def test_construct(self):
         images = generate_images()
-        m = CORInspectionDialogModel(images, 5, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
-        npt.assert_equal(m.sino, images.sino(5))
+        slice_idx = 5
+        m = CORInspectionDialogModel(images, slice_idx, ScalarCoR(20), ReconstructionParameters('FBP_CUDA', 'ram-lak'),
+                                     False)
+        npt.assert_equal(m.images.sino(slice_idx), images.sino(slice_idx))
         self.assertEqual(m.cor_extents, (0, 9))
         self.assertEqual(m.proj_angles.value.shape, (10, ))
 
@@ -114,5 +116,4 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         m.reconstructor = Mock()
         m.recon_preview(ImageType.CURRENT)
         replace_mock.assert_called_once_with(m.recon_params, num_iter=100)
-        m.reconstructor.single_sino.assert_called_once_with(m.sino, m.initial_cor, m.proj_angles,
-                                                            replace_mock.return_value)
+        m.reconstructor.single_sino.assert_called_once_with(m.images, m.slice_idx, replace_mock.return_value)

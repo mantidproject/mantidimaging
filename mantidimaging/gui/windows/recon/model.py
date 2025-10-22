@@ -118,7 +118,6 @@ class ReconstructWindowModel:
 
     def run_preview_recon(self,
                           slice_idx: int,
-                          cor: ScalarCoR,
                           recon_params: ReconstructionParameters,
                           progress: Progress | None = None) -> ImageStack | None:
         # Ensure we have some sample data
@@ -126,21 +125,19 @@ class ReconstructWindowModel:
         if images is None:
             return None
 
-        # Log only if the slice index is different from the previous one
-        if getattr(self, "_last_preview_slice_idx", None) != slice_idx:
-            LOG.info("Running preview reconstruction: slice_idx=%d, COR=%.3f, algorithm=%s", slice_idx, cor.value,
-                     recon_params.algorithm)
-            self._last_preview_slice_idx = slice_idx
-
         # Perform single slice reconstruction
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         output_shape = (1, images.width, images.width)
+
         recon: ImageStack = ImageStack.create_empty_image_stack(output_shape, images.dtype, images.metadata)
-        recon.data[0] = reconstructor.single_sino(images.sino(slice_idx),
-                                                  cor,
-                                                  images.projection_angles(recon_params.max_projection_angle),
-                                                  recon_params,
-                                                  progress=progress)
+
+        # Log only if the slice index is different from the previous one
+        if getattr(self, "_last_preview_slice_idx", None) != slice_idx:
+            LOG.info("Running preview reconstruction: slice_idx=%d, COR=%.3f, algorithm=%s", slice_idx,
+                     images.geometry.cor.value, recon_params.algorithm)
+            self._last_preview_slice_idx = slice_idx
+
+        recon.data[0] = reconstructor.single_sino(images, slice_idx, recon_params, progress=progress)
 
         recon = self._apply_pixel_size(recon, recon_params)
         return recon
@@ -153,9 +150,8 @@ class ReconstructWindowModel:
         LOG.info("Starting full reconstruction: algorithm=%s, slices=%d", recon_params.algorithm, self.images.height)
 
         reconstructor = get_reconstructor_for(recon_params.algorithm)
-        # get the image height based on the current ROI
-        recon = reconstructor.full(images, self.data_model.get_all_cors_from_regression(images.height), recon_params,
-                                   progress)
+
+        recon = reconstructor.full(images, recon_params, progress)
         recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
 
@@ -230,23 +226,27 @@ class ReconstructWindowModel:
         return self.selected_row, slices
 
     def auto_find_minimisation_sqsum(self, slices: list[int], recon_params: ReconstructionParameters,
-                                     initial_cor: list[float], progress: Progress) -> list[float]:
+                                     progress: Progress) -> list[float]:
         """
         Automatically find the COR (Center of Rotation) by minimising the sum of squared differences.
 
         :param slices: Slice indices to be reconstructed
         :param recon_params: Reconstruction parameters
-        :param initial_cor: Initial COR values (float for all or list matching slice count)
         :param progress: Progress reporter
         """
         if self.images is None:
             LOG.warning("No image stack loaded; returning default COR=0.0")
             return [0.0]
 
+        initial_cor = []
+        for slc in slices:
+            initial_cor.append(self.images.geometry.get_cor_at_slice_index(slc).value)
+
         if len(initial_cor) == 1:
             initial_cor = initial_cor * len(slices)
         if len(initial_cor) != len(slices):
             raise ValueError("The number of initial COR values must match the number of slices")
+
         reconstructor = get_reconstructor_for(recon_params.algorithm)
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
         cors = []

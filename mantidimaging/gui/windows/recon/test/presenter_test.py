@@ -366,7 +366,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         task_mock = mock.Mock(result=test_data, error=None)
         recon_params = ReconstructionParameters("gridrec", "ram-lak", 10)
         self.view.recon_params.return_value = recon_params
-        self.presenter._get_slice_index = mock.Mock(return_value=7)
+        self.presenter._get_preview_slice_index = mock.Mock(return_value=7)
         self.presenter._on_stack_reconstruct_slice_done(task_mock)
 
         self.view.show_recon_volume.assert_called_once()
