@@ -526,7 +526,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rebin_param</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">new_shape</span> <span class="o">=</span> <span class="n">rebin_param</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rebin_param</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)):</span>
-            <span class="n">current_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">current_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="n">new_shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">current_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rebin_param</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">rebin_param</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid type for rebin_param&quot;</span><span class="p">)</span>
@@ -534,7 +534,7 @@
         <span class="n">output</span> <span class="o">=</span> <span class="n">_create_reshaped_array</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">rebin_param</span><span class="p">)</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;new_shape&#39;</span><span class="p">:</span> <span class="n">new_shape</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">}</span>
-        <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">RebinFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">params</span><span class="p">,</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">RebinFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">params</span><span class="p">,</span>
                             <span class="n">progress</span><span class="p">)</span>
         <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span> <span class="o">=</span> <span class="n">output</span>
         <span class="k">return</span> <span class="n">images</span></div>
@@ -638,7 +638,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_create_reshaped_array</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">rebin_param</span><span class="p">):</span>
-    <span class="n">old_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">old_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">num_images</span> <span class="o">=</span> <span class="n">old_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># use SciPy&#39;s calculation to find the expected dimensions</span>

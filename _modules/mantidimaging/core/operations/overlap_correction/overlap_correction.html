@@ -530,7 +530,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No loaded Shutter Count file for this stack.&quot;</span><span class="p">)</span>
 
-        <span class="n">output</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">execute_single</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">shutters</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span> <span class="o">=</span> <span class="n">output</span>
         <span class="k">return</span> <span class="n">images</span></div>
