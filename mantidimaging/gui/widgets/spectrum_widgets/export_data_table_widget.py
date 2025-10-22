@@ -42,38 +42,48 @@ class ExportDataTableWidget(QWidget):
         Clears any existing data in the table.
         """
         self.parameter_names = parameter_names
-        headers = ["ROI Name"] + parameter_names + ["Export Status"]
+        headers = ["ROI Name"] + parameter_names + ["χ²", "Export Status"]
         self.model.setColumnCount(len(headers))
         self.model.setHorizontalHeaderLabels(headers)
 
-    def update_roi_data(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
+    def update_roi_data(
+        self,
+        roi_name: str,
+        params: dict[str, float],
+        status: str = "Ready",
+        chi2: float | None = None,
+    ) -> None:
         """
-        Add or update a row for the specified ROI, populating parameter values and status.
+        Add or update a row for the specified ROI, populating parameter values, χ², and status.
         """
         row_index = self._find_row_by_roi_name(roi_name)
-        name_item = QStandardItem(roi_name)
-        name_item.setData(roi_name)
-        items = [name_item]
+        items = [self._make_item(roi_name)]
 
         for param in self.parameter_names:
-            value = params[param]
-            cell = QStandardItem(f"{value:.4g}")
-            cell.setData(f"{value:.6g}")
-            cell.setTextAlignment(Qt.AlignCenter)
-            items.append(cell)
+            items.append(self._make_item(params[param]))
 
-        status_item = QStandardItem(status)
-        status_item.setData(status)
-        status_item.setTextAlignment(Qt.AlignCenter)
-        items.append(status_item)
+        chi2_value = chi2 if chi2 is not None else "N/A"
+        items.append(self._make_item(chi2_value))
+
+        items.append(self._make_item(status))
 
         if row_index is not None:
             for col, item in enumerate(items):
                 self.model.setItem(row_index, col, item)
         else:
             self.model.appendRow(items)
+        LOG.info("Export table updated: ROI=%s, Params=%s, χ²=%s, Status=%s", roi_name, params, chi2, status)
 
-        LOG.info("Export table updated: ROI=%s, Params=%s, Status=%s", roi_name, params, status)
+    def _make_item(self, value: float | int | str) -> QStandardItem:
+        item = QStandardItem()
+        if isinstance(value, float | int):
+            item.setText(f"{value:.4g}")
+            item.setData(f"{value:.6g}")
+        else:
+            item.setText(value)
+            item.setData(value)
+        item.setTextAlignment(Qt.AlignCenter)
+        return item
 
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:
         """
