@@ -15,6 +15,7 @@ from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
+from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import BoundType
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
     ToFUnitMode, allowed_modes
 from mantidimaging.core.fitting.fitting_functions import FittingRegion, BadFittingRoiError
@@ -699,7 +700,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             roi = self.view.spectrum_widget.get_roi(roi_name)
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
             xvals = self.model.tof_data
-            result = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params)
+            bound_params = self.view.scalable_roi_widget.get_bound_parameters()
+            result = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params, params_bounds=bound_params)
             self.view.scalable_roi_widget.set_fitted_parameter_values(result)
             self.show_fit(list(result.values()))
 
@@ -719,8 +721,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                      initial=True)
 
     def run_region_fit(self) -> None:
-        result = self.fit_single_region(self.fitting_spectrum, self.view.get_fitting_region(), self.model.tof_data,
-                                        self.view.scalable_roi_widget.get_initial_param_values())
+        bound_params = self.view.scalable_roi_widget.get_bound_parameters()
+        result = self.fit_single_region(self.fitting_spectrum,
+                                        self.view.get_fitting_region(),
+                                        self.model.tof_data,
+                                        self.view.scalable_roi_widget.get_initial_param_values(),
+                                        bounds=bound_params)
 
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.show_fit(list(result.values()))
@@ -733,15 +739,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                           fitting_region: FittingRegion,
                           tof_data: np.ndarray,
                           init_params: list[float],
-                          bounds: list[tuple[float | None, float | None]] | None = None) -> dict[str, float]:
+                          bounds: list[BoundType] | None = None) -> dict[str, float]:
         fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
         xvals = tof_data[fitting_slice]
         yvals = spectrum[fitting_slice]
 
-        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params, bounds)
+        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
 
     def fit_all_regions(self):
         init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        bound_params = self.view.scalable_roi_widget.get_bound_parameters()
         for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
             if roi_name == "rits_roi":
                 continue
@@ -749,7 +756,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             fitting_region = self.view.get_fitting_region()
             try:
-                result = self.fit_single_region(spectrum, fitting_region, self.model.tof_data, init_params)
+                result = self.fit_single_region(spectrum,
+                                                fitting_region,
+                                                self.model.tof_data,
+                                                init_params,
+                                                bounds=bound_params)
                 status = "Fitted"
             except (ValueError, BadFittingRoiError) as e:
                 LOG.warning(f"Failed to find fit for {roi_name}: {e}")

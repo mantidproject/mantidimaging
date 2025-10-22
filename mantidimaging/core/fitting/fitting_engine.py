@@ -6,6 +6,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction, FittingRegion
+from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import BoundType
 
 
 class FittingEngine:
@@ -26,7 +27,7 @@ class FittingEngine:
                       xdata: np.ndarray,
                       ydata: np.ndarray,
                       initial_params: list[float],
-                      params_bounds: list[tuple[float | None, float | None]] | None = None) -> dict[str, float]:
+                      params_bounds: list[BoundType] | None = None) -> dict[str, float]:
         additional_params = self.model.prefitting(xdata, ydata, initial_params)
         if additional_params:
             params_to_fit = initial_params[:-len(additional_params)] + additional_params
