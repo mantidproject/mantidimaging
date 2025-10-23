@@ -17,6 +17,7 @@ from logging import getLogger
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.fitting.bounding_box import get_bounding_box
 from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERATION_DISPLAY_NAME
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility import BlockQtSignals
 from mantidimaging.gui.utility.common import operation_in_progress
@@ -198,8 +199,10 @@ class FiltersWindowPresenter(BasePresenter):
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
 
-        if filter_name == CROP_COORDINATES or filter_name == ROI_NORMALISATION:
+        if filter_name == CROP_COORDINATES:
             self.init_roi_field(filter_widget_kwargs["roi_field"])
+        elif filter_name == ROI_NORMALISATION:
+            self.init_air_field(filter_widget_kwargs["roi_field"])
 
         self.model.setup_filter(filter_name, filter_widget_kwargs)
         self.view.clear_notification_dialog()
@@ -491,6 +494,30 @@ class FiltersWindowPresenter(BasePresenter):
 
         crop_string = crop_roi.to_list_string()
         roi_field.setText(crop_string)
+
+    def init_air_field(self, roi_field: QLineEdit) -> None:
+        """
+        Sets the initial value of the air region coordinates line edit widget based on the auto bounding box found
+        around the sample.
+        :param roi_field: The ROI field line edit widget.
+        """
+        if self.stack is None:
+            return
+
+        sample_roi = get_bounding_box(self.stack)
+
+        air_roi_left = SensibleROI(0, 0, sample_roi.left, self.stack.height)
+        air_roi_right = SensibleROI(sample_roi.right, 0, self.stack.width, self.stack.height)
+        air_roi_top = SensibleROI(0, 0, self.stack.width, sample_roi.top)
+
+        air_rois = [air_roi_left, air_roi_right, air_roi_top]
+
+        air_rois_area = np.array([[roi.width * roi.height for roi in air_rois]])
+        max_ind = np.argmax(air_rois_area)
+
+        air_string = air_rois[max_ind].to_list_string()
+
+        roi_field.setText(air_string)
 
     def _show_negative_values_error(self, negative_stacks: list[ImageStack]):
         """
