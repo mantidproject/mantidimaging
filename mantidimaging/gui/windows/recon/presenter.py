@@ -441,37 +441,42 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self) -> None:
-        if not self.model.images.has_proj180deg():
-            self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
-                                          "projection set. Please load a 180 projection manually.")
+        if self.model.images is None:
+            self.view.show_status_message("No dataset loaded for correlation.")
             return
+        images = self.model.images
+        num_projs = images.num_projections
+        if num_projs < 2:
+            self.view.show_error_dialog("At least two projections are required to perform correlation.")
+            return
+        start_angle_idx = 0
+        opposite_angle_idx = (start_angle_idx + num_projs // 2) % num_projs
+        LOG.info(f"Running correlation using projections {start_angle_idx} and {opposite_angle_idx}")
 
         self.recon_is_running = True
+        self.view.set_correlate_buttons_enabled(False)
 
         def completed(task: TaskWorkerThread) -> None:
-            if task.error is not None:
-
-                if self.view.current_stack_uuid is None:
-                    raise StackNotFoundError("Cannot find stack UUID")
-                selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
-                if selected_stack is None:
-                    raise StackNotFoundError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
-                self.view.show_error_dialog(
-                    f"Finding the COR failed, likely caused by the selected stack's 180 "
-                    f"degree projection being a different shape. \n\n "
-                    f"Error: {str(task.error)} "
-                    f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
-                    f"({selected_stack.height}, {selected_stack.width})")
-            elif task.result is not None:
-                cor, tilt = task.result
-                self._set_precalculated_cor_tilt(cor, tilt)
-            else:
-                raise AssertionError("task in inconsistent state, both task.error and task.result are None")
             self.view.set_correlate_buttons_enabled(True)
             self.recon_is_running = False
+            if task.error is not None:
+                self.view.show_error_dialog(f"Finding the COR failed.\n\nError: {str(task.error)}")
+                return
+            if task.result is not None:
+                cor, tilt = task.result
+                self._set_precalculated_cor_tilt(cor, tilt)
+                LOG.info(f"Auto correlation completed: COR={cor.value:.3f}, Tilt={tilt.value:.3f}")
+            else:
+                raise AssertionError("Unexpected state: task has neither error nor result")
 
-        self.view.set_correlate_buttons_enabled(False)
-        start_async_task_view(self.view, self.model.auto_find_correlation, completed, tracker=self.async_tracker)
+        start_async_task_view(self.view,
+                              self.model.auto_find_correlation,
+                              completed, {
+                                  "progress": None,
+                                  "start_angle_idx": start_angle_idx,
+                                  "opposite_angle_idx": opposite_angle_idx,
+                              },
+                              tracker=self.async_tracker)
 
     def _auto_find_minimisation_square_sum(self) -> None:
         num_cors = self.view.get_number_of_cors()

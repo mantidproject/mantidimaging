@@ -24,9 +24,18 @@ def do_calculate_correlation_err(store, search_index: int, p0_and_180, image_wid
     store[:] = np.square(np.roll(p0_and_180[0], search_index, axis=1) - p0_and_180[1]).sum(axis=1) / image_width
 
 
-def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degrees]:
-    if images is None or images.proj180deg is None:
-        raise ValueError("images and images.proj180deg cannot be None")
+def find_center(images: ImageStack,
+                progress: Progress,
+                start_angle_idx: int = 0,
+                opposite_angle_idx: int | None = None) -> tuple[ScalarCoR, Degrees]:
+    if images is None:
+        raise ValueError("images cannot be None")
+
+    if opposite_angle_idx is None:
+        opposite_angle_idx = (start_angle_idx + images.num_projections // 2) % images.num_projections
+
+    proj_a = images.projection(start_angle_idx)
+    proj_b = np.fliplr(images.projection(opposite_angle_idx))
 
     # Assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
@@ -38,8 +47,8 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
 
     # Copy projections to shared memory
     shared_projections = pu.create_array((2, images.height, images.width), dtype=np.float32)
-    shared_projections.array[0][:] = images.projection(0)
-    shared_projections.array[1][:] = np.fliplr(images.proj180deg.data[0])
+    shared_projections.array[0][:] = proj_a
+    shared_projections.array[1][:] = proj_b
 
     # Prepare parameters for the compute function
     params = {'image_width': images.width}
@@ -51,13 +60,11 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
     _find_shift(images, search_range, min_correlation_error.array, shift.array)
 
     par = np.polyfit(slices, shift.array, deg=1)
-    m = float(par[0])
-    q = float(par[1])
+    m, q = float(par[0]), float(par[1])
     LOG.debug(f"m={m}, q={q}")
-
     theta = Degrees(np.rad2deg(np.arctan(0.5 * m)))
     offset = float(np.round(m * images.height * 0.5 + q) * 0.5)
-    LOG.info(f"found offset: {-offset} and tilt {theta}")
+    LOG.info(f"Found offset: {-offset}, tilt: {theta}, using projections {start_angle_idx} & {opposite_angle_idx}")
 
     return ScalarCoR(images.h_middle + -offset), theta
 
