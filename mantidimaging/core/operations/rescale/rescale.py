@@ -43,7 +43,7 @@ class RescaleFilter(BaseFilter):
         """
 
         params = {'min_input': min_input, 'max_input': max_input, 'max_output': max_output}
-        ps.run_compute_func(RescaleFilter.compute_function, len(images.data), [images.shared_array], params)
+        ps.run_compute_func(RescaleFilter.compute_function, len(images.data), [images.shared_array], params, progress)
         return images
 
     @staticmethod
