@@ -303,8 +303,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         else:
             return None
 
-    def update_export_table(self, roi_name: str, params: dict[str, float], status: str = "Ready") -> None:
-        self.exportDataTableWidget.update_roi_data(roi_name, params, status)
+    def update_export_table(
+        self,
+        roi_name: str,
+        params: dict[str, float],
+        status: str = "Ready",
+        chi2: float | None = None,
+    ) -> None:
+        self.exportDataTableWidget.update_roi_data(roi_name, params, status=status, chi2=chi2)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)

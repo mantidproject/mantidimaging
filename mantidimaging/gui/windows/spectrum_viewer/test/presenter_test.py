@@ -466,12 +466,16 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.spectrum_widget.get_roi = mock.Mock(return_value="mock_roi")
         self.presenter.model.get_spectrum = mock.Mock(return_value=np.array([1, 2, 3]))
         self.presenter.model.tof_data = np.array([1, 2, 3])
-        self.presenter.model.fitting_engine.find_best_fit = mock.Mock(return_value={
-            "mu": 1.0,
-            "sigma": 2.0,
-            "h": 3.0,
-            "a": 4.0
-        })
+        self.presenter.model.fitting_engine.find_best_fit = mock.Mock(return_value=(
+            {
+                "mu": 1.0,
+                "sigma": 2.0,
+                "h": 3.0,
+                "a": 4.0,
+            },
+            0.0,
+            0.0,
+        ))
         self.view.scalable_roi_widget.set_fitted_parameter_values = mock.Mock()
         self.view.fittingDisplayWidget.is_initial_fit_visible.return_value = is_initial_fit_visible
 
