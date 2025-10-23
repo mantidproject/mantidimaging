@@ -521,6 +521,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">run_fit_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">run_region_fit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_values_logged</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;RSS:&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;RSS/DoF:&quot;</span><span class="p">)</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span><span class="p">)</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span><span class="p">)</span>
+
 <div class="viewcode-block" id="FittingParamFormWidget.set_parameters">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.set_parameters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -596,6 +601,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">params_layout</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">row_layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Parameter form rows cleared&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FittingParamFormWidget.set_fit_quality">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.set_fit_quality">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_fit_quality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rss_per_dof</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the fit quality display with raw and reduced residual sum of squares.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RSS: </span><span class="si">{</span><span class="n">rss</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RSS/DoF: </span><span class="si">{</span><span class="n">rss_per_dof</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
