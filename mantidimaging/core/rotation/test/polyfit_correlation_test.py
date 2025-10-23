@@ -56,6 +56,18 @@ class PolyfitCorrelationTest(unittest.TestCase):
         assert res_cor.value == 4.0, f"Found {res_cor.value}"
         assert abs(res_tilt.value) < 1e-6, f"Found {res_tilt.value}"
 
+    def test_find_center_with_use_projections_matches_proj180deg(self):
+        images = generate_images((10, 10, 10))
+        images.data[0] = np.identity(10)
+        images.data[6] = np.fliplr(np.identity(10))
+        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
+        mock_progress = mock.create_autospec(Progress, instance=True)
+        res_cor_default, res_tilt_default = find_center(images, mock_progress)
+        images.proj180deg = None
+        res_cor_tuple, res_tilt_tuple = find_center(images, mock_progress, use_projections=(0, 6))
+        self.assertEqual(res_cor_tuple.value, res_cor_default.value)
+        self.assertEqual(res_tilt_tuple.value, res_tilt_default.value)
+
     def test_find_shift(self):
         images = mock.Mock(height=3)
         min_correlation_error = np.array([[1, 2, 2, 2, 2, 2, 2, 2, 2, 2], [3, 3, 3, 3, 3, 3, 3, 3, 2, 3],

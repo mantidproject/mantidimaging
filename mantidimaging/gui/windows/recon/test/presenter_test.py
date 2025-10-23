@@ -344,12 +344,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.view = mock.MagicMock()
         self.presenter.view = self.view
         self.view.main_window.get_stack = mock.MagicMock(return_value=images)
-
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
-
         mock_start_async.assert_called_once()
         completed_function = mock_start_async.call_args[0][2]
-
         task = mock.MagicMock()
         task.result = None
         task.error = ValueError("Task Error")
