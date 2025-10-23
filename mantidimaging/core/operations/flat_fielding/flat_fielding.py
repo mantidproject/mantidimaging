@@ -133,7 +133,8 @@ class FlatFieldFilter(BaseFilter):
                                  f"flat had shape: {flat_avg.shape}, and dark had shape: {dark_avg.shape}")
 
         params = {'flat_avg': flat_avg, 'dark_avg': dark_avg}
-        ps.run_compute_func(FlatFieldFilter._compute_flat_field, len(images.data), [images.shared_array], params)
+        ps.run_compute_func(FlatFieldFilter._compute_flat_field, len(images.data), [images.shared_array], params,
+                            progress)
 
         h.check_data_stack(images)
         return images
