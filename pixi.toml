@@ -22,7 +22,7 @@ default-gpu = ["runtime", "gpu-verify", "dev", "test", "lint"]
 
 build = ["runtime", "build"]
 build-cpu = ["runtime", "runtime-cpu", "build"]
-build-gpu = ["runtime",  "runtime-gpu", "gpu-verify", "build"]
+build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
 
 dev = ["runtime", "runtime-gpu", "dev", "test", "lint"]
 dev-cpu = ["runtime", "runtime-cpu", "dev", "test", "lint"]
@@ -31,7 +31,6 @@ dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
 # Base dependencies (shared across environments)
 [dependencies]
 numexpr = "*"
-mkl-devel = "*"
 
 # Testing packages
 [feature.test.dependencies]
@@ -98,6 +97,7 @@ jenkspy = "0.4.*"
 pyqt = "5.15.*"
 pyqtgraph = "0.13.7.*"
 qt-material = "2.14.*"
+qt-main = "5.15.8.*"
 
 # GPU-specific packages - common
 [feature.runtime-gpu.dependencies]
@@ -111,7 +111,7 @@ libastra = { version = "2.1.0.*", build = "cuda*" }
 
 # Windows GPU
 [feature.runtime-gpu.target.win-64.dependencies]
-astra-toolbox = ">=2.1.0"  # Let it find compatible version
+astra-toolbox = ">=2.1.0"
 libastra = ">=2.1.0"
 
 # CPU-specific packages (non-CUDA builds)
@@ -151,7 +151,7 @@ AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
 
 # Linux specific dependencies (to get Qt platform theme working)
 [target.linux-64.dependencies]
-qt-gtk-platformtheme = "*"
+qt-gtk-platformtheme = { version = "5.15.8", build = "he21a4df_1" }
 
 # Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
 [target.win-64.dependencies]
