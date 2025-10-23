@@ -141,10 +141,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.set_stack(self.main_window.get_stack(uuid))
         self.model.set_tof_unit_mode_for_stack()
         self.reset_units_menu()
-        if not {
-                name: self.view.spectrum_widget.roi_dict[name]
-                for name in self.view.spectrum_widget.roi_dict if name != 'rits_roi'
-        }:
+        if not [name for name in self.view.spectrum_widget.roi_dict if name != 'rits_roi']:
             self.do_add_roi()
             self.add_rits_roi()
         self.roi_to_process_queue = self.view.spectrum_widget.roi_dict.copy()
@@ -158,9 +155,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
-        if not self.view.spectrum_widget.roi_dict:
-            self.do_add_roi()
-            self.add_rits_roi()
         self.view.set_normalise_error(self.model.normalise_issue())
         self.set_shuttercount_error()
         self.show_new_sample()
@@ -261,7 +255,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.update_roi_on_fitting_thumbnail()
 
     def run_spectrum_calculation(self, roi: SpectrumROI, open_beam_roi: SensibleROI | None, spec_mode: SpecType,
-                                 shutter_norm: bool, chunk_start: int, chunk_end: int) -> np.ndarray:
+                                 shutter_norm: bool, chunk_start: int, chunk_end: int,
+                                 spectrum_data_dict: dict) -> np.ndarray:
         spectrum = self.model.get_spectrum(roi.as_sensible_roi(),
                                            spec_mode,
                                            shutter_norm,
@@ -300,7 +295,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             "spec_mode": self.spectrum_mode,
             "shutter_norm": self.view.shuttercount_norm_enabled(),
             "chunk_start": chunk_start,
-            "chunk_end": chunk_end
+            "chunk_end": chunk_end,
+            "spectrum_data_dict": self.view.spectrum_widget.spectrum_data_dict
         }
         self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
         self.thread.start()
@@ -334,7 +330,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             spectrum = thread.result
             roi_name = thread.kwargs["roi"].name
             chunk_start = thread.kwargs["chunk_start"]
-            spectrum_data_dict = self.view.spectrum_widget.spectrum_data_dict[roi_name]
+            spectrum_data_dict = thread.kwargs["spectrum_data_dict"][roi_name]
+
             if spectrum_data_dict is not None:
                 for i in range(len(spectrum)):
                     np.put(spectrum_data_dict, chunk_start + i, spectrum[i])
