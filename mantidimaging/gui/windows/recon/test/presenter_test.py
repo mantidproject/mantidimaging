@@ -326,21 +326,24 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_without_180_projection(self, mock_start_async: mock.Mock):
-        self.presenter.model.images.has_proj180deg = mock.Mock(return_value=False)
+        images = mock.MagicMock()
+        images.num_projections = 10
+        self.presenter.model.initial_select_data(images)
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
-        mock_start_async.assert_not_called()
-        self.view.show_status_message.assert_called_once_with("Unable to correlate 0 and 180 because the dataset "
-                                                              "doesn't have a 180 projection set. Please load a 180 "
-                                                              "projection manually.")
+        mock_start_async.assert_called_once()
+        args, kwargs = mock_start_async.call_args
+        self.assertIn("start_angle_idx", args[3])
+        self.assertIn("opposite_angle_idx", args[3])
+        self.assertEqual(args[3]["start_angle_idx"], 0)
+        self.assertEqual(args[3]["opposite_angle_idx"], 5)
 
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock):
         images = mock.MagicMock()
         images.height = 10
         images.width = 10
-        images.proj180deg.height = 20
-        images.proj180deg.width = 20
-        self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
+        images.num_projections = 10
+        self.presenter.model.initial_select_data(images)
         self.view = mock.MagicMock()
         self.presenter.view = self.view
         self.view.main_window.get_stack = mock.MagicMock(return_value=images)
@@ -354,11 +357,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
         task.result = None
         task.error = ValueError("Task Error")
         completed_function(task)
-
-        self.view.show_error_dialog.assert_called_once_with(
-            "Finding the COR failed, likely caused by the selected stack's 180 degree projection being a different "
-            "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
-            "projection to (10, 10)")
+        self.view.show_error_dialog.assert_called_once_with("Finding the COR failed.\n\nError: Task Error")
 
     def test_on_stack_reconstruct_slice_done(self):
         test_data = ImageStack(np.ndarray(shape=(200, 250), dtype=np.float32))
