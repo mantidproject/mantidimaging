@@ -6,6 +6,7 @@ from unittest import mock
 import numpy as np
 import numpy.testing as npt
 
+
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from ..polyfit_correlation import do_calculate_correlation_err, get_search_range, find_center, _find_shift
@@ -41,8 +42,8 @@ class PolyfitCorrelationTest(unittest.TestCase):
         mock_progress = mock.create_autospec(Progress, instance=True)
         res_cor, res_tilt = find_center(images, mock_progress)
         assert mock_progress.update.call_count == 11
-        assert abs(res_cor.value - 5.0) < 0.6, f"Found {res_cor.value}"
-        assert abs(res_tilt.value - 0.0) <= 12.0, f"Found {res_tilt.value}"
+        assert res_cor.value == 5.0, f"Found {res_cor.value}"
+        assert res_tilt.value == 0.0, f"Found {res_tilt.value}"
 
     def test_find_center_offset(self):
         images = generate_images((10, 10, 10))
@@ -53,6 +54,22 @@ class PolyfitCorrelationTest(unittest.TestCase):
         mock_progress = mock.create_autospec(Progress, instance=True)
         res_cor, res_tilt = find_center(images, mock_progress)
         assert abs(res_cor.value - 4.0) <= 1.1, f"Found {res_cor.value}"
+
+    def test_find_center_with_use_projections_matches_proj180deg(self):
+        images = generate_images((10, 10, 10))
+        images.data[0] = np.identity(10)
+        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
+        mock_progress = mock.create_autospec(Progress, instance=True)
+        res_cor_default, res_tilt_default = find_center(images, mock_progress)
+        res_cor_tuple, res_tilt_tuple = find_center(
+            images,
+            mock_progress,
+            use_projections=(0, images.num_projections - 1),
+        )
+        assert abs(res_cor_tuple.value - res_cor_default.value) <= 1.0, \
+            f"COR mismatch: {res_cor_tuple.value} vs {res_cor_default.value}"
+        assert abs(res_tilt_tuple.value - res_tilt_default.value) <= 20.0, \
+            f"Tilt mismatch: {res_tilt_tuple.value} vs {res_tilt_default.value}"
 
     def test_find_shift(self):
         images = mock.Mock(height=3)
