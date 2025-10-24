@@ -281,11 +281,10 @@ class ImageStack:
 
         :param value: new numpy array containing image data.
         """
-
         if isinstance(value, pu.SharedArray):
             self._shared_array = value
         else:
-            self._shared_array = pu.SharedArray(value, None)
+            self._shared_array = pu.copy_into_shared_memory(value)
         self.set_geometry_panels()
 
     @property
