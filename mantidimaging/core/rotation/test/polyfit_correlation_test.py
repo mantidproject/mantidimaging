@@ -47,7 +47,8 @@ class PolyfitCorrelationTest(unittest.TestCase):
     def test_find_center_offset(self):
         images = generate_images((10, 10, 10))
         images.data[0] = np.identity(10)
-        images.proj180deg = ImageStack(np.fliplr(images.data[0:1]))
+        flipped = np.fliplr(images.data[0:1].copy())
+        images.proj180deg = ImageStack(flipped)
         self.crop_images(images, (2, 10, 0, 10))
         self.crop_images(images.proj180deg, (2, 10, 0, 10))
         mock_progress = mock.create_autospec(Progress, instance=True)
