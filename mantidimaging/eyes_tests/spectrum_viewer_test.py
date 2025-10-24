@@ -38,6 +38,10 @@ class SpectrumViewerWindowTest(BaseEyesTest):
 
         return log
 
+    def tearDown(self) -> None:
+        wait_until(lambda: len(self.imaging.spectrum_viewer.presenter.roi_to_process_queue) == 0, max_retry=600)
+        super().tearDown()
+
     def test_spectrum_viewer_opens_with_data(self):
         self._generate_spectrum_dataset()
         self.imaging.show_spectrum_viewer_window()
