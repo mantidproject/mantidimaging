@@ -14,14 +14,8 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TY
 from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset
 
 
-def _set_fake_projection_angles(image_stack: ImageStack):
-    """
-    Sets the private projection angles attribute.
-    :param image_stack: The ImageStack object.
-    """
+def _set_projection_angles(image_stack: ImageStack):
     image_stack.set_projection_angles(ProjectionAngles(np.array([0, 180])))
-    #image_stack.real_projection_angles.return_value = image_stack._projection_angles
-    #image_stack.projection_angles.return_value = image_stack._projection_angles
 
 
 class DatasetTest(unittest.TestCase):
@@ -185,7 +179,7 @@ class DatasetTest(unittest.TestCase):
     def test_rotation_angles(self):
         ds, images = generate_standard_dataset()
         for stack in images:
-            _set_fake_projection_angles(stack)
+            _set_projection_angles(stack)
         assert np.array_equal(ds.nexus_rotation_angles, [
             ds.dark_before.projection_angles().value,
             ds.flat_before.projection_angles().value,
@@ -205,9 +199,9 @@ class DatasetTest(unittest.TestCase):
     def test_partially_incomplete_nexus_rotation_angles(self):
         ds, _ = generate_standard_dataset()
 
-        _set_fake_projection_angles(ds.dark_before)
-        _set_fake_projection_angles(ds.flat_before)
-        _set_fake_projection_angles(ds.dark_after)
+        _set_projection_angles(ds.dark_before)
+        _set_projection_angles(ds.flat_before)
+        _set_projection_angles(ds.dark_after)
         expected_list = [
             ds.dark_before.projection_angles().value,
             ds.flat_before.projection_angles().value,
