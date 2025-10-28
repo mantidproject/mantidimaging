@@ -14,7 +14,8 @@ class OperationsWindowTest(BaseEyesTest):
         super().setUp()
 
     def tearDown(self):
-        self.imaging.filters.close()
+        if self.imaging.filters:
+            self.imaging.filters.close()
         super().tearDown()
 
     def test_operation_window_opens(self):
