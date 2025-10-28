@@ -11,6 +11,8 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog, QDialog
 import pytest
+
+from mantidimaging.core.utility.data_containers import FILE_TYPES
 from mantidimaging.test_helpers.qt_test_message_handler import qt_message_handler
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
@@ -126,7 +128,7 @@ class GuiSystemBase(unittest.TestCase):
         raise RuntimeError("_wait_for_stack_selector reach max retries")
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.select_file")
-    def _load_data_set(self, mocked_select_file):
+    def _load_data_set(self, mocked_select_file, load_log=True):
         mocked_select_file.return_value = LOAD_SAMPLE
         initial_stacks = len(self.main_window.presenter.get_active_stack_visualisers())
 
@@ -137,6 +139,10 @@ class GuiSystemBase(unittest.TestCase):
         self.main_window.actionLoadDataset.trigger()
         QTest.qWait(SHOW_DELAY)
         self.main_window.image_load_dialog.presenter.do_update_field(self.main_window.image_load_dialog.sample)
+
+        # Uncheck if load_log is set to False
+        self.main_window.image_load_dialog.fields[FILE_TYPES.SAMPLE_LOG.fname].use = load_log
+
         QTest.qWait(SHOW_DELAY)
         self.main_window.image_load_dialog.accept()
         wait_until(test_func, max_retry=600)

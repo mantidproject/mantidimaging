@@ -18,7 +18,8 @@ class ReconstructionWindowTest(BaseEyesTest):
         super().setUp()
 
     def tearDown(self):
-        self.imaging.recon.close()
+        if self.imaging.recon:
+            self.imaging.recon.close()
         super().tearDown()
 
     def _show_recon_window(self):

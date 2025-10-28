@@ -417,6 +417,7 @@ class ImageStack:
         """
         Creates an AcquisitionGeometry belonging to the ImageStack.
         """
+
         self.geometry = Geometry(angles.value,
                                  type=geom_type,
                                  num_pixels=(self.width, self.height),
