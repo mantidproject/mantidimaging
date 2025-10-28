@@ -59,7 +59,7 @@ class GeometryWindowPresenter(BasePresenter):
         geometry_type = stack.geometry.type.value
 
         angle_range = "N/A"
-        real_projection_angles = stack.real_projection_angles()
+        real_projection_angles = stack.projection_angles()
         if real_projection_angles is not None:
             min_angle = degrees(real_projection_angles.value[0])
             max_angle = degrees(real_projection_angles.value[-1])
@@ -122,13 +122,12 @@ class GeometryWindowPresenter(BasePresenter):
 
         new_angles = ProjectionAngles(
             np.linspace(np.deg2rad(new_min_angle), np.deg2rad(new_max_angle), stack.num_projections))
-        stack.set_projection_angles(new_angles)
 
         geometry_type = GeometryType.PARALLEL3D
         if new_type == "Cone 3D":
             geometry_type = GeometryType.CONE3D
 
-        stack.create_geometry(geometry_type)
+        stack.create_geometry(new_angles, geometry_type)
         assert stack.geometry is not None
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
         stack.geometry.set_source_detector_positions(new_source_position, new_detector_position)
@@ -154,7 +153,11 @@ class GeometryWindowPresenter(BasePresenter):
             return
 
         LOG.debug(f"Converting Geometry from {current_type} to {new_type}")
-        stack.create_geometry(geom_type=new_type)
+
+        existing_angles = stack.projection_angles()
+        assert existing_angles is not None
+
+        stack.create_geometry(existing_angles, new_type)
         self.handle_stack_changed()
 
     def _get_current_stack_with_assert(self) -> ImageStack:

@@ -19,7 +19,7 @@ def _set_fake_projection_angles(image_stack: ImageStack):
     Sets the private projection angles attribute.
     :param image_stack: The ImageStack object.
     """
-    image_stack._projection_angles = ProjectionAngles(np.array([0, 180]))
+    image_stack.set_projection_angles(ProjectionAngles(np.array([0, 180])))
     #image_stack.real_projection_angles.return_value = image_stack._projection_angles
     #image_stack.projection_angles.return_value = image_stack._projection_angles
 
