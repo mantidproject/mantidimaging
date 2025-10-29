@@ -23,13 +23,9 @@ build = ["runtime", "build"]
 build-cpu = ["runtime", "runtime-cpu", "build"]
 build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
 
-dev = ["runtime", "runtime-gpu", "dev", "test", "lint"]
+dev = ["runtime", "runtime-cpu", "dev", "test", "lint"]
 dev-cpu = ["runtime", "runtime-cpu", "dev", "test", "lint"]
 dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
-
-# Base dependencies (shared across environments)
-[dependencies]
-numexpr = "*"
 
 # Testing packages
 [feature.test.dependencies]
@@ -53,7 +49,6 @@ types-docutils = "*"
 
 # Packages required for development and building
 [feature.dev.dependencies]
-pip = "*"
 gitpython = "3.1.*"
 coverage = ">=7.0,<7.6"
 coveralls = "4.0.*"
@@ -65,69 +60,80 @@ pydata-sphinx-theme = "0.16.*"
 sphinx-copybutton = "0.5.*"
 sphinx-design = "0.6.*"
 attrs = ">=19.2.0,<23"         # Pinned due to conflict when installing eyes
+setuptools = "72.*"
 
 # pypi only packages for development (not available via conda)
 [feature.dev.pypi-dependencies]
 eyes-images = "==5.23.*"
 
-# Core Python packages required at runtime
+# Core packages required at runtime
 [feature.runtime.dependencies]
+# Core Python and utilities
 python = "3.12.*"
 pip = "*"
-darkdetect = "0.8.0.*"
-numba = "0.61.*"
-vtk = "*"
-ccpi-viewer = "25.0.*"
-astropy = "7.1.*"
-scipy = "1.14.*"
-scikit-image = "0.25.*"
-tifffile = "2023.7.18.*"
-imagecodecs = "2023.9.18.*"
 numpy = "1.26.*"
-algotom = "1.6.*"
-tomopy = "1.12.*"
+scipy = "1.14.*"
+numba = "0.61.*"
+numexpr = "2.8.*"
 requests = "2.32.*"
+psutil = "5.9.*"
+
+# Data I/O and file handling
 h5py = "3.13.*"
 hdf5 = ">=1.14.2,<1.15"
-psutil = "5.9.*"
+tifffile = "2023.7.18.*"
+imagecodecs = "2023.9.18.*"
+
+# Image processing and scientific libraries
+astropy = "7.1.*"
+scikit-image = "0.25.*"
+jenkspy = "0.4.*"
+
+# Tomography and reconstruction
+algotom = "1.6.*"
+tomopy = "1.12.*"
 cil = "25.0.*"
 ccpi-regulariser = "*"
-jenkspy = "0.4.*"
+ccpi-viewer = "25.0.*"
+
+# Visualization and GUI
+vtk = { version = "*", build = "qt*" }
 pyqt = "5.15.*"
+qt-main = "5.15.8.*"
 pyqtgraph = "0.13.7.*"
 qt-material = "2.14.*"
-qt-main = "5.15.8.*"
+darkdetect = "0.8.0.*"
 
-# GPU-specific packages - common
+# GPU-specific packages - common across all platforms
 [feature.runtime-gpu.dependencies]
 cudatoolkit = "11.8.*"
 cupy = "12.3.*"
 
-# Linux GPU - astra 2.1.0 available
+# Linux-specific GPU packages - Linux (CUDA-enabled builds)
 [feature.runtime-gpu.target.linux-64.dependencies]
 astra-toolbox = { version = "2.1.0.*", build = "cuda*" }
 libastra = { version = "2.1.0.*", build = "cuda*" }
 
-# Windows GPU
+# Windows-specific GPU packages - Windows (CUDA-enabled builds with specific hashes)
 [feature.runtime-gpu.target.win-64.dependencies]
-astra-toolbox = ">=2.1.0"
-libastra = ">=2.1.0"
+astra-toolbox = { version = "2.1.0.*", build = "cudapy312h0f47501_105" }
+libastra = { version = "2.1.0.*", build = "cuda11.8hb8fb34d_111" }
 
 # CPU-specific packages (non-CUDA builds)
 [feature.runtime-cpu.target.linux-64.dependencies]
 astra-toolbox = "2.1.0.*"
 libastra = "2.1.0.*"
 
-# Windows CPU - specific build hash required for astra-toolbox
+# Windows-specific CPU packages - Windows (non-CUDA builds with specific hashes)
 [feature.runtime-cpu.target.win-64.dependencies]
 astra-toolbox = { version = "2.1.0.*", build = "py312h6965d8f_5" }
 libastra = { version = "2.1.0.*" }
 
-# GPU verification feature - adds __cuda requirement
+# GPU verification feature - adds __cuda requirement - needed to ensure GPU builds only go to GPU-capable systems
 [feature.gpu-verify.system-requirements]
 cuda = "11.8"
 
-# Virtual package to ensure CUDA is available on GPU systems - needed for windows, unsure about linux
+# Virtual package to ensure CUDA is available on GPU systems - needed for windows
 [feature.gpu-verify.target.win-64.dependencies]
 __cuda = "11.8.*"
 
@@ -154,8 +160,6 @@ qt-gtk-platformtheme = "5.15.8.*"
 
 # Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
 [target.win-64.dependencies]
-vs2015_runtime = "*"
-intel-openmp = "*"
 ipp = { version = "2021.12.*", channel = "https://software.repos.intel.com/python/conda" }
 
 # Platform specific system and screenshot base tasks
@@ -240,13 +244,17 @@ description = "Run screenshot tests (GPU)"
 
 [feature.dev.tasks]
 #Run Mantid Imaging Application
-MI-base =  { cmd = "python -m mantidimaging", description = "Launch Mantid Imaging GUI" }
+MI-base = { cmd = "python -m mantidimaging", description = "Launch Mantid Imaging GUI" }
 MI-cpu = { depends-on = [{ task = "MI-base", environment = "dev-cpu" }] }
 MI-gpu = { depends-on = [{ task = "MI-base", environment = "dev-gpu" }] }
 
 MI-debug-base = { cmd = "python -X faulthandler -W default -m mantidimaging --log-level DEBUG", description = "Launch Mantid Imaging GUI in debug mode" }
-MI-debug-cpu = { depends-on = [{ task = "MI-debug-base", environment = "dev-cpu" }] }
-MI-debug-gpu = { depends-on = [{ task = "MI-debug-base", environment = "dev-gpu" }] }
+MI-debug-cpu = { depends-on = [
+    { task = "MI-debug-base", environment = "dev-cpu" },
+] }
+MI-debug-gpu = { depends-on = [
+    { task = "MI-debug-base", environment = "dev-gpu" },
+] }
 
 # Tests
 test-base = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", description = "Run test suite in parallel" }
@@ -255,23 +263,39 @@ test-gpu = { depends-on = [{ task = "test-base", environment = "dev-gpu" }] }
 
 # Tests with verbose output
 test-verbose = { cmd = "python -m pytest -vs -o log_cli=true", description = "Run tests with verbose output" }
-test-verbose-cpu = { depends-on = [{ task = "test-verbose", environment = "dev-cpu" }] }
-test-verbose-gpu = { depends-on = [{ task = "test-verbose", environment = "dev-gpu" }] }
+test-verbose-cpu = { depends-on = [
+    { task = "test-verbose", environment = "dev-cpu" },
+] }
+test-verbose-gpu = { depends-on = [
+    { task = "test-verbose", environment = "dev-gpu" },
+] }
 
 # Tests without GUI (suitable for CI)
 test-nogui = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Run tests without GUI (suitable for CI)" }
-test-nogui-cpu = { depends-on = [{ task = "test-nogui", environment = "dev-cpu" }] }
-test-nogui-gpu = { depends-on = [{ task = "test-nogui", environment = "dev-gpu" }] }
+test-nogui-cpu = { depends-on = [
+    { task = "test-nogui", environment = "dev-cpu" },
+] }
+test-nogui-gpu = { depends-on = [
+    { task = "test-nogui", environment = "dev-gpu" },
+] }
 
 # Tests without GUI and with verbose output (suitable for CI)
-test-nogui-verbose = { cmd = "python -m pytest -vs -o log_cli=true -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }  , description = "Run tests without GUI (suitable for CI) with verbose output" }
-test-nogui-verbose-cpu = { depends-on = [{ task = "test-nogui-verbose", environment = "dev-cpu" }] }
-test-nogui-verbose-gpu = { depends-on = [{ task = "test-nogui-verbose", environment = "dev-gpu" }] }
+test-nogui-verbose = { cmd = "python -m pytest -vs -o log_cli=true -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Run tests without GUI (suitable for CI) with verbose output" }
+test-nogui-verbose-cpu = { depends-on = [
+    { task = "test-nogui-verbose", environment = "dev-cpu" },
+] }
+test-nogui-verbose-gpu = { depends-on = [
+    { task = "test-nogui-verbose", environment = "dev-gpu" },
+] }
 
 # PyInstaller packaging tasks
 package-pyinstaller-base = { cmd = "python PackageWithPyInstaller.py", cwd = "packaging", description = "Build PyInstaller package" }
-package-pyinstaller-cpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-cpu" }], description = "Build PyInstaller package (CPU)" }
-package-pyinstaller-gpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-gpu" }], description = "Build PyInstaller package (GPU)" }
+package-pyinstaller-cpu = { depends-on = [
+    { task = "package-pyinstaller-base", environment = "dev-cpu" },
+], description = "Build PyInstaller package (CPU)" }
+package-pyinstaller-gpu = { depends-on = [
+    { task = "package-pyinstaller-base", environment = "dev-gpu" },
+], description = "Build PyInstaller package (GPU)" }
 
 # Static Analysis Checks
 mypy = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true"
@@ -333,7 +357,7 @@ description = "Build conda package (GPU) - no upload"
 depends-on = [
     { task = "check-upload-user", environment = "build-cpu" },
     { task = "check-anaconda-api", environment = "build-cpu" },
-    { task = "build-conda-package-nightly-base", environment = "build-cpu" }
+    { task = "build-conda-package-nightly-base", environment = "build-cpu" },
 ]
 description = "Build nightly conda package (CPU)"
 
@@ -341,7 +365,7 @@ description = "Build nightly conda package (CPU)"
 depends-on = [
     { task = "check-upload-user", environment = "build-gpu" },
     { task = "check-anaconda-api", environment = "build-gpu" },
-    { task = "build-conda-package-nightly-base", environment = "build-gpu" }
+    { task = "build-conda-package-nightly-base", environment = "build-gpu" },
 ]
 description = "Build nightly conda package (GPU)"
 
@@ -349,7 +373,7 @@ description = "Build nightly conda package (GPU)"
 depends-on = [
     { task = "check-upload-user", environment = "build-cpu" },
     { task = "check-anaconda-api", environment = "build-cpu" },
-    { task = "build-conda-package-release-base", environment = "build-cpu" }
+    { task = "build-conda-package-release-base", environment = "build-cpu" },
 ]
 description = "Build release conda package (CPU)"
 
@@ -357,6 +381,6 @@ description = "Build release conda package (CPU)"
 depends-on = [
     { task = "check-upload-user", environment = "build-gpu" },
     { task = "check-anaconda-api", environment = "build-gpu" },
-    { task = "build-conda-package-release-base", environment = "build-gpu" }
+    { task = "build-conda-package-release-base", environment = "build-gpu" },
 ]
 description = "Build release conda package (GPU)"
