@@ -124,7 +124,7 @@ def add_hidden_imports(run_options):
 
 
 def add_missing_submodules(run_options):
-    run_options.extend([f'--collect-submodules={name}' for name in ['cupy', 'cupy_backends']])
+    run_options.extend([f'--collect-submodules={name}' for name in ['cupy', 'cupy_backends', 'vtkmodules']])
 
 
 def add_data_files(run_options):
