@@ -25,7 +25,7 @@ requirements:
     - numpy=1.26.*
     - numexpr=2.8.*
     - algotom=1.6.*
-    - tomopy=1.12.*
+    - tomopy=1.15.*
     - cudatoolkit=11.8.*
     - cupy=12.3.*
     - astra-toolbox=2.1.0=cuda*
