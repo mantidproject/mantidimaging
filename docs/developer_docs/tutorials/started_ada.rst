@@ -1,6 +1,8 @@
 Getting Started with Ada
 ---------------
 
+.. note:: Ada is a remote VM system available to STFC staff and ISIS users.
+
 First, log in to the `Ada platform <https://ada.stfc.ac.uk/>`_
 using your STFC email and password. Once logged in, you can select
 *New Workspace > IMAT > Tomography Recommended* to create a new workspace.
@@ -21,20 +23,23 @@ Load the Conda environment setup script by running::
 
     source /etc/profile.d/conda.sh
 
-Then confirm that the ``mantidimaging`` and ``mantidimaging_nightly`` environments appear when you list Conda environments::
+For development, it's recommended to create a new environment that includes the
+required tools::
+
+    python3 ./setup.py create_dev_env
+
+This will create an environment named ``mantidimaging-dev``.
+
+Then confirm that the ``mantidimaging-dev`` environment appears when you list Conda environments::
 
     conda env list
 
-Activate one of the Mantid Imaging environments:
+Activate it using::
 
-- ``mantidimaging`` — matches the latest release version
-- ``mantidimaging_nightly`` — includes the latest updates from the main GitHub branch
-::
+    mamba activate mantidimaging-dev
 
-    mamba activate <preferred-environment>
-
-Mantid Imaging can then be run using the Ada Workspace GUI window. Open a new terminal in your workspace, activate one of the 
-Mantid Imaging Conda environments, and launch Mantid Imaging with the following command::
+Mantid Imaging can then be run using the Ada Workspace GUI window. Open a new terminal in your workspace, activate the
+``mantidimaging-dev`` Conda environment, and launch Mantid Imaging with the following command::
 
     python3 -m mantidimaging
 
