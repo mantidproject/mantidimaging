@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "mantidimaging"
 version = "3.1.0"
 description = "Graphical toolkit for tomography and time-of-flight imaging"
@@ -12,6 +12,7 @@ channels = [
     "algotom",
     "https://software.repos.intel.com/python/conda",
 ]
+requires-pixi = ">=0.59,<1.0"
 platforms = ["linux-64", "win-64"]
 
 [environments]
@@ -244,7 +245,23 @@ description = "Run screenshot tests (CPU)"
 depends-on = [{ task = "test-screenshots-base", environment = "dev-gpu" }]
 description = "Run screenshot tests (GPU)"
 
-[feature.dev.tasks]
+# Combined linting task
+[feature.lint.tasks]
+# Base linting tasks (run in lint environment) - FAIL FAST (no || true)
+mypy-base = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS", description = "Run mypy type checks (fail on error)" }
+pyright-base = { cmd = "python -m pyright", description = "Run pyright type checks (fail on error)" }
+yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS", description = "Check code formatting with yapf (fail on error)" }
+ruff-base = { cmd = "ruff check $SOURCE_DIRS", description = "Run ruff linter (fail on error)" }
+
+# Base linting tasks - CONTINUE ON ERROR (with || true)
+mypy-base-continue = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true", description = "Run mypy type checks (continue on error)" }
+pyright-base-continue = { cmd = "python -m pyright || true", description = "Run pyright type checks (continue on error)" }
+yapf-base-continue = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS || true", description = "Check code formatting with yapf (continue on error)" }
+ruff-base-continue = { cmd = "ruff check $SOURCE_DIRS || true", description = "Run ruff linter (continue on error)" }
+[feature.lint.activation.env]
+SOURCE_DIRS = "mantidimaging scripts docs/ext/"
+
+[tasks]
 #Run Mantid Imaging Application
 MI-base = { cmd = "python -m mantidimaging", description = "Base task to launch Mantid Imaging GUI (used by other tasks)" }
 MI-cpu = { depends-on = [{ task = "MI-base", environment = "dev" }], description = "Launch Mantid Imaging GUI with CPU support" }
@@ -254,59 +271,47 @@ MI-debug-base = { cmd = "python -X faulthandler -W default -m mantidimaging --lo
 MI-debug-cpu = { depends-on = [{ task = "MI-debug-base", environment = "dev" }], description = "Launch Mantid Imaging GUI in debug mode with CPU support" }
 MI-debug-gpu = { depends-on = [{ task = "MI-debug-base", environment = "dev-gpu" }], description = "Launch Mantid Imaging GUI in debug mode with GPU support" }
 
-# Tests
-test-base = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", description = "Base task to run unit tests (used by other tasks)" }
+# Tests (suitable for CI as they do not require GUI)
+test-base = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to run unit tests (used by other tasks)" }
 test-cpu = { depends-on = [{ task = "test-base", environment = "dev" }], description = "Run unit tests with CPU support" }
 test-gpu = { depends-on = [{ task = "test-base", environment = "dev-gpu" }], description = "Run unit tests with GPU support" }
-
-# Tests with verbose output
-test-verbose-base = { cmd = "python -m pytest -vs -o log_cli=true", description = "Base task to run tests with verbose output (used by other tasks)" }
+test-verbose-base = { cmd = "python -m pytest -vs -o log_cli=true", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to run tests with verbose output (used by other tasks)" }
 test-verbose-cpu = { depends-on = [{ task = "test-verbose-base", environment = "dev" }], description = "Run tests with verbose output (CPU)" }
 test-verbose-gpu = { depends-on = [{ task = "test-verbose-base", environment = "dev-gpu" }], description = "Run tests with verbose output (GPU)" }
-
-# Tests without GUI (suitable for CI)
-test-nogui-base = { cmd = "python -m pytest -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to run tests without GUI (suitable for CI - used by other tasks)" }
-test-nogui-cpu = { depends-on = [{ task = "test-nogui-base", environment = "dev" }], description = "Run tests without GUI (suitable for CI) with CPU" }
-test-nogui-gpu = { depends-on = [{ task = "test-nogui-base", environment = "dev-gpu" }], description = "Run tests without GUI (suitable for CI) with GPU" }
-
-# Tests without GUI and with verbose output (suitable for CI)
-test-nogui-verbose = { cmd = "python -m pytest -vs -o log_cli=true -n auto --maxprocesses=4 --dist loadgroup", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Run tests without GUI (suitable for CI) with verbose output" }
-test-nogui-verbose-cpu = { depends-on = [{ task = "test-nogui-verbose", environment = "dev" }], description = "Run tests without GUI (suitable for CI) with verbose output (CPU)" }
-test-nogui-verbose-gpu = { depends-on = [{ task = "test-nogui-verbose", environment = "dev-gpu" }], description = "Run tests without GUI (suitable for CI) with verbose output (GPU)" }
 
 # PyInstaller packaging tasks
 package-pyinstaller-base = { cmd = "python PackageWithPyInstaller.py", cwd = "packaging", description = "Build PyInstaller package" }
 package-pyinstaller-cpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev" }], description = "Build PyInstaller package (CPU)" }
 package-pyinstaller-gpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-gpu" }], description = "Build PyInstaller package (GPU)" }
 
+# Static analysis tasks - FAIL FAST (stop on first error)
+mypy = { depends-on = [{ task = "mypy-base", environment = "lint" }], description = "Run mypy type checks (fail on error)" }
+pyright = { depends-on = [{ task = "pyright-base", environment = "lint" }], description = "Run pyright type checks (fail on error)" }
+yapf = { depends-on = [{ task = "yapf-base", environment = "lint" }], description = "Check code formatting with yapf (fail on error)" }
+ruff = { depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter (fail on error)" }
+
+# Static analysis tasks - CONTINUE ON ERROR (run all checks)
+mypy-continue = { depends-on = [{ task = "mypy-base-continue", environment = "lint" }], description = "Run mypy type checks (continue on error)" }
+pyright-continue = { depends-on = [{ task = "pyright-base-continue", environment = "lint" }], description = "Run pyright type checks (continue on error)" }
+yapf-continue = { depends-on = [{ task = "yapf-base-continue", environment = "lint" }], description = "Check code formatting with yapf (continue on error)" }
+ruff-continue = { depends-on = [{ task = "ruff-base-continue", environment = "lint" }], description = "Run ruff linter (continue on error)" }
+
+# Utility task to apply yapf formatting
+yapf-apply = { depends-on = [{ task = "yapf-apply-base", environment = "lint" }], description = "Apply yapf formatting" }
+
+# Combined linting tasks - FAIL FAST (stop on first failure)
+typecheck = { depends-on = ["mypy", "pyright"], description = "Run all type checks (stop on first error)" }
+format-check = { depends-on = ["yapf", "ruff"], description = "Run all code format checks (stop on first error)" }
+lint-all = { depends-on = ["mypy", "pyright", "yapf", "ruff"], description = "Run all linting checks (stop on first error)" }
+
+# Combined linting tasks - CONTINUE ON ERROR (run all checks regardless of failures)
+typecheck-continue = { depends-on = ["mypy-continue", "pyright-continue"], description = "Run all type checks (continue on error)" }
+format-check-continue = { depends-on = ["yapf-continue", "ruff-continue"], description = "Run all code format checks (continue on error)" }
+lint-all-continue = { depends-on = ["mypy-continue", "pyright-continue", "yapf-continue", "ruff-continue"], description = "Run all linting checks (continue on error)" }
+
 # Documentation
 build-docs = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/_build/html", cwd = "." }
 release-notes = "python setup.py release_notes"
-
-# Combined linting task
-[feature.lint.tasks]
-# Base linting tasks (run in lint environment)
-mypy-base = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true", description = "Run mypy type checks" }
-pyright-base = { cmd = "python -m pyright", description = "Run pyright type checks" }
-yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS", description = "Check code formatting with yapf" }
-yapf-apply-base = { cmd = "python -m yapf -i --parallel --recursive $SOURCE_DIRS", description = "Apply yapf formatting" }
-ruff-base = { cmd = "ruff check $SOURCE_DIRS || true", description = "Run ruff linter" }
-
-[feature.lint.activation.env]
-SOURCE_DIRS = "mantidimaging scripts docs/ext/"
-
-[tasks]
-# Static analysis tasks
-mypy = { depends-on = [{ task = "mypy-base", environment = "lint" }], description = "Run mypy type checks" }
-pyright = { depends-on = [{ task = "pyright-base", environment = "lint" }], description = "Run pyright type checks" }
-yapf = { depends-on = [{ task = "yapf-base", environment = "lint" }], description = "Check code formatting with yapf" }
-yapf-apply = { depends-on = [{ task = "yapf-apply-base", environment = "lint" }], description = "Apply yapf formatting" }
-ruff = { depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter" }
-
-# Combined linting task only
-typecheck = { depends-on = ["mypy", "pyright"], description = "Run all type checks" }
-format-check = { depends-on = ["yapf", "ruff"], description = "Run all code format checks" }
-lint-all = { depends-on = ["mypy", "pyright", "yapf", "ruff"], description = "Run all linting checks" }
 
 # Cross-platform Tasks for building and uploading conda packages
 #
