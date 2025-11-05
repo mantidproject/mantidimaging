@@ -707,7 +707,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
             xvals = self.model.tof_data
             bound_params = self.view.scalable_roi_widget.get_bound_parameters()
-            fit_params, rss, rss_per_dof = self.model.fitting_engine.find_best_fit(xvals, spectrum, init_params, params_bounds=bound_params)
+            fit_params, rss, rss_per_dof = self.model.fitting_engine.find_best_fit(xvals,
+                                                                                   spectrum,
+                                                                                   init_params,
+                                                                                   params_bounds=bound_params)
             self.view.scalable_roi_widget.set_fitted_parameter_values(fit_params)
             self.view.scalable_roi_widget.set_fit_quality(rss, rss_per_dof)
             self.show_fit(list(fit_params.values()))
@@ -733,13 +736,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Run a fit on the currently selected ROI and update the GUI/export table.
         """
         bound_params = self.view.scalable_roi_widget.get_bound_parameters()
-        result, rss, reduced_rss = self.fit_single_region(
-            self.fitting_spectrum,
-            self.view.get_fitting_region(),
-            self.model.tof_data,
-            self.view.scalable_roi_widget.get_initial_param_values(),
-            bounds=bound_params
-        )
+        result, rss, reduced_rss = self.fit_single_region(self.fitting_spectrum,
+                                                          self.view.get_fitting_region(),
+                                                          self.model.tof_data,
+                                                          self.view.scalable_roi_widget.get_initial_param_values(),
+                                                          bounds=bound_params)
         self.view.scalable_roi_widget.set_fitted_parameter_values(result)
         self.view.scalable_roi_widget.set_fit_quality(rss, reduced_rss)
         self.show_fit(list(result.values()))
@@ -775,8 +776,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             fitting_region = self.view.get_fitting_region()
             try:
-                result, rss, rss_per_dof = self.fit_single_region(spectrum, fitting_region, self.model.tof_data,
-                                                                  init_params, bounds=bound_params)
+                result, rss, rss_per_dof = self.fit_single_region(spectrum,
+                                                                  fitting_region,
+                                                                  self.model.tof_data,
+                                                                  init_params,
+                                                                  bounds=bound_params)
                 status = "Fitted"
             except (ValueError, BadFittingRoiError) as e:
                 LOG.warning(f"Failed to find fit for ROI '{roi_name}': {e}")
