@@ -261,6 +261,11 @@ ruff-base-continue = { cmd = "ruff check $SOURCE_DIRS || true", description = "R
 [feature.lint.activation.env]
 SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 
+[feature.dev.tasks]
+# Documentation base tasks
+build-docs-base = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", description = "Base task to build Sphinx documentation" }
+release-notes-base = { cmd = "python setup.py release_notes", description = "Base task to generate release notes" }
+
 [tasks]
 #Run Mantid Imaging Application
 MI-base = { cmd = "python -m mantidimaging", description = "Base task to launch Mantid Imaging GUI (used by other tasks)" }
@@ -285,14 +290,14 @@ package-pyinstaller-cpu = { depends-on = [{ task = "package-pyinstaller-base", e
 package-pyinstaller-gpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-gpu" }], description = "Build PyInstaller package (GPU)" }
 
 # Static analysis tasks - FAIL FAST (stop on first error)
-mypy = { depends-on = [{ task = "mypy-base", environment = "lint" }], description = "Run mypy type checks (fail on error)" }
-pyright = { depends-on = [{ task = "pyright-base", environment = "lint" }], description = "Run pyright type checks (fail on error)" }
+mypy = { depends-on = [{ task = "mypy-base", environment = "dev" }], description = "Run mypy type checks (fail on error)" }
+pyright = { depends-on = [{ task = "pyright-base", environment = "dev" }], description = "Run pyright type checks (fail on error)" }
 yapf = { depends-on = [{ task = "yapf-base", environment = "lint" }], description = "Check code formatting with yapf (fail on error)" }
 ruff = { depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter (fail on error)" }
 
 # Static analysis tasks - CONTINUE ON ERROR (run all checks)
-mypy-continue = { depends-on = [{ task = "mypy-base-continue", environment = "lint" }], description = "Run mypy type checks (continue on error)" }
-pyright-continue = { depends-on = [{ task = "pyright-base-continue", environment = "lint" }], description = "Run pyright type checks (continue on error)" }
+mypy-continue = { depends-on = [{ task = "mypy-base-continue", environment = "dev" }], description = "Run mypy type checks (continue on error)" }
+pyright-continue = { depends-on = [{ task = "pyright-base-continue", environment = "dev" }], description = "Run pyright type checks (continue on error)" }
 yapf-continue = { depends-on = [{ task = "yapf-base-continue", environment = "lint" }], description = "Check code formatting with yapf (continue on error)" }
 ruff-continue = { depends-on = [{ task = "ruff-base-continue", environment = "lint" }], description = "Run ruff linter (continue on error)" }
 
@@ -309,9 +314,9 @@ typecheck-continue = { depends-on = ["mypy-continue", "pyright-continue"], descr
 format-check-continue = { depends-on = ["yapf-continue", "ruff-continue"], description = "Run all code format checks (continue on error)" }
 lint-all-continue = { depends-on = ["mypy-continue", "pyright-continue", "yapf-continue", "ruff-continue"], description = "Run all linting checks (continue on error)" }
 
-# Documentation
-build-docs = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/_build/html", cwd = "." }
-release-notes = "python setup.py release_notes"
+# Documentation tasks
+build-docs = { depends-on = [{ task = "build-docs-base", environment = "dev" }], description = "Build Sphinx documentation" }
+release-notes = { depends-on = [{ task = "release-notes-base", environment = "dev" }], description = "Generate release notes" }
 
 # Cross-platform Tasks for building and uploading conda packages
 #
