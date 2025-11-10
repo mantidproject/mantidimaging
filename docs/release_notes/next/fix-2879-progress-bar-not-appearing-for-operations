@@ -1,0 +1,1 @@
+#2879: Fixes a bug that was preventing the progress bar from updating during the flat fielding operation and added a progress bar for rescale operation.
