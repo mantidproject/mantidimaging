@@ -6,6 +6,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction, FittingRegion
+from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import BoundType
 
 
 class FittingEngine:
@@ -27,7 +28,7 @@ class FittingEngine:
         xdata: np.ndarray,
         ydata: np.ndarray,
         initial_params: list[float],
-        params_bounds: list[tuple[float | None, float | None]] | None = None,
+        params_bounds: list[BoundType] | None = None,
     ) -> tuple[dict[str, float], float, float]:
         """
         Fit the model to the given spectrum using unweighted least squares.

@@ -4,13 +4,16 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
+     QGroupBox
 from PyQt5.QtGui import QDoubleValidator
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
 
 LOG = getLogger(__name__)
+
+BoundType = tuple[float | None, float | None]
 
 
 class FittingParamFormWidget(QWidget):
@@ -31,6 +34,8 @@ class FittingParamFormWidget(QWidget):
         header.addWidget(QLabel(""), 1)
         header.addWidget(QLabel("Initial"), 2)
         header.addWidget(QLabel("Final"), 2)
+        header.addWidget(QLabel("Fix"), 1)
+        header.addWidget(QLabel("Range"), 1)
         self.params_layout.addLayout(header)
         self._rows: dict[str, tuple[QWidget, ...]] = {}
 
@@ -63,13 +68,41 @@ class FittingParamFormWidget(QWidget):
             initial_edit.setReadOnly(False)
             final_edit.setReadOnly(True)
             initial_edit.setValidator(QDoubleValidator())
+            fix_checkbox = QCheckBox()
+            range_checkbox = QCheckBox()
+            range_checkbox.stateChanged.connect(self.show_range_edit_fields)
+            fix_checkbox.stateChanged.connect(self.set_fixed_parameters)
 
             row_layout.addWidget(row_label, 1)
             row_layout.addWidget(initial_edit, 2)
             row_layout.addWidget(final_edit, 2)
+            row_layout.addWidget(fix_checkbox, 1)
+            row_layout.addWidget(range_checkbox, 1)
 
             self.params_layout.addLayout(row_layout)
-            self._rows[label] = (row_layout, row_label, initial_edit, final_edit)
+
+            min_label = QLabel("min " + str(label) + ":")
+            min_edit = QLineEdit(str(0.0))
+            min_edit.setValidator(QDoubleValidator())
+            max_label = QLabel("max " + str(label) + ":")
+            max_edit = QLineEdit(str(0.0))
+            max_edit.setValidator(QDoubleValidator())
+
+            range_row_box = QGroupBox()
+            range_row_box_layout = QHBoxLayout()
+
+            range_row_box_layout.addWidget(min_label, 1)
+            range_row_box_layout.addWidget(min_edit, 2)
+            range_row_box_layout.addWidget(max_label, 1)
+            range_row_box_layout.addWidget(max_edit, 2)
+
+            range_row_box.setLayout(range_row_box_layout)
+
+            self.params_layout.addWidget(range_row_box)
+            range_row_box.hide()
+
+            self._rows[label] = (row_layout, row_label, initial_edit, final_edit, fix_checkbox, range_checkbox,
+                                 range_row_box)
 
             initial_edit.editingFinished.connect(self.presenter.on_initial_params_edited)
 
@@ -113,3 +146,27 @@ class FittingParamFormWidget(QWidget):
         """
         self.rss_label.setText(f"RSS: {rss:.2g}")
         self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
+
+    def show_range_edit_fields(self) -> None:
+        for row in self._rows.values():
+            if row[5].isChecked():
+                row[4].setChecked(False)
+                row[6].show()
+            else:
+                row[6].hide()
+
+    def set_fixed_parameters(self) -> None:
+        for row in self._rows.values():
+            if row[4].isChecked():
+                row[5].setChecked(False)
+
+    def get_bound_parameters(self) -> list[BoundType]:
+        return [self.get_bound(row) for row in self._rows.values()]
+
+    def get_bound(self, row: tuple[QWidget, ...]) -> BoundType:
+        if row[4].isChecked():
+            return float(row[2].text()), float(row[2].text())
+        elif row[5].isChecked():
+            return float(row[6].layout().itemAt(1).widget().text()), float(row[6].layout().itemAt(3).widget().text())
+        else:
+            return None, None
