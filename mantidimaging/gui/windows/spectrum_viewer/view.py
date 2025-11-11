@@ -197,11 +197,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def initial_setup(self) -> None:
         QtWidgets.qApp.processEvents()
-        self._configure_dropdown(self.sampleStackSelector)
         self._configure_dropdown(self.normaliseStackSelector)
+        self._configure_dropdown(self.sampleStackSelector)
         QtWidgets.qApp.processEvents()
         self.sampleStackSelector.select_eligible_stack()
-        self.try_to_select_relevant_normalise_stack("Flat")
         self.presenter.handle_tof_unit_change()
         self.set_roi_properties()
         self.presenter.initial_sample_change = False
