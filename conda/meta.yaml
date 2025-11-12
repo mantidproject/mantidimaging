@@ -24,7 +24,7 @@ requirements:
     - imagecodecs=2023.9.18
     - imageio=2.33.*
     - numpy=1.26.*
-    - numexpr=2.8.*
+    - numexpr=2.10.*
     - algotom=1.6.*
     - tomopy=1.12.*
     - cudatoolkit=11.8.*
@@ -35,7 +35,7 @@ requirements:
     - hdf5>=1.14.2,<1.15
     - psutil=5.9.*
     - cil=25.0.*
-    - ccpi-regulariser
+    - ccpi-regulariser=25.0.*
     - jenkspy=0.4.*
     - pyqt=5.15.*
     - pyqtgraph=0.13.7
