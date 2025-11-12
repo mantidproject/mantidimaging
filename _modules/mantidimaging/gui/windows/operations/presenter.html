@@ -493,6 +493,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.bounding_box</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_bounding_box</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operation_history.const</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATION_HISTORY</span><span class="p">,</span> <span class="n">OPERATION_DISPLAY_NAME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">operation_in_progress</span>
@@ -696,8 +697,10 @@
         <span class="n">filter_widget_kwargs</span> <span class="o">=</span> <span class="n">register_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">auto_update_triggered</span><span class="o">.</span><span class="n">emit</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">CROP_COORDINATES</span> <span class="ow">or</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">ROI_NORMALISATION</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">CROP_COORDINATES</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init_roi_field</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">ROI_NORMALISATION</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_air_field</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setup_filter</span><span class="p">(</span><span class="n">filter_name</span><span class="p">,</span> <span class="n">filter_widget_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_notification_dialog</span><span class="p">()</span>
@@ -1019,6 +1022,32 @@
 
         <span class="n">crop_string</span> <span class="o">=</span> <span class="n">crop_roi</span><span class="o">.</span><span class="n">to_list_string</span><span class="p">()</span>
         <span class="n">roi_field</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">crop_string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FiltersWindowPresenter.init_air_field">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_air_field">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_air_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the initial value of the air region coordinates line edit widget based on the auto bounding box found</span>
+<span class="sd">        around the sample.</span>
+<span class="sd">        :param roi_field: The ROI field line edit widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">sample_roi</span> <span class="o">=</span> <span class="n">get_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
+
+        <span class="n">air_roi_left</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sample_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">air_roi_right</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="p">(</span><span class="n">sample_roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">air_roi_top</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">sample_roi</span><span class="o">.</span><span class="n">top</span><span class="p">)</span>
+
+        <span class="n">air_rois</span> <span class="o">=</span> <span class="p">[</span><span class="n">air_roi_left</span><span class="p">,</span> <span class="n">air_roi_right</span><span class="p">,</span> <span class="n">air_roi_top</span><span class="p">]</span>
+
+        <span class="n">largest_roi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">air_rois</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">roi</span><span class="p">:</span> <span class="n">roi</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="n">air_string</span> <span class="o">=</span> <span class="n">largest_roi</span><span class="o">.</span><span class="n">to_list_string</span><span class="p">()</span>
+
+        <span class="n">roi_field</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">air_string</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_show_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">negative_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
