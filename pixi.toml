@@ -72,13 +72,13 @@ numba = "0.61.*"
 numexpr = "2.8.*"
 requests = "2.32.*"
 psutil = "5.9.*"
-pyyaml = "*" 
+pyyaml = "*"
 
 # Data I/O and file handling
 h5py = "3.13.*"
 hdf5 = ">=1.14.2,<1.15"
 tifffile = "2023.7.18.*"
-imagecodecs = "2023.9.18.*"
+imagecodecs = ">=2023.9,<2025"
 
 # Image processing and scientific libraries
 astropy = "7.1.*"
@@ -93,9 +93,9 @@ ccpi-regulariser = "*"
 ccpi-viewer = "25.0.*"
 
 # Visualization and GUI
-vtk = { version = "*", build = "qt*" }
-pyqt = "5.15.*"
-qt-main = "5.15.8.*"
+vtk = { version = ">=9.2.6,<9.4", build = "qt*" }
+pyqt = { version = "5.15.11.*", build = "py312h*_2" }
+qt-main = "5.15.15.*"
 pyqtgraph = "0.13.7.*"
 qt-material = "2.14.*"
 darkdetect = "0.8.0.*"
@@ -152,7 +152,7 @@ AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
 
 # Linux specific dependencies (to get Qt platform theme working)
 [target.linux-64.dependencies]
-qt-gtk-platformtheme = "5.15.8.*"
+qt-gtk-platformtheme = "5.15.15.*"
 
 # Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
 [target.win-64.dependencies]
