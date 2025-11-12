@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import imagecodecs
-from PyInstaller.utils.hooks import conda_support, collect_data_files
+from PyInstaller.utils.hooks import conda_support, collect_data_files, collect_dynamic_libs
 import PyInstaller.__main__
 
 
@@ -120,10 +120,11 @@ def add_hidden_imports(run_options):
     run_options.extend(add_conda_dynamic_libs('cupy', 'nvrtc'))
     run_options.extend(add_conda_dynamic_libs('libcurl', 'ssl'))
     run_options.extend(add_conda_dynamic_libs('libcurl', 'crypto'))
+    run_options.extend(add_conda_dynamic_libs('cil', 'cilacc', inside_dist=True))
 
 
 def add_missing_submodules(run_options):
-    run_options.extend([f'--collect-submodules={name}' for name in ['cupy', 'cupy_backends']])
+    run_options.extend([f'--collect-submodules={name}' for name in ['cupy', 'cupy_backends', 'vtkmodules']])
 
 
 def add_data_files(run_options):
@@ -144,9 +145,12 @@ def add_data_files(run_options):
     run_options.extend([f'--add-data={src}{os.pathsep}{dest}' for src, dest in data_files])
 
 
-def add_conda_dynamic_libs(module_name, pattern):
+def add_conda_dynamic_libs(module_name, pattern, inside_dist=False):
     options = []
-    binaries = conda_support.collect_dynamic_libs(module_name)
+    if inside_dist:
+        binaries = collect_dynamic_libs(module_name)
+    else:
+        binaries = conda_support.collect_dynamic_libs(module_name)
     for src, dest in binaries:
         src_path = Path(src).resolve()
         if pattern in src_path.name:
@@ -159,7 +163,7 @@ def add_optional_arguments(run_options):
 
 
 def add_exclude_modules(run_options):
-    for exclude in ['matplotlib', 'dask', 'pandas', 'PySide6']:
+    for exclude in ['dask', 'pandas', 'PySide6']:
         run_options.extend(['--exclude-module', exclude])
 
 
