@@ -155,7 +155,7 @@ class FiltersWindowPresenter(BasePresenter):
     def set_stack(self, stack: ImageStack | None):
         self.stack = stack
         if stack is not None:
-            LOG.info(f"Stack changed: name={stack.name}, shape={stack.data.shape}")
+            LOG.info(f"Stack changed: name={stack.name}, shape={stack.shape}")
         else:
             LOG.info("Stack selection cleared (None)")
 

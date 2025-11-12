@@ -217,7 +217,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
 
         sample = list(self.main_window.presenter.datasets)[0].sample
-        image_count, *image_shape = sample.data.shape
+        image_count, *image_shape = sample.shape
         self.assertEqual(image_shape, [128, 128])
         self.assertEqual(image_count, expected_count)
         self.assertEqual(len(sample.real_projection_angles().value), expected_count)
@@ -229,7 +229,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
         self._load_data_set()
         self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
-        self.assertEqual(100, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
+        self.assertEqual(100, list(self.main_window.presenter.datasets)[0].sample.shape[0])
         initial_sample_id = list(self.main_window.presenter.datasets)[0].sample.id
 
         self.main_window.dataset_tree_widget.topLevelItem(0).setSelected(True)
@@ -247,7 +247,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         wait_until(lambda: initial_sample_id not in self.main_window.presenter.all_stack_ids)
 
         self._check_datasets_consistent()
-        self.assertEqual(20, list(self.main_window.presenter.datasets)[0].sample.data.shape[0])
+        self.assertEqual(20, list(self.main_window.presenter.datasets)[0].sample.shape[0])
 
     def _check_datasets_consistent(self, show_datasets=False) -> None:
         if show_datasets:
