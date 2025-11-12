@@ -512,10 +512,9 @@ class FiltersWindowPresenter(BasePresenter):
 
         air_rois = [air_roi_left, air_roi_right, air_roi_top]
 
-        air_rois_area = np.array([[roi.width * roi.height for roi in air_rois]])
-        max_ind = np.argmax(air_rois_area)
+        largest_roi = max(air_rois, key=lambda roi: roi.width * roi.height)
 
-        air_string = air_rois[max_ind].to_list_string()
+        air_string = largest_roi.to_list_string()
 
         roi_field.setText(air_string)
 
