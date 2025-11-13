@@ -121,7 +121,7 @@ def _do_rotation(data, angle, progress) -> np.ndarray:
         data.shared_array = _cardinal_rotation_per_slice(data, angle, progress)
     else:
         data.shared_array = _cardinal_rotation_per_slice(data, _get_cardinal_angle(angle), progress)
-        data.shared_array = _inplace_rotation(data.data.shape[0], data, angle - _get_cardinal_angle(angle), progress)
+        data.shared_array = _inplace_rotation(data.shape[0], data, angle - _get_cardinal_angle(angle), progress)
     return data
 
 
@@ -135,13 +135,13 @@ def _cardinal_rotation_per_slice(data: ImageStack, angle: float, progress) -> pu
     param: progress: progress bar
     return: new_data: rotated image data array
     """
-    z_axis, y_axis, x_axis = data.data.shape
+    z_axis, y_axis, x_axis = data.shape
     rotated_shape: tuple = (z_axis, x_axis, y_axis)
 
     if angle == 0 or angle == 180:
         new_data = _inplace_rotation(z_axis, data, angle, progress)
     else:
-        new_data = pu.create_array(rotated_shape, data.data.dtype)
+        new_data = pu.create_array(rotated_shape, data.dtype)
         ps.run_compute_func(_compute_cardinal_rotation_per_slice, z_axis, [data.shared_array, new_data],
                             {"angle": angle}, progress)
     return new_data

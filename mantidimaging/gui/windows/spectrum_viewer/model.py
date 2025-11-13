@@ -124,15 +124,14 @@ class SpectrumViewerWindowModel:
         self._stack = stack
         if stack is None:
             return
-        self.tof_range = (0, stack.data.shape[0] - 1)
+        self.tof_range = (0, stack.shape[0] - 1)
         self.tof_data = self.get_stack_time_of_flight()
-        LOG.info("Sample stack set: shape=%s, ToF range=(%d–%d)", stack.data.shape, self.tof_range[0],
-                 self.tof_range[1])
+        LOG.info("Sample stack set: shape=%s, ToF range=(%d–%d)", stack.shape, self.tof_range[0], self.tof_range[1])
 
     def set_normalise_stack(self, normalise_stack: ImageStack | None) -> None:
         self._normalise_stack = normalise_stack
         if normalise_stack is not None:
-            LOG.info("Normalisation stack set: shape=%s", normalise_stack.data.shape)
+            LOG.info("Normalisation stack set: shape=%s", normalise_stack.shape)
         else:
             LOG.info("Normalisation stack cleared")
 
@@ -192,7 +191,7 @@ class SpectrumViewerWindowModel:
 
     def get_number_of_images_in_stack(self) -> int:
         if self._stack is not None:
-            return self._stack.data.shape[0]
+            return self._stack.shape[0]
         else:
             return 0
 
@@ -201,7 +200,7 @@ class SpectrumViewerWindowModel:
             return "Need 2 selected stacks"
         if self._stack is self._normalise_stack:
             return "Need 2 different stacks"
-        if self._stack.data.shape != self._normalise_stack.data.shape:
+        if self._stack.shape != self._normalise_stack.shape:
             return "Stack shapes must match"
         return ""
 
@@ -234,7 +233,7 @@ class SpectrumViewerWindowModel:
         if self._stack is None:
             return np.array([])
         if self.presenter.initial_sample_change:
-            return np.zeros(self._stack.data.shape[0])
+            return np.zeros(self._stack.shape[0])
 
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
@@ -353,8 +352,8 @@ class SpectrumViewerWindowModel:
 
     def get_image_shape(self) -> tuple[int, int]:
         if self._stack is not None:
-            assert len(self._stack.data.shape) == 3
-            return self._stack.data.shape[1:]
+            assert len(self._stack.shape) == 3
+            return self._stack.shape[1:]
         else:
             return 0, 0
 
@@ -381,7 +380,7 @@ class SpectrumViewerWindowModel:
             raise ValueError("No ROIs provided")
 
         csv_output = CSVOutput()
-        csv_output.add_column("ToF_index", np.arange(self._stack.data.shape[0]), "Index")
+        csv_output.add_column("ToF_index", np.arange(self._stack.shape[0]), "Index")
 
         local_tof_data = self.get_stack_time_of_flight()
         if local_tof_data.size != 0:
@@ -562,8 +561,8 @@ class SpectrumViewerWindowModel:
         if self._stack is not None:
             self.tof_data = self.get_stack_time_of_flight()
             if self.tof_mode == ToFUnitMode.IMAGE_NUMBER or self.tof_data.size == 0:
-                self.tof_plot_range = (0, self._stack.data.shape[0] - 1)
-                self.tof_range = (0, self._stack.data.shape[0] - 1)
+                self.tof_plot_range = (0, self._stack.shape[0] - 1)
+                self.tof_range = (0, self._stack.shape[0] - 1)
                 self.tof_data = np.arange(self.tof_range[0], self.tof_range[1] + 1)
             else:
                 self.units.set_data_to_convert(self.tof_data)

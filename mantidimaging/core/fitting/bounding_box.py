@@ -9,7 +9,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 def get_bounding_box(stack: ImageStack) -> SensibleROI:
     edge_clip = 5
     data = stack.data[:, edge_clip:-edge_clip, edge_clip:-edge_clip]  # clip dark edges
-    _, height, width = stack.data.shape
+    _, height, width = stack.shape
     buffer_pixels = width / 100 * 5
     all_col_mean = np.mean(data, axis=(1, 0))
     all_row_mean = np.mean(data, axis=(2, 0))

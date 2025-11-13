@@ -30,7 +30,7 @@ class CropCoordsTest(unittest.TestCase):
         result = CropCoordinatesFilter.filter_func(images, roi)
         expected_shape = (10, 4, 4)
 
-        npt.assert_equal(result.data.shape, expected_shape)
+        npt.assert_equal(result.shape, expected_shape)
         # check that the data has been modified
         th.assert_not_equals(result.data, sample.array)
 

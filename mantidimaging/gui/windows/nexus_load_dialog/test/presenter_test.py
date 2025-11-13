@@ -273,7 +273,7 @@ class NexusLoaderTest(unittest.TestCase):
         self.view.step_widget.value.return_value = 2
         self.nexus_loader.scan_nexus_file()
         dataset = self.nexus_loader.get_dataset()[0]
-        self.assertEqual(dataset.sample.data.shape[0], 1)
+        self.assertEqual(dataset.sample.shape[0], 1)
 
     def test_load_invalid_nexus_file(self):
         self.nexus_load_mock.side_effect = OSError
@@ -365,7 +365,7 @@ class NexusLoaderTest(unittest.TestCase):
         recon_entry.create_dataset("definition", data=numpy.bytes_("NXtomoproc"))
         data = recon_entry.create_group("data")
         data.attrs["NX_class"] = numpy.bytes_("NXdata")
-        data.create_dataset("data", shape=recon.data.shape, dtype="float16")
+        data.create_dataset("data", shape=recon.shape, dtype="float16")
         data["data"][:] = recon.data
 
         self.nexus_loader._look_for_recon_entries()

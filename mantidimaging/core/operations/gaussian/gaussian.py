@@ -53,7 +53,7 @@ class GaussianFilter(BaseFilter):
             raise ValueError(f'Size parameter must be greater than 1, but value provided was {size}')
 
         params = {'size': size, 'mode': mode, 'order': order}
-        ps.run_compute_func(GaussianFilter.compute_function, data.data.shape[0], data.shared_array, params, progress)
+        ps.run_compute_func(GaussianFilter.compute_function, data.shape[0], data.shared_array, params, progress)
 
         h.check_data_stack(data)
         return data

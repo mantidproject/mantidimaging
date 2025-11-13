@@ -54,11 +54,11 @@ class RebinTest(unittest.TestCase):
 
         result = RebinFilter.filter_func(images, val, mode)
 
-        npt.assert_equal(result.data.shape[1], expected_x)
-        npt.assert_equal(result.data.shape[2], expected_y)
+        npt.assert_equal(result.shape[1], expected_x)
+        npt.assert_equal(result.shape[2], expected_y)
 
-        self.assertEqual(images.data.dtype, dtype)
-        self.assertEqual(result.data.dtype, dtype)
+        self.assertEqual(images.dtype, dtype)
+        self.assertEqual(result.dtype, dtype)
 
     def test_executed_xy_par_128_256(self):
         self.do_execute_xy(True, (128, 256))
@@ -84,8 +84,8 @@ class RebinTest(unittest.TestCase):
 
         result = RebinFilter.filter_func(images, rebin_param=val, mode=mode)
 
-        npt.assert_equal(result.data.shape[1], expected_x)
-        npt.assert_equal(result.data.shape[2], expected_y)
+        npt.assert_equal(result.shape[1], expected_x)
+        npt.assert_equal(result.shape[2], expected_y)
 
     def test_failure_to_allocate_output_doesnt_free_input_data(self):
         """

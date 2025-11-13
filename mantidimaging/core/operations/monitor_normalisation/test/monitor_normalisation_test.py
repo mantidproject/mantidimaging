@@ -48,7 +48,7 @@ class MonitorNormalisationTest(unittest.TestCase):
         self.assertIsNone(MonitorNormalisation.validate_execute_kwargs({}, images))
         MonitorNormalisation.filter_func(images)
         images._log_file.counts.assert_called()
-        self.assertEqual(original.data.shape, original.data.shape)
+        self.assertEqual(original.shape, original.shape)
         assert_not_equals(original.data, images.data)
 
     def test_execute2(self):

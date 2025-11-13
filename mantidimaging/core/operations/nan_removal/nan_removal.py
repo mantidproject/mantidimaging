@@ -51,10 +51,10 @@ class NaNRemovalFilter(BaseFilter):
 
         if mode_value == "Constant":
             params = {'replace_value': replace_value}
-            ps.run_compute_func(NaNRemovalFilter.compute_constant_function, data.data.shape[0], data.shared_array,
-                                params, progress)
+            ps.run_compute_func(NaNRemovalFilter.compute_constant_function, data.shape[0], data.shared_array, params,
+                                progress)
         elif mode_value == "Median":
-            ps.run_compute_func(NaNRemovalFilter.compute_median_function, data.data.shape[0], data.shared_array, {},
+            ps.run_compute_func(NaNRemovalFilter.compute_median_function, data.shape[0], data.shared_array, {},
                                 progress)
         else:
             raise ValueError(f"Unknown mode: '{mode_value}'. Should be one of {NaNRemovalFilter.MODES}")
