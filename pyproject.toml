@@ -16,6 +16,7 @@ pythonVersion = "3.12"
 include = ["mantidimaging/**/*.py"]
 exclude =  ["tests/**/*.py", "test/**/*.py", "**/*test.py"]
 reportMissingTypeStubs = false
+reportMissingImports=false
 reportAttributeAccessIssue = false
 reportOptionalMemberAccess = false
 reportCallIssue = false
