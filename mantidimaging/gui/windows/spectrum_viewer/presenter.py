@@ -118,6 +118,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Called when the stack has been changed in the stack selector.
         """
         self.view.roi_form.exportTabs.setDisabled(uuid is None)
+        if self.current_stack_uuid and uuid:
+            if ((current_stack := self.main_window.get_stack(self.current_stack_uuid))
+                    and (new_stack := self.main_window.get_stack(uuid))):
+                if current_stack.shape[1:] != new_stack.shape[1:]:
+                    self.do_remove_roi()
+                    self.view.table_view.clear_table()
+                    LOG.info("The new image stack has a different size to previous image stack: deleting all ROIs")
 
         if uuid == self.current_stack_uuid:
             return
