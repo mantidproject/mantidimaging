@@ -89,7 +89,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self._set_sample_stack()
 
         av_img = self.model.get_averaged_image()
-        self.assertEqual(av_img.data.shape, (11, 12))
+        self.assertEqual(av_img.shape, (11, 12))
         self.assertEqual(av_img.data[0, 0], 4.5)
 
     def test_get_averaged_image_range(self):
@@ -97,7 +97,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.tof_range = (6, 7)
 
         av_img = self.model.get_averaged_image()
-        self.assertEqual(av_img.data.shape, (11, 12))
+        self.assertEqual(av_img.shape, (11, 12))
         self.assertEqual(av_img.data[0, 0], 6.5)
 
     def _set_sample_and_normalize_stacks(self):

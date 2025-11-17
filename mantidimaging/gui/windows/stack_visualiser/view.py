@@ -34,8 +34,8 @@ class StackVisualiserView(QDockWidget):
 
     def __init__(self, parent: MainWindowView, images: ImageStack):
         # enforce not showing a single image
-        assert images.data.ndim == 3, \
-            f"Data does NOT have 3 dimensions! Dimensions found: {images.data.ndim}"
+        assert images.ndim == 3, \
+            f"Data does NOT have 3 dimensions! Dimensions found: {images.ndim}"
 
         # We set the main window as the parent, the effect is the same as
         # having no parent, the window will be inside the QDockWidget. If the

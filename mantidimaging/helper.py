@@ -73,5 +73,5 @@ def check_data_stack(data, expected_dims=3, expected_class=ImageStack) -> None:
         raise ValueError(
             f"Invalid data type. It must be an {expected_class.__name__} object. Instead found: {type(data).__name__}")
 
-    if expected_dims != data.data.ndim:
-        raise ValueError(f"Invalid data format. It does not have 3 dimensions. Shape: {data.data.shape}")
+    if expected_dims != data.ndim:
+        raise ValueError(f"Invalid data format. It does not have 3 dimensions. Shape: {data.shape}")

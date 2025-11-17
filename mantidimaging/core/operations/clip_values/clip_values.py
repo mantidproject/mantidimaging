@@ -64,8 +64,7 @@ class ClipValuesFilter(BaseFilter):
             'clip_max_new_value': clip_max_new_value
         }
 
-        ps.run_compute_func(ClipValuesFilter.compute_function, data.data.shape[0], [data.shared_array], params,
-                            progress)
+        ps.run_compute_func(ClipValuesFilter.compute_function, data.shape[0], [data.shared_array], params, progress)
 
         return data
 

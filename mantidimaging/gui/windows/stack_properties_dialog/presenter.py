@@ -19,7 +19,7 @@ class StackPropertiesPresenter(BasePresenter):
 
     def set_stack_data(self) -> None:
         if self.view.stack is not None:
-            self.view.stack_shape = self.view.stack.data.shape
+            self.view.stack_shape = self.view.stack.shape
         self.view.stack_size_MB = self.get_stack_size_MB()
 
     def set_stack_directory(self) -> None:
@@ -27,7 +27,7 @@ class StackPropertiesPresenter(BasePresenter):
             self.view.directory = Path(self.view.stack.filenames[0]).parent
 
     def get_stack_size_MB(self) -> float:
-        return full_size_MB(self.view.stack.data.shape, self.view.stack.data.dtype)
+        return full_size_MB(self.view.stack.shape, self.view.stack.dtype)
 
     def get_log_filename(self) -> str:
         if 'log_file' in self.view.stack.metadata:

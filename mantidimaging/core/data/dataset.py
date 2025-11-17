@@ -156,17 +156,17 @@ class Dataset:
     def image_keys(self) -> list[int]:
         image_keys = []
         if self.dark_before is not None:
-            image_keys += _image_key_list(2, self.dark_before.data.shape[0])
+            image_keys += _image_key_list(2, self.dark_before.shape[0])
         if self.flat_before is not None:
-            image_keys += _image_key_list(1, self.flat_before.data.shape[0])
+            image_keys += _image_key_list(1, self.flat_before.shape[0])
         if self.sample is not None:
-            image_keys += _image_key_list(0, self.sample.data.shape[0])
+            image_keys += _image_key_list(0, self.sample.shape[0])
         else:
             raise RuntimeError("Unable to create image keys object without sample.")
         if self.flat_after is not None:
-            image_keys += _image_key_list(1, self.flat_after.data.shape[0])
+            image_keys += _image_key_list(1, self.flat_after.shape[0])
         if self.dark_after is not None:
-            image_keys += _image_key_list(2, self.dark_after.data.shape[0])
+            image_keys += _image_key_list(2, self.dark_after.shape[0])
         return image_keys
 
     def set_stack(self, file_type: FILE_TYPES, image_stack: ImageStack) -> None:

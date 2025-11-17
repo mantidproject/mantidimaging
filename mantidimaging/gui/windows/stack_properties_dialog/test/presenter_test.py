@@ -25,6 +25,8 @@ class StackPropertiesPresenterTest(unittest.TestCase):
 
     def test_WHEN_set_stack_data_THEN_stack_data_set_correctly(self):
         self.view.stack.data = np.ones([3, 11, 12])
+        self.view.stack.shape = self.view.stack.data.shape
+        self.view.stack.dtype = self.view.stack.data.dtype
         self.view.stack.filenames = ["test/filename/a.tif", "test/filename/b.tif", "test/filename/c.tif"]
         self.presenter.get_stack_size_MB = mock.Mock()
         self.presenter.get_stack_size_MB.return_value = 10

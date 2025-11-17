@@ -338,7 +338,7 @@ def _save_recon_to_nexus(nexus_file: h5py.File, recon: ImageStack, sample_path: 
     data = recon_entry.create_group("data")
     _set_nx_class(data, "NXdata")
 
-    data.create_dataset("data", shape=recon.data.shape, dtype="float32")
+    data.create_dataset("data", shape=recon.shape, dtype="float32")
     data["data"][:] = recon.data
 
     x_arr, y_arr, z_arr = _create_pixel_size_arrays(recon)
@@ -354,9 +354,9 @@ def _create_pixel_size_arrays(recon: ImageStack) -> tuple[np.ndarray, np.ndarray
     :return: The tuple of the x/y/z arrays.
     """
     pixel_size = recon.pixel_size
-    x_arr = np.arange(recon.data.shape[0]) * pixel_size
-    y_arr = np.arange(recon.data.shape[1]) * pixel_size
-    z_arr = np.arange(recon.data.shape[2]) * pixel_size
+    x_arr = np.arange(recon.shape[0]) * pixel_size
+    y_arr = np.arange(recon.shape[1]) * pixel_size
+    z_arr = np.arange(recon.shape[2]) * pixel_size
     return x_arr, y_arr, z_arr
 
 

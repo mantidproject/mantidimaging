@@ -38,7 +38,7 @@ def _nexus_dataset_to_string(nexus_dataset) -> str:
 
 def _create_sample_with_filename() -> ImageStack:
     sample = th.generate_images()
-    sample.filenames = [Path(f"image{i}.tiff") for i in range(sample.data.shape[0])]
+    sample.filenames = [Path(f"image{i}.tiff") for i in range(sample.shape[0])]
     return sample
 
 
@@ -216,7 +216,7 @@ class IOTest(FileOutputtingTestCase):
             npt.assert_array_equal(np.array(nexus_file[NEXUS_PROCESSED_DATA_PATH]["data"]),
                                    sd.sample.data.astype("float32"))
             npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
-                                   [0 for _ in range(sd.sample.data.shape[0])])
+                                   [0 for _ in range(sd.sample.shape[0])])
 
             # test instrument/sample fields
             self.assertEqual(_decode_nexus_class(tomo_entry["sample"]), "NXsample")
@@ -275,11 +275,11 @@ class IOTest(FileOutputtingTestCase):
                     [sd.dark_before.data, sd.flat_before.data, sd.sample.data, sd.flat_after.data,
                      sd.dark_after.data]).astype("float32"))
             # test instrument field
-            npt.assert_array_equal(
-                np.array(tomo_entry["instrument"]["detector"]["image_key"]),
-                [2 for _ in range(sd.dark_before.data.shape[0])] + [1 for _ in range(sd.flat_before.data.shape[0])] +
-                [0 for _ in range(sd.sample.data.shape[0])] + [1 for _ in range(sd.flat_after.data.shape[0])] +
-                [2 for _ in range(sd.dark_after.data.shape[0])])
+            npt.assert_array_equal(np.array(tomo_entry["instrument"]["detector"]["image_key"]),
+                                   [2 for _ in range(sd.dark_before.shape[0])] +
+                                   [1 for _ in range(sd.flat_before.shape[0])] +
+                                   [0 for _ in range(sd.sample.shape[0])] + [1 for _ in range(sd.flat_after.shape[0])] +
+                                   [2 for _ in range(sd.dark_after.shape[0])])
 
             # test instrument/sample fields
             npt.assert_array_equal(np.array(tomo_entry["sample"]["rotation_angle"]),
@@ -445,11 +445,11 @@ class IOTest(FileOutputtingTestCase):
         with h5py.File("path", "w", driver="core", backing_store=False) as nexus_file:
             _save_recon_to_nexus(nexus_file, recon, self.sample_path)
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["x"]),
-                                   np.array([pixel_size * i for i in range(recon.data.shape[0])]))
+                                   np.array([pixel_size * i for i in range(recon.shape[0])]))
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["y"]),
-                                   np.array([pixel_size * i for i in range(recon.data.shape[1])]))
+                                   np.array([pixel_size * i for i in range(recon.shape[1])]))
             npt.assert_array_equal(np.array(nexus_file[recon_name]["data"]["z"]),
-                                   np.array([pixel_size * i for i in range(recon.data.shape[2])]))
+                                   np.array([pixel_size * i for i in range(recon.shape[2])]))
 
     def test_raw_file_field(self):
         recon = th.generate_images()

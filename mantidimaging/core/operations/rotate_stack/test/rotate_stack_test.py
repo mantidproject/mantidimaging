@@ -94,9 +94,9 @@ class RotateStackTest(unittest.TestCase):
         Test that when _compute_rotation is called with an angle then the data is rotated
         """
         data = th.generate_images()
-        shape = data.data.shape
+        shape = data.shape
         result = _do_rotation(data, 180, mock.Mock())
-        self.assertEqual(result.data.shape, shape)
+        self.assertEqual(result.shape, shape)
 
 
 if __name__ == '__main__':
