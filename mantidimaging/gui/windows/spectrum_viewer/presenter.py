@@ -87,7 +87,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
-
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
