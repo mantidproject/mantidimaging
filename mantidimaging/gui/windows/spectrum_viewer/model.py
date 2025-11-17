@@ -215,25 +215,45 @@ class SpectrumViewerWindowModel:
             return "Need 2 different ShutterCount stacks"
         return ""
 
-    def get_spectrum(self,
-                     roi: SensibleROI,
-                     mode: SpecType,
-                     normalise_with_shuttercount: bool = False,
-                     chunk_start: int = 0,
-                     chunk_end: int | None = None,
-                     open_beam_roi: SensibleROI | None = None) -> np.ndarray:
+    def get_spectrum(
+        self,
+        roi: SensibleROI,
+        mode: SpecType,
+        normalise_with_shuttercount: bool = False,
+        chunk_start: int = 0,
+        chunk_end: int | None = None,
+        open_beam_roi: SensibleROI | None = None,
+    ) -> np.ndarray:
 
-        if open_beam_roi is None:
-            open_beam_roi = roi
+        open_beam_roi = open_beam_roi or roi
 
         cache_key = (*roi, *open_beam_roi, mode, normalise_with_shuttercount)
-
-        if cache_key in self.spectrum_cache:
+        if cache_key in self.spectrum_cache and chunk_start == 0 and chunk_end is None:
             return self.spectrum_cache[cache_key]
+
+        spectrum = self._compute_spectrum(roi, mode, normalise_with_shuttercount, chunk_start, chunk_end,
+                                          open_beam_roi) or np.array([])
+        spectrum = np.asarray(spectrum)
+        if chunk_start == 0 and chunk_end is None:
+            self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi)
+
+        return spectrum
+
+    def _compute_spectrum(self,
+                          roi: SensibleROI,
+                          mode: SpecType,
+                          normalise_with_shuttercount: bool = False,
+                          chunk_start: int = 0,
+                          chunk_end: int | None = None,
+                          open_beam_roi: SensibleROI | None = None) -> np.ndarray:
+
         if self._stack is None:
             return np.array([])
-        if self.presenter.initial_sample_change:
-            return np.zeros(self._stack.shape[0])
+
+        if getattr(self, "presenter", None) and getattr(self.presenter, "initial_sample_change", False):
+            return np.zeros(self._stack.data.shape[0])
+
+        open_beam_roi = open_beam_roi or roi
 
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
@@ -248,22 +268,23 @@ class SpectrumViewerWindowModel:
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
                 return np.array([])
+
             roi_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
             roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
-        spectrum = np.divide(roi_spectrum,
-                             roi_norm_spectrum,
-                             out=np.zeros_like(roi_spectrum),
-                             where=roi_norm_spectrum != 0)
-        if normalise_with_shuttercount:
-            average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
-            spectrum = spectrum / average_shuttercount
-        if chunk_start == 0 and chunk_end is None:
-            self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi=open_beam_roi)
+            spectrum = np.divide(
+                roi_spectrum,
+                roi_norm_spectrum,
+                out=np.zeros_like(roi_spectrum),
+                where=roi_norm_spectrum != 0,
+            )
+            if normalise_with_shuttercount:
+                average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
+                spectrum = spectrum / average_shuttercount
+            LOG.debug("Computing spectrum: ROI=%s, Open ROI=%s, mode=%s", roi, open_beam_roi, mode.name)
 
-        LOG.debug("Computing spectrum: ROI=%s, Open ROI=%s, mode=%s, cached=%s", roi, open_beam_roi, mode.name,
-                  cache_key in self.spectrum_cache)
+            return spectrum
 
-        return spectrum
+        return np.array([])
 
     def store_spectrum(self,
                        roi: SensibleROI,
