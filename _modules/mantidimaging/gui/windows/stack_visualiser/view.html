@@ -512,8 +512,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">):</span>
         <span class="c1"># enforce not showing a single image</span>
-        <span class="k">assert</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> \
-            <span class="sa">f</span><span class="s2">&quot;Data does NOT have 3 dimensions! Dimensions found: </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> \
+            <span class="sa">f</span><span class="s2">&quot;Data does NOT have 3 dimensions! Dimensions found: </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="c1"># We set the main window as the parent, the effect is the same as</span>
         <span class="c1"># having no parent, the window will be inside the QDockWidget. If the</span>
