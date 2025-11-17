@@ -37,6 +37,20 @@ If you are using `pytest`, you can run tests that match a specific keyword by us
 These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
 See the Pytest docs for additional `command line options <https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags>`_.
 
+Running tests with Ada
+----------------------
+
+To run the tests from the terminal in VSCode, first clone the ``mantidimaging-data`` repository in the same parent directory as ``mantidimaging``::
+
+    git clone https://github.com/mantidproject/mantidimaging-data.git
+
+Set the following environment variable::
+
+    export QT_QPA_PLATFORM=offscreen
+
+Then execute the tests by running::
+
+    python3 -m pytest -vs
 
 Pre-commit
 ----------
@@ -128,6 +142,25 @@ GUI system tests
 GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where possible by using QTest methods to emulate mouse and keyboard actions. They use the same data files as the GUI screenshot tests. These take several minutes to run (longer on Windows) and so must be explicitly requested.::
 
     make test-system
+
+
+Test Data for Manual Testing
+----------------------------
+Mantid Imaging provides a collection of example datasets that developers can use when manually testing new features, investigating bugs, or validating workflow behaviour outside of the automated test suite.
+
+These datasets can be downloaded from the `Mantid Imaging Example Data Archive <https://stfc365.sharepoint.com/sites/mantidimaging/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=vw2usD&CID=1ccf297e%2D2e06%2D4492%2D8103%2Da896c74d90ee&FolderCTID=0x012000C6F8027226DE314D8744358F33947ED6&id=%2Fsites%2Fmantidimaging%2FShared%20Documents%2FExample%20Data>`_
+
+You will need access to this SharePoint location.
+If you cannot access it, please contact a member of the Mantid Imaging team to request permission.
+
+To use these datasets locally:
+
+- Download a dataset from the the link above.
+- Extract the contents to a known location on your local machine.
+- Load the dataset through the GUI or using the ``--path`` flag when launching Mantid Imaging from the command line for example::
+
+    python -m mantidimaging --path /path/to/downloaded/dataset
+
 
 Logging
 -------
