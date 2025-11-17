@@ -97,7 +97,7 @@ class ImageStack:
         return not self == other
 
     def __str__(self) -> str:
-        return f'Image Stack: data={self.data.shape} | properties|={len(self.metadata)}'
+        return f'Image Stack: data={self.shape} | properties|={len(self.metadata)}'
 
     def count(self) -> int:
         return len(self._filenames) if self._filenames else 0
@@ -108,7 +108,7 @@ class ImageStack:
 
     @filenames.setter
     def filenames(self, new_ones: list[Path]) -> None:
-        assert len(new_ones) == self.data.shape[0], "Number of filenames and number of images must match."
+        assert len(new_ones) == self.shape[0], "Number of filenames and number of images must match."
         self._filenames = new_ones
 
     @property
@@ -161,7 +161,7 @@ class ImageStack:
         return const.OPERATION_HISTORY in self.metadata
 
     def copy(self, flip_axes: bool = False) -> ImageStack:
-        shape = (self.data.shape[1], self.data.shape[0], self.data.shape[2]) if flip_axes else self.data.shape
+        shape = (self.shape[1], self.shape[0], self.shape[2]) if flip_axes else self.shape
         data_copy = pu.create_array(shape, self.data.dtype)
         if flip_axes:
             data_copy.array[:] = np.swapaxes(self.data, 0, 1)
@@ -175,7 +175,7 @@ class ImageStack:
         return images
 
     def copy_roi(self, roi: SensibleROI) -> ImageStack:
-        shape = (self.data.shape[0], roi.height, roi.width)
+        shape = (self.shape[0], roi.height, roi.width)
 
         data_copy = pu.create_array(shape, self.data.dtype)
         data_copy.array[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
@@ -202,13 +202,13 @@ class ImageStack:
     @property
     def height(self) -> int:
         if not self._is_sinograms:
-            return self.data.shape[1]
+            return self.shape[1]
         else:
-            return self.data.shape[0]
+            return self.shape[0]
 
     @property
     def width(self) -> int:
-        return self.data.shape[2]
+        return self.shape[2]
 
     @property
     def h_middle(self) -> float:
@@ -219,14 +219,14 @@ class ImageStack:
 
     @property
     def num_images(self) -> int:
-        return self.data.shape[0]
+        return self.shape[0]
 
     @property
     def num_projections(self) -> int:
         if not self._is_sinograms:
-            return self.data.shape[0]
+            return self.shape[0]
         else:
-            return self.data.shape[1]
+            return self.shape[1]
 
     @property
     def num_sinograms(self) -> int:
