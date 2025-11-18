@@ -40,6 +40,10 @@ See the Pytest docs for additional `command line options <https://docs.pytest.or
 Running tests with Ada
 ----------------------
 
+.. note:: Ada (previously known as IDAaaS) is a remote VM system available to STFC staff and ISIS users.
+
+Access the platform through the `Ada Login <https://ada.stfc.ac.uk/login>`_ page, and see :ref:`getting-started-with-ada` in **Tutorials** if you're new to using Ada.
+
 To run the tests from the terminal in VSCode, first clone the ``mantidimaging-data`` repository in the same parent directory as ``mantidimaging``::
 
     git clone https://github.com/mantidproject/mantidimaging-data.git
@@ -148,14 +152,16 @@ Test Data for Manual Testing
 ----------------------------
 Mantid Imaging provides a collection of example datasets that developers can use when manually testing new features, investigating bugs, or validating workflow behaviour outside of the automated test suite.
 
-These datasets can be downloaded from the `Mantid Imaging Example Data Archive <https://stfc365.sharepoint.com/sites/mantidimaging/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=vw2usD&CID=1ccf297e%2D2e06%2D4492%2D8103%2Da896c74d90ee&FolderCTID=0x012000C6F8027226DE314D8744358F33947ED6&id=%2Fsites%2Fmantidimaging%2FShared%20Documents%2FExample%20Data>`_
+These datasets can be downloaded from the Mantid Imaging "Example Data" Sharepoint folder which is accessible to internal team members only (please reach out to a member of the team to request access).
 
-You will need access to this SharePoint location.
-If you cannot access it, please contact a member of the Mantid Imaging team to request permission.
+Alternatively, the Ceph data store, which is accessible via `Ada <https://ada.stfc.ac.uk/login>`_ data-analysis-as-a-service platform, located at:
+``/mnt/ceph/auxiliary/tomography/example_data`` can be used to access example datasets.
+
+For external users without an Ada account who would like access to example data, a repository containing `test data <https://github.com/mantidproject/mantidimaging-data>`_ for system testing is available. You can download data from this repository to run manual testing.
 
 To use these datasets locally:
 
-- Download a dataset from the the link above.
+- Download the dataset locally from the repository or Sharepoint link.
 - Extract the contents to a known location on your local machine.
 - Load the dataset through the GUI or using the ``--path`` flag when launching Mantid Imaging from the command line for example::
 
