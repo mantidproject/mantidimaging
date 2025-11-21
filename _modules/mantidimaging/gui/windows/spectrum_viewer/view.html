@@ -683,11 +683,10 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.initial_setup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">initial_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampleStackSelector</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_configure_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normaliseStackSelector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampleStackSelector</span><span class="p">)</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">qApp</span><span class="o">.</span><span class="n">processEvents</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sampleStackSelector</span><span class="o">.</span><span class="n">select_eligible_stack</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">try_to_select_relevant_normalise_stack</span><span class="p">(</span><span class="s2">&quot;Flat&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">initial_sample_change</span> <span class="o">=</span> <span class="kc">False</span>
