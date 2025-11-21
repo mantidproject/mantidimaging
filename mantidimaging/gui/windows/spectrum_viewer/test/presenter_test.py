@@ -53,7 +53,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.experimentSetupFormWidget = mock.Mock(spec=ExperimentSetupFormWidget)
         self.view.experimentSetupFormWidget.time_delay = 0.0
         self.view.fittingDisplayWidget = mock.Mock()
-        self.view.scalable_roi_widget = mock.Mock()
+        self.view.fitting_param_form = mock.Mock()
         self.view.roiSelectionWidget = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot.spectrum = mock.Mock()
@@ -439,7 +439,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.display_normalise_error.assert_called_once()
 
     def test_show_initial_fit_calls_correct_plot_method(self):
-        self.view.scalable_roi_widget.get_initial_param_values = mock.Mock(return_value=[1.0, 2.0, 3.0, 4.0])
+        self.view.fitting_param_form.get_initial_param_values = mock.Mock(return_value=[1.0, 2.0, 3.0, 4.0])
         self.presenter.model.tof_data = np.array([1, 2, 3])
         self.presenter.model.fitting_engine.model.evaluate = mock.Mock(return_value=np.array([10, 20, 30]))
         self.view.fittingDisplayWidget.show_fit_line = mock.Mock()
@@ -463,7 +463,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
                                                              expect_show_fit):
         self.presenter._plot_initial_fit = mock.Mock()
         self.view.fittingDisplayWidget.show_fit_line = mock.Mock()
-        self.view.scalable_roi_widget.get_initial_param_values = mock.Mock(return_value=[1.0, 2.0, 3.0, 4.0])
+        self.view.fitting_param_form.get_initial_param_values = mock.Mock(return_value=[1.0, 2.0, 3.0, 4.0])
         self.view.roiSelectionWidget.current_roi_name = "roi"
         self.view.spectrum_widget.get_roi = mock.Mock(return_value="mock_roi")
         self.presenter.model.get_spectrum = mock.Mock(return_value=np.array([1, 2, 3]))
@@ -478,7 +478,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             0.0,
             0.0,
         ))
-        self.view.scalable_roi_widget.set_fitted_parameter_values = mock.Mock()
+        self.view.fitting_param_form.set_fitted_parameter_values = mock.Mock()
         self.view.fittingDisplayWidget.is_initial_fit_visible.return_value = is_initial_fit_visible
 
         self.presenter.on_initial_params_edited()
@@ -486,7 +486,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         if expect_plot_initial:
             self.presenter._plot_initial_fit.assert_called_once()
             self.view.fittingDisplayWidget.show_fit_line.assert_not_called()
-            self.view.scalable_roi_widget.set_fitted_parameter_values.assert_not_called()
+            self.view.fitting_param_form.set_fitted_parameter_values.assert_not_called()
         if expect_show_fit:
             self.presenter._plot_initial_fit.assert_not_called()
             self.view.fittingDisplayWidget.show_fit_line.assert_called_once()
@@ -495,7 +495,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
             assert kwargs["color"] == (0, 128, 255)
             assert kwargs["label"] == "fit"
             assert kwargs["initial"] is False
-            self.view.scalable_roi_widget.set_fitted_parameter_values.assert_called_once_with({
+            self.view.fitting_param_form.set_fitted_parameter_values.assert_called_once_with({
                 "mu": 1.0,
                 "sigma": 2.0,
                 "h": 3.0,

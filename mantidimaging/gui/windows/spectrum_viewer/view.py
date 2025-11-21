@@ -96,8 +96,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
         self.roiSelectionWidget.selectionChanged.connect(self.handle_fitting_roi_changed)
 
-        self.scalable_roi_widget = FittingParamFormWidget(self.presenter)
-        self.fittingFormLayout.layout().addWidget(self.scalable_roi_widget)
+        self.fitting_param_form = FittingParamFormWidget(self.presenter)
+        self.fittingFormLayout.layout().addWidget(self.fitting_param_form)
 
         self.export_display_tabs = QTabWidget(self)
         self.exportDataTableWidget = ExportDataTableWidget()

@@ -664,19 +664,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def setup_fitting_model(self) -> None:
         param_names = self.model.fitting_engine.get_parameter_names()
-        self.view.scalable_roi_widget.set_parameters(param_names)
+        self.view.fitting_param_form.set_parameters(param_names)
         self.view.exportDataTableWidget.set_parameters(param_names)
 
     def get_init_params_from_roi(self) -> None:
         fitting_region = self.view.get_fitting_region()
         init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
-        self.view.scalable_roi_widget.set_parameter_values(init_params)
+        self.view.fitting_param_form.set_parameter_values(init_params)
 
         self.view.fittingDisplayWidget.set_plot_mode("initial")
 
         self.show_initial_fit()
         roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.scalable_roi_widget.set_fit_quality(float("nan"), float("nan"))
+        self.view.fitting_param_form.set_fit_quality(float("nan"), float("nan"))
         self.view.exportDataTableWidget.update_roi_data(
             roi_name=roi_name,
             params=init_params,
@@ -685,7 +685,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         )
 
     def _plot_initial_fit(self) -> None:
-        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        init_params = self.view.fitting_param_form.get_initial_param_values()
         xvals = self.model.tof_data
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
         self.view.fittingDisplayWidget.show_fit_line(xvals,
@@ -705,18 +705,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if self.view.fittingDisplayWidget.is_initial_fit_visible():
             self._plot_initial_fit()
         else:
-            init_params = self.view.scalable_roi_widget.get_initial_param_values()
+            init_params = self.view.fitting_param_form.get_initial_param_values()
             roi_name = self.view.roiSelectionWidget.current_roi_name
             roi = self.view.spectrum_widget.get_roi(roi_name)
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
             xvals = self.model.tof_data
-            bound_params = self.view.scalable_roi_widget.get_bound_parameters()
+            bound_params = self.view.fitting_param_form.get_bound_parameters()
             fit_params, rss, rss_per_dof = self.model.fitting_engine.find_best_fit(xvals,
                                                                                    spectrum,
                                                                                    init_params,
                                                                                    params_bounds=bound_params)
-            self.view.scalable_roi_widget.set_fitted_parameter_values(fit_params)
-            self.view.scalable_roi_widget.set_fit_quality(rss, rss_per_dof)
+            self.view.fitting_param_form.set_fitted_parameter_values(fit_params)
+            self.view.fitting_param_form.set_fit_quality(rss, rss_per_dof)
             self.show_fit(list(fit_params.values()))
             LOG.info("Refit completed for ROI=%s, RSS/DoF=%.3f", roi_name, rss_per_dof)
 
@@ -727,7 +727,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         and evaluates the fitting model using these parameters to generate the initial fit curve.
         """
         xvals = self.model.tof_data
-        init_params = self.view.scalable_roi_widget.get_initial_param_values()
+        init_params = self.view.fitting_param_form.get_initial_param_values()
         init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
         self.view.fittingDisplayWidget.show_fit_line(xvals,
                                                      init_fit,
@@ -739,14 +739,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         Run a fit on the currently selected ROI and update the GUI/export table.
         """
-        bound_params = self.view.scalable_roi_widget.get_bound_parameters()
+        bound_params = self.view.fitting_param_form.get_bound_parameters()
         result, rss, reduced_rss = self.fit_single_region(self.fitting_spectrum,
                                                           self.view.get_fitting_region(),
                                                           self.model.tof_data,
-                                                          self.view.scalable_roi_widget.get_initial_param_values(),
+                                                          self.view.fitting_param_form.get_initial_param_values(),
                                                           bounds=bound_params)
-        self.view.scalable_roi_widget.set_fitted_parameter_values(result)
-        self.view.scalable_roi_widget.set_fit_quality(rss, reduced_rss)
+        self.view.fitting_param_form.set_fitted_parameter_values(result)
+        self.view.fitting_param_form.set_fit_quality(rss, reduced_rss)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(
@@ -771,8 +771,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
 
     def fit_all_regions(self):
-        init_params = self.view.scalable_roi_widget.get_initial_param_values()
-        bound_params = self.view.scalable_roi_widget.get_bound_parameters()
+        init_params = self.view.fitting_param_form.get_initial_param_values()
+        bound_params = self.view.fitting_param_form.get_bound_parameters()
         for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
             if roi_name == "rits_roi":
                 continue
