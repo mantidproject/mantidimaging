@@ -233,9 +233,11 @@ class SpectrumViewerWindowModel:
         spectrum = self._compute_spectrum(roi, mode, normalise_with_shuttercount, chunk_start, chunk_end, open_beam_roi)
         if spectrum is None:
             spectrum = np.array([])
+        if spectrum.size == 0:
+            LOG.debug("Skipping cache for empty spectrum (ROI=%s, mode=%s)", roi, mode.name)
+            return spectrum
         if chunk_start == 0 and chunk_end is None and spectrum.size > 0:
             self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi)
-
         return spectrum
 
     def _compute_spectrum(self,
