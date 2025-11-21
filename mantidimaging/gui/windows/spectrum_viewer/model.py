@@ -226,15 +226,14 @@ class SpectrumViewerWindowModel:
     ) -> np.ndarray:
 
         open_beam_roi = open_beam_roi or roi
-
         cache_key = (*roi, *open_beam_roi, mode, normalise_with_shuttercount)
         if cache_key in self.spectrum_cache and chunk_start == 0 and chunk_end is None:
-            return self.spectrum_cache[cache_key]
+            return np.asarray(self.spectrum_cache[cache_key])
 
-        spectrum = self._compute_spectrum(roi, mode, normalise_with_shuttercount, chunk_start, chunk_end,
-                                          open_beam_roi) or np.array([])
-        spectrum = np.asarray(spectrum)
-        if chunk_start == 0 and chunk_end is None:
+        spectrum = self._compute_spectrum(roi, mode, normalise_with_shuttercount, chunk_start, chunk_end, open_beam_roi)
+        if spectrum is None:
+            spectrum = np.array([])
+        if chunk_start == 0 and chunk_end is None and spectrum.size > 0:
             self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi)
 
         return spectrum
