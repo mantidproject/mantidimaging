@@ -56,14 +56,18 @@ class GuiSystemBase(unittest.TestCase):
         QTest.qWait(SHORT_DELAY)
         self.assertDictEqual(self.main_window.presenter.model.datasets, {})
 
-        if leak_count := leak_tracker.count():
+        # if self._outcome.result._excinfo is None then there were no AssertionErrors during the test
+        test_error = self._outcome.result._excinfo  # type: ignore
+        if test_error is None and (leak_count := leak_tracker.count()) > self.leak_count_limit:
             print("\nItems still alive:", leak_count)
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
-            if leak_count > self.leak_count_limit:
-                print("details:")
-                leak_tracker.pretty_print(debug_init=True, debug_owners=True, trace_depth=5)
-                raise RuntimeError(f"Too many leaked objects: {leak_count}")
-            leak_tracker.clear()
+            try:
+                if leak_count > self.leak_count_limit:
+                    print("details:")
+                    leak_tracker.pretty_print(debug_init=True, debug_owners=True, trace_depth=5)
+                    raise RuntimeError(f"Too many leaked objects: {leak_count}")
+            finally:
+                leak_tracker.clear()
 
         for widget in self.app.topLevelWidgets():
             if widget.isVisible():
