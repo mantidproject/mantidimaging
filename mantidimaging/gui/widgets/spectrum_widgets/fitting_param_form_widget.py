@@ -18,7 +18,12 @@ BoundType = tuple[float | None, float | None]
 
 class FittingParamFormWidget(QWidget):
     """
-    Scalable widget to display ROI parameters with Initial and Final values.
+    From for inputting and viewing fitting parameters.
+
+    Shows a row for each parameter in the current fitting model, with initial and final values, and controls to fix
+    and set ranges.
+    Has controls for getting initial parameters and running a fit.
+    Has space to show goodness of fit measures.
     """
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
@@ -56,7 +61,7 @@ class FittingParamFormWidget(QWidget):
     def set_parameters(self, params: list[str]) -> None:
         """
         Set parameters in the widget.
-        :param params: Dict of label -> (initial, final)
+        :param params: List of parameter names
         """
         self.clear_rows()
 
