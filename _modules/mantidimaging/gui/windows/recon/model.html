@@ -785,8 +785,12 @@
 
 <div class="viewcode-block" id="ReconstructWindowModel.auto_find_correlation">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.auto_find_correlation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">auto_find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Degrees</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">find_center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">auto_find_correlation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">,</span>
+        <span class="n">use_projections</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">Degrees</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">find_center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">use_projections</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowModel.stack_contains_nans">
