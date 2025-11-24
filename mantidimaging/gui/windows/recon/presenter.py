@@ -456,8 +456,10 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
                                           "projection set. Please load a 180 projection manually.")
             return
-
+        pair = self.view.get_selected_projection_pair()
+        use_projections = None if pair == "proj180" else pair
         self.recon_is_running = True
+        self.view.set_correlate_buttons_enabled(False)
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
@@ -476,13 +478,22 @@ class ReconstructWindowPresenter(BasePresenter):
             elif task.result is not None:
                 cor, tilt = task.result
                 self._set_precalculated_cor_tilt(cor, tilt)
+                LOG.info(f"Correlation completed: COR={cor.value:.3f}, Tilt={tilt.value:.3f}")
             else:
                 raise AssertionError("task in inconsistent state, both task.error and task.result are None")
             self.view.set_correlate_buttons_enabled(True)
             self.recon_is_running = False
 
-        self.view.set_correlate_buttons_enabled(False)
-        start_async_task_view(self.view, self.model.auto_find_correlation, completed, tracker=self.async_tracker)
+        start_async_task_view(
+            self.view,
+            self.model.auto_find_correlation,
+            completed,
+            {
+                "progress": None,
+                "use_projections": use_projections
+            },
+            tracker=self.async_tracker,
+        )
 
     def _auto_find_minimisation_square_sum(self) -> None:
         num_cors = self.view.get_number_of_cors()
