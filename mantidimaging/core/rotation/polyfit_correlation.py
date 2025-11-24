@@ -24,9 +24,26 @@ def do_calculate_correlation_err(store, search_index: int, p0_and_180, image_wid
     store[:] = np.square(np.roll(p0_and_180[0], search_index, axis=1) - p0_and_180[1]).sum(axis=1) / image_width
 
 
-def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degrees]:
-    if images is None or images.proj180deg is None:
-        raise ValueError("images and images.proj180deg cannot be None")
+def find_center(images: ImageStack,
+                progress: Progress,
+                use_projections: tuple[int, int] | None = None) -> tuple[ScalarCoR, Degrees]:
+
+    if images is None:
+        raise ValueError("images cannot be None")
+
+    proj180 = getattr(images, "proj180deg", None)
+    if use_projections is not None:
+        start_idx, end_idx = use_projections
+        proj_a = images.projection(start_idx)
+        proj_b = np.fliplr(images.projection(end_idx))
+        LOG.info(f"Using projections {start_idx} and {end_idx} for correlation")
+    elif proj180 is not None:
+        proj_a = images.projection(0)
+        proj_b = np.fliplr(proj180.data[0])
+        LOG.info("Using flipped images.proj180deg for correlation (legacy behaviour)")
+    else:
+        raise ValueError("No proj180deg available and no use_projections provided. "
+                         "Caller must specify use_projections or supply images.proj180deg.")
 
     # Assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)
@@ -38,8 +55,8 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
 
     # Copy projections to shared memory
     shared_projections = pu.create_array((2, images.height, images.width), dtype=np.float32)
-    shared_projections.array[0][:] = images.projection(0)
-    shared_projections.array[1][:] = np.fliplr(images.proj180deg.data[0])
+    shared_projections.array[0][:] = proj_a
+    shared_projections.array[1][:] = proj_b
 
     # Prepare parameters for the compute function
     params = {'image_width': images.width}
@@ -47,19 +64,15 @@ def find_center(images: ImageStack, progress: Progress) -> tuple[ScalarCoR, Degr
                         len(search_range), [min_correlation_error, shared_projections, shared_search_range],
                         params,
                         progress=progress)
-
     _find_shift(images, search_range, min_correlation_error.array, shift.array)
 
     par = np.polyfit(slices, shift.array, deg=1)
-    m = float(par[0])
-    q = float(par[1])
-    LOG.debug(f"m={m}, q={q}")
-
+    m, q = float(par[0]), float(par[1])
     theta = Degrees(np.rad2deg(np.arctan(0.5 * m)))
     offset = float(np.round(m * images.height * 0.5 + q) * 0.5)
     LOG.info(f"found offset: {-offset} and tilt {theta}")
 
-    return ScalarCoR(images.h_middle + -offset), theta
+    return ScalarCoR(images.h_middle - offset), theta
 
 
 def compute_correlation_error(index: int, arrays: list[NDArray[np.float32]], params: dict[str, int]) -> None:

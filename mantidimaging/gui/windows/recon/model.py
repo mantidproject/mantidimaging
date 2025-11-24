@@ -257,8 +257,12 @@ class ReconstructWindowModel:
         LOG.info("COR minimisation completed: CORs=%s", cors)
         return cors
 
-    def auto_find_correlation(self, progress: Progress) -> tuple[ScalarCoR, Degrees]:
-        return find_center(self.images, progress)
+    def auto_find_correlation(
+        self,
+        progress: Progress,
+        use_projections: tuple[int, int] | None = None,
+    ) -> tuple[ScalarCoR, Degrees]:
+        return find_center(self.images, progress, use_projections)
 
     def stack_contains_nans(self) -> bool:
         return bool(np.any(np.isnan(self.images.data)))
