@@ -113,12 +113,12 @@
         <widget class="QComboBox" name="image_output_mode_combobox">
          <item>
           <property name="text">
-           <string>Single Spectrum</string>
+           <string>2D Binned</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>2D Binned</string>
+           <string>Single Spectrum</string>
           </property>
          </item>
         </widget>
