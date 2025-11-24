@@ -87,7 +87,6 @@ class LeakTracker:
 
     def __init__(self):
         self.tracked_objects = []
-        self.leak_limit_exceeded = False
 
     def add(self, item, msg=""):
         created = traceback.format_stack()[:-1]
