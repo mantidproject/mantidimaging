@@ -268,11 +268,6 @@ class MainWindowView(BaseMainWindowView):
         self.actionResetLayout.setShortcut("Ctrl+Shift+R")
         self.actionResetLayout.triggered.connect(self.reset_layout)
 
-        # Add Reset Layout action
-        self.actionResetLayout = QAction("Reset Layout", self)
-        self.actionResetLayout.setShortcut("Ctrl+Shift+R")
-        self.actionResetLayout.triggered.connect(self.reset_layout)
-
         # Spectrum Viewer
         self.actionSpectrumViewer.setShortcut("Ctrl+P")
 
