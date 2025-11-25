@@ -382,3 +382,16 @@ class ImageStackTest(unittest.TestCase):
         images.has_proj180deg = mock.MagicMock(return_value=False)
 
         self.assertFalse(images.proj_180_degree_shape_matches_images())
+
+    def test_find_image_from_angle_closest_index(self):
+        images = generate_images()
+        angles = np.linspace(0, 180, images.num_projections)
+        images.geometry = mock.MagicMock()
+        images.geometry.angles = angles
+        idx = images.find_image_from_angle(90)
+
+        self.assertEqual(idx, np.argmin(np.abs(angles - 90)))
+        idx_tol = images.find_image_from_angle(99, tol=2)
+        self.assertEqual(idx_tol, np.argmin(np.abs(angles - 99)))
+        with self.assertRaises(ValueError):
+            images.find_image_from_angle(200, tol=1)

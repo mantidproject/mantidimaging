@@ -457,7 +457,18 @@ class ReconstructWindowPresenter(BasePresenter):
                                           "projection set. Please load a 180 projection manually.")
             return
         pair = self.view.get_selected_projection_pair()
-        use_projections = None if pair == "proj180" else pair
+        use_projections = None
+        if pair != "proj180":
+            try:
+                proj1_angle, proj2_angle = pair
+                idx1 = self.model.images.find_image_from_angle(proj1_angle, tol=2)
+                idx2 = self.model.images.find_image_from_angle(proj2_angle, tol=2)
+                LOG.info(f"Using projections at {proj1_angle:.2f}° and {proj2_angle:.2f}° "
+                         f"(closest indices {idx1}, {idx2})")
+                use_projections = (idx1, idx2)
+            except ValueError as e:
+                self.view.show_error_dialog(str(e))
+                return
         self.recon_is_running = True
         self.view.set_correlate_buttons_enabled(False)
 

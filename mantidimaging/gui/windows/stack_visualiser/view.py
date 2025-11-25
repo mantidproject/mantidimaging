@@ -158,7 +158,7 @@ class StackVisualiserView(QDockWidget):
             4,  # Digits/decimals
             flags=INPUT_DIALOG_FLAGS)
         if accepted:
-            self.image_view.set_selected_image(self.presenter.find_image_from_angle(projection_to_goto))
+            self.image_view.set_selected_image(self.model.images.find_image_from_angle(projection_to_goto, tol=2))
 
     def set_roi(self) -> None:
         roi, accepted = QInputDialog.getText(
