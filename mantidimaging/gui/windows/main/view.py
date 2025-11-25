@@ -258,6 +258,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionViewer3d.triggered.connect(self.open_3d_viewer)
         self.actionLiveViewer.triggered.connect(self.live_view_choose_directory)
         self.actionSettings.triggered.connect(self.show_settings_window)
+        self.actionSpectrumViewer.triggered.connect(self.show_spectrum_viewer_window)
 
         self.actionCompareImages.triggered.connect(self.show_stack_select_dialog)
 
@@ -271,6 +272,9 @@ class MainWindowView(BaseMainWindowView):
         self.actionResetLayout = QAction("Reset Layout", self)
         self.actionResetLayout.setShortcut("Ctrl+Shift+R")
         self.actionResetLayout.triggered.connect(self.reset_layout)
+
+        # Spectrum Viewer
+        self.actionSpectrumViewer.setShortcut("Ctrl+P")
 
         # Add to View menu (menuView always exists now)
         self.menuView.addAction(self.actionResetLayout)
