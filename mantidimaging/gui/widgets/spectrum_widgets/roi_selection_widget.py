@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-
+from mantidimaging.core.utility.sensible_roi import ROIBinner
 from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
 from PyQt5 import QtWidgets, QtCore
 from logging import getLogger
@@ -81,3 +81,8 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     def handle_mode_change(self, mode: ExportMode) -> None:
         self.roiDropdown.setVisible(mode == ExportMode.ROI_MODE)
         self.subroiRow.setVisible(mode == ExportMode.IMAGE_MODE)
+
+    def handle_binning_changed(self, binner: ROIBinner) -> None:
+        x_len, y_len = binner.lengths()
+        self.sub_roi_x_input.setMaximum(x_len)
+        self.sub_roi_y_input.setMaximum(y_len)

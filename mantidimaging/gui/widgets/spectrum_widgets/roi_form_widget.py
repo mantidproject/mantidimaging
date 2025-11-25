@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QLabel
 from logging import getLogger
 
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.gui.mvp_base import BaseWidget
 from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
@@ -36,6 +36,7 @@ class ROIFormWidget(BaseWidget):
     transmission_error_mode_combobox: QComboBox
     bin_size_spinBox: QSpinBox
     bin_step_spinBox: QSpinBox
+    binningChanged = pyqtSignal(ROIBinner)
 
     def __init__(self, parent=None):
         super().__init__(parent, ui_file='gui/ui/roi_form_widget.ui')
@@ -59,8 +60,8 @@ class ROIFormWidget(BaseWidget):
         idx = btn_layout.indexOf(self.exportButtonRITS)
         btn_layout.insertWidget(idx, self.ritsWarningIcon)
 
-        self.bin_step_spinBox.valueChanged.connect(self._check_rits_step_validity)
-        self.bin_size_spinBox.valueChanged.connect(self._check_rits_step_validity)
+        self.bin_step_spinBox.valueChanged.connect(self._binning_changed)
+        self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
 
     @property
     def image_output_mode(self) -> str:
@@ -78,10 +79,15 @@ class ROIFormWidget(BaseWidget):
         self.ritsWarningIcon.setVisible(visible)
         self.ritsWarningIcon.setToolTip(message or "")
 
-    def _check_rits_step_validity(self) -> None:
+    def _binning_changed(self) -> None:
         roi = self.roi_properties_widget.to_roi()
         step = self.bin_step_spinBox.value()
         bin_size = self.bin_size_spinBox.value()
+        self._check_rits_step_validity(roi, step, bin_size)
+        binner = ROIBinner(roi, step_size=step, bin_size=bin_size)
+        self.binningChanged.emit(binner)
+
+    def _check_rits_step_validity(self, roi: SensibleROI, step: int, bin_size: int) -> None:
         roi_width = roi.right - roi.left
         roi_height = roi.bottom - roi.top
         norm_mode = self.transmission_error_mode_combobox.currentText()
