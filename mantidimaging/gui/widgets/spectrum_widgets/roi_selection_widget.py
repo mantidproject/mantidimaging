@@ -5,6 +5,8 @@ from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
 from PyQt5 import QtWidgets, QtCore
 from logging import getLogger
 
+from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
+
 LOG = getLogger(__name__)
 
 
@@ -21,7 +23,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     def __init__(self, parent: QtWidgets.QWidget = None):
         super().__init__("Select ROI", parent)
 
-        self.setFixedHeight(60)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(10, 5, 10, 5)
         layout.setSpacing(2)
@@ -30,6 +32,16 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         self.roiDropdown.currentIndexChanged.connect(self._on_selection_changed)
         layout.addWidget(self.roiDropdown)
         self.previous_selection = None
+
+        self.subroiRow = QtWidgets.QWidget()
+        subroi_row_layout = QtWidgets.QHBoxLayout(self.subroiRow)
+        self.sub_roi_x_input = QtWidgets.QSpinBox()
+        self.sub_roi_y_input = QtWidgets.QSpinBox()
+        subroi_row_layout.addWidget(QtWidgets.QLabel("Roi bin"))
+        subroi_row_layout.addWidget(self.sub_roi_x_input)
+        subroi_row_layout.addWidget(self.sub_roi_y_input)
+        layout.addWidget(self.subroiRow)
+        self.subroiRow.hide()
 
     def _on_selection_changed(self) -> None:
         """ Handle dropdown selection change and emit signal. """
@@ -65,3 +77,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     def current_roi_name(self) -> str:
         """Returns the currently selected ROI name from the dropdown."""
         return self.roiDropdown.currentText()
+
+    def handle_mode_change(self, mode: ExportMode) -> None:
+        self.roiDropdown.setVisible(mode == ExportMode.ROI_MODE)
+        self.subroiRow.setVisible(mode == ExportMode.IMAGE_MODE)
