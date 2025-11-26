@@ -54,6 +54,9 @@ class ROIBinner:
         self._step_size = step_size
         self._bin_size = bin_size
 
+        if step_size < 1:
+            raise ValueError("ROIBinner step_size must greater than zero")
+
         self.left_indexes = range(roi.left, roi.right - bin_size + 1, step_size)
         self.top_indexes = range(roi.top, roi.bottom - bin_size + 1, step_size)
 
@@ -76,3 +79,21 @@ class ROIBinner:
     @property
     def bin_size(self) -> int:
         return self._bin_size
+
+    def is_valid(self) -> tuple[bool, str]:
+        """
+        Validates that the bin_size and step_size are compatible with aech other the roi dimensions
+        - bin_size must be greater than zero (step_size must be checked at construction)
+        - bin_size must be greater or equal than step_size (to avoid gaps)
+        - bin_size must be less than or equal to roi width and height (to fit in the roi)
+        Returns:
+            validity (bool), message (str)
+        """
+        if self.bin_size < 1:
+            return False, "bin_size must be greater than zero"
+        if self.bin_size < self.step_size:
+            return False, "bin_size must be greater or equal than step_size"
+        if self.bin_size > self.roi.width or self.bin_size > self.roi.height:
+            return False, "step_size must be less than or equal to roi width and height"
+
+        return True, ""
