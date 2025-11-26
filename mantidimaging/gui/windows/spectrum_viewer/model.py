@@ -446,28 +446,6 @@ class SpectrumViewerWindowModel:
         LOG.info("Exporting RITS file: path=%s, ROI=(%d,%d,%d,%d), error_mode=%s", path, roi.left, roi.top, roi.right,
                  roi.bottom, error_mode.name)
 
-    def validate_bin_and_step_size(self, roi: SensibleROI, bin_size: int, step_size: int) -> None:
-        """
-        Validates the bin size and step size for saving RITS images.
-        This method checks the following conditions:
-        - Both bin size and step size must be greater than 0.
-        - Bin size must be larger than or equal to step size.
-        - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.
-        If any of these conditions are not met, a ValueError is raised.
-        Parameters:
-            roi: The region of interest (ROI) to which the bin size and step size should be compared.
-            bin_size (int): The size of the bins to be validated.
-            step_size (int): The size of the steps to be validated.
-        Raises:
-            ValueError: If any of the validation conditions are not met.
-        """
-        if bin_size and step_size < 1:
-            raise ValueError("Both bin size and step size must be greater than 0")
-        if bin_size < step_size:
-            raise ValueError("Bin size must be larger than or equal to step size")
-        if bin_size and step_size > min(roi.width, roi.height):
-            raise ValueError("Both bin size and step size must be less than or equal to the ROI size")
-
     def save_rits_images(self,
                          directory: Path,
                          error_mode: ErrorMode,
@@ -505,7 +483,10 @@ class SpectrumViewerWindowModel:
         x_iterations, y_iterations = binner.lengths()
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
 
-        self.validate_bin_and_step_size(roi, bin_size, step)
+        is_valid, message = binner.is_valid()
+        if not is_valid:
+            raise ValueError(f"Invalid binning: {message}")
+
         for y in range(y_iterations):
             for x in range(x_iterations):
                 sub_roi = binner.get_sub_roi(x, y)
