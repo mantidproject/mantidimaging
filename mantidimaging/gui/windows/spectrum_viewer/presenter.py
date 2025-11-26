@@ -92,12 +92,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.model.spectrum_cache.clear()
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
         open_beam_roi = self.view.get_open_beam_roi()
-        self.model.get_spectrum(sample_roi,
-                                self.spectrum_mode,
-                                self.view.shuttercount_norm_enabled(),
-                                open_beam_roi=open_beam_roi)
+        spectrum = self.model.get_spectrum(sample_roi,
+                                           self.spectrum_mode,
+                                           self.view.shuttercount_norm_enabled(),
+                                           open_beam_roi=open_beam_roi)
+        if spectrum is not None and spectrum.size > 0:
+            self.view.set_spectrum("roi", spectrum)
+        else:
+            LOG.debug("Skipping empty spectrum display during stack modification")
         self.reset_units_menu()
-
         self.handle_tof_unit_change()
         self.show_new_sample()
         self.redraw_all_rois()
@@ -109,7 +112,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                            self.spectrum_mode,
                                            self.view.shuttercount_norm_enabled(),
                                            open_beam_roi=open_beam_roi)
-
+        if spectrum is not None and spectrum.size > 0:
+            self.view.set_spectrum("roi", spectrum)
+        else:
+            LOG.debug("Skipping empty spectrum display during initial ROI calculation")
         self.view.set_spectrum("roi", spectrum)
         self.set_default_fitting_region()
 
@@ -251,7 +257,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         run_thread_check = roi not in self.roi_to_process_queue
         self.roi_to_process_queue[self.changed_roi.name] = self.changed_roi
         spectrum = self.view.spectrum_widget.spectrum_data_dict[roi.name]
-        if spectrum is not None:
+        if spectrum is not None and hasattr(spectrum, "size") and spectrum.size > 0:
             self.image_nan_mask_dict[roi.name] = np.ma.asarray(np.full(self.model.get_stack_length(), np.nan))
         self.clear_spectrum()
         self.view.show_visible_spectrums()
@@ -349,7 +355,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if list(self.roi_to_process_queue.keys())[0] not in self.view.spectrum_widget.spectrum_data_dict.keys():
             return
         spectrum = self.image_nan_mask_dict[list(self.roi_to_process_queue.keys())[0]]
-        if spectrum is not None:
+        if spectrum is not None and hasattr(spectrum, "size") and spectrum.size > 0:
             if np.isnan(spectrum).any():
                 if not self.handle_roi_change_timer.isActive():
                     self.handle_roi_change_timer.start(10)
