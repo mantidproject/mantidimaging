@@ -567,8 +567,5 @@ class ReconstructWindowView(BaseMainWindowView):
     def set_max_slice_index(self, max_index: int) -> None:
         self.previewSliceIndexSpinBox.setMaximum(max_index)
 
-    def get_selected_projection_pair(self):
+    def get_selected_projection_pair(self) -> tuple[float, float]:
         return self.projectionPairDropdown.currentData()
-
-    def use_proj180_selected(self):
-        return self.projectionPairDropdown.currentData() == "proj180"

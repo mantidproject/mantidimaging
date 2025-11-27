@@ -349,14 +349,14 @@ class ImageStack:
         self._shutter_count_file = value
 
     def find_image_from_angle(self, target_angle: float, tol: float | None = None) -> int:
-        angles = getattr(getattr(self, "geometry", None), "angles", None)
-        if angles is None or len(angles) == 0:
+        angles = self.real_projection_angles()
+        if angles is None or len(angles.value) == 0:
             raise ValueError("No projection angles defined for this ImageStack")
-        angles = np.asarray(angles, dtype=float)
-        idx = int(np.argmin(np.abs(angles - target_angle)))
-        if tol and abs(angles[idx] - target_angle) > tol:
-            raise ValueError(f"No angle within {tol}° of {target_angle}° (closest: {angles[idx]:.2f}°)")
-        return idx
+        angles_deg = np.rad2deg(angles.value)
+        idx = np.argmin(np.abs(angles_deg - target_angle))
+        if tol is not None and abs(angles_deg[idx] - target_angle) > tol:
+            raise ValueError(f"No angle within {tol}° of {target_angle}° (closest: {angles_deg[idx]:.2f}°)")
+        return int(idx)
 
     def set_projection_angles(self, angles: ProjectionAngles) -> None:
         """

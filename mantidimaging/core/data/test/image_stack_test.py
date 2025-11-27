@@ -388,10 +388,11 @@ class ImageStackTest(unittest.TestCase):
         angles = np.linspace(0, 180, images.num_projections)
         images.geometry = mock.MagicMock()
         images.geometry.angles = angles
-        idx = images.find_image_from_angle(90)
 
+        idx = images.find_image_from_angle(90)
         self.assertEqual(idx, np.argmin(np.abs(angles - 90)))
         idx_tol = images.find_image_from_angle(99, tol=2)
+
         self.assertEqual(idx_tol, np.argmin(np.abs(angles - 99)))
         with self.assertRaises(ValueError):
             images.find_image_from_angle(200, tol=1)
