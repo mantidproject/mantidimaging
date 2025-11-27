@@ -242,14 +242,17 @@ class CILRecon(BaseRecon):
                 # COMPAT CIL < 24.1  - workaround for https://github.com/TomographicImaging/CIL/issues/1445
                 data.geometry = BlockGeometry(*geo)
         else:
-            data.reorder('astra')
+            data.reorder("astra")
 
         return data
 
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
+        projection_angles = images.projection_angles()
+        assert projection_angles is not None
+
         return tomopy.find_center(images.sinograms,
-                                  images.projection_angles(recon_params.max_projection_angle).value,
+                                  projection_angles.value,
                                   ind=slice_idx,
                                   init=start_cor,
                                   sinogram_order=True)
@@ -267,7 +270,8 @@ class CILRecon(BaseRecon):
         assert (images.geometry is not None)
         sino = images.sino(slice_idx)
         cor = images.geometry.get_cor_at_slice_index(slice_idx)
-        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+        proj_angles = images.projection_angles()
+        assert (proj_angles is not None)
         geom_type = images.geometry.type
 
         num_iter = recon_params.num_iter

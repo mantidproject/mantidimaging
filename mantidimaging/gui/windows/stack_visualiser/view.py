@@ -104,7 +104,7 @@ class StackVisualiserView(QDockWidget):
 
     def set_image(self, image_stack: ImageStack):
         self.image = image_stack.data
-        self.image_view.angles = image_stack.real_projection_angles()
+        self.image_view.angles = image_stack.projection_angles()
 
     @property
     def main_window(self) -> MainWindowView:
