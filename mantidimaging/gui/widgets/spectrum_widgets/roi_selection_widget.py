@@ -40,6 +40,8 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         subroi_row_layout.addWidget(QtWidgets.QLabel("Roi bin"))
         subroi_row_layout.addWidget(self.sub_roi_x_input)
         subroi_row_layout.addWidget(self.sub_roi_y_input)
+        self.sub_roi_x_input.setToolTip("Bin x coordinate (from left)")
+        self.sub_roi_y_input.setToolTip("Bin y coordinate (from top)")
         layout.addWidget(self.subroiRow)
         self.subroiRow.hide()
 
