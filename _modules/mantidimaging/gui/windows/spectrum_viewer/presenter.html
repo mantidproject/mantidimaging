@@ -1188,6 +1188,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_export_tab_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_export_tab_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">=</span> <span class="n">ExportMode</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">handle_mode_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_mode</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">on_visibility_change</span><span class="p">()</span></div>
 
 

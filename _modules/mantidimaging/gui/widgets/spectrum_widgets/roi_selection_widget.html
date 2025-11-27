@@ -476,10 +476,12 @@
   <h1>Source code for mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROIBinner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI_RITS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportMode</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -499,7 +501,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;Select ROI&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Maximum</span><span class="p">)</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -508,6 +510,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_selection_changed</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previous_selection</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">subroi_row_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="n">subroi_row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Roi bin&quot;</span><span class="p">))</span>
+        <span class="n">subroi_row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="p">)</span>
+        <span class="n">subroi_row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Bin x coordinate (from left)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Bin y coordinate (from top)&quot;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_selection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Handle dropdown selection change and emit signal. &quot;&quot;&quot;</span>
@@ -548,7 +562,22 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the currently selected ROI name from the dropdown.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ROISelectionWidget.handle_mode_change">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.handle_mode_change">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_mode_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">ExportMode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">IMAGE_MODE</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ROISelectionWidget.handle_binning_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.handle_binning_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_binning_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x_len</span><span class="p">,</span> <span class="n">y_len</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">lengths</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">x_len</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">y_len</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 
