@@ -161,6 +161,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.openBeamRoiCombo.currentIndexChanged.connect(self.presenter.handle_open_beam_roi_choice_changed)
         self.roi_form.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
+        self.roi_form.binningChanged.connect(self.roiSelectionWidget.handle_binning_changed)
 
         # ROI action buttons
         self.roi_form.addBtn.clicked.connect(self.set_new_roi)
