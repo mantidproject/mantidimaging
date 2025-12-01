@@ -10,10 +10,10 @@ from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint, QTimer, QEvent
 from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
 from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout, QApplication
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -124,6 +124,7 @@ class MainWindowView(BaseMainWindowView):
 
     def __init__(self, open_dialogs: bool = True):
         super().__init__(None, "gui/ui/main_window.ui")
+        QApplication.instance().installEventFilter(self)
 
         self.menuView = self.menuBar().addMenu("View")
 
@@ -133,6 +134,13 @@ class MainWindowView(BaseMainWindowView):
 
         self.args = CommandLineArguments()
 
+        self.installEventFilter(self)
+        # Select File but do NOT open it
+        QTimer.singleShot(300, lambda: self.menuBar().setActiveAction(self.menuFile.menuAction()))
+
+        # Give focus to the menubar so TAB key is captured
+        QTimer.singleShot(300, lambda: self.menuBar().setFocus())
+
         if not self.args.path():
             self.create_welcome_screen()
 
@@ -140,7 +148,6 @@ class MainWindowView(BaseMainWindowView):
         self.status_bar_label = QLabel("", self)
         status_bar.addPermanentWidget(self.status_bar_label)
 
-        self.setup_shortcuts()
         self.update_shortcuts()
         self.setAcceptDrops(True)
 
@@ -678,6 +685,25 @@ class MainWindowView(BaseMainWindowView):
             else:
                 QMessageBox.critical(self, "Load not possible!", "Please drag and drop only folders/directories!")
                 return
+
+    def eventFilter(self, watched, event):
+        from PyQt5.QtCore import QEvent, Qt
+
+        if event.type() == QEvent.KeyPress and event.key() == Qt.Key_Tab:
+            self.menuBar().setActiveAction(self.menuFile.menuAction())
+            action = self.menuFile.menuAction()
+            geo = self.menuBar().actionGeometry(action)
+            pos = self.menuBar().mapToGlobal(geo.bottomLeft())
+            self.menuFile.popup(pos)
+
+            return True
+
+        return False
+
+    def _window_ready(self):
+        super()._window_ready()
+        self.menuBar().setActiveAction(self.menuFile.menuAction())
+        self.menuFile.close()
 
     def ask_to_use_closest_to_180(self, diff_rad: float) -> bool:
         """
