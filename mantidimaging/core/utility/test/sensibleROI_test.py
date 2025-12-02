@@ -161,6 +161,18 @@ class ROIBinnerTest(unittest.TestCase):
         is_valid, reason = binner.is_valid()
         self.assertEqual(is_valid, expect_is_valid)
 
+    @parameterized.expand([
+        ("good_fit_same", SensibleROI(0, 0, 20, 20), 5, 5, True),
+        ("good_fit_different", SensibleROI(0, 0, 23, 26), 5, 3, True),
+        ("good_fit_moved", SensibleROI(1, 2, 21, 22), 5, 5, True),
+        ("bad_fit_small_step", SensibleROI(0, 0, 20, 20), 5, 4, False),
+        ("bad_fit_horizontal", SensibleROI(0, 0, 11, 12), 3, 3, False),
+        ("bad_fit_vertical", SensibleROI(0, 0, 12, 11), 3, 3, False),
+    ])
+    def test_binner_fits_exactly_check(self, _, roi, bin_size, step_size, expected):
+        binner = ROIBinner(roi, step_size, bin_size)
+        self.assertEqual(binner.check_fits_exactly(), expected)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -97,3 +97,11 @@ class ROIBinner:
             return False, "step_size must be less than or equal to roi width and height"
 
         return True, ""
+
+    def check_fits_exactly(self) -> bool:
+        """
+        Check that the bins fit exactly in the roi
+        """
+        right_edge = self.left_indexes[-1] + self.bin_size
+        bottom_edge = self.top_indexes[-1] + self.bin_size
+        return right_edge == self.roi.right and bottom_edge == self.roi.bottom
