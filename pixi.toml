@@ -264,6 +264,7 @@ SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 [feature.dev.tasks]
 # Documentation base tasks
 build-docs-base = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", description = "Base task to build Sphinx documentation" }
+build-docs-headless-base = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to build Sphinx documentation in headless mode" }
 release-notes-base = { cmd = "python setup.py release_notes", description = "Base task to generate release notes" }
 
 [tasks]
@@ -316,6 +317,7 @@ lint-all-continue = { depends-on = ["mypy-continue", "pyright-continue", "yapf-c
 
 # Documentation tasks
 build-docs = { depends-on = [{ task = "build-docs-base", environment = "dev" }], description = "Build Sphinx documentation" }
+build-docs-headless = { depends-on = [{ task = "build-docs-headless-base", environment = "dev" }], description = "Build Sphinx documentation in headless mode" }
 release-notes = { depends-on = [{ task = "release-notes-base", environment = "dev" }], description = "Generate release notes" }
 
 # Cross-platform Tasks for building and uploading conda packages
