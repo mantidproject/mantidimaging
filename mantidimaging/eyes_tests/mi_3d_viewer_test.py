@@ -1,8 +1,10 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
-# SPDX - License - Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import sys
 import numpy as np
+import pytest
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
@@ -13,7 +15,19 @@ from mantidimaging.test_helpers.unit_test_helper import generate_zeroed_images
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
+@pytest.mark.usefixtures("qt_app")
 class MI3DViewerTest(BaseEyesTest):
+    """
+    Tests for the 3D viewer functionality in Mantid Imaging.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        # Ensure QApplication exists before any GUI code runs
+        cls._app = QApplication.instance()
+        if cls._app is None:
+            cls._app = QApplication(sys.argv)
+        super().setUpClass()
 
     def _create_3d_object(self, shape=(30, 30, 30), cube_size=12, dtype=np.float32):
         """
@@ -33,7 +47,7 @@ class MI3DViewerTest(BaseEyesTest):
         volume[cube_z0:cube_z0 + cube_size, cube_y0:cube_y0 + cube_size, cube_x0:cube_x0 + cube_size] = 250
 
         radius = cube_size / 2
-        sphere_cx = cube_x0 + cube_size + radius  # sphere next to cube
+        sphere_cx = cube_x0 + cube_size + radius
         sphere_cy = y_size / 2
         sphere_cz = z_size / 2
         sphere_mask = (x - sphere_cx)**2 + (y - sphere_cy)**2 + (z - sphere_cz)**2 <= radius**2
