@@ -31,6 +31,11 @@ def gen_img_numpy_rand(shape=g_shape, seed: int | None = None) -> np.ndarray:
     return rng.random(shape)
 
 
+def generate_zeroed_images(shape=g_shape, dtype=np.float32) -> ImageStack:
+    d = pu.create_array(shape, dtype)
+    return ImageStack(d)
+
+
 def generate_images(shape=g_shape, dtype=np.float32, seed: int | None = None) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
