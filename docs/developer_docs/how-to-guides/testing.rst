@@ -37,6 +37,24 @@ If you are using `pytest`, you can run tests that match a specific keyword by us
 These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
 See the Pytest docs for additional `command line options <https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags>`_.
 
+Running tests with Ada
+----------------------
+
+.. note:: Ada (previously known as IDAaaS) is a remote VM system available to STFC staff and ISIS users.
+
+Access the platform through the `Ada Login <https://ada.stfc.ac.uk/login>`_ page, and see :ref:`getting-started-with-ada` in **Tutorials** if you're new to using Ada.
+
+To run the tests from the terminal in VSCode, first clone the ``mantidimaging-data`` repository in the same parent directory as ``mantidimaging``::
+
+    git clone https://github.com/mantidproject/mantidimaging-data.git
+
+Set the following environment variable::
+
+    export QT_QPA_PLATFORM=offscreen
+
+Then execute the tests by running::
+
+    python3 -m pytest -vs
 
 Pre-commit
 ----------
@@ -128,6 +146,27 @@ GUI system tests
 GUI system tests run work flows in Mantid Imaging in a 'realistic' way, where possible by using QTest methods to emulate mouse and keyboard actions. They use the same data files as the GUI screenshot tests. These take several minutes to run (longer on Windows) and so must be explicitly requested.::
 
     make test-system
+
+
+Test Data for Manual Testing
+----------------------------
+Mantid Imaging provides a collection of example datasets that developers can use when manually testing new features, investigating bugs, or validating workflow behaviour outside of the automated test suite.
+
+These datasets can be downloaded from the Mantid Imaging "Example Data" Sharepoint folder which is accessible to internal team members only (please reach out to a member of the team to request access).
+
+Alternatively, the Ceph data store, which is accessible via `Ada <https://ada.stfc.ac.uk/login>`_ data-analysis-as-a-service platform, located at:
+``/mnt/ceph/auxiliary/tomography/example_data`` can be used to access example datasets.
+
+For external users without an Ada account who would like access to example data, a repository containing `test data <https://github.com/mantidproject/mantidimaging-data>`_ for system testing is available. You can download data from this repository to run manual testing.
+
+To use these datasets locally:
+
+- Download the dataset locally from the repository or Sharepoint link.
+- Extract the contents to a known location on your local machine.
+- Load the dataset through the GUI or using the ``--path`` flag when launching Mantid Imaging from the command line for example::
+
+    python -m mantidimaging --path /path/to/downloaded/dataset
+
 
 Logging
 -------
