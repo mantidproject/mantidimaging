@@ -263,8 +263,8 @@ SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 
 [feature.dev.tasks]
 # Documentation base tasks
-build-docs-base = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", description = "Base task to build Sphinx documentation" }
-build-docs-headless-base = { cmd = "sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to build Sphinx documentation in headless mode" }
+build-docs-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\", ignore_errors=True)' && sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' '**/tests' 'mantidimaging/ipython' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", description = "Base task to build Sphinx documentation" }
+build-docs-headless-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\", ignore_errors=True)' && sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' '**/tests' 'mantidimaging/ipython' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to build Sphinx documentation in headless mode" }
 release-notes-base = { cmd = "python setup.py release_notes", description = "Base task to generate release notes" }
 
 [tasks]
