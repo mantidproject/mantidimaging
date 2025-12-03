@@ -1,7 +1,9 @@
+.. _getting-started-with-ada:
+
 Getting Started with Ada
 ---------------
 
-.. note:: Ada is a remote VM system available to STFC staff and ISIS users.
+.. note:: Ada (previously known as IDAaaS) is a remote VM system available to STFC staff and ISIS users.
 
 First, log in to the `Ada platform <https://ada.stfc.ac.uk/>`_
 using your STFC email and password. Once logged in, you can select

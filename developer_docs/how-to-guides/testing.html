@@ -559,6 +559,26 @@
 <p>These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
 See the Pytest docs for additional <a class="reference external" href="https://docs.pytest.org/en/stable/reference/reference.html#command-line-flags">command line options</a>.</p>
 </section>
+<section id="running-tests-with-ada">
+<h2>Running tests with Ada<a class="headerlink" href="#running-tests-with-ada" title="Link to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ada (previously known as IDAaaS) is a remote VM system available to STFC staff and ISIS users.</p>
+</div>
+<p>Access the platform through the <a class="reference external" href="https://ada.stfc.ac.uk/login">Ada Login</a> page, and see <a class="reference internal" href="../tutorials/started_ada.html#getting-started-with-ada"><span class="std std-ref">Getting Started with Ada</span></a> in <strong>Tutorials</strong> if you’re new to using Ada.</p>
+<p>To run the tests from the terminal in VSCode, first clone the <code class="docutils literal notranslate"><span class="pre">mantidimaging-data</span></code> repository in the same parent directory as <code class="docutils literal notranslate"><span class="pre">mantidimaging</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mantidproject</span><span class="o">/</span><span class="n">mantidimaging</span><span class="o">-</span><span class="n">data</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<p>Set the following environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">QT_QPA_PLATFORM</span><span class="o">=</span><span class="n">offscreen</span>
+</pre></div>
+</div>
+<p>Then execute the tests by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">vs</span>
+</pre></div>
+</div>
+</section>
 <section id="pre-commit">
 <h2>Pre-commit<a class="headerlink" href="#pre-commit" title="Link to this heading">#</a></h2>
 <p>Mantid Imaging uses <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.</p>
@@ -640,6 +660,24 @@ See the Pytest docs for additional <a class="reference external" href="https://d
 </pre></div>
 </div>
 </section>
+<section id="test-data-for-manual-testing">
+<h2>Test Data for Manual Testing<a class="headerlink" href="#test-data-for-manual-testing" title="Link to this heading">#</a></h2>
+<p>Mantid Imaging provides a collection of example datasets that developers can use when manually testing new features, investigating bugs, or validating workflow behaviour outside of the automated test suite.</p>
+<p>These datasets can be downloaded from the Mantid Imaging “Example Data” Sharepoint folder which is accessible to internal team members only (please reach out to a member of the team to request access).</p>
+<p>Alternatively, the Ceph data store, which is accessible via <a class="reference external" href="https://ada.stfc.ac.uk/login">Ada</a> data-analysis-as-a-service platform, located at:
+<code class="docutils literal notranslate"><span class="pre">/mnt/ceph/auxiliary/tomography/example_data</span></code> can be used to access example datasets.</p>
+<p>For external users without an Ada account who would like access to example data, a repository containing <a class="reference external" href="https://github.com/mantidproject/mantidimaging-data">test data</a> for system testing is available. You can download data from this repository to run manual testing.</p>
+<p>To use these datasets locally:</p>
+<ul>
+<li><p>Download the dataset locally from the repository or Sharepoint link.</p></li>
+<li><p>Extract the contents to a known location on your local machine.</p></li>
+<li><p>Load the dataset through the GUI or using the <code class="docutils literal notranslate"><span class="pre">--path</span></code> flag when launching Mantid Imaging from the command line for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">mantidimaging</span> <span class="o">--</span><span class="n">path</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">downloaded</span><span class="o">/</span><span class="n">dataset</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 <section id="logging">
 <h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">#</a></h2>
 <p>See the <a class="reference internal" href="../../troubleshooting.html#troubleshooting-logging"><span class="std std-ref">Logging</span></a> section for details on logging configuration.</p>
@@ -719,11 +757,13 @@ See the Pytest docs for additional <a class="reference external" href="https://d
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-specific-tests">Running Specific Tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-tests-with-ada">Running tests with Ada</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-commit">Pre-commit</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-testing">Unit testing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#static-analysis">Static analysis</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gui-screenshot-testing">GUI Screenshot Testing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gui-system-tests">GUI system tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-data-for-manual-testing">Test Data for Manual Testing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">Logging</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmarking-and-profiling">Benchmarking and profiling</a></li>
 </ul>
