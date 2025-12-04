@@ -94,6 +94,10 @@ class AstraRecon(BaseRecon):
 
         proj_angles = images.projection_angles()
         assert proj_angles is not None
+        assert images.geometry is not None
+
+        original_cor = images.geometry.cor
+        original_tilt = images.geometry.tilt
 
         def get_sumsq(image: np.ndarray) -> float:
             return float(np.sum(image**2))
@@ -107,7 +111,9 @@ class AstraRecon(BaseRecon):
         if isinstance(start_cor, np.ndarray):
             start_cor = float(start_cor[0])
 
-        minimized_cor = minimize(minimizer_function, start_cor, method='nelder-mead', tol=0.1).x[0]
+        minimized_cor = minimize(minimizer_function, start_cor, method="nelder-mead", tol=0.1).x[0]
+        images.geometry.cor = original_cor
+        images.geometry.tilt = original_tilt
 
         return minimized_cor
 
