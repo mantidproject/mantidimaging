@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING
 import h5py
 import numpy as np
 
+from cil.io import NEXUSDataReader
+
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.utility import NEXUS_PROCESSED_DATA_PATH
@@ -129,6 +131,20 @@ class NexusLoadPresenter:
             LOG.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
+
+        # Try to read geometry if Nexus file is in CIL format
+        try:
+            reader = NEXUSDataReader()
+            reader.set_up(file_path)
+            acquisition_geometry = reader.get_geometry()
+            assert (self.data is not None and self.data.sample is not None)
+            self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
+
+        except OSError:
+            LOG.info("NeXus file {file_path} does not contain CIL acquisition geometry data")
+        # CIL reader raises a generic Exception if file not found
+        except Exception:
+            LOG.info("File {file_path} does not exist.")
 
     def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> np.ndarray | None:
         """
