@@ -24,14 +24,6 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images, generat
 
 class ImageStackTest(unittest.TestCase):
 
-    @staticmethod
-    def generate_images_with_geometry() -> ImageStack:
-        data = generate_images().data
-        images = ImageStack(data=data)
-        test_angles = generate_angles(360, images.num_projections)
-        images.create_geometry(test_angles)
-        return images
-
     def test_parse_metadata_file(self):
         json_file = io.StringIO('{"a_int": 42, "a_string": "yes", "a_arr": ["one", "two", '
                                 '"three"], "a_float": 3.65e-05, "a_bool": true}')
@@ -368,7 +360,7 @@ class ImageStackTest(unittest.TestCase):
         self.assertFalse(images.is_processed)
 
     def test_default_geometry(self):
-        images = self.generate_images_with_geometry()
+        images = generate_images_with_geometry(max_angle=360.0)
         num_pixels = images.width, images.height
         pixel_size = (1., 1.)
         npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
@@ -376,7 +368,7 @@ class ImageStackTest(unittest.TestCase):
 
     @parameterized.expand([("shapes_match", 10, 10, 10, 10, True), ("shapes_do_not_match", 10, 10, 20, 10, False)])
     def test_proj_180_degree_shape_matches_images(self, _, height, width, proj180_height, proj180_width, expected):
-        images = self.generate_images_with_geometry()
+        images = generate_images_with_geometry(max_angle=360.0)
         angles = range(0, 360)
         angle_unit = "radian"
         pixel_size = (1., 1.)
@@ -394,7 +386,7 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(images.proj_180_degree_shape_matches_images(), expected)
 
     def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
-        images = self.generate_images_with_geometry()
+        images = generate_images_with_geometry(max_angle=360.0)
         images.has_proj180deg = mock.MagicMock(return_value=False)
 
         self.assertFalse(images.proj_180_degree_shape_matches_images())
