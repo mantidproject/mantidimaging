@@ -19,7 +19,7 @@ from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, gene
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_angles
+from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_angles, generate_images_with_geometry
 
 
 class ImageStackTest(unittest.TestCase):
