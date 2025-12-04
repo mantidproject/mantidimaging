@@ -75,29 +75,43 @@ class TestGuiSystemLoading(GuiSystemBase):
         raise ValueError(f"Could not extract angle from: {log_path}")
 
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
-    def test_load_log(self, mocked_select_file):
-        log_path = Path(LOAD_SAMPLE).parents[1] / "TomoIMAT00010675_FlowerFine_log.txt"
-        mocked_select_file.return_value = log_path
+    def test_load_dataset(self, mocked_select_file):
+        """
+        Verify that all stacks are loaded by the "Load dataset" dialogue
+        """
         self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
-        self._load_data_set()
-        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
 
+        self._load_data_set()
+
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
         self.assertEqual(len(self.main_window.presenter.datasets), 1)
         sample = list(self.main_window.presenter.datasets)[0].sample
         self.assertIn("log_file", sample.metadata)
 
-        sample.log_file = None
-        sample._projection_angles = None
-        self.assertNotIn("log_file", sample.metadata)
+        log_path = Path(LOAD_SAMPLE).parents[1] / "TomoIMAT00010675_FlowerFine_log.txt"
+        log_angle = math.radians(self._get_log_angle(log_path))
+        self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, 8)
 
-        stack_len = sample.num_images
-        self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
+    @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
+    def test_load_log(self, mocked_select_file):
+        """
+        Verify that manually loading a log file after a dataset is loaded correctly loads angle data
+        """
+        log_path = Path(LOAD_SAMPLE).parents[1] / "TomoIMAT00010675_FlowerFine_log.txt"
+        mocked_select_file.return_value = log_path
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
+        self._load_data_set(load_log=False)
+        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
+
+        # Verify state is as expected with no log file selected
+        sample = list(self.main_window.presenter.datasets)[0].sample
+        self.assertNotIn("log_file", sample.metadata)
+        self.assertIsNone(sample.projection_angles())
 
         # Load sample log
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_stack_selector())
         QTimer.singleShot(SHORT_DELAY * 2, lambda: self._click_messageBox("OK"))
         self.main_window.actionSampleLoadLog.trigger()
-
         self.assertIn("log_file", sample.metadata)
         self.assertEqual(sample.metadata['log_file'], str(log_path))
 
@@ -113,21 +127,13 @@ class TestGuiSystemLoading(GuiSystemBase):
 
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def test_load_angles(self, mocked_select_file):
-        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 0)
-        self._load_data_set()
-        self.assertEqual(len(self.main_window.presenter.get_active_stack_visualisers()), 5)
+        """
+        Verify that manually loading a projection angles file after a dataset is loaded correctly loads angle data
+        """
+        self._load_data_set(load_log=False)
 
-        self.assertEqual(len(self.main_window.presenter.datasets), 1)
         sample = list(self.main_window.presenter.datasets)[0].sample
-        self.assertIn("log_file", sample.metadata)
-
-        sample.log_file = None
-        sample._projection_angles = None
-        self.assertNotIn("log_file", sample.metadata)
-
         stack_len = sample.num_images
-        self.assertAlmostEqual(sample.projection_angles().value[1], 2 * math.pi / (stack_len - 1), 12)
-
         test_angles = numpy.linspace(0, 100, stack_len)
         angle_file = self._make_angles_file(test_angles)
 
@@ -139,7 +145,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         self.main_window.actionLoadProjectionAngles.trigger()
 
         # After loading angles should match file
-        self.assertAlmostEqual(sample.projection_angles().value[1], math.radians(test_angles[1]), 12)
+        self.assertAlmostEqual(sample.projection_angles().value[1], math.radians(test_angles[1]), 4)
         os.remove(angle_file.name)
 
     def test_save_images(self):
@@ -220,7 +226,7 @@ class TestGuiSystemLoading(GuiSystemBase):
         image_count, *image_shape = sample.shape
         self.assertEqual(image_shape, [128, 128])
         self.assertEqual(image_count, expected_count)
-        self.assertEqual(len(sample.real_projection_angles().value), expected_count)
+        self.assertEqual(len(sample.projection_angles().value), expected_count)
 
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def test_replace_image_stack(self, mocked_select_file):

@@ -25,11 +25,11 @@ class TomopyRecon(BaseRecon):
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:
         sino = np.maximum(images.sinograms[slice_idx:slice_idx + 1], 1e-6)
         sino = BaseRecon.prepare_sinogram(sino, recon_params)
-        return tomopy.find_center(sino,
-                                  images.projection_angles(recon_params.max_projection_angle).value,
-                                  ind=0,
-                                  init=start_cor,
-                                  sinogram_order=True)
+
+        projection_angles = images.projection_angles()
+        assert projection_angles is not None
+
+        return tomopy.find_center(sino, projection_angles.value, ind=0, init=start_cor, sinogram_order=True)
 
     @staticmethod
     def single_sino(images: ImageStack,
@@ -40,7 +40,8 @@ class TomopyRecon(BaseRecon):
         assert (images.geometry is not None)
         sino = BaseRecon.prepare_sinogram(images.sino(slice_idx), recon_params)
         cor = images.geometry.get_cor_at_slice_index(slice_idx)
-        proj_angles = images.projection_angles(recon_params.max_projection_angle)
+        proj_angles = images.projection_angles()
+        assert (proj_angles is not None)
 
         volume = tomopy.recon(tomo=[sino],
                               sinogram_order=True,
@@ -69,13 +70,17 @@ class TomopyRecon(BaseRecon):
         cors = images.geometry.get_all_cors()
 
         import multiprocessing
+
         ncores = multiprocessing.cpu_count()
+
+        projection_angles = images.projection_angles()
+        assert projection_angles is not None
 
         kwargs = {
             'ncore': ncores,
             'tomo': BaseRecon.prepare_sinogram(images.data, recon_params),
             'sinogram_order': images._is_sinograms,
-            'theta': images.projection_angles(recon_params.max_projection_angle).value,
+            'theta': projection_angles.value,
             'center': [cor.value for cor in cors],
             'algorithm': recon_params.algorithm,
             'filter_name': recon_params.filter_name
