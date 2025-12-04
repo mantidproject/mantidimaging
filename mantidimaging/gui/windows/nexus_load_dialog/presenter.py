@@ -20,7 +20,7 @@ from mantidimaging.core.utility.data_containers import ProjectionAngles
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog  # pragma: no cover
 
-logger = getLogger(__name__)
+LOG = getLogger(__name__)
 
 
 class Notification(Enum):
@@ -85,6 +85,7 @@ class NexusLoadPresenter:
         Try to open the NeXus file and display its contents on the view.
         """
         file_path = self.view.filePathLineEdit.text()
+
         try:
             with h5py.File(file_path, "r") as self.nexus_file:
                 self.tomo_entry = self._look_for_nxtomo_entry()
@@ -107,7 +108,7 @@ class NexusLoadPresenter:
                     return
 
                 if "units" not in self.rotation_angles.attrs.keys():
-                    logger.warning("No unit information found for rotation angles. Will infer from array values.")
+                    LOG.warning("No unit information found for rotation angles. Will infer from array values.")
                     degrees = np.abs(self.rotation_angles).max() > 2 * np.pi
                 else:
                     degrees = "deg" in str(self.rotation_angles.attrs["units"])
@@ -122,9 +123,10 @@ class NexusLoadPresenter:
 
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
+
         except OSError:
             unable_message = f"Unable to read NeXus data from {file_path}"
-            logger.error(unable_message)
+            LOG.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
@@ -158,10 +160,10 @@ class NexusLoadPresenter:
         """
         if "rotation_angle" in field:
             error_msg = _missing_data_message(field)
-            logger.warning(error_msg)
+            LOG.warning(error_msg)
         else:
             error_msg = _missing_data_message("required " + field)
-            logger.error(error_msg)
+            LOG.error(error_msg)
 
         self.view.show_data_error(error_msg)
 
@@ -299,7 +301,7 @@ class NexusLoadPresenter:
         try:
             return self.tomo_entry["title"][0].decode("UTF-8")
         except (KeyError, ValueError):
-            logger.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
+            LOG.info("A valid title couldn't be found. Using 'NeXus Data' instead.")
             return "NeXus Data"
 
     def get_dataset(self) -> tuple[Dataset, str]:
