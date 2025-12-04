@@ -74,6 +74,8 @@ jobs:
         shell: bash -l {0}
         run: |
           make build-docs
+        env:
+          QT_QPA_PLATFORM: offscreen
 
       - name: publish docs
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
