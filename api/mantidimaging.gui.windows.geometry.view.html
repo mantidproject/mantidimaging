@@ -552,8 +552,110 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="mantidimaging-gui-windows-geometry-view-module">
-<h1>mantidimaging.gui.windows.geometry.view module<a class="headerlink" href="#mantidimaging-gui-windows-geometry-view-module" title="Link to this heading">#</a></h1>
+  <section id="module-mantidimaging.gui.windows.geometry.view">
+<span id="mantidimaging-gui-windows-geometry-view-module"></span><h1>mantidimaging.gui.windows.geometry.view module<a class="headerlink" href="#module-mantidimaging.gui.windows.geometry.view" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.CustomRangeSpinBox">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.geometry.view.</span></span><span class="sig-name descname"><span class="pre">CustomRangeSpinBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/view.html#CustomRangeSpinBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.CustomRangeSpinBox" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDoubleSpinBox</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.windows.geometry.view.</span></span><span class="sig-name descname"><span class="pre">GeometryWindowView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView" title="mantidimaging.gui.windows.main.view.MainWindowView"><span class="pre">MainWindowView</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/view.html#GeometryWindowView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView" title="mantidimaging.gui.mvp_base.view.BaseMainWindowView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMainWindowView</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.angles">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.angles" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.clear_plot">
+<span class="sig-name descname"><span class="pre">clear_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/view.html#GeometryWindowView.clear_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.clear_plot" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.conversion_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">conversion_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.conversion_type" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.current_stack">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_stack</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">UUID</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.current_stack" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.detector_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">detector_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.detector_position" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_detector_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_detector_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_detector_position" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_max_angle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_max_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_max_angle" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_min_angle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_min_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_min_angle" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_rotation_axis">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_rotation_axis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_rotation_axis" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_source_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_source_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_source_position" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_tilt">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_tilt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_type" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.refresh_plot">
+<span class="sig-name descname"><span class="pre">refresh_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Figure</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/view.html#GeometryWindowView.refresh_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.refresh_plot" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.rotation_axis">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rotation_axis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.rotation_axis" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.set_widget_stack_page">
+<span class="sig-name descname"><span class="pre">set_widget_stack_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/geometry/view.html#GeometryWindowView.set_widget_stack_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.set_widget_stack_page" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.source_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.source_position" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.tilt">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.tilt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.geometry.view.GeometryWindowView.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.type" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -594,6 +696,39 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.CustomRangeSpinBox"><code class="docutils literal notranslate"><span class="pre">CustomRangeSpinBox</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.angles"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.angles</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.clear_plot"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.clear_plot()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.conversion_type"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.conversion_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.current_stack"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.current_stack</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.detector_position"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.detector_position</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_detector_position"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_detector_position</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_max_angle"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_max_angle</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_min_angle"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_min_angle</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_rotation_axis"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_rotation_axis</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_source_position"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_source_position</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_tilt"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_tilt</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.new_type"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.new_type</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.refresh_plot"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.refresh_plot()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.rotation_axis"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.rotation_axis</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.set_widget_stack_page"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.set_widget_stack_page()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.source_position"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.source_position</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.tilt"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.tilt</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.geometry.view.GeometryWindowView.type"><code class="docutils literal notranslate"><span class="pre">GeometryWindowView.type</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
