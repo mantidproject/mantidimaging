@@ -222,10 +222,9 @@ class ImageStackTest(unittest.TestCase):
         np.testing.assert_equal(actual.value, expected)
 
     def test_get_projection_angles_no_logfile(self):
-        images = generate_images_with_geometry(max_angle=360)
+        images = generate_images()
         actual = images.projection_angles()
-        self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(np.deg2rad(360), actual.value[-1], places=4)
+        self.assertIsNone(actual)
 
         angles = generate_angles(275.69, images.num_projections)
         images.set_projection_angles(angles)
