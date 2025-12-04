@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import numpy as np
+import sys
+import pytest
+import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
@@ -13,6 +16,8 @@ from mantidimaging.test_helpers.unit_test_helper import generate_zeroed_images
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
 
+@pytest.mark.skipif(sys.platform == "win32" and os.environ.get("CI") == "true",
+                    reason="VTK cannot initialise OpenGL on headless Windows CI runners.")
 class MI3DViewerTest(BaseEyesTest):
 
     def _create_3d_object(self, shape=(30, 30, 30), cube_size=12, dtype=np.float32):
