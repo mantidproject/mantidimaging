@@ -42,6 +42,7 @@ class MI3DViewerWindowView(BaseMainWindowView):
         """
         self.frame = QCILViewerWidget(parent=self, viewer=viewer3D, shape=(800, 600))
         self.viewer = self.frame.viewer
+        self.viewer.getRenderer().SetBackground(0, 0, 0)
         self.vtk_widget = self.frame.vtkWidget
 
         QTimer.singleShot(0, self.vtk_widget.Initialize)
