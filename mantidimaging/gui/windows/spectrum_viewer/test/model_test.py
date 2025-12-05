@@ -441,23 +441,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertRaises(ValueError, ErrorMode.get_by_value, "")
 
     @parameterized.expand([
-        ("larger_than_1", 1, 0, ValueError),  # bin_size and step_size < 1
-        ("bin_less_than_or_equal_to_step", 1, 2, ValueError),  # bin_size <= step_size
-        ("less_than_roi", 10, 10, ValueError),  # bin_size and step_size > min(roi.width, roi.height)
-        ("valid", 2, 1, None),  # valid case
-    ])
-    def test_validate_bin_and_step_size(self, _, bin_size, step_size, expected_exception):
-        roi = SensibleROI.from_list([0, 0, 5, 5])
-        if expected_exception:
-            with self.assertRaises(expected_exception):
-                self.model.validate_bin_and_step_size(roi, bin_size, step_size)
-        else:
-            try:
-                self.model.validate_bin_and_step_size(roi, bin_size, step_size)
-            except ValueError:
-                self.fail("validate_bin_and_step_size() raised ValueError unexpectedly!")
-
-    @parameterized.expand([
         (["5x5_bin_2_step_1", 5, 2, 1]),
         (["5x5_bin_2_step_2", 5, 3, 2]),
         (["7x7_bin_2_step_3", 7, 4, 1]),

@@ -83,23 +83,14 @@ class ROIFormWidget(BaseWidget):
         roi = self.roi_properties_widget.to_roi()
         step = self.bin_step_spinBox.value()
         bin_size = self.bin_size_spinBox.value()
-        self._check_rits_step_validity(roi, step, bin_size)
         binner = ROIBinner(roi, step_size=step, bin_size=bin_size)
-        self.binningChanged.emit(binner)
-
-    def _check_rits_step_validity(self, roi: SensibleROI, step: int, bin_size: int) -> None:
-        roi_width = roi.right - roi.left
-        roi_height = roi.bottom - roi.top
-        norm_mode = self.transmission_error_mode_combobox.currentText()
-
-        if ((roi_width - bin_size) % step != 0 or (roi_height - bin_size) % step != 0):
+        if not binner.check_fits_exactly():
             warning = (f"Step size {step} and bin size {bin_size} do not evenly divide ROI dimensions "
-                       f"({roi_width}x{roi_height}). Some rows or columns may not be exported.")
+                       f"({roi.width}x{roi.height}). Some rows or columns may not be exported.")
             self.show_rits_warning(warning)
         else:
-            LOG.info("RITS config valid — bin=%d, step=%d, norm_error=%s, roi_size=%dx%d", bin_size, step, norm_mode,
-                     roi_width, roi_height)
             self.show_rits_warning(None)
+        self.binningChanged.emit(binner)
 
 
 class ROIPropertiesTableWidget(BaseWidget):
