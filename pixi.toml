@@ -265,6 +265,7 @@ SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 # Documentation base tasks
 build-docs-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\", ignore_errors=True)' && sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' '**/tests' 'mantidimaging/ipython' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", description = "Base task to build Sphinx documentation" }
 build-docs-headless-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\", ignore_errors=True)' && sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' '**/tests' 'mantidimaging/ipython' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to build Sphinx documentation in headless mode" }
+serve-docs-base = { cmd = "python -m http.server 8000", cwd = "docs/build/html", description = "Base task to serve built documentation on http://localhost:8000" }
 release-notes-base = { cmd = "python setup.py release_notes", description = "Base task to generate release notes" }
 
 [tasks]
@@ -319,6 +320,7 @@ lint-all-continue = { depends-on = ["mypy-continue", "pyright-continue", "yapf-c
 build-docs = { depends-on = [{ task = "build-docs-base", environment = "dev" }], description = "Build Sphinx documentation" }
 build-docs-headless = { depends-on = [{ task = "build-docs-headless-base", environment = "dev" }], description = "Build Sphinx documentation in headless mode" }
 release-notes = { depends-on = [{ task = "release-notes-base", environment = "dev" }], description = "Generate release notes" }
+serve-docs = { depends-on = [{ task = "serve-docs-base", environment = "dev" }], description = "Serve built documentation on http://localhost:8000" }
 
 # Cross-platform Tasks for building and uploading conda packages
 #
