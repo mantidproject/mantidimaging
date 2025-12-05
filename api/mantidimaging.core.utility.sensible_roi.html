@@ -561,9 +561,28 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.sensible_roi.ROIBinner.check_fits_exactly">
+<span class="sig-name descname"><span class="pre">check_fits_exactly</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/sensible_roi.html#ROIBinner.check_fits_exactly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.check_fits_exactly" title="Link to this definition">#</a></dt>
+<dd><p>Check that the bins fit exactly in the roi</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.sensible_roi.ROIBinner.get_sub_roi">
 <span class="sig-name descname"><span class="pre">get_sub_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/sensible_roi.html#ROIBinner.get_sub_roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.get_sub_roi" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.utility.sensible_roi.ROIBinner.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/utility/sensible_roi.html#ROIBinner.is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.is_valid" title="Link to this definition">#</a></dt>
+<dd><p>Validates that the bin_size and step_size are compatible with aech other the roi dimensions
+- bin_size must be greater than zero (step_size must be checked at construction)
+- bin_size must be greater or equal than step_size (to avoid gaps)
+- bin_size must be less than or equal to roi width and height (to fit in the roi)
+Returns:</p>
+<blockquote>
+<div><p>validity (bool), message (str)</p>
+</div></blockquote>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.sensible_roi.ROIBinner.lengths">
@@ -684,7 +703,9 @@
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner"><code class="docutils literal notranslate"><span class="pre">ROIBinner</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.bin_size"><code class="docutils literal notranslate"><span class="pre">ROIBinner.bin_size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.check_fits_exactly"><code class="docutils literal notranslate"><span class="pre">ROIBinner.check_fits_exactly()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.get_sub_roi"><code class="docutils literal notranslate"><span class="pre">ROIBinner.get_sub_roi()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.is_valid"><code class="docutils literal notranslate"><span class="pre">ROIBinner.is_valid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.lengths"><code class="docutils literal notranslate"><span class="pre">ROIBinner.lengths()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.roi"><code class="docutils literal notranslate"><span class="pre">ROIBinner.roi</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.utility.sensible_roi.ROIBinner.step_size"><code class="docutils literal notranslate"><span class="pre">ROIBinner.step_size</span></code></a></li>

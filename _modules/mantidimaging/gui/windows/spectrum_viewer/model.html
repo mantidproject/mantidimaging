@@ -1002,31 +1002,6 @@
                  <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span> <span class="n">error_mode</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SpectrumViewerWindowModel.validate_bin_and_step_size">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.validate_bin_and_step_size">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate_bin_and_step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validates the bin size and step size for saving RITS images.</span>
-<span class="sd">        This method checks the following conditions:</span>
-<span class="sd">        - Both bin size and step size must be greater than 0.</span>
-<span class="sd">        - Bin size must be larger than or equal to step size.</span>
-<span class="sd">        - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.</span>
-<span class="sd">        If any of these conditions are not met, a ValueError is raised.</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            roi: The region of interest (ROI) to which the bin size and step size should be compared.</span>
-<span class="sd">            bin_size (int): The size of the bins to be validated.</span>
-<span class="sd">            step_size (int): The size of the steps to be validated.</span>
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If any of the validation conditions are not met.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">bin_size</span> <span class="ow">and</span> <span class="n">step_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both bin size and step size must be greater than 0&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">bin_size</span> <span class="o">&lt;</span> <span class="n">step_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bin size must be larger than or equal to step size&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">bin_size</span> <span class="ow">and</span> <span class="n">step_size</span> <span class="o">&gt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both bin size and step size must be less than or equal to the ROI size&quot;</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="SpectrumViewerWindowModel.save_rits_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_rits_images">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_rits_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -1066,7 +1041,10 @@
         <span class="n">x_iterations</span><span class="p">,</span> <span class="n">y_iterations</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">lengths</span><span class="p">()</span>
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">x_iterations</span> <span class="o">*</span> <span class="n">y_iterations</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">validate_bin_and_step_size</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">is_valid</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid binning: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y_iterations</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x_iterations</span><span class="p">):</span>
                 <span class="n">sub_roi</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">get_sub_roi</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>

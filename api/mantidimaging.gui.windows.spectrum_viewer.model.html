@@ -877,27 +877,6 @@ and additional ROIs excluding default ROIs will be removed</p>
 <span class="sig-name descname"><span class="pre">tof_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_range" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.validate_bin_and_step_size">
-<span class="sig-name descname"><span class="pre">validate_bin_and_step_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.SensibleROI" title="mantidimaging.core.utility.sensible_roi.SensibleROI"><span class="pre">SensibleROI</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/spectrum_viewer/model.html#SpectrumViewerWindowModel.validate_bin_and_step_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.validate_bin_and_step_size" title="Link to this definition">#</a></dt>
-<dd><p>Validates the bin size and step size for saving RITS images.
-This method checks the following conditions:
-- Both bin size and step size must be greater than 0.
-- Bin size must be larger than or equal to step size.
-- Both bin size and step size must be less than or equal to the smallest dimension of the ROI.
-If any of these conditions are not met, a ValueError is raised.
-Parameters:</p>
-<blockquote>
-<div><p>roi: The region of interest (ROI) to which the bin size and step size should be compared.
-bin_size (int): The size of the bins to be validated.
-step_size (int): The size of the steps to be validated.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Raises:</dt><dd><p>ValueError: If any of the validation conditions are not met.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -1029,7 +1008,6 @@ step_size (int): The size of the steps to be validated.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_mode"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_plot_range"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_plot_range</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.tof_range"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.tof_range</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.validate_bin_and_step_size"><code class="docutils literal notranslate"><span class="pre">SpectrumViewerWindowModel.validate_bin_and_step_size()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.spectrum_viewer.model.ToFUnitMode"><code class="docutils literal notranslate"><span class="pre">ToFUnitMode</span></code></a><ul class="nav section-nav flex-column">

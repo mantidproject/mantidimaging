@@ -544,6 +544,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_size</span> <span class="o">=</span> <span class="n">step_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bin_size</span> <span class="o">=</span> <span class="n">bin_size</span>
 
+        <span class="k">if</span> <span class="n">step_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ROIBinner step_size must greater than zero&quot;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">left_indexes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="n">bin_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_indexes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span> <span class="o">-</span> <span class="n">bin_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
 
@@ -571,7 +574,39 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bin_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bin_size</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bin_size</span>
+
+<div class="viewcode-block" id="ROIBinner.is_valid">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.ROIBinner.is_valid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates that the bin_size and step_size are compatible with aech other the roi dimensions</span>
+<span class="sd">        - bin_size must be greater than zero (step_size must be checked at construction)</span>
+<span class="sd">        - bin_size must be greater or equal than step_size (to avoid gaps)</span>
+<span class="sd">        - bin_size must be less than or equal to roi width and height (to fit in the roi)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            validity (bool), message (str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;bin_size must be greater than zero&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;bin_size must be greater or equal than step_size&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;step_size must be less than or equal to roi width and height&quot;</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ROIBinner.check_fits_exactly">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.ROIBinner.check_fits_exactly">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_fits_exactly</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check that the bins fit exactly in the roi</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">right_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_indexes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span>
+        <span class="n">bottom_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indexes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span>
+        <span class="k">return</span> <span class="n">right_edge</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">right</span> <span class="ow">and</span> <span class="n">bottom_edge</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">bottom</span></div>
+</div>
 
 </pre></div>
 
