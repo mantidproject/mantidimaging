@@ -105,6 +105,10 @@ todo_include_todos = True
 html_theme = 'pydata_sphinx_theme'
 
 html_css_files = ['custom.css']
+html_js_files = [('https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', {
+    'integrity': 'sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p',
+    'crossorigin': 'anonymous'
+})]
 
 # Ensure sidebar displays only the current section's nested headings (local ToC)
 html_sidebars = {
