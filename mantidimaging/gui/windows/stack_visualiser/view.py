@@ -53,6 +53,7 @@ class StackVisualiserView(QDockWidget):
         self.presenter = StackVisualiserPresenter(self, images)
 
         self._actions = [("Show history and metadata", self.show_image_metadata),
+                         ("Export stack as GIF animation", self._request_create_gif),
                          ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
                          ("Duplicate current ROI of data",
                           lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
@@ -194,6 +195,10 @@ class StackVisualiserView(QDockWidget):
     def show_image_metadata(self) -> None:
         dialog = MetadataDialog(self, self.presenter.images)
         dialog.show()
+
+    def _request_create_gif(self) -> None:
+        """Request GIF creation from main window presenter"""
+        self._main_window.presenter._create_gif(self.presenter.images)
 
     def mark_as_sinograms(self) -> None:
         # 1 is position of sinograms, 0 is projections
