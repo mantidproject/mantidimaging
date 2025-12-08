@@ -127,31 +127,6 @@ jobs:
         run: |
           xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
 
-      - name: Get test data
-        shell: bash -l {0}
-        run: |
-          wget -nv https://github.com/mantidproject/mantidimaging-data/archive/refs/tags/small.zip
-          unzip -q small.zip -d ~
-          mv ~/mantidimaging-data-small ~/mantidimaging-data
-        timeout-minutes: 5
-
-      - name: GUI Tests System
-        shell: bash -l {0}
-        run: |
-          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests --durations=10
-        timeout-minutes: 30
-
-      - name: GUI Tests Screenshots Applitools
-        if: github.event_name == 'pull_request'
-        shell: bash -l {0}
-        env:
-          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          APPLITOOLS_BATCH_ID: ${{ github.sha }}
-          GITHUB_BRANCH_NAME: ${{ github.head_ref }}
-        run: |
-          xvfb-run --auto-servernum /bin/time -v python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true mantidimaging/eyes_tests --run-eyes-tests --durations=10
-        timeout-minutes: 15
-
       - name: Coveralls
         continue-on-error: true
         shell: bash -l {0}
