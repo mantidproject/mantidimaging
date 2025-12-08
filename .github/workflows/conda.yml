@@ -53,7 +53,7 @@ jobs:
         env:
           CACHE_NUMBER: 0
         with:
-          path: ${CONDA}/envs/mantidimaging-dev
+          path: ~/miniconda3/envs/mantidimaging-dev
           key:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml', 'setup.py')}}
 
