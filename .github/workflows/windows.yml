@@ -139,3 +139,9 @@ jobs:
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN_MANTIDIMAGING }}
+
+      - name: Show disk space at end
+        if: ${{ !cancelled() }}
+        run: |
+          df -h
+        shell: bash
