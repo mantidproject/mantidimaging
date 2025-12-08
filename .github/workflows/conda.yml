@@ -27,7 +27,7 @@ jobs:
 
       - name: Disk free start
         run: |
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
         shell: bash
 
       - name: Get Date
@@ -69,27 +69,27 @@ jobs:
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
         shell: bash -l {0}
         run: |
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
           conda deactivate
           python3 ./setup.py create_dev_env
           cp -Ta ${CONDA}/envs/mantidimaging-dev ${CONDA}/envs/mantidimaging-dev.cache
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
 
       - name: Mantid Imaging developer dependencies - from cache
         if: steps.cache-miniforge-environment.outputs.cache-hit == 'true'
         shell: bash -l {0}
         run: |
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
           cp -Ta ${CONDA}/envs/mantidimaging-dev.cache ${CONDA}/envs/mantidimaging-dev
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
 
       - name: Other dependencies
         shell: bash -l {0}
         run: |
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
           sudo apt update -y
           sudo apt-get install -y xvfb libxcb* libxkb*
-          df -h
+          df -h ; du -sh /home/runner/* | sort -h
 
       - name: List versions
         shell: bash -l {0}
