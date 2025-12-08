@@ -74,6 +74,10 @@ jobs:
           python3 ./setup.py create_dev_env
           cp -Ta ${CONDA}/envs/mantidimaging-dev ${CONDA}/envs/mantidimaging-dev.cache
           df -h ; du -sh /home/runner/* | sort -h
+          du -sh /home/runner/miniconda3/* | sort -h
+          du -sh /home/runner/miniconda3/envs/* | sort -h
+          du -sh /home/runner/miniconda3/envs/mantidimaging-dev/* | sort -h | tail -n20
+          du -sh /home/runner/miniconda3/envs/mantidimaging-dev/lib/* | sort -h | tail -n20
 
       - name: Mantid Imaging developer dependencies - from cache
         if: steps.cache-miniforge-environment.outputs.cache-hit == 'true'
