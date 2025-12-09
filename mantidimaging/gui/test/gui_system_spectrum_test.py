@@ -12,8 +12,9 @@ from parameterized import parameterized
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
-from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, SensibleROI
+from mantidimaging.gui.windows.spectrum_viewer.model import SpecType
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 
 class TestGuiSpectrumViewer(GuiSystemBase):

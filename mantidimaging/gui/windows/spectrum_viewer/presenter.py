@@ -460,9 +460,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.save_rits_images,
                 path,
                 error_mode,
-                self.view.bin_size,
-                self.view.bin_step,
-                roi,
+                self.view.get_binner(),
                 normalise=self.view.shuttercount_norm_enabled(),
             )
             start_async_task_view(self.view, run_function, self._async_save_done)

@@ -476,14 +476,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def image_output_mode(self) -> str:
         return self.roi_form.image_output_mode
 
-    @property
-    def bin_size(self) -> int:
-        return self.roi_form.bin_size_spinBox.value()
-
-    @property
-    def bin_step(self) -> int:
-        return self.roi_form.bin_step_spinBox.value()
-
     def get_binner(self) -> ROIBinner:
         return self.roi_form.binner
 
