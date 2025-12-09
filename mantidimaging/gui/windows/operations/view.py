@@ -59,6 +59,8 @@ class FiltersWindowView(BaseMainWindowView):
     applyToAllButton: QPushButton
     filterSelector: QComboBox
 
+    safeApply: QCheckBox
+
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/filters_window.ui')
 
@@ -112,6 +114,8 @@ class FiltersWindowView(BaseMainWindowView):
         # Handle help button pressed
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
+
+        self.safeApply.setChecked(False)
 
         self.handle_filter_selection("")
         self.window_ready = True
