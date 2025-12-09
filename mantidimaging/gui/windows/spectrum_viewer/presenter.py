@@ -580,7 +580,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
-        self.view.roiSelectionWidget.handle_mode_change(self.export_mode)
         self.view.on_visibility_change()
 
     def handle_tof_unit_change(self) -> None:
