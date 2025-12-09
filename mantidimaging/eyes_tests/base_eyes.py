@@ -134,10 +134,10 @@ class BaseEyesTest(unittest.TestCase):
         filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
         filename_group.find_all_files()
         image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
+        dataset = Dataset(sample=image_stack)
         test_angles = generate_angles(360, image_stack.num_projections)
         image_stack.create_geometry(test_angles)
         image_stack.name = "Stack 1"
-        dataset = Dataset(sample=image_stack)
         self.imaging.presenter.model.add_dataset_to_model(dataset)
         self.imaging.presenter._add_dataset_to_view(dataset)
         assert dataset.sample  # Dataset has a sample
