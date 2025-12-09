@@ -81,15 +81,14 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
+        self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingForm = FittingParamFormWidgetView(self)
         self.fittingFormContainer.layout().addWidget(self.fittingForm)
 
         self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
-
         self.fitSelectionWidget = self.fittingForm.fitSelectionWidget
         self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
-        self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
         self.roiSelectionWidget.selectionChanged.connect(self.handle_fitting_roi_changed)
@@ -378,7 +377,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def update_roi_dropdown(self) -> None:
         """ Updates the ROI dropdown menus with the available ROIs. """
         roi_names = self.presenter.get_roi_names()
-        self.roiSelectionWidget.update_roi_list(roi_names)
         self.exportSettingsWidget.set_roi_names(roi_names)
         current = self.openBeamRoiCombo.currentText()
         self.openBeamRoiCombo.blockSignals(True)
@@ -395,7 +393,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
     def handle_fitting_roi_changed(self) -> None:
         self.show_visible_spectrums()
-        self.presenter.update_roi_on_fitting_thumbnail()
 
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()
