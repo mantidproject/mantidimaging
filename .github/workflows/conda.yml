@@ -42,16 +42,6 @@ jobs:
           key:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
-      - name: Cache Miniforge environment
-        uses: actions/cache@v4
-        id: cache-miniforge-environment
-        env:
-          CACHE_NUMBER: 0
-        with:
-          path: ${CONDA}/envs/mantidimaging-dev.cache
-          key:
-            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml', 'setup.py')}}
-
       - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
@@ -60,19 +50,22 @@ jobs:
           auto-activate-base: false
           use-mamba: true
 
+      - name: Cache Miniforge environment
+        uses: actions/cache@v4
+        id: cache-miniforge-environment
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ~/miniconda3/envs/mantidimaging-dev
+          key:
+            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml', 'setup.py')}}
+
       - name: Mantid Imaging developer dependencies
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
         shell: bash -l {0}
         run: |
           conda deactivate
           python3 ./setup.py create_dev_env
-          cp -Ta ${CONDA}/envs/mantidimaging-dev ${CONDA}/envs/mantidimaging-dev.cache
-
-      - name: Mantid Imaging developer dependencies - from cache
-        if: steps.cache-miniforge-environment.outputs.cache-hit == 'true'
-        shell: bash -l {0}
-        run: |
-          cp -Ta ${CONDA}/envs/mantidimaging-dev.cache ${CONDA}/envs/mantidimaging-dev
 
       - name: Other dependencies
         shell: bash -l {0}
@@ -152,3 +145,9 @@ jobs:
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN_MANTIDIMAGING }}
+
+      - name: Show disk space at end
+        if: ${{ !cancelled() }}
+        run: |
+          df -h
+        shell: bash
