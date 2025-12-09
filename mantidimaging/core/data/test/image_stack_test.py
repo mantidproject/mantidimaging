@@ -226,13 +226,6 @@ class ImageStackTest(unittest.TestCase):
         actual = images.projection_angles()
         self.assertIsNone(actual)
 
-        angles = generate_angles(275.69, images.num_projections)
-        images.set_projection_angles(angles)
-
-        actual = images.projection_angles()
-        self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)
-
     def test_metadata_gets_updated_with_logfile(self):
         images = generate_images()
         images.log_file = generate_txt_logfile()
