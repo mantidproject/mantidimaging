@@ -79,14 +79,19 @@ class ROIFormWidget(BaseWidget):
         self.ritsWarningIcon.setVisible(visible)
         self.ritsWarningIcon.setToolTip(message or "")
 
-    def _binning_changed(self) -> None:
+    @property
+    def binner(self) -> ROIBinner:
         roi = self.roi_properties_widget.to_roi()
         step = self.bin_step_spinBox.value()
         bin_size = self.bin_size_spinBox.value()
-        binner = ROIBinner(roi, step_size=step, bin_size=bin_size)
+        return ROIBinner(roi, step_size=step, bin_size=bin_size)
+
+    def _binning_changed(self) -> None:
+        binner = self.binner
         if not binner.check_fits_exactly():
-            warning = (f"Step size {step} and bin size {bin_size} do not evenly divide ROI dimensions "
-                       f"({roi.width}x{roi.height}). Some rows or columns may not be exported.")
+            warning = (
+                f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
+                f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
             self.show_rits_warning(warning)
         else:
             self.show_rits_warning(None)

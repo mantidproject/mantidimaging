@@ -62,6 +62,7 @@ class FittingParamFormWidgetPresenter:
         self.update_roi_dropdown()
         self.update_roi_on_fitting_thumbnail()
         self.set_default_fitting_region()
+        self.set_binning()
 
     def update_roi_dropdown(self) -> None:
         roi_names = self.spectrum_viewer.presenter.get_roi_names()
@@ -74,3 +75,9 @@ class FittingParamFormWidgetPresenter:
     def set_default_fitting_region(self) -> None:
         self.view.fittingDisplayWidget.set_default_region_if_needed(self.spectrum_viewer.presenter.model.tof_data,
                                                                     self.fitting_spectrum)
+
+    def set_binning(self) -> None:
+        mode = self.spectrum_viewer.presenter.export_mode
+        binner = self.spectrum_viewer.get_binner()
+        self.view.roiSelectionWidget.handle_mode_change(mode)
+        self.view.roiSelectionWidget.handle_binning_changed(binner)

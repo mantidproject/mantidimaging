@@ -15,7 +15,7 @@ from PyQt5.QtCore import QModelIndex
 from logging import getLogger
 
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from .fitting_form import FittingParamFormWidgetView
@@ -157,7 +157,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.openBeamRoiCombo.currentIndexChanged.connect(self.presenter.handle_open_beam_roi_choice_changed)
         self.roi_form.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
-        self.roi_form.binningChanged.connect(self.roiSelectionWidget.handle_binning_changed)
 
         # ROI action buttons
         self.roi_form.addBtn.clicked.connect(self.set_new_roi)
@@ -484,6 +483,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     @property
     def bin_step(self) -> int:
         return self.roi_form.bin_step_spinBox.value()
+
+    def get_binner(self) -> ROIBinner:
+        return self.roi_form.binner
 
     @property
     def tof_units_mode(self) -> str:
