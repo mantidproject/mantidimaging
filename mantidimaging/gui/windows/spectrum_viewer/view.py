@@ -18,20 +18,17 @@ from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+from .fitting_form import FittingParamFormWidgetView
 from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
-from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
-from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget import FitExportFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget import ExportDataTableWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_image_widget import ExportImageViewWidget
 
 import numpy as np
-
-from ...widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -84,11 +81,12 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
-        self.roiSelectionWidget = ROISelectionWidget(self)
-        self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
+        self.fittingForm = FittingParamFormWidgetView(self)
+        self.fittingFormContainer.layout().addWidget(self.fittingForm)
 
-        self.fitSelectionWidget = FitSelectionWidget(self)
-        self.fittingFormLayout.layout().addWidget(self.fitSelectionWidget)
+        self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
+
+        self.fitSelectionWidget = self.fittingForm.fitSelectionWidget
         self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
         self.fittingDisplayWidget = FittingDisplayWidget()
@@ -96,8 +94,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
         self.roiSelectionWidget.selectionChanged.connect(self.handle_fitting_roi_changed)
 
-        self.fitting_param_form = FittingParamFormWidget(self.presenter)
-        self.fittingFormLayout.layout().addWidget(self.fitting_param_form)
+        self.fitting_param_form = self.fittingForm.fitting_param_form
 
         self.export_display_tabs = QTabWidget(self)
         self.exportDataTableWidget = ExportDataTableWidget()
