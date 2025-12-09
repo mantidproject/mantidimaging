@@ -60,6 +60,7 @@ class Notification(Enum):
     SHOW_MOVE_STACK_DIALOG = auto()
     MOVE_STACK = auto()
     SHOW_PROPERTIES_DIALOG = auto()
+    SHOW_RENAME_DIALOG = auto()
 
 
 class MainWindowPresenter(BasePresenter):
@@ -103,6 +104,8 @@ class MainWindowPresenter(BasePresenter):
                 self._move_stack(**baggage)
             elif signal == Notification.SHOW_PROPERTIES_DIALOG:
                 self._show_stack_properties_dialog(**baggage)
+            elif signal == Notification.SHOW_RENAME_DIALOG:
+                self._show_stack_rename_dialog(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -642,6 +645,13 @@ class MainWindowPresenter(BasePresenter):
             raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
         stack_data_type = _get_stack_data_type(stack_id, dataset)
         self.view.show_stack_properties_dialog(stack_id, dataset, stack_data_type)
+
+    def _show_stack_rename_dialog(self, stack_id: uuid.UUID) -> None:
+        dataset_id = self.get_dataset_id_for_stack(stack_id)
+        dataset = self.get_dataset(dataset_id)
+        if dataset is None:
+            raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
+        self.view.show_stack_rename_dialog(stack_id, dataset)
 
     def handle_add_images_to_existing_dataset_from_dialog(self) -> None:
         """
