@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-import numpy as np
 import traceback
 from enum import IntEnum, auto
 from logging import getLogger
@@ -127,13 +126,6 @@ class StackVisualiserPresenter(BasePresenter):
 
     def get_num_images(self) -> int:
         return self.images.num_projections
-
-    def find_image_from_angle(self, selected_angle: float) -> int:
-        selected_angle = np.deg2rad(selected_angle)
-        for index, angle in enumerate(self.images.projection_angles().value):
-            if angle >= selected_angle:
-                return index
-        return len(self.images.projection_angles().value)
 
     def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack) -> None:
         self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)
