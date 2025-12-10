@@ -40,7 +40,7 @@ class CORInspectionDialogModel:
             self._divide_step = self._divide_cor_step
 
         # Cache projection angles
-        self.proj_angles = images.projection_angles(recon_params.max_projection_angle)
+        self.proj_angles = images.projection_angles()
         self.recon_params = recon_params
         self.reconstructor = get_reconstructor_for(recon_params.algorithm)
 
@@ -83,10 +83,12 @@ class CORInspectionDialogModel:
 
     def _recon_cor_preview(self, image: ImageType) -> np.ndarray:
         assert (self.images.geometry is not None)
+        assert self.proj_angles is not None
         self.images.geometry.cor = ScalarCoR(self.cor(image))
         return self.reconstructor.single_sino(self.images, self.slice_idx, self.recon_params)
 
     def _recon_iters_preview(self, image: ImageType) -> np.ndarray:
+        assert self.proj_angles is not None
         iters = self.iterations(image)
         new_params = replace(self.recon_params, num_iter=int(iters))
         return self.reconstructor.single_sino(self.images, self.slice_idx, new_params)

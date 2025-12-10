@@ -13,6 +13,7 @@ import mantidimaging.test_helpers.unit_test_helper as th
 from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserPresenter, StackVisualiserView, SVNotification, \
     SVImageMode
+from mantidimaging.test_helpers.unit_test_helper import generate_angles
 
 
 class StackVisualiserPresenterTest(unittest.TestCase):
@@ -23,6 +24,8 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         # mock the view so it has the same methods
         self.view = mock.create_autospec(StackVisualiserView, instance=True)
         self.presenter = StackVisualiserPresenter(self.view, self.test_data)
+        test_angles = generate_angles(360, self.presenter.images.num_projections)
+        self.presenter.images.set_projection_angles(test_angles)
         self.presenter.model = mock.Mock()
         self.view._main_window = mock.Mock()
 

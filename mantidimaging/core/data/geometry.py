@@ -6,6 +6,8 @@ from enum import Enum
 from math import tan, radians, degrees
 
 from cil.framework import AcquisitionGeometry
+from numpy import ndarray
+
 from mantidimaging.core.utility.data_containers import ScalarCoR
 
 
@@ -16,16 +18,19 @@ class GeometryType(Enum):
 
 class Geometry(AcquisitionGeometry):
 
-    def __init__(self,
-                 type: GeometryType = GeometryType.PARALLEL3D,
-                 num_pixels: list | tuple = (10, 10),
-                 pixel_size: list | tuple = (1., 1.),
-                 source_position: list | tuple = (0, -1, 0),
-                 detector_position: list | tuple = (0, 1, 0),
-                 angle_unit: str = "radian",
-                 units: str = "default",
-                 *args,
-                 **kwargs):
+    def __init__(
+            self,
+            angles: ndarray,
+            angle_unit: str = "radian",
+            type: GeometryType = GeometryType.PARALLEL3D,
+            num_pixels: list | tuple = (10, 10),
+            pixel_size: list | tuple = (1.0, 1.0),
+            source_position: list | tuple = (0, -1, 0),
+            detector_position: list | tuple = (0, 1, 0),
+            units: str = "default",
+            *args,
+            **kwargs,
+    ):
         """
         Uses CIL conventions to determine geometry and centre of rotation.
         By default, the Geometry object is instantiated using a Parallel3D configuration.
@@ -53,7 +58,7 @@ class Geometry(AcquisitionGeometry):
             self.config = conebeam_3d.config
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
-        self.set_angles(angles=range(0, 180), angle_unit=angle_unit)
+        self.set_angles(angles=angles, angle_unit=angle_unit)
 
     def set_geometry_from_cor_tilt(self, cor: ScalarCoR, tilt: float) -> None:
         """
