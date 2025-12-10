@@ -2,7 +2,6 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import unittest
-import uuid
 from unittest import mock
 
 from mantidimaging.core.data import ImageStack
@@ -11,6 +10,7 @@ from mantidimaging.gui.windows.stack_rename_dialog.presenter import Notification
 
 from mantidimaging.gui.windows.stack_rename_dialog.view import StackRenameDialog
 from mantidimaging.test_helpers import start_qapplication
+
 
 @start_qapplication
 class StackRenameDialogTest(unittest.TestCase):
@@ -34,4 +34,3 @@ class StackRenameDialogTest(unittest.TestCase):
     def test_origin_stack_information_matched(self):
         self.assertEqual(self.origin_stack.name, self.view.stack_name)
         self.assertEqual(self.origin_stack.id, self.view.stack_id)
-
