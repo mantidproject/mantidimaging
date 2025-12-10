@@ -237,15 +237,18 @@ class MainWindowPresenter(BasePresenter):
         assert dataset.sample is not None
         if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
             return
+
+        projection_angles = dataset.sample.projection_angles()
+        if projection_angles is None:
+            closest_projection = dataset.sample.projection(dataset.sample.num_projections // 2)
+            diff = 0.0
         else:
-            projection_angles = dataset.sample.projection_angles()
-            assert projection_angles is not None
             closest_projection, diff = find_projection_closest_to_180(dataset.sample.projections,
                                                                       projection_angles.value)
-            if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
-                _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
-                proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
-                self.add_images_to_existing_dataset(dataset.id, proj180deg, "proj_180")
+        if diff <= THRESHOLD_180 or self.view.ask_to_use_closest_to_180(diff):
+            _180_arr = np.reshape(closest_projection, (1, ) + closest_projection.shape).copy()
+            proj180deg = ImageStack(_180_arr, name=f"{dataset.name}_180")
+            self.add_images_to_existing_dataset(dataset.id, proj180deg, "proj_180")
 
     def create_dataset_stack_visualisers(self, dataset: Dataset) -> None:
         """Creates StackVisualiserView widgets for a new dataset and tabifies them."""
