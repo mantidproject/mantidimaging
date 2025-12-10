@@ -1,8 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-
-from math import degrees
 from typing import TYPE_CHECKING
 
 from PyQt5.QtWidgets import QLabel, QGridLayout, QLineEdit, QDialogButtonBox
@@ -18,16 +16,17 @@ if TYPE_CHECKING:
 
 class StackRenameDialog(BaseDialogView):
 
-    def __init__(self, parent, stack: ImageStack, origin_dataset: Dataset):
+    def __init__(self, parent, stack: Dataset | ImageStack):
         super().__init__(parent)
         self.parent_view = parent
-        self.origin_dataset = origin_dataset
 
         self.presenter = StackRenamePresenter(self)
 
         self.stack = stack
+        self.stack_id = stack.id
+        self.stack_name = stack.name
 
-        self.setWindowTitle(f"Rename Stack: {origin_dataset.name}")
+        self.setWindowTitle(f"Rename Stack/Dataset: {self.stack.name}")
 
         QBtn = QDialogButtonBox.Ok
         self.buttonBox = QDialogButtonBox(QBtn)
@@ -37,7 +36,7 @@ class StackRenameDialog(BaseDialogView):
 
         self.new_name_field = QLineEdit()
 
-        self.layout.addWidget(QLabel("New Dataset Name: "), 1, 1)
+        self.layout.addWidget(QLabel("New Stack/Dataset Name: "), 1, 1)
         self.layout.addWidget(self.new_name_field, 1, 2)
 
         self.layout.addWidget(self.buttonBox, 2, 2)

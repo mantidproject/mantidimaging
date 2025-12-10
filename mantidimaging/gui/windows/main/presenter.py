@@ -50,6 +50,7 @@ class Notification(Enum):
     IMAGE_FILE_SAVE = auto()
     REMOVE_STACK = auto()
     RENAME_STACK = auto()
+    RENAME_DATASET = auto()
     NEXUS_LOAD = auto()
     NEXUS_SAVE = auto()
     FOCUS_TAB = auto()
@@ -84,6 +85,8 @@ class MainWindowPresenter(BasePresenter):
                 self._delete_container(**baggage)
             elif signal == Notification.RENAME_STACK:
                 self._do_rename_stack(**baggage)
+            elif signal == Notification.RENAME_DATASET:
+                self._do_rename_dataset(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
             elif signal == Notification.NEXUS_SAVE:
@@ -105,7 +108,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.SHOW_PROPERTIES_DIALOG:
                 self._show_stack_properties_dialog(**baggage)
             elif signal == Notification.SHOW_RENAME_DIALOG:
-                self._show_stack_rename_dialog(**baggage)
+                self._show_dataset_rename_dialog(**baggage)
 
         except Exception as e:
             self.show_error(e, traceback.format_exc())
@@ -145,6 +148,13 @@ class MainWindowPresenter(BasePresenter):
         if dock is not None:
             dock.setWindowTitle(new_name)
             self.view.model_changed.emit()
+
+    def _do_rename_dataset(self, origin_dataset_stack: Dataset | ImageStack, new_name: str):
+        old_name = origin_dataset_stack.name
+        origin_dataset_stack.name = new_name
+        self._do_rename_stack(old_name, new_name)
+        self.update_dataset_tree()
+        self.view.model_changed.emit()
 
     def load_image_files(self) -> None:
         assert self.view.image_load_dialog is not None
@@ -646,12 +656,14 @@ class MainWindowPresenter(BasePresenter):
         stack_data_type = _get_stack_data_type(stack_id, dataset)
         self.view.show_stack_properties_dialog(stack_id, dataset, stack_data_type)
 
-    def _show_stack_rename_dialog(self, stack_id: uuid.UUID) -> None:
-        dataset_id = self.get_dataset_id_for_stack(stack_id)
-        dataset = self.get_dataset(dataset_id)
-        if dataset is None:
-            raise RuntimeError(f"Failed to find dataset with ID {dataset_id}")
-        self.view.show_stack_rename_dialog(stack_id, dataset)
+    def _show_dataset_rename_dialog(self, stack_id: uuid.UUID) -> None:
+        stack: Dataset | ImageStack | None
+        if stack_id in self.all_dataset_ids:
+            stack = self.get_dataset(stack_id)
+        else:
+            stack = self.model.get_images_by_uuid(stack_id)
+        assert stack is not None
+        self.view.show_dataset_rename_dialog(stack)
 
     def handle_add_images_to_existing_dataset_from_dialog(self) -> None:
         """
