@@ -4,7 +4,7 @@ from __future__ import annotations
 import functools
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QSettings
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
                              QVBoxLayout)
 
@@ -21,6 +21,8 @@ from ...widgets.roi_selector.view import ROISelectorView
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
     from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
+
+settings = QSettings('mantidproject', 'Mantid Imaging')
 
 
 def _strip_filter_name(filter_name: str):
@@ -58,6 +60,8 @@ class FiltersWindowView(BaseMainWindowView):
     applyButton: QPushButton
     applyToAllButton: QPushButton
     filterSelector: QComboBox
+
+    safeApply: QCheckBox
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/filters_window.ui')
@@ -113,6 +117,9 @@ class FiltersWindowView(BaseMainWindowView):
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
+        self.safeApply.setChecked(settings.value('safeApply', False, bool))
+        self.safeApply.stateChanged.connect(self.handle_safe_apply_check)
+
         self.handle_filter_selection("")
         self.window_ready = True
 
@@ -161,6 +168,9 @@ class FiltersWindowView(BaseMainWindowView):
         # Update preview on filter selection (on the off chance the default
         # options are valid)
         self.auto_update_triggered.emit()
+
+    def handle_safe_apply_check(self):
+        settings.setValue('safeApply', self.safeApply.isChecked())
 
     def on_auto_update_triggered(self):
         """
