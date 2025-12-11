@@ -43,6 +43,7 @@ def create_array(shape: tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> S
 
 
 def _create_shared_array(shape: tuple[int, ...], dtype: npt.DTypeLike = np.float32) -> SharedArray:
+    # No alignment checks. Some dtypes require specific alignment, raw SharedMemory does not ensure it.
     size = full_size_bytes(shape, dtype)
     name = pm.generate_mi_shared_mem_name()
     mem = shared_memory.SharedMemory(name=name, create=True, size=size)
@@ -56,6 +57,8 @@ def _read_array_from_shared_memory(shape: tuple[int, ...], dtype: npt.DTypeLike,
 
 
 def copy_into_shared_memory(array: np.ndarray) -> SharedArray:
+    # writes arrays unsafely assumes array is contiguous.
+    # corrupted shared memory → workers crash → numpy crashes → OS access violation.
     shared_array = create_array(array.shape, array.dtype)
     shared_array.array[:] = array[:]
     return shared_array
@@ -144,11 +147,18 @@ def run_compute_func_impl(worker_func: Callable[[int], None],
 class SharedArray:
 
     def __init__(self, array: np.ndarray, shared_memory: SharedMemory | None, free_mem_on_del: bool = True):
+        # SharedArray breaks the only safe invariant: .array must always map mem.buf
+        # This overwrites the attribute instead of storing the ndarray as _array.
         self.array = array
         self._shared_memory = shared_memory
         self._free_mem_on_del = free_mem_on_del
 
     def __del__(self):
+        # . __del__ frees SharedMemory at unpredictable times
+        # __del__ frees SharedMemory nondeterministically
+        # On Windows, unlink() destroys the memory block immediately.
+        # Linux is lazy
+        # 0xC0000005 failures.
         if self.has_shared_memory:
             self._shared_memory.close()
             if self._free_mem_on_del:
@@ -164,6 +174,8 @@ class SharedArray:
 
     @property
     def array_proxy(self) -> SharedArrayProxy:
+        # Proxy depends on .array for shape/dtype, but .array can be
+        # reassigned, so the proxy may attach with incorrect metadata.
         mem_name = self._shared_memory.name if self._shared_memory else None
         return SharedArrayProxy(mem_name=mem_name, shape=self.array.shape, dtype=self.array.dtype)
 
@@ -174,11 +186,16 @@ class SharedArrayProxy:
         self._mem_name = mem_name
         self._shape = shape
         self._dtype = dtype
+        # Cached SharedArray may become invalid if parent frees memory early.
         self._shared_array: SharedArray | None = None
 
     @property
     def array(self) -> np.ndarray:
         if self._shared_array is None:
+            # If another SharedArray has already unlinked memory,
+            # SharedMemory(name=...) may fail or attach to invalid memory.
             mem = shared_memory.SharedMemory(name=self._mem_name)
+            # _read_array_from_shared_memory trusts the caller completely
             self._shared_array = _read_array_from_shared_memory(self._shape, self._dtype, mem, False)
+        # .array may have been reassigned; no guarantee this is backed by SharedMemory.
         return self._shared_array.array
