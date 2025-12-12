@@ -58,7 +58,7 @@ class ImageStack:
         if isinstance(data, pu.SharedArray):
             self._shared_array = data
         else:
-            self._shared_array = pu.SharedArray(data, None)
+            self._shared_array = pu.copy_into_shared_memory(data)
 
         self.indices = indices
         self._id = uuid.uuid4()
