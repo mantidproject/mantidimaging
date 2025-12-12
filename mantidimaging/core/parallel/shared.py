@@ -15,6 +15,12 @@ ComputeFuncType = (Callable[[int, list['ndarray'], dict[str, Any]], None]
 
 
 class _Worker:
+    """
+    Workers only attach to existing SharedMemory via SharedArrayProxy/SharedArray
+    They never create or free SharedArrays, and only access contiguous slices
+    This avoids the premature unlinks when
+    ImageStack creates many temporary SharedArrays.
+    """
 
     def __init__(self, func: ComputeFuncType, arrays: list[pu.SharedArray] | list[pu.SharedArrayProxy],
                  params: dict[str, Any]):
@@ -34,6 +40,13 @@ def run_compute_func(func: ComputeFuncType,
                      arrays: list[pu.SharedArray] | pu.SharedArray,
                      params: dict[str, Any],
                      progress=None) -> None:
+    """
+    SharedArray works safely here because operations use a single, pre-allocated
+    shared buffer with a fixed lifetime. No slicing, reassignment, or temporary
+    SharedArrays are created, and workers only attach to the existing buffer.
+    This controlled pattern avoids the premature unlinks and writes that
+    occur in ImageStack.
+    """
     if isinstance(arrays, pu.SharedArray):
         arrays = [arrays]
     all_data_in_shared_memory, data = _check_shared_mem_and_get_data(arrays)
