@@ -45,6 +45,7 @@ from mantidimaging.gui.windows.stack_properties_dialog.view import StackProperti
 from mantidimaging.gui.windows.stack_visualiser import StackVisualiserView
 from mantidimaging.gui.windows.welcome_screen.presenter import WelcomeScreenPresenter
 from mantidimaging.gui.windows.wizard.presenter import WizardPresenter
+from mantidimaging.gui.widgets.gif_parameters import GifParametersWidget
 from mantidimaging.__main__ import process_start_time
 
 if TYPE_CHECKING:
@@ -99,6 +100,7 @@ class MainWindowView(BaseMainWindowView):
     actionLoadNeXusFile: QAction
     actionSaveImages: QAction
     actionSaveNeXusFile: QAction
+    actionExportGIF: QAction
     actionSettings: QAction
     actionExit: QAction
 
@@ -243,6 +245,7 @@ class MainWindowView(BaseMainWindowView):
         self.actionLoadProjectionAngles.triggered.connect(self.load_projection_angles)
         self.actionSaveImages.triggered.connect(self.show_image_save_dialog)
         self.actionSaveNeXusFile.triggered.connect(self.show_nexus_save_dialog)
+        self.actionExportGIF.triggered.connect(self.export_gif_from_active_stack)
         self.actionExit.triggered.connect(self.close)
 
         self.menuImage.aboutToShow.connect(self.populate_image_menu)
@@ -294,6 +297,7 @@ class MainWindowView(BaseMainWindowView):
 
         self.actionSaveImages.setEnabled(has_datasets)
         self.actionSaveNeXusFile.setEnabled(has_datasets)
+        self.actionExportGIF.setEnabled(has_datasets)
         self.actionSampleLoadLog.setEnabled(has_datasets)
         self.actionShutterCounts.setEnabled(has_datasets)
         self.actionLoadProjectionAngles.setEnabled(has_datasets)
@@ -870,3 +874,38 @@ class MainWindowView(BaseMainWindowView):
         except (AttributeError, RuntimeError, TypeError) as unexpected_error:
             QMessageBox.critical(self, "Error",
                                  f"Reset Layout could not completely reset the stacks.\n\nDetails: {unexpected_error}")
+
+    def show_gif_parameters_dialog(self, image_stack: ImageStack, optimal_skip: int) -> tuple[int, float, bool]:
+        """
+        Show GIF parameters dialog and return user selections
+
+        :param image_stack: The image stack to create the GIF from
+        :param optimal_skip: The optimal frame skip step value calculated for the image stack
+        :return: A tuple containing the selected frame skip, duration per frame, and whether
+        the user accepted the dialog
+        """
+        dialog = GifParametersWidget(self, image_stack, optimal_skip)
+        result = dialog.exec()
+        return (dialog.get_frame_skip(), dialog.get_duration(), result == QDialog.Accepted)
+
+    def get_gif_output_path(self, image_stack) -> str:
+        """
+        Get output file path from user via save dialog
+
+        :param image_stack: The image stack to create the GIF from
+        :return: The selected output file path
+        """
+        default_dir = str(image_stack.filenames[0].parent)
+        default_filename = f"{image_stack.name}.gif"
+        default_path = str(Path(default_dir) / default_filename)
+
+        output_path, _ = QFileDialog.getSaveFileName(self, "Save GIF", default_path, "GIF Files (*.gif)")
+        return output_path
+
+    def export_gif_from_active_stack(self) -> None:
+        """Export the currently displayed stack as an animated GIF"""
+        active_stack = self.current_showing_stack()
+        if active_stack is None:
+            QMessageBox.warning(self, "No Stack Selected", "Please select a stack to export")
+            return
+        self.presenter._create_gif(active_stack.presenter.images)

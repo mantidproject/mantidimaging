@@ -79,6 +79,7 @@ h5py = "3.13.*"
 hdf5 = ">=1.14.2,<1.15"
 tifffile = "2023.7.18.*"
 imagecodecs = ">=2023.9,<2025"
+imageio = "2.33.*"
 
 # Image processing and scientific libraries
 astropy = "7.1.*"

@@ -22,6 +22,7 @@ requirements:
     - scikit-image=0.25.*
     - tifffile=2023.7.18
     - imagecodecs=2023.9.18
+    - imageio=2.33.*
     - numpy=1.26.*
     - numexpr=2.8.*
     - algotom=1.6.*
