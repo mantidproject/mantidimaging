@@ -40,6 +40,11 @@ def generate_images(shape=g_shape, dtype=np.float32, seed: int | None = None) ->
     return _set_random_data(d, shape, seed=seed)
 
 
+def generate_raw_array(shape=g_shape, dtype=np.float32, seed=None):
+    rng = np.random.default_rng(seed)
+    return rng.random(shape, dtype=dtype)
+
+
 def generate_images_with_geometry(max_angle, seed: int | None = None) -> ImageStack:
     images = generate_images(seed=seed)
     angles = generate_angles(max_angle, images.num_projections)

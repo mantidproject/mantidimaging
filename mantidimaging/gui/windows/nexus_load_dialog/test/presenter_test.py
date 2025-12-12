@@ -10,7 +10,7 @@ import numpy
 import numpy as np
 
 from mantidimaging.core.io.saver import NEXUS_PROCESSED_DATA_PATH
-from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img_numpy_rand
+from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img_numpy_rand, generate_raw_array
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
@@ -372,7 +372,10 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertEqual(len(self.nexus_loader.recon_data), 1)
 
     def test_get_dataset_creates_recon_list(self):
-        self.nexus_loader.recon_data = [generate_images(), generate_images()]
+        self.nexus_loader.recon_data = [
+            generate_raw_array(),
+            generate_raw_array(),
+        ]
         self.nexus_loader.scan_nexus_file()
         ds, _ = self.nexus_loader.get_dataset()
         self.assertEqual(len(ds.recons), 2)
