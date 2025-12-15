@@ -161,7 +161,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.dataset.sample.proj180deg = None
         self.presenter.add_alternative_180_if_required(self.dataset)
 
-        self.assertIsNone(self.dataset.proj180deg.data.base)
+        self.assertIsNotNone(self.dataset.proj180deg.shared_array._shared_memory)
 
     def test_create_new_stack_dataset_and_reject_180(self):
         self.view.ask_to_use_closest_to_180.return_value = False
