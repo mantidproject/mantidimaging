@@ -133,7 +133,7 @@ class ReconstructWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.image_view)
         self.image_view.sigSliceIndexChanged.connect(self.presenter.set_preview_slice_idx)
 
-        self.projectionPairDropdown.addItem("Use 180° projection image", "proj180")
+        self.projectionPairDropdown.addItem("180° projection", "proj180")
         self.projectionPairDropdown.addItem("0° and 180°", (0, 180))
         self.projectionPairDropdown.addItem("90° and 270°", (90, 270))
         self.projectionPairDropdown.addItem("180° and 360°", (180, 360))

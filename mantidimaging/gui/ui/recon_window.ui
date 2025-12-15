@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1495</width>
+    <width>1493</width>
     <height>1029</height>
    </rect>
   </property>
@@ -28,20 +28,23 @@
       </property>
       <widget class="QWidget" name="formLayoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="sizeConstraint">
          <enum>QLayout::SetMaximumSize</enum>
         </property>
         <property name="leftMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="topMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
          <number>0</number>
         </property>
         <property name="bottomMargin">
-         <number>9</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="QScrollArea" name="scrollArea">
@@ -94,6 +97,21 @@
             </size>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>1</number>
+            </property>
+            <property name="topMargin">
+             <number>1</number>
+            </property>
+            <property name="rightMargin">
+             <number>1</number>
+            </property>
+            <property name="bottomMargin">
+             <number>1</number>
+            </property>
             <item>
              <widget class="QTabWidget" name="tabWidget">
               <property name="sizePolicy">
@@ -271,9 +289,6 @@
                      </item>
                     </layout>
                    </item>
-                   <item>
-                    <layout class="QVBoxLayout" name="fitLayout"/>
-                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -282,7 +297,7 @@
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>110</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="title">
@@ -291,16 +306,6 @@
                   <layout class="QVBoxLayout" name="verticalLayout_9">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout">
-                     <item>
-                      <widget class="QPushButton" name="correlateButton">
-                       <property name="toolTip">
-                        <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
-                       </property>
-                       <property name="text">
-                        <string>Correlate Projections</string>
-                       </property>
-                      </widget>
-                     </item>
                      <item>
                       <widget class="QPushButton" name="minimiseButton">
                        <property name="toolTip">
@@ -325,6 +330,16 @@
                       </widget>
                      </item>
                     </layout>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="correlateButton">
+                     <property name="toolTip">
+                      <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
+                     </property>
+                     <property name="text">
+                      <string>Correlate Projections</string>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -860,7 +875,7 @@
             <item>
              <widget class="QGroupBox" name="previewGroup">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -938,7 +953,7 @@
             <item>
              <widget class="QPushButton" name="changeColourPaletteButton">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -957,7 +972,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_2">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
