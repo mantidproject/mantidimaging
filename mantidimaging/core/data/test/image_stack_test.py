@@ -386,8 +386,8 @@ class ImageStackTest(unittest.TestCase):
     def test_find_image_from_angle_closest_index(self):
         images = generate_images()
         angles = np.linspace(0, 180, images.num_projections)
-        images.real_projection_angles = mock.Mock(return_value=mock.Mock(value=np.deg2rad(angles)))
-
+        images.geometry = mock.Mock()
+        images.geometry.angles = np.deg2rad(angles)
         idx = images.find_image_from_angle(90)
         self.assertEqual(idx, np.argmin(np.abs(angles - 90)))
         idx_tol = images.find_image_from_angle(99, tol=2)

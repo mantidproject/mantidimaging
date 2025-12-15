@@ -20,6 +20,8 @@ from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogVie
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
+from mantidimaging.core.data.geometry import Geometry
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 LOG = getLogger(__name__)
 
@@ -426,17 +428,18 @@ class ReconstructWindowPresenter(BasePresenter):
         self._set_precalculated_cor_tilt(cor, tilt)
 
     def _update_imagestack_geometry_data(self) -> None:
-        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
+        # TODO: Clean up when tilt/COR logic moves to Geometry window
         current_uuid = self.view.stackSelector.current()
         assert current_uuid is not None, "Invalid stack UUID; No stack selected"
-
         current_image_stack = self.main_window.get_stack(current_uuid)
         if current_image_stack is None:
             LOG.debug("No image stack or geometry found; skipping geometry update.")
             return
-
         if current_image_stack.geometry is None:
-            raise StackNotFoundError(f"No geometry found for imagestack with UUID: {current_uuid}")
+            LOG.warning(f"No geometry found for ImageStack {current_uuid}; creating default geometry.")
+            num_projs = getattr(current_image_stack, "num_projections", 1)
+            default_angles = ProjectionAngles(np.linspace(0, np.pi, num_projs))
+            current_image_stack.geometry = Geometry(default_angles.value)
 
         tilt = self.view.tilt
         cor_top = ScalarCoR(self.view.rotation_centre)
@@ -452,13 +455,14 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self) -> None:
-        if not self.model.images.has_proj180deg():
-            self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
-                                          "projection set. Please load a 180 projection manually.")
-            return
         pair = self.view.get_selected_projection_pair()
         use_projections = None
-        if pair != "proj180":
+        if pair == "proj180":
+            if not self.model.images.has_proj180deg():
+                self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180° "
+                                              "projection set. Please load a 180° projection manually.")
+                return
+        else:
             try:
                 proj1_angle, proj2_angle = pair
                 idx1 = self.model.images.find_image_from_angle(proj1_angle, tol=2)
