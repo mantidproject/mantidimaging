@@ -1107,8 +1107,12 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_status_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shows a status message indicating that zero/negative/NaN pixels were found in the stack. If the msg argument is</span>
-<span class="sd">        empty then this is taken to mean that no such pixels were found, so the warning message and icon are cleared.</span>
+<span class="sd">        Shows a status message in the reconstruction window.</span>
+
+<span class="sd">        Typically used to indicate that zero/negative/NaN pixels were found in the stack.</span>
+<span class="sd">        If the msg argument is empty then this is taken to mean that no such pixels were found,</span>
+<span class="sd">        so the warning message and icon are cleared.</span>
+
 <span class="sd">        :param msg: The status message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">statusMessageTextEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>

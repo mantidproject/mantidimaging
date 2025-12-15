@@ -539,7 +539,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">data</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">copy_into_shared_memory</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
@@ -552,7 +552,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_proj180deg</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">:</span> <span class="n">InstrumentLog</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shutter_count_file</span><span class="p">:</span> <span class="n">ShutterCount</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span> <span class="k">if</span> <span class="n">filenames</span> <span class="k">else</span> <span class="s2">&quot;untitled&quot;</span>
@@ -792,6 +791,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a reference to the internal numpy array holding the image data</span>
+
+<span class="sd">        .. note:: Do not hold on to this reference longer than the lifetime of the ImageStack.</span>
+<span class="sd">           ImageStack use the operating system&#39;s shared memory, which will be freed when the ImageStack has no remaining</span>
+<span class="sd">           references. A reference to this array will not keep that shared memory alive.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span><span class="o">.</span><span class="n">array</span>
 
     <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
@@ -890,15 +896,15 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The number of angles does not match the number of images. &quot;</span>
                                <span class="sa">f</span><span class="s2">&quot;Num angles </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">angles</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> and num images </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_images</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span> <span class="o">=</span> <span class="n">angles</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_angles</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="n">angles</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">angle_unit</span><span class="o">=</span><span class="s2">&quot;radian&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ImageStack.real_projection_angles">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.real_projection_angles">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">real_projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ImageStack.projection_angles">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.projection_angles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return projection angles from actual data sources (log files or manually loaded files).</span>
 
@@ -908,33 +914,14 @@
 
 <span class="sd">        :return: Real projection angles if they were found, None otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ProjectionAngles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">angles</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="ImageStack.projection_angles">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.projection_angles">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_angle</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">360.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return projection angles, in priority order:</span>
-<span class="sd">        - From a log</span>
-<span class="sd">        - From the manually loaded file with a list of angles</span>
-<span class="sd">        - Automatically generated with equidistant step</span>
-
-<span class="sd">        :param max_angle: The maximum angle up to which the angles will be generated.</span>
-<span class="sd">                          Only used when the angles are generated, if they are provided</span>
-<span class="sd">                          via a log or a file the argument will be ignored.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">projection_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_projection_angles</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">projection_angles</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">max_angle</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_projections</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ImageStack.counts">
@@ -970,13 +957,15 @@
 
 <div class="viewcode-block" id="ImageStack.create_geometry">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_geometry">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom_type</span><span class="p">:</span> <span class="n">GeometryType</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">geom_type</span><span class="p">:</span> <span class="n">GeometryType</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an AcquisitionGeometry belonging to the ImageStack.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">geom_type</span><span class="p">,</span> <span class="n">num_pixels</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">pixel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_angles</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_panels</span><span class="p">()</span></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">angles</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                 <span class="nb">type</span><span class="o">=</span><span class="n">geom_type</span><span class="p">,</span>
+                                 <span class="n">num_pixels</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
+                                 <span class="n">pixel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ImageStack.set_geometry_panels">
@@ -999,23 +988,6 @@
         <span class="n">num_pixels</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
         <span class="n">pixel_size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_panel</span><span class="p">(</span><span class="n">num_pixels</span><span class="o">=</span><span class="n">num_pixels</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="ImageStack.set_geometry_angles">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.set_geometry_angles">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_geometry_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Updates the geometry&#39;s angle data based on its parent ImageStack&#39;s projection angles if both geometry</span>
-<span class="sd">        and projection angles are present.</span>
-
-<span class="sd">        :side effects: Modifies self.geometry by updating its angle configuration.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot update geometry angles:&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;geometry is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="si">}</span><span class="s2">, projection angles is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_angles</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">angle_unit</span><span class="o">=</span><span class="s2">&quot;radian&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 3
 
+   mantidimaging.core.operations.append_stacks
    mantidimaging.core.operations.arithmetic
    mantidimaging.core.operations.circular_mask
    mantidimaging.core.operations.clip_values

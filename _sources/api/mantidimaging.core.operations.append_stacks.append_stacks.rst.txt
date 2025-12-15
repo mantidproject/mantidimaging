@@ -1,0 +1,7 @@
+mantidimaging.core.operations.append\_stacks.append\_stacks module
+==================================================================
+
+.. automodule:: mantidimaging.core.operations.append_stacks.append_stacks
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -542,7 +542,7 @@
         <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">value</span>
 
         <span class="n">angle_range</span> <span class="o">=</span> <span class="s2">&quot;N/A&quot;</span>
-        <span class="n">real_projection_angles</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">real_projection_angles</span><span class="p">()</span>
+        <span class="n">real_projection_angles</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">real_projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">min_angle</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="n">real_projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">max_angle</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="n">real_projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -617,13 +617,12 @@
 
         <span class="n">new_angles</span> <span class="o">=</span> <span class="n">ProjectionAngles</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">new_min_angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">new_max_angle</span><span class="p">),</span> <span class="n">stack</span><span class="o">.</span><span class="n">num_projections</span><span class="p">))</span>
-        <span class="n">stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">new_angles</span><span class="p">)</span>
 
         <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span>
         <span class="k">if</span> <span class="n">new_type</span> <span class="o">==</span> <span class="s2">&quot;Cone 3D&quot;</span><span class="p">:</span>
             <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span>
 
-        <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">geometry_type</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">new_angles</span><span class="p">,</span> <span class="n">geometry_type</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">new_cor</span><span class="p">,</span> <span class="n">new_tilt</span><span class="p">)</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">new_source_position</span><span class="p">,</span> <span class="n">new_detector_position</span><span class="p">)</span>
@@ -652,7 +651,11 @@
             <span class="k">return</span>
 
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting Geometry from </span><span class="si">{</span><span class="n">current_type</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">geom_type</span><span class="o">=</span><span class="n">new_type</span><span class="p">)</span>
+
+        <span class="n">existing_angles</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">existing_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">existing_angles</span><span class="p">,</span> <span class="n">new_type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span></div>
 
 

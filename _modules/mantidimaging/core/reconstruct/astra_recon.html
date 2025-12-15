@@ -581,7 +581,10 @@
 <span class="sd">        Larger squared sum -&gt; bigger deviance from the mean, i.e. larger distance between noise and data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">assert</span> <span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
         <span class="n">original_cor</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cor</span>
         <span class="n">original_tilt</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tilt</span>
 
@@ -597,7 +600,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_cor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">start_cor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">start_cor</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="n">minimized_cor</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">minimizer_function</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nelder-mead&#39;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">minimized_cor</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">minimizer_function</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;nelder-mead&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cor</span> <span class="o">=</span> <span class="n">original_cor</span>
         <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tilt</span> <span class="o">=</span> <span class="n">original_tilt</span>
 
@@ -617,7 +620,8 @@
         <span class="k">assert</span> <span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">sino</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">sino</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
         <span class="n">cor</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_cor_at_slice_index</span><span class="p">(</span><span class="n">slice_idx</span><span class="p">)</span>
-        <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">max_projection_angle</span><span class="p">)</span>
+        <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="n">sino</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Sinogram must be a 2D image&quot;</span>
 
@@ -648,6 +652,9 @@
         <span class="n">output_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">num_sinograms</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
         <span class="n">output_images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="o">.</span><span class="n">create_empty_image_stack</span><span class="p">(</span><span class="n">output_shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
         <span class="n">output_images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="s1">&#39;AstraRecon.full&#39;</span><span class="p">,</span> <span class="s1">&#39;Volume Reconstruction&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">recon_params</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+        <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
             <span class="n">output_images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">AstraRecon</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>

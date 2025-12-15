@@ -983,9 +983,15 @@ are updated.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message">
 <span class="sig-name descname"><span class="pre">show_status_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.show_status_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.show_status_message" title="Link to this definition">#</a></dt>
-<dd><p>Shows a status message indicating that zero/negative/NaN pixels were found in the stack. If the msg argument is
-empty then this is taken to mean that no such pixels were found, so the warning message and icon are cleared.
-:param msg: The status message.</p>
+<dd><p>Shows a status message in the reconstruction window.</p>
+<p>Typically used to indicate that zero/negative/NaN pixels were found in the stack.
+If the msg argument is empty then this is taken to mean that no such pixels were found,
+so the warning message and icon are cleared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> – The status message.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
