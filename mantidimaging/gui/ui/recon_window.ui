@@ -288,98 +288,84 @@
                   <property name="title">
                    <string>Auto COR finding methods</string>
                   </property>
-                  <widget class="QWidget" name="layoutWidget">
-                   <property name="geometry">
-                    <rect>
-                     <x>10</x>
-                     <y>30</y>
-                     <width>332</width>
-                     <height>30</height>
-                    </rect>
-                   </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout">
-                    <item>
-                     <widget class="QPushButton" name="correlateButton">
-                      <property name="toolTip">
-                       <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
-                      </property>
-                      <property name="text">
-                       <string>Correlate Projections</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="minimiseButton">
-                      <property name="toolTip">
-                       <string>Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
-                      </property>
-                      <property name="text">
-                       <string>Minimise error</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="corHelpButton">
-                      <property name="maximumSize">
-                       <size>
-                        <width>25</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string>?</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                  <widget class="QWidget" name="layoutWidget_2">
-                   <property name="geometry">
-                    <rect>
-                     <x>10</x>
-                     <y>70</y>
-                     <width>284</width>
-                     <height>30</height>
-                    </rect>
-                   </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_3">
-                    <item>
-                     <widget class="QLabel" name="label_2">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                        <horstretch>90</horstretch>
-                        <verstretch>60</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>60</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="text">
-                       <string>Correlation Pair</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="projectionPairDropdown">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>80</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>200</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
+                  <layout class="QVBoxLayout" name="verticalLayout_9">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                     <item>
+                      <widget class="QPushButton" name="correlateButton">
+                       <property name="toolTip">
+                        <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
+                       </property>
+                       <property name="text">
+                        <string>Correlate Projections</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="minimiseButton">
+                       <property name="toolTip">
+                        <string>Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
+                       </property>
+                       <property name="text">
+                        <string>Minimise error</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="corHelpButton">
+                       <property name="maximumSize">
+                        <size>
+                         <width>25</width>
+                         <height>16777215</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>?</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_3">
+                     <item>
+                      <widget class="QLabel" name="label_2">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>60</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>60</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Correlation Pair</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="projectionPairDropdown">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                         <horstretch>80</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item>
