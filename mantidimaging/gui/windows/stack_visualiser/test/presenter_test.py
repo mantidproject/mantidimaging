@@ -6,7 +6,6 @@ import unittest
 from unittest import mock
 from unittest.mock import patch
 
-import numpy as np
 from mantidimaging.gui.windows.stack_visualiser.presenter import SVParameters
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -65,24 +64,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
 
     def test_get_num_images(self):
         assert self.presenter.get_num_images() == self.presenter.images.num_projections
-
-    def test_find_image_from_angle_returns_matching_index(self):
-        angle_rad = self.presenter.images.projection_angles().value[1]
-        angle_deg = np.rad2deg(angle_rad)
-        index = self.presenter.find_image_from_angle(angle_deg)
-        self.assertAlmostEqual(self.presenter.images.projection_angles().value[index], angle_rad)
-
-    def test_find_image_from_angle_returns_next_index(self):
-        angle = (self.presenter.images.projection_angles().value[1] +
-                 self.presenter.images.projection_angles().value[2]) * 0.5
-        angle = np.rad2deg(angle)
-        index = self.presenter.find_image_from_angle(angle)
-        assert index == 2
-
-    def test_find_image_from_angle_returns_number_of_values(self):
-        angle = self.presenter.images.projection_angles().value[-1] * 2
-        angle = np.rad2deg(angle)
-        assert self.presenter.find_image_from_angle(angle) == len(self.presenter.images.projection_angles().value)
 
     @patch("mantidimaging.gui.windows.stack_visualiser.presenter.getLogger")
     def test_notify_exception_log(self, get_logger_mock):

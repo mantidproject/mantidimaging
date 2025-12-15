@@ -133,6 +133,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.image_view)
         self.image_view.sigSliceIndexChanged.connect(self.presenter.set_preview_slice_idx)
 
+        self.projectionPairDropdown.addItem("180° projection", "proj180")
+        self.projectionPairDropdown.addItem("0° and 180°", (0, 180))
+        self.projectionPairDropdown.addItem("90° and 270°", (90, 270))
+        self.projectionPairDropdown.addItem("180° and 360°", (180, 360))
+        self.projectionPairDropdown.addItem("-90° and 90°", (-90, 90))
+
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -560,3 +566,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def set_max_slice_index(self, max_index: int) -> None:
         self.previewSliceIndexSpinBox.setMaximum(max_index)
+
+    def get_selected_projection_pair(self) -> tuple[float, float]:
+        return self.projectionPairDropdown.currentData()
