@@ -271,6 +271,13 @@ class ImageStack:
 
     @property
     def data(self) -> np.ndarray:
+        """
+        Get a reference to the internal numpy array holding the image data
+
+        .. note:: Do not hold on to this reference longer than the lifetime of the ImageStack.
+           ImageStack use the operating system's shared memory, which will be freed when the ImageStack has no remaining
+           references. A reference to this array will not keep that shared memory alive.
+        """
         return self._shared_array.array
 
     @data.setter

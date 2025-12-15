@@ -299,9 +299,13 @@ class ImageStackTest(unittest.TestCase):
     def test_slice_as_stack(self):
         raw_pixels = np.arange(60, dtype=np.float32).reshape((3, 4, 5))
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=False)
-        np.testing.assert_array_equal(raw_pixels[[0], :, :], image.slice_as_image_stack(0).data)
-        np.testing.assert_array_equal(raw_pixels[[2], :, :], image.slice_as_image_stack(2).data)
+        slice_0 = image.slice_as_image_stack(0)
+        slice_2 = image.slice_as_image_stack(2)
+
+        np.testing.assert_array_equal(raw_pixels[[0], :, :], slice_0.data)
+        np.testing.assert_array_equal(raw_pixels[[2], :, :], slice_2.data)
         self.assertRaises(IndexError, image.slice_as_image_stack, 3)
+
         slice = image.slice_as_image_stack(0)
         self.assertEqual(slice.height, image.height)
         self.assertEqual(slice.width, image.width)
@@ -309,24 +313,28 @@ class ImageStackTest(unittest.TestCase):
 
         # check that modification do not affect original
         copy = image.slice_as_image_stack(0)
-        copy_data = copy.data.copy()
-        copy_data += 1
-        copy.data = copy_data
-        np.testing.assert_array_equal(raw_pixels, image.data.copy())
+        copy.data += 1
+        np.testing.assert_array_equal(raw_pixels, image.data)
 
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=True)
         slice = image.slice_as_image_stack(0)
         self.assertEqual(slice.height, 1)
         self.assertEqual(slice.width, image.width)
         self.assertEqual(slice.num_projections, image.num_projections)
-        np.testing.assert_array_equal(raw_pixels[[0], :, :], slice.data.copy())
+
+        np.testing.assert_array_equal(raw_pixels[[0], :, :], slice.data)
 
     def test_sino_as_stack(self):
         raw_pixels = np.arange(60, dtype=np.float32).reshape((3, 4, 5))
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=False)
-        np.testing.assert_array_equal(raw_pixels[:, [0], :], image.sino_as_image_stack(0).data)
-        np.testing.assert_array_equal(raw_pixels[:, [3], :], image.sino_as_image_stack(3).data)
+
+        sino_0 = image.sino_as_image_stack(0)
+        sino_3 = image.sino_as_image_stack(3)
+        np.testing.assert_array_equal(raw_pixels[:, [0], :], sino_0.data)
+        np.testing.assert_array_equal(raw_pixels[:, [3], :], sino_3.data)
+
         self.assertRaises(IndexError, image.sino_as_image_stack, 4)
+
         slice = image.sino_as_image_stack(0)
         self.assertEqual(slice.height, 1)
         self.assertEqual(slice.width, image.width)
@@ -334,13 +342,12 @@ class ImageStackTest(unittest.TestCase):
 
         # check that modification do not affect original
         copy = image.sino_as_image_stack(0)
-        copy_data = copy.data.copy()
-        copy_data += 1
-        copy.data = copy_data
+        copy.data += 1
         np.testing.assert_array_equal(raw_pixels, image.data)
 
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=True)
-        np.testing.assert_array_equal(raw_pixels[[0], :, :].swapaxes(0, 1), image.sino_as_image_stack(0).data)
+        sino_0 = image.sino_as_image_stack(0)
+        np.testing.assert_array_equal(raw_pixels[[0], :, :].swapaxes(0, 1), sino_0.data)
 
     def test_processed_is_true(self):
         images = generate_images()
