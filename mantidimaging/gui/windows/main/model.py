@@ -5,6 +5,8 @@ import uuid
 from logging import getLogger
 from pathlib import Path
 from typing import NoReturn, TYPE_CHECKING
+import numpy as np
+import imageio
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
@@ -232,3 +234,34 @@ class MainWindowModel:
 
     def get_recon_list_id(self, parent_id: uuid.UUID) -> uuid.UUID:
         return self.datasets[parent_id].recons.id
+
+    def create_gif_from_stack(self, image_stack: ImageStack, output_path: str, frame_skip: int,
+                              rotation_duration: float) -> None:
+        """
+        Create an animated GIF from an image stack.
+
+        Applies percentile-based auto-scaling (2-98 percentile) for improved contrast,
+        similarly to the image viewer, filling with mid-gray if data is uniform - required for GIF format.
+        Converted to 8-bit for GIF compatibility.
+
+        :param image_stack: The ImageStack to create GIF from
+        :param output_path: Path where the GIF will be saved
+        :param frame_skip: Show every Nth frame (e.g., 10 = every 10th frame)
+        :param rotation_duration: Duration in seconds for the complete rotation (assumes 360 degrees)
+        """
+        data = image_stack.data.astype(np.float64)
+        data_low = np.percentile(data, 2)
+        data_high = np.percentile(data, 98)
+
+        if data_high > data_low:
+            normalized_data = np.clip((data - data_low) / (data_high - data_low) * 255, 0, 255).astype(np.uint8)
+        else:
+            normalized_data = np.full_like(data, 128, dtype=np.uint8)  # Fill with mid-gray if uniform
+
+        skipped_data = normalized_data[::frame_skip]  # Apply frame skip to reduce gif size
+
+        # Calculate frame duration in milliseconds for imageio (format mimsave expects duration per frame)
+        num_frames = len(skipped_data)
+        frame_duration_ms = int((rotation_duration / num_frames) * 1000)
+
+        imageio.mimsave(output_path, skipped_data, duration=frame_duration_ms, loop=0, optimize=True, quantize=256)

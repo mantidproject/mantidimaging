@@ -12,7 +12,7 @@ from collections.abc import Iterable
 import numpy as np
 from PyQt5.QtCore import QSettings, Qt
 from PyQt5.QtGui import QFont, QPalette, QColor
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem
+from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QMessageBox
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
@@ -24,6 +24,7 @@ from mantidimaging.core.utility.progress_reporting.progress import TaskCancelled
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_visualiser.view import StackVisualiserView
+from mantidimaging.gui.utility.gif_utils import calculate_optimal_frame_skip
 from .model import MainWindowModel
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 
@@ -167,6 +168,51 @@ class MainWindowPresenter(BasePresenter):
                                   'save_as_float': self.view.nexus_save_dialog.save_as_float
                               },
                               busy=True)
+
+    def _create_gif(self, image_stack) -> None:
+        """
+        Create GIF from stack with user-provided parameters and error handling
+
+        :param image_stack: The ImageStack to create GIF from
+        """
+        output_path = self._get_gif_output_path(image_stack)
+        frame_skip, rotation_duration, ok = self._show_gif_parameters_dialog(image_stack)
+
+        if not output_path or not ok:
+            return
+
+        try:
+            self.model.create_gif_from_stack(image_stack, output_path, frame_skip, rotation_duration)
+            QMessageBox.information(self.view, "Success", f"GIF saved successfully to:\n{output_path}")
+        except Exception as error:
+            QMessageBox.critical(self.view, "GIF Creation Failed", f"Failed to create GIF:\n{str(error)}")
+
+    def _get_gif_output_path(self, image_stack) -> str:
+        return self.view.get_gif_output_path(image_stack)
+
+    def _show_gif_parameters_dialog(self, image_stack) -> tuple[int, float, bool]:
+        """
+        Show a dialog for GIF parameters: frame skip and rotation duration.
+
+        Gets number of angles from geometry if available, otherwise uses number of projections and
+        calculates optimal frame skip step to keep GIF size manageable (~<=5 MB).
+
+        :param image_stack: The ImageStack to create GIF from.
+        :return: Tuple of (frame_skip, rotation_duration, accepted)
+        """
+
+        if image_stack.geometry and image_stack.geometry.angles is not None:
+            num_angles = image_stack.geometry.angles.size
+        else:
+            num_angles = image_stack.num_projections
+
+        optimal_skip = calculate_optimal_frame_skip(projection_count=image_stack.num_projections,
+                                                    image_height=image_stack.height,
+                                                    image_width=image_stack.width,
+                                                    angle_count=num_angles,
+                                                    max_size_mb=5.0)
+
+        return self.view.show_gif_parameters_dialog(image_stack, optimal_skip)
 
     def load_image_stack(self, file_path: str) -> None:
         start_async_task_view(self.view, self.model.load_image_stack_to_new_dataset, self._on_dataset_load_done,
