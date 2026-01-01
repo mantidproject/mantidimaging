@@ -1,0 +1,1 @@
+#2885: The ccpi-regulariser package has been updated to 25.0.* to fix Windows Build timeout on Github Actions. Numexpr has also been upgrade to 2.10.*
