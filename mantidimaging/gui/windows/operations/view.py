@@ -118,6 +118,8 @@ class FiltersWindowView(BaseMainWindowView):
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
         self.safeApply.setChecked(settings.value('safeApply', False, bool))
+        self.safeApply.stateChanged.connect(self.handle_safe_apply_check)
+        
         self.handle_filter_selection("")
         self.window_ready = True
         # tryuityi
@@ -167,6 +169,9 @@ class FiltersWindowView(BaseMainWindowView):
         # Update preview on filter selection (on the off chance the default
         # options are valid)
         self.auto_update_triggered.emit()
+
+    def handle_safe_apply_check(self):
+        settings.setValue('safeApply', self.safeApply.isChecked())
 
     def on_auto_update_triggered(self):
         """
