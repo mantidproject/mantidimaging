@@ -119,7 +119,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.safeApply.setChecked(settings.value('safeApply', False, bool))
         self.safeApply.stateChanged.connect(self.handle_safe_apply_check)
-        
+
         self.handle_filter_selection("")
         self.window_ready = True
         # tryuityi
