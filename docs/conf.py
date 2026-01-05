@@ -131,7 +131,7 @@ html_theme_options = {
         "json_url": "/mantidimaging/_static/version_switcher.json",
         "version_match": release,
     },
-    "navbar_end": ["version-switcher", "icon-links"],  # Add version switcher and GitHub link
+    "navbar_end": ["theme-switcher", "version-switcher", "icon-links"],  # Add theme, version switcher and GitHub link
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
