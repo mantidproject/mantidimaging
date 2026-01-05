@@ -115,6 +115,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         self.handle_filter_selection("")
         self.window_ready = True
+        # tryuityi
 
     def closeEvent(self, e):
         if self.presenter.filter_is_running:
