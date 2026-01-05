@@ -117,6 +117,7 @@ class FiltersWindowView(BaseMainWindowView):
         self.filterHelpButton.pressed.connect(self.open_help_webpage)
         self.collapseToggleButton.pressed.connect(self.toggle_filters_section)
 
+        self.safeApply.setChecked(settings.value('safeApply', False, bool))
         self.handle_filter_selection("")
         self.window_ready = True
         # tryuityi
