@@ -864,7 +864,6 @@ class MainWindowView(BaseMainWindowView):
         stack_properties_dialog.show()
 
     def show_dataset_rename_dialog(self, stack: ImageStack | Dataset) -> None:
-        assert stack is not None
         stack_rename_dialog = StackRenameDialog(self, stack)
         stack_rename_dialog.show()
 
