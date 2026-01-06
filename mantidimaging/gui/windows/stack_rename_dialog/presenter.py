@@ -9,8 +9,6 @@ from mantidimaging.gui.windows.stack_properties_dialog.view import StackProperti
 
 class Notification(Enum):
     ACCEPTED = auto()
-    DATASET_CHANGED = auto()
-
 
 class StackRenamePresenter(BasePresenter):
 
