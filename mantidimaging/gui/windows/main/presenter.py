@@ -85,7 +85,7 @@ class MainWindowPresenter(BasePresenter):
             elif signal == Notification.RENAME_STACK:
                 self._do_rename_stack(**baggage)
             elif signal == Notification.RENAME_DATASET:
-                self._do_rename_dataset(**baggage)
+                self._do_rename_stack_or_dataset(**baggage)
             elif signal == Notification.NEXUS_LOAD:
                 self.load_nexus_file()
             elif signal == Notification.NEXUS_SAVE:
@@ -148,10 +148,11 @@ class MainWindowPresenter(BasePresenter):
             dock.setWindowTitle(new_name)
             self.view.model_changed.emit()
 
-    def _do_rename_dataset(self, origin_dataset_stack: Dataset | ImageStack, new_name: str):
+    def _do_rename_stack_or_dataset(self, origin_dataset_stack: Dataset | ImageStack, new_name: str):
         old_name = origin_dataset_stack.name
         origin_dataset_stack.name = new_name
-        self._do_rename_stack(old_name, new_name)
+        if isinstance(origin_dataset_stack, ImageStack):
+            self._do_rename_stack(old_name, new_name)
         self.update_dataset_tree()
         self.view.model_changed.emit()
 

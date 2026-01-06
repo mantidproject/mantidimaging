@@ -2,12 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from enum import Enum, auto
-from logging import getLogger
-
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.stack_properties_dialog.view import StackPropertiesDialog
-logger = getLogger(__name__)
 
 
 class Notification(Enum):
