@@ -55,6 +55,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -230,6 +231,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -382,6 +391,14 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
@@ -584,6 +601,25 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.model.MainWindowModel.create_gif_from_stack">
+<span class="sig-name descname"><span class="pre">create_gif_from_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/model.html#MainWindowModel.create_gif_from_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.model.MainWindowModel.create_gif_from_stack" title="Link to this definition">#</a></dt>
+<dd><p>Create an animated GIF from an image stack.</p>
+<p>Applies percentile-based auto-scaling (2-98 percentile) for improved contrast,
+similarly to the image viewer, filling with mid-gray if data is uniform - required for GIF format.
+Converted to 8-bit for GIF compatibility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_stack</strong> – The ImageStack to create GIF from</p></li>
+<li><p><strong>output_path</strong> – Path where the GIF will be saved</p></li>
+<li><p><strong>frame_skip</strong> – Show every Nth frame (e.g., 10 = every 10th frame)</p></li>
+<li><p><strong>rotation_duration</strong> – Duration in seconds for the complete rotation (assumes 360 degrees)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving">
 <span class="sig-name descname"><span class="pre">do_images_saving</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.UUID" title="uuid.UUID"><span class="pre">uuid.UUID</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress" title="mantidimaging.core.utility.progress_reporting.progress.Progress"><span class="pre">Progress</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/model.html#MainWindowModel.do_images_saving"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -735,6 +771,7 @@ otherwise.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_log_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_log_to_sample()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_projection_angles_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_projection_angles_to_sample()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.add_shutter_counts_to_sample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.create_gif_from_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.create_gif_from_stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_images_saving()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_load_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_load_dataset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.model.MainWindowModel.do_nexus_saving"><code class="docutils literal notranslate"><span class="pre">MainWindowModel.do_nexus_saving()</span></code></a></li>

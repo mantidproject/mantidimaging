@@ -16,6 +16,7 @@ Subpackages
    mantidimaging.gui.widgets.bad_data_overlay
    mantidimaging.gui.widgets.dataset_selector
    mantidimaging.gui.widgets.dataset_selector_dialog
+   mantidimaging.gui.widgets.gif_parameters
    mantidimaging.gui.widgets.indicator_icon
    mantidimaging.gui.widgets.line_profile_plot
    mantidimaging.gui.widgets.mi_image_view

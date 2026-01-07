@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -379,6 +388,14 @@
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-3"
     type="button"
@@ -493,6 +510,8 @@
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionCompareImages">actionCompareImages (mantidimaging.gui.windows.main.view.MainWindowView attribute)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionExit">actionExit (mantidimaging.gui.windows.main.view.MainWindowView attribute)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionExportGIF">actionExportGIF (mantidimaging.gui.windows.main.view.MainWindowView attribute)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.actionFilters">actionFilters (mantidimaging.gui.windows.main.view.MainWindowView attribute)</a>
 </li>
@@ -889,6 +908,8 @@
       <li><a href="api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.SantistebanFunction.calculate_line_profile">calculate_line_profile() (mantidimaging.core.fitting.fitting_functions.SantistebanFunction method)</a>
 </li>
       <li><a href="api/mantidimaging.core.utility.progress_reporting.progress.html#mantidimaging.core.utility.progress_reporting.progress.Progress.calculate_mean_time">calculate_mean_time() (mantidimaging.core.utility.progress_reporting.progress.Progress static method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.utility.gif_utils.html#mantidimaging.gui.utility.gif_utils.calculate_optimal_frame_skip">calculate_optimal_frame_skip() (in module mantidimaging.gui.utility.gif_utils)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.calculateCorsButton">calculateCorsButton (mantidimaging.gui.windows.recon.view.ReconstructWindowView attribute)</a>
 </li>
@@ -1316,6 +1337,8 @@
 </li>
       <li><a href="api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_geometry">create_geometry() (mantidimaging.core.data.imagestack.ImageStack method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.create_gif_from_stack">create_gif_from_stack() (mantidimaging.gui.windows.main.model.MainWindowModel method)</a>
+</li>
       <li><a href="api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.create_loading_parameters_for_file_path">create_loading_parameters_for_file_path() (in module mantidimaging.core.io.loader.loader)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.create_new_stack">create_new_stack() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
@@ -1678,6 +1701,8 @@
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ErrorMode">ErrorMode (class in mantidimaging.gui.windows.spectrum_viewer.model)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.utility.gif_utils.html#mantidimaging.gui.utility.gif_utils.estimate_gif_size">estimate_gif_size() (in module mantidimaging.gui.utility.gif_utils)</a>
+</li>
       <li><a href="api/mantidimaging.core.fitting.fitting_functions.html#mantidimaging.core.fitting.fitting_functions.BaseFittingFunction.evaluate">evaluate() (mantidimaging.core.fitting.fitting_functions.BaseFittingFunction method)</a>
 
       <ul>
@@ -1781,6 +1806,8 @@
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.experimentSetupFormWidget">experimentSetupFormWidget (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView attribute)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.experimentSetupGroupBox">experimentSetupGroupBox (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView attribute)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.export_gif_from_active_stack">export_gif_from_active_stack() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.export_mode">export_mode (mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter attribute)</a>
 </li>
@@ -1996,8 +2023,12 @@
       </ul></li>
       <li><a href="api/mantidimaging.core.io.utility.html#mantidimaging.core.io.utility.find_first_file_that_is_possibly_a_sample">find_first_file_that_is_possibly_a_sample() (in module mantidimaging.core.io.utility)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.find_image_from_angle">find_image_from_angle() (mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter method)</a>
+      <li><a href="api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.find_image_from_angle">find_image_from_angle() (mantidimaging.core.data.imagestack.ImageStack method)</a>
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.find_image_from_angle">(mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter method)</a>
 </li>
+      </ul></li>
       <li><a href="api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.find_images">find_images() (mantidimaging.gui.windows.live_viewer.model.ImageWatcher method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.model.html#mantidimaging.gui.windows.recon.model.ReconstructWindowModel.find_initial_cor">find_initial_cor() (mantidimaging.gui.windows.recon.model.ReconstructWindowModel method)</a>
@@ -2238,6 +2269,12 @@
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_tree_view_item">get_dataset_tree_view_item() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.GifParametersWidget.get_duration">get_duration() (mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.GifParametersWidget method)</a>
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.html#mantidimaging.gui.widgets.gif_parameters.GifParametersWidget.get_duration">(mantidimaging.gui.widgets.gif_parameters.GifParametersWidget method)</a>
+</li>
+      </ul></li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.roi_table_model.html#mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel.get_element">get_element() (mantidimaging.gui.windows.spectrum_viewer.roi_table_model.TableModel method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_existing_180_id">get_existing_180_id() (mantidimaging.gui.windows.main.model.MainWindowModel method)</a>
@@ -2251,6 +2288,14 @@
       <li><a href="api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.get_fitted_param_values">get_fitted_param_values() (mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_fitting_region">get_fitting_region() (mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.GifParametersWidget.get_frame_skip">get_frame_skip() (mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.GifParametersWidget method)</a>
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.html#mantidimaging.gui.widgets.gif_parameters.GifParametersWidget.get_frame_skip">(mantidimaging.gui.widgets.gif_parameters.GifParametersWidget method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_gif_output_path">get_gif_output_path() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.widgets.line_profile_plot.view.html#mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI.get_image_region">get_image_region() (mantidimaging.gui.widgets.line_profile_plot.view.ImageViewLineROI method)</a>
 </li>
@@ -2296,10 +2341,10 @@
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_normalized_averaged_image">get_normalized_averaged_image() (mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel method)</a>
 </li>
-      <li><a href="api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_num_images">get_num_images() (mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_num_images">get_num_images() (mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter method)</a>
+</li>
       <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_number_of_cors">get_number_of_cors() (mantidimaging.gui.windows.recon.view.ReconstructWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_number_of_images_in_stack">get_number_of_images_in_stack() (mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel method)</a>
@@ -2370,6 +2415,8 @@
 </li>
       <li><a href="api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.get_selected_fit_region">get_selected_fit_region() (mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_selected_projection_pair">get_selected_projection_pair() (mantidimaging.gui.windows.recon.view.ReconstructWindowView method)</a>
+</li>
       <li><a href="api/mantidimaging.core.utility.imat_log_file_parser.html#mantidimaging.core.utility.imat_log_file_parser.IMATLogFile.get_seperator">get_seperator() (mantidimaging.core.utility.imat_log_file_parser.IMATLogFile static method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_shuttercount_normalised_correction_parameter">get_shuttercount_normalised_correction_parameter() (mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel method)</a>
@@ -2432,6 +2479,12 @@
 </li>
       <li><a href="api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel.getColumn">getColumn() (mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel method)</a>
 </li>
+      <li><a href="api/mantidimaging.gui.widgets.gif_parameters.html#mantidimaging.gui.widgets.gif_parameters.GifParametersWidget">GifParametersWidget (class in mantidimaging.gui.widgets.gif_parameters)</a>
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.GifParametersWidget">(class in mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget)</a>
+</li>
+      </ul></li>
       <li><a href="api/mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_angle">goto_angle() (mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.goto_projection">goto_projection() (mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView method)</a>
@@ -4112,6 +4165,13 @@
 </li>
       </ul></li>
       <li>
+    mantidimaging.gui.utility.gif_utils
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.utility.gif_utils.html#module-mantidimaging.gui.utility.gif_utils">module</a>
+</li>
+      </ul></li>
+      <li>
     mantidimaging.gui.utility.qt_helpers
 
       <ul>
@@ -4186,6 +4246,20 @@
 
       <ul>
         <li><a href="api/mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.html#module-mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog">module</a>
+</li>
+      </ul></li>
+      <li>
+    mantidimaging.gui.widgets.gif_parameters
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.html#module-mantidimaging.gui.widgets.gif_parameters">module</a>
+</li>
+      </ul></li>
+      <li>
+    mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget
+
+      <ul>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#module-mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget">module</a>
 </li>
       </ul></li>
       <li>
@@ -4559,6 +4633,8 @@
         <li><a href="api/mantidimaging.gui.windows.move_stack_dialog.view.html#module-mantidimaging.gui.windows.move_stack_dialog.view">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     mantidimaging.gui.windows.nexus_load_dialog
 
@@ -4566,8 +4642,6 @@
         <li><a href="api/mantidimaging.gui.windows.nexus_load_dialog.html#module-mantidimaging.gui.windows.nexus_load_dialog">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     mantidimaging.gui.windows.nexus_load_dialog.presenter
 
@@ -5277,6 +5351,8 @@
 </li>
         <li><a href="api/mantidimaging.gui.utility.common.html#module-mantidimaging.gui.utility.common">mantidimaging.gui.utility.common</a>
 </li>
+        <li><a href="api/mantidimaging.gui.utility.gif_utils.html#module-mantidimaging.gui.utility.gif_utils">mantidimaging.gui.utility.gif_utils</a>
+</li>
         <li><a href="api/mantidimaging.gui.utility.qt_helpers.html#module-mantidimaging.gui.utility.qt_helpers">mantidimaging.gui.utility.qt_helpers</a>
 </li>
         <li><a href="api/mantidimaging.gui.widgets.html#module-mantidimaging.gui.widgets">mantidimaging.gui.widgets</a>
@@ -5298,6 +5374,10 @@
         <li><a href="api/mantidimaging.gui.widgets.dataset_selector_dialog.html#module-mantidimaging.gui.widgets.dataset_selector_dialog">mantidimaging.gui.widgets.dataset_selector_dialog</a>
 </li>
         <li><a href="api/mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog.html#module-mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog">mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog</a>
+</li>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.html#module-mantidimaging.gui.widgets.gif_parameters">mantidimaging.gui.widgets.gif_parameters</a>
+</li>
+        <li><a href="api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#module-mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget">mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget</a>
 </li>
         <li><a href="api/mantidimaging.gui.widgets.indicator_icon.html#module-mantidimaging.gui.widgets.indicator_icon">mantidimaging.gui.widgets.indicator_icon</a>
 </li>
@@ -7055,6 +7135,8 @@
       <li><a href="api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.show_from_timer">show_from_timer() (mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_geometry_window">show_geometry_window() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
+</li>
+      <li><a href="api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_gif_parameters_dialog">show_gif_parameters_dialog() (mantidimaging.gui.windows.main.view.MainWindowView method)</a>
 </li>
       <li><a href="api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget.show_image">show_image() (mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget method)</a>
 </li>

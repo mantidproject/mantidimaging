@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../../../../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -377,6 +386,14 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
@@ -748,33 +765,46 @@
                      <span class="n">chunk_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">open_beam_roi</span><span class="p">:</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 
-        <span class="k">if</span> <span class="n">open_beam_roi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">open_beam_roi</span> <span class="o">=</span> <span class="n">roi</span>
-
+        <span class="n">open_beam_roi</span> <span class="o">=</span> <span class="n">open_beam_roi</span> <span class="ow">or</span> <span class="n">roi</span>
         <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">roi</span><span class="p">,</span> <span class="o">*</span><span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span> <span class="ow">and</span> <span class="n">chunk_start</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">chunk_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using cached spectrum: ROI=</span><span class="si">%s</span><span class="s2">, Open ROI=</span><span class="si">%s</span><span class="s2">, mode=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+
+        <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">)</span>
+        <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">chunk_start</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">chunk_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="o">=</span><span class="n">open_beam_roi</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stored spectrum cache: ROI=</span><span class="si">%s</span><span class="s2">, Open ROI=</span><span class="si">%s</span><span class="s2">, mode=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">spectrum</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                          <span class="n">mode</span><span class="p">:</span> <span class="n">SpecType</span><span class="p">,</span>
+                          <span class="n">normalise_with_shuttercount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="n">chunk_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                          <span class="n">chunk_end</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">open_beam_roi</span><span class="p">:</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">initial_sample_change</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
+        <span class="n">open_beam_roi</span> <span class="o">=</span> <span class="n">open_beam_roi</span> <span class="ow">or</span> <span class="n">roi</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span>
             <span class="n">sample_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">sample_spectrum</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">OPEN</span><span class="p">:</span>
             <span class="n">open_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">open_spectrum</span>
         <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalise_issue</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-            <span class="n">roi_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
-            <span class="n">roi_norm_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
+        <span class="n">roi_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
+        <span class="n">roi_norm_spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalise_stack</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">chunk_start</span><span class="p">,</span> <span class="n">chunk_end</span><span class="p">)</span>
         <span class="n">spectrum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">,</span>
                              <span class="n">roi_norm_spectrum</span><span class="p">,</span>
                              <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">roi_spectrum</span><span class="p">),</span>
@@ -782,14 +812,8 @@
         <span class="k">if</span> <span class="n">normalise_with_shuttercount</span><span class="p">:</span>
             <span class="n">average_shuttercount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_shuttercount_normalised_correction_parameter</span><span class="p">()</span>
             <span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum</span> <span class="o">/</span> <span class="n">average_shuttercount</span>
-        <span class="k">if</span> <span class="n">chunk_start</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">chunk_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">store_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">normalise_with_shuttercount</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="o">=</span><span class="n">open_beam_roi</span><span class="p">)</span>
-
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing spectrum: ROI=</span><span class="si">%s</span><span class="s2">, Open ROI=</span><span class="si">%s</span><span class="s2">, mode=</span><span class="si">%s</span><span class="s2">, cached=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                  <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">spectrum</span></div>
-
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Computing spectrum: ROI=</span><span class="si">%s</span><span class="s2">, Open ROI=</span><span class="si">%s</span><span class="s2">, mode=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">open_beam_roi</span><span class="p">,</span> <span class="n">mode</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spectrum</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.store_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.store_spectrum">[docs]</a>

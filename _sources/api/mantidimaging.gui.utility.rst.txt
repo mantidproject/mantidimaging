@@ -13,4 +13,5 @@ Submodules
    :maxdepth: 3
 
    mantidimaging.gui.utility.common
+   mantidimaging.gui.utility.gif_utils
    mantidimaging.gui.utility.qt_helpers

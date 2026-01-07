@@ -55,6 +55,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -230,6 +231,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -382,6 +391,14 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
@@ -560,6 +577,7 @@
 <li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2886">#2886</a>: Use Agg instead of Qt5AGG if QT_QPA_PLATFORM is set to offscreen to enable headless testing</p></li>
 <li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2892">#2892</a>: The ROI Normalisation Operation now selects the largest air region available automatically.</p></li>
 <li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2902">#2902</a>: Updated fitting engine to return both Residual Sum of Squares (RSS) and Reduced RSS (RSS/DoF).</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2984">#2984</a>: Add a right-click context menu option in the main window image view to “Export stack as GIF animation”.</p></li>
 </ul>
 </section>
 <section id="fixes">
@@ -571,6 +589,7 @@
 <li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2872">#2872</a>: Fixes a bug that was not displaying the 3D widget in the 3D viewer on Linux.</p></li>
 <li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2879">#2879</a>: Fixes a bug that was preventing the progress bar from updating during the flat fielding operation and added a progress bar for rescale operation.</p></li>
 <li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2920">#2920</a>: In the Spectrum Viewer, the normalise stack is selected automatically even if it doesnt have “flat” or “dark” in the filenames</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2973">#2973</a>: Create a bootstrap 5 carousel to replace the static image content for Mantid Imaging documentation index (homepage) to display multiple images showcasing Mantid Imaging features.</p></li>
 </ul>
 </section>
 <section id="developer-changes">

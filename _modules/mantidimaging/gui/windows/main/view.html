@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../../../../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -379,6 +388,14 @@
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-3"
     type="button"
@@ -521,6 +538,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.stack_visualiser</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackVisualiserView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.welcome_screen.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WelcomeScreenPresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.wizard.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">WizardPresenter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.gif_parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">GifParametersWidget</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.__main__</span><span class="w"> </span><span class="kn">import</span> <span class="n">process_start_time</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -580,6 +598,7 @@
     <span class="n">actionLoadNeXusFile</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionSaveImages</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionSaveNeXusFile</span><span class="p">:</span> <span class="n">QAction</span>
+    <span class="n">actionExportGIF</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionSettings</span><span class="p">:</span> <span class="n">QAction</span>
     <span class="n">actionExit</span><span class="p">:</span> <span class="n">QAction</span>
 
@@ -738,6 +757,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadProjectionAngles</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_projection_angles</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveImages</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_image_save_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveNeXusFile</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_nexus_save_dialog</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actionExportGIF</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_gif_from_active_stack</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionExit</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">menuImage</span><span class="o">.</span><span class="n">aboutToShow</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">populate_image_menu</span><span class="p">)</span>
@@ -798,6 +818,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveImages</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSaveNeXusFile</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actionExportGIF</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionSampleLoadLog</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionShutterCounts</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">actionLoadProjectionAngles</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_datasets</span><span class="p">)</span>
@@ -1545,6 +1566,58 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">unexpected_error</span><span class="p">:</span>
             <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
                                  <span class="sa">f</span><span class="s2">&quot;Reset Layout could not completely reset the stacks.</span><span class="se">\n\n</span><span class="s2">Details: </span><span class="si">{</span><span class="n">unexpected_error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.show_gif_parameters_dialog">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_gif_parameters_dialog">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_gif_parameters_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">optimal_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show GIF parameters dialog and return user selections</span>
+
+<span class="sd">        :param image_stack: The image stack to create the GIF from</span>
+<span class="sd">        :param optimal_skip: The optimal frame skip step value calculated for the image stack</span>
+<span class="sd">        :return: A tuple containing (frame_skip, rotation_duration, accepted) where:</span>
+<span class="sd">                 - frame_skip: The selected frame skip value</span>
+<span class="sd">                 - rotation_duration: Total animation duration in seconds</span>
+<span class="sd">                 - accepted: Whether the user clicked OK (True) or Cancel (False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">GifParametersWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">,</span> <span class="n">optimal_skip</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dialog</span><span class="o">.</span><span class="n">get_frame_skip</span><span class="p">(),</span> <span class="n">dialog</span><span class="o">.</span><span class="n">get_duration</span><span class="p">(),</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Accepted</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.get_gif_output_path">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.get_gif_output_path">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_gif_output_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show file save dialog to get GIF output path from user</span>
+
+<span class="sd">        :param image_stack: The image stack to create the GIF from (used for default filename/directory)</span>
+<span class="sd">        :return: The selected output file path, or empty string if user cancelled</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>
+            <span class="n">default_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">image_stack</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">())</span>
+        <span class="n">default_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">image_stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.gif&quot;</span>
+        <span class="n">default_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">default_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">default_filename</span><span class="p">)</span>
+
+        <span class="n">output_path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Save GIF&quot;</span><span class="p">,</span> <span class="n">default_path</span><span class="p">,</span> <span class="s2">&quot;GIF Files (*.gif)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.export_gif_from_active_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.export_gif_from_active_stack">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_gif_from_active_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export the currently displayed stack as an animated GIF.</span>
+<span class="sd">        Displays warning if no stack is currently visible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">active_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_showing_stack</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">active_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;No Stack Selected&quot;</span><span class="p">,</span> <span class="s2">&quot;Please select a stack to export&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">_create_gif</span><span class="p">(</span><span class="n">active_stack</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

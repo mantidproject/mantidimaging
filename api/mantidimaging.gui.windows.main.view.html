@@ -55,6 +55,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -230,6 +231,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -382,6 +391,14 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
@@ -720,6 +737,11 @@ uuid_generate_time_safe(3).</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.actionExportGIF">
+<span class="sig-name descname"><span class="pre">actionExportGIF</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QAction</span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionExportGIF" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.actionFilters">
 <span class="sig-name descname"><span class="pre">actionFilters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">QAction</span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionFilters" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -932,6 +954,13 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <span class="sig-name descname"><span class="pre">execute_nexus_save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/view.html#MainWindowView.execute_nexus_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_save" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.export_gif_from_active_stack">
+<span class="sig-name descname"><span class="pre">export_gif_from_active_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/view.html#MainWindowView.export_gif_from_active_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.export_gif_from_active_stack" title="Link to this definition">#</a></dt>
+<dd><p>Export the currently displayed stack as an animated GIF.
+Displays warning if no stack is currently visible.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.filters">
 <span class="sig-name descname"><span class="pre">filters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView" title="mantidimaging.gui.windows.operations.view.FiltersWindowView"><span class="pre">FiltersWindowView</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.filters" title="Link to this definition">#</a></dt>
@@ -968,6 +997,20 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd><p>Looks for the dataset tree view item matching a given ID.
 :param dataset_id: The dataset ID.
 :return: The tree view item if found.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.get_gif_output_path">
+<span class="sig-name descname"><span class="pre">get_gif_output_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/view.html#MainWindowView.get_gif_output_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_gif_output_path" title="Link to this definition">#</a></dt>
+<dd><p>Show file save dialog to get GIF output path from user</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>image_stack</strong> – The image stack to create the GIF from (used for default filename/directory)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The selected output file path, or empty string if user cancelled</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1179,6 +1222,26 @@ the welcome screen’s links if it’s still visible.</p>
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.show_geometry_window">
 <span class="sig-name descname"><span class="pre">show_geometry_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/view.html#MainWindowView.show_geometry_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_geometry_window" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.show_gif_parameters_dialog">
+<span class="sig-name descname"><span class="pre">show_gif_parameters_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimal_skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/main/view.html#MainWindowView.show_gif_parameters_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_gif_parameters_dialog" title="Link to this definition">#</a></dt>
+<dd><p>Show GIF parameters dialog and return user selections</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_stack</strong> – The image stack to create the GIF from</p></li>
+<li><p><strong>optimal_skip</strong> – The optimal frame skip step value calculated for the image stack</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing (frame_skip, rotation_duration, accepted) where:
+- frame_skip: The selected frame skip value
+- rotation_duration: Total animation duration in seconds
+- accepted: Whether the user clicked OK (True) or Cancel (False)</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog">
@@ -1409,6 +1472,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionCompareImages"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionCompareImages</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionExit"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionExit</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionExportGIF"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionExportGIF</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionFilters"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionFilters</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionGeometry"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionGeometry</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.actionLiveViewer"><code class="docutils literal notranslate"><span class="pre">MainWindowView.actionLiveViewer</span></code></a></li>
@@ -1448,6 +1512,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.execute_move_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_move_stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_load"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_nexus_load()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.execute_nexus_save"><code class="docutils literal notranslate"><span class="pre">MainWindowView.execute_nexus_save()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.export_gif_from_active_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.export_gif_from_active_stack()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.filters"><code class="docutils literal notranslate"><span class="pre">MainWindowView.filters</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.geometry"><code class="docutils literal notranslate"><span class="pre">MainWindowView.geometry</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_all_180_projections"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_all_180_projections()</span></code></a></li>
@@ -1455,6 +1520,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_dataset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_id_from_stack_uuid"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_dataset_id_from_stack_uuid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_dataset_tree_view_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_dataset_tree_view_item()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_gif_output_path"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_gif_output_path()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_recon_group"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_recon_group()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_sinograms_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_sinograms_item()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.get_stack"><code class="docutils literal notranslate"><span class="pre">MainWindowView.get_stack()</span></code></a></li>
@@ -1493,6 +1559,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_add_stack_to_existing_dataset_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_add_stack_to_existing_dataset_dialog()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_filters_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_filters_window()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_geometry_window"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_geometry_window()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_gif_parameters_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_gif_parameters_dialog()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_image_load_dialog()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_image_load_dialog_with_path"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_image_load_dialog_with_path()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.show_image_save_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.show_image_save_dialog()</span></code></a></li>

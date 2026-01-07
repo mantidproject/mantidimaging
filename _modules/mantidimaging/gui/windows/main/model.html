@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../../../../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -379,6 +388,14 @@
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-3"
     type="button"
@@ -481,6 +498,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">imageio</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span><span class="p">,</span> <span class="n">ImageStack</span>
@@ -757,6 +776,40 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_recon_list_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_recon_list_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">recons</span><span class="o">.</span><span class="n">id</span></div>
+
+
+<div class="viewcode-block" id="MainWindowModel.create_gif_from_stack">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.create_gif_from_stack">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_gif_from_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">frame_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                              <span class="n">rotation_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an animated GIF from an image stack.</span>
+
+<span class="sd">        Applies percentile-based auto-scaling (2-98 percentile) for improved contrast,</span>
+<span class="sd">        similarly to the image viewer, filling with mid-gray if data is uniform - required for GIF format.</span>
+<span class="sd">        Converted to 8-bit for GIF compatibility.</span>
+
+<span class="sd">        :param image_stack: The ImageStack to create GIF from</span>
+<span class="sd">        :param output_path: Path where the GIF will be saved</span>
+<span class="sd">        :param frame_skip: Show every Nth frame (e.g., 10 = every 10th frame)</span>
+<span class="sd">        :param rotation_duration: Duration in seconds for the complete rotation (assumes 360 degrees)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">data_low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">data_high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">98</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data_high</span> <span class="o">&gt;</span> <span class="n">data_low</span><span class="p">:</span>
+            <span class="n">normalized_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">data</span> <span class="o">-</span> <span class="n">data_low</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">data_high</span> <span class="o">-</span> <span class="n">data_low</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">normalized_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>  <span class="c1"># Fill with mid-gray if uniform</span>
+
+        <span class="n">skipped_data</span> <span class="o">=</span> <span class="n">normalized_data</span><span class="p">[::</span><span class="n">frame_skip</span><span class="p">]</span>  <span class="c1"># Apply frame skip to reduce gif size</span>
+
+        <span class="c1"># Calculate frame duration in milliseconds for imageio (format mimsave expects duration per frame)</span>
+        <span class="n">num_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">skipped_data</span><span class="p">)</span>
+        <span class="n">frame_duration_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">rotation_duration</span> <span class="o">/</span> <span class="n">num_frames</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+
+        <span class="n">imageio</span><span class="o">.</span><span class="n">mimsave</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">skipped_data</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">frame_duration_ms</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quantize</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

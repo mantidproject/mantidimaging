@@ -1,0 +1,7 @@
+mantidimaging.gui.widgets.gif\_parameters.gif\_parameters\_widget module
+========================================================================
+
+.. automodule:: mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

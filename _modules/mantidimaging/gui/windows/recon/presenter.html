@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../../../../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -379,6 +388,14 @@
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-3"
     type="button"
@@ -496,6 +513,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.recon.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructWindowModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -970,17 +989,18 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_imagestack_geometry_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window</span>
+        <span class="c1"># TODO: Clean up when tilt/COR logic moves to Geometry window</span>
         <span class="n">current_uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">current_uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Invalid stack UUID; No stack selected&quot;</span>
-
         <span class="n">current_image_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">current_uuid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_image_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No image stack or geometry found; skipping geometry update.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-
         <span class="k">if</span> <span class="n">current_image_stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No geometry found for imagestack with UUID: </span><span class="si">{</span><span class="n">current_uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No geometry found for ImageStack </span><span class="si">{</span><span class="n">current_uuid</span><span class="si">}</span><span class="s2">; creating default geometry.&quot;</span><span class="p">)</span>
+            <span class="n">num_projs</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">current_image_stack</span><span class="p">,</span> <span class="s2">&quot;num_projections&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">default_angles</span> <span class="o">=</span> <span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">num_projs</span><span class="p">))</span>
+            <span class="n">current_image_stack</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">default_angles</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
         <span class="n">tilt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tilt</span>
         <span class="n">cor_top</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">rotation_centre</span><span class="p">)</span>
@@ -996,12 +1016,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">do_preview_reconstruct_slice</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_auto_find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_status_message</span><span class="p">(</span><span class="s2">&quot;Unable to correlate 0 and 180 because the dataset doesn&#39;t have a 180 &quot;</span>
-                                          <span class="s2">&quot;projection set. Please load a 180 projection manually.&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-
+        <span class="n">pair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_projection_pair</span><span class="p">()</span>
+        <span class="n">use_projections</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">pair</span> <span class="o">==</span> <span class="s2">&quot;proj180&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_status_message</span><span class="p">(</span><span class="s2">&quot;Unable to correlate 0 and 180 because the dataset doesn&#39;t have a 180° &quot;</span>
+                                              <span class="s2">&quot;projection set. Please load a 180° projection manually.&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">proj1_angle</span><span class="p">,</span> <span class="n">proj2_angle</span> <span class="o">=</span> <span class="n">pair</span>
+                <span class="n">idx1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find_image_from_angle</span><span class="p">(</span><span class="n">proj1_angle</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">idx2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find_image_from_angle</span><span class="p">(</span><span class="n">proj2_angle</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using projections at </span><span class="si">{</span><span class="n">proj1_angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">° and </span><span class="si">{</span><span class="n">proj2_angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">° &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;(closest indices </span><span class="si">{</span><span class="n">idx1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">idx2</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="n">use_projections</span> <span class="o">=</span> <span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_correlate_buttons_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">completed</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1020,13 +1054,22 @@
             <span class="k">elif</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Correlation completed: COR=</span><span class="si">{</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Tilt=</span><span class="si">{</span><span class="n">tilt</span><span class="o">.</span><span class="n">value</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;task in inconsistent state, both task.error and task.result are None&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_correlate_buttons_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon_is_running</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_correlate_buttons_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">auto_find_correlation</span><span class="p">,</span> <span class="n">completed</span><span class="p">,</span> <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">)</span>
+        <span class="n">start_async_task_view</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">auto_find_correlation</span><span class="p">,</span>
+            <span class="n">completed</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;progress&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;use_projections&quot;</span><span class="p">:</span> <span class="n">use_projections</span>
+            <span class="p">},</span>
+            <span class="n">tracker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">async_tracker</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_auto_find_minimisation_square_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">num_cors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_number_of_cors</span><span class="p">()</span>

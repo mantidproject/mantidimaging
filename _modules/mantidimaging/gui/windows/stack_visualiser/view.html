@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../../../../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -377,6 +386,14 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
@@ -531,6 +548,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">StackVisualiserPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;Show history and metadata&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_image_metadata</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s2">&quot;Export stack as GIF animation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_create_gif</span><span class="p">),</span>
                          <span class="p">(</span><span class="s2">&quot;Duplicate whole data&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">DUPE_STACK</span><span class="p">)),</span>
                          <span class="p">(</span><span class="s2">&quot;Duplicate current ROI of data&quot;</span><span class="p">,</span>
                           <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">DUPE_STACK_ROI</span><span class="p">)),</span>
@@ -653,7 +671,7 @@
             <span class="mi">4</span><span class="p">,</span>  <span class="c1"># Digits/decimals</span>
             <span class="n">flags</span><span class="o">=</span><span class="n">INPUT_DIALOG_FLAGS</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">accepted</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">set_selected_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">find_image_from_angle</span><span class="p">(</span><span class="n">projection_to_goto</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">set_selected_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find_image_from_angle</span><span class="p">(</span><span class="n">projection_to_goto</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="StackVisualiserView.set_roi">
@@ -702,6 +720,10 @@
         <span class="n">dialog</span> <span class="o">=</span> <span class="n">MetadataDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
         <span class="n">dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_request_create_gif</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request GIF creation from main window presenter&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">_create_gif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
 
 <div class="viewcode-block" id="StackVisualiserView.mark_as_sinograms">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.mark_as_sinograms">[docs]</a>

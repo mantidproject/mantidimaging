@@ -54,6 +54,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script crossorigin="anonymous" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="icon" href="../../../../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -227,6 +228,14 @@
       
       
         <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
   <button id="pst-version-switcher-button-2"
     type="button"
@@ -377,6 +386,14 @@
     
     
       <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
           <div class="navbar-item">
 <div class="version-switcher__container dropdown pst-js-only">
@@ -610,6 +627,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span> <span class="o">=</span> <span class="n">ReconImagesView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">sigSliceIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_preview_slice_idx</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;180° projection&quot;</span><span class="p">,</span> <span class="s2">&quot;proj180&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;0° and 180°&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;90° and 270°&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">270</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;180° and 360°&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">360</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;-90° and 90°&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">))</span>
 
         <span class="c1"># Point table</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">horizontalHeader</span><span class="p">()</span><span class="o">.</span><span class="n">setStretchLastSection</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -1139,6 +1162,12 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_max_slice_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_max_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previewSliceIndexSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReconstructWindowView.get_selected_projection_pair">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.get_selected_projection_pair">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_selected_projection_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">currentData</span><span class="p">()</span></div>
 </div>
 
 </pre></div>
