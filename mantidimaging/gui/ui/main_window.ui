@@ -43,6 +43,7 @@
     <addaction name="separator"/>
     <addaction name="actionSaveImages"/>
     <addaction name="actionSaveNeXusFile"/>
+    <addaction name="actionExportGIF"/>
     <addaction name="separator"/>
     <addaction name="actionLiveViewer"/>
     <addaction name="separator"/>
@@ -267,6 +268,17 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionExportGIF">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Export stack as GIF animation</string>
+   </property>
+   <property name="toolTip">
+    <string>Export the current stack as an animated GIF</string>
    </property>
   </action>
  </widget>
