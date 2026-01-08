@@ -90,7 +90,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
-        self.roiSelectionWidget.selectionChanged.connect(self.handle_fitting_roi_changed)
 
         self.fitting_param_form = self.fittingForm.fitting_param_form
 
@@ -374,9 +373,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.openBeamRoiCombo.blockSignals(False)
         LOG.debug("ROI dropdown updated in view")
 
-    def handle_fitting_roi_changed(self) -> None:
-        self.show_visible_spectrums()
-
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()
 
@@ -419,10 +415,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                                                spectrum_data,
                                                name=roi_name,
                                                pen=self.spectrum_widget.roi_dict[roi_name].colour)
-
-        if current_roi_name := self.roiSelectionWidget.current_roi_name:
-            self.fittingDisplayWidget.update_plot(self.presenter.model.tof_data, self.presenter.fitting_spectrum,
-                                                  current_roi_name)
 
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """

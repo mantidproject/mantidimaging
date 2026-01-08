@@ -365,7 +365,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     @property
     def fitting_spectrum(self) -> np.ndarray:
-        return self.view.fittingForm.presenter.fitting_spectrum
+        return self.view.fittingForm.presenter.fitting_spectrum[1]
 
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
