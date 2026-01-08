@@ -202,7 +202,7 @@ class FilenameGroup:
         Find the first non-empty list of log paths matching any schema, then filter out
         paths containing 'ShutterCount' and select the shortest one
         """
-        possible_schemas = [self.directory.name + "*.txt", "*spectra.txt"]
+        possible_schemas = [self.directory.name + "*.txt", "*spectra.txt", "*.csv"]
         log_path_list: list[Path] = next((paths for schema in possible_schemas
                                           if (paths := list(self.directory.parent.glob(schema, case_sensitive=False)))),
                                          [])
@@ -228,7 +228,7 @@ class FilenameGroup:
             self.shutter_count_path = self.directory / shortest
 
     def find_related(self, file_type: FILE_TYPES) -> FilenameGroup | None:
-        if self.directory.name not in ["Tomo", "tomo"]:
+        if self.directory.name not in ["Tomo", "tomo", "GRtomo"]:
             return None
 
         if file_type == FILE_TYPES.PROJ_180:
@@ -250,16 +250,19 @@ class FilenameGroup:
 
     def _find_related_180_proj(self) -> FilenameGroup | None:
         sample_first_name = self.first_file().name
+        print(f"{sample_first_name=}")
 
         test_name = "180deg"
 
         new_dir = self.directory.parent / test_name
+        print(f"{new_dir=}")
         if new_dir.exists():
             for trim_numbers in [True, False]:
                 if trim_numbers:
                     new_name = re.sub(r'_([0-9]+)', "", sample_first_name)
                 else:
                     new_name = sample_first_name
+                print(f"{new_name=}")
                 new_name = new_name.replace("Tomo", test_name).replace("tomo", test_name)
                 new_path = new_dir / new_name
                 if new_path.exists():

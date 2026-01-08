@@ -69,6 +69,7 @@ class LoadPresenter:
         self.view.ok_button.setEnabled(True)
 
         for file_info in FILE_TYPES:
+            print(f"============== {file_info=} ==================\n {file_info.mode=}\n")
             if file_info.mode in ["images", "180"]:
                 related_group = sample.find_related(file_info)
                 if related_group:
