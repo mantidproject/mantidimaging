@@ -7,7 +7,6 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from PyQt5 import QtWidgets
-from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QSplitter, QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox,
                              QActionGroup, QAction)
@@ -246,9 +245,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def get_fitting_region(self) -> FittingRegion:
         return self.fittingDisplayWidget.get_selected_fit_region()
 
-    def set_fitting_region(self, region: tuple[float, float]) -> None:
-        self.fittingDisplayWidget.set_selected_fit_region(region)
-
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
         selector.presenter.show_stacks = True
         selector.subscribe_to_main_window(self.main_window)
@@ -265,18 +261,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
-
-    def update_fitting_plot(self, roi_name: str, spectrum_data: np.ndarray) -> None:
-        """Updates the spectrum plot in the Fitting Window with a yellow line."""
-        self.fittingSpectrumPlot.spectrum.clear()
-
-        if spectrum_data is not None and len(spectrum_data) > 0:
-            LOG.info("Fitting plot updated: ROI=%s, points=%d", roi_name, len(spectrum_data))
-            yellow_pen = mkPen(color=(255, 255, 0), width=2)
-            self.fittingSpectrumPlot.spectrum.plot(self.presenter.model.tof_data,
-                                                   spectrum_data,
-                                                   pen=yellow_pen,
-                                                   name=roi_name)
 
     def get_rits_export_directory(self) -> Path | None:
         """

@@ -130,10 +130,6 @@ class FittingParamFormWidget(QWidget):
         params = [float(row[2].text()) for row in self._rows.values()]
         return params
 
-    def get_fitted_param_values(self) -> list[float]:
-        params = [float(row[3].text()) for row in self._rows.values()]
-        return params
-
     def clear_rows(self) -> None:
         """
         Remove all existing rows from the widget.
