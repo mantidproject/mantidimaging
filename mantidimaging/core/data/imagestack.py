@@ -291,7 +291,8 @@ class ImageStack:
             self._shared_array = value
         else:
             self._shared_array = pu.copy_into_shared_memory(value)
-        self.set_geometry_panels()
+        if self.geometry is not None:
+            self.set_geometry_panels()
 
     @property
     def shape(self) -> tuple[int, ...]:
@@ -312,7 +313,8 @@ class ImageStack:
     @shared_array.setter
     def shared_array(self, shared_array: pu.SharedArray) -> None:
         self._shared_array = shared_array
-        self.set_geometry_panels()
+        if self.geometry is not None:
+            self.set_geometry_panels()
 
     def cleanup(self) -> None:
         self._shared_array = None  # type: ignore # Only happens when cleaning up
@@ -454,11 +456,7 @@ class ImageStack:
 
         :side effects: Modifies self.geometry by updating its panel configuration.
         """
-        if not self.geometry or not self._shared_array:
-            LOG.warning(f"Cannot update geometry panels:"
-                        f"geometry is {self.geometry}, shared_array is {self._shared_array}")
-            raise RuntimeError
-
+        assert self.geometry is not None
         num_pixels = (self.width, self.height)
         pixel_size = (1.0, 1.0)
         self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
