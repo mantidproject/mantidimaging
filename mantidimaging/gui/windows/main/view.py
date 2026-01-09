@@ -644,8 +644,6 @@ class MainWindowView(BaseMainWindowView):
         getLogger(__name__).error(log_error_msg)
         self.show_error_dialog(f"Uncaught exception {user_error_msg}")
 
-    from uuid import UUID
-
     def show_stack_select_dialog(self) -> StackComparePresenter | None:
         dialog = MultipleStackSelect(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
