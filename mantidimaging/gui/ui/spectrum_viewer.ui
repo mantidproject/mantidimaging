@@ -236,7 +236,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="fittingFormLayout">
+       <widget class="QWidget" name="fittingFormContainer">
         <attribute name="title">
          <string>Fitting</string>
         </attribute>

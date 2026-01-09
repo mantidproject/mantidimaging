@@ -15,12 +15,12 @@ from mantidimaging.core.fitting.fitting_functions import ErfStepFunction
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
-from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.unit_conversion import UnitConversion
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
+    from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 
 LOG = getLogger(__name__)
 
@@ -456,29 +456,19 @@ class SpectrumViewerWindowModel:
     def save_rits_images(self,
                          directory: Path,
                          error_mode: ErrorMode,
-                         bin_size: int,
-                         step: int,
-                         roi: SensibleROI,
+                         binner: ROIBinner,
                          normalise: bool = False,
                          progress: Progress | None = None) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
 
-        This method divides the ROI into multiple sub-regions of size 'bin_size' and saves each sub-region
-        as a separate RITS image.
-        The sub-regions are created by sliding a window of size 'bin_size' across the ROI with a step size of 'step'.
-
-        During each iteration on a given axis by the step size, a check is made to see if
-        the sub_roi has reached the end of the ROI on that axis and if so, the iteration for that axis is stopped.
-
+        This method divides the ROI into multiple sub-regions defined by the binner
 
         Parameters:
         directory (Path): The directory where the RITS images will be saved. If None, no images will be saved.
         normalised (bool): If True, the images will be normalised.
         error_mode (ErrorMode): The error mode to use when saving the images.
-        bin_size (int): The size of the sub-regions.
-        step (int): The step size to use when sliding the window across the ROI.
-        roi (SensibleROI): The parent ROI to be subdivided.
+        binner (ROIBinner): Binner object used to subdivide region
         normalise (bool): If True, the images will be normalised.
         progress (Progress | None): Optional progress reporter.
 
@@ -486,7 +476,6 @@ class SpectrumViewerWindowModel:
         None
         """
 
-        binner = ROIBinner(roi, step_size=step, bin_size=bin_size)
         x_iterations, y_iterations = binner.lengths()
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
 

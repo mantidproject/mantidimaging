@@ -91,11 +91,6 @@ class FittingDisplayWidget(QWidget):
             if mode == "Image Index":
                 action.setChecked(True)
 
-    def update_labels(self, value_range: tuple[float, float] | None, unit_label: str) -> None:
-        """Update the unit range label below the plot, if available."""
-        if value_range is not None:
-            self.spectrum_plot.set_unit_range_label(*value_range, unit_label=unit_label)
-
     def set_default_region_if_needed(self, x_data: np.ndarray, y_data: np.ndarray) -> None:
         """Position the ROI centrally over the plotted data, if valid data and not in existing region
         We define valid data as a spectrum which is non-zero in length and does not consist of nans or zeros
@@ -122,16 +117,6 @@ class FittingDisplayWidget(QWidget):
     def is_data_in_region(x_data: np.ndarray, y_data: np.ndarray, roi: FittingRegion):
         return np.any((x_data >= roi.x_min) & (x_data <= roi.x_max)
                     & (y_data >= roi.y_min) & (y_data <= roi.y_max)) # yapf: disable
-
-    def set_selected_fit_region(self, region: tuple[float, float]) -> None:
-        """Set the horizontal (X-axis) range of the ROI."""
-        x_start, x_end = region
-        width = x_end - x_start
-        y_pos = self.fitting_region.pos().y()
-        height = self.fitting_region.size().y()
-        self.fitting_region.setPos((x_start, y_pos))
-        self.fitting_region.setSize((width, height))
-        LOG.info("Fit region set: x_start=%.3f, x_end=%.3f", x_start, x_end)
 
     def get_selected_fit_region(self) -> FittingRegion:
         pos = self.fitting_region.pos()
