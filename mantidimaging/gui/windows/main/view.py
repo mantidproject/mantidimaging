@@ -638,7 +638,7 @@ class MainWindowView(BaseMainWindowView):
     def cleanup(self) -> None:
         # Release shared memory from loaded stacks
         for stack in self.get_all_stacks():
-            stack.shared_array = None  # type: ignore # Only happens when cleaning up
+            stack.cleanup()
 
     def uncaught_exception(self, user_error_msg: str, log_error_msg: str) -> None:
         getLogger(__name__).error(log_error_msg)
