@@ -314,6 +314,9 @@ class ImageStack:
         self._shared_array = shared_array
         self.set_geometry_panels()
 
+    def cleanup(self) -> None:
+        self._shared_array = None  # type: ignore # Only happens when cleaning up
+
     @property
     def uses_shared_memory(self) -> bool:
         return self._shared_array.has_shared_memory
@@ -454,7 +457,7 @@ class ImageStack:
         if not self.geometry or not self._shared_array:
             LOG.warning(f"Cannot update geometry panels:"
                         f"geometry is {self.geometry}, shared_array is {self._shared_array}")
-            return
+            raise RuntimeError
 
         num_pixels = (self.width, self.height)
         pixel_size = (1.0, 1.0)
