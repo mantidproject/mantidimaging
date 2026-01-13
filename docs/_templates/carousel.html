@@ -1,0 +1,177 @@
+<style>
+    .carousel-item {
+        transition: transform 0.6s ease-in-out;
+    }
+
+    .carousel-indicators button {
+        background-color: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(0, 0, 0, 0.7);
+    }
+
+    .carousel-indicators .active {
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    html[data-theme=light] .carousel-indicators button,
+    html:not([data-theme]) .carousel-indicators button {
+        background-color: rgba(100, 100, 100, 0.6);
+        border: 1px solid rgba(100, 100, 100, 0.8);
+    }
+
+    html[data-theme=light] .carousel-indicators .active,
+    html:not([data-theme]) .carousel-indicators .active {
+        background-color: rgba(50, 50, 50, 0.9);
+    }
+
+    .carousel:hover {
+        cursor: pointer;
+    }
+
+    .carousel-caption {
+        position: static;
+        background: rgba(0, 0, 0, .6);
+        padding: .5rem 1rem;
+        border-radius: .5rem;
+        margin-top: .5rem;
+        margin-bottom: 3rem;
+        color: #e0e0e0;
+    }
+
+    .carousel-caption h5 {
+        margin-top: 0;
+        color: #ffffff;
+    }
+
+    .carousel-caption p {
+        color: #d0d0d0;
+        margin-bottom: 0;
+    }
+
+    html[data-theme=light] .carousel-caption,
+    html:not([data-theme]) .carousel-caption {
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    html[data-theme=light] .carousel-caption h5,
+    html:not([data-theme]) .carousel-caption h5 {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+
+    html[data-theme=light] .carousel-caption p,
+    html:not([data-theme]) .carousel-caption p {
+        color: #555;
+    }
+
+    .only-light img {
+        display: block
+    }
+
+    .only-dark img {
+        display: none
+    }
+
+    html[data-theme=dark] .only-light img {
+        display: none
+    }
+
+    html[data-theme=dark] .only-dark img {
+        display: block
+    }
+</style>
+<div id="mainCarousel" class="carousel slide" data-bs-interval="10000" data-bs-pause="click" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active" aria-current="true"
+            aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="only-light"><img src="_static/carousel/main_light.jpg" class="d-block w-100"
+                    alt="Main Window interface displaying lego golden ratio dataset" loading="eager">
+            </div>
+            <div class="only-dark"><img src="_static/carousel/main_dark.jpg" class="d-block w-100"
+                    alt="Main Window interface displaying lego golden ratio dataset" loading="lazy">
+            </div>
+            <div class="carousel-caption">
+                <h5>Main Window</h5>
+                <p>Main interface showing the newly loaded lego golden ratio dataset with autocolouring using Jenks
+                    classification and Viridis color mapping</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="only-light"><img src="_static/carousel/operations_remove_outliers_light.jpg"
+                    class="d-block w-100" alt="Operations Window displaying remove outliers operation" loading="lazy">
+            </div>
+            <div class="only-dark"><img src="_static/carousel/operations_remove_outliers_dark.jpg" class="d-block w-100"
+                    alt="Operations Window displaying remove outliers operation" loading="lazy"></div>
+            <div class="carousel-caption">
+                <h5>Operations</h5>
+                <p>Image processing operations panel displaying the remove outliers operation</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="only-light"><img src="_static/carousel/recon_light.jpg" class="d-block w-100"
+                    alt="Reconstruction Window displaying automatic center of rotation correction" loading="lazy"></div>
+            <div class="only-dark"><img src="_static/carousel/recon_dark.jpg" class="d-block w-100"
+                    alt="Reconstruction Window displaying automatic center of rotation correction" loading="lazy"></div>
+            <div class="carousel-caption">
+                <h5>Reconstruction</h5>
+                <p>Tomographic reconstruction interface showing automatic center of rotation (COR) correction, taking
+                    the square sum of the projections as a noise heuristic to find the best COR for a given sinogram</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="only-light"><img src="_static/carousel/recon_residuals_light.jpg" class="d-block w-100"
+                    alt="Reconstruction Preview with Residuals and Convergence using Primal Dual Hybrid Gradient with Total Variance (PDHG-TV)"
+                    loading="lazy"></div>
+            <div class="only-dark"><img src="_static/carousel/recon_residuals_dark.jpg" class="d-block w-100"
+                    alt="Reconstruction Preview with Residuals and Convergence using Primal Dual Hybrid Gradient with Total Variance (PDHG-TV)"
+                    loading="lazy"></div>
+            <div class="carousel-caption">
+                <h5>Reconstruction Preview with Residuals and Convergence</h5>
+                <p>Preview reconstruction using primal duel-hybrid gradient with total variance (PDHG-TV)
+                    and the visualisation of residuals and convergence metrics</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="only-light"><img src="_static/carousel/spectrum_viewer_light.jpg" class="d-block w-100"
+                    alt="Spectrum Viewer displaying MCP collected Fe powder time of flight (TOF) dataset"
+                    loading="lazy"></div>
+            <div class="only-dark"><img src="_static/carousel/spectrum_viewer_dark.jpg" class="d-block w-100"
+                    alt="Spectrum Viewer displaying MCP collected Fe powder time of flight (TOF) dataset"
+                    loading="lazy"></div>
+            <div class="carousel-caption">
+                <h5>Spectrum Viewer</h5>
+                <p>The Spectrum Viewer with MCP collected Fe powder dataset loaded. The Spectrum Viewer allows for
+                    analysis of neutron time of flight (TOF) data enabling users to perform Bragg edge analysis</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <div class="only-light"><img src="_static/carousel/geometry_light.jpg" class="d-block w-100"
+                    alt="Geometry window displaying cone beam correction" loading="lazy"></div>
+            <div class="only-dark"><img src="_static/carousel/geometry_dark.jpg" class="d-block w-100"
+                    alt="Geometry window displaying cone beam correction" loading="lazy"></div>
+            <div class="carousel-caption">
+                <h5>Geometry Correction</h5>
+                <p>Cone beam tilt and rotation correction can be performed in the geometry window to produce high
+                    quality reconstructions</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<br>

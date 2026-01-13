@@ -11,6 +11,7 @@ import numpy as np
 
 from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.test_helpers.unit_test_helper import generate_angles
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.gui.windows.geometry import GeometryWindowPresenter, GeometryWindowView
@@ -49,7 +50,6 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.reset_new_stack()
         test_stack = self.main_window.get_stack()
         test_stack.set_projection_angles(ProjectionAngles(numpy.linspace(0, 360, test_stack.num_projections)))
-        test_stack.create_geometry()
         self.presenter.update_parameters(test_stack)
         test_geometry_type = GeometryType.PARALLEL3D.value
         self.assertEqual(self.view.type, test_geometry_type)
@@ -67,7 +67,8 @@ class GeometryWindowPresenterTest(unittest.TestCase):
     def test_converting_geometry(self):
         self.reset_new_stack()
         test_stack = self.main_window.get_stack()
-        test_stack.create_geometry()
+        test_angles = generate_angles(360, test_stack.num_projections)
+        test_stack.create_geometry(test_angles)
         self.assertEqual(test_stack.geometry.type, GeometryType.PARALLEL3D)
         self.view.conversion_type = "Cone 3D"
         self.presenter.handle_convert_geometry()

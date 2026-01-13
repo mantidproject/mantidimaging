@@ -14,8 +14,9 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.geometry import Geometry
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
-from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView
+from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView, ReconstructWindowModel
 from mantidimaging.gui.windows.recon.presenter import Notifications as PresNotification
+from mantidimaging.test_helpers.unit_test_helper import generate_angles
 
 TEST_PIXEL_SIZE = 1443
 
@@ -27,7 +28,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
         self.data.pixel_size = TEST_PIXEL_SIZE
-        self.data.geometry = Geometry(num_pixels=(128, 128), pixel_size=(1., 1.))
+        test_angles = np.linspace(0, np.deg2rad(360), self.data.num_projections)
+        self.data.geometry = Geometry(angles=test_angles, num_pixels=(128, 128), pixel_size=(1., 1.))
 
         self.main_window = mock.MagicMock()
         self.main_window.get_stack.return_value = self.data
@@ -317,6 +319,7 @@ class ReconWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_with_180_projection(self, mock_start_async: mock.Mock):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
+        self.presenter.view.get_selected_projection_pair = mock.Mock(return_value="proj180")
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_called_once()
         mock_first_call = mock_start_async.call_args[0]
@@ -327,35 +330,42 @@ class ReconWindowPresenterTest(unittest.TestCase):
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_without_180_projection(self, mock_start_async: mock.Mock):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=False)
+        self.presenter.view.get_selected_projection_pair = mock.Mock(return_value="proj180")
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_not_called()
-        self.view.show_status_message.assert_called_once_with("Unable to correlate 0 and 180 because the dataset "
-                                                              "doesn't have a 180 projection set. Please load a 180 "
-                                                              "projection manually.")
+        self.view.show_status_message.assert_called_once_with(
+            "Unable to correlate 0 and 180 because the dataset doesn't have a 180° "
+            "projection set. Please load a 180° projection manually.")
 
-    @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
-    def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock):
-        images = mock.MagicMock()
-        images.height = 10
-        images.width = 10
-        images.proj180deg.height = 20
-        images.proj180deg.width = 20
-        self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
-        self.view = mock.MagicMock()
-        self.presenter.view = self.view
-        self.view.main_window.get_stack = mock.MagicMock(return_value=images)
-        self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
-        mock_start_async.assert_called_once()
-        completed_function = mock_start_async.call_args[0][2]
-        task = mock.MagicMock()
-        task.result = None
-        task.error = ValueError("Task Error")
-        completed_function(task)
-
-        self.view.show_error_dialog.assert_called_once_with(
-            "Finding the COR failed, likely caused by the selected stack's 180 degree projection being a different "
-            "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
-            "projection to (10, 10)")
+        @mock.patch.object(ReconstructWindowModel, "images", new_callable=mock.PropertyMock)
+        @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
+        def test_auto_find_correlation_failed_due_to_180_deg_shape(self, mock_start_async: mock.MagicMock,
+                                                                   mock_images: mock.PropertyMock):
+            images = mock.MagicMock()
+            images.height = 10
+            images.width = 10
+            images.proj180deg.height = 20
+            images.proj180deg.width = 20
+            images.has_proj180deg.return_value = True
+            mock_images.return_value = images
+            self.presenter.model.auto_find_correlation = mock.Mock()
+            self.presenter.view.get_selected_projection_pair = mock.Mock(return_value="proj180")
+            self.presenter.view.main_window = mock.MagicMock()
+            self.presenter.view.main_window.get_stack.return_value = images
+            self.presenter.view.current_stack_uuid = "uuid123"
+            self.presenter.view.show_error_dialog = mock.Mock()
+            self.presenter.view.set_correlate_buttons_enabled = mock.Mock()
+            self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
+            mock_start_async.assert_called_once()
+            completed_function = mock_start_async.call_args[0][2]
+            task = mock.MagicMock()
+            task.result = None
+            task.error = ValueError("Task Error")
+            completed_function(task)
+            self.presenter.view.show_error_dialog.assert_called_once_with(
+                "Finding the COR failed, likely caused by the selected stack's 180 degree projection being a different "
+                "shape. \n\n Error: Task Error \n\n Suggestion: Use crop coordinates to resize the 180 degree "
+                "projection to (10, 10)")
 
     def test_on_stack_reconstruct_slice_done(self):
         test_data = ImageStack(np.ndarray(shape=(200, 250), dtype=np.float32))
@@ -461,6 +471,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         type(self.view).tilt = PropertyMock(return_value=tilt)
         type(self.view).rotation_centre = PropertyMock(return_value=cor)
 
+        test_angles = generate_angles(360, self.data.num_projections)
+        self.data.create_geometry(test_angles)
         self.presenter._update_imagestack_geometry_data()
 
         self.assertAlmostEqual(self.data.geometry.cor.value, cor, places=10)

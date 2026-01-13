@@ -53,6 +53,7 @@ class StackVisualiserView(QDockWidget):
         self.presenter = StackVisualiserPresenter(self, images)
 
         self._actions = [("Show history and metadata", self.show_image_metadata),
+                         ("Export stack as GIF animation", self._request_create_gif),
                          ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
                          ("Duplicate current ROI of data",
                           lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
@@ -104,7 +105,7 @@ class StackVisualiserView(QDockWidget):
 
     def set_image(self, image_stack: ImageStack):
         self.image = image_stack.data
-        self.image_view.angles = image_stack.real_projection_angles()
+        self.image_view.angles = image_stack.projection_angles()
 
     @property
     def main_window(self) -> MainWindowView:
@@ -158,7 +159,7 @@ class StackVisualiserView(QDockWidget):
             4,  # Digits/decimals
             flags=INPUT_DIALOG_FLAGS)
         if accepted:
-            self.image_view.set_selected_image(self.presenter.find_image_from_angle(projection_to_goto))
+            self.image_view.set_selected_image(self.presenter.images.find_image_from_angle(projection_to_goto, tol=2))
 
     def set_roi(self) -> None:
         roi, accepted = QInputDialog.getText(
@@ -194,6 +195,10 @@ class StackVisualiserView(QDockWidget):
     def show_image_metadata(self) -> None:
         dialog = MetadataDialog(self, self.presenter.images)
         dialog.show()
+
+    def _request_create_gif(self) -> None:
+        """Request GIF creation from main window presenter"""
+        self._main_window.presenter._create_gif(self.presenter.images)
 
     def mark_as_sinograms(self) -> None:
         # 1 is position of sinograms, 0 is projections

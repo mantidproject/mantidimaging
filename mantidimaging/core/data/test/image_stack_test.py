@@ -19,7 +19,7 @@ from mantidimaging.core.data.test.fake_logfile import generate_csv_logfile, gene
 from mantidimaging.core.operations.crop_coords import CropCoordinatesFilter
 from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
-from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_angles, generate_images_with_geometry
 
 
 class ImageStackTest(unittest.TestCase):
@@ -188,7 +188,8 @@ class ImageStackTest(unittest.TestCase):
     def test_data_set(self):
         data = generate_images().data
         images = ImageStack(data=data)
-        images.create_geometry()
+        test_angles = generate_angles(360, images.num_projections)
+        images.create_geometry(test_angles)
 
         num_pixels = (512, 512)
         pixel_size = (2., 2.)
@@ -208,7 +209,7 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images()
         images.log_file = generate_txt_logfile()
         expected = np.deg2rad(np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368]))
-        actual = images.projection_angles(360.0)
+        actual = images.projection_angles()
         self.assertEqual(len(actual.value), len(expected))
         np.testing.assert_equal(actual.value, expected)
 
@@ -216,19 +217,14 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images()
         images.log_file = generate_csv_logfile()
         expected = np.deg2rad(np.asarray([0.0, 0.3152, 0.6304, 0.9456, 1.2608, 1.576, 1.8912, 2.2064, 2.5216, 2.8368]))
-        actual = images.projection_angles(360.0)
+        actual = images.projection_angles()
         self.assertEqual(len(actual.value), len(expected))
         np.testing.assert_equal(actual.value, expected)
 
     def test_get_projection_angles_no_logfile(self):
         images = generate_images()
-        actual = images.projection_angles(360.0)
-        self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(np.deg2rad(360), actual.value[-1], places=4)
-
-        actual = images.projection_angles(275.69)
-        self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(np.deg2rad(275.69), actual.value[-1], places=4)
+        actual = images.projection_angles()
+        self.assertIsNone(actual)
 
     def test_metadata_gets_updated_with_logfile(self):
         images = generate_images()
@@ -243,11 +239,10 @@ class ImageStackTest(unittest.TestCase):
 
         actual = images.projection_angles()
         self.assertEqual(10, len(actual.value))
-        self.assertAlmostEqual(images.projection_angles().value, pangles.value, places=4)
+        np.testing.assert_allclose(actual.value, pangles.value, atol=1e-4)
 
     def test_set_angles_geometry(self):
         images = generate_images()
-        images.create_geometry()
         angles = range(0, 10)
         angle_unit = "radian"
         pangles = ProjectionAngles(list(angles))
@@ -304,9 +299,11 @@ class ImageStackTest(unittest.TestCase):
     def test_slice_as_stack(self):
         raw_pixels = np.arange(60, dtype=np.float32).reshape((3, 4, 5))
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=False)
+        slice_0 = image.slice_as_image_stack(0)
+        slice_2 = image.slice_as_image_stack(2)
 
-        np.testing.assert_array_equal(raw_pixels[[0], :, :], image.slice_as_image_stack(0).data)
-        np.testing.assert_array_equal(raw_pixels[[2], :, :], image.slice_as_image_stack(2).data)
+        np.testing.assert_array_equal(raw_pixels[[0], :, :], slice_0.data)
+        np.testing.assert_array_equal(raw_pixels[[2], :, :], slice_2.data)
         self.assertRaises(IndexError, image.slice_as_image_stack, 3)
 
         slice = image.slice_as_image_stack(0)
@@ -324,14 +321,18 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(slice.height, 1)
         self.assertEqual(slice.width, image.width)
         self.assertEqual(slice.num_projections, image.num_projections)
+
         np.testing.assert_array_equal(raw_pixels[[0], :, :], slice.data)
 
     def test_sino_as_stack(self):
         raw_pixels = np.arange(60, dtype=np.float32).reshape((3, 4, 5))
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=False)
 
-        np.testing.assert_array_equal(raw_pixels[:, [0], :], image.sino_as_image_stack(0).data)
-        np.testing.assert_array_equal(raw_pixels[:, [3], :], image.sino_as_image_stack(3).data)
+        sino_0 = image.sino_as_image_stack(0)
+        sino_3 = image.sino_as_image_stack(3)
+        np.testing.assert_array_equal(raw_pixels[:, [0], :], sino_0.data)
+        np.testing.assert_array_equal(raw_pixels[:, [3], :], sino_3.data)
+
         self.assertRaises(IndexError, image.sino_as_image_stack, 4)
 
         slice = image.sino_as_image_stack(0)
@@ -345,7 +346,8 @@ class ImageStackTest(unittest.TestCase):
         np.testing.assert_array_equal(raw_pixels, image.data)
 
         image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=True)
-        np.testing.assert_array_equal(raw_pixels[[0], :, :].swapaxes(0, 1), image.sino_as_image_stack(0).data)
+        sino_0 = image.sino_as_image_stack(0)
+        np.testing.assert_array_equal(raw_pixels[[0], :, :].swapaxes(0, 1), sino_0.data)
 
     def test_processed_is_true(self):
         images = generate_images()
@@ -357,9 +359,7 @@ class ImageStackTest(unittest.TestCase):
         self.assertFalse(images.is_processed)
 
     def test_default_geometry(self):
-        data = generate_images().data
-        images = ImageStack(data=data)
-        images.create_geometry()
+        images = generate_images_with_geometry(max_angle=360.0)
         num_pixels = images.width, images.height
         pixel_size = (1., 1.)
         npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
@@ -367,9 +367,7 @@ class ImageStackTest(unittest.TestCase):
 
     @parameterized.expand([("shapes_match", 10, 10, 10, 10, True), ("shapes_do_not_match", 10, 10, 20, 10, False)])
     def test_proj_180_degree_shape_matches_images(self, _, height, width, proj180_height, proj180_width, expected):
-        data = generate_images().data
-        images = ImageStack(data=data)
-        images.create_geometry()
+        images = generate_images_with_geometry(max_angle=360.0)
         angles = range(0, 360)
         angle_unit = "radian"
         pixel_size = (1., 1.)
@@ -387,9 +385,19 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(images.proj_180_degree_shape_matches_images(), expected)
 
     def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
-        data = generate_images().data
-        images = ImageStack(data=data)
-        images.create_geometry()
+        images = generate_images_with_geometry(max_angle=360.0)
         images.has_proj180deg = mock.MagicMock(return_value=False)
 
         self.assertFalse(images.proj_180_degree_shape_matches_images())
+
+    def test_find_image_from_angle_closest_index(self):
+        images = generate_images()
+        angles = np.linspace(0, 180, images.num_projections)
+        images.geometry = mock.Mock()
+        images.geometry.angles = np.deg2rad(angles)
+        idx = images.find_image_from_angle(90)
+        self.assertEqual(idx, np.argmin(np.abs(angles - 90)))
+        idx_tol = images.find_image_from_angle(99, tol=2)
+        self.assertEqual(idx_tol, np.argmin(np.abs(angles - 99)))
+        with self.assertRaises(ValueError):
+            images.find_image_from_angle(200, tol=1)

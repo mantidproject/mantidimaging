@@ -15,12 +15,12 @@ from mantidimaging.core.fitting.fitting_functions import ErfStepFunction
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
-from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.unit_conversion import UnitConversion
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
+    from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 
 LOG = getLogger(__name__)
 
@@ -223,33 +223,45 @@ class SpectrumViewerWindowModel:
                      chunk_end: int | None = None,
                      open_beam_roi: SensibleROI | None = None) -> np.ndarray:
 
-        if open_beam_roi is None:
-            open_beam_roi = roi
-
+        open_beam_roi = open_beam_roi or roi
         cache_key = (*roi, *open_beam_roi, mode, normalise_with_shuttercount)
-
-        if cache_key in self.spectrum_cache:
+        if cache_key in self.spectrum_cache and chunk_start == 0 and chunk_end is None:
+            LOG.debug("Using cached spectrum: ROI=%s, Open ROI=%s, mode=%s", roi, open_beam_roi, mode.name)
             return self.spectrum_cache[cache_key]
+
+        spectrum = self._compute_spectrum(roi, mode, normalise_with_shuttercount, chunk_start, chunk_end, open_beam_roi)
+        spectrum = np.asarray(spectrum)
+
+        if chunk_start == 0 and chunk_end is None:
+            self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi=open_beam_roi)
+            LOG.debug("Stored spectrum cache: ROI=%s, Open ROI=%s, mode=%s", roi, open_beam_roi, mode.name)
+
+        return spectrum
+
+    def _compute_spectrum(self,
+                          roi: SensibleROI,
+                          mode: SpecType,
+                          normalise_with_shuttercount: bool = False,
+                          chunk_start: int = 0,
+                          chunk_end: int | None = None,
+                          open_beam_roi: SensibleROI | None = None) -> np.ndarray:
+
         if self._stack is None:
             return np.array([])
-        if self.presenter.initial_sample_change:
-            return np.zeros(self._stack.shape[0])
-
+        open_beam_roi = open_beam_roi or roi
         if mode == SpecType.SAMPLE:
             sample_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
             return sample_spectrum
-
         if self._normalise_stack is None:
             return np.array([])
-
         if mode == SpecType.OPEN:
             open_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
             return open_spectrum
         elif mode == SpecType.SAMPLE_NORMED:
             if self.normalise_issue():
                 return np.array([])
-            roi_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
-            roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
+        roi_spectrum = self.get_stack_spectrum(self._stack, roi, chunk_start, chunk_end)
+        roi_norm_spectrum = self.get_stack_spectrum(self._normalise_stack, open_beam_roi, chunk_start, chunk_end)
         spectrum = np.divide(roi_spectrum,
                              roi_norm_spectrum,
                              out=np.zeros_like(roi_spectrum),
@@ -257,12 +269,7 @@ class SpectrumViewerWindowModel:
         if normalise_with_shuttercount:
             average_shuttercount = self.get_shuttercount_normalised_correction_parameter()
             spectrum = spectrum / average_shuttercount
-        if chunk_start == 0 and chunk_end is None:
-            self.store_spectrum(roi, mode, normalise_with_shuttercount, spectrum, open_beam_roi=open_beam_roi)
-
-        LOG.debug("Computing spectrum: ROI=%s, Open ROI=%s, mode=%s, cached=%s", roi, open_beam_roi, mode.name,
-                  cache_key in self.spectrum_cache)
-
+        LOG.debug("Computing spectrum: ROI=%s, Open ROI=%s, mode=%s", roi, open_beam_roi, mode.name)
         return spectrum
 
     def store_spectrum(self,
@@ -446,54 +453,22 @@ class SpectrumViewerWindowModel:
         LOG.info("Exporting RITS file: path=%s, ROI=(%d,%d,%d,%d), error_mode=%s", path, roi.left, roi.top, roi.right,
                  roi.bottom, error_mode.name)
 
-    def validate_bin_and_step_size(self, roi: SensibleROI, bin_size: int, step_size: int) -> None:
-        """
-        Validates the bin size and step size for saving RITS images.
-        This method checks the following conditions:
-        - Both bin size and step size must be greater than 0.
-        - Bin size must be larger than or equal to step size.
-        - Both bin size and step size must be less than or equal to the smallest dimension of the ROI.
-        If any of these conditions are not met, a ValueError is raised.
-        Parameters:
-            roi: The region of interest (ROI) to which the bin size and step size should be compared.
-            bin_size (int): The size of the bins to be validated.
-            step_size (int): The size of the steps to be validated.
-        Raises:
-            ValueError: If any of the validation conditions are not met.
-        """
-        if bin_size and step_size < 1:
-            raise ValueError("Both bin size and step size must be greater than 0")
-        if bin_size < step_size:
-            raise ValueError("Bin size must be larger than or equal to step size")
-        if bin_size and step_size > min(roi.width, roi.height):
-            raise ValueError("Both bin size and step size must be less than or equal to the ROI size")
-
     def save_rits_images(self,
                          directory: Path,
                          error_mode: ErrorMode,
-                         bin_size: int,
-                         step: int,
-                         roi: SensibleROI,
+                         binner: ROIBinner,
                          normalise: bool = False,
                          progress: Progress | None = None) -> None:
         """
         Saves multiple Region of Interest (ROI) images to RITS files.
 
-        This method divides the ROI into multiple sub-regions of size 'bin_size' and saves each sub-region
-        as a separate RITS image.
-        The sub-regions are created by sliding a window of size 'bin_size' across the ROI with a step size of 'step'.
-
-        During each iteration on a given axis by the step size, a check is made to see if
-        the sub_roi has reached the end of the ROI on that axis and if so, the iteration for that axis is stopped.
-
+        This method divides the ROI into multiple sub-regions defined by the binner
 
         Parameters:
         directory (Path): The directory where the RITS images will be saved. If None, no images will be saved.
         normalised (bool): If True, the images will be normalised.
         error_mode (ErrorMode): The error mode to use when saving the images.
-        bin_size (int): The size of the sub-regions.
-        step (int): The step size to use when sliding the window across the ROI.
-        roi (SensibleROI): The parent ROI to be subdivided.
+        binner (ROIBinner): Binner object used to subdivide region
         normalise (bool): If True, the images will be normalised.
         progress (Progress | None): Optional progress reporter.
 
@@ -501,11 +476,13 @@ class SpectrumViewerWindowModel:
         None
         """
 
-        binner = ROIBinner(roi, step_size=step, bin_size=bin_size)
         x_iterations, y_iterations = binner.lengths()
         progress = Progress.ensure_instance(progress, num_steps=x_iterations * y_iterations)
 
-        self.validate_bin_and_step_size(roi, bin_size, step)
+        is_valid, message = binner.is_valid()
+        if not is_valid:
+            raise ValueError(f"Invalid binning: {message}")
+
         for y in range(y_iterations):
             for x in range(x_iterations):
                 sub_roi = binner.get_sub_roi(x, y)

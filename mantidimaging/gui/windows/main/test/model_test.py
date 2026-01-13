@@ -497,3 +497,49 @@ class MainWindowModelTest(unittest.TestCase):
 
         self.model.do_nexus_saving(sd.id, path, sample_name, save_as_float)
         nexus_save.assert_called_once_with(sd, path, sample_name, save_as_float)
+
+    @mock.patch("mantidimaging.gui.windows.main.model.imageio.mimsave")
+    def test_create_gif_basic(self, mimsave_mock):
+        """Test GIF creation, frame skip and normalization with 10 frames, 64x64"""
+        num_frames = 10
+        frame_height = 64
+        frame_width = 64
+        total_elements = num_frames * frame_height * frame_width
+        test_data = np.arange(0, total_elements, dtype=np.float32).reshape(num_frames, frame_height, frame_width)
+        image_stack = mock.Mock(spec=ImageStack)
+        image_stack.data = test_data
+        output_path = "/tmp/test.gif"
+        frame_skip = 2
+        rotation_duration = 1.0
+
+        self.model.create_gif_from_stack(image_stack, output_path, frame_skip, rotation_duration)
+
+        # Check mimsave called with correct arguments
+        mimsave_mock.assert_called_once()
+        saved_path, saved_data = mimsave_mock.call_args[0]
+        frame_duration = mimsave_mock.call_args[1]['duration']
+
+        self.assertEqual(saved_path, output_path)  # validate output path == input path
+        self.assertEqual(saved_data.shape[0], 5)  # assert frame count after skip (10 // 2 = 5 frames)
+        self.assertEqual(saved_data.dtype, np.uint8)  # assert GIF format compatibility
+        self.assertEqual(frame_duration, 200)  # assert duration in ms (1 second / 5 frames = 200 ms)
+
+    @mock.patch("mantidimaging.gui.windows.main.model.imageio.mimsave")
+    def test_create_gif_uniform_data(self, mimsave_mock):
+        """
+        Test GIF creation with uniform data (should fill with mid-gray 128
+        which would cause division by zero if not handled)
+        """
+        num_frames = 5
+        frame_height = 32
+        frame_width = 32
+        uniform_value = 100.0
+        test_data = np.full((num_frames, frame_height, frame_width), uniform_value, dtype=np.float32)
+        image_stack = mock.Mock(spec=ImageStack)
+        image_stack.data = test_data
+        output_path = "/tmp/uniform.gif"
+
+        self.model.create_gif_from_stack(image_stack, output_path, frame_skip=1, rotation_duration=1.0)
+
+        _, saved_data = mimsave_mock.call_args[0]
+        self.assertTrue(np.all(saved_data == 128))

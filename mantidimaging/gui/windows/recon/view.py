@@ -133,6 +133,12 @@ class ReconstructWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.image_view)
         self.image_view.sigSliceIndexChanged.connect(self.presenter.set_preview_slice_idx)
 
+        self.projectionPairDropdown.addItem("180° projection", "proj180")
+        self.projectionPairDropdown.addItem("0° and 180°", (0, 180))
+        self.projectionPairDropdown.addItem("90° and 270°", (90, 270))
+        self.projectionPairDropdown.addItem("180° and 360°", (180, 360))
+        self.projectionPairDropdown.addItem("-90° and 90°", (-90, 90))
+
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
         self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -537,8 +543,12 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def show_status_message(self, msg: str) -> None:
         """
-        Shows a status message indicating that zero/negative/NaN pixels were found in the stack. If the msg argument is
-        empty then this is taken to mean that no such pixels were found, so the warning message and icon are cleared.
+        Shows a status message in the reconstruction window.
+
+        Typically used to indicate that zero/negative/NaN pixels were found in the stack.
+        If the msg argument is empty then this is taken to mean that no such pixels were found,
+        so the warning message and icon are cleared.
+
         :param msg: The status message.
         """
         self.statusMessageTextEdit.setText(msg)
@@ -556,3 +566,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def set_max_slice_index(self, max_index: int) -> None:
         self.previewSliceIndexSpinBox.setMaximum(max_index)
+
+    def get_selected_projection_pair(self) -> tuple[float, float]:
+        return self.projectionPairDropdown.currentData()

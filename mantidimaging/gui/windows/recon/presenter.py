@@ -20,12 +20,17 @@ from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogVie
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
+from mantidimaging.core.data.geometry import Geometry
+from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 LOG = getLogger(__name__)
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.recon.view import ReconstructWindowView  # pragma: no cover
     from mantidimaging.gui.windows.main import MainWindowView
+
+NO_GEOMETRY_MESSAGE = "Geometry not found for imagestack. Cannot perform reconstruction. Please load or create "\
+    "geometry data."
 
 
 class AutoCorMethod(Enum):
@@ -259,6 +264,10 @@ class ReconstructWindowPresenter(BasePresenter):
         if not self.model.has_results:
             raise ValueError("Fit is not performed on the data, therefore the CoR cannot be found for each slice.")
 
+        if self.model.images.geometry is None:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
+            return
+
         self.recon_is_running = True
         self.view.set_recon_buttons_enabled(False)
         start_async_task_view(self.view,
@@ -296,6 +305,10 @@ class ReconstructWindowPresenter(BasePresenter):
             return
 
         slice_idx = self._get_preview_slice_index(slice_idx)
+
+        if self.model.images.geometry is None:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
+            return
 
         self.view.update_sinogram(self.model.images.sino(slice_idx))
         if self.view.is_auto_update_preview() or force_update:
@@ -415,17 +428,18 @@ class ReconstructWindowPresenter(BasePresenter):
         self._set_precalculated_cor_tilt(cor, tilt)
 
     def _update_imagestack_geometry_data(self) -> None:
-        # TODO: This code needs to be cleaned up when tilt/COR logic is moved to a dedicated Geometry window
+        # TODO: Clean up when tilt/COR logic moves to Geometry window
         current_uuid = self.view.stackSelector.current()
         assert current_uuid is not None, "Invalid stack UUID; No stack selected"
-
         current_image_stack = self.main_window.get_stack(current_uuid)
         if current_image_stack is None:
             LOG.debug("No image stack or geometry found; skipping geometry update.")
             return
-
         if current_image_stack.geometry is None:
-            raise StackNotFoundError(f"No geometry found for imagestack with UUID: {current_uuid}")
+            LOG.warning(f"No geometry found for ImageStack {current_uuid}; creating default geometry.")
+            num_projs = getattr(current_image_stack, "num_projections", 1)
+            default_angles = ProjectionAngles(np.linspace(0, np.pi, num_projs))
+            current_image_stack.geometry = Geometry(default_angles.value)
 
         tilt = self.view.tilt
         cor_top = ScalarCoR(self.view.rotation_centre)
@@ -441,12 +455,26 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_preview_reconstruct_slice()
 
     def _auto_find_correlation(self) -> None:
-        if not self.model.images.has_proj180deg():
-            self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180 "
-                                          "projection set. Please load a 180 projection manually.")
-            return
-
+        pair = self.view.get_selected_projection_pair()
+        use_projections = None
+        if pair == "proj180":
+            if not self.model.images.has_proj180deg():
+                self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180° "
+                                              "projection set. Please load a 180° projection manually.")
+                return
+        else:
+            try:
+                proj1_angle, proj2_angle = pair
+                idx1 = self.model.images.find_image_from_angle(proj1_angle, tol=2)
+                idx2 = self.model.images.find_image_from_angle(proj2_angle, tol=2)
+                LOG.info(f"Using projections at {proj1_angle:.2f}° and {proj2_angle:.2f}° "
+                         f"(closest indices {idx1}, {idx2})")
+                use_projections = (idx1, idx2)
+            except ValueError as e:
+                self.view.show_error_dialog(str(e))
+                return
         self.recon_is_running = True
+        self.view.set_correlate_buttons_enabled(False)
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
@@ -465,13 +493,22 @@ class ReconstructWindowPresenter(BasePresenter):
             elif task.result is not None:
                 cor, tilt = task.result
                 self._set_precalculated_cor_tilt(cor, tilt)
+                LOG.info(f"Correlation completed: COR={cor.value:.3f}, Tilt={tilt.value:.3f}")
             else:
                 raise AssertionError("task in inconsistent state, both task.error and task.result are None")
             self.view.set_correlate_buttons_enabled(True)
             self.recon_is_running = False
 
-        self.view.set_correlate_buttons_enabled(False)
-        start_async_task_view(self.view, self.model.auto_find_correlation, completed, tracker=self.async_tracker)
+        start_async_task_view(
+            self.view,
+            self.model.auto_find_correlation,
+            completed,
+            {
+                "progress": None,
+                "use_projections": use_projections
+            },
+            tracker=self.async_tracker,
+        )
 
     def _auto_find_minimisation_square_sum(self) -> None:
         num_cors = self.view.get_number_of_cors()

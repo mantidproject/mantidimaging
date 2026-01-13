@@ -87,7 +87,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
-
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
@@ -111,7 +110,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                            open_beam_roi=open_beam_roi)
 
         self.view.set_spectrum("roi", spectrum)
-        self.set_default_fitting_region()
 
     def handle_sample_change(self, uuid: UUID | None) -> None:
         """
@@ -259,7 +257,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if run_thread_check:
             if not self.handle_roi_change_timer.isActive():
                 self.handle_roi_change_timer.start(500)
-        self.update_roi_on_fitting_thumbnail()
 
     def run_spectrum_calculation(self, roi: SpectrumROI, open_beam_roi: SensibleROI | None, spec_mode: SpecType,
                                  shutter_norm: bool, chunk_start: int, chunk_end: int) -> np.ndarray:
@@ -366,20 +363,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
             self.model.get_number_of_images_in_stack(), np.nan))
 
-    def update_roi_on_fitting_thumbnail(self) -> None:
-        roi_widget = self.view.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
-        self.view.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
-
     @property
     def fitting_spectrum(self) -> np.ndarray:
-        selected_fitting_roi = self.view.roiSelectionWidget.current_roi_name
-        if (spectrum_data := self.view.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
-            return spectrum_data
-
-        raise RuntimeError("Fitting spectrum not calculated")
-
-    def set_default_fitting_region(self) -> None:
-        self.view.fittingDisplayWidget.set_default_region_if_needed(self.model.tof_data, self.fitting_spectrum)
+        return self.view.fittingForm.presenter.fitting_spectrum[1]
 
     def update_fitting_function(self, fitting_obj) -> None:
         fitting_func = fitting_obj()
@@ -474,9 +460,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.model.save_rits_images,
                 path,
                 error_mode,
-                self.view.bin_size,
-                self.view.bin_step,
-                roi,
+                self.view.get_binner(),
                 normalise=self.view.shuttercount_norm_enabled(),
             )
             start_async_task_view(self.view, run_function, self._async_save_done)
@@ -594,7 +578,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def handle_export_tab_change(self, index: int) -> None:
         self.export_mode = ExportMode(index)
-        self.view.roiSelectionWidget.handle_mode_change(self.export_mode)
         self.view.on_visibility_change()
 
     def handle_tof_unit_change(self) -> None:

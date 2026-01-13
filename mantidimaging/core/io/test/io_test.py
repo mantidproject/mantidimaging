@@ -188,7 +188,8 @@ class IOTest(FileOutputtingTestCase):
     def test_nexus_simple_dataset_save(self):
         sample = th.generate_images()
         sample.data *= 12
-        sample._projection_angles = sample.projection_angles()
+        test_angles = th.generate_angles(360, sample.num_projections)
+        sample.set_projection_angles(test_angles)
 
         sd = Dataset(sample=sample)
         sd.sample.record_operation("", "")
@@ -229,10 +230,12 @@ class IOTest(FileOutputtingTestCase):
             self.assertEqual(tomo_entry["data"]["image_key"], tomo_entry["instrument"]["detector"]["image_key"])
 
     def test_nexus_missing_projection_angles_save_as_zeros(self):
+        """
+        Test that writing an imagestack with no angle/geometry data to nexus files writes all zeroes to the angle field
+        """
         shape = (10, 8, 10)
         sample = th.generate_images(shape)
         flat_before = th.generate_images(shape)
-        flat_before._projection_angles = flat_before.projection_angles()
 
         sd = Dataset(sample=sample, flat_before=flat_before)
         path = "nexus/file/path"
@@ -244,7 +247,7 @@ class IOTest(FileOutputtingTestCase):
             rotation_angle_entry = tomo_entry["sample"]["rotation_angle"]
 
             # test rotation angle fields
-            expected = np.concatenate([flat_before.projection_angles().value, np.zeros(shape[0])])
+            expected = np.zeros(shape[0] * 2)
             npt.assert_array_equal(expected, np.array(rotation_angle_entry))
 
             # test rotation angle links
@@ -253,10 +256,9 @@ class IOTest(FileOutputtingTestCase):
     def test_nexus_complex_processed_dataset_save(self):
         image_stacks = []
         for _ in range(5):
-            image_stack = th.generate_images()
+            image_stack = th.generate_images_with_geometry(max_angle=360)
             image_stack.data *= 12
             image_stacks.append(image_stack)
-            image_stack._projection_angles = image_stack.projection_angles()
 
         sd = Dataset(sample=image_stacks[0],
                      flat_before=image_stacks[1],
@@ -295,7 +297,6 @@ class IOTest(FileOutputtingTestCase):
             image_stack = th.generate_images()
             image_stack.data *= 12
             image_stacks.append(image_stack)
-            image_stack._projection_angles = image_stack.projection_angles()
 
         sd = Dataset(sample=image_stacks[0],
                      flat_before=image_stacks[1],
@@ -342,7 +343,6 @@ class IOTest(FileOutputtingTestCase):
     @mock.patch("mantidimaging.core.io.saver._save_recon_to_nexus")
     def test_save_recons_if_present(self, recon_save_mock: mock.Mock):
         sample = _create_sample_with_filename()
-        sample._projection_angles = sample.projection_angles()
 
         sd = Dataset(sample=sample)
         sd.recons.data = [th.generate_images(), th.generate_images()]
@@ -371,7 +371,6 @@ class IOTest(FileOutputtingTestCase):
     def test_dont_save_recons_if_none_present(self, recon_save_mock: mock.Mock):
 
         sample = th.generate_images()
-        sample._projection_angles = sample.projection_angles()
 
         sd = Dataset(sample=sample)
 

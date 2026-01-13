@@ -34,11 +34,25 @@ def gen_img_numpy_rand(shape=g_shape, seed: int | None = None) -> np.ndarray:
 def generate_zeroed_images(shape=g_shape, dtype=np.float32) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return ImageStack(d)
+def generate_angles(max_angle: float, num_projections: int) -> ProjectionAngles:
+    return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), num_projections))
 
 
 def generate_images(shape=g_shape, dtype=np.float32, seed: int | None = None) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
+
+
+def generate_raw_array(shape=g_shape, dtype=np.float32, seed=None):
+    rng = np.random.default_rng(seed)
+    return rng.random(shape, dtype=dtype)
+
+
+def generate_images_with_geometry(max_angle, seed: int | None = None) -> ImageStack:
+    images = generate_images(seed=seed)
+    angles = generate_angles(max_angle, images.num_projections)
+    images.create_geometry(angles)
+    return images
 
 
 def generate_images_for_parallel(shape: tuple[int, int, int] = (15, 8, 10), dtype=np.float32,

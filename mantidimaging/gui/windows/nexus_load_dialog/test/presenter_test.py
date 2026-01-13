@@ -10,7 +10,7 @@ import numpy
 import numpy as np
 
 from mantidimaging.core.io.saver import NEXUS_PROCESSED_DATA_PATH
-from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img_numpy_rand
+from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img_numpy_rand, generate_raw_array
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
@@ -332,11 +332,11 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         ds, _ = self.nexus_loader.get_dataset()
 
-        self.assertIsNone(ds.flat_before._projection_angles)
-        self.assertIsNone(ds.dark_before._projection_angles)
-        self.assertIsNone(ds.sample._projection_angles)
-        self.assertIsNone(ds.dark_after._projection_angles)
-        self.assertIsNone(ds.flat_after._projection_angles)
+        self.assertIsNone(ds.flat_before.projection_angles())
+        self.assertIsNone(ds.dark_before.projection_angles())
+        self.assertIsNone(ds.sample.projection_angles())
+        self.assertIsNone(ds.dark_after.projection_angles())
+        self.assertIsNone(ds.flat_after.projection_angles())
 
     def test_projection_angles_set_correctly_when_only_some_are_zero(self):
         del self.tomo_entry[ROTATION_ANGLE_PATH]
@@ -349,11 +349,11 @@ class NexusLoaderTest(unittest.TestCase):
         self.nexus_loader.scan_nexus_file()
         ds, _ = self.nexus_loader.get_dataset()
 
-        self.assertIsNone(ds.flat_before._projection_angles)
-        self.assertIsNone(ds.dark_before._projection_angles)
+        self.assertIsNone(ds.flat_before.projection_angles())
+        self.assertIsNone(ds.dark_before.projection_angles())
         assert np.array_equal(ds.sample.projection_angles().value, [rotation_angle_data[4], rotation_angle_data[5]])
-        self.assertIsNone(ds.dark_after._projection_angles)
-        self.assertIsNone(ds.flat_after._projection_angles)
+        self.assertIsNone(ds.dark_after.projection_angles())
+        self.assertIsNone(ds.flat_after.projection_angles())
 
     def test_recon_entry_found_in_file(self):
         recon = generate_images()
@@ -372,7 +372,10 @@ class NexusLoaderTest(unittest.TestCase):
         self.assertEqual(len(self.nexus_loader.recon_data), 1)
 
     def test_get_dataset_creates_recon_list(self):
-        self.nexus_loader.recon_data = [generate_images(), generate_images()]
+        self.nexus_loader.recon_data = [
+            generate_raw_array(),
+            generate_raw_array(),
+        ]
         self.nexus_loader.scan_nexus_file()
         ds, _ = self.nexus_loader.get_dataset()
         self.assertEqual(len(ds.recons), 2)

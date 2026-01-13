@@ -7,7 +7,7 @@ from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
-from mantidimaging.test_helpers.unit_test_helper import generate_images
+from mantidimaging.test_helpers.unit_test_helper import generate_images_with_geometry
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 
@@ -18,7 +18,8 @@ class ReconstructionWindowTest(BaseEyesTest):
         super().setUp()
 
     def tearDown(self):
-        self.imaging.recon.close()
+        if self.imaging.recon:
+            self.imaging.recon.close()
         super().tearDown()
 
     def _show_recon_window(self):
@@ -54,8 +55,7 @@ class ReconstructionWindowTest(BaseEyesTest):
         self.check_target(widget=self.imaging.recon)
 
     def test_negative_nan_overlay(self):
-        images = generate_images(seed=10)
-        images.create_geometry()
+        images = generate_images_with_geometry(360, seed=10)
         images.name = "bad_data"
         ds = Dataset(stacks=[images])
         self.imaging.presenter.model.add_dataset_to_model(ds)

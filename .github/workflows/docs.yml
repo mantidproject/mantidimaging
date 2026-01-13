@@ -38,16 +38,6 @@ jobs:
           key:
             ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
-      - name: Cache Miniforge environment
-        uses: actions/cache@v4
-        id: cache-miniforge-environment
-        env:
-          CACHE_NUMBER: 0
-        with:
-          path: ${CONDA}/envs/mantidimaging-dev.cache
-          key:
-            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
-
       - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
@@ -55,6 +45,16 @@ jobs:
           activate-environment: mantidimaging-dev
           auto-activate-base: false
           use-mamba: true
+
+      - name: Cache Miniforge environment
+        uses: actions/cache@v4
+        id: cache-miniforge-environment
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ${CONDA}/envs/mantidimaging-dev
+          key:
+            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Mantid Imaging developer dependencies
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
@@ -89,3 +89,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           dir_name: ${{ github.ref_name }}
+
+      - name: Show disk space at end
+        if: ${{ !cancelled() }}
+        run: |
+          df -h
+        shell: bash

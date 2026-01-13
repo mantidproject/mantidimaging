@@ -17,7 +17,7 @@ from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresen
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, ErrorMode
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 
 
 class CloseCheckStream(io.StringIO):
@@ -441,23 +441,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.assertRaises(ValueError, ErrorMode.get_by_value, "")
 
     @parameterized.expand([
-        ("larger_than_1", 1, 0, ValueError),  # bin_size and step_size < 1
-        ("bin_less_than_or_equal_to_step", 1, 2, ValueError),  # bin_size <= step_size
-        ("less_than_roi", 10, 10, ValueError),  # bin_size and step_size > min(roi.width, roi.height)
-        ("valid", 2, 1, None),  # valid case
-    ])
-    def test_validate_bin_and_step_size(self, _, bin_size, step_size, expected_exception):
-        roi = SensibleROI.from_list([0, 0, 5, 5])
-        if expected_exception:
-            with self.assertRaises(expected_exception):
-                self.model.validate_bin_and_step_size(roi, bin_size, step_size)
-        else:
-            try:
-                self.model.validate_bin_and_step_size(roi, bin_size, step_size)
-            except ValueError:
-                self.fail("validate_bin_and_step_size() raised ValueError unexpectedly!")
-
-    @parameterized.expand([
         (["5x5_bin_2_step_1", 5, 2, 1]),
         (["5x5_bin_2_step_2", 5, 3, 2]),
         (["7x7_bin_2_step_3", 7, 4, 1]),
@@ -468,6 +451,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         norm = ImageStack(np.full([10, 11, 12], 2))
         stack.data[:, :, :5] *= 2
         roi = SensibleROI.from_list([0, 0, roi_size, roi_size])
+        binner = ROIBinner(roi, step, bin_size)
         self.model.set_normalise_stack(norm)
         Mx, My = roi.width, roi.height
         x_iterations = min(math.ceil(Mx / step), math.ceil((Mx - bin_size) / step) + 1)
@@ -475,7 +459,7 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         expected_number_of_calls = x_iterations * y_iterations
         _, mock_path = self._make_mock_path_stream()
         with mock.patch.object(self.model, "save_roi_coords"):
-            self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, bin_size, step, roi)
+            self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, binner)
 
         self.assertEqual(mock_save_rits_roi.call_count, expected_number_of_calls)
 
@@ -500,7 +484,8 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.model.set_normalise_stack(norm)
         mock_path = mock.create_autospec(Path, instance=True)
         roi = SensibleROI.from_list([1, 0, 6, 4])
-        self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, 3, 1, roi)
+        binner = ROIBinner(roi, 1, 3)
+        self.model.save_rits_images(mock_path, ErrorMode.STANDARD_DEVIATION, binner)
 
         self.assertEqual(6, len(mock_save_rits_roi.call_args_list))
         expected_means = [1, 1.5, 2, 1, 1.5, 2]  # running average of [1, 2, 3, 4, 5], divided by 2 for normalisation

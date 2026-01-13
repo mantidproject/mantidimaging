@@ -7,7 +7,6 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from PyQt5 import QtWidgets
-from pyqtgraph import mkPen
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (QSplitter, QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox,
                              QActionGroup, QAction)
@@ -15,23 +14,20 @@ from PyQt5.QtCore import QModelIndex
 from logging import getLogger
 
 from mantidimaging.core.utility import finder
-from mantidimaging.core.utility.sensible_roi import SensibleROI
+from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
+from .fitting_form import FittingParamFormWidgetView
 from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from .spectrum_widget import SpectrumWidget
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
-from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget import FittingDisplayWidget
-from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget import FitExportFormWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget import ExportDataTableWidget
 from mantidimaging.gui.widgets.spectrum_widgets.export_image_widget import ExportImageViewWidget
 
 import numpy as np
-
-from ...widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401  # pragma: no cover
@@ -84,20 +80,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
-        self.roiSelectionWidget = ROISelectionWidget(self)
-        self.fittingFormLayout.layout().addWidget(self.roiSelectionWidget)
+        self.fittingDisplayWidget = FittingDisplayWidget()
+        self.fittingForm = FittingParamFormWidgetView(self)
+        self.fittingFormContainer.layout().addWidget(self.fittingForm)
 
-        self.fitSelectionWidget = FitSelectionWidget(self)
-        self.fittingFormLayout.layout().addWidget(self.fitSelectionWidget)
+        self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
+        self.fitSelectionWidget = self.fittingForm.fitSelectionWidget
         self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
-        self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
-        self.roiSelectionWidget.selectionChanged.connect(self.handle_fitting_roi_changed)
 
-        self.fitting_param_form = FittingParamFormWidget(self.presenter)
-        self.fittingFormLayout.layout().addWidget(self.fitting_param_form)
+        self.fitting_param_form = self.fittingForm.fitting_param_form
 
         self.export_display_tabs = QTabWidget(self)
         self.exportDataTableWidget = ExportDataTableWidget()
@@ -161,7 +155,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.openBeamRoiCombo.currentIndexChanged.connect(self.presenter.handle_open_beam_roi_choice_changed)
         self.roi_form.exportTabs.currentChanged.connect(self.presenter.handle_export_tab_change)
-        self.roi_form.binningChanged.connect(self.roiSelectionWidget.handle_binning_changed)
 
         # ROI action buttons
         self.roi_form.addBtn.clicked.connect(self.set_new_roi)
@@ -251,9 +244,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def get_fitting_region(self) -> FittingRegion:
         return self.fittingDisplayWidget.get_selected_fit_region()
 
-    def set_fitting_region(self, region: tuple[float, float]) -> None:
-        self.fittingDisplayWidget.set_selected_fit_region(region)
-
     def _configure_dropdown(self, selector: DatasetSelectorWidgetView) -> None:
         selector.presenter.show_stacks = True
         selector.subscribe_to_main_window(self.main_window)
@@ -270,18 +260,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
-
-    def update_fitting_plot(self, roi_name: str, spectrum_data: np.ndarray) -> None:
-        """Updates the spectrum plot in the Fitting Window with a yellow line."""
-        self.fittingSpectrumPlot.spectrum.clear()
-
-        if spectrum_data is not None and len(spectrum_data) > 0:
-            LOG.info("Fitting plot updated: ROI=%s, points=%d", roi_name, len(spectrum_data))
-            yellow_pen = mkPen(color=(255, 255, 0), width=2)
-            self.fittingSpectrumPlot.spectrum.plot(self.presenter.model.tof_data,
-                                                   spectrum_data,
-                                                   pen=yellow_pen,
-                                                   name=roi_name)
 
     def get_rits_export_directory(self) -> Path | None:
         """
@@ -381,7 +359,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def update_roi_dropdown(self) -> None:
         """ Updates the ROI dropdown menus with the available ROIs. """
         roi_names = self.presenter.get_roi_names()
-        self.roiSelectionWidget.update_roi_list(roi_names)
         self.exportSettingsWidget.set_roi_names(roi_names)
         current = self.openBeamRoiCombo.currentText()
         self.openBeamRoiCombo.blockSignals(True)
@@ -395,10 +372,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.openBeamRoiCombo.setCurrentIndex(idx if idx >= 0 else 0)
         self.openBeamRoiCombo.blockSignals(False)
         LOG.debug("ROI dropdown updated in view")
-
-    def handle_fitting_roi_changed(self) -> None:
-        self.show_visible_spectrums()
-        self.presenter.update_roi_on_fitting_thumbnail()
 
     def shuttercount_norm_enabled(self) -> bool:
         return self.normalise_ShutterCount_CheckBox.isChecked()
@@ -443,10 +416,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                                                name=roi_name,
                                                pen=self.spectrum_widget.roi_dict[roi_name].colour)
 
-        if current_roi_name := self.roiSelectionWidget.current_roi_name:
-            self.fittingDisplayWidget.update_plot(self.presenter.model.tof_data, self.presenter.fitting_spectrum,
-                                                  current_roi_name)
-
     def add_roi_table_row(self, name: str, colour: tuple[int, int, int, int]) -> None:
         """
         Add a new row to the ROI table
@@ -483,13 +452,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def image_output_mode(self) -> str:
         return self.roi_form.image_output_mode
 
-    @property
-    def bin_size(self) -> int:
-        return self.roi_form.bin_size_spinBox.value()
-
-    @property
-    def bin_step(self) -> int:
-        return self.roi_form.bin_step_spinBox.value()
+    def get_binner(self) -> ROIBinner:
+        return self.roi_form.binner
 
     @property
     def tof_units_mode(self) -> str:

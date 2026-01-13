@@ -145,6 +145,34 @@ class ROIBinnerTest(unittest.TestCase):
         with self.assertRaises(AttributeError):
             binner.bin_size = 4
 
+    def test_dont_allow_zero_step_size(self):
+        with self.assertRaisesRegex(ValueError, "step_size"):
+            ROIBinner(SensibleROI(0, 0, 5, 5), 0, 1)
+
+    @parameterized.expand([
+        ("larger_than_1", 0, 1, False),  # bin_size < 1
+        ("bin_less_than_or_equal_to_step", 1, 2, False),  # bin_size <= step_size
+        ("less_than_roi", 9, 10, False),  # bin_size and step_size > min(roi.width, roi.height)
+        ("less_than_roi", 10, 9, False),  # bin_size and step_size > min(roi.width, roi.height)
+        ("valid", 2, 1, True),  # valid case
+    ])
+    def test_binner_is_valid(self, _, bin_size, step_size, expect_is_valid):
+        binner = ROIBinner(SensibleROI(0, 0, 5, 5), step_size, bin_size)
+        is_valid, reason = binner.is_valid()
+        self.assertEqual(is_valid, expect_is_valid)
+
+    @parameterized.expand([
+        ("good_fit_same", SensibleROI(0, 0, 20, 20), 5, 5, True),
+        ("good_fit_different", SensibleROI(0, 0, 23, 26), 5, 3, True),
+        ("good_fit_moved", SensibleROI(1, 2, 21, 22), 5, 5, True),
+        ("bad_fit_small_step", SensibleROI(0, 0, 20, 20), 5, 4, False),
+        ("bad_fit_horizontal", SensibleROI(0, 0, 11, 12), 3, 3, False),
+        ("bad_fit_vertical", SensibleROI(0, 0, 12, 11), 3, 3, False),
+    ])
+    def test_binner_fits_exactly_check(self, _, roi, bin_size, step_size, expected):
+        binner = ROIBinner(roi, step_size, bin_size)
+        self.assertEqual(binner.check_fits_exactly(), expected)
+
 
 if __name__ == '__main__':
     unittest.main()
