@@ -34,6 +34,8 @@ def gen_img_numpy_rand(shape=g_shape, seed: int | None = None) -> np.ndarray:
 def generate_zeroed_images(shape=g_shape, dtype=np.float32) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return ImageStack(d)
+
+
 def generate_angles(max_angle: float, num_projections: int) -> ProjectionAngles:
     return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), num_projections))
 
