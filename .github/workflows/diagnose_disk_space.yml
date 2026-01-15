@@ -1,0 +1,97 @@
+name: Diagnose Disk Space
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Miniforge and Pip packages
+        uses: actions/cache@v4
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: |
+            ~/conda_pkgs_dir
+            ~/.cache/pip
+          key:
+            ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Setup Miniforge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          activate-environment: mantidimaging-dev
+          auto-activate-base: false
+          use-mamba: true
+
+      - name: Cache Miniforge environment
+        uses: actions/cache@v4
+        id: cache-miniforge-environment
+        env:
+          CACHE_NUMBER: 0
+        with:
+          path: ${CONDA}/envs/mantidimaging-dev
+          key:
+            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Mantid Imaging developer dependencies
+        if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
+        shell: bash -l {0}
+        run: |
+          conda deactivate
+          python3 ./setup.py create_dev_env
+          cp -Ta ${CONDA}/envs/mantidimaging-dev ${CONDA}/envs/mantidimaging-dev.cache
+
+      - name: Mantid Imaging developer dependencies - from cache
+        if: steps.cache-miniforge-environment.outputs.cache-hit == 'true'
+        shell: bash -l {0}
+        run: |
+          cp -Ta ${CONDA}/envs/mantidimaging-dev.cache ${CONDA}/envs/mantidimaging-dev
+
+      - name: Diagnose disk space
+        shell: bash -l {0}
+        run: |
+          echo "=== Conda Package Cache ==="
+          echo "Total size:"
+          du -sh ~/conda_pkgs_dir 2>/dev/null || echo "Not found"
+          echo ""
+          echo "Tar.bz2 files:"
+          find ~/conda_pkgs_dir -name "*.tar.bz2" 2>/dev/null | wc -l
+          echo ""
+          echo "Top 10 packages:"
+          find ~/conda_pkgs_dir -maxdepth 1 -type d 2>/dev/null | xargs du -sh 2>/dev/null | sort -rh | head -10
+          echo ""
+
+          echo "=== Pip Cache ==="
+          echo "Total size:"
+          du -sh ~/.cache/pip 2>/dev/null || echo "Not found"
+          echo ""
+          echo "Wheel files:"
+          find ~/.cache/pip -name "*.whl" 2>/dev/null | wc -l
+          echo ""
+
+          echo "=== Conda Environments ==="
+          du -sh ~/miniconda3/envs/* 2>/dev/null | sort -rh
+          echo ""
+          echo "Total:"
+          du -sh ~/miniconda3/envs 2>/dev/null
+          echo ""
+
+          echo "=== /tmp Directory ==="
+          du -sh /tmp 2>/dev/null
+          echo ""
