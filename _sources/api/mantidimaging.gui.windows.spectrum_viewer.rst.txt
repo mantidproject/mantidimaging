@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 3
 
+   mantidimaging.gui.windows.spectrum_viewer.fitting_form
    mantidimaging.gui.windows.spectrum_viewer.model
    mantidimaging.gui.windows.spectrum_viewer.presenter
    mantidimaging.gui.windows.spectrum_viewer.roi_table_model

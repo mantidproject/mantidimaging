@@ -828,7 +828,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">copy_into_shared_memory</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_panels</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_panels</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
@@ -849,7 +850,14 @@
     <span class="nd">@shared_array</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">shared_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shared_array</span><span class="p">:</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="n">shared_array</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_panels</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_panels</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ImageStack.cleanup">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.cleanup">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore # Only happens when cleaning up</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">uses_shared_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1011,11 +1019,7 @@
 
 <span class="sd">        :side effects: Modifies self.geometry by updating its panel configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot update geometry panels:&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;geometry is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="si">}</span><span class="s2">, shared_array is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shared_array</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">num_pixels</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
         <span class="n">pixel_size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_panel</span><span class="p">(</span><span class="n">num_pixels</span><span class="o">=</span><span class="n">num_pixels</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">)</span></div>

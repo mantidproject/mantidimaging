@@ -508,12 +508,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.csv_output</span><span class="w"> </span><span class="kn">import</span> <span class="n">CSVOutput</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">saver</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.instrument_log</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogColumn</span><span class="p">,</span> <span class="n">ShutterCountColumn</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">ROIBinner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.unit_conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitConversion</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowPresenter</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">ROIBinner</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -1031,29 +1031,19 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">save_rits_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                          <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
                          <span class="n">error_mode</span><span class="p">:</span> <span class="n">ErrorMode</span><span class="p">,</span>
-                         <span class="n">bin_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                         <span class="n">step</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                         <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span>
+                         <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">,</span>
                          <span class="n">normalise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                          <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves multiple Region of Interest (ROI) images to RITS files.</span>
 
-<span class="sd">        This method divides the ROI into multiple sub-regions of size &#39;bin_size&#39; and saves each sub-region</span>
-<span class="sd">        as a separate RITS image.</span>
-<span class="sd">        The sub-regions are created by sliding a window of size &#39;bin_size&#39; across the ROI with a step size of &#39;step&#39;.</span>
-
-<span class="sd">        During each iteration on a given axis by the step size, a check is made to see if</span>
-<span class="sd">        the sub_roi has reached the end of the ROI on that axis and if so, the iteration for that axis is stopped.</span>
-
+<span class="sd">        This method divides the ROI into multiple sub-regions defined by the binner</span>
 
 <span class="sd">        Parameters:</span>
 <span class="sd">        directory (Path): The directory where the RITS images will be saved. If None, no images will be saved.</span>
 <span class="sd">        normalised (bool): If True, the images will be normalised.</span>
 <span class="sd">        error_mode (ErrorMode): The error mode to use when saving the images.</span>
-<span class="sd">        bin_size (int): The size of the sub-regions.</span>
-<span class="sd">        step (int): The step size to use when sliding the window across the ROI.</span>
-<span class="sd">        roi (SensibleROI): The parent ROI to be subdivided.</span>
+<span class="sd">        binner (ROIBinner): Binner object used to subdivide region</span>
 <span class="sd">        normalise (bool): If True, the images will be normalised.</span>
 <span class="sd">        progress (Progress | None): Optional progress reporter.</span>
 
@@ -1061,7 +1051,6 @@
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">binner</span> <span class="o">=</span> <span class="n">ROIBinner</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">bin_size</span><span class="o">=</span><span class="n">bin_size</span><span class="p">)</span>
         <span class="n">x_iterations</span><span class="p">,</span> <span class="n">y_iterations</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">lengths</span><span class="p">()</span>
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">x_iterations</span> <span class="o">*</span> <span class="n">y_iterations</span><span class="p">)</span>
 
