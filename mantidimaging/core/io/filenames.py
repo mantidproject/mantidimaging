@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import re
 from typing import Final
@@ -202,33 +203,45 @@ class FilenameGroup:
         Find the first non-empty list of log paths matching any schema, then filter out
         paths containing 'ShutterCount' and select the shortest one
         """
-        possible_schemas = [self.directory.name + "*.txt", "*spectra.txt"]
-        log_path_list: list[Path] = next((paths for schema in possible_schemas
-                                          if (paths := list(self.directory.parent.glob(schema, case_sensitive=False)))),
-                                         [])
+        directories_to_search = [self.directory, self.directory.parent]
+        possible_schemas = [self.directory.name + "*.txt", "*spectra.txt", "*.csv"]
+        for directory in directories_to_search:
+
+            log_path_list: list[Path] = next(
+                (paths for schema in possible_schemas if (paths := list(directory.glob(schema, case_sensitive=False)))),
+                [])
+            if log_path_list:
+                break
+
         log_path_list = [log_path for log_path in log_path_list if "ShutterCount" not in log_path.name]
         if log_path_list:
+            for log_path in log_path_list:
+                if self.directory.name in log_path.name:
+                    self.log_path = log_path
+                    return
             self.log_path = self.directory / min(log_path_list, key=lambda log_path: len(log_path.name))
 
     def find_shutter_count_file(self) -> None:
         """
         Try to find the shutter count file in directory if it exists in the parent directory.
         """
-        parent_directory = self.directory.parent
-        if self.directory.name.lower() in ["tomo", "sample"]:
-            shutter_count_pattern = "*shuttercount.txt"
-            shutter_count_paths = list(parent_directory.glob(shutter_count_pattern, case_sensitive=False))
-            shutter_count_paths = [path for path in shutter_count_paths if "flat" not in path.name.lower()]
-        else:
-            shutter_count_pattern = f"{self.directory.name}*shuttercount.txt"
-            shutter_count_paths = list(parent_directory.glob(shutter_count_pattern, case_sensitive=False))
+        directories_to_search = [self.directory, self.directory.parent]
+        for directory in directories_to_search:
+            if self.directory.name.lower() in ["tomo", "sample", "GRtomo"]:
+                shutter_count_pattern = "*shuttercount.txt"
+                shutter_count_paths = list(directory.glob(shutter_count_pattern, case_sensitive=False))
+                shutter_count_paths = [path for path in shutter_count_paths if "flat" not in path.name.lower()]
+            else:
+                shutter_count_pattern = f"{self.directory.name}*shuttercount.txt"
+                shutter_count_paths = list(directory.glob(shutter_count_pattern, case_sensitive=False))
 
-        if shutter_count_paths:
-            shortest = min(shutter_count_paths, key=lambda p: len(p.name))
-            self.shutter_count_path = self.directory / shortest
+            if shutter_count_paths:
+                shortest = min(shutter_count_paths, key=lambda p: len(p.name))
+                self.shutter_count_path = self.directory / shortest
+                return
 
     def find_related(self, file_type: FILE_TYPES) -> FilenameGroup | None:
-        if self.directory.name not in ["Tomo", "tomo"]:
+        if self.directory.name not in ["Tomo", "tomo", "GRtomo"]:
             return None
 
         if file_type == FILE_TYPES.PROJ_180:
@@ -251,18 +264,39 @@ class FilenameGroup:
     def _find_related_180_proj(self) -> FilenameGroup | None:
         sample_first_name = self.first_file().name
 
+        if "GRtomo" in sample_first_name:
+            strs_to_replace = ["GRtomo"]
+            sample_first_name = sample_first_name.replace(sample_first_name.split("_")[0], "")
+        else:
+            strs_to_replace = ["Tomo", "tomo"]
+
         test_name = "180deg"
 
         new_dir = self.directory.parent / test_name
         if new_dir.exists():
             for trim_numbers in [True, False]:
                 if trim_numbers:
-                    new_name = re.sub(r'_([0-9]+)', "", sample_first_name)
+                    if "GRtomo" in sample_first_name:
+                        new_name = re.sub(r'_([0-9]+)\.([0-9]+)_([0-9]+)', "", sample_first_name)
+                    else:
+                        new_name = re.sub(r'_([0-9]+)', "", sample_first_name)
                 else:
                     new_name = sample_first_name
-                new_name = new_name.replace("Tomo", test_name).replace("tomo", test_name)
+                for old_str in strs_to_replace:
+                    new_name = new_name.replace(old_str, test_name)
+
                 new_path = new_dir / new_name
+
                 if new_path.exists():
                     return self.from_file(new_path)
 
+            # If 180 image cannot be found for GRtomo due to different naming scheme, loosen restrictions on matching
+            if "GRtomo" in sample_first_name:
+                new_name = re.sub(r'_([0-9]+)\.([0-9]+)_([0-9]+)', "", sample_first_name)
+                new_name = new_name.replace(new_name.split("_")[0], "").replace("GRtomo", "")
+
+                for (_, _, files) in os.walk(new_dir):
+                    for file in files:
+                        if new_name.replace(self.pattern.suffix, "") in file:
+                            return self.from_file(new_dir / file)
         return None
