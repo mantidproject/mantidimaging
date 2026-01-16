@@ -35,6 +35,11 @@ def generate_angles(max_angle: float, num_projections: int) -> ProjectionAngles:
     return ProjectionAngles(np.linspace(0, np.deg2rad(max_angle), num_projections))
 
 
+def generate_zeroed_images(shape=g_shape, dtype=np.float32) -> ImageStack:
+    d = pu.create_array(shape, dtype)
+    return ImageStack(d)
+
+
 def generate_images(shape=g_shape, dtype=np.float32, seed: int | None = None) -> ImageStack:
     d = pu.create_array(shape, dtype)
     return _set_random_data(d, shape, seed=seed)
