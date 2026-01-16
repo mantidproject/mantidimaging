@@ -207,9 +207,9 @@ class FilenameGroup:
         possible_schemas = [self.directory.name + "*.txt", "*spectra.txt", "*.csv"]
         for directory in directories_to_search:
 
-            log_path_list: list[Path] = next((paths for schema in possible_schemas
-                                              if (paths := list(directory.glob(schema, case_sensitive=False)))),
-                                             [])
+            log_path_list: list[Path] = next(
+                (paths for schema in possible_schemas if (paths := list(directory.glob(schema, case_sensitive=False)))),
+                [])
             if log_path_list:
                 break
 
@@ -225,18 +225,20 @@ class FilenameGroup:
         """
         Try to find the shutter count file in directory if it exists in the parent directory.
         """
-        parent_directory = self.directory.parent
-        if self.directory.name.lower() in ["tomo", "sample", "GRtomo"]:
-            shutter_count_pattern = "*shuttercount.txt"
-            shutter_count_paths = list(parent_directory.glob(shutter_count_pattern, case_sensitive=False))
-            shutter_count_paths = [path for path in shutter_count_paths if "flat" not in path.name.lower()]
-        else:
-            shutter_count_pattern = f"{self.directory.name}*shuttercount.txt"
-            shutter_count_paths = list(parent_directory.glob(shutter_count_pattern, case_sensitive=False))
+        directories_to_search = [self.directory, self.directory.parent]
+        for directory in directories_to_search:
+            if self.directory.name.lower() in ["tomo", "sample", "GRtomo"]:
+                shutter_count_pattern = "*shuttercount.txt"
+                shutter_count_paths = list(directory.glob(shutter_count_pattern, case_sensitive=False))
+                shutter_count_paths = [path for path in shutter_count_paths if "flat" not in path.name.lower()]
+            else:
+                shutter_count_pattern = f"{self.directory.name}*shuttercount.txt"
+                shutter_count_paths = list(directory.glob(shutter_count_pattern, case_sensitive=False))
 
-        if shutter_count_paths:
-            shortest = min(shutter_count_paths, key=lambda p: len(p.name))
-            self.shutter_count_path = self.directory / shortest
+            if shutter_count_paths:
+                shortest = min(shutter_count_paths, key=lambda p: len(p.name))
+                self.shutter_count_path = self.directory / shortest
+                return
 
     def find_related(self, file_type: FILE_TYPES) -> FilenameGroup | None:
         if self.directory.name not in ["Tomo", "tomo", "GRtomo"]:
