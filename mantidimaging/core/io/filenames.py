@@ -203,10 +203,16 @@ class FilenameGroup:
         Find the first non-empty list of log paths matching any schema, then filter out
         paths containing 'ShutterCount' and select the shortest one
         """
+        directories_to_search = [self.directory, self.directory.parent]
         possible_schemas = [self.directory.name + "*.txt", "*spectra.txt", "*.csv"]
-        log_path_list: list[Path] = next((paths for schema in possible_schemas
-                                          if (paths := list(self.directory.parent.glob(schema, case_sensitive=False)))),
-                                         [])
+        for directory in directories_to_search:
+
+            log_path_list: list[Path] = next((paths for schema in possible_schemas
+                                              if (paths := list(directory.glob(schema, case_sensitive=False)))),
+                                             [])
+            if log_path_list:
+                break
+
         log_path_list = [log_path for log_path in log_path_list if "ShutterCount" not in log_path.name]
         if log_path_list:
             for log_path in log_path_list:
