@@ -3,12 +3,12 @@ name: Testing on Windows
 on:
   push:
     branches:
-    - 'main'
-    - 'release-*'
+      - "main"
+      - "release-*"
   pull_request:
     paths:
-      - '**'
-      - '!docs/**'
+      - "**"
+      - "!docs/**"
   release:
   merge_group:
 concurrency:
@@ -41,8 +41,7 @@ jobs:
           path: |
             ~/conda_pkgs_dir
             ~/.cache/pip
-          key:
-            ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+          key: ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
       - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
@@ -59,8 +58,10 @@ jobs:
           CACHE_NUMBER: 0
         with:
           path: ${{env.CONDA}}/envs/mantidimaging-dev
-          key:
-            ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+          key: ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Install setuptools for system Python
+        run: python -m pip install --upgrade pip setuptools
 
       - name: Mantid Imaging developer dependencies
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
