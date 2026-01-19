@@ -58,7 +58,7 @@ jobs:
       - name: ui
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.ui"
+          command: npx prettier --check --parser xml "**/*.ui"
           label: rocky8
 
       - name: mypy

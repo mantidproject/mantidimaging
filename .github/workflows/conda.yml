@@ -105,7 +105,7 @@ jobs:
       - name: UI
         shell: bash -l {0}
         run: |
-          npx prettier --check "**/*.ui"
+          npx prettier --check --parser xml "**/*.ui"
 
       - name: mypy
         shell: bash -l {0}
