@@ -42,10 +42,16 @@ jobs:
           command: ruff check .
           label: ubuntu18
 
-      - name: Prettier - Check all
+      - name: json
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.json" "**/*.y?(a)ml" "**/*.xml" "!conda/meta.yaml"
+          command: npx prettier --check "**/*.json"
+          label: ubuntu18
+
+      - name: yaml
+        uses: ./.github/actions/test
+        with:
+          command: npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
           label: ubuntu18
 
       - name: mypy
