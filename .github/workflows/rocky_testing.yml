@@ -43,10 +43,16 @@ jobs:
           command: ruff check .
           label: rocky8
 
-      - name: Prettier - Check all
+      - name: json
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.json" "**/*.y?(a)ml" "**/*.xml" "!conda/meta.yaml"
+          command: npx prettier --check "**/*.json"
+          label: rocky8
+
+      - name: yaml
+        uses: ./.github/actions/test
+        with:
+          command: npx prettier --check  "**/*.y?(a)ml" "!conda/meta.yaml"
           label: rocky8
 
       - name: mypy
