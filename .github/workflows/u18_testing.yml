@@ -54,6 +54,12 @@ jobs:
           command: npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
           label: ubuntu18
 
+      - name: ui
+        uses: ./.github/actions/test
+        with:
+          command: npx prettier --check "**/*.ui"
+          label: ubuntu18
+
       - name: mypy
         uses: ./.github/actions/test
         with:

@@ -55,4 +55,4 @@ repos:
         files: \.ya?ml$
       - id: prettier
         additional_dependencies: [prettier, prettier-plugin-xml]
-        files: \.xml$
+        files: \.ui$
