@@ -10,12 +10,21 @@ name: Build & Publish Docker Ubuntu18 & CentOS7
 on:
   push:
     branches:
-    - 'main'
-    paths: ['docker/**', 'Dockerfile', 'conda/**', 'Makefile', 'setup.py', 'environment.yml', 'environment-dev.yml']
+      - "main"
+    paths:
+      [
+        "docker/**",
+        "Dockerfile",
+        "conda/**",
+        "Makefile",
+        "setup.py",
+        "environment.yml",
+        "environment-dev.yml",
+      ]
   pull_request:
     branches:
-      - 'main'
-    types: [ labeled ]
+      - "main"
+    types: [labeled]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
