@@ -65,9 +65,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install Prettier
-        run: npm install -g prettier prettier-plugin-json prettier-plugin-yaml prettier-plugin-xml
-
       - name: Install setuptools for system Python
         run: python -m pip install --upgrade pip setuptools
 
@@ -93,6 +90,16 @@ jobs:
         shell: bash -l {0}
         run: |
           ruff check .
+
+      - name: Json
+        shell: bash -l {0}
+        run: |
+          npx prettier --check "**/*.json"
+
+      - name: Yaml
+        shell: bash -l {0}
+        run: |
+          npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
 
       - name: mypy
         shell: bash -l {0}
