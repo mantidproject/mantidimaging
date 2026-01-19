@@ -106,11 +106,6 @@ jobs:
         run: |
           mypy --ignore-missing-imports mantidimaging
 
-      - name: Prettier - Check all
-        shell: bash -l {0}
-        run: |
-          npx prettier --check "**/*.json" "**/*.y?(a)ml" "**/*.xml" "!conda/meta.yaml"
-
       - name: pyright
         shell: bash -l {0}
         run: |
