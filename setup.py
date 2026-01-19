@@ -6,14 +6,13 @@ from __future__ import annotations
 import importlib
 import platform
 import subprocess
-from distutils.core import Command
 from collections import defaultdict
 from pathlib import Path
 import tempfile
 import shutil
 from importlib.machinery import SourceFileLoader
 
-from setuptools import find_packages, setup
+from setuptools import find_packages, setup, Command
 
 THIS_PATH = Path(__file__).parent
 versions = SourceFileLoader('versions', str(THIS_PATH / 'mantidimaging' / '__init__.py')).load_module()

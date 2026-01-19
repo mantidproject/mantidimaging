@@ -62,6 +62,9 @@ jobs:
           key:
             ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
 
+      - name: Install setuptools for system Python
+        run: python -m pip install --upgrade pip setuptools
+
       - name: Mantid Imaging developer dependencies
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
         shell: bash -l {0}
