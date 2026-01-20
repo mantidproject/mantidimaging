@@ -54,6 +54,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install Node dependencies
+        run: npm ci
+
       - name: Cache Miniforge environment
         uses: actions/cache@v4
         id: cache-miniforge-environment

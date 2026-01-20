@@ -68,8 +68,8 @@ jobs:
       - name: Install setuptools for system Python
         run: python -m pip install --upgrade pip setuptools
 
-      - name: Install ui xml formatter
-        run: npm install --no-save prettier @prettier/plugin-xml
+      - name: Install Node dependencies
+        run: npm ci
 
       - name: Mantid Imaging developer dependencies
         if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'

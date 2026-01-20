@@ -24,6 +24,9 @@ jobs:
       - name: Pre-load docker image
         run: docker pull ghcr.io/mantidproject/mantidimaging:ubuntu18
 
+      - name: Install Node dependencies
+        run: npm ci
+
       - name: List versions
         uses: ./.github/actions/test
         with:
