@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
@@ -42,12 +42,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="imageIndex"/>
+      <widget class="QSpinBox" name="imageIndex" />
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>AddToDatasetDialog</class>
  <widget class="QDialog" name="AddToDatasetDialog">
@@ -50,7 +50,7 @@
      <item row="0" column="1" colspan="2">
       <widget class="QLabel" name="datasetNameText">
        <property name="text">
-        <string/>
+        <string />
        </property>
       </widget>
      </item>
@@ -62,7 +62,7 @@
       </widget>
      </item>
      <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="imageTypeComboBox"/>
+      <widget class="QComboBox" name="imageTypeComboBox" />
      </item>
     </layout>
    </item>
@@ -78,7 +78,7 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources />
  <connections>
   <connection>
    <sender>buttonBox</sender>

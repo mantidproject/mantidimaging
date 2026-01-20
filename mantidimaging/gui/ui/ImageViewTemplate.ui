@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
@@ -40,10 +40,10 @@
         <number>0</number>
        </property>
        <item row="0" column="3" colspan="3">
-        <widget class="HistogramLUTWidget" name="histogram"/>
+        <widget class="HistogramLUTWidget" name="histogram" />
        </item>
        <item row="0" column="1" rowspan="2">
-        <widget class="GraphicsView" name="graphicsView"/>
+        <widget class="GraphicsView" name="graphicsView" />
        </item>
        <item row="1" column="5">
         <widget class="QPushButton" name="menuBtn">
@@ -187,7 +187,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QDoubleSpinBox" name="normXBlurSpin"/>
+       <widget class="QDoubleSpinBox" name="normXBlurSpin" />
       </item>
       <item row="2" column="1">
        <widget class="QLabel" name="label_8">
@@ -210,7 +210,7 @@
        </widget>
       </item>
       <item row="2" column="4">
-       <widget class="QDoubleSpinBox" name="normYBlurSpin"/>
+       <widget class="QDoubleSpinBox" name="normYBlurSpin" />
       </item>
       <item row="2" column="5">
        <widget class="QLabel" name="label_10">
@@ -247,7 +247,7 @@
        </widget>
       </item>
       <item row="2" column="6">
-       <widget class="QDoubleSpinBox" name="normTBlurSpin"/>
+       <widget class="QDoubleSpinBox" name="normTBlurSpin" />
       </item>
      </layout>
     </widget>
@@ -272,6 +272,6 @@
    <header>pyqtgraph.widgets.HistogramLUTWidget</header>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>
