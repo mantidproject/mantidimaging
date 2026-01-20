@@ -57,7 +57,7 @@ jobs:
       - name: ui
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check --parser xml"**/*.ui"
+          command: npx prettier --check --plugin=@prettier/plugin-xml --parser=xml "**/*.ui"
           label: ubuntu18
 
       - name: mypy
