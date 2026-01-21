@@ -439,7 +439,8 @@ class ImageStack:
 
     def create_geometry(self, angles: ProjectionAngles, geom_type: GeometryType = GeometryType.PARALLEL3D) -> None:
         """
-        Creates a Geometry belonging to the ImageStack.
+        Creates a Geometry of given type belonging to the ImageStack
+        Angles should be given in radians
         """
 
         self.geometry = Geometry(angles.value,
@@ -451,9 +452,9 @@ class ImageStack:
         """
         Creates a Geometry belong to the ImageStack from a CIL AcquisitionGeometry object.
         """
-        self.create_geometry()
+        self.create_geometry(ProjectionAngles(np.zeros(0)))
         assert (self.geometry is not None)
-        self.geometry.config = acquisition_geometry.config
+        self.geometry.config = acquisition_geometry.config.copy()
 
     def set_geometry_panels(self) -> None:
         """
