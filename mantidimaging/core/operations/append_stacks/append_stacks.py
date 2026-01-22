@@ -40,11 +40,13 @@ class AppendStacks(BaseFilter):
         """
 
         h.check_data_stack(images)
+        h.check_data_stack(stack_to_append)
 
         sample_data = images.data
         sample_angles = images.projection_angles()
-        stack_to_append_data = stack_to_append.data
-        stack_to_append_angles = stack_to_append.projection_angles()
+
+        stack_to_append_data = stack_to_append.data if stack_to_append is not None else None
+        stack_to_append_angles = stack_to_append.projection_angles() if stack_to_append is not None else None
 
         if sample_data is not None and stack_to_append_data is not None:
             out_shape = (sample_data.shape[0] + stack_to_append_data.shape[0], sample_data.shape[1],
@@ -59,9 +61,10 @@ class AppendStacks(BaseFilter):
         else:
             output_angles = None
 
-        if images.shape[0] != 1:
+        if images.shape[0] != 1 and stack_to_append is not None and output is not None:
             execute_single(images, stack_to_append, progress, out=output.array, out_ang=output_angles)
             images.shared_array = output
+        if output_angles is not None:
             images.set_projection_angles(ProjectionAngles(output_angles))
 
         return images
@@ -103,12 +106,12 @@ def execute_single(stack: ImageStack, stack_to_append: ImageStack, progress=None
     progress = Progress.ensure_instance(progress, task_name='Append Stacks')
     progress.add_estimated_steps(1)
 
-    if isinstance(stack.projection_angles(), ProjectionAngles):
-        angles = stack.projection_angles().value
+    if isinstance(stack_angles := stack.projection_angles(), ProjectionAngles):
+        angles = stack_angles.value
     else:
         angles = np.full(stack.shape[0], 0)
-    if isinstance(stack_to_append.projection_angles(), ProjectionAngles):
-        angles_to_append = stack_to_append.projection_angles().value
+    if isinstance(stack_to_append_angles := stack_to_append.projection_angles(), ProjectionAngles):
+        angles_to_append = stack_to_append_angles.value
     else:
         angles_to_append = np.full(stack_to_append.shape[0], 0)
 
