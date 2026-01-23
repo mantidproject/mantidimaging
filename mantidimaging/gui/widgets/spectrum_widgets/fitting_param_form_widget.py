@@ -9,12 +9,12 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit
      QGroupBox
 from PyQt5.QtGui import QDoubleValidator
 
+from mantidimaging.core.fitting.fitting_engine import BoundType
+
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
 
 LOG = getLogger(__name__)
-
-BoundType = tuple[float | None, float | None]
 
 
 class FittingParamFormWidget(QWidget):
@@ -28,6 +28,7 @@ class FittingParamFormWidget(QWidget):
     """
 
     fromROIButtonClicked = QtCore.pyqtSignal()
+    initialEditFinished = QtCore.pyqtSignal()
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
@@ -103,8 +104,7 @@ class FittingParamFormWidget(QWidget):
 
             self._rows[label] = (row_layout, row_label, initial_edit, final_edit, fix_checkbox, range_checkbox,
                                  range_row_box)
-
-            initial_edit.editingFinished.connect(self.presenter.on_initial_params_edited)
+            initial_edit.editingFinished.connect(self.initialEditFinished.emit)
 
     def set_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():

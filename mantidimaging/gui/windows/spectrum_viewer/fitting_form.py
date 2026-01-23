@@ -36,7 +36,7 @@ class FittingFormWidgetView(QWidget):
 
         self.run_fit_button = QPushButton("Run fit")
         self.layout().addWidget(self.run_fit_button)
-        self.run_fit_button.clicked.connect(self.spectrum_viewer.presenter.run_region_fit)
+        self.run_fit_button.clicked.connect(self.presenter.run_region_fit)
 
         self.rss_label = QLabel("RSS:")
         self.reduced_rss_label = QLabel("RSS/DoF:")
@@ -49,7 +49,8 @@ class FittingFormWidgetView(QWidget):
 
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.handle_roi_selection_changes)
         self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
-        self.fitting_param_form.fromROIButtonClicked.connect(self.presenter.show_initial_fit)
+        self.fitting_param_form.fromROIButtonClicked.connect(self.presenter.get_init_params_from_roi)
+        self.fitting_param_form.initialEditFinished.connect(self.presenter.on_initial_params_edited)
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
@@ -140,13 +141,18 @@ class FittingFormWidgetPresenter:
 
         self.show_initial_fit()
         roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.fittingForm.set_fit_quality(float("nan"), float("nan"))
-        self.view.exportDataTableWidget.update_roi_data(
+        self.view.set_fit_quality(float("nan"), float("nan"))
+        self.spectrum_viewer.exportDataTableWidget.update_roi_data(
             roi_name=roi_name,
             params=init_params,
             status="Initial",
             chi2=None,
         )
+
+    def show_fit(self, params: list[float]) -> None:
+        xvals = self.model.tof_data
+        fit = self.model.fitting_engine.model.evaluate(xvals, params)
+        self.view.fittingDisplayWidget.show_fit_line(xvals, fit, color=(0, 128, 255), label="fit", initial=False)
 
     def show_initial_fit(self) -> None:
         """
@@ -162,3 +168,52 @@ class FittingFormWidgetPresenter:
                                                      color=(128, 128, 128),
                                                      label="initial",
                                                      initial=True)
+
+    def on_initial_params_edited(self) -> None:
+        """
+        Handles updates when the initial fitting parameters are edited.
+
+        If the initial fit is visible, updates the plot with the new initial fit.
+        Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,
+        and displays the new fit result.
+        """
+        if self.view.fittingDisplayWidget.is_initial_fit_visible():
+            self.show_initial_fit()
+        else:
+            init_params = self.view.fitting_param_form.get_initial_param_values()
+            roi_name = self.view.roiSelectionWidget.current_roi_name
+            roi = self.spectrum_viewer.spectrum_widget.get_roi(roi_name)
+            spectrum = self.model.get_spectrum(roi, self.spectrum_viewer.presenter.spectrum_mode)
+            xvals = self.model.tof_data
+            bound_params = self.view.fitting_param_form.get_bound_parameters()
+            fit_params, rss, rss_per_dof = self.model.fitting_engine.find_best_fit(xvals,
+                                                                                   spectrum,
+                                                                                   init_params,
+                                                                                   params_bounds=bound_params)
+            self.view.fitting_param_form.set_fitted_parameter_values(fit_params)
+            self.view.set_fit_quality(rss, rss_per_dof)
+            self.show_fit(list(fit_params.values()))
+            LOG.info("Refit completed for ROI=%s, RSS/DoF=%.3f", roi_name, rss_per_dof)
+
+    def run_region_fit(self) -> None:
+        """
+        Run a fit on the currently selected ROI and update the GUI/export table.
+        """
+        bound_params = self.view.fitting_param_form.get_bound_parameters()
+        tof_data, spectrum = self.fitting_spectrum
+        result, rss, reduced_rss = self.model.fit_single_region(spectrum,
+                                                                self.spectrum_viewer.get_fitting_region(),
+                                                                tof_data,
+                                                                self.view.fitting_param_form.get_initial_param_values(),
+                                                                bounds=bound_params)
+        self.view.fitting_param_form.set_fitted_parameter_values(result)
+        self.view.set_fit_quality(rss, reduced_rss)
+        self.show_fit(list(result.values()))
+        roi_name = self.view.roiSelectionWidget.current_roi_name
+        self.spectrum_viewer.exportDataTableWidget.update_roi_data(
+            roi_name=roi_name,
+            params=result,
+            status="Fitted",
+            chi2=reduced_rss,
+        )
+        LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, reduced_rss)
