@@ -23,7 +23,6 @@ class FittingDisplayWidget(QWidget):
     Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.
     """
 
-    initial_fit_line: PlotDataItem | None = None
     unit_changed = pyqtSignal(str)
 
     def __init__(self, parent: QWidget | None = None) -> None:

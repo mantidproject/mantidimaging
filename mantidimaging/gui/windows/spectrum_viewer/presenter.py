@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
-    from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
 
@@ -52,9 +51,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     current_stack_uuid: UUID | None = None
     current_norm_stack_uuid: UUID | None = None
     export_mode: ExportMode
-    initial_sample_change: bool = True
     changed_roi: SpectrumROI
-    stop_next_chunk = False
     image_nan_mask_dict: dict[str, np.ma.MaskedArray] = {}
     roi_to_process_queue: dict[str, SpectrumROI] = {}
 
@@ -620,10 +617,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def change_selected_menu_option(self, opt: str) -> None:
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
-                if action.objectName() == opt:
-                    self.check_action(action, True)
-                else:
-                    self.check_action(action, False)
+                action.setChecked(action.objectName() == opt)
 
     def do_adjust_roi(self) -> None:
         new_roi = self.view.roi_form.roi_properties_widget.to_roi()
@@ -633,10 +627,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             roi_name = "rits_roi"
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
         self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
-
-    @staticmethod
-    def check_action(action: QAction, param: bool) -> None:
-        action.setChecked(param)
 
     def fit_all_regions(self) -> None:
         init_params = self.view.fitting_param_form.get_initial_param_values()

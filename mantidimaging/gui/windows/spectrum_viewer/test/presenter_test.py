@@ -365,17 +365,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_experiment_setup_properties_change()
         self.assertEqual(float(self.presenter.model.units.data_offset), 400.00 * 1e-6)
 
-    def test_WHEN_menu_option_selected_THEN_menu_option_changed(self):
-        menu_options = [QAction("opt1"), QAction("opt2"), QAction("opt3"), QAction("opt4")]
-        menu_options[0].setObjectName("opt1")
-        menu_options[1].setObjectName("opt2")
-        menu_options[2].setObjectName("opt3")
-        menu_options[3].setObjectName("opt4")
-        self.presenter.check_action = mock.Mock()
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.presenter.QSignalBlocker")
+    def test_WHEN_menu_option_selected_THEN_menu_option_changed(self, _):
+        menu_options = [mock.Mock(spec=QAction, objectName=mock.Mock(return_value=f"opt{index}")) for index in range(4)]
         self.view.tof_mode_select_group.actions = mock.Mock(return_value=menu_options)
         self.presenter.change_selected_menu_option("opt2")
-        calls = [mock.call(menu_options[a], b) for a, b in [(0, False), (1, True), (2, False), (3, False)]]
-        self.presenter.check_action.assert_has_calls(calls)
+        for index, value in enumerate((False, False, True, False)):
+            menu_options[index].setChecked.assert_called_once_with(value)
 
     @mock.patch.object(SpectrumViewerWindowModel, 'get_spectrum')
     @mock.patch.object(SpectrumViewerWindowModel, 'get_stack_length')
