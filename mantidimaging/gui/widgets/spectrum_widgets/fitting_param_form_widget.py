@@ -48,15 +48,7 @@ class FittingParamFormWidget(QWidget):
         self.layout().addWidget(self.from_roi_button)
         self.from_roi_button.clicked.connect(self.presenter.get_init_params_from_roi)
 
-        self.run_fit_button = QPushButton("Run fit")
-        self.layout().addWidget(self.run_fit_button)
-        self.run_fit_button.clicked.connect(self.presenter.run_region_fit)
         self._param_values_logged = False
-
-        self.rss_label = QLabel("RSS:")
-        self.reduced_rss_label = QLabel("RSS/DoF:")
-        main_layout.addWidget(self.rss_label)
-        main_layout.addWidget(self.reduced_rss_label)
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -140,13 +132,6 @@ class FittingParamFormWidget(QWidget):
             self.params_layout.layout().removeItem(row_layout)
         self._rows.clear()
         LOG.debug("Parameter form rows cleared")
-
-    def set_fit_quality(self, rss: float, rss_per_dof: float) -> None:
-        """
-        Update the fit quality display with raw and reduced residual sum of squares.
-        """
-        self.rss_label.setText(f"RSS: {rss:.2g}")
-        self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
 
     def show_range_edit_fields(self) -> None:
         for row in self._rows.values():

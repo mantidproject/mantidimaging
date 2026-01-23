@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
@@ -34,6 +34,17 @@ class FittingParamFormWidgetView(QWidget):
         self.fitting_param_form = FittingParamFormWidget(self.spectrum_viewer.presenter)
         self.layout().addWidget(self.fitting_param_form)
 
+        self.run_fit_button = QPushButton("Run fit")
+        self.layout().addWidget(self.run_fit_button)
+        self.run_fit_button.clicked.connect(self.spectrum_viewer.presenter.run_region_fit)
+
+        self.rss_label = QLabel("RSS:")
+        self.reduced_rss_label = QLabel("RSS/DoF:")
+        self.layout().addWidget(self.rss_label)
+        self.layout().addWidget(self.reduced_rss_label)
+
+        self.layout().addStretch()
+
         self.fittingDisplayWidget = spectrum_viewer.fittingDisplayWidget
 
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.handle_roi_selection_changes)
@@ -45,6 +56,13 @@ class FittingParamFormWidgetView(QWidget):
     @property
     def current_roi_name(self) -> str:
         return self.roiSelectionWidget.current_roi_name
+
+    def set_fit_quality(self, rss: float, rss_per_dof: float) -> None:
+        """
+        Update the fit quality display with raw and reduced residual sum of squares.
+        """
+        self.rss_label.setText(f"RSS: {rss:.2g}")
+        self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
 
 
 class FittingParamFormWidgetPresenter:

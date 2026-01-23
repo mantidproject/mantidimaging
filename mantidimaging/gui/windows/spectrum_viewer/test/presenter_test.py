@@ -16,6 +16,7 @@ from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWi
     ROITableWidget
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
+from mantidimaging.gui.windows.spectrum_viewer.fitting_form import FittingParamFormWidgetView
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType, \
     SpectrumViewerWindowModel
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI, \
@@ -58,6 +59,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.fittingDisplayWidget.spectrum_plot = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot.spectrum = mock.Mock()
         self.view.fittingDisplayWidget.update_labels = mock.Mock()
+        self.view.fittingForm = mock.create_autospec(FittingParamFormWidgetView, instance=True)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):

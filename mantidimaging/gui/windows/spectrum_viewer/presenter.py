@@ -660,7 +660,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         self.show_initial_fit()
         roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.fitting_param_form.set_fit_quality(float("nan"), float("nan"))
+        self.view.fittingForm.set_fit_quality(float("nan"), float("nan"))
         self.view.exportDataTableWidget.update_roi_data(
             roi_name=roi_name,
             params=init_params,
@@ -700,7 +700,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                                                    init_params,
                                                                                    params_bounds=bound_params)
             self.view.fitting_param_form.set_fitted_parameter_values(fit_params)
-            self.view.fitting_param_form.set_fit_quality(rss, rss_per_dof)
+            self.view.fittingForm.set_fit_quality(rss, rss_per_dof)
             self.show_fit(list(fit_params.values()))
             LOG.info("Refit completed for ROI=%s, RSS/DoF=%.3f", roi_name, rss_per_dof)
 
@@ -730,7 +730,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                                                           self.view.fitting_param_form.get_initial_param_values(),
                                                           bounds=bound_params)
         self.view.fitting_param_form.set_fitted_parameter_values(result)
-        self.view.fitting_param_form.set_fit_quality(rss, reduced_rss)
+        self.view.fittingForm.set_fit_quality(rss, reduced_rss)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.exportDataTableWidget.update_roi_data(
