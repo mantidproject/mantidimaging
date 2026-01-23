@@ -193,7 +193,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.sampleStackSelector.select_eligible_stack()
         self.presenter.handle_tof_unit_change()
         self.set_roi_properties()
-        self.presenter.initial_sample_change = False
         self.presenter.initial_roi_calc()
 
     def handle_change_tab(self, tab_index: int):
@@ -275,15 +274,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
-
-    def update_export_table(
-        self,
-        roi_name: str,
-        params: dict[str, float],
-        status: str = "Ready",
-        chi2: float | None = None,
-    ) -> None:
-        self.exportDataTableWidget.update_roi_data(roi_name, params, status=status, chi2=chi2)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
