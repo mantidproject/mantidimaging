@@ -64,6 +64,7 @@ class AppendStacks(BaseFilter):
         if images.shape[0] != 1 and stack_to_append is not None and output is not None:
             execute_single(images, stack_to_append, progress, out=output.array, out_ang=output_angles)
             images.shared_array = output
+            images.filenames += stack_to_append.filenames
         if output_angles is not None:
             images.set_projection_angles(ProjectionAngles(output_angles))
 
