@@ -86,7 +86,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
         self.fitSelectionWidget = self.fittingForm.fitSelectionWidget
-        self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
@@ -199,7 +198,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.set_roi_properties()
         self.presenter.initial_sample_change = False
         self.presenter.initial_roi_calc()
-        self.presenter.setup_fitting_model()
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)

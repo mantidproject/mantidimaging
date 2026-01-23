@@ -367,12 +367,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def fitting_spectrum(self) -> np.ndarray:
         return self.view.fittingForm.presenter.fitting_spectrum[1]
 
-    def update_fitting_function(self, fitting_obj) -> None:
-        fitting_func = fitting_obj()
-        self.model.fitting_engine.set_fitting_model(fitting_func)
-        LOG.info("Spectrum Viewer: Fit function set to %s", fitting_func.__class__.__name__)
-        self.setup_fitting_model()
-
     def redraw_spectrum(self, name: str) -> None:
         """
         Redraw the spectrum with the given name
@@ -645,11 +639,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     @staticmethod
     def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
-
-    def setup_fitting_model(self) -> None:
-        param_names = self.model.fitting_engine.get_parameter_names()
-        self.view.fitting_param_form.set_parameters(param_names)
-        self.view.exportDataTableWidget.set_parameters(param_names)
 
     def get_init_params_from_roi(self) -> None:
         fitting_region = self.view.get_fitting_region()

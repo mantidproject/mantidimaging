@@ -48,6 +48,7 @@ class FittingParamFormWidgetView(QWidget):
         self.fittingDisplayWidget = spectrum_viewer.fittingDisplayWidget
 
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.handle_roi_selection_changes)
+        self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
@@ -70,13 +71,15 @@ class FittingParamFormWidgetPresenter:
     def __init__(self, view: FittingParamFormWidgetView):
         self.view = view
         self.spectrum_viewer = view.spectrum_viewer
+        self.model = self.spectrum_viewer.presenter.model
         self.fitting_display_widget = view.spectrum_viewer.fittingDisplayWidget
+        self.first_activation = True
 
     @property
     def fitting_spectrum(self) -> tuple[np.ndarray, np.ndarray]:
         selected_fitting_roi = self.view.current_roi_name
         if (spectrum_data := self.spectrum_viewer.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
-            return self.spectrum_viewer.presenter.model.tof_data, spectrum_data
+            return self.model.tof_data, spectrum_data
 
         raise RuntimeError("Fitting spectrum not calculated")
 
@@ -87,6 +90,9 @@ class FittingParamFormWidgetPresenter:
         self.set_spectrum()
         self.set_default_fitting_region()
         self.set_binning()
+        if self.first_activation:
+            self.setup_fitting_model()
+            self.first_activation = False
 
     def handle_roi_selection_changes(self) -> None:
         self.update_roi_on_fitting_thumbnail()
@@ -112,3 +118,14 @@ class FittingParamFormWidgetPresenter:
         binner = self.spectrum_viewer.get_binner()
         self.view.roiSelectionWidget.handle_mode_change(mode)
         self.view.roiSelectionWidget.handle_binning_changed(binner)
+
+    def update_fitting_function(self, fitting_obj) -> None:
+        fitting_func = fitting_obj()
+        self.model.fitting_engine.set_fitting_model(fitting_func)
+        LOG.info("Spectrum Viewer: Fit function set to %s", fitting_func.__class__.__name__)
+        self.setup_fitting_model()
+
+    def setup_fitting_model(self) -> None:
+        param_names = self.model.fitting_engine.get_parameter_names()
+        self.view.fitting_param_form.set_parameters(param_names)
+        self.spectrum_viewer.exportDataTableWidget.set_parameters(param_names)
