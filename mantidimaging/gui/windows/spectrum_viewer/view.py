@@ -84,9 +84,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.fittingForm = FittingFormWidgetView(self)
         self.fittingFormContainer.layout().addWidget(self.fittingForm)
 
-        self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
-        self.fitSelectionWidget = self.fittingForm.fitSelectionWidget
-
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
 
