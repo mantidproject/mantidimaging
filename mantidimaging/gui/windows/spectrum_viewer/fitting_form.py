@@ -17,12 +17,12 @@ if TYPE_CHECKING:
 LOG = getLogger(__name__)
 
 
-class FittingParamFormWidgetView(QWidget):
+class FittingFormWidgetView(QWidget):
 
     def __init__(self, spectrum_viewer: SpectrumViewerWindowView):
         super().__init__(None)
         self.spectrum_viewer = spectrum_viewer
-        self.presenter = FittingParamFormWidgetPresenter(self)
+        self.presenter = FittingFormWidgetPresenter(self)
         self.setLayout(QVBoxLayout())
 
         self.roiSelectionWidget = ROISelectionWidget(self)
@@ -66,9 +66,9 @@ class FittingParamFormWidgetView(QWidget):
         self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
 
 
-class FittingParamFormWidgetPresenter:
+class FittingFormWidgetPresenter:
 
-    def __init__(self, view: FittingParamFormWidgetView):
+    def __init__(self, view: FittingFormWidgetView):
         self.view = view
         self.spectrum_viewer = view.spectrum_viewer
         self.model = self.spectrum_viewer.presenter.model

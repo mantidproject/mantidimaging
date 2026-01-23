@@ -17,7 +17,7 @@ from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .fitting_form import FittingParamFormWidgetView
+from .fitting_form import FittingFormWidgetView
 from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from .spectrum_widget import SpectrumWidget
@@ -81,7 +81,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
         self.fittingDisplayWidget = FittingDisplayWidget()
-        self.fittingForm = FittingParamFormWidgetView(self)
+        self.fittingForm = FittingFormWidgetView(self)
         self.fittingFormContainer.layout().addWidget(self.fittingForm)
 
         self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
