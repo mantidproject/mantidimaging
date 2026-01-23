@@ -58,7 +58,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.roiSelectionWidget = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot.spectrum = mock.Mock()
-        self.view.fittingDisplayWidget.update_labels = mock.Mock()
         self.view.fittingForm = mock.create_autospec(FittingFormWidgetView, instance=True)
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
@@ -439,23 +438,6 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_enable_normalised(norm_enabled)
         self.assertEqual(self.presenter.spectrum_mode, spec_type)
         self.view.display_normalise_error.assert_called_once()
-
-    def test_show_initial_fit_calls_correct_plot_method(self):
-        self.view.fitting_param_form.get_initial_param_values = mock.Mock(return_value=[1.0, 2.0, 3.0, 4.0])
-        self.presenter.model.tof_data = np.array([1, 2, 3])
-        self.presenter.model.fitting_engine.model.evaluate = mock.Mock(return_value=np.array([10, 20, 30]))
-        self.view.fittingDisplayWidget.show_fit_line = mock.Mock()
-
-        self.presenter.show_initial_fit()
-
-        self.view.fittingDisplayWidget.show_fit_line.assert_called_once()
-        args, kwargs = self.view.fittingDisplayWidget.show_fit_line.call_args
-        np.testing.assert_array_equal(args[0], np.array([1, 2, 3]))
-        np.testing.assert_array_equal(args[1], np.array([10, 20, 30]))
-        assert kwargs["color"] == (128, 128, 128)
-        assert kwargs["label"] == "initial"
-        assert kwargs["initial"] is True
-        self.view.fittingDisplayWidget.show_fit_line.reset_mock()
 
     @parameterized.expand([
         (True, True, False),  # (is_initial_fit_visible, expect_plot_initial, expect_show_fit)

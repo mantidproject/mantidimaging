@@ -406,7 +406,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_roi_name_change(self, old_name: str, new_name: str) -> None:
         self.view.spectrum_widget.rename_roi(old_name, new_name)
         self.view.set_roi_properties()
-        self.view.roiSelectionWidget.update_roi_list(self.get_roi_names())
 
     def handle_button_enabled(self) -> None:
         """
@@ -640,23 +639,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def check_action(action: QAction, param: bool) -> None:
         action.setChecked(param)
 
-    def get_init_params_from_roi(self) -> None:
-        fitting_region = self.view.get_fitting_region()
-        init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
-        self.view.fitting_param_form.set_parameter_values(init_params)
-
-        self.view.fittingDisplayWidget.set_plot_mode("initial")
-
-        self.show_initial_fit()
-        roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.fittingForm.set_fit_quality(float("nan"), float("nan"))
-        self.view.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=init_params,
-            status="Initial",
-            chi2=None,
-        )
-
     def _plot_initial_fit(self) -> None:
         init_params = self.view.fitting_param_form.get_initial_param_values()
         xvals = self.model.tof_data
@@ -692,21 +674,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.fittingForm.set_fit_quality(rss, rss_per_dof)
             self.show_fit(list(fit_params.values()))
             LOG.info("Refit completed for ROI=%s, RSS/DoF=%.3f", roi_name, rss_per_dof)
-
-    def show_initial_fit(self) -> None:
-        """
-        Displays the initial fit curve on the fitting display widget.
-        Retrieves current TOF data and the initial parameter values from the view
-        and evaluates the fitting model using these parameters to generate the initial fit curve.
-        """
-        xvals = self.model.tof_data
-        init_params = self.view.fitting_param_form.get_initial_param_values()
-        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
-        self.view.fittingDisplayWidget.show_fit_line(xvals,
-                                                     init_fit,
-                                                     color=(128, 128, 128),
-                                                     label="initial",
-                                                     initial=True)
 
     def run_region_fit(self) -> None:
         """

@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
      QGroupBox
 from PyQt5.QtGui import QDoubleValidator
@@ -26,6 +27,8 @@ class FittingParamFormWidget(QWidget):
     Has space to show goodness of fit measures.
     """
 
+    fromROIButtonClicked = QtCore.pyqtSignal()
+
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
         self.presenter = presenter
@@ -46,7 +49,7 @@ class FittingParamFormWidget(QWidget):
 
         self.from_roi_button = QPushButton("From ROI")
         self.layout().addWidget(self.from_roi_button)
-        self.from_roi_button.clicked.connect(self.presenter.get_init_params_from_roi)
+        self.from_roi_button.clicked.connect(self.fromROIButtonClicked.emit)
 
         self._param_values_logged = False
 

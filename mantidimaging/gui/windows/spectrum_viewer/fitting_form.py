@@ -49,6 +49,7 @@ class FittingFormWidgetView(QWidget):
 
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.handle_roi_selection_changes)
         self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
+        self.fitting_param_form.fromROIButtonClicked.connect(self.presenter.show_initial_fit)
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
@@ -129,3 +130,35 @@ class FittingFormWidgetPresenter:
         param_names = self.model.fitting_engine.get_parameter_names()
         self.view.fitting_param_form.set_parameters(param_names)
         self.spectrum_viewer.exportDataTableWidget.set_parameters(param_names)
+
+    def get_init_params_from_roi(self) -> None:
+        fitting_region = self.fitting_display_widget.get_selected_fit_region()
+        init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
+        self.view.fitting_param_form.set_parameter_values(init_params)
+
+        self.view.fittingDisplayWidget.set_plot_mode("initial")
+
+        self.show_initial_fit()
+        roi_name = self.view.roiSelectionWidget.current_roi_name
+        self.view.fittingForm.set_fit_quality(float("nan"), float("nan"))
+        self.view.exportDataTableWidget.update_roi_data(
+            roi_name=roi_name,
+            params=init_params,
+            status="Initial",
+            chi2=None,
+        )
+
+    def show_initial_fit(self) -> None:
+        """
+        Displays the initial fit curve on the fitting display widget.
+        Retrieves current TOF data and the initial parameter values from the view
+        and evaluates the fitting model using these parameters to generate the initial fit curve.
+        """
+        xvals = self.model.tof_data
+        init_params = self.view.fitting_param_form.get_initial_param_values()
+        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
+        self.view.fittingDisplayWidget.show_fit_line(xvals,
+                                                     init_fit,
+                                                     color=(128, 128, 128),
+                                                     label="initial",
+                                                     initial=True)
