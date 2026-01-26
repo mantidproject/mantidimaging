@@ -18,6 +18,11 @@ LOG = getLogger(__name__)
 
 
 class FittingFormWidgetView(QWidget):
+    """
+    Widget for the form area of the fitting tab
+
+    Contains widgets for selecting fitting model and parameters
+    """
 
     def __init__(self, spectrum_viewer: SpectrumViewerWindowView):
         super().__init__(None)
@@ -69,6 +74,11 @@ class FittingFormWidgetView(QWidget):
 
 
 class FittingFormWidgetPresenter:
+    """
+    Presenter for the fitting tab
+
+    Handles the behaviour of the fitting tab
+    """
 
     def __init__(self, view: FittingFormWidgetView):
         self.view = view
