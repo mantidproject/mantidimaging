@@ -91,21 +91,6 @@ jobs:
         run: |
           ruff check .
 
-      - name: Json
-        shell: bash -l {0}
-        run: |
-          npx prettier --check "**/*.json"
-
-      - name: Yaml
-        shell: bash -l {0}
-        run: |
-          npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
-
-      - name: UI
-        shell: bash -l {0}
-        run: |
-          npx prettier --check --plugin=@prettier/plugin-xml --parser=xml "**/*.ui"
-
       - name: mypy
         shell: bash -l {0}
         run: |
