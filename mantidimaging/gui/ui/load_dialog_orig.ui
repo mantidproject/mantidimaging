@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
@@ -19,7 +19,7 @@
      <item>
       <layout class="QHBoxLayout" name="sampleLayout">
        <item>
-        <widget class="QLineEdit" name="sample_path"/>
+        <widget class="QLineEdit" name="sample_path" />
        </item>
        <item>
         <widget class="QPushButton" name="sample_button">
@@ -46,7 +46,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QLineEdit" name="flat_path"/>
+         <widget class="QLineEdit" name="flat_path" />
         </item>
         <item>
          <widget class="QPushButton" name="flat_button">
@@ -74,7 +74,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QLineEdit" name="dark_path"/>
+         <widget class="QLineEdit" name="dark_path" />
         </item>
         <item>
          <widget class="QPushButton" name="dark_button">
@@ -232,7 +232,8 @@
      <item row="0" column="1">
       <widget class="QLineEdit" name="stackName">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set custom name that will be used as the stack's name. If not provided the folder name will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string
+                >&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set custom name that will be used as the stack's name. If not provided the folder name will be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -257,7 +258,7 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources />
  <connections>
   <connection>
    <sender>buttonBox</sender>

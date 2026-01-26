@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
@@ -126,16 +126,16 @@
              <string>Image Key</string>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
            </item>
            <item>
@@ -148,36 +148,36 @@
              <string>Data</string>
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <property name="text">
-             <string/>
+             <string />
             </property>
             <item>
              <property name="text">
               <string>Projections</string>
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <item>
               <property name="text">
-               <string/>
+               <string />
               </property>
               <property name="flags">
                <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
@@ -189,16 +189,16 @@
               <string>Flat Before</string>
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
             </item>
             <item>
@@ -206,16 +206,16 @@
               <string>Flat After</string>
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
             </item>
             <item>
@@ -223,16 +223,16 @@
               <string>Dark Before</string>
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
             </item>
             <item>
@@ -240,16 +240,16 @@
               <string>Dark After</string>
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
              <property name="text">
-              <string/>
+              <string />
              </property>
             </item>
            </item>
@@ -373,7 +373,7 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources />
  <connections>
   <connection>
    <sender>buttonBox</sender>

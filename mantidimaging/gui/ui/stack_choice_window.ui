@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -90,7 +90,8 @@ margin-top:3px;
       <item>
        <widget class="QCheckBox" name="lockHistograms">
         <property name="toolTip">
-         <string>If activated - the histograms will share the value ranges for the contrast. If inactive they will be separate.</string>
+         <string
+                  >If activated - the histograms will share the value ranges for the contrast. If inactive they will be separate.</string>
         </property>
         <property name="text">
          <string>Lock Histograms</string>
@@ -247,8 +248,8 @@ margin-top:3px;
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar" />
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

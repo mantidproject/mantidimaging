@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
@@ -42,7 +42,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="leftRoiBound"/>
+      <widget class="QSpinBox" name="leftRoiBound" />
      </item>
      <item>
       <widget class="QLabel" name="topRoiBoundLabel">
@@ -52,7 +52,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="topRoiBound"/>
+      <widget class="QSpinBox" name="topRoiBound" />
      </item>
      <item>
       <widget class="QLabel" name="rightRoiBoundLabel">
@@ -62,7 +62,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="rightRoiBound"/>
+      <widget class="QSpinBox" name="rightRoiBound" />
      </item>
      <item>
       <widget class="QLabel" name="bottomRoiBoundLabel">
@@ -72,7 +72,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="bottomRoiBound"/>
+      <widget class="QSpinBox" name="bottomRoiBound" />
      </item>
      <item>
       <widget class="QPushButton" name="clearRoiButton">
@@ -85,6 +85,6 @@
    </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

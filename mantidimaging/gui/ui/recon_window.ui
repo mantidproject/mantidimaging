@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>ReconstructionWindow</class>
  <widget class="QMainWindow" name="ReconstructionWindow">
@@ -141,7 +141,10 @@
                   </property>
                   <layout class="QFormLayout" name="formLayout">
                    <item row="0" column="0" colspan="2">
-                    <widget class="DatasetSelectorWidgetView" name="stackSelector"/>
+                    <widget
+                                          class="DatasetSelectorWidgetView"
+                                          name="stackSelector"
+                                        />
                    </item>
                   </layout>
                  </widget>
@@ -166,7 +169,8 @@
                      <item row="1" column="0">
                       <widget class="QLabel" name="resultCorLabel">
                        <property name="toolTip">
-                        <string>Centre of Rotation, relative to full image coordinates.</string>
+                        <string
+                                                >Centre of Rotation, relative to full image coordinates.</string>
                        </property>
                        <property name="text">
                         <string>COR:</string>
@@ -229,7 +233,7 @@
                         <enum>QAbstractSpinBox::NoButtons</enum>
                        </property>
                        <property name="prefix">
-                        <string/>
+                        <string />
                        </property>
                        <property name="suffix">
                         <string>°</string>
@@ -277,7 +281,8 @@
                      <item row="4" column="1">
                       <widget class="QPushButton" name="calculateCorsButton">
                        <property name="toolTip">
-                        <string>Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
+                        <string
+                                                >Use the CoR and Tilt above to generate a CoR for each of the slice indices in the table below</string>
                        </property>
                        <property name="toolTipDuration">
                         <number>2</number>
@@ -309,7 +314,8 @@
                      <item>
                       <widget class="QPushButton" name="minimiseButton">
                        <property name="toolTip">
-                        <string>Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
+                        <string
+                                                >Minimises the square-sum error of the reconstructed slice, for a number of slices. The COR with lowest error will be used.</string>
                        </property>
                        <property name="text">
                         <string>Minimise error</string>
@@ -334,7 +340,8 @@
                    <item>
                     <widget class="QPushButton" name="correlateButton">
                      <property name="toolTip">
-                      <string>Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
+                      <string
+                                            >Performs a correlation between the 0 and 180 degree projections to find the shift.</string>
                      </property>
                      <property name="text">
                       <string>Correlate Projections</string>
@@ -365,7 +372,10 @@
                      <item>
                       <widget class="QComboBox" name="projectionPairDropdown">
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                        <sizepolicy
+                                                  hsizetype="MinimumExpanding"
+                                                  vsizetype="Fixed"
+                                                >
                          <horstretch>80</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -410,7 +420,8 @@
                      <item row="0" column="1">
                       <widget class="QPushButton" name="addButton">
                        <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        <string
+                                                >&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="text">
                         <string>Add</string>
@@ -423,7 +434,8 @@
                         <bool>false</bool>
                        </property>
                        <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes the selected row from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        <string
+                                                >&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes the selected row from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="text">
                         <string>Remove</string>
@@ -433,7 +445,8 @@
                      <item row="1" column="0">
                       <widget class="QPushButton" name="clearAllButton">
                        <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes all rows from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        <string
+                                                >&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes all rows from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="text">
                         <string>Clear All</string>
@@ -611,7 +624,7 @@
                   <item row="5" column="1">
                    <widget class="QCheckBox" name="nonNegativeCheckBox">
                     <property name="text">
-                     <string/>
+                     <string />
                     </property>
                    </widget>
                   </item>
@@ -642,7 +655,7 @@
                   <item row="6" column="1">
                    <widget class="QCheckBox" name="stochasticCheckBox">
                     <property name="text">
-                     <string/>
+                     <string />
                     </property>
                    </widget>
                   </item>
@@ -984,7 +997,7 @@
                </size>
               </property>
               <property name="title">
-               <string/>
+               <string />
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
@@ -996,7 +1009,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string/>
+                  <string />
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -1018,7 +1031,8 @@
                   </size>
                  </property>
                  <property name="textInteractionFlags">
-                  <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                  <set
+                                    >Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                  </property>
                 </widget>
                </item>
@@ -1055,6 +1069,6 @@
    <header>mantidimaging.gui.widgets</header>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

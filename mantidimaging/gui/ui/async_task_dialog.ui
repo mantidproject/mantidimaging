@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
@@ -41,7 +41,7 @@
         </widget>   
     </item>     
      <item>
-      <layout class="QVBoxLayout" name="PlotVerticalLayout"/>
+      <layout class="QVBoxLayout" name="PlotVerticalLayout" />
      </item>
      <item>
       <widget class="QPushButton" name="cancelButton">
@@ -52,6 +52,6 @@
      </item>
   </layout>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

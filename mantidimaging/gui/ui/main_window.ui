@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -15,12 +15,15 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../images/mantid_imaging_64px.png</normaloff>../../../images/mantid_imaging_64px.png</iconset>
+    <normaloff
+        >../../../images/mantid_imaging_64px.png</normaloff>../../../images/mantid_imaging_64px.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">/* background: url(/home/matt/Documents/imgpy/mantidimaging/gui/ui/code.jpg)*/</string>
+   <string
+        notr="true"
+      >/* background: url(/home/matt/Documents/imgpy/mantidimaging/gui/ui/code.jpg)*/</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -34,22 +37,22 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoadDataset"/>
-    <addaction name="actionLoadImages"/>
-    <addaction name="actionLoadNeXusFile"/>
-    <addaction name="actionSampleLoadLog"/>
-    <addaction name="actionShutterCounts"/>
-    <addaction name="actionLoadProjectionAngles"/>
-    <addaction name="separator"/>
-    <addaction name="actionSaveImages"/>
-    <addaction name="actionSaveNeXusFile"/>
-    <addaction name="actionExportGIF"/>
-    <addaction name="separator"/>
-    <addaction name="actionLiveViewer"/>
-    <addaction name="separator"/>
-    <addaction name="actionSettings"/>
-    <addaction name="separator"/>
-    <addaction name="actionExit"/>
+    <addaction name="actionLoadDataset" />
+    <addaction name="actionLoadImages" />
+    <addaction name="actionLoadNeXusFile" />
+    <addaction name="actionSampleLoadLog" />
+    <addaction name="actionShutterCounts" />
+    <addaction name="actionLoadProjectionAngles" />
+    <addaction name="separator" />
+    <addaction name="actionSaveImages" />
+    <addaction name="actionSaveNeXusFile" />
+    <addaction name="actionExportGIF" />
+    <addaction name="separator" />
+    <addaction name="actionLiveViewer" />
+    <addaction name="separator" />
+    <addaction name="actionSettings" />
+    <addaction name="separator" />
+    <addaction name="actionExit" />
    </widget>
    <widget class="QMenu" name="menuWorkflow">
     <property name="enabled">
@@ -58,20 +61,20 @@
     <property name="title">
      <string>Workflow</string>
     </property>
-    <addaction name="actionFilters"/>
-    <addaction name="actionRecon"/>
-    <addaction name="actionGeometry"/>
-    <addaction name="actionCompareImages"/>
-    <addaction name="actionSpectrumViewer"/>
-    <addaction name="actionViewer3d"/>
+    <addaction name="actionFilters" />
+    <addaction name="actionRecon" />
+    <addaction name="actionGeometry" />
+    <addaction name="actionCompareImages" />
+    <addaction name="actionSpectrumViewer" />
+    <addaction name="actionViewer3d" />
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionOnlineDocumentation"/>
-    <addaction name="actionAbout"/>
-    <addaction name="actionWizard"/>
+    <addaction name="actionOnlineDocumentation" />
+    <addaction name="actionAbout" />
+    <addaction name="actionWizard" />
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="enabled">
@@ -81,10 +84,10 @@
      <string>Image</string>
     </property>
    </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuWorkflow"/>
-   <addaction name="menuImage"/>
-   <addaction name="menuHelp"/>
+   <addaction name="menuFile" />
+   <addaction name="menuWorkflow" />
+   <addaction name="menuImage" />
+   <addaction name="menuHelp" />
   </widget>
   <action name="actionLoadDataset">
    <property name="text">
@@ -282,6 +285,6 @@
    </property>
   </action>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

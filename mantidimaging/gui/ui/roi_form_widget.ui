@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
@@ -54,7 +54,8 @@
                <bool>false</bool>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes the selected row from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string
+                              >&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes the selected row from the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>Remove</string>
@@ -64,7 +65,8 @@
             <item>
              <widget class="QPushButton" name="addBtn">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string
+                              >&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Adds a new row to the table.&lt;/p&gt;&lt;p&gt;Slice index defaults to the current preview slice index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>Add</string>
@@ -206,7 +208,11 @@
     </widget>
    </item>
    <item>
-    <widget class="ROIPropertiesTableWidget" name="roi_properties_widget" native="true"/>
+    <widget
+          class="ROIPropertiesTableWidget"
+          name="roi_properties_widget"
+          native="true"
+        />
    </item>
   </layout>
  </widget>
@@ -223,6 +229,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>

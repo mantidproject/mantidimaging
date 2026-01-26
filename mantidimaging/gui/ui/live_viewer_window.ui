@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ui version="4.0">
  <class>LiveViewerWindow</class>
  <widget class="QMainWindow" name="LiveViewerWindow">
@@ -81,6 +81,6 @@
    </layout>
   </widget>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>
