@@ -95,6 +95,7 @@ class SpectrumViewerWindowTest(BaseEyesTest):
     def test_spectrum_viewer_export_tab(self):
         self._generate_spectrum_dataset()
         self.imaging.show_spectrum_viewer_window()
+        self.imaging.spectrum_viewer.formTabs.setCurrentIndex(1)
         self.imaging.spectrum_viewer.formTabs.setCurrentIndex(2)
         self.check_target(widget=self.imaging.spectrum_viewer)
 
