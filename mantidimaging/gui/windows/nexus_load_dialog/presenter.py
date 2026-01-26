@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 
 import h5py
 import numpy as np
+from cil.framework import AcquisitionGeometry
 
 from cil.io import NEXUSDataReader
 
@@ -86,10 +87,10 @@ class NexusLoadPresenter:
         """
         Try to open the NeXus file and display its contents on the view.
         """
-        file_path = self.view.filePathLineEdit.text()
+        self.file_path = self.view.filePathLineEdit.text()
 
         try:
-            with h5py.File(file_path, "r") as self.nexus_file:
+            with h5py.File(self.file_path, "r") as self.nexus_file:
                 self.tomo_entry = self._look_for_nxtomo_entry()
                 if self.tomo_entry is None:
                     return
@@ -126,25 +127,30 @@ class NexusLoadPresenter:
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
 
+                if 'creator' in self.nexus_file.attrs:
+                    self.creator = self.nexus_file.attrs['creator']
+                else:
+                    self.creator = ""
+                LOG.warning(f"{self.creator=}")
+
         except OSError:
-            unable_message = f"Unable to read NeXus data from {file_path}"
+            unable_message = f"Unable to read NeXus data from {self.file_path}"
             LOG.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
-        # Try to read geometry if Nexus file is in CIL format
-        try:
-            reader = NEXUSDataReader()
-            reader.set_up(file_path)
-            acquisition_geometry = reader.get_geometry()
-            assert (self.data is not None and self.data.sample is not None)
+        acquisition_geometry = self._read_geometry()
+        if acquisition_geometry is not None and self.data is not None and self.data.sample is not None:
             self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
 
-        except OSError:
-            LOG.info("NeXus file {file_path} does not contain CIL acquisition geometry data")
-        # CIL reader raises a generic Exception if file not found
-        except Exception:
-            LOG.info("File {file_path} does not exist.")
+    def _read_geometry(self) -> AcquisitionGeometry | None:
+        if self.creator != np.bytes_('NEXUSDataWriter.py'):
+            LOG.debug(f"NeXus file {self.file_path} not created with NEXUSDataWriter")
+            return None
+        reader = NEXUSDataReader()
+        reader.set_up(self.file_path)
+        acquisition_geometry = reader.get_geometry()
+        return acquisition_geometry
 
     def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> np.ndarray | None:
         """
