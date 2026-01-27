@@ -97,7 +97,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_new_sample()
         self.redraw_all_rois()
 
-    def initial_roi_calc(self):
+    def initial_roi_calc(self) -> None:
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
         open_beam_roi = self.view.get_open_beam_roi()
         spectrum = self.model.get_spectrum(sample_roi,
@@ -355,7 +355,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
 
-    def clear_spectrum(self):
+    def clear_spectrum(self) -> None:
         self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
             self.model.get_number_of_images_in_stack(), np.nan))
 
