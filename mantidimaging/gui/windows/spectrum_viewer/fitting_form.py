@@ -13,6 +13,8 @@ from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView
+    from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction
+    from PyQt5.QtGui import QShowEvent
 
 LOG = getLogger(__name__)
 
@@ -57,7 +59,7 @@ class FittingFormWidgetView(QWidget):
         self.fitting_param_form.fromROIButtonClicked.connect(self.presenter.get_init_params_from_roi)
         self.fitting_param_form.initialEditFinished.connect(self.presenter.on_initial_params_edited)
 
-    def showEvent(self, ev) -> None:
+    def showEvent(self, ev: QShowEvent) -> None:
         super().showEvent(ev)
         self.presenter.handle_activated()
 
@@ -131,7 +133,7 @@ class FittingFormWidgetPresenter:
         self.view.roiSelectionWidget.handle_mode_change(mode)
         self.view.roiSelectionWidget.handle_binning_changed(binner)
 
-    def update_fitting_function(self, fitting_obj) -> None:
+    def update_fitting_function(self, fitting_obj: type[BaseFittingFunction]) -> None:
         fitting_func = fitting_obj()
         self.model.fitting_engine.set_fitting_model(fitting_func)
         LOG.info("Spectrum Viewer: Fit function set to %s", fitting_func.__class__.__name__)
