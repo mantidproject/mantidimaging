@@ -47,7 +47,7 @@ class FitSelectionWidget(QtWidgets.QGroupBox):
         """ Handle dropdown selection change and emit signal. """
         selected_fit = self.fitDropdown.currentText()
         self.selectionChanged.emit(self.func_dict[selected_fit])
-        LOG.info("Fit function selected: %s", self.fitDropdown.currentText())
+        LOG.info("Fit function selected: %s", selected_fit)
 
     def set_available_fitting_functions(self) -> None:
         """ Update the dropdown and trigger selection change if needed. """
@@ -55,8 +55,3 @@ class FitSelectionWidget(QtWidgets.QGroupBox):
         self.fitDropdown.clear()
         self.fitDropdown.addItems(list(self.func_dict.keys()))
         self.fitDropdown.blockSignals(False)
-
-    @property
-    def current_fit_name(self) -> str:
-        """Returns the currently selected fit from the dropdown."""
-        return self.fitDropdown.currentText()

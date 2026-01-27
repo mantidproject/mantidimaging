@@ -6,7 +6,8 @@ import numpy as np
 from scipy.optimize import minimize
 
 from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction, FittingRegion
-from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import BoundType
+
+BoundType = tuple[float | None, float | None]
 
 
 class FittingEngine:
