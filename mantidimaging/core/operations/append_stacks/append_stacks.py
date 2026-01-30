@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QComboBox
 import numpy as np
 
 from mantidimaging import helper as h
+from mantidimaging.core.io.instrument_log import LogColumn
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -29,7 +30,7 @@ class AppendStacks(BaseFilter):
     link_histograms = True
     allow_for_180_projection = False
 
-    TYPES = ["Tomography", "Time of Flight (ToF)"]
+    TYPES = ["Tomography"]
 
     @staticmethod
     def filter_func(images: ImageStack,
@@ -38,9 +39,13 @@ class AppendStacks(BaseFilter):
                     progress=None) -> ImageStack:
         """
         """
+        if images.is_temporary:
+            return images
 
         h.check_data_stack(images)
         h.check_data_stack(stack_to_append)
+
+        assert images is not None and stack_to_append is not None
 
         sample_data = images.data
         sample_angles = images.projection_angles()
@@ -64,9 +69,27 @@ class AppendStacks(BaseFilter):
         if images.shape[0] != 1 and stack_to_append is not None and output is not None:
             execute_single(images, stack_to_append, progress, out=output.array, out_ang=output_angles)
             images.shared_array = output
+        if images.filenames is not None and stack_to_append.filenames is not None:
             images.filenames += stack_to_append.filenames
         if output_angles is not None:
             images.set_projection_angles(ProjectionAngles(output_angles))
+        if images.log_file and stack_to_append.log_file is not None:
+            image_columns = list(images.log_file.data.keys())
+            if LogColumn.PROJECTION_ANGLE in image_columns:
+                final_images_proj_angles_ind = (np.array([
+                    images.log_file.get_column(LogColumn.PROJECTION_ANGLE) +
+                    stack_to_append.log_file.get_column(LogColumn.PROJECTION_ANGLE)
+                ]).argsort())
+            else:
+                final_images_proj_angles_ind = None
+
+            for column in image_columns:
+                appended_column = images.log_file.get_column(column) + stack_to_append.log_file.get_column(column)
+                del images.log_file.data[column]
+                if final_images_proj_angles_ind is not None:
+                    appended_column = np.array(appended_column)[final_images_proj_angles_ind]
+                    appended_column = appended_column.tolist()
+                images.log_file.data[column] = appended_column
 
         return images
 
@@ -120,12 +143,12 @@ def execute_single(stack: ImageStack, stack_to_append: ImageStack, progress=None
         progress.update(msg=f"Appending Stacks {stack.name} and {stack_to_append.name}")
 
         output = out[:] if out is not None else stack.data
-        output_angles = out_ang[:] if out_ang is not None else angles
+        output_angles = out_ang[:] if out_ang is not None else None
 
         if stack_to_append.data is not None:
             output[:] = np.concatenate((stack.data, stack_to_append.data))[:]
 
-        if angles_to_append is not None:
+        if output_angles is not None:
             output_angles[:] = np.concatenate((angles, angles_to_append))[:]
 
     return output, output_angles

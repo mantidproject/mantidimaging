@@ -38,6 +38,7 @@ class ImageStack:
     name: str
     geometry: Geometry | None = None
     _shared_array: pu.SharedArray
+    is_temporary: bool = False
 
     def __init__(self,
                  data: np.ndarray | pu.SharedArray,
