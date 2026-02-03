@@ -59,6 +59,21 @@ class Notifications(Enum):
 
 
 class ReconstructWindowPresenter(BasePresenter):
+
+    def on_geometry_updated(self):
+        """
+        Called when geometry/angles are loaded after initial dataset load.
+        Refreshes UI and re-enables geometry-dependent actions if possible.
+        """
+        if self.model.images is not None and self.model.images.geometry is not None:
+            self.view.show_status_message("")
+            self.view.set_recon_buttons_enabled(True)
+            self.view.set_correlate_buttons_enabled(True)
+            self.do_update_projection()
+            self.do_preview_reconstruct_slice()
+        else:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
+
     ERROR_STRING = "COR/Tilt finding failed: {}"
     view: ReconstructWindowView
 
