@@ -31,8 +31,10 @@ class CORInspectionDialogView(BaseDialogView):
         self.iters_mode = iters_mode
 
         if self.iters_mode:
+            self.setWindowTitle("Refine Iterations")
             self.spin_box = self.stepIterations
         else:
+            self.setWindowTitle("COR Inspection")
             self.spin_box = self.stepCOR
 
         self.presenter = CORInspectionDialogPresenter(self, images, slice_index, initial_cor, recon_params, iters_mode)
