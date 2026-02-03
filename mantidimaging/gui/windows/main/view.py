@@ -746,6 +746,7 @@ class MainWindowView(BaseMainWindowView):
                 add_action.triggered.connect(self._add_images_to_existing_dataset)
                 delete_action = self.menuTreeView.addAction("Delete")
                 delete_action.triggered.connect(self._delete_container)
+            if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_dataset_ids:
                 rename_action = self.menuTreeView.addAction("Rename Dataset")
                 rename_action.triggered.connect(self._rename_dataset)
             if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
@@ -753,6 +754,8 @@ class MainWindowView(BaseMainWindowView):
                 properties_action.triggered.connect(self._stack_properties)
                 move_action = self.menuTreeView.addAction("Move Stack")
                 move_action.triggered.connect(self._move_stack)
+                rename_action = self.menuTreeView.addAction("Rename Stack")
+                rename_action.triggered.connect(self._rename_dataset)
 
             self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 

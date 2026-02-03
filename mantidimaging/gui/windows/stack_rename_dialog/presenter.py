@@ -27,5 +27,6 @@ class StackRenamePresenter(BasePresenter):
         """
         Calls the execute rename dataset method in the main view.
         """
-        assert self.view.new_name_field.text(), "Stack name can not be empty."
+        if self.view.new_name_field.text() == "":
+            raise ValueError("Stack name can not be empty.")
         self.view.parent_view.execute_rename_dataset(self.view.stack, self.view.new_name_field.text())
