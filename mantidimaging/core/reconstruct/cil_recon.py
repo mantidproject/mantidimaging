@@ -279,10 +279,15 @@ class CILRecon(BaseRecon):
         if recon_params.stochastic:
             # The UI will pass the number of epochs in this case
             num_iter *= num_subsets
-
-        if progress:
-            progress.add_estimated_steps(num_iter + 1)
-            progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
+            if progress:
+                # For SPDHG, don't add extra setup step, just use num_iter
+                progress.add_estimated_steps(num_iter)
+                progress.update(steps=0, msg='CIL: Setting up reconstruction', force_continue=False)
+        else:
+            if progress:
+                # For non-stochastic, add 1 extra step for setup
+                progress.add_estimated_steps(num_iter + 1)
+                progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
 
         if cil_mutex.locked():
             LOG.warning("CIL recon already in progress")
