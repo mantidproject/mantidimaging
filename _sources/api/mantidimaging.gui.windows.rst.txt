@@ -25,6 +25,7 @@ Subpackages
    mantidimaging.gui.windows.spectrum_viewer
    mantidimaging.gui.windows.stack_choice
    mantidimaging.gui.windows.stack_properties_dialog
+   mantidimaging.gui.windows.stack_rename_dialog
    mantidimaging.gui.windows.stack_visualiser
    mantidimaging.gui.windows.viewer_3d
    mantidimaging.gui.windows.welcome_screen
