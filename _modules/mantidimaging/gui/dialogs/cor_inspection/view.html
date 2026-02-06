@@ -526,8 +526,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">iters_mode</span> <span class="o">=</span> <span class="n">iters_mode</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">iters_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Refine Iterations&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stepIterations</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;COR Inspection&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stepCOR</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">CORInspectionDialogPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">slice_index</span><span class="p">,</span> <span class="n">initial_cor</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">,</span> <span class="n">iters_mode</span><span class="p">)</span>
