@@ -4,7 +4,7 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-import numpy
+import numpy as np
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
 from PyQt5.QtCore import QSignalBlocker
@@ -32,7 +32,20 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowView(BaseMainWindowView):
-    # COR and Tilt tab
+
+    def on_geometry_deleted(self, stack_uuid):
+        """
+        Called when geometry is deleted for a stack. Resets geometry-dependent UI and state.
+        """
+        if self.current_stack_uuid == stack_uuid:
+            # Reset geometry-dependent UI
+            self.show_status_message("Geometry deleted. Please create or load geometry to enable reconstruction.")
+            self.reset_recon_and_sino_previews()
+            self.reset_projection_preview()
+            self.rotation_centre = 0.0
+            self.tilt = 0.0
+            self.slope = 0.0
+            self.set_recon_buttons_enabled(False)
 
     resultsTab: QWidget
 
@@ -200,7 +213,7 @@ class ReconstructWindowView(BaseMainWindowView):
         # Update initial UI state
         self.on_table_row_count_change()
 
-        self.stackSelector.subscribe_to_main_window(main_window)
+        self.stackSelector.subscribe_to_main_window(self.main_window)
         self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_CURRENT_STACK))
         self.stackSelector.select_eligible_stack()
 
@@ -315,7 +328,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if self.previewAutoUpdate.isChecked():
             self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 
-    def update_recon_preview(self, image_data: numpy.ndarray, reset_roi: bool = False) -> None:
+    def update_recon_preview(self, image_data: np.ndarray, reset_roi: bool = False) -> None:
         """
         Updates the reconstruction preview image with new data.
         """
