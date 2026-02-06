@@ -37,7 +37,6 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self.presenter = mock.create_autospec(SpectrumViewerWindowPresenter, instance=True)
         self.model = SpectrumViewerWindowModel(self.presenter)
         self.model.spectrum_cache = {}
-        self.presenter.initial_sample_change = False
 
     def tearDown(self):
         del self.model.spectrum_cache

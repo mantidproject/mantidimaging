@@ -17,7 +17,7 @@ from mantidimaging.core.utility import finder
 from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
-from .fitting_form import FittingParamFormWidgetView
+from .fitting_form import FittingFormWidgetView
 from .model import ROI_RITS, allowed_modes
 from .presenter import SpectrumViewerWindowPresenter, ExportMode
 from .spectrum_widget import SpectrumWidget
@@ -81,12 +81,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
 
         self.fittingDisplayWidget = FittingDisplayWidget()
-        self.fittingForm = FittingParamFormWidgetView(self)
+        self.fittingForm = FittingFormWidgetView(self)
         self.fittingFormContainer.layout().addWidget(self.fittingForm)
-
-        self.roiSelectionWidget = self.fittingForm.roiSelectionWidget
-        self.fitSelectionWidget = self.fittingForm.fitSelectionWidget
-        self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
 
         self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
@@ -197,9 +193,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.sampleStackSelector.select_eligible_stack()
         self.presenter.handle_tof_unit_change()
         self.set_roi_properties()
-        self.presenter.initial_sample_change = False
         self.presenter.initial_roi_calc()
-        self.presenter.setup_fitting_model()
 
     def handle_change_tab(self, tab_index: int):
         self.imageTabs.setCurrentIndex(tab_index)
@@ -280,15 +274,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return Path(path)
         else:
             return None
-
-    def update_export_table(
-        self,
-        roi_name: str,
-        params: dict[str, float],
-        status: str = "Ready",
-        chi2: float | None = None,
-    ) -> None:
-        self.exportDataTableWidget.update_roi_data(roi_name, params, status=status, chi2=chi2)
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)

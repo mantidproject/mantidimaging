@@ -12,13 +12,12 @@ from logging import getLogger
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
 
+from mantidimaging.core.fitting.fitting_functions import BadFittingRoiError
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
-from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import BoundType
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
     ToFUnitMode, allowed_modes
-from mantidimaging.core.fitting.fitting_functions import FittingRegion, BadFittingRoiError
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -26,7 +25,6 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
     from mantidimaging.core.data import ImageStack
     from uuid import UUID
-    from PyQt5.QtWidgets import QAction
 
 LOG = getLogger(__name__)
 
@@ -53,9 +51,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     current_stack_uuid: UUID | None = None
     current_norm_stack_uuid: UUID | None = None
     export_mode: ExportMode
-    initial_sample_change: bool = True
     changed_roi: SpectrumROI
-    stop_next_chunk = False
     image_nan_mask_dict: dict[str, np.ma.MaskedArray] = {}
     roi_to_process_queue: dict[str, SpectrumROI] = {}
 
@@ -101,7 +97,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_new_sample()
         self.redraw_all_rois()
 
-    def initial_roi_calc(self):
+    def initial_roi_calc(self) -> None:
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
         open_beam_roi = self.view.get_open_beam_roi()
         spectrum = self.model.get_spectrum(sample_roi,
@@ -359,19 +355,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self.view.table_view.select_roi(roi.name)
             self.view.set_roi_properties()
 
-    def clear_spectrum(self):
+    def clear_spectrum(self) -> None:
         self.view.spectrum_widget.spectrum_data_dict[self.changed_roi.name] = (np.full(
             self.model.get_number_of_images_in_stack(), np.nan))
 
     @property
     def fitting_spectrum(self) -> np.ndarray:
         return self.view.fittingForm.presenter.fitting_spectrum[1]
-
-    def update_fitting_function(self, fitting_obj) -> None:
-        fitting_func = fitting_obj()
-        self.model.fitting_engine.set_fitting_model(fitting_func)
-        LOG.info("Spectrum Viewer: Fit function set to %s", fitting_func.__class__.__name__)
-        self.setup_fitting_model()
 
     def redraw_spectrum(self, name: str) -> None:
         """
@@ -412,7 +402,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def handle_roi_name_change(self, old_name: str, new_name: str) -> None:
         self.view.spectrum_widget.rename_roi(old_name, new_name)
         self.view.set_roi_properties()
-        self.view.roiSelectionWidget.update_roi_list(self.get_roi_names())
 
     def handle_button_enabled(self) -> None:
         """
@@ -628,10 +617,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def change_selected_menu_option(self, opt: str) -> None:
         for action in self.view.tof_mode_select_group.actions():
             with QSignalBlocker(action):
-                if action.objectName() == opt:
-                    self.check_action(action, True)
-                else:
-                    self.check_action(action, False)
+                action.setChecked(action.objectName() == opt)
 
     def do_adjust_roi(self) -> None:
         new_roi = self.view.roi_form.roi_properties_widget.to_roi()
@@ -642,119 +628,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
         self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
-    @staticmethod
-    def check_action(action: QAction, param: bool) -> None:
-        action.setChecked(param)
-
-    def setup_fitting_model(self) -> None:
-        param_names = self.model.fitting_engine.get_parameter_names()
-        self.view.fitting_param_form.set_parameters(param_names)
-        self.view.exportDataTableWidget.set_parameters(param_names)
-
-    def get_init_params_from_roi(self) -> None:
-        fitting_region = self.view.get_fitting_region()
-        init_params = self.model.fitting_engine.get_init_params_from_roi(fitting_region)
-        self.view.fitting_param_form.set_parameter_values(init_params)
-
-        self.view.fittingDisplayWidget.set_plot_mode("initial")
-
-        self.show_initial_fit()
-        roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.fitting_param_form.set_fit_quality(float("nan"), float("nan"))
-        self.view.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=init_params,
-            status="Initial",
-            chi2=None,
-        )
-
-    def _plot_initial_fit(self) -> None:
-        init_params = self.view.fitting_param_form.get_initial_param_values()
-        xvals = self.model.tof_data
-        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
-        self.view.fittingDisplayWidget.show_fit_line(xvals,
-                                                     init_fit,
-                                                     color=(128, 128, 128),
-                                                     label="initial",
-                                                     initial=True)
-
-    def on_initial_params_edited(self) -> None:
-        """
-        Handles updates when the initial fitting parameters are edited.
-
-        If the initial fit is visible, updates the plot with the new initial fit.
-        Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,
-        and displays the new fit result.
-        """
-        if self.view.fittingDisplayWidget.is_initial_fit_visible():
-            self._plot_initial_fit()
-        else:
-            init_params = self.view.fitting_param_form.get_initial_param_values()
-            roi_name = self.view.roiSelectionWidget.current_roi_name
-            roi = self.view.spectrum_widget.get_roi(roi_name)
-            spectrum = self.model.get_spectrum(roi, self.spectrum_mode)
-            xvals = self.model.tof_data
-            bound_params = self.view.fitting_param_form.get_bound_parameters()
-            fit_params, rss, rss_per_dof = self.model.fitting_engine.find_best_fit(xvals,
-                                                                                   spectrum,
-                                                                                   init_params,
-                                                                                   params_bounds=bound_params)
-            self.view.fitting_param_form.set_fitted_parameter_values(fit_params)
-            self.view.fitting_param_form.set_fit_quality(rss, rss_per_dof)
-            self.show_fit(list(fit_params.values()))
-            LOG.info("Refit completed for ROI=%s, RSS/DoF=%.3f", roi_name, rss_per_dof)
-
-    def show_initial_fit(self) -> None:
-        """
-        Displays the initial fit curve on the fitting display widget.
-        Retrieves current TOF data and the initial parameter values from the view
-        and evaluates the fitting model using these parameters to generate the initial fit curve.
-        """
-        xvals = self.model.tof_data
-        init_params = self.view.fitting_param_form.get_initial_param_values()
-        init_fit = self.model.fitting_engine.model.evaluate(xvals, init_params)
-        self.view.fittingDisplayWidget.show_fit_line(xvals,
-                                                     init_fit,
-                                                     color=(128, 128, 128),
-                                                     label="initial",
-                                                     initial=True)
-
-    def run_region_fit(self) -> None:
-        """
-        Run a fit on the currently selected ROI and update the GUI/export table.
-        """
-        bound_params = self.view.fitting_param_form.get_bound_parameters()
-        result, rss, reduced_rss = self.fit_single_region(self.fitting_spectrum,
-                                                          self.view.get_fitting_region(),
-                                                          self.model.tof_data,
-                                                          self.view.fitting_param_form.get_initial_param_values(),
-                                                          bounds=bound_params)
-        self.view.fitting_param_form.set_fitted_parameter_values(result)
-        self.view.fitting_param_form.set_fit_quality(rss, reduced_rss)
-        self.show_fit(list(result.values()))
-        roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.view.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=result,
-            status="Fitted",
-            chi2=reduced_rss,
-        )
-        LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, reduced_rss)
-
-    def fit_single_region(
-        self,
-        spectrum: np.ndarray,
-        fitting_region: FittingRegion,
-        tof_data: np.ndarray,
-        init_params: list[float],
-        bounds: list[BoundType] | None = None,
-    ) -> tuple[dict[str, float], float, float]:
-        fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
-        xvals = tof_data[fitting_slice]
-        yvals = spectrum[fitting_slice]
-        return self.model.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
-
-    def fit_all_regions(self):
+    def fit_all_regions(self) -> None:
         init_params = self.view.fitting_param_form.get_initial_param_values()
         bound_params = self.view.fitting_param_form.get_bound_parameters()
         for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
@@ -764,17 +638,18 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
             fitting_region = self.view.get_fitting_region()
             try:
-                result, rss, rss_per_dof = self.fit_single_region(spectrum,
-                                                                  fitting_region,
-                                                                  self.model.tof_data,
-                                                                  init_params,
-                                                                  bounds=bound_params)
+                result, rss, rss_per_dof = self.model.fit_single_region(spectrum,
+                                                                        fitting_region,
+                                                                        self.model.tof_data,
+                                                                        init_params,
+                                                                        bounds=bound_params)
                 status = "Fitted"
             except (ValueError, BadFittingRoiError) as e:
                 LOG.warning(f"Failed to find fit for ROI '{roi_name}': {e}")
                 param_names = self.model.fitting_engine.get_parameter_names()
                 result = {param_name: 0 for param_name in param_names}
                 status = "Failed"
+                rss_per_dof = 0
 
             self.view.exportDataTableWidget.update_roi_data(
                 roi_name=roi_name,
@@ -783,11 +658,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 chi2=rss_per_dof,
             )
             LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, rss_per_dof)
-
-    def show_fit(self, params: list[float]) -> None:
-        xvals = self.model.tof_data
-        fit = self.model.fitting_engine.model.evaluate(xvals, params)
-        self.view.fittingDisplayWidget.show_fit_line(xvals, fit, color=(0, 128, 255), label="fit", initial=False)
 
     def handle_export_table(self) -> None:
         """

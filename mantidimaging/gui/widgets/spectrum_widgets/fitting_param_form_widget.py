@@ -4,16 +4,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
      QGroupBox
 from PyQt5.QtGui import QDoubleValidator
+
+from mantidimaging.core.fitting.fitting_engine import BoundType
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowPresenter
 
 LOG = getLogger(__name__)
-
-BoundType = tuple[float | None, float | None]
 
 
 class FittingParamFormWidget(QWidget):
@@ -25,6 +26,9 @@ class FittingParamFormWidget(QWidget):
     Has controls for getting initial parameters and running a fit.
     Has space to show goodness of fit measures.
     """
+
+    fromROIButtonClicked = QtCore.pyqtSignal()
+    initialEditFinished = QtCore.pyqtSignal()
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
@@ -46,17 +50,9 @@ class FittingParamFormWidget(QWidget):
 
         self.from_roi_button = QPushButton("From ROI")
         self.layout().addWidget(self.from_roi_button)
-        self.from_roi_button.clicked.connect(self.presenter.get_init_params_from_roi)
+        self.from_roi_button.clicked.connect(self.fromROIButtonClicked.emit)
 
-        self.run_fit_button = QPushButton("Run fit")
-        self.layout().addWidget(self.run_fit_button)
-        self.run_fit_button.clicked.connect(self.presenter.run_region_fit)
         self._param_values_logged = False
-
-        self.rss_label = QLabel("RSS:")
-        self.reduced_rss_label = QLabel("RSS/DoF:")
-        main_layout.addWidget(self.rss_label)
-        main_layout.addWidget(self.reduced_rss_label)
 
     def set_parameters(self, params: list[str]) -> None:
         """
@@ -108,8 +104,7 @@ class FittingParamFormWidget(QWidget):
 
             self._rows[label] = (row_layout, row_label, initial_edit, final_edit, fix_checkbox, range_checkbox,
                                  range_row_box)
-
-            initial_edit.editingFinished.connect(self.presenter.on_initial_params_edited)
+            initial_edit.editingFinished.connect(self.initialEditFinished.emit)
 
     def set_parameter_values(self, values: dict[str, float]) -> None:
         for name, value in values.items():
@@ -140,13 +135,6 @@ class FittingParamFormWidget(QWidget):
             self.params_layout.layout().removeItem(row_layout)
         self._rows.clear()
         LOG.debug("Parameter form rows cleared")
-
-    def set_fit_quality(self, rss: float, rss_per_dof: float) -> None:
-        """
-        Update the fit quality display with raw and reduced residual sum of squares.
-        """
-        self.rss_label.setText(f"RSS: {rss:.2g}")
-        self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
 
     def show_range_edit_fields(self) -> None:
         for row in self._rows.values():

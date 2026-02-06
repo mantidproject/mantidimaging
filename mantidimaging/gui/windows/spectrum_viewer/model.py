@@ -10,8 +10,8 @@ import numpy as np
 
 from logging import getLogger
 from mantidimaging.core.data.imagestack import ImageStack
-from mantidimaging.core.fitting.fitting_engine import FittingEngine
-from mantidimaging.core.fitting.fitting_functions import ErfStepFunction
+from mantidimaging.core.fitting.fitting_engine import FittingEngine, BoundType
+from mantidimaging.core.fitting.fitting_functions import ErfStepFunction, FittingRegion
 from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
@@ -569,3 +569,16 @@ class SpectrumViewerWindowModel:
             return self._stack.data.shape[0]
         else:
             return 0
+
+    def fit_single_region(
+        self,
+        spectrum: np.ndarray,
+        fitting_region: FittingRegion,
+        tof_data: np.ndarray,
+        init_params: list[float],
+        bounds: list[BoundType] | None = None,
+    ) -> tuple[dict[str, float], float, float]:
+        fitting_slice = slice(*np.searchsorted(tof_data, (fitting_region[0], fitting_region[1])))
+        xvals = tof_data[fitting_slice]
+        yvals = spectrum[fitting_slice]
+        return self.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
