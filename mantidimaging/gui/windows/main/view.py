@@ -34,6 +34,7 @@ from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.move_stack_dialog.view import MoveStackDialog
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 from mantidimaging.gui.windows.operations import FiltersWindowView
+from mantidimaging.gui.windows.stack_rename_dialog.view import StackRenameDialog
 from mantidimaging.gui.windows.viewer_3d.view import MI3DViewerWindowView as MI3DViewer
 from mantidimaging.gui.windows.recon import ReconstructWindowView
 from mantidimaging.gui.windows.geometry import GeometryWindowView
@@ -472,6 +473,11 @@ class MainWindowView(BaseMainWindowView):
                               destination_stack_type=destination_stack_type,
                               destination_dataset_id=destination_dataset_id)
 
+    def execute_rename_dataset(self, origin_dataset_stack: Dataset | ImageStack, new_dataset_name: str) -> None:
+        self.presenter.notify(PresNotification.RENAME_DATASET,
+                              origin_dataset_stack=origin_dataset_stack,
+                              new_name=new_dataset_name)
+
     def show_image_save_dialog(self) -> None:
         self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
         self.image_save_dialog.show()
@@ -740,11 +746,16 @@ class MainWindowView(BaseMainWindowView):
                 add_action.triggered.connect(self._add_images_to_existing_dataset)
                 delete_action = self.menuTreeView.addAction("Delete")
                 delete_action.triggered.connect(self._delete_container)
+            if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_dataset_ids:
+                rename_action = self.menuTreeView.addAction("Rename Dataset")
+                rename_action.triggered.connect(self._rename_dataset)
             if self.dataset_tree_widget.itemAt(position).id in self.presenter.all_stack_ids:
                 properties_action = self.menuTreeView.addAction("Stack Properties")
                 properties_action.triggered.connect(self._stack_properties)
                 move_action = self.menuTreeView.addAction("Move Stack")
                 move_action.triggered.connect(self._move_stack)
+                rename_action = self.menuTreeView.addAction("Rename Stack")
+                rename_action.triggered.connect(self._rename_dataset)
 
             self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
@@ -769,6 +780,10 @@ class MainWindowView(BaseMainWindowView):
     def _stack_properties(self) -> None:
         stack_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_PROPERTIES_DIALOG, stack_id=stack_id)
+
+    def _rename_dataset(self) -> None:
+        stack_id = self.dataset_tree_widget.selectedItems()[0].id
+        self.presenter.notify(PresNotification.SHOW_RENAME_DIALOG, stack_id=stack_id)
 
     def _bring_stack_tab_to_front(self, item: QTreeDatasetWidgetItem) -> None:
         """
@@ -850,6 +865,10 @@ class MainWindowView(BaseMainWindowView):
         assert stack is not None
         stack_properties_dialog = StackPropertiesDialog(self, stack, origin_dataset, stack_data_type)
         stack_properties_dialog.show()
+
+    def show_dataset_rename_dialog(self, stack: ImageStack | Dataset) -> None:
+        stack_rename_dialog = StackRenameDialog(self, stack)
+        stack_rename_dialog.show()
 
     def reset_layout(self):
         """Close and reopen all stacks, showing critical GUI errors for unsuccessful actions."""
