@@ -505,13 +505,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSignalBlocker</span><span class="p">,</span> <span class="n">QTimer</span><span class="p">,</span> <span class="n">Qt</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BadFittingRoiError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.async_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_async_task_view</span><span class="p">,</span> <span class="n">TaskWorkerThread</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowModel</span><span class="p">,</span> <span class="n">SpecType</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">ErrorMode</span><span class="p">,</span> \
     <span class="n">ToFUnitMode</span><span class="p">,</span> <span class="n">allowed_modes</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingRegion</span><span class="p">,</span> <span class="n">BadFittingRoiError</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowView</span>  <span class="c1"># pragma: no cover</span>
@@ -519,7 +518,6 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumROI</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QAction</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -551,9 +549,7 @@
     <span class="n">current_stack_uuid</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">current_norm_stack_uuid</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">export_mode</span><span class="p">:</span> <span class="n">ExportMode</span>
-    <span class="n">initial_sample_change</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">changed_roi</span><span class="p">:</span> <span class="n">SpectrumROI</span>
-    <span class="n">stop_next_chunk</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">image_nan_mask_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">roi_to_process_queue</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumROI</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -604,7 +600,7 @@
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.initial_roi_calc">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.initial_roi_calc">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">initial_roi_calc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_roi_calc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sample_roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()])</span>
         <span class="n">open_beam_roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_open_beam_roi</span><span class="p">()</span>
         <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">sample_roi</span><span class="p">,</span>
@@ -913,7 +909,7 @@
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.clear_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.clear_spectrum">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">changed_roi</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_number_of_images_in_stack</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span></div>
 
@@ -921,15 +917,6 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">fitting_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingForm</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">fitting_spectrum</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.update_fitting_function">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.update_fitting_function">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fitting_func</span> <span class="o">=</span> <span class="n">fitting_obj</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">set_fitting_model</span><span class="p">(</span><span class="n">fitting_func</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Spectrum Viewer: Fit function set to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fitting_func</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span></div>
-
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.redraw_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.redraw_spectrum">[docs]</a>
@@ -980,8 +967,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_roi_name_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_roi_name_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">rename_roi</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">update_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">())</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_button_enabled">
@@ -1251,10 +1237,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">change_selected_menu_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">actions</span><span class="p">():</span>
             <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="n">action</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span> <span class="o">==</span> <span class="n">opt</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">check_action</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">check_action</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+                <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span> <span class="o">==</span> <span class="n">opt</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.do_adjust_roi">
@@ -1269,142 +1252,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_notify_roi_moved</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.check_action">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.check_action">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">check_action</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">param</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.setup_fitting_model">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.setup_fitting_model">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setup_fitting_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">get_parameter_names</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">set_parameters</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.get_init_params_from_roi">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.get_init_params_from_roi">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_init_params_from_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fitting_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_fitting_region</span><span class="p">()</span>
-        <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">get_init_params_from_roi</span><span class="p">(</span><span class="n">fitting_region</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_parameter_values</span><span class="p">(</span><span class="n">init_params</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">set_plot_mode</span><span class="p">(</span><span class="s2">&quot;initial&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">show_initial_fit</span><span class="p">()</span>
-        <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">current_roi_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_fit_quality</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">update_roi_data</span><span class="p">(</span>
-            <span class="n">roi_name</span><span class="o">=</span><span class="n">roi_name</span><span class="p">,</span>
-            <span class="n">params</span><span class="o">=</span><span class="n">init_params</span><span class="p">,</span>
-            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;Initial&quot;</span><span class="p">,</span>
-            <span class="n">chi2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_initial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_initial_param_values</span><span class="p">()</span>
-        <span class="n">xvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span>
-        <span class="n">init_fit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">init_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">show_fit_line</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span>
-                                                     <span class="n">init_fit</span><span class="p">,</span>
-                                                     <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-                                                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span>
-                                                     <span class="n">initial</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.on_initial_params_edited">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.on_initial_params_edited">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">on_initial_params_edited</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Handles updates when the initial fitting parameters are edited.</span>
-
-<span class="sd">        If the initial fit is visible, updates the plot with the new initial fit.</span>
-<span class="sd">        Otherwise, re-runs the fit with the updated parameters, updates the fitted parameter values,</span>
-<span class="sd">        and displays the new fit result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">is_initial_fit_visible</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_initial_fit</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_initial_param_values</span><span class="p">()</span>
-            <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">current_roi_name</span>
-            <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
-            <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">)</span>
-            <span class="n">xvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span>
-            <span class="n">bound_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_bound_parameters</span><span class="p">()</span>
-            <span class="n">fit_params</span><span class="p">,</span> <span class="n">rss</span><span class="p">,</span> <span class="n">rss_per_dof</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">find_best_fit</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span>
-                                                                                   <span class="n">spectrum</span><span class="p">,</span>
-                                                                                   <span class="n">init_params</span><span class="p">,</span>
-                                                                                   <span class="n">params_bounds</span><span class="o">=</span><span class="n">bound_params</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_fitted_parameter_values</span><span class="p">(</span><span class="n">fit_params</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_fit_quality</span><span class="p">(</span><span class="n">rss</span><span class="p">,</span> <span class="n">rss_per_dof</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">show_fit</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fit_params</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Refit completed for ROI=</span><span class="si">%s</span><span class="s2">, RSS/DoF=</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">rss_per_dof</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.show_initial_fit">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_initial_fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_initial_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Displays the initial fit curve on the fitting display widget.</span>
-<span class="sd">        Retrieves current TOF data and the initial parameter values from the view</span>
-<span class="sd">        and evaluates the fitting model using these parameters to generate the initial fit curve.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">xvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span>
-        <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_initial_param_values</span><span class="p">()</span>
-        <span class="n">init_fit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">init_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">show_fit_line</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span>
-                                                     <span class="n">init_fit</span><span class="p">,</span>
-                                                     <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
-                                                     <span class="n">label</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span>
-                                                     <span class="n">initial</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.run_region_fit">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.run_region_fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run_region_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Run a fit on the currently selected ROI and update the GUI/export table.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bound_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_bound_parameters</span><span class="p">()</span>
-        <span class="n">result</span><span class="p">,</span> <span class="n">rss</span><span class="p">,</span> <span class="n">reduced_rss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_single_region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_spectrum</span><span class="p">,</span>
-                                                          <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_fitting_region</span><span class="p">(),</span>
-                                                          <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="p">,</span>
-                                                          <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_initial_param_values</span><span class="p">(),</span>
-                                                          <span class="n">bounds</span><span class="o">=</span><span class="n">bound_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_fitted_parameter_values</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">set_fit_quality</span><span class="p">(</span><span class="n">rss</span><span class="p">,</span> <span class="n">reduced_rss</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">show_fit</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-        <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">roiSelectionWidget</span><span class="o">.</span><span class="n">current_roi_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">update_roi_data</span><span class="p">(</span>
-            <span class="n">roi_name</span><span class="o">=</span><span class="n">roi_name</span><span class="p">,</span>
-            <span class="n">params</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
-            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;Fitted&quot;</span><span class="p">,</span>
-            <span class="n">chi2</span><span class="o">=</span><span class="n">reduced_rss</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fit completed for ROI=</span><span class="si">%s</span><span class="s2">, params=</span><span class="si">%s</span><span class="s2">, RSS/DoF=</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">reduced_rss</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.fit_single_region">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.fit_single_region">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit_single_region</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">spectrum</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">fitting_region</span><span class="p">:</span> <span class="n">FittingRegion</span><span class="p">,</span>
-        <span class="n">tof_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">init_params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-        <span class="n">bounds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundType</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-        <span class="n">fitting_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">tof_data</span><span class="p">,</span> <span class="p">(</span><span class="n">fitting_region</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fitting_region</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
-        <span class="n">xvals</span> <span class="o">=</span> <span class="n">tof_data</span><span class="p">[</span><span class="n">fitting_slice</span><span class="p">]</span>
-        <span class="n">yvals</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">fitting_slice</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">find_best_fit</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">init_params</span><span class="p">,</span> <span class="n">params_bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.fit_all_regions">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.fit_all_regions">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit_all_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit_all_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">init_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_initial_param_values</span><span class="p">()</span>
         <span class="n">bound_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">get_bound_parameters</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">roi_widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1414,17 +1264,18 @@
             <span class="n">spectrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">())</span>
             <span class="n">fitting_region</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_fitting_region</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">,</span> <span class="n">rss</span><span class="p">,</span> <span class="n">rss_per_dof</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_single_region</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span>
-                                                                  <span class="n">fitting_region</span><span class="p">,</span>
-                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="p">,</span>
-                                                                  <span class="n">init_params</span><span class="p">,</span>
-                                                                  <span class="n">bounds</span><span class="o">=</span><span class="n">bound_params</span><span class="p">)</span>
+                <span class="n">result</span><span class="p">,</span> <span class="n">rss</span><span class="p">,</span> <span class="n">rss_per_dof</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit_single_region</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span>
+                                                                        <span class="n">fitting_region</span><span class="p">,</span>
+                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="p">,</span>
+                                                                        <span class="n">init_params</span><span class="p">,</span>
+                                                                        <span class="n">bounds</span><span class="o">=</span><span class="n">bound_params</span><span class="p">)</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;Fitted&quot;</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">BadFittingRoiError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find fit for ROI &#39;</span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">get_parameter_names</span><span class="p">()</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">param_name</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">}</span>
                 <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;Failed&quot;</span>
+                <span class="n">rss_per_dof</span> <span class="o">=</span> <span class="mi">0</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">update_roi_data</span><span class="p">(</span>
                 <span class="n">roi_name</span><span class="o">=</span><span class="n">roi_name</span><span class="p">,</span>
@@ -1433,14 +1284,6 @@
                 <span class="n">chi2</span><span class="o">=</span><span class="n">rss_per_dof</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fit completed for ROI=</span><span class="si">%s</span><span class="s2">, params=</span><span class="si">%s</span><span class="s2">, RSS/DoF=</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">rss_per_dof</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowPresenter.show_fit">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.show_fit">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">xvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span>
-        <span class="n">fit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">show_fit_line</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_export_table">

@@ -499,7 +499,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFittingFunction</span><span class="p">,</span> <span class="n">FittingRegion</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundType</span>
+
+<span class="n">BoundType</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="FittingEngine">

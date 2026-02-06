@@ -497,16 +497,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> \
      <span class="n">QGroupBox</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDoubleValidator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundType</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowPresenter</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-<span class="n">BoundType</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="FittingParamFormWidget">
@@ -520,6 +521,9 @@
 <span class="sd">    Has controls for getting initial parameters and running a fit.</span>
 <span class="sd">    Has space to show goodness of fit measures.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fromROIButtonClicked</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">initialEditFinished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -541,17 +545,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">from_roi_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;From ROI&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">from_roi_button</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">from_roi_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_init_params_from_roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">from_roi_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fromROIButtonClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">run_fit_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Run fit&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_fit_button</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">run_fit_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">run_region_fit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_values_logged</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;RSS:&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;RSS/DoF:&quot;</span><span class="p">)</span>
-        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span><span class="p">)</span>
-        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FittingParamFormWidget.set_parameters">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.set_parameters">[docs]</a>
@@ -605,8 +601,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">row_layout</span><span class="p">,</span> <span class="n">row_label</span><span class="p">,</span> <span class="n">initial_edit</span><span class="p">,</span> <span class="n">final_edit</span><span class="p">,</span> <span class="n">fix_checkbox</span><span class="p">,</span> <span class="n">range_checkbox</span><span class="p">,</span>
                                  <span class="n">range_row_box</span><span class="p">)</span>
-
-            <span class="n">initial_edit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_initial_params_edited</span><span class="p">)</span></div>
+            <span class="n">initial_edit</span><span class="o">.</span><span class="n">editingFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialEditFinished</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FittingParamFormWidget.set_parameter_values">
@@ -649,16 +644,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">params_layout</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">row_layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Parameter form rows cleared&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="FittingParamFormWidget.set_fit_quality">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget.FittingParamFormWidget.set_fit_quality">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_fit_quality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rss</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rss_per_dof</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update the fit quality display with raw and reduced residual sum of squares.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RSS: </span><span class="si">{</span><span class="n">rss</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RSS/DoF: </span><span class="si">{</span><span class="n">rss_per_dof</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FittingParamFormWidget.show_range_edit_fields">

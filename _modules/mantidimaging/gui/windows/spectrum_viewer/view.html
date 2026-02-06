@@ -510,7 +510,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">ROIBinner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.fitting_form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingParamFormWidgetView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.fitting_form</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingFormWidgetView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">allowed_modes</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">,</span> <span class="n">ExportMode</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumWidget</span>
@@ -576,12 +576,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">range_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_range_slide_moved</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span> <span class="o">=</span> <span class="n">FittingDisplayWidget</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fittingForm</span> <span class="o">=</span> <span class="n">FittingParamFormWidgetView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fittingForm</span> <span class="o">=</span> <span class="n">FittingFormWidgetView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingFormContainer</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fittingForm</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">roiSelectionWidget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fittingForm</span><span class="o">.</span><span class="n">roiSelectionWidget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fitSelectionWidget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fittingForm</span><span class="o">.</span><span class="n">fitSelectionWidget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fitSelectionWidget</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_fitting_function</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">unit_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change_via_menu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fittingLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="p">)</span>
@@ -700,9 +696,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sampleStackSelector</span><span class="o">.</span><span class="n">select_eligible_stack</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">initial_sample_change</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">initial_roi_calc</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">initial_roi_calc</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_change_tab">
@@ -810,18 +804,6 @@
             <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="SpectrumViewerWindowView.update_export_table">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_export_table">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_export_table</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-        <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Ready&quot;</span><span class="p">,</span>
-        <span class="n">chi2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">update_roi_data</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">chi2</span><span class="o">=</span><span class="n">chi2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.set_image">
