@@ -18,6 +18,8 @@ class CORInspectionDialogView(BaseDialogView):
     lessButton: QPushButton
     currentButton: QPushButton
     moreButton: QPushButton
+    finishButton: QPushButton
+    cancelButton: QPushButton
     stepCOR: QDoubleSpinBox
     stepIterations: QSpinBox
     stepStackedWidget: QStackedWidget
@@ -45,6 +47,7 @@ class CORInspectionDialogView(BaseDialogView):
         self.moreButton.clicked.connect(lambda: self.presenter.on_select_image(ImageType.MORE))
 
         self.finishButton.clicked.connect(self.accept)
+        self.cancelButton.clicked.connect(self._on_cancel_clicked)
 
         self.stepStackedWidget.setCurrentIndex(int(iters_mode))
         self.instructionStackedWidget.setCurrentIndex(int(iters_mode))
@@ -53,6 +56,27 @@ class CORInspectionDialogView(BaseDialogView):
         self.imagePlotLayout.addWidget(self.image_canvas)
 
         self.presenter.do_refresh()
+
+    def closeEvent(self, event):
+        from PyQt5.QtWidgets import QMessageBox
+        reply = QMessageBox.question(
+            self, "Cancel Refinement?",
+            "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
+    def _on_cancel_clicked(self):
+        from PyQt5.QtWidgets import QMessageBox
+        reply = QMessageBox.question(
+            self, "Cancel Refinement?",
+            "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.reject()
+        # else do nothing, stay open
 
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str) -> None:
         self.image_canvas.set_image(image_type, recon_data, title)
