@@ -142,8 +142,6 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_stack_uuid_changed(self) -> None:
         uuid = self.view.stackSelector.current()
         self.set_current_stack(uuid)
-        if uuid is not None:
-            self.check_stack_for_invalid_180_deg_proj(uuid)
 
     def set_current_stack(self, uuid: UUID | None) -> None:
         if not self.view.isVisible():
@@ -185,18 +183,6 @@ class ReconstructWindowPresenter(BasePresenter):
         self._set_max_preview_indexes()
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
-
-    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
-        try:
-            selected_images = self.main_window.get_stack(uuid)
-        except KeyError:
-            # Likely due to stack no longer existing, e.g. when all stacks closed
-            LOG.debug("UUID did not match open stack")
-            return
-        if selected_images is not None and not selected_images.proj_180_degree_shape_matches_images():
-            self.view.show_error_dialog(
-                "The shapes of the selected stack and it's 180 degree projections do not match! This is "
-                "going to cause an error when calculating the COR. Fix the shape before continuing!")
 
     def _set_max_preview_indexes(self) -> None:
         images = self.model.images
@@ -459,8 +445,9 @@ class ReconstructWindowPresenter(BasePresenter):
         use_projections = None
         if pair == "proj180":
             if not self.model.images.has_proj180deg():
-                self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180° "
-                                              "projection set. Please load a 180° projection manually.")
+                self.view.show_status_message(
+                    "Unable to correlate 0 and 180 because the dataset doesn't have a 180° projection. "
+                    "Please select a valid projection pair.")
                 return
         else:
             try:
@@ -485,11 +472,9 @@ class ReconstructWindowPresenter(BasePresenter):
                 if selected_stack is None:
                     raise StackNotFoundError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
                 self.view.show_error_dialog(
-                    f"Finding the COR failed, likely caused by the selected stack's 180 "
-                    f"degree projection being a different shape. \n\n "
+                    f"Finding COR failed, likely caused by the selected projection pair being invalid/mismatched.\n\n "
                     f"Error: {str(task.error)} "
-                    f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
-                    f"({selected_stack.height}, {selected_stack.width})")
+                    f"\n\n Suggestion: Ensure both selected projections have matching shapes/valid for correlation.")
             elif task.result is not None:
                 cor, tilt = task.result
                 self._set_precalculated_cor_tilt(cor, tilt)
