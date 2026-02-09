@@ -31,19 +31,13 @@ def find_center(images: ImageStack,
     if images is None:
         raise ValueError("images cannot be None")
 
-    proj180 = getattr(images, "proj180deg", None)
     if use_projections is not None:
         start_idx, end_idx = use_projections
         proj_a = images.projection(start_idx)
         proj_b = np.fliplr(images.projection(end_idx))
         LOG.info(f"Using projections {start_idx} and {end_idx} for correlation")
-    elif proj180 is not None:
-        proj_a = images.projection(0)
-        proj_b = np.fliplr(proj180.data[0])
-        LOG.info("Using flipped images.proj180deg for correlation (legacy behaviour)")
     else:
-        raise ValueError("No proj180deg available and no use_projections provided. "
-                         "Caller must specify use_projections or supply images.proj180deg.")
+        raise ValueError("You must specify use_projections (tuple of projection indices) for correlation.")
 
     # Assume the ROI is the full image, i.e. the slices are ALL rows of the image
     slices = np.arange(images.height)

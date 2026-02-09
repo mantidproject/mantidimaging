@@ -68,7 +68,6 @@ class ImageStack:
         self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
         self._is_sinograms = sinograms
 
-        self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
         self._shutter_count_file: ShutterCount | None = None
 
@@ -242,24 +241,6 @@ class ImageStack:
             return np.swapaxes(self.data, 0, 1)[projection_idx]
         else:
             return self.data[projection_idx]
-
-    def proj_180_degree_shape_matches_images(self) -> bool:
-        if self.proj180deg is not None:
-            return self.has_proj180deg(
-            ) and self.height == self.proj180deg.height and self.width == self.proj180deg.width
-        else:
-            return False
-
-    def has_proj180deg(self) -> bool:
-        return self._proj180deg is not None
-
-    @property
-    def proj180deg(self) -> ImageStack | None:
-        return self._proj180deg
-
-    @proj180deg.setter
-    def proj180deg(self, value: ImageStack | None) -> None:
-        self._proj180deg = value
 
     @property
     def projections(self) -> np.ndarray:

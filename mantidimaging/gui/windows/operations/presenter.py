@@ -303,18 +303,10 @@ class FiltersWindowPresenter(BasePresenter):
             use_new_data = True
             negative_stacks = []
             for stack in updated_stacks:
-                # Ensure there is no error if we are to continue with safe apply and 180 degree.
+                # 180 degree stack support removed; only process main stack
                 if task.error is None:
-                    # otherwise check with user which one to keep
                     if self.view.safeApply.isChecked():
                         use_new_data = self._wait_for_stack_choice(stack, stack.id)
-                    # if the stack that was kept happened to have a proj180 stack - then apply the filter to that too
-                    if stack.has_proj180deg() and use_new_data and not self.applying_to_all:
-                        if self.model.selected_filter.allow_for_180_projection:
-                            # Apply to proj180 synchronously - this function is already running async
-                            # and running another async instance causes a race condition in the parallel module
-                            # where the shared data can be removed in the middle of the operation of another operation
-                            self._do_apply_filter_sync([stack.proj180deg])
                 if np.any(stack.data < 0):
                     negative_stacks.append(stack)
 

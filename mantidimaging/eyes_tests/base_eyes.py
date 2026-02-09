@@ -13,15 +13,10 @@ from uuid import uuid4
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 
-from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.io.loader import loader
-from mantidimaging.core.utility.data_containers import Indices
 from mantidimaging.eyes_tests.eyes_manager import EyesManager
 from mantidimaging.test_helpers.start_qapplication import start_qapplication
-import mantidimaging.core.parallel.utility as pu
-from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_angles
+from mantidimaging.test_helpers.unit_test_helper import generate_images
 
 import matplotlib.pyplot  # noqa: F401 - need to import before FakeFileSystem, see Issue #2480
 
@@ -129,32 +124,6 @@ class BaseEyesTest(unittest.TestCase):
     def show_menu(widget: QMainWindow, menu: QMenu):
         menu_location = widget.menuBar().rect().bottomLeft()
         menu.popup(widget.mapFromGlobal(menu_location))
-
-    def _load_strict_data_set(self, set_180: bool = False):
-        filename_group = FilenameGroup.from_file(Path(LOAD_SAMPLE))
-        filename_group.find_all_files()
-        image_stack = loader.load(filename_group, indices=Indices(0, 100, 2))
-        dataset = Dataset(sample=image_stack)
-        test_angles = generate_angles(360, image_stack.num_projections)
-        image_stack.create_geometry(test_angles)
-        image_stack.name = "Stack 1"
-        self.imaging.presenter.model.add_dataset_to_model(dataset)
-        self.imaging.presenter._add_dataset_to_view(dataset)
-        assert dataset.sample  # Dataset has a sample
-        vis = self.imaging.get_stack_visualiser(dataset.sample.id)
-
-        if set_180:
-            _180_array = image_stack.data[0:1]
-            shared_180 = pu.create_array(_180_array.shape, _180_array.dtype)
-            shared_180.array[:] = _180_array[:]
-            image_stack.proj180deg = ImageStack(shared_180)
-            self.imaging.presenter.create_single_tabbed_images_stack(image_stack.proj180deg)
-
-        self.imaging.presenter.model.add_dataset_to_model(dataset)
-
-        QApplication.sendPostedEvents()
-
-        return vis
 
     def _create_new_dataset(self) -> Dataset:
         new_dataset = Dataset(sample=generate_images(), name="new")

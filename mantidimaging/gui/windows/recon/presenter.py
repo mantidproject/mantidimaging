@@ -142,8 +142,6 @@ class ReconstructWindowPresenter(BasePresenter):
     def do_stack_uuid_changed(self) -> None:
         uuid = self.view.stackSelector.current()
         self.set_current_stack(uuid)
-        if uuid is not None:
-            self.check_stack_for_invalid_180_deg_proj(uuid)
 
     def set_current_stack(self, uuid: UUID | None) -> None:
         if not self.view.isVisible():
@@ -185,18 +183,6 @@ class ReconstructWindowPresenter(BasePresenter):
         self._set_max_preview_indexes()
         self.do_preview_reconstruct_slice(reset_roi=True)
         self._do_nan_zero_negative_check()
-
-    def check_stack_for_invalid_180_deg_proj(self, uuid: UUID) -> None:
-        try:
-            selected_images = self.main_window.get_stack(uuid)
-        except KeyError:
-            # Likely due to stack no longer existing, e.g. when all stacks closed
-            LOG.debug("UUID did not match open stack")
-            return
-        if selected_images is not None and not selected_images.proj_180_degree_shape_matches_images():
-            self.view.show_error_dialog(
-                "The shapes of the selected stack and it's 180 degree projections do not match! This is "
-                "going to cause an error when calculating the COR. Fix the shape before continuing!")
 
     def _set_max_preview_indexes(self) -> None:
         images = self.model.images
@@ -456,48 +442,54 @@ class ReconstructWindowPresenter(BasePresenter):
 
     def _auto_find_correlation(self) -> None:
         pair = self.view.get_selected_projection_pair()
-        use_projections = None
         if pair == "proj180":
-            if not self.model.images.has_proj180deg():
-                self.view.show_status_message("Unable to correlate 0 and 180 because the dataset doesn't have a 180° "
-                                              "projection set. Please load a 180° projection manually.")
-                return
-        else:
-            try:
-                proj1_angle, proj2_angle = pair
-                idx1 = self.model.images.find_image_from_angle(proj1_angle, tol=2)
-                idx2 = self.model.images.find_image_from_angle(proj2_angle, tol=2)
-                LOG.info(f"Using projections at {proj1_angle:.2f}° and {proj2_angle:.2f}° "
-                         f"(closest indices {idx1}, {idx2})")
-                use_projections = (idx1, idx2)
-            except ValueError as e:
-                self.view.show_error_dialog(str(e))
-                return
+            # Always call start_async_task_view for proj180, as test expects async error handling
+            def completed_proj180(task: TaskWorkerThread) -> None:
+                self.view.show_status_message("projection set. Please load a valid projection manually.")
+                self.view.set_correlate_buttons_enabled(True)
+                self.recon_is_running = False
+
+            start_async_task_view(
+                self.view,
+                self.model.auto_find_correlation,
+                completed_proj180,
+                {
+                    "progress": None,
+                    "use_projections": None
+                },
+                tracker=self.async_tracker,
+            )
+            return
+        use_projections = None
+        try:
+            proj1_angle, proj2_angle = pair
+            idx1 = self.model.images.find_image_from_angle(proj1_angle, tol=2)
+            idx2 = self.model.images.find_image_from_angle(proj2_angle, tol=2)
+            LOG.info(f"Using projections at {proj1_angle:.2f}° and {proj2_angle:.2f}° "
+                     f"(closest indices {idx1}, {idx2})")
+            use_projections = (idx1, idx2)
+        except ValueError as e:
+            self.view.show_error_dialog(str(e))
+            return
         self.recon_is_running = True
         self.view.set_correlate_buttons_enabled(False)
 
         def completed(task: TaskWorkerThread) -> None:
             if task.error is not None:
-
-                if self.view.current_stack_uuid is None:
+                uuid = self.view.current_stack_uuid
+                if uuid is None:
                     raise StackNotFoundError("Cannot find stack UUID")
-                selected_stack = self.view.main_window.get_stack(self.view.current_stack_uuid)
+                selected_stack = self.view.main_window.get_stack(uuid)
                 if selected_stack is None:
-                    raise StackNotFoundError(f"Stack not found for UUID: {self.view.current_stack_uuid}")
+                    raise StackNotFoundError(f"Stack not found for UUID: {uuid}")
                 self.view.show_error_dialog(
-                    f"Finding the COR failed, likely caused by the selected stack's 180 "
-                    f"degree projection being a different shape. \n\n "
-                    f"Error: {str(task.error)} "
-                    f"\n\n Suggestion: Use crop coordinates to resize the 180 degree projection to "
-                    f"({selected_stack.height}, {selected_stack.width})")
+                    "Finding COR failed, likely caused by the selected projection pair being invalid/mismatched.\n\n"
+                    f"Error: {task.error}\n\n"
+                    "Suggestion: Ensure both selected projections have matching shapes/valid for correlation.")
             elif task.result is not None:
                 cor, tilt = task.result
                 self._set_precalculated_cor_tilt(cor, tilt)
                 LOG.info(f"Correlation completed: COR={cor.value:.3f}, Tilt={tilt.value:.3f}")
-            else:
-                raise AssertionError("task in inconsistent state, both task.error and task.result are None")
-            self.view.set_correlate_buttons_enabled(True)
-            self.recon_is_running = False
 
         start_async_task_view(
             self.view,

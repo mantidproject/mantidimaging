@@ -189,7 +189,7 @@ def create_loading_parameters_for_file_path(file_path: Path) -> LoadingParameter
     loading_parameters.image_stacks[FILE_TYPES.SAMPLE] = ImageParameters(sample_fg, sample_fg.log_path,
                                                                          sample_fg.shutter_count_path)
 
-    for file_type in [ft for ft in FILE_TYPES if ft.mode in ["images", "180"]]:
+    for file_type in [ft for ft in FILE_TYPES if ft.mode == "images"]:
         fg = sample_fg.find_related(file_type)
         if fg is None:
             continue

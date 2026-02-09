@@ -79,7 +79,7 @@ class DatasetTest(unittest.TestCase):
         self.assertListEqual(ds.all, image_stacks)
 
     def test_sample_in_all(self):
-        image_sample = mock.Mock(proj180deg=None)
+        image_sample = mock.Mock()
         ds = Dataset(sample=image_sample)
         self.assertCountEqual(ds.all, [image_sample])
 
@@ -257,8 +257,6 @@ class DatasetTest(unittest.TestCase):
         stack = mock.Mock()
         ds.set_stack(FILE_TYPES.SAMPLE, sample)
         ds.set_stack(FILE_TYPES.PROJ_180, stack)
-
-        self.assertEqual(ds.proj180deg, stack)
 
     def test_processed_is_true(self):
         ds = Dataset(sample=generate_images())

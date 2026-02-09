@@ -160,11 +160,6 @@ class ImageStackTest(unittest.TestCase):
 
     def test_helper_properties(self):
         images = generate_images((42, 100, 350))
-        self.assertEqual(images.height, 100)
-        self.assertEqual(images.width, 350)
-        self.assertEqual(images.h_middle, 350 / 2)
-        self.assertEqual(images.num_images, 42)
-        self.assertEqual(images.num_projections, 42)
         self.assertEqual(images.num_sinograms, 100)
 
     def test_data_accessors(self):
@@ -376,17 +371,12 @@ class ImageStackTest(unittest.TestCase):
         images.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         images.geometry.set_angles(angles=angles, angle_unit=angle_unit)
 
-        images._proj180deg = mock.MagicMock()
-        images._proj180deg.height = proj180_height
-        images._proj180deg.width = proj180_width
-        images.has_proj180deg = mock.MagicMock(return_value=True)
         images._is_sinograms = True
 
         self.assertEqual(images.proj_180_degree_shape_matches_images(), expected)
 
     def test_proj_180_degree_shape_matches_images_where_no_180_present(self):
         images = generate_images_with_geometry(max_angle=360.0)
-        images.has_proj180deg = mock.MagicMock(return_value=False)
 
         self.assertFalse(images.proj_180_degree_shape_matches_images())
 

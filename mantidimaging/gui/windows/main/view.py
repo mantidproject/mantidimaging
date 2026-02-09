@@ -575,9 +575,6 @@ class MainWindowView(BaseMainWindowView):
     def get_all_stacks(self) -> list[ImageStack]:
         return self.presenter.get_all_stacks()
 
-    def get_all_180_projections(self) -> list[ImageStack]:
-        return self.presenter.get_all_180_projections()
-
     def get_stack_history(self, stack_uuid) -> dict[str, Any]:
         return self.presenter.get_stack_visualiser_history(stack_uuid)
 

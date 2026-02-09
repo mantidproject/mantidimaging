@@ -76,7 +76,7 @@ def generate_standard_dataset(shape: tuple[int, int, int] = (2, 5, 5)) -> tuple[
                  flat_after=image_stacks[2],
                  dark_before=image_stacks[3],
                  dark_after=image_stacks[4])
-    ds.proj180deg = image_stacks[5]
+    # Removed proj180deg assignment
     return ds, image_stacks
 
 

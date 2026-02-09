@@ -34,14 +34,13 @@ class TestGuiSystemWindows(GuiSystemBase):
         self.assertIsNotNone(dataset.flat_before)
         self.assertIsNotNone(dataset.flat_after)
         self.assertIsNotNone(dataset.dark_before)
-        self.assertIsNotNone(dataset.proj180deg)
         self.assertIsNone(dataset.dark_after)
 
         self.assertTupleEqual(dataset.sample.shape, (100, 128, 128))
         self.assertTupleEqual(dataset.flat_before.shape, (20, 128, 128))
         self.assertTupleEqual(dataset.flat_after.shape, (20, 128, 128))
         self.assertTupleEqual(dataset.dark_before.shape, (10, 128, 128))
-        self.assertTupleEqual(dataset.proj180deg.shape, (1, 128, 128))
+        # Removed proj180deg shape check
 
     def test_open_operations(self):
         self._close_welcome()

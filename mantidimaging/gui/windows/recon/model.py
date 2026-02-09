@@ -154,9 +154,9 @@ class ReconstructWindowModel:
 
         LOG.info("Starting full reconstruction: algorithm=%s, slices=%d", recon_params.algorithm, self.images.height)
 
-        reconstructor = get_reconstructor_for(recon_params.algorithm)
+        recon_constructor = get_reconstructor_for(recon_params.algorithm)
 
-        recon = reconstructor.full(images, recon_params, progress)
+        recon = recon_constructor.full(images, recon_params, progress)
         recon = self._apply_pixel_size(recon, recon_params, progress)
         return recon
 
@@ -197,8 +197,8 @@ class ReconstructWindowModel:
 
     @staticmethod
     def get_allowed_filters(alg_name: str) -> list:
-        reconstructor = get_reconstructor_for(alg_name)
-        return reconstructor.allowed_filters()
+        recon_constructor = get_reconstructor_for(alg_name)
+        return recon_constructor.allowed_filters()
 
     def get_me_a_cor(self, cor: ScalarCoR | None = None) -> ScalarCoR:
         if cor is not None:
@@ -243,6 +243,15 @@ class ReconstructWindowModel:
             LOG.warning("No image stack loaded; returning default COR=0.0")
             return [0.0]
 
+        if self.images.geometry is None:
+            # Set default geometry if missing
+            num_projs = getattr(self.images, "num_projections", self.images.shape[0])
+            from mantidimaging.core.utility.data_containers import ProjectionAngles
+            import numpy as np
+            default_angles = ProjectionAngles(np.linspace(0, np.pi, num_projs))
+            from mantidimaging.core.data.geometry import Geometry
+            self.images.geometry = Geometry(default_angles.value)
+
         initial_cor = []
         for slc in slices:
             initial_cor.append(self.images.geometry.get_cor_at_slice_index(slc).value)
@@ -252,11 +261,11 @@ class ReconstructWindowModel:
         if len(initial_cor) != len(slices):
             raise ValueError("The number of initial COR values must match the number of slices")
 
-        reconstructor = get_reconstructor_for(recon_params.algorithm)
+        recon_constructor = get_reconstructor_for(recon_params.algorithm)
         progress = Progress.ensure_instance(progress, num_steps=len(slices))
         cors = []
         for idx, slice in enumerate(slices):
-            cor = reconstructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
+            cor = recon_constructor.find_cor(self.images, slice, initial_cor[idx], recon_params)
             cors.append(cor)
             progress.update(msg=f"Calculating COR for slice {slice}")
         LOG.info("COR minimisation completed: CORs=%s", cors)
@@ -267,6 +276,9 @@ class ReconstructWindowModel:
         progress: Progress,
         use_projections: tuple[int, int] | None = None,
     ) -> tuple[ScalarCoR, Degrees]:
+        if self.images is None or (use_projections is not None
+                                   and not all(isinstance(idx, int) for idx in use_projections)):
+            raise ValueError("No valid image stack or projection indices provided for correlation.")
         return find_center(self.images, progress, use_projections)
 
     def stack_contains_nans(self) -> bool:

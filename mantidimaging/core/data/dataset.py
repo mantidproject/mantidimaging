@@ -67,8 +67,7 @@ class Dataset:
     @property
     def all(self) -> list[ImageStack]:
         named_stacks = [
-            self.sample, self.proj180deg, self.flat_before, self.flat_after, self.dark_before, self.dark_after,
-            self.sinograms
+            self.sample, self.flat_before, self.flat_after, self.dark_before, self.dark_after, self.sinograms
         ]
         return self.recons.stacks + self._stacks + remove_nones(named_stacks)
 
@@ -83,9 +82,6 @@ class Dataset:
             self.dark_before = None
         elif isinstance(self.dark_after, ImageStack) and self.dark_after.id == images_id:
             self.dark_after = None
-        elif isinstance(self.proj180deg, ImageStack) and self.proj180deg.id == images_id:
-            assert self.sample is not None
-            self.sample.proj180deg = None
         elif isinstance(self.sinograms, ImageStack) and self.sinograms.id == images_id:
             self.sinograms = None
         else:
@@ -124,19 +120,6 @@ class Dataset:
         self._stacks.append(stack)
 
     @property
-    def proj180deg(self) -> ImageStack | None:
-        if self.sample is not None:
-            return self.sample.proj180deg
-        else:
-            return None
-
-    @proj180deg.setter
-    def proj180deg(self, proj180deg: ImageStack | None) -> None:
-        if self.sample is None:
-            raise RuntimeError("Can't set a 180 projection without a sample")
-        self.sample.proj180deg = proj180deg
-
-    @property
     def _nexus_stack_order(self) -> list[ImageStack]:
         return list(filter(None, [self.dark_before, self.flat_before, self.sample, self.flat_after, self.dark_after]))
 
@@ -171,8 +154,9 @@ class Dataset:
 
     def set_stack(self, file_type: FILE_TYPES, image_stack: ImageStack) -> None:
         attr_name = file_type.fname.lower().replace(" ", "_")
-        if file_type == FILE_TYPES.PROJ_180:
-            attr_name = "proj180deg"
+        # Ignore 180 degree/proj_180 types, as 180deg stacks are no longer supported
+        if file_type == FILE_TYPES.PROJ_180 or attr_name == "180_degree":
+            return
         if hasattr(self, attr_name):
             setattr(self, attr_name, image_stack)
         else:
@@ -180,6 +164,8 @@ class Dataset:
 
     def set_stack_by_type_name(self, file_type_name: str, image_stack: ImageStack) -> None:
         file_type_name = file_type_name.upper().replace(" ", "_")
+        if file_type_name in ("PROJ_180", "180_DEGREE"):
+            return  # Ignore 180deg stack types
         if file_type_name == "RECON":
             self.add_recon(image_stack)
         elif file_type_name == "IMAGES":
@@ -222,6 +208,4 @@ def _get_stack_data_type(stack_id: uuid.UUID, dataset: Dataset) -> str:
         return "Dark Before"
     if dataset.dark_after is not None and stack_id == dataset.dark_after.id:
         return "Dark After"
-    if dataset.proj180deg is not None and stack_id == dataset.proj180deg.id:
-        return "180"
     raise StackNotFoundError(f"No stack with ID {stack_id} found in dataset {dataset.id}")

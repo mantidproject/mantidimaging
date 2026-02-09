@@ -286,17 +286,12 @@ class MainWindowPresenter(BasePresenter):
     def get_all_stacks(self) -> list[ImageStack]:
         return self.model.images
 
-    def get_all_180_projections(self) -> list[ImageStack]:
-        return self.model.proj180s
-
     def add_alternative_180_if_required(self, dataset: Dataset) -> None:
         """
         Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.
         :param dataset: The loaded dataset.
         """
         assert dataset.sample is not None
-        if dataset.sample.has_proj180deg() and dataset.sample.proj180deg.filenames:  # type: ignore
-            return
 
         projection_angles = dataset.sample.projection_angles()
         if projection_angles is None:
@@ -370,8 +365,7 @@ class MainWindowPresenter(BasePresenter):
 
             attributes = [("Projections", dataset.sample), ("Flat Before", dataset.flat_before),
                           ("Flat After", dataset.flat_after), ("Dark Before", dataset.dark_before),
-                          ("Dark After", dataset.dark_after), ("180", dataset.proj180deg),
-                          ("Sinograms", dataset.sinograms)]
+                          ("Dark After", dataset.dark_after), ("Sinograms", dataset.sinograms)]
             for label, item in attributes:
                 if item:
                     self.view.add_item_to_dataset_tree_widget(label, item.id, dataset_item)

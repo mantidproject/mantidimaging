@@ -117,8 +117,7 @@ class MainWindowModel:
         if not dataset.sample:
             raise RuntimeError(f"Dataset with ID {dataset_id} does not have a sample")
 
-        if isinstance(dataset.proj180deg, ImageStack):
-            return dataset.proj180deg.id
+        # 180deg stack support removed
         return None
 
     def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
@@ -178,12 +177,6 @@ class MainWindowModel:
             for dataset in self.datasets.values():
                 if container_id in dataset:
                     proj_180_id = None
-                    # If we're deleting a sample then any linked 180 projection will also be
-                    # deleted
-                    if dataset.proj180deg:
-                        assert dataset.sample is not None
-                        if dataset.sample.id == container_id:
-                            proj_180_id = dataset.proj180deg.id
                     dataset.delete_stack(container_id)
                     return [container_id, proj_180_id] if proj_180_id else [container_id]
                 if container_id == dataset.recons.id:
@@ -208,14 +201,6 @@ class MainWindowModel:
         for dataset in self.datasets.values():
             images += dataset.all
         return images
-
-    @property
-    def proj180s(self) -> list[ImageStack]:
-        proj180s = []
-        for dataset in self.datasets.values():
-            if dataset.proj180deg is not None:
-                proj180s.append(dataset.proj180deg)
-        return proj180s
 
     def get_parent_dataset(self, member_id: uuid.UUID) -> uuid.UUID:
         """
