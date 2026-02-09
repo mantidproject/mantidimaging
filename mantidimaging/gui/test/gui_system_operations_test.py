@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from uuid import UUID
 
 OP_LIST = [
+    ("Append Stacks", []),
     ("Arithmetic", [["Multiply", "2"]]),
     ("Circular Mask", []),
     ("Clip Values", [["Clip Max", "10000"]]),
@@ -203,7 +204,7 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: self.op_window.presenter.filter_is_running is False, max_retry=600)
 
-    @parameterized.expand([(OP_LIST[3][0], "Select ROI", "ROI"), (OP_LIST[13][0], "Select Air Region", "Air Region")])
+    @parameterized.expand([(OP_LIST[4][0], "Select ROI", "ROI"), (OP_LIST[14][0], "Select Air Region", "Air Region")])
     def test_opening_roi_selector_window_toggles_controls_correctly(self, op_name, button_name, field_name):
         QTest.qWait(SHOW_DELAY)
         index = self.op_window.filterSelector.findText(op_name)
