@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget
+from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget, QMessageBox
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
@@ -58,7 +58,6 @@ class CORInspectionDialogView(BaseDialogView):
         self.presenter.do_refresh()
 
     def closeEvent(self, event):
-        from PyQt5.QtWidgets import QMessageBox
         reply = QMessageBox.question(
             self, "Cancel Refinement?",
             "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
@@ -69,7 +68,6 @@ class CORInspectionDialogView(BaseDialogView):
             event.ignore()
 
     def _on_cancel_clicked(self):
-        from PyQt5.QtWidgets import QMessageBox
         reply = QMessageBox.question(
             self, "Cancel Refinement?",
             "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
