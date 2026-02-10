@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 import h5py
 import numpy as np
 from cil.framework import AcquisitionGeometry
+from cil.framework import ImageGeometry
 
 from cil.io import NEXUSDataReader
 
@@ -40,6 +41,8 @@ IMAGE_TITLE_MAP = {ImageKeys.Projections: "Projections", ImageKeys.FlatField: "F
 BEFORE_TITLE_MAP = {True: "Before", False: "After"}
 
 TOMO_ENTRY = "tomo_entry"
+CIL_NEXUS_DATA_PATH = "data/data"
+CIL_ROTATION_ANGLE_PATH = "data/rotation_angle"
 DATA_PATH = "instrument/detector/data"
 IMAGE_KEY_PATH = "instrument/detector/image_key"
 ROTATION_ANGLE_PATH = "sample/rotation_angle"
@@ -61,7 +64,6 @@ class NexusLoadPresenter:
 
     def __init__(self, view: NexusLoadDialog):
         self.view = view
-        self.nexus_file = None
         self.tomo_entry = None
         self.data = None
         self.tomo_path = ""
@@ -94,18 +96,33 @@ class NexusLoadPresenter:
                 self.tomo_entry = self._look_for_nxtomo_entry()
                 if self.tomo_entry is None:
                     return
+                if 'creator' in self.nexus_file.attrs:
+                    self.creator = self.nexus_file.attrs['creator']
+                else:
+                    self.creator = ""
 
-                self.data = self._look_for_image_data_and_update_view()
-                if self.data is None:
-                    return
+                if self.creator != "NEXUSDataWriter.py":
+                    self.data = self._look_for_image_data_and_update_view()
+                    self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+                    self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+                else:
+                    self.data = self._look_for_cil_nexus_data()
+                    LOG.warning("Invalid nexus file")
+                    assert self.data is not None
+                    num_images = self.data.shape[0]
+                    self.image_key_dataset = np.zeros(num_images, dtype=int)
 
-                self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+                    self.view.set_data_found(
+                        position=0,
+                        found=True,
+                        path="Assuming all images are projections",
+                        shape=self.image_key_dataset.shape,
+                    )
+                    self.rotation_angles = self._look_for_tomo_data_and_update_view(CIL_ROTATION_ANGLE_PATH, 1)
+
                 if self.image_key_dataset is None:
                     return
-
                 self.image_key_dataset = self.image_key_dataset[:]
-
-                self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
 
                 if self.rotation_angles is None:
                     return
@@ -127,12 +144,6 @@ class NexusLoadPresenter:
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
 
-                if 'creator' in self.nexus_file.attrs:
-                    self.creator = self.nexus_file.attrs['creator']
-                else:
-                    self.creator = ""
-                LOG.warning(f"{self.creator=}")
-
         except OSError:
             unable_message = f"Unable to read NeXus data from {self.file_path}"
             LOG.error(unable_message)
@@ -143,14 +154,18 @@ class NexusLoadPresenter:
         if acquisition_geometry is not None and self.data is not None and self.data.sample is not None:
             self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
 
-    def _read_geometry(self) -> AcquisitionGeometry | None:
+    def _read_geometry(self) -> ImageGeometry | AcquisitionGeometry | None:
         if self.creator != np.bytes_('NEXUSDataWriter.py'):
             LOG.debug(f"NeXus file {self.file_path} not created with NEXUSDataWriter")
             return None
         reader = NEXUSDataReader()
         reader.set_up(self.file_path)
         acquisition_geometry = reader.get_geometry()
-        return acquisition_geometry
+        if isinstance(acquisition_geometry, AcquisitionGeometry):
+            return acquisition_geometry
+        else:
+            LOG.warning("Acquisition geometry is not of expected type.")
+        return None
 
     def _read_rotation_angles(self, image_key: int, before: bool | None = None) -> np.ndarray | None:
         """
@@ -204,6 +219,18 @@ class NexusLoadPresenter:
         else:
             self.view.set_data_found(position, True, self.tomo_path + "/" + field, dataset.shape)
         return dataset
+
+    def _look_for_cil_nexus_data(self) -> h5py.Dataset | None:
+        position = 2
+        dataset = self._look_for_tomo_data(CIL_NEXUS_DATA_PATH)
+        if dataset is not None:
+            self.view.set_data_found(position, True, self.tomo_path + "/" + CIL_NEXUS_DATA_PATH, dataset.shape)
+            return dataset if isinstance(dataset, h5py.Dataset) else None
+
+        self._missing_data_error(CIL_NEXUS_DATA_PATH)
+        self.view.set_data_found(position, False, "", ())
+        self.view.disable_ok_button()
+        return None
 
     def _look_for_image_data_and_update_view(self) -> h5py.Dataset | None:
         position = 2
