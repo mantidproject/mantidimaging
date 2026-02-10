@@ -2,15 +2,15 @@ name: Build conda package
 
 inputs:
   repository:
-    description: 'Anaconda repository'
+    description: "Anaconda repository"
     required: true
-    default: 'mantidimaging'
+    default: "mantidimaging"
   label:
-    description: 'Label'
+    description: "Label"
     required: false
-    default: 'unstable'
+    default: "unstable"
   token:
-    description: 'Anaconda API Token'
+    description: "Anaconda API Token"
     required: true
 
 description: Build conda package
@@ -18,26 +18,25 @@ runs:
   using: "composite"
 
   steps:
-  - name: Make build-env
-    shell: bash -l {0}
-    run: |
-      conda config --set always_yes yes --set changeps1 no
-      # Install build requirements
-      # We can't use the makefile target for this because the CONDA_ACTIVATE command is incompatible with GitHub Actions Windows runners
-      conda create -n build-env --yes boa anaconda-client
-      conda activate build-env
-      # Configure the conda channels
-      conda config --env $(cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
-      conda config --show channels
+    - name: Make build-env
+      shell: bash -l {0}
+      run: |
+        conda config --set always_yes yes --set changeps1 no
+        # Install build requirements
+        # We can't use the makefile target for this because the CONDA_ACTIVATE command is incompatible with GitHub Actions Windows runners
+        conda create -n build-env --yes boa anaconda-client
+        conda activate build-env
+        # Configure the conda channels
+        conda config --env $(cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
+        conda config --show channels
 
-
-  - name: Build package
-    shell: bash -l {0}
-    run: |
-      conda activate build-env
-      conda config --set anaconda_upload no
-      # if the upload silently fails - check the token expiration. Conda can fail silently!
-      conda mambabuild $GITHUB_WORKSPACE/conda
-      anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2 |& tee upload.log
-      # Check that upload completed
-      grep "Upload complete" upload.log
+    - name: Build package
+      shell: bash -l {0}
+      run: |
+        conda activate build-env
+        conda config --set anaconda_upload no
+        # if the upload silently fails - check the token expiration. Conda can fail silently!
+        conda mambabuild $GITHUB_WORKSPACE/conda
+        anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2 |& tee upload.log
+        # Check that upload completed
+        grep "Upload complete" upload.log

@@ -26,9 +26,7 @@
         "params": {
           "add_val": 8
         },
-        "flags": [
-          "slow"
-        ]
+        "flags": ["slow"]
       },
       {
         "test_name": "sub6",
@@ -177,67 +175,47 @@
       {
         "test_name": "zero_fifty",
         "params": {
-          "region_of_interest": [
-            0,
-            0,
-            50,
-            50
-          ]
+          "region_of_interest": [0, 0, 50, 50]
         }
       },
       {
         "test_name": "zero_twentyfive",
         "params": {
-          "region_of_interest": [
-            0,
-            0,
-            25,
-            25
-          ]
+          "region_of_interest": [0, 0, 25, 25]
         }
       },
       {
         "test_name": "twentyfive_fifty",
         "params": {
-          "region_of_interest": [
-            25,
-            25,
-            50,
-            50
-          ]
+          "region_of_interest": [25, 25, 50, 50]
         }
       },
       {
         "test_name": "ten_twenty_thirty_forty",
         "params": {
-          "region_of_interest": [
-            10,
-            20,
-            30,
-            40
-          ]
+          "region_of_interest": [10, 20, 30, 40]
         }
       }
     ]
   },
   "Ring Removal": {
-      "params": {
-        "center_mode": "image center"
-      },
-      "source_data": "flower128",
-      "cases": [
-        {
-          "test_name": "30k_1k",
-          "params": {
-            "thresh": 300,
-            "thresh_max": 30000,
-            "thresh_min": 1000,
-            "theta_min": 30,
-            "rwidth": 30
-          },
-          "known_failure": "Unreliable output, see https://github.com/tomopy/tomopy/issues/618"
-        }
-      ]
+    "params": {
+      "center_mode": "image center"
+    },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "test_name": "30k_1k",
+        "params": {
+          "thresh": 300,
+          "thresh_max": 30000,
+          "thresh_min": 1000,
+          "theta_min": 30,
+          "rwidth": 30
+        },
+        "known_failure": "Unreliable output, see https://github.com/tomopy/tomopy/issues/618"
+      }
+    ]
   },
   "Clip Values": {
     "params": {},
@@ -510,37 +488,37 @@
     ]
   },
   "NaN Removal": {
-      "params": {
-        "mode_value": "Constant",
-        "replace_value": 0
-      },
-      "source_data": "flower128",
-      "cases": [
-        {
-          "pre_run_step": "add_nan",
-          "test_name": "nan_removal_constant_default",
-          "params": {
-            "mode_value": "Constant",
-            "replace_value": 0
-          }
-        },
-        {
-          "pre_run_step": "add_nan",
-          "test_name": "nan_removal_median",
-          "params": {
-            "mode_value": "Median"
-          }
-        },
-        {
-          "pre_run_step": "add_nan",
-          "test_name": "nan_removal_constant_specific",
-          "params": {
-            "mode_value": "Constant",
-            "replace_value": 100
-          }
-        }
-      ]
+    "params": {
+      "mode_value": "Constant",
+      "replace_value": 0
     },
+    "source_data": "flower128",
+    "cases": [
+      {
+        "pre_run_step": "add_nan",
+        "test_name": "nan_removal_constant_default",
+        "params": {
+          "mode_value": "Constant",
+          "replace_value": 0
+        }
+      },
+      {
+        "pre_run_step": "add_nan",
+        "test_name": "nan_removal_median",
+        "params": {
+          "mode_value": "Median"
+        }
+      },
+      {
+        "pre_run_step": "add_nan",
+        "test_name": "nan_removal_constant_specific",
+        "params": {
+          "mode_value": "Constant",
+          "replace_value": 100
+        }
+      }
+    ]
+  },
   "Rebin": {
     "params": {
       "rebin_param": 0.5,
@@ -556,12 +534,8 @@
       },
       {
         "test_name": "rebin_to_dimensions_100x90",
-          "params": {
-              "rebin_param": [
-                  "tuple",
-                  100,
-                  90
-              ]
+        "params": {
+          "rebin_param": ["tuple", 100, 90]
         }
       }
     ]
@@ -586,12 +560,7 @@
   },
   "ROI Normalisation": {
     "params": {
-      "region_of_interest": [
-        0,
-        0,
-        20,
-        20
-      ],
+      "region_of_interest": [0, 0, 20, 20],
       "normalisation_mode": "Stack Average",
       "flat_field": null
     },
@@ -600,12 +569,7 @@
       {
         "test_name": "default_settings",
         "params": {
-          "region_of_interest": [
-            0,
-            0,
-            20,
-            20
-          ],
+          "region_of_interest": [0, 0, 20, 20],
           "normalisation_mode": "Stack Average",
           "flat_field": null
         }
@@ -686,8 +650,7 @@
       {
         "test_name": "default_normalisation",
         "pre_run_step": "load_monitor_log",
-        "params": {
-        }
+        "params": {}
       }
     ]
   },
@@ -698,8 +661,7 @@
       {
         "test_name": "overlap",
         "pre_run_step": "load_shutter_counts",
-        "params": {
-        }
+        "params": {}
       }
     ]
   },

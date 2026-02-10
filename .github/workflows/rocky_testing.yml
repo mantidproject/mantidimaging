@@ -3,12 +3,12 @@ name: Testing with Rocky docker
 on:
   push:
     branches:
-    - 'main'
-    - 'release-*'
+      - "main"
+      - "release-*"
   pull_request:
     paths:
-      - '**'
-      - '!docs/**'
+      - "**"
+      - "!docs/**"
   merge_group:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,38 +20,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Pre-load docker image
-      run: docker pull ghcr.io/mantidproject/mantidimaging:rocky8
+      - name: Pre-load docker image
+        run: docker pull ghcr.io/mantidproject/mantidimaging:rocky8
 
-    - name: List versions
-      uses: ./.github/actions/test
-      with:
-        command: python --version; conda list ; pip list
-        label: rocky8
+      - name: List versions
+        uses: ./.github/actions/test
+        with:
+          command: python --version; conda list ; pip list
+          label: rocky8
 
-    - name: yapf
-      uses: ./.github/actions/test
-      with:
-        command: yapf --parallel --diff --recursive .
-        label: rocky8
+      - name: yapf
+        uses: ./.github/actions/test
+        with:
+          command: yapf --parallel --diff --recursive .
+          label: rocky8
 
-    - name: ruff
-      uses: ./.github/actions/test
-      with:
-        command: ruff check .
-        label: rocky8
+      - name: ruff
+        uses: ./.github/actions/test
+        with:
+          command: ruff check .
+          label: rocky8
 
-    - name: mypy
-      uses: ./.github/actions/test
-      with:
-        command: mypy --ignore-missing-imports mantidimaging
-        label: rocky8
+      - name: mypy
+        uses: ./.github/actions/test
+        with:
+          command: mypy --ignore-missing-imports mantidimaging
+          label: rocky8
 
-    - name: pytest
-      timeout-minutes: 5
-      uses: ./.github/actions/test
-      with:
-        command: xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
-        label: rocky8
+      - name: pytest
+        timeout-minutes: 5
+        uses: ./.github/actions/test
+        with:
+          command: xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+          label: rocky8
