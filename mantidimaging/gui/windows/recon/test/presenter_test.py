@@ -318,7 +318,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_not_called()
         self.view.show_status_message.assert_called_once_with(
-            "projection set. Please load a valid projection manually.")
+            "Unable to correlate 0 and 180 because the dataset doesn't have a 180° projection. "
+            "Please select a valid projection pair.")
 
         @mock.patch.object(ReconstructWindowModel, "images", new_callable=mock.PropertyMock)
         @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')

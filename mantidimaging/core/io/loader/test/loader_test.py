@@ -67,10 +67,9 @@ class LoaderTest(FakeFSTestCase):
         self._file_in_sequence(Path("/b/Dark_After/Dark_After_0000.tif"), sample.file_group.all_files())
         self.assertEqual(5, len(list(sample.file_group.all_files())))
 
-        if FILE_TYPES.PROJ_180 in lp.image_stacks:
-            sample = lp.image_stacks[FILE_TYPES.PROJ_180]
-            self._file_in_sequence(Path("/b/180deg/180deg_0000.tif"), sample.file_group.all_files())
-            self.assertEqual(1, len(list(sample.file_group.all_files())))
+        sample = lp.image_stacks[FILE_TYPES.PROJ_180]
+        self._file_in_sequence(Path("/b/180deg/180deg_0000.tif"), sample.file_group.all_files())
+        self.assertEqual(1, len(list(sample.file_group.all_files())))
 
     @mock.patch('mantidimaging.core.io.loader.loader.load_log')
     @mock.patch('mantidimaging.core.io.loader.loader.img_loader.execute')

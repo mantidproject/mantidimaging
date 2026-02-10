@@ -67,6 +67,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     reconTab: QWidget
 
+    maxProjAngleSpinBox: QDoubleSpinBox
     algorithmNameComboBox: QComboBox
     filterNameComboBox: QComboBox
     numIterSpinBox: QSpinBox
