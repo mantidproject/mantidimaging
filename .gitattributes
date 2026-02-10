@@ -1,2 +1,7 @@
+# JSON, YAML, and UI files should always use LF endings
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.ui   text eol=lf
 # SCM syntax highlighting & preventing 3-way merges
 pixi.lock merge=binary linguist-language=YAML linguist-generated=true
