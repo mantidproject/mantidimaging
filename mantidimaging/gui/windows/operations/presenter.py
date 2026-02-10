@@ -373,6 +373,7 @@ class FiltersWindowPresenter(BasePresenter):
         is_flat_fielding = self._flat_fielding_is_selected()
 
         self.view.clear_previews(clear_before=False)
+        full_stack_shape = self.stack.shape
 
         # Only apply the lock scale after image data has been set for the first time otherwise no region is shown
         lock_scale = self.view.lockScaleCheckBox.isChecked() and not is_new_data
@@ -393,7 +394,8 @@ class FiltersWindowPresenter(BasePresenter):
             squeeze_axis = 1
 
         subset.is_temporary = True
-
+        # store shape in subset for filter to access
+        subset.full_stack_shape = full_stack_shape
         # Take copies for display to prevent issues when shared memory is cleaned
         before_image = np.copy(subset.data.squeeze(squeeze_axis))
         try:
