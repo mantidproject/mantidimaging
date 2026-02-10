@@ -24,9 +24,6 @@ jobs:
       - name: Pre-load docker image
         run: docker pull ghcr.io/mantidproject/mantidimaging:ubuntu18
 
-      - name: Set up Prettier XML plugin
-        run: npm install --no-save prettier @prettier/plugin-xml
-
       - name: List versions
         uses: ./.github/actions/test
         with:
