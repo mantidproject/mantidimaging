@@ -497,10 +497,17 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QComboBox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QCheckBox</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">h</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.instrument_log</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogColumn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">utility</span> <span class="k">as</span> <span class="n">pu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
@@ -518,7 +525,7 @@
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">allow_for_180_projection</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="n">TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tomography&quot;</span><span class="p">,</span> <span class="s2">&quot;Time of Flight (ToF)&quot;</span><span class="p">]</span>
+    <span class="n">TYPES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tomography&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="AppendStacks.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.append_stacks.append_stacks.html#mantidimaging.core.operations.append_stacks.append_stacks.AppendStacks.filter_func">[docs]</a>
@@ -526,9 +533,78 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                     <span class="n">append_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">stack_to_append</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">order_angles</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_temporary</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">images</span>
+
+        <span class="k">assert</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_to_append</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">stack_to_append</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">order_angles</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;Stack has no log file!&quot;</span>
+            <span class="k">assert</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;Stack to append has no log file!&quot;</span>
+            <span class="k">assert</span> <span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">(),</span> <span class="s2">&quot;Stack does not have Projection Angle data!&quot;</span>
+            <span class="k">assert</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">(),</span> \
+                <span class="s2">&quot;Stack to append does not have Projection Angle data!&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># get stacks projection angle order</span>
+                <span class="n">final_images_proj_angles_ind</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                    <span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="n">stack_to_append</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_ANGLE</span><span class="p">)</span>
+                <span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">())</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The chosen stacks do not have projection angle data! Error </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_images_proj_angles_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">num_images</span> <span class="o">+</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">num_images</span><span class="p">)</span>
+
+        <span class="n">sample_data</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">sample_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+
+        <span class="n">stack_to_append_data</span> <span class="o">=</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">stack_to_append</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">stack_to_append_angles</span> <span class="o">=</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span> <span class="k">if</span> <span class="n">stack_to_append</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">sample_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_to_append_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">stack_to_append_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sample_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">sample_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">out_shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">sample_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_to_append_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_angles_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample_angles</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">stack_to_append_angles</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">output_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">out_angles_shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">output_angles</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">stack_to_append</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">,</span> <span class="n">output_angles</span> <span class="o">=</span> <span class="n">execute_single</span><span class="p">(</span><span class="n">images</span><span class="p">,</span>
+                                                <span class="n">stack_to_append</span><span class="p">,</span>
+                                                <span class="n">progress</span><span class="p">,</span>
+                                                <span class="n">ang_order</span><span class="o">=</span><span class="n">final_images_proj_angles_ind</span><span class="p">,</span>
+                                                <span class="n">out</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+                                                <span class="n">out_ang</span><span class="o">=</span><span class="n">output_angles</span><span class="p">)</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">+=</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">filenames</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">)[</span><span class="n">final_images_proj_angles_ind</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">output_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">output_angles</span><span class="p">))</span>
+
+        <span class="c1"># Append (and order) the log_file columns</span>
+        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">image_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">image_columns</span><span class="p">:</span>
+                <span class="n">appended_column</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="o">+</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+                <span class="n">appended_column</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">appended_column</span><span class="p">)[</span><span class="n">final_images_proj_angles_ind</span><span class="p">]</span>
+                <span class="n">appended_column</span> <span class="o">=</span> <span class="n">appended_column</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">images</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">appended_column</span>
+
         <span class="k">return</span> <span class="n">images</span></div>
 
 
@@ -550,25 +626,76 @@
                                                          <span class="n">filters_view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span>
                                                          <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
                                                          <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Stack to append.&quot;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">order_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Sort in Projection Angle order&quot;</span><span class="p">,</span>
+                                               <span class="n">Type</span><span class="o">.</span><span class="n">BOOL</span><span class="p">,</span>
+                                               <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+                                               <span class="n">filters_view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span>
+                                               <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
+                                               <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Sort in Projection Angle order.&quot;</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stack_to_append_widget</span><span class="p">,</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span>
         <span class="n">stack_to_append_widget</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">375</span><span class="p">)</span>
         <span class="n">stack_to_append_widget</span><span class="o">.</span><span class="n">subscribe_to_main_window</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="p">)</span>
         <span class="n">stack_to_append_widget</span><span class="o">.</span><span class="n">try_to_select_relevant_stack</span><span class="p">(</span><span class="s2">&quot;Flat&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type_widget&#39;</span><span class="p">:</span> <span class="n">type_widget</span><span class="p">,</span> <span class="s1">&#39;stack_to_append_widget&#39;</span><span class="p">:</span> <span class="n">stack_to_append_widget</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;type_widget&#39;</span><span class="p">:</span> <span class="n">type_widget</span><span class="p">,</span>
+            <span class="s1">&#39;stack_to_append_widget&#39;</span><span class="p">:</span> <span class="n">stack_to_append_widget</span><span class="p">,</span>
+            <span class="s1">&#39;order_widget&#39;</span><span class="p">:</span> <span class="n">order_widget</span>
+        <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="AppendStacks.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.append_stacks.append_stacks.html#mantidimaging.core.operations.append_stacks.append_stacks.AppendStacks.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">type_widget</span><span class="p">:</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">stack_to_append_widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+            <span class="n">type_widget</span><span class="p">:</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">stack_to_append_widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">,</span>
+            <span class="n">order_widget</span><span class="p">:</span> <span class="n">QCheckBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
         <span class="n">stack_to_append_images</span> <span class="o">=</span> <span class="n">BaseFilter</span><span class="o">.</span><span class="n">get_images_from_stack</span><span class="p">(</span><span class="n">stack_to_append_widget</span><span class="p">,</span> <span class="s2">&quot;stack to append&quot;</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">AppendStacks</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span>
                        <span class="n">stack_to_append</span><span class="o">=</span><span class="n">stack_to_append_images</span><span class="p">,</span>
-                       <span class="n">append_type</span><span class="o">=</span><span class="n">type_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span></div>
+                       <span class="n">append_type</span><span class="o">=</span><span class="n">type_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">(),</span>
+                       <span class="n">order_angles</span><span class="o">=</span><span class="n">order_widget</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="execute_single">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.append_stacks.append_stacks.html#mantidimaging.core.operations.append_stacks.append_stacks.execute_single">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">execute_single</span><span class="p">(</span><span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+                   <span class="n">stack_to_append</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
+                   <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">ang_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">out_ang</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Append Stacks&#39;</span><span class="p">)</span>
+    <span class="n">progress</span><span class="o">.</span><span class="n">add_estimated_steps</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stack_angles</span> <span class="o">:=</span> <span class="n">stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(),</span> <span class="n">ProjectionAngles</span><span class="p">):</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">stack_angles</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stack_to_append_angles</span> <span class="o">:=</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">(),</span> <span class="n">ProjectionAngles</span><span class="p">):</span>
+        <span class="n">angles_to_append</span> <span class="o">=</span> <span class="n">stack_to_append_angles</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">angles_to_append</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">stack_to_append</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
+        <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Appending Stacks </span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">stack_to_append</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:]</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">stack</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">output_angles</span> <span class="o">=</span> <span class="n">out_ang</span><span class="p">[:]</span> <span class="k">if</span> <span class="n">out_ang</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">stack_to_append</span><span class="o">.</span><span class="n">data</span><span class="p">))[:]</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">ang_order</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">output_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_angles</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">angles</span><span class="p">,</span> <span class="n">angles_to_append</span><span class="p">))[:]</span>
+            <span class="n">output_angles</span> <span class="o">=</span> <span class="n">output_angles</span><span class="p">[</span><span class="n">ang_order</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">output_angles</span></div>
 
 </pre></div>
 
