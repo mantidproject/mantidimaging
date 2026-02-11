@@ -59,21 +59,6 @@ class Notifications(Enum):
 
 
 class ReconstructWindowPresenter(BasePresenter):
-
-    def on_geometry_updated(self):
-        """
-        Called when geometry/angles are loaded after initial dataset load.
-        Refreshes UI and re-enables geometry-dependent actions if possible.
-        """
-        if self.model.images is not None and self.model.images.geometry is not None:
-            self.view.show_status_message("")
-            self.view.set_recon_buttons_enabled(True)
-            self.view.set_correlate_buttons_enabled(True)
-            self.do_update_projection()
-            self.do_preview_reconstruct_slice()
-        else:
-            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
-
     ERROR_STRING = "COR/Tilt finding failed: {}"
     view: ReconstructWindowView
 
@@ -192,6 +177,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
+        self._update_geometry_dependent_ui()
 
     def _setup_new_stack_previews(self) -> None:
         """
@@ -441,6 +427,30 @@ class ReconstructWindowPresenter(BasePresenter):
         cor = ScalarCoR(self.view.rotation_centre)
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
+
+    def on_geometry_updated(self):
+        """
+        Called when geometry/angles are loaded after initial dataset load.
+        Refreshes UI and re-enables geometry-dependent actions if possible.
+        """
+        self._update_geometry_dependent_ui()
+
+        if self.model.images is not None and self.model.images.geometry is not None:
+            self.do_update_projection()
+            self.do_preview_reconstruct_slice()
+
+    def _update_geometry_dependent_ui(self) -> None:
+        """
+        Enable/disable geometry-dependent actions based on current stack state.
+        """
+        images = self.model.images
+        has_geometry = images is not None and images.geometry is not None
+        self.view.set_recon_buttons_enabled(has_geometry)
+        self.view.set_correlate_buttons_enabled(has_geometry)
+        if not has_geometry:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
+        else:
+            self.view.show_status_message("")
 
     def _update_imagestack_geometry_data(self) -> None:
         # TODO: Clean up when tilt/COR logic moves to Geometry window
