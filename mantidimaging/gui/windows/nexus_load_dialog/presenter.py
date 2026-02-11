@@ -104,6 +104,13 @@ class NexusLoadPresenter:
                 if self.creator != "NEXUSDataWriter.py":
                     self.data = self._look_for_image_data_and_update_view()
                     self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+                    if self.data is None:
+                        self.view.set_data_found(2, False, "", ())
+                        return
+
+                    if self.image_key_dataset is None:
+                        self.view.set_data_found(0, False, "", ())
+                        return
                     self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
                 else:
                     self.data = self._look_for_cil_nexus_data()
@@ -120,7 +127,7 @@ class NexusLoadPresenter:
                     )
                     self.rotation_angles = self._look_for_tomo_data_and_update_view(CIL_ROTATION_ANGLE_PATH, 1)
 
-                if self.image_key_dataset is None:
+                if self.data is None or self.image_key_dataset is None:
                     return
                 self.image_key_dataset = self.image_key_dataset[:]
 
@@ -144,15 +151,15 @@ class NexusLoadPresenter:
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
 
+                acquisition_geometry = self._read_geometry()
+                if acquisition_geometry is not None and self.data is not None and self.data.sample is not None:
+                    self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
+
         except OSError:
             unable_message = f"Unable to read NeXus data from {self.file_path}"
             LOG.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
-
-        acquisition_geometry = self._read_geometry()
-        if acquisition_geometry is not None and self.data is not None and self.data.sample is not None:
-            self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
 
     def _read_geometry(self) -> ImageGeometry | AcquisitionGeometry | None:
         if self.creator != np.bytes_('NEXUSDataWriter.py'):
