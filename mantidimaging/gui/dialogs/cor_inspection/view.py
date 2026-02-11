@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget, QMessageBox
 
 from mantidimaging.core.data import ImageStack
@@ -57,24 +58,24 @@ class CORInspectionDialogView(BaseDialogView):
 
         self.presenter.do_refresh()
 
-    def closeEvent(self, event):
-        reply = QMessageBox.question(
-            self, "Cancel Refinement?",
-            "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if reply == QMessageBox.Yes:
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if self._confirm_cancel():
             event.accept()
         else:
             event.ignore()
 
-    def _on_cancel_clicked(self):
-        reply = QMessageBox.question(
-            self, "Cancel Refinement?",
-            "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if reply == QMessageBox.Yes:
+    def _on_cancel_clicked(self) -> None:
+        if self._confirm_cancel():
             self.reject()
-        # else do nothing, stay open
+
+    def _confirm_cancel(self) -> bool:
+        return (QMessageBox.question(
+            self,
+            "Cancel Refinement?",
+            "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        ) == QMessageBox.Yes)
 
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str) -> None:
         self.image_canvas.set_image(image_type, recon_data, title)
@@ -86,7 +87,7 @@ class CORInspectionDialogView(BaseDialogView):
         self.stepCOR.setMaximum(cor)
 
     @property
-    def step_size(self) -> None:
+    def step_size(self) -> int | float:
         return self.spin_box.value()
 
     @step_size.setter
