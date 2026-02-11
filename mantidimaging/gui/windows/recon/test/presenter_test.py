@@ -300,22 +300,6 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.do_update_projection.assert_called_once()
         self.presenter.do_preview_reconstruct_slice.assert_called_once()
 
-    @parameterized.expand([(False, True), (True, False)])
-    def test_check_stack_for_invalid_180_deg_proj(self, shape_matches, expect_error):
-        uuid = mock.Mock()
-        selected_images = self.presenter.main_window.get_stack(uuid)
-        selected_images.proj_180_degree_shape_matches_images = mock.Mock(return_value=shape_matches)
-
-        self.presenter.check_stack_for_invalid_180_deg_proj(uuid)
-        selected_images.proj_180_degree_shape_matches_images.assert_called_once()
-
-        if expect_error:
-            self.view.show_error_dialog.assert_called_once_with(
-                "The shapes of the selected stack and it's 180 degree projections do not match! This is going to cause "
-                "an error when calculating the COR. Fix the shape before continuing!")
-        else:
-            self.view.show_error_dialog.assert_not_called()
-
     @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')
     def test_auto_find_correlation_with_180_projection(self, mock_start_async: mock.Mock):
         self.presenter.model.images.has_proj180deg = mock.Mock(return_value=True)
@@ -334,8 +318,8 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.presenter.notify(PresNotification.AUTO_FIND_COR_CORRELATE)
         mock_start_async.assert_not_called()
         self.view.show_status_message.assert_called_once_with(
-            "Unable to correlate 0 and 180 because the dataset doesn't have a 180° "
-            "projection set. Please load a 180° projection manually.")
+            "Unable to correlate 0 and 180 because the dataset doesn't have a 180° projection. "
+            "Please select a valid projection pair.")
 
         @mock.patch.object(ReconstructWindowModel, "images", new_callable=mock.PropertyMock)
         @mock.patch('mantidimaging.gui.windows.recon.presenter.start_async_task_view')

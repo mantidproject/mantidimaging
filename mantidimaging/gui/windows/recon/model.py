@@ -267,6 +267,9 @@ class ReconstructWindowModel:
         progress: Progress,
         use_projections: tuple[int, int] | None = None,
     ) -> tuple[ScalarCoR, Degrees]:
+        if self.images is None or (use_projections is not None
+                                   and not all(isinstance(idx, int) for idx in use_projections)):
+            raise ValueError("No valid image stack or projection indices provided for correlation.")
         return find_center(self.images, progress, use_projections)
 
     def stack_contains_nans(self) -> bool:
