@@ -1,0 +1,1 @@
+#3008: The Append Stack Operation is now functional. It allows the user to append two stacks together and sort them according to the projection angle data supplied in the associated log files.

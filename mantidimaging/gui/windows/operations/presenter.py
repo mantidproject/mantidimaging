@@ -391,6 +391,9 @@ class FiltersWindowPresenter(BasePresenter):
                 return
             subset = self.stack.sino_as_image_stack(self.model.preview_image_idx)
             squeeze_axis = 1
+
+        subset.is_temporary = True
+
         # Take copies for display to prevent issues when shared memory is cleaned
         before_image = np.copy(subset.data.squeeze(squeeze_axis))
         try:

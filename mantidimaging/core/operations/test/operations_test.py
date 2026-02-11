@@ -10,7 +10,7 @@ import numpy
 
 from mantidimaging.core.operations.loader import load_filter_packages
 import mantidimaging.test_helpers.unit_test_helper as th
-from mantidimaging.core.utility.data_containers import Counts
+from mantidimaging.core.utility.data_containers import Counts, ProjectionAngles
 from mantidimaging.core.gpu import utility as gpu
 from mantidimaging.core.operations.overlap_correction.overlap_correction import ShutterInfo
 
@@ -22,6 +22,7 @@ GPU_NOT_AVAIL = not gpu.gpu_available()
 
 def get_filter_func_args():
     filter_func_args = {
+        "Append Stacks": {"append_type": "Tomography", "stack_to_append": th.generate_images()},
         "Clip Values": {"clip_min": 0.1, "clip_max": 0.5},
         "Crop Coordinates": {"region_of_interest": [0, 0, 5, 5]},
         "Divide": {"value": 2},
@@ -67,6 +68,12 @@ class OperationsTest(unittest.TestCase):
                     ShutterInfo(1, 230, start_index=1, end_index=2)
                 ]
                 images._shutter_count_file = mock.Mock()
+            if filter_name == "Append Stacks":
+                proj_ang = ProjectionAngles(numpy.arange(images.num_images))
+                images.projection_angles = mock.Mock()
+                images.projection_angles.return_value = proj_ang
+                filter_args["stack_to_append"].projection_angles = mock.Mock()
+                filter_args["stack_to_append"].projection_angles.return_value = proj_ang
 
             returned = filter.filter_func(images, **filter_args)
             self.assertEqual(id(images), id(returned))
