@@ -650,9 +650,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.do_stack_uuid_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_stack_uuid_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_stack</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">check_stack_for_invalid_180_deg_proj</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_stack</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ReconstructWindowPresenter.set_current_stack">
@@ -698,21 +696,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_max_preview_indexes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_preview_reconstruct_slice</span><span class="p">(</span><span class="n">reset_roi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_do_nan_zero_negative_check</span><span class="p">()</span>
-
-<div class="viewcode-block" id="ReconstructWindowPresenter.check_stack_for_invalid_180_deg_proj">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.check_stack_for_invalid_180_deg_proj">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">check_stack_for_invalid_180_deg_proj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">selected_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="c1"># Likely due to stack no longer existing, e.g. when all stacks closed</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;UUID did not match open stack&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">selected_images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">selected_images</span><span class="o">.</span><span class="n">proj_180_degree_shape_matches_images</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span>
-                <span class="s2">&quot;The shapes of the selected stack and it&#39;s 180 degree projections do not match! This is &quot;</span>
-                <span class="s2">&quot;going to cause an error when calculating the COR. Fix the shape before continuing!&quot;</span><span class="p">)</span></div>
-
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_max_preview_indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span>
@@ -1020,8 +1003,9 @@
         <span class="n">use_projections</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">pair</span> <span class="o">==</span> <span class="s2">&quot;proj180&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_status_message</span><span class="p">(</span><span class="s2">&quot;Unable to correlate 0 and 180 because the dataset doesn&#39;t have a 180° &quot;</span>
-                                              <span class="s2">&quot;projection set. Please load a 180° projection manually.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_status_message</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to correlate 0 and 180 because the dataset doesn&#39;t have a 180° projection. &quot;</span>
+                    <span class="s2">&quot;Please select a valid projection pair.&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1046,11 +1030,9 @@
                 <span class="k">if</span> <span class="n">selected_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stack not found for UUID: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_stack_uuid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Finding the COR failed, likely caused by the selected stack&#39;s 180 &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;degree projection being a different shape. </span><span class="se">\n\n</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Finding COR failed, likely caused by the selected projection pair being invalid/mismatched.</span><span class="se">\n\n</span><span class="s2"> &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Suggestion: Use crop coordinates to resize the 180 degree projection to &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">selected_stack</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">selected_stack</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2"> Suggestion: Ensure both selected projections have matching shapes/valid for correlation.&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
