@@ -496,7 +496,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QStackedWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QCloseEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QStackedWidget</span><span class="p">,</span> <span class="n">QMessageBox</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ReconstructionParameters</span>
@@ -513,6 +514,8 @@
     <span class="n">lessButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">currentButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">moreButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">finishButton</span><span class="p">:</span> <span class="n">QPushButton</span>
+    <span class="n">cancelButton</span><span class="p">:</span> <span class="n">QPushButton</span>
     <span class="n">stepCOR</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
     <span class="n">stepIterations</span><span class="p">:</span> <span class="n">QSpinBox</span>
     <span class="n">stepStackedWidget</span><span class="p">:</span> <span class="n">QStackedWidget</span>
@@ -542,6 +545,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">moreButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_select_image</span><span class="p">(</span><span class="n">ImageType</span><span class="o">.</span><span class="n">MORE</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">finishButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancelButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_cancel_clicked</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stepStackedWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">iters_mode</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">instructionStackedWidget</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">iters_mode</span><span class="p">))</span>
@@ -550,6 +554,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">imagePlotLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_canvas</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_refresh</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CORInspectionDialogView.closeEvent">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.closeEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QCloseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confirm_cancel</span><span class="p">():</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">ignore</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_cancel_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confirm_cancel</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_confirm_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">&quot;Cancel Refinement?&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Are you sure you want to cancel the refinement? Any unsaved changes will be lost.&quot;</span><span class="p">,</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">,</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CORInspectionDialogView.set_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.view.html#mantidimaging.gui.dialogs.cor_inspection.view.CORInspectionDialogView.set_image">[docs]</a>
@@ -567,7 +593,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_box</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
     <span class="nd">@step_size</span><span class="o">.</span><span class="n">setter</span>
