@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING
 import h5py
 import numpy as np
 from cil.framework import AcquisitionGeometry
-from cil.framework import ImageGeometry
 
 from cil.io import NEXUSDataReader
 
@@ -114,9 +113,12 @@ class NexusLoadPresenter:
                     self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
                 else:
                     self.data = self._look_for_cil_nexus_data()
-                    LOG.warning("Invalid nexus file")
                     assert self.data is not None
-                    num_images = self.data.shape[0]
+                    LOG.warning("Invalid nexus file")
+                    stack = ImageStack(self.data)
+                    self.stack_data = Dataset(sample=stack)
+                    assert self.stack_data.sample is not None
+                    num_images = self.stack_data.sample.shape[0]
                     self.image_key_dataset = np.zeros(num_images, dtype=int)
 
                     self.view.set_data_found(
@@ -126,6 +128,12 @@ class NexusLoadPresenter:
                         shape=self.image_key_dataset.shape,
                     )
                     self.rotation_angles = self._look_for_tomo_data_and_update_view(CIL_ROTATION_ANGLE_PATH, 1)
+
+                    acquisition_geometry = self._read_geometry()
+                    if acquisition_geometry is not None and self.stack_data is not None \
+                     and self.stack_data.sample is not None:
+                        self.stack_data.sample.create_geometry_from_cil_acq(acquisition_geometry)
+                        LOG.warning("Created geometry from CIL acquisition geometry.")
 
                 if self.data is None or self.image_key_dataset is None:
                     return
@@ -151,20 +159,13 @@ class NexusLoadPresenter:
                 self._get_data_from_image_key()
                 self.title = self._find_data_title()
 
-                acquisition_geometry = self._read_geometry()
-                if acquisition_geometry is not None and self.data is not None and self.data.sample is not None:
-                    self.data.sample.create_geometry_from_cil_acq(acquisition_geometry)
-
         except OSError:
             unable_message = f"Unable to read NeXus data from {self.file_path}"
             LOG.error(unable_message)
             self.view.show_data_error(unable_message)
             self.view.disable_ok_button()
 
-    def _read_geometry(self) -> ImageGeometry | AcquisitionGeometry | None:
-        if self.creator != np.bytes_('NEXUSDataWriter.py'):
-            LOG.debug(f"NeXus file {self.file_path} not created with NEXUSDataWriter")
-            return None
+    def _read_geometry(self) -> AcquisitionGeometry | None:
         reader = NEXUSDataReader()
         reader.set_up(self.file_path)
         acquisition_geometry = reader.get_geometry()
