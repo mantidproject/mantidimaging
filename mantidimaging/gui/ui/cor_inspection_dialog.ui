@@ -48,13 +48,24 @@
      <item row="4" column="0" colspan="3">
       <layout class="QVBoxLayout" name="imagePlotLayout"/>
      </item>
-     <item row="8" column="1">
-      <widget class="QPushButton" name="finishButton">
-       <property name="text">
+    <item row="8" column="1">
+     <layout class="QHBoxLayout" name="finishCancelLayout">
+      <item>
+       <widget class="QPushButton" name="finishButton">
+        <property name="text">
         <string>Finish</string>
-       </property>
-      </widget>
-     </item>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="cancelButton">
+        <property name="text">
+        <string>Cancel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
      <item row="7" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="sizeConstraint">
@@ -255,7 +266,8 @@
   <tabstop>lessButton</tabstop>
   <tabstop>currentButton</tabstop>
   <tabstop>moreButton</tabstop>
-  <tabstop>finishButton</tabstop>
+    <tabstop>finishButton</tabstop>
+    <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
