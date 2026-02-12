@@ -101,38 +101,9 @@ class NexusLoadPresenter:
                     self.creator = ""
 
                 if self.creator != "NEXUSDataWriter.py":
-                    self.data = self._look_for_image_data_and_update_view()
-                    self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
-                    if self.data is None:
-                        self.view.set_data_found(2, False, "", ())
-                        return
-
-                    if self.image_key_dataset is None:
-                        self.view.set_data_found(0, False, "", ())
-                        return
-                    self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+                    self._load_standard_nexus_file()
                 else:
-                    self.data = self._look_for_cil_nexus_data()
-                    assert self.data is not None
-                    LOG.warning("Not a valid NXTomo, loading as a NEXUSDataWriter file")
-                    stack = ImageStack(self.data)
-                    self.stack_data = Dataset(sample=stack)
-                    assert self.stack_data.sample is not None
-                    num_images = self.stack_data.sample.shape[0]
-                    self.image_key_dataset = np.zeros(num_images, dtype=int)
-
-                    self.view.set_data_found(
-                        position=0,
-                        found=True,
-                        path="Assuming all images are projections",
-                        shape=self.image_key_dataset.shape,
-                    )
-                    self.rotation_angles = self._look_for_tomo_data_and_update_view(CIL_ROTATION_ANGLE_PATH, 1)
-
-                    acquisition_geometry = self._read_geometry()
-                    if acquisition_geometry is not None:
-                        self.stack_data.sample.create_geometry_from_cil_acq(acquisition_geometry)
-                        LOG.debug("Created geometry from CIL acquisition geometry.")
+                    self._load_cil_nexus_file()
 
                 if self.data is None or self.image_key_dataset is None:
                     return
@@ -438,3 +409,38 @@ class NexusLoadPresenter:
     def _add_recons_to_dataset(self, ds: Dataset) -> None:
         for recon_array in self.recon_data:
             ds.add_recon(ImageStack(recon_array))
+
+    def _load_standard_nexus_file(self):
+        self.data = self._look_for_image_data_and_update_view()
+        self.image_key_dataset = self._look_for_tomo_data_and_update_view(IMAGE_KEY_PATH, 0)
+        if self.data is None:
+            self.view.set_data_found(2, False, "", ())
+            return
+
+        if self.image_key_dataset is None:
+            self.view.set_data_found(0, False, "", ())
+            return
+        self.rotation_angles = self._look_for_tomo_data_and_update_view(ROTATION_ANGLE_PATH, 1)
+
+    def _load_cil_nexus_file(self):
+        self.data = self._look_for_cil_nexus_data()
+        assert self.data is not None
+        LOG.warning("Not a valid NXTomo, loading as a NEXUSDataWriter file")
+        stack = ImageStack(self.data)
+        self.stack_data = Dataset(sample=stack)
+        assert self.stack_data.sample is not None
+        num_images = self.stack_data.sample.shape[0]
+        self.image_key_dataset = np.zeros(num_images, dtype=int)
+
+        self.view.set_data_found(
+            position=0,
+            found=True,
+            path="Assuming all images are projections",
+            shape=self.image_key_dataset.shape,
+        )
+        self.rotation_angles = self._look_for_tomo_data_and_update_view(CIL_ROTATION_ANGLE_PATH, 1)
+
+        acquisition_geometry = self._read_geometry()
+        if acquisition_geometry is not None:
+            self.stack_data.sample.create_geometry_from_cil_acq(acquisition_geometry)
+            LOG.debug("Created geometry from CIL acquisition geometry.")
