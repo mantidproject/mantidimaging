@@ -222,10 +222,4 @@ class FittingFormWidgetPresenter:
         self.view.set_fit_quality(rss, reduced_rss)
         self.show_fit(list(result.values()))
         roi_name = self.view.roiSelectionWidget.current_roi_name
-        self.spectrum_viewer.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=result,
-            status="Fitted",
-            chi2=reduced_rss,
-        )
         LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, reduced_rss)

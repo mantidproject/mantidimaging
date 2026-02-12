@@ -95,12 +95,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self._export_image_widget = ExportImageViewWidget(self)
         self.export_display_tabs.addTab(self._export_image_widget, "Image")
+        self.export_display_tabs.currentChanged.connect(self.handle_export_change_tab)
         self.exportLayout.addWidget(self.export_display_tabs)
-        export_image = self.spectrum_widget.image.image_item.image
-        if export_image is not None:
-            self._export_image_widget.update_image(export_image)
-        self.spectrum_widget.image.image_item.sigImageChanged.connect(
-            lambda: self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image))
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
@@ -199,6 +195,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
         LOG.debug("Tab changed: index=%d", tab_index)
+
+    def handle_export_change_tab(self, tab_index: int):
+        if self.export_display_tabs.tabText(tab_index) == "Image":
+            self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
+
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""
