@@ -454,7 +454,7 @@ class ImageStack:
         """
         self.create_geometry(ProjectionAngles(np.zeros(0)))
         assert (self.geometry is not None)
-        self.geometry.config = acquisition_geometry.config.copy()
+        self.geometry.config = deepcopy(acquisition_geometry.config)
 
     def set_geometry_panels(self) -> None:
         """

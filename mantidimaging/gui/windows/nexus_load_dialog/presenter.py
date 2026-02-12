@@ -114,7 +114,7 @@ class NexusLoadPresenter:
                 else:
                     self.data = self._look_for_cil_nexus_data()
                     assert self.data is not None
-                    LOG.warning("Invalid nexus file")
+                    LOG.warning("Not a valid NXTomo, loading as a NEXUSDataWriter file")
                     stack = ImageStack(self.data)
                     self.stack_data = Dataset(sample=stack)
                     assert self.stack_data.sample is not None
@@ -130,10 +130,9 @@ class NexusLoadPresenter:
                     self.rotation_angles = self._look_for_tomo_data_and_update_view(CIL_ROTATION_ANGLE_PATH, 1)
 
                     acquisition_geometry = self._read_geometry()
-                    if acquisition_geometry is not None and self.stack_data is not None \
-                     and self.stack_data.sample is not None:
+                    if acquisition_geometry is not None:
                         self.stack_data.sample.create_geometry_from_cil_acq(acquisition_geometry)
-                        LOG.warning("Created geometry from CIL acquisition geometry.")
+                        LOG.debug("Created geometry from CIL acquisition geometry.")
 
                 if self.data is None or self.image_key_dataset is None:
                     return
