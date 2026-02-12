@@ -34,8 +34,6 @@ class GeometryWindowPresenter(BasePresenter):
             stack.metadata.pop('angles', None)
         self.view.set_widget_stack_page(1)
         self.view.clear_plot()
-        if hasattr(self.main_window, 'on_geometry_deleted'):
-            self.main_window.on_geometry_deleted(stack.id)
         self.view.show_info_dialog("Geometry deleted. You can now create a new geometry.")
 
     view: GeometryWindowView

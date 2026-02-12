@@ -762,10 +762,6 @@ class MainWindowView(BaseMainWindowView):
         container_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_ADD_STACK_DIALOG, container_id=container_id)
 
-    def on_geometry_deleted(self, stack_id):
-        if self.recon is not None:
-            self.recon.on_geometry_deleted(stack_id)
-
     def _move_stack(self) -> None:
         stack_id = self.dataset_tree_widget.selectedItems()[0].id
         self.presenter.notify(PresNotification.SHOW_MOVE_STACK_DIALOG, stack_id=stack_id)

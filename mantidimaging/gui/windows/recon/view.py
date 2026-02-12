@@ -33,20 +33,6 @@ LOG = getLogger(__name__)
 
 class ReconstructWindowView(BaseMainWindowView):
 
-    def on_geometry_deleted(self, stack_uuid):
-        """
-        Called when geometry is deleted for a stack. Resets geometry-dependent UI and state.
-        """
-        if self.current_stack_uuid == stack_uuid:
-            # Reset geometry-dependent UI
-            self.show_status_message("Geometry deleted. Please create or load geometry to enable reconstruction.")
-            self.reset_recon_and_sino_previews()
-            self.reset_projection_preview()
-            self.rotation_centre = 0.0
-            self.tilt = 0.0
-            self.slope = 0.0
-            self.set_recon_buttons_enabled(False)
-
     resultsTab: QWidget
 
     stackSelector: DatasetSelectorWidgetView
@@ -213,7 +199,7 @@ class ReconstructWindowView(BaseMainWindowView):
         # Update initial UI state
         self.on_table_row_count_change()
 
-        self.stackSelector.subscribe_to_main_window(self.main_window)
+        self.stackSelector.subscribe_to_main_window(main_window)
         self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_CURRENT_STACK))
         self.stackSelector.select_eligible_stack()
 
