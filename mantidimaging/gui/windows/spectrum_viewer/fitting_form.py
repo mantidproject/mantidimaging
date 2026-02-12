@@ -61,7 +61,8 @@ class FittingFormWidgetView(QWidget):
 
     def showEvent(self, ev: QShowEvent) -> None:
         super().showEvent(ev)
-        self.presenter.handle_activated()
+        if self.spectrum_viewer.presenter.model.has_stack():
+            self.presenter.handle_activated()
 
     @property
     def current_roi_name(self) -> str:
@@ -73,6 +74,14 @@ class FittingFormWidgetView(QWidget):
         """
         self.rss_label.setText(f"RSS: {rss:.2g}")
         self.reduced_rss_label.setText(f"RSS/DoF: {rss_per_dof:.2g}")
+
+    def clear(self) -> None:
+        """
+        Clear fitting form display and reset presenter state for reinitialisation.
+        """
+        self.set_fit_quality(float("nan"), float("nan"))
+        self.fitting_param_form.clear_rows()
+        self.presenter.first_activation = True
 
 
 class FittingFormWidgetPresenter:
