@@ -200,7 +200,6 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.export_display_tabs.tabText(tab_index) == "Image":
             self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
 
-
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""
         for group in (self.tof_mode_select_group, self.fittingDisplayWidget.tof_mode_select_group):
