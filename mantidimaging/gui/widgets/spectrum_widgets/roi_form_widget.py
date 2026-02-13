@@ -88,14 +88,19 @@ class ROIFormWidget(BaseWidget):
 
     def _binning_changed(self) -> None:
         binner = self.binner
-        if not binner.check_fits_exactly():
-            warning = (
-                f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
-                f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
-            self.show_rits_warning(warning)
-        else:
-            self.show_rits_warning(None)
+        warning = self._get_binning_warning(binner)
+        self.show_rits_warning(warning)
         self.binningChanged.emit(binner)
+
+    def _get_binning_warning(self, binner: ROIBinner) -> str | None:
+        if len(binner.left_indexes) == 0 or len(binner.top_indexes) == 0:
+            return (
+                f"Bin size {binner.bin_size} and step size {binner.step_size} are too large for the ROI "
+                f"({binner.roi.width}x{binner.roi.height}). No bins can be created. Please reduce bin or step size.")
+        if not binner.check_fits_exactly():
+            return (f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
+                    f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
+        return None
 
 
 class ROIPropertiesTableWidget(BaseWidget):
