@@ -152,14 +152,7 @@ class FittingFormWidgetPresenter:
         self.view.fittingDisplayWidget.set_plot_mode("initial")
 
         self.show_initial_fit()
-        roi_name = self.view.roiSelectionWidget.current_roi_name
         self.view.set_fit_quality(float("nan"), float("nan"))
-        self.spectrum_viewer.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=init_params,
-            status="Initial",
-            chi2=None,
-        )
 
     def show_fit(self, params: list[float]) -> None:
         xvals = self.model.tof_data

@@ -192,6 +192,9 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.presenter.initial_roi_calc()
 
     def handle_change_tab(self, tab_index: int):
+        if self.formTabs.tabText(tab_index) == "Export":
+            if self.exportDataTableWidget.model.rowCount() == 0:
+                self.fittingForm.presenter.setup_fitting_model()
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
         LOG.debug("Tab changed: index=%d", tab_index)
