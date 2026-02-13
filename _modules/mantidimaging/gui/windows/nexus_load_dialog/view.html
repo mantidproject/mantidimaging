@@ -635,6 +635,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
             <span class="k">return</span>
 
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;Assuming all images are projections&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_found_status</span><span class="p">(</span><span class="n">data_section</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
         <span class="c1"># Add the path and array shape information to the QTreeWidget</span>
         <span class="n">data_section</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">PATH_COLUMN</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="n">data_section</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">SHAPE_COLUMN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span></div>

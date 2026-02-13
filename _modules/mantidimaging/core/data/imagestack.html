@@ -504,6 +504,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cil.framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionGeometry</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">mark_cropped</span>
@@ -999,13 +1000,25 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_geometry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">geom_type</span><span class="p">:</span> <span class="n">GeometryType</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates an AcquisitionGeometry belonging to the ImageStack.</span>
+<span class="sd">        Creates a Geometry of given type belonging to the ImageStack</span>
+<span class="sd">        Angles should be given in radians</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">angles</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                  <span class="nb">type</span><span class="o">=</span><span class="n">geom_type</span><span class="p">,</span>
                                  <span class="n">num_pixels</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
                                  <span class="n">pixel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ImageStack.create_geometry_from_cil_acq">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_geometry_from_cil_acq">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_geometry_from_cil_acq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acquisition_geometry</span><span class="p">:</span> <span class="n">AcquisitionGeometry</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a Geometry belong to the ImageStack from a CIL AcquisitionGeometry object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">acquisition_geometry</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ImageStack.set_geometry_panels">
