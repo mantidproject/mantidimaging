@@ -1,0 +1,1 @@
+#2988: The spectrum viewer image, fitting and export tab user interface states now gracefully clear when the active dataset is deleted.

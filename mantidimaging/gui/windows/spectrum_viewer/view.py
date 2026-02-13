@@ -287,9 +287,17 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.show_visible_spectrums()
 
     def clear(self) -> None:
+        """
+        Clear spectrum viewer data and reset the UI states:
+        - Spectrum data and plots
+        - Export table data
+        - Normalisation checkbox
+        """
         self.spectrum_widget.spectrum_data_dict = {}
         self.spectrum_widget.image.setImage(np.zeros((1, 1)))
         self.spectrum_widget.spectrum.clearPlots()
+        self.exportDataTableWidget.clear_table()
+        self.normaliseCheckBox.setChecked(False)
 
     def auto_range_image(self) -> None:
         self.spectrum_widget.image.vb.autoRange()

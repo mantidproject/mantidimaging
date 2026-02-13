@@ -61,6 +61,16 @@ class FittingDisplayWidget(QWidget):
     def set_plot_mode(self, mode: str) -> None:
         self._showing_initial_fit = (mode == "initial")
 
+    def clear(self) -> None:
+        """
+        Clear the fitting display widget data and reset to default state.
+        """
+        self.spectrum_plot.spectrum.clearPlots()
+        self.image_item.setImage(np.zeros((150, 150)), autoLevels=True)
+        self.fitting_region.hide()
+        self._current_fit_line = None
+        self.image_preview_roi.hide()
+
     def update_plot(self, x_data: np.ndarray, y_data: np.ndarray, label: str = "ROI") -> None:
         self.spectrum_plot.spectrum.clear()
         self.spectrum_plot.spectrum.plot(x_data, y_data, name=label, pen=(255, 255, 0))

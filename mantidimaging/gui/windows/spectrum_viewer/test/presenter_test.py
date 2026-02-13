@@ -55,6 +55,7 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.view.fittingDisplayWidget = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot = mock.Mock()
         self.view.fittingDisplayWidget.spectrum_plot.spectrum = mock.Mock()
+        self.view.fittingForm = mock.Mock()
         self.presenter = SpectrumViewerWindowPresenter(self.view, self.main_window)
 
     def test_get_dataset_id_for_stack_no_stack_id(self):
@@ -99,11 +100,13 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.get_dataset_id_for_stack = mock.Mock(return_value=None)
         self.view.try_to_select_relevant_normalise_stack = mock.Mock()
         self.presenter.show_new_sample = mock.Mock()
+        self.presenter._clear_state = mock.Mock()
 
         self.presenter.handle_sample_change(None)
         self.view.try_to_select_relevant_normalise_stack.assert_not_called()
         self.assertIsNone(self.view.current_dataset_id)
         self.presenter.show_new_sample.assert_not_called()
+        self.presenter._clear_state.assert_called_once()
 
     def test_handle_sample_change_dataset_unchanged(self):
         initial_dataset_id = self.view.current_dataset_id
@@ -427,6 +430,18 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     @parameterized.expand([(True, SpecType.SAMPLE_NORMED), (False, SpecType.SAMPLE)])
     def test_WHEN_normalised_enabled_THEN_correct_mode_set(self, norm_enabled, spec_type):
         self.presenter.redraw_all_rois = mock.Mock()
+        self.presenter.model.set_stack(generate_images())
         self.presenter.handle_enable_normalised(norm_enabled)
         self.assertEqual(self.presenter.spectrum_mode, spec_type)
         self.view.display_normalise_error.assert_called_once()
+
+    @parameterized.expand([(True), (False)])
+    def test_WHEN_no_stack_THEN_normalised_enabled_reurns_earlyt(self, norm_enabled):
+        self.presenter.redraw_all_rois = mock.Mock()
+        self.presenter.model.set_stack(None)
+        initial_spectrum_mode = self.presenter.spectrum_mode
+
+        self.presenter.handle_enable_normalised(norm_enabled)
+        self.assertEqual(self.presenter.spectrum_mode, initial_spectrum_mode)
+        self.presenter.redraw_all_rois.assert_not_called()
+        self.view.display_normalise_error.assert_not_called()

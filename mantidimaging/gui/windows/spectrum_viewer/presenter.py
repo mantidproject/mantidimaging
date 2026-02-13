@@ -135,7 +135,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         if uuid is None:
             self.model.set_stack(None)
-            self.view.clear()
+            self._clear_state()
             self.view.tof_mode_select_group.setEnabled(False)
             return
 
@@ -161,6 +161,16 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.show_new_sample()
         self.view.on_visibility_change()
         self.view.setup_roi_properties_spinboxes()
+
+    def _clear_state(self) -> None:
+        """Clear UI and data states when sample is removed. """
+        self.model.set_normalise_stack(None)
+        self.model.set_stack(None)
+        self.current_norm_stack_uuid = None
+        self.do_remove_roi()
+        self.view.fittingForm.clear()
+        self.view.fittingDisplayWidget.clear()
+        self.view.clear()
 
     def reset_units_menu(self) -> None:
         if self.model.tof_data.size == 0:
@@ -469,6 +479,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             LOG.error("Fit failed: %s", task.error)
 
     def handle_enable_normalised(self, enabled: bool) -> None:
+        if not self.model.has_stack():
+            return
         if enabled:
             self.spectrum_mode = SpecType.SAMPLE_NORMED
         else:
@@ -559,6 +571,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 self.view.spectrum_widget.remove_roi(name)
                 LOG.info(f"ROI removed: name={name}")
             self.view.spectrum_widget.roi_dict.clear()
+            self.view.table_view.clear_table()
             self.model.remove_all_roi()
         else:
             self.view.spectrum_widget.remove_roi(roi_name)
