@@ -35,7 +35,8 @@ def get_filter_func_args():
         "Remove all stripes": {"sm_size": 25},
         "Ring Removal": {"theta_min": 2},
         "ROI Normalisation": {"region_of_interest": [0, 0, 5, 5]},
-        "Rotate Stack": {"angle": 10}
+        "Rotate Stack": {"angle": 10},
+        "Sum Stack Intensities": {"stack_type":"Tomography","secondary_stack": th.generate_images()}
     }  # yapf: disable
     return filter_func_args
 
@@ -58,6 +59,7 @@ class OperationsTest(unittest.TestCase):
             filter_args = self.filter_args.get(filter_name, {})
 
             images = th.generate_images()
+            images.full_stack_shape = images.data.shape
             if filter_name == "Monitor Normalisation":
                 counts = Counts(numpy.ones(images.num_images))
                 images._log_file = mock.Mock(counts=lambda counts=counts: counts)

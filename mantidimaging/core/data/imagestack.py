@@ -83,6 +83,8 @@ class ImageStack:
         leak_tracker.add(self._shared_array.array, msg=tracker_msg)
         leak_tracker.add(self._shared_array, msg=tracker_msg)
 
+        self._full_stack_shape: tuple[int, ...] | None = None
+
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ImageStack):
             return np.array_equal(self.data, other.data) \
@@ -299,6 +301,23 @@ class ImageStack:
     @property
     def shape(self) -> tuple[int, ...]:
         return self._shared_array.array.shape
+
+    @property
+    def full_stack_shape(self) -> tuple[int, ...] | None:
+        """
+        The original shape of the stack irrespective of preview subsetting.
+        For preview subsets: Returns the full shape instead of the sliced shape.
+
+        Property should be set when preview is updated, allowing operations to
+        validate against the stacks full shape instead of the preview subset shape.
+
+        :return: The full shape of the stack as a tuple of ints (z, y, x) or None if not set.
+        """
+        return self._full_stack_shape
+
+    @full_stack_shape.setter
+    def full_stack_shape(self, value: tuple[int, ...] | None) -> None:
+        self._full_stack_shape = value
 
     @property
     def ndim(self) -> int:
