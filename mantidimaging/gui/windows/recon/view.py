@@ -4,7 +4,7 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-import numpy
+import numpy as np
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
 from PyQt5.QtCore import QSignalBlocker
@@ -32,7 +32,6 @@ LOG = getLogger(__name__)
 
 
 class ReconstructWindowView(BaseMainWindowView):
-    # COR and Tilt tab
 
     resultsTab: QWidget
 
@@ -315,7 +314,7 @@ class ReconstructWindowView(BaseMainWindowView):
         if self.previewAutoUpdate.isChecked():
             self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
 
-    def update_recon_preview(self, image_data: numpy.ndarray, reset_roi: bool = False) -> None:
+    def update_recon_preview(self, image_data: np.ndarray, reset_roi: bool = False) -> None:
         """
         Updates the reconstruction preview image with new data.
         """

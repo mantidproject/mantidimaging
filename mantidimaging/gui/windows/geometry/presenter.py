@@ -23,6 +23,19 @@ if TYPE_CHECKING:
 
 
 class GeometryWindowPresenter(BasePresenter):
+
+    def handle_delete_geometry(self) -> None:
+        stack = self._get_current_stack_with_assert()
+        if stack.geometry is None:
+            self.view.show_info_dialog("No geometry to delete.")
+            return
+        stack.geometry = None
+        if hasattr(stack, 'geometry'):
+            stack.metadata.pop('angles', None)
+        self.view.set_widget_stack_page(1)
+        self.view.clear_plot()
+        self.view.show_info_dialog("Geometry deleted. You can now create a new geometry.")
+
     view: GeometryWindowView
 
     def __init__(self, view: GeometryWindowView, main_window: MainWindowView):

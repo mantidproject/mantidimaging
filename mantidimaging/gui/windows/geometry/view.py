@@ -164,6 +164,9 @@ class GeometryWindowView(BaseMainWindowView):
         data_display_group_layout.addRow(QLabel("Source Pos:"), self.sourcePosBox)
         data_display_group_layout.addRow(QLabel("Detector Pos:"), self.detectorPosBox)
 
+        self.deleteGeometryButton = QPushButton("Delete Geometry")
+        data_display_group_layout.addRow(self.deleteGeometryButton)
+
         return data_display_group
 
     def _build_geometry_conversion_group(self) -> QWidget:
@@ -263,6 +266,8 @@ class GeometryWindowView(BaseMainWindowView):
         self.sourcePosBox.valueChanged.connect(self.presenter.handle_parameter_updates)
         self.createGeometryButton.clicked.connect(self.presenter.handle_create_new_geometry)
         self.convertGeometryButton.clicked.connect(self.presenter.handle_convert_geometry)
+
+        self.deleteGeometryButton.clicked.connect(self.presenter.handle_delete_geometry)
 
     def set_widget_stack_page(self, index: int) -> None:
         self.geometryPagesWidget.setCurrentIndex(index)
