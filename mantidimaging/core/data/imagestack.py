@@ -11,6 +11,7 @@ import logging
 from pathlib import Path
 
 import numpy as np
+from cil.framework import AcquisitionGeometry
 
 from mantidimaging.core.data.geometry import Geometry, GeometryType
 from mantidimaging.core.data.utility import mark_cropped
@@ -439,13 +440,22 @@ class ImageStack:
 
     def create_geometry(self, angles: ProjectionAngles, geom_type: GeometryType = GeometryType.PARALLEL3D) -> None:
         """
-        Creates an AcquisitionGeometry belonging to the ImageStack.
+        Creates a Geometry of given type belonging to the ImageStack
+        Angles should be given in radians
         """
 
         self.geometry = Geometry(angles.value,
                                  type=geom_type,
                                  num_pixels=(self.width, self.height),
                                  pixel_size=(1., 1.))
+
+    def create_geometry_from_cil_acq(self, acquisition_geometry: AcquisitionGeometry) -> None:
+        """
+        Creates a Geometry belong to the ImageStack from a CIL AcquisitionGeometry object.
+        """
+        self.create_geometry(ProjectionAngles(np.zeros(0)))
+        assert (self.geometry is not None)
+        self.geometry.config = deepcopy(acquisition_geometry.config)
 
     def set_geometry_panels(self) -> None:
         """

@@ -132,6 +132,9 @@ class NexusLoadDialog(BaseDialogView):
         if not found:
             return
 
+        if path == "Assuming all images are projections":
+            self.set_found_status(data_section, False)
+
         # Add the path and array shape information to the QTreeWidget
         data_section.setText(PATH_COLUMN, path)
         data_section.setText(SHAPE_COLUMN, str(shape))

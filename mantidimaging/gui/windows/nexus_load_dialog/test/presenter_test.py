@@ -15,7 +15,7 @@ from mantidimaging.test_helpers.unit_test_helper import generate_images, gen_img
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.windows.nexus_load_dialog.presenter import _missing_data_message, TOMO_ENTRY, DATA_PATH, \
     IMAGE_KEY_PATH, NexusLoadPresenter, ROTATION_ANGLE_PATH
-from mantidimaging.gui.windows.nexus_load_dialog.presenter import logger as nexus_logger
+from mantidimaging.gui.windows.nexus_load_dialog.presenter import LOG as nexus_logger
 from mantidimaging.gui.windows.nexus_load_dialog.view import NexusLoadDialog
 
 
