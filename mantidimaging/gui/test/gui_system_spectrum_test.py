@@ -210,3 +210,25 @@ class TestGuiSpectrumViewer(GuiSystemBase):
                 self.assertEqual(item.opts['symbol'], 'o')
                 self.assertEqual(item.opts['pen'].color().getRgb(), (200, 200, 200, 255))
         self.assertEqual(len(self.spectrum_window.spectrum.spectrum.items), initial_items + 1)
+
+    def test_fit_model_does_not_update_export_table(self):
+        self.spectrum_window.formTabs.setCurrentIndex(1)
+        QTest.qWait(SHORT_DELAY)
+        self.spectrum_window.formTabs.setCurrentIndex(2)
+        QTest.mouseClick(self.spectrum_window.exportSettingsWidget.fitAllButton, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+        old_params = []
+        for col in range(self.spectrum_window.exportDataTableWidget.model.columnCount()):
+            old_params.append(self.spectrum_window.exportDataTableWidget.model.item(0, col).text())
+        self.spectrum_window.formTabs.setCurrentIndex(1)
+        QTest.mouseClick(self.spectrum_window.fitting_param_form.from_roi_button, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+        QTest.mouseClick(self.spectrum_window.fittingForm.run_fit_button, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+        new_params = []
+        for col in range(self.spectrum_window.exportDataTableWidget.model.columnCount()):
+            new_params.append(self.spectrum_window.exportDataTableWidget.model.item(0, col).text())
+
+        self.assertListEqual(old_params, new_params)
+
+
