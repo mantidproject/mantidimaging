@@ -195,6 +195,8 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.formTabs.tabText(tab_index) == "Export":
             if self.exportDataTableWidget.model.rowCount() == 0:
                 self.fittingForm.presenter.setup_fitting_model()
+            if self.export_display_tabs.tabText(self.export_display_tabs.currentIndex()) == "Image":
+                self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
         LOG.debug("Tab changed: index=%d", tab_index)
