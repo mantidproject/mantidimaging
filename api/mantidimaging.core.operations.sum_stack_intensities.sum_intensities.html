@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mantidimaging.core.operations package &#8212; MantidImaging 3.0.0a1 documentation</title>
+    <title>mantidimaging.core.operations.sum_stack_intensities.sum_intensities module &#8212; MantidImaging 3.0.0a1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.operations';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -59,8 +59,8 @@
     <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="mantidimaging.core.operations.append_stacks package" href="mantidimaging.core.operations.append_stacks.html" />
-    <link rel="prev" title="mantidimaging.core.operation_history.operations module" href="mantidimaging.core.operation_history.operations.html" />
+    <link rel="next" title="mantidimaging.core.operations.base_filter module" href="mantidimaging.core.operations.base_filter.html" />
+    <link rel="prev" title="mantidimaging.core.operations.sum_stack_intensities package" href="mantidimaging.core.operations.sum_stack_intensities.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0" />
@@ -546,7 +546,13 @@
     
     <li class="breadcrumb-item"><a href="mantidimaging.core.html" class="nav-link">mantidimaging.core package</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.core.operations package</span></li>
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.core.operations.html" class="nav-link">mantidimaging.core.operations package</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.core.operations.sum_stack_intensities.html" class="nav-link">mantidimaging.core.operations.sum_stack_intensities package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.core.operations.sum_stack_intensities.sum_intensities module</span></li>
   </ul>
 </nav>
 </div>
@@ -563,220 +569,86 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-mantidimaging.core.operations">
-<span id="mantidimaging-core-operations-package"></span><h1>mantidimaging.core.operations package<a class="headerlink" href="#module-mantidimaging.core.operations" title="Link to this heading">#</a></h1>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.append_stacks.html">mantidimaging.core.operations.append_stacks package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.append_stacks.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.append_stacks.append_stacks.html">mantidimaging.core.operations.append_stacks.append_stacks module</a></li>
+  <section id="module-mantidimaging.core.operations.sum_stack_intensities.sum_intensities">
+<span id="mantidimaging-core-operations-sum-stack-intensities-sum-intensities-module"></span><h1>mantidimaging.core.operations.sum_stack_intensities.sum_intensities module<a class="headerlink" href="#module-mantidimaging.core.operations.sum_stack_intensities.sum_intensities" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.operations.sum_stack_intensities.sum_intensities.</span></span><span class="sig-name descname"><span class="pre">SumIntensitiesFilter</span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/sum_stack_intensities/sum_intensities.html#SumIntensitiesFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter" title="mantidimaging.core.operations.base_filter.BaseFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFilter</span></code></a></p>
+<p>Sum stack intensities as a new stack to emulate longer exposure times for Tomography and
+Time of Flight (ToF) datasets.</p>
+<dl>
+<dt>Use cases:</dt><dd><ul class="simple">
+<li><p>The stacks to be summed have exactly the same shape (x,y) and number of slices (z).</p></li>
 </ul>
-</li>
+<p>The z-axis could be either rotation angle or ToF bin.
+- Stacks where values on the z-axis are identical, e.g. 2 tomography scans taken at the same rotation angles.</p>
+</dd>
+</dl>
+<p>The new stack will be saved either in-place or as a new stack within a new dataset, depending on the user’s choice.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.compute_function">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/operations/sum_stack_intensities/sum_intensities.html#SumIntensitiesFilter.compute_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.compute_function" title="Link to this definition">#</a></dt>
+<dd><p>Function to compute the sum of stack intensities</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.execute_wrapper">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack_type_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QComboBox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_to_sum_widget</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView" title="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView"><span class="pre">DatasetSelectorWidgetView</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">partial</span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/sum_stack_intensities/sum_intensities.html#SumIntensitiesFilter.execute_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.execute_wrapper" title="Link to this definition">#</a></dt>
+<dd><p>Should construct a partial call to _filter_func using values taken from the widgets passed to this function
+as kwargs.
+:param kwargs: widgets which contain values required for _filter_func.
+:return: a partial call to _filter_func using parameters taken from the input widgets.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_func">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack" title="mantidimaging.core.data.imagestack.ImageStack"><span class="pre">ImageStack</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/sum_stack_intensities/sum_intensities.html#SumIntensitiesFilter.filter_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_func" title="Link to this definition">#</a></dt>
+<dd><p>Validate and prepare stacks for summing intensities.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_name">
+<span class="sig-name descname"><span class="pre">filter_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Sum</span> <span class="pre">Stack</span> <span class="pre">Intensities'</span></em><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.group_name">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">group_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup" title="mantidimaging.core.operations.base_filter.FilterGroup"><span class="pre">FilterGroup</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/sum_stack_intensities/sum_intensities.html#SumIntensitiesFilter.group_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.group_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.link_histograms">
+<span class="sig-name descname"><span class="pre">link_histograms</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.link_histograms" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.register_gui">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_gui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QFormLayout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mantidimaging/core/operations/sum_stack_intensities/sum_intensities.html#SumIntensitiesFilter.register_gui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.register_gui" title="Link to this definition">#</a></dt>
+<dd><p>Adds any required input widgets to the given form and returns references to them.</p>
+<p>The return values should be in a dict which can be unpacked as kwargs for a call to
+the operations <cite>execute_wrapper</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>view</strong></p></li>
+<li><p><strong>form</strong> – the layout to create input widgets in</p></li>
+<li><p><strong>on_change</strong> – the filter view action to be bound to all created inputs</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.arithmetic.html">mantidimaging.core.operations.arithmetic package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.arithmetic.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.arithmetic.arithmetic.html">mantidimaging.core.operations.arithmetic.arithmetic module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.circular_mask.html">mantidimaging.core.operations.circular_mask package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.circular_mask.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.circular_mask.circular_mask.html">mantidimaging.core.operations.circular_mask.circular_mask module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.clip_values.html">mantidimaging.core.operations.clip_values package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.clip_values.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.clip_values.clip_values.html">mantidimaging.core.operations.clip_values.clip_values module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.crop_coords.html">mantidimaging.core.operations.crop_coords package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.crop_coords.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.crop_coords.crop_coords.html">mantidimaging.core.operations.crop_coords.crop_coords module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.divide.html">mantidimaging.core.operations.divide package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.divide.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.divide.divide.html">mantidimaging.core.operations.divide.divide module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.flat_fielding.html">mantidimaging.core.operations.flat_fielding package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.flat_fielding.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.flat_fielding.flat_fielding.html">mantidimaging.core.operations.flat_fielding.flat_fielding module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.gaussian.html">mantidimaging.core.operations.gaussian package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.gaussian.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.gaussian.gaussian.html">mantidimaging.core.operations.gaussian.gaussian module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.median_filter.html">mantidimaging.core.operations.median_filter package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.median_filter.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.median_filter.median_filter.html">mantidimaging.core.operations.median_filter.median_filter module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.monitor_normalisation.html">mantidimaging.core.operations.monitor_normalisation package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.monitor_normalisation.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.monitor_normalisation.monitor_normalisation.html">mantidimaging.core.operations.monitor_normalisation.monitor_normalisation module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.nan_removal.html">mantidimaging.core.operations.nan_removal package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.nan_removal.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.nan_removal.nan_removal.html">mantidimaging.core.operations.nan_removal.nan_removal module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.outliers.html">mantidimaging.core.operations.outliers package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.outliers.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.outliers.outliers.html">mantidimaging.core.operations.outliers.outliers module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.html">mantidimaging.core.operations.overlap_correction package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.overlap_correction.overlap_correction.html">mantidimaging.core.operations.overlap_correction.overlap_correction module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.rebin.html">mantidimaging.core.operations.rebin package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.rebin.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.rebin.rebin.html">mantidimaging.core.operations.rebin.rebin module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.remove_all_stripe.html">mantidimaging.core.operations.remove_all_stripe package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.remove_all_stripe.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_all_stripe.remove_all_stripe.html">mantidimaging.core.operations.remove_all_stripe.remove_all_stripe module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.remove_dead_stripe.html">mantidimaging.core.operations.remove_dead_stripe package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.remove_dead_stripe.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_dead_stripe.remove_dead_stripe.html">mantidimaging.core.operations.remove_dead_stripe.remove_dead_stripe module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.remove_large_stripe.html">mantidimaging.core.operations.remove_large_stripe package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.remove_large_stripe.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_large_stripe.remove_large_stripe.html">mantidimaging.core.operations.remove_large_stripe.remove_large_stripe module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_filtering.html">mantidimaging.core.operations.remove_stripe_filtering package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_filtering.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.html">mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_sorting_fitting.html">mantidimaging.core.operations.remove_stripe_sorting_fitting package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_sorting_fitting.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting.html">mantidimaging.core.operations.remove_stripe_sorting_fitting.remove_stripe_sorting_fitting module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.rescale.html">mantidimaging.core.operations.rescale package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.rescale.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.rescale.rescale.html">mantidimaging.core.operations.rescale.rescale module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.ring_removal.html">mantidimaging.core.operations.ring_removal package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.ring_removal.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.ring_removal.ring_removal.html">mantidimaging.core.operations.ring_removal.ring_removal module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.roi_normalisation.html">mantidimaging.core.operations.roi_normalisation package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.roi_normalisation.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.roi_normalisation.roi_normalisation.html">mantidimaging.core.operations.roi_normalisation.roi_normalisation module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.rotate_stack.html">mantidimaging.core.operations.rotate_stack package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.rotate_stack.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.rotate_stack.rotate_stack.html">mantidimaging.core.operations.rotate_stack.rotate_stack module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.sum_stack_intensities.html">mantidimaging.core.operations.sum_stack_intensities package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.sum_stack_intensities.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html">mantidimaging.core.operations.sum_stack_intensities.sum_intensities module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html">mantidimaging.core.operations.base_filter module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter"><code class="docutils literal notranslate"><span class="pre">BaseFilter</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.SINOGRAM_FILTER_INFO"><code class="docutils literal notranslate"><span class="pre">BaseFilter.SINOGRAM_FILTER_INFO</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.allow_for_180_projection"><code class="docutils literal notranslate"><span class="pre">BaseFilter.allow_for_180_projection</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">BaseFilter.execute_wrapper()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">BaseFilter.filter_func()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">BaseFilter.filter_name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.get_images_from_stack"><code class="docutils literal notranslate"><span class="pre">BaseFilter.get_images_from_stack()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.group_name"><code class="docutils literal notranslate"><span class="pre">BaseFilter.group_name()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.link_histograms"><code class="docutils literal notranslate"><span class="pre">BaseFilter.link_histograms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.operate_on_sinograms"><code class="docutils literal notranslate"><span class="pre">BaseFilter.operate_on_sinograms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.register_gui"><code class="docutils literal notranslate"><span class="pre">BaseFilter.register_gui()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.show_negative_overlay"><code class="docutils literal notranslate"><span class="pre">BaseFilter.show_negative_overlay</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.sv_params"><code class="docutils literal notranslate"><span class="pre">BaseFilter.sv_params()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.validate_execute_kwargs"><code class="docutils literal notranslate"><span class="pre">BaseFilter.validate_execute_kwargs()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup"><code class="docutils literal notranslate"><span class="pre">FilterGroup</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup.Advanced"><code class="docutils literal notranslate"><span class="pre">FilterGroup.Advanced</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup.Basic"><code class="docutils literal notranslate"><span class="pre">FilterGroup.Basic</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.FilterGroup.NoGroup"><code class="docutils literal notranslate"><span class="pre">FilterGroup.NoGroup</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.raise_not_implemented"><code class="docutils literal notranslate"><span class="pre">raise_not_implemented()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.operations.loader.html">mantidimaging.core.operations.loader module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.operations.loader.html#mantidimaging.core.operations.loader.load_filter_packages"><code class="docutils literal notranslate"><span class="pre">load_filter_packages()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the widgets bound as kwargs which are needed to call execute_wrapper</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.valid_types">
+<span class="sig-name descname"><span class="pre">valid_types</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['Tomography',</span> <span class="pre">'Time</span> <span class="pre">of</span> <span class="pre">Flight</span> <span class="pre">(ToF)']</span></em><a class="headerlink" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.valid_types" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -790,20 +662,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="mantidimaging.core.operation_history.operations.html"
+       href="mantidimaging.core.operations.sum_stack_intensities.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">mantidimaging.core.operation_history.operations module</p>
+        <p class="prev-next-title">mantidimaging.core.operations.sum_stack_intensities package</p>
       </div>
     </a>
     <a class="right-next"
-       href="mantidimaging.core.operations.append_stacks.html"
+       href="mantidimaging.core.operations.base_filter.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">mantidimaging.core.operations.append_stacks package</p>
+        <p class="prev-next-title">mantidimaging.core.operations.base_filter module</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -826,8 +698,17 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.compute_function"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.compute_function()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.execute_wrapper"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.execute_wrapper()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_func"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.filter_func()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_name"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.filter_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.group_name"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.group_name()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.link_histograms"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.link_histograms</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.register_gui"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.register_gui()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.valid_types"><code class="docutils literal notranslate"><span class="pre">SumIntensitiesFilter.valid_types</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -835,7 +716,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/api/mantidimaging.core.operations.rst.txt"
+      <li><a href="../_sources/api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

@@ -35,6 +35,7 @@ Subpackages
    mantidimaging.core.operations.ring_removal
    mantidimaging.core.operations.roi_normalisation
    mantidimaging.core.operations.rotate_stack
+   mantidimaging.core.operations.sum_stack_intensities
 
 Submodules
 ----------

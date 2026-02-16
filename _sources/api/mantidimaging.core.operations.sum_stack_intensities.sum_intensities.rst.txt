@@ -1,0 +1,7 @@
+mantidimaging.core.operations.sum\_stack\_intensities.sum\_intensities module
+=============================================================================
+
+.. automodule:: mantidimaging.core.operations.sum_stack_intensities.sum_intensities
+   :members:
+   :show-inheritance:
+   :undoc-members:

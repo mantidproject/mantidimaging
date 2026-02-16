@@ -1,0 +1,15 @@
+mantidimaging.core.operations.sum\_stack\_intensities package
+=============================================================
+
+.. automodule:: mantidimaging.core.operations.sum_stack_intensities
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.sum_stack_intensities.sum_intensities
