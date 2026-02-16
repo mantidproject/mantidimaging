@@ -8,6 +8,7 @@ import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtTest import QTest
 from PyQt5.QtGui import QColor
+from numpy.testing._private.utils import assert_array_equal
 from parameterized import parameterized
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 
@@ -231,4 +232,11 @@ class TestGuiSpectrumViewer(GuiSystemBase):
 
         self.assertListEqual(old_params, new_params)
 
-
+    def test_export_image_tab_not_updated_until_viewed(self):
+        self.spectrum_window.formTabs.setCurrentIndex(0)
+        assert_array_equal(self.spectrum_window._export_image_widget.image_data, np.array([[0]]))
+        QTest.qWait(SHORT_DELAY)
+        self.spectrum_window.formTabs.setCurrentIndex(2)
+        self.spectrum_window.export_display_tabs.setCurrentIndex(1)
+        spec_stack = self.main_window.get_stack(self.spectrum_window.presenter.current_stack_uuid)
+        assert_array_equal(spec_stack.data.mean(axis=0), self.spectrum_window._export_image_widget.image_data)
