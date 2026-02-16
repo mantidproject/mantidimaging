@@ -662,6 +662,9 @@
         <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Source Pos:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosBox</span><span class="p">)</span>
         <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Detector Pos:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosBox</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteGeometryButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Delete Geometry&quot;</span><span class="p">)</span>
+        <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deleteGeometryButton</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">data_display_group</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_geometry_conversion_group</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
@@ -761,6 +764,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_parameter_updates</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">createGeometryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_create_new_geometry</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convertGeometryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_convert_geometry</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteGeometryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_delete_geometry</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GeometryWindowView.set_widget_stack_page">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.geometry.view.html#mantidimaging.gui.windows.geometry.view.GeometryWindowView.set_widget_stack_page">[docs]</a>
