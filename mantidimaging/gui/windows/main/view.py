@@ -380,6 +380,7 @@ class MainWindowView(BaseMainWindowView):
             return
 
         self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=Path(selected_file))
+        self.stack_modified.emit()
 
         QMessageBox.information(self, "Load complete",
                                 f"{selected_file} was loaded as a log into {stack_to_add_log_to}.")
