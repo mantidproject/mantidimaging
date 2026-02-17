@@ -232,13 +232,17 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.update_projection(img_data, self.model.preview_slice_idx)
 
     def handle_stack_modified(self) -> None:
-        if self.view.isVisible():
-            self.model.reset_cor_model()
-            self.do_update_projection()
-            self._set_max_preview_indexes()
-            self.do_preview_reconstruct_slice(reset_roi=True)
+        current_uuid = self.view.stackSelector.current()
+        if current_uuid is not None:
+            self.set_current_stack(current_uuid)
         else:
-            self.stack_modified_pending = True
+            if self.view.isVisible():
+                self.model.reset_cor_model()
+                self.do_update_projection()
+                self._set_max_preview_indexes()
+                self.do_preview_reconstruct_slice(reset_roi=True)
+            else:
+                self.stack_modified_pending = True
 
     def _find_next_free_slice_index(self) -> int:
         slice_index = self.model.preview_slice_idx
