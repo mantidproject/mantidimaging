@@ -62,6 +62,7 @@ class ROIFormWidget(BaseWidget):
 
         self.bin_step_spinBox.valueChanged.connect(self._binning_changed)
         self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
+        self.roi_properties_widget.roi_changed.connect(self._update_bin_size_limit)
 
     @property
     def image_output_mode(self) -> str:
@@ -88,19 +89,28 @@ class ROIFormWidget(BaseWidget):
 
     def _binning_changed(self) -> None:
         binner = self.binner
-        warning = self._get_binning_warning(binner)
-        self.show_rits_warning(warning)
-        self.binningChanged.emit(binner)
-
-    def _get_binning_warning(self, binner: ROIBinner) -> str | None:
         if len(binner.left_indexes) == 0 or len(binner.top_indexes) == 0:
-            return (
+            warning = (
                 f"Bin size {binner.bin_size} and step size {binner.step_size} are too large for the ROI "
                 f"({binner.roi.width}x{binner.roi.height}). No bins can be created. Please reduce bin or step size.")
-        if not binner.check_fits_exactly():
-            return (f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
-                    f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
-        return None
+            self.show_rits_warning(warning)
+        elif not binner.check_fits_exactly():
+            warning = (
+                f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
+                f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
+            self.show_rits_warning(warning)
+        else:
+            self.show_rits_warning(None)
+        self.binningChanged.emit(binner)
+
+    def _update_bin_size_limit(self):
+        """Set bin_size_spinBox maximum to max(roi.width, roi.height) to prevent invalid bin sizes."""
+        roi = self.roi_properties_widget.to_roi()
+        max_dim = max(roi.width, roi.height)
+        with QSignalBlocker(self.bin_size_spinBox):
+            self.bin_size_spinBox.setMaximum(max_dim)
+            if self.bin_size_spinBox.value() > max_dim:
+                self.bin_size_spinBox.setValue(max_dim)
 
 
 class ROIPropertiesTableWidget(BaseWidget):
