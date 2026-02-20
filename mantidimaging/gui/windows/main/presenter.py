@@ -266,7 +266,7 @@ class MainWindowPresenter(BasePresenter):
             getLogger(__name__).info("Loading was cancelled by the user.")
             return
 
-        if task.was_successful():
+        if task.was_successful() and task.result is not None:
             images = self.model.get_images_by_uuid(task.result[0])
             if images is None:
                 self.model.raise_error_when_images_not_found(task.result[0])
