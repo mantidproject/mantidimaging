@@ -132,6 +132,8 @@ class MainWindowModel:
             images.data = image_data
             if images.filenames is not None:
                 images.filenames = [images.filenames[i] for i in angle_order]
+        else:
+            raise RuntimeError(f"Failed to get ImageStack with ID {images_id}")
         return images_id, proj_angles
 
     def raise_error_when_images_not_found(self, images_id: uuid.UUID) -> NoReturn:
