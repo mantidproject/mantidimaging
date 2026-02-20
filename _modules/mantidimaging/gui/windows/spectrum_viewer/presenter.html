@@ -641,7 +641,7 @@
 
         <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_stack</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_state</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">return</span>
 
@@ -668,6 +668,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">on_visibility_change</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">setup_roi_properties_spinboxes</span><span class="p">()</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear UI and data states when sample is removed. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_normalise_stack</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_stack</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_norm_stack_uuid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_remove_roi</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingForm</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.reset_units_menu">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.reset_units_menu">[docs]</a>
@@ -1047,6 +1057,8 @@
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_enable_normalised">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_enable_normalised">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_enable_normalised</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">has_stack</span><span class="p">():</span>
+            <span class="k">return</span>
         <span class="k">if</span> <span class="n">enabled</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_mode</span> <span class="o">=</span> <span class="n">SpecType</span><span class="o">.</span><span class="n">SAMPLE_NORMED</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1158,6 +1170,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">remove_roi</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI removed: name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">remove_all_roi</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">remove_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>

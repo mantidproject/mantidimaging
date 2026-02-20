@@ -559,6 +559,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;initial&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="FittingDisplayWidget.clear">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear the fitting display widget data and reset to default state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)),</span> <span class="n">autoLevels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="FittingDisplayWidget.update_plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ROI&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

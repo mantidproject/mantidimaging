@@ -826,9 +826,17 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.clear">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear spectrum viewer data and reset the UI states:</span>
+<span class="sd">        - Spectrum data and plots</span>
+<span class="sd">        - Export table data</span>
+<span class="sd">        - Normalisation checkbox</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normaliseCheckBox</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.auto_range_image">

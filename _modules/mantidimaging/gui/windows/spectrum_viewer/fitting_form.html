@@ -558,7 +558,8 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.fitting_form.html#mantidimaging.gui.windows.spectrum_viewer.fitting_form.FittingFormWidgetView.showEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">showEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QShowEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">showEvent</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_activated</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">has_stack</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_activated</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
@@ -573,6 +574,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rss_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RSS: </span><span class="si">{</span><span class="n">rss</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduced_rss_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RSS/DoF: </span><span class="si">{</span><span class="n">rss_per_dof</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FittingFormWidgetView.clear">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.fitting_form.html#mantidimaging.gui.windows.spectrum_viewer.fitting_form.FittingFormWidgetView.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear fitting form display and reset presenter state for reinitialisation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fit_quality</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">clear_rows</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">first_activation</span> <span class="o">=</span> <span class="kc">True</span></div>
 </div>
 
 
