@@ -102,6 +102,8 @@ class ROIBinner:
         """
         Check that the bins fit exactly in the roi
         """
+        if len(self.left_indexes) == 0 or len(self.top_indexes) == 0:
+            return False
         right_edge = self.left_indexes[-1] + self.bin_size
         bottom_edge = self.top_indexes[-1] + self.bin_size
         return right_edge == self.roi.right and bottom_edge == self.roi.bottom
