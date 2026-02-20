@@ -121,11 +121,18 @@ class MainWindowModel:
             return dataset.proj180deg.id
         return None
 
-    def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
+    def add_projection_angles_to_sample(self, images_id: uuid.UUID,
+                                        proj_angles: ProjectionAngles) -> tuple[uuid.UUID, ProjectionAngles]:
         images = self.get_images_by_uuid(images_id)
-        if images is None:
-            self.raise_error_when_images_not_found(images_id)
-        images.set_projection_angles(proj_angles)
+        if images is not None:
+            angles = proj_angles.value
+            angle_order = np.argsort(angles)
+            proj_angles.value = angles[angle_order]
+            image_data = images.data[angle_order]
+            images.data = image_data
+            if images.filenames is not None:
+                images.filenames = [images.filenames[i] for i in angle_order]
+        return images_id, proj_angles
 
     def raise_error_when_images_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise StackNotFoundError(f"Failed to get ImageStack with ID {images_id}")
