@@ -141,6 +141,9 @@ class MainWindowModel:
         if images.filenames is not None:
             log.raise_if_angle_missing([str(f) for f in images.filenames])
         images.log_file = log
+        if hasattr(log, 'has_projection_angles') and log.has_projection_angles():
+            angles = log.projection_angles()
+            images.set_projection_angles(angles)
 
     def add_shutter_counts_to_sample(self, images_id: uuid.UUID, shutter_counts_file: Path) -> None:
         """

@@ -175,6 +175,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
+        self._update_geometry_dependent_ui()
 
     def _setup_new_stack_previews(self) -> None:
         """
@@ -217,13 +218,17 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.update_projection(img_data, self.model.preview_slice_idx)
 
     def handle_stack_modified(self) -> None:
-        if self.view.isVisible():
-            self.model.reset_cor_model()
-            self.do_update_projection()
-            self._set_max_preview_indexes()
-            self.do_preview_reconstruct_slice(reset_roi=True)
+        current_uuid = self.view.stackSelector.current()
+        if current_uuid is not None:
+            self.set_current_stack(current_uuid)
         else:
-            self.stack_modified_pending = True
+            if self.view.isVisible():
+                self.model.reset_cor_model()
+                self.do_update_projection()
+                self._set_max_preview_indexes()
+                self.do_preview_reconstruct_slice(reset_roi=True)
+            else:
+                self.stack_modified_pending = True
 
     def _find_next_free_slice_index(self) -> int:
         slice_index = self.model.preview_slice_idx
@@ -412,6 +417,30 @@ class ReconstructWindowPresenter(BasePresenter):
         cor = ScalarCoR(self.view.rotation_centre)
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
+
+    def on_geometry_updated(self):
+        """
+        Called when geometry/angles are loaded after initial dataset load.
+        Refreshes UI and re-enables geometry-dependent actions if possible.
+        """
+        self._update_geometry_dependent_ui()
+
+        if self.model.images is not None and self.model.images.geometry is not None:
+            self.do_update_projection()
+            self.do_preview_reconstruct_slice()
+
+    def _update_geometry_dependent_ui(self) -> None:
+        """
+        Enable/disable geometry-dependent actions based on current stack state.
+        """
+        images = self.model.images
+        has_geometry = images is not None and images.geometry is not None
+        self.view.set_recon_buttons_enabled(has_geometry)
+        self.view.set_correlate_buttons_enabled(has_geometry)
+        if not has_geometry:
+            self.view.show_status_message(NO_GEOMETRY_MESSAGE)
+        else:
+            self.view.show_status_message("")
 
     def _update_imagestack_geometry_data(self) -> None:
         # TODO: Clean up when tilt/COR logic moves to Geometry window
