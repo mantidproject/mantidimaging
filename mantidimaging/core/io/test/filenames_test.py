@@ -188,11 +188,22 @@ class FilenameGroupTest(FakeFSTestCase):
 
         self._files_equal(fg.log_path, log)
 
-    @parameterized.expand([
-        ("/foo/tomo/IMAT_Flower_Tomo_000000.tif", "/foo/shuttercount.txt"),
-        ("/foo/Flat_Before/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_Before_shuttercount.txt"),
-        ("/foo/Flat_After/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_After_shuttercount.txt"),
-    ])
+    def test_find_log_csv(self):
+        log = Path("/foo", "tomo.csv")
+        self.fs.create_file(log)
+
+        sample = Path("/foo", "tomo", "IMAT_Flower_Tomo_000000.tif")
+        self.fs.create_file(sample)
+
+        fg = FilenameGroup.from_file(sample)
+        fg.find_log_file()
+
+        self._files_equal(fg.log_path, log)
+
+    @parameterized.expand([("/foo/tomo/IMAT_Flower_Tomo_000000.tif", "/foo/shuttercount.txt"),
+                           ("/foo/Flat_Before/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_Before_shuttercount.txt"),
+                           ("/foo/Flat_After/IMAT_Flower_Tomo_000000.tif", "/foo/Flat_After_shuttercount.txt"),
+                           ("/foo/GRtomo/IMAT_Flower_GRtomo_0.0_000.tif", "/foo/GRtomo_shuttercount.txt")])
     def test_find_shuttercount_log(self, sample_path, log_path):
         log = Path(log_path)
         self.fs.create_file(log)
@@ -303,6 +314,21 @@ class FilenameGroupTest(FakeFSTestCase):
     ])
     def test_find_related_proj_180(self, proj_name):
         tomo_list = [Path("/a/Tomo/foo_Tomo_%06d.tif" % i) for i in range(10)]
+        proj_180_list = [Path(proj_name)]
+        for file_name in tomo_list + proj_180_list:
+            self.fs.create_file(file_name)
+
+        fg = FilenameGroup.from_file(tomo_list[0])
+        proj_180_fg = fg.find_related(FILE_TYPES.PROJ_180)
+        self.assertIsNotNone(proj_180_fg)
+        proj_180_fg.find_all_files()
+
+        self._file_list_count_equal(proj_180_list, list(proj_180_fg.all_files()))
+
+    def test_find_related_proj_180_GRtomo(self):
+        proj_name = "/a/180deg/foo_GR_180deg_180.0_000.tif"
+        tomo_list = [Path("/a/GRtomo/foo_GRtomo_%01d.%04d_%03d.tif" % (i, i, i)) for i in range(10)]
+        print(f"{tomo_list=}")
         proj_180_list = [Path(proj_name)]
         for file_name in tomo_list + proj_180_list:
             self.fs.create_file(file_name)
