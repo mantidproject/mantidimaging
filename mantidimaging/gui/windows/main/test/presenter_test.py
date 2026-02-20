@@ -254,11 +254,17 @@ class MainWindowPresenterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.presenter.get_stack_with_images(generate_images())
 
-    def test_add_projection_angles_to_stack(self):
+    @mock.patch("mantidimaging.gui.windows.main.presenter.start_async_task_view")
+    def test_add_projection_angles_to_stack(self, start_async_mock: mock.Mock):
         id, angles = "doesn't-exist", ProjectionAngles(np.ndarray([1]))
         self.presenter.stack_visualisers[id] = mock.Mock()
         self.presenter.add_projection_angles_to_sample(id, angles)
-        self.model.add_projection_angles_to_sample.assert_called_with(id, angles)
+
+        start_async_mock.assert_called_once_with(self.view, self.presenter.model.add_projection_angles_to_sample,
+                                                 self.presenter._on_proj_angle_load_done, {
+                                                     'images_id': id,
+                                                     'proj_angles': angles
+                                                 })
 
     def test_remove_dataset_from_tree_view(self):
         """

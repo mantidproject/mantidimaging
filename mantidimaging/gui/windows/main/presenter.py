@@ -67,6 +67,7 @@ class Notification(Enum):
 class MainWindowPresenter(BasePresenter):
     LOAD_ERROR_STRING = "Failed to load stack. Error: {}"
     SAVE_ERROR_STRING = "Failed to save data. Error: {}"
+    LOAD_ANGLE_ERROR_STRING = "Failed to load angles. Error: {}"
 
     view: MainWindowView
 
@@ -259,6 +260,24 @@ class MainWindowPresenter(BasePresenter):
             self._open_window_if_not_open()
         else:
             raise RuntimeError(self.LOAD_ERROR_STRING.format(task.error))
+
+    def _on_proj_angle_load_done(self, task: TaskWorkerThread) -> None:
+        if isinstance(task.error, TaskCancelled):
+            getLogger(__name__).info("Loading was cancelled by the user.")
+            return
+
+        if task.was_successful() and task.result is not None:
+            images = self.model.get_images_by_uuid(task.result[0])
+            if images is None:
+                self.model.raise_error_when_images_not_found(task.result[0])
+            images.set_projection_angles(task.result[1])
+
+            self.stack_visualisers[task.result[0]].image_view.setImage(images.data)
+
+            self.stack_visualisers[task.result[0]].image_view.angles = task.result[1]
+            task.result = None
+        else:
+            raise RuntimeError(self.LOAD_ANGLE_ERROR_STRING.format(task.error))
 
     def _add_dataset_to_view(self, dataset: Dataset) -> None:
         """
@@ -470,8 +489,10 @@ class MainWindowPresenter(BasePresenter):
         raise StackNotFoundError(f"Did not find stack {images} in stacks! Stacks: {self.stack_visualisers.items()}")
 
     def add_projection_angles_to_sample(self, stack_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
-        self.model.add_projection_angles_to_sample(stack_id, proj_angles)
-        self.stack_visualisers[stack_id].image_view.angles = proj_angles
+        start_async_task_view(self.view, self.model.add_projection_angles_to_sample, self._on_proj_angle_load_done, {
+            'images_id': stack_id,
+            'proj_angles': proj_angles
+        })
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
         loading_params = create_loading_parameters_for_file_path(Path(file_path))

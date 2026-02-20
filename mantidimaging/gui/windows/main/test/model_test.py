@@ -236,7 +236,6 @@ class MainWindowModelTest(unittest.TestCase):
         self.model.add_projection_angles_to_sample(images_id, proj_angles)
 
         get_images_mock.assert_called_with(images_id)
-        get_images_mock.return_value.set_projection_angles.assert_called_once_with(proj_angles)
 
     @mock.patch("mantidimaging.gui.windows.main.model.loader")
     @mock.patch("mantidimaging.gui.windows.main.model.FilenameGroup")
