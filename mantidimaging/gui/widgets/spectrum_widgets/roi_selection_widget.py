@@ -42,6 +42,8 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         subroi_row_layout.addWidget(self.sub_roi_y_input)
         self.sub_roi_x_input.setToolTip("Bin x coordinate (from left)")
         self.sub_roi_y_input.setToolTip("Bin y coordinate (from top)")
+        self.sub_roi_x_input.valueChanged.connect(self._on_sub_roi_changed)
+        self.sub_roi_y_input.valueChanged.connect(self._on_sub_roi_changed)
         layout.addWidget(self.subroiRow)
         self.subroiRow.hide()
 
@@ -75,10 +77,19 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         if index != -1:
             self.roiDropdown.setCurrentIndex(index)
 
+    def _on_sub_roi_changed(self) -> None:
+        """ Handle sub-ROI coordinate changes and emit selection change signal. """
+        self.selectionChanged.emit(self.current_roi_name)
+
     @property
     def current_roi_name(self) -> str:
         """Returns the currently selected ROI name from the dropdown."""
         return self.roiDropdown.currentText()
+
+    @property
+    def current_sub_roi_coordinates(self) -> tuple[int, int]:
+        """Returns the current sub-ROI coordinates from the spin boxes."""
+        return self.sub_roi_x_input.value(), self.sub_roi_y_input.value()
 
     def handle_mode_change(self, mode: ExportMode) -> None:
         self.roiDropdown.setVisible(mode == ExportMode.ROI_MODE)

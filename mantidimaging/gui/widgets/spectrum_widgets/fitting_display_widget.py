@@ -11,7 +11,8 @@ from PyQt5.QtCore import pyqtSignal
 from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 
 from mantidimaging.gui.windows.spectrum_viewer.model import allowed_modes
-from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget, SpectrumROI
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumPlotWidget
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.fitting.fitting_functions import FittingRegion
 from logging import getLogger
 
@@ -136,16 +137,14 @@ class FittingDisplayWidget(QWidget):
         assert y1 < y2
         return FittingRegion(x1, x2, y1, y2)
 
-    def show_roi_on_thumbnail_from_widget(self, roi_widget: SpectrumROI) -> None:
+    def show_roi_on_thumbnail_from_widget(self, roi: SensibleROI, color: tuple[int, int, int]) -> None:
         """
         Copy ROI size and color from the main image window ROI to the thumbnail overlay.
         """
-        pos = roi_widget.pos()
-        size = roi_widget.size()
-        color = roi_widget.colour
-
-        self.image_preview_roi.setPos(pos)
-        self.image_preview_roi.setSize(size)
+        width = roi.right - roi.left
+        height = roi.bottom - roi.top
+        self.image_preview_roi.setPos((roi.left, roi.top))
+        self.image_preview_roi.setSize((width, height))
         self.image_preview_roi.setPen(mkPen(color, width=2))
         self.image_preview_roi.show()
 
