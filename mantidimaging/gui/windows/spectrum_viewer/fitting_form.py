@@ -10,6 +10,9 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
+from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
+from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
+from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView
@@ -55,6 +58,7 @@ class FittingFormWidgetView(QWidget):
         self.fittingDisplayWidget = spectrum_viewer.fittingDisplayWidget
 
         self.roiSelectionWidget.selectionChanged.connect(self.presenter.handle_roi_selection_changes)
+        self.roiSelectionWidget.subRoiChanged.connect(self.presenter.handle_sub_roi_changed)
         self.fitSelectionWidget.selectionChanged.connect(self.presenter.update_fitting_function)
         self.fitting_param_form.fromROIButtonClicked.connect(self.presenter.get_init_params_from_roi)
         self.fitting_param_form.initialEditFinished.connect(self.presenter.on_initial_params_edited)
@@ -109,7 +113,10 @@ class FittingFormWidgetPresenter:
     def handle_activated(self) -> None:
         LOG.warning("Fitting form activated")
         self.update_roi_dropdown()
-        self.update_roi_on_fitting_thumbnail()
+        if self.spectrum_viewer.presenter.export_mode == ExportMode.ROI_MODE:
+            self.update_roi_on_fitting_thumbnail()
+        elif self.spectrum_viewer.presenter.export_mode == ExportMode.IMAGE_MODE:
+            self.handle_sub_roi_changed()
         self.set_spectrum()
         self.set_default_fitting_region()
         self.set_binning()
@@ -141,6 +148,27 @@ class FittingFormWidgetPresenter:
         binner = self.spectrum_viewer.get_binner()
         self.view.roiSelectionWidget.handle_mode_change(mode)
         self.view.roiSelectionWidget.handle_binning_changed(binner)
+
+    def handle_sub_roi_changed(self) -> None:
+        x_pos = self.view.roiSelectionWidget.sub_roi_x_input.value()
+        y_pos = self.view.roiSelectionWidget.sub_roi_y_input.value()
+
+        self.fitting_display_widget.update_plot(self.model.tof_data, self.get_sub_roi_spectrum_data(x_pos, y_pos))
+
+    def get_sub_roi_spectrum_data(self, x_pos, y_pos) -> np.ndarray:
+        binner = self.spectrum_viewer.get_binner()
+        sub_roi = binner.get_sub_roi(x_pos, y_pos)
+        sub_spectrum_roi = SpectrumROI("ROI", sub_roi)
+        sub_spectrum_roi.colour = self.spectrum_viewer.spectrum_widget.roi_dict[ROI_RITS].colour
+        self.fitting_display_widget.show_roi_on_thumbnail_from_widget(sub_spectrum_roi)
+        open_beam_roi = self.spectrum_viewer.get_open_beam_roi()
+
+        sub_roi_spectrum_data = self.model.get_spectrum(sub_roi,
+                                                        self.spectrum_viewer.presenter.spectrum_mode,
+                                                        self.spectrum_viewer.shuttercount_norm_enabled(),
+                                                        open_beam_roi=open_beam_roi)
+
+        return sub_roi_spectrum_data
 
     def update_fitting_function(self, fitting_obj: type[BaseFittingFunction]) -> None:
         fitting_func = fitting_obj()

@@ -19,6 +19,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     """
 
     selectionChanged = QtCore.pyqtSignal(str)
+    subRoiChanged = QtCore.pyqtSignal()
 
     def __init__(self, parent: QtWidgets.QWidget = None):
         super().__init__("Select ROI", parent)
@@ -36,7 +37,9 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
         self.subroiRow = QtWidgets.QWidget()
         subroi_row_layout = QtWidgets.QHBoxLayout(self.subroiRow)
         self.sub_roi_x_input = QtWidgets.QSpinBox()
+        self.sub_roi_x_input.valueChanged.connect(self.subRoiChanged.emit)
         self.sub_roi_y_input = QtWidgets.QSpinBox()
+        self.sub_roi_y_input.valueChanged.connect(self.subRoiChanged.emit)
         subroi_row_layout.addWidget(QtWidgets.QLabel("Roi bin"))
         subroi_row_layout.addWidget(self.sub_roi_x_input)
         subroi_row_layout.addWidget(self.sub_roi_y_input)
