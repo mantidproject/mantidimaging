@@ -97,5 +97,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
 
     def handle_binning_changed(self, binner: ROIBinner) -> None:
         x_len, y_len = binner.lengths()
-        self.sub_roi_x_input.setMaximum(x_len)
-        self.sub_roi_y_input.setMaximum(y_len)
+        max_x = max(0, x_len - 1)
+        max_y = max(0, y_len - 1)
+        self.sub_roi_x_input.setMaximum(max_x)
+        self.sub_roi_y_input.setMaximum(max_y)

@@ -141,10 +141,8 @@ class FittingDisplayWidget(QWidget):
         """
         Copy ROI size and color from the main image window ROI to the thumbnail overlay.
         """
-        width = roi.right - roi.left
-        height = roi.bottom - roi.top
         self.image_preview_roi.setPos((roi.left, roi.top))
-        self.image_preview_roi.setSize((width, height))
+        self.image_preview_roi.setSize((roi.width, roi.height))
         self.image_preview_roi.setPen(mkPen(color, width=2))
         self.image_preview_roi.show()
 

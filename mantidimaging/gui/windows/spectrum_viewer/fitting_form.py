@@ -128,14 +128,25 @@ class FittingFormWidgetPresenter:
         self.set_spectrum()
 
     def get_current_roi(self) -> SensibleROI:
-        if self.spectrum_viewer.presenter.export_mode == ExportMode.IMAGE_MODE:
+        mode = self.spectrum_viewer.presenter.export_mode
+        if mode == ExportMode.IMAGE_MODE:
             binner = self.spectrum_viewer.get_binner()
-            sub_roi_coords = self.view.current_sub_roi_coordinates
-            current_roi = binner.get_sub_roi(*sub_roi_coords)
-        elif self.spectrum_viewer.presenter.export_mode == ExportMode.ROI_MODE:
+            x_len, y_len = binner.lengths()
+            max_x = max(0, x_len - 1)
+            max_y = max(0, y_len - 1)
+            current_x, current_y = self.view.current_sub_roi_coordinates
+            x = min(current_x, max_x)
+            y = min(current_y, max_y)
+            if x != current_x:
+                self.view.roiSelectionWidget.sub_roi_x_input.setValue(x)
+            if y != current_y:
+                self.view.roiSelectionWidget.sub_roi_y_input.setValue(y)
+            return binner.get_sub_roi(x, y)
+        elif mode == ExportMode.ROI_MODE:
             roi_widget = self.spectrum_viewer.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
-            current_roi = roi_widget.as_sensible_roi()
-        return current_roi
+            return roi_widget.as_sensible_roi()
+
+        raise RuntimeError("Unknown export mode")
 
     def set_spectrum(self) -> None:
         spectrum_data = self.fitting_spectrum
