@@ -215,22 +215,16 @@ class TestGuiSpectrumViewer(GuiSystemBase):
     def test_fit_model_does_not_update_export_table(self):
         self.spectrum_window.formTabs.setCurrentIndex(1)
         QTest.qWait(SHORT_DELAY)
-        self.spectrum_window.formTabs.setCurrentIndex(2)
-        QTest.mouseClick(self.spectrum_window.exportSettingsWidget.fitAllButton, Qt.MouseButton.LeftButton)
-        QTest.qWait(SHORT_DELAY)
-        old_params = []
-        for col in range(self.spectrum_window.exportDataTableWidget.model.columnCount()):
-            old_params.append(self.spectrum_window.exportDataTableWidget.model.item(0, col).text())
-        self.spectrum_window.formTabs.setCurrentIndex(1)
-        QTest.mouseClick(self.spectrum_window.fitting_param_form.from_roi_button, Qt.MouseButton.LeftButton)
-        QTest.qWait(SHORT_DELAY)
+        self.assertEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 0)
+        QTest.mouseClick(self.spectrum_window.fittingForm.fitting_param_form.from_roi_button, Qt.MouseButton.LeftButton)
         QTest.mouseClick(self.spectrum_window.fittingForm.run_fit_button, Qt.MouseButton.LeftButton)
         QTest.qWait(SHORT_DELAY)
-        new_params = []
-        for col in range(self.spectrum_window.exportDataTableWidget.model.columnCount()):
-            new_params.append(self.spectrum_window.exportDataTableWidget.model.item(0, col).text())
-
-        self.assertListEqual(old_params, new_params)
+        self.assertEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 0)
+        self.spectrum_window.formTabs.setCurrentIndex(2)
+        self.assertEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 0)
+        QTest.mouseClick(self.spectrum_window.exportSettingsWidget.fitAllButton, Qt.MouseButton.LeftButton)
+        self.assertEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 1)
+        self.assertEqual(self.spectrum_window.exportDataTableWidget.model.item(0, 0).text(), "roi")
 
     def test_export_image_tab_not_updated_until_viewed(self):
         self.spectrum_window.formTabs.setCurrentIndex(0)
