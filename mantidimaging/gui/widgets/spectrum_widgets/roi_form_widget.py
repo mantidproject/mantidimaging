@@ -16,7 +16,7 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox
+    from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox, QWidget
 
 LOG = getLogger(__name__)
 
@@ -26,6 +26,7 @@ class ROIFormWidget(BaseWidget):
     Collection of widgets for adding, removing and adjusting ROIs in the spectrum viewer
     """
     exportTabs: QTabWidget
+    image_tab: QWidget
     roi_properties_widget: ROIPropertiesTableWidget
     table_view: ROITableWidget
     image_output_mode_combobox: QComboBox
