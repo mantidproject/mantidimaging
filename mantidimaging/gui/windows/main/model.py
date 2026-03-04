@@ -44,8 +44,8 @@ class MainWindowModel:
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 
         sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE])
-        ds = Dataset(sample=sample)
-        sample._is_sinograms = parameters.sinograms
+        if parameters.sinograms:
+            ds = Dataset(sample=sample.copy(flip_axes=True))
         sample.pixel_size = parameters.pixel_size
 
         for file_type in [
