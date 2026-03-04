@@ -80,7 +80,8 @@ class MainWindowModel:
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
-        if save_as_sino and not images.is_sinograms:
+        is_sinogram = images.shape[1] != images.shape[2]
+        if save_as_sino and not is_sinogram:
             sino_images = images.copy(flip_axes=True)
             images = sino_images
 
