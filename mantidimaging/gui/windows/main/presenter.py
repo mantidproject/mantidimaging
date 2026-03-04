@@ -389,7 +389,13 @@ class MainWindowPresenter(BasePresenter):
         assert isinstance(self.view.image_save_dialog, ImageSaveDialog)
 
         current_stack_name = self.view.image_save_dialog.stackNames.currentText()
-        export_type = "reconstruction" if "Recon" in current_stack_name else "raw data"
+        save_as_sino = self.view.image_save_dialog.as_sino_check.isChecked()
+        if save_as_sino:
+            export_type = "sinogram"
+        elif "Recon" in current_stack_name:
+            export_type = "reconstruction"
+        else:
+            export_type = "raw data"
         output_dir = self.view.image_save_dialog.save_path()
         image_format = self.view.image_save_dialog.image_format()
 
@@ -398,6 +404,7 @@ class MainWindowPresenter(BasePresenter):
 
         kwargs = {
             'images_id': self.view.image_save_dialog.selected_stack,
+            'save_as_sino': save_as_sino,
             'output_dir': self.view.image_save_dialog.save_path(),
             'name_prefix': self.view.image_save_dialog.name_prefix(),
             'image_format': self.view.image_save_dialog.image_format(),
