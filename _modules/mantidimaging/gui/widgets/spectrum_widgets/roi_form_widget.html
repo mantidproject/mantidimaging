@@ -509,7 +509,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.roi_table_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">TableModel</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QGroupBox</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QWidget</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -521,6 +521,7 @@
 <span class="sd">    Collection of widgets for adding, removing and adjusting ROIs in the spectrum viewer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">exportTabs</span><span class="p">:</span> <span class="n">QTabWidget</span>
+    <span class="n">image_tab</span><span class="p">:</span> <span class="n">QWidget</span>
     <span class="n">roi_properties_widget</span><span class="p">:</span> <span class="n">ROIPropertiesTableWidget</span>
     <span class="n">table_view</span><span class="p">:</span> <span class="n">ROITableWidget</span>
     <span class="n">image_output_mode_combobox</span><span class="p">:</span> <span class="n">QComboBox</span>

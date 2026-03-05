@@ -504,7 +504,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">RectROI</span><span class="p">,</span> <span class="n">mkPen</span><span class="p">,</span> <span class="n">ImageItem</span><span class="p">,</span> <span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">ROI</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">allowed_modes</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumPlotWidget</span><span class="p">,</span> <span class="n">SpectrumROI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.spectrum_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumPlotWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensibleROI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">FittingRegion</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
@@ -654,16 +655,12 @@
 
 <div class="viewcode-block" id="FittingDisplayWidget.show_roi_on_thumbnail_from_widget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.show_roi_on_thumbnail_from_widget">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_roi_on_thumbnail_from_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_widget</span><span class="p">:</span> <span class="n">SpectrumROI</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_roi_on_thumbnail_from_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy ROI size and color from the main image window ROI to the thumbnail overlay.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="n">roi_widget</span><span class="o">.</span><span class="n">pos</span><span class="p">()</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="n">roi_widget</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-        <span class="n">color</span> <span class="o">=</span> <span class="n">roi_widget</span><span class="o">.</span><span class="n">colour</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">mkPen</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 

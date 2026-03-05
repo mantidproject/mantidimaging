@@ -537,6 +537,8 @@
         <span class="n">subroi_row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Bin x coordinate (from left)&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Bin y coordinate (from top)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_sub_roi_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_sub_roi_changed</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subroiRow</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
@@ -576,10 +578,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_sub_roi_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Handle sub-ROI coordinate changes and emit selection change signal. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_roi_name</span><span class="p">)</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">current_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the currently selected ROI name from the dropdown.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_sub_roi_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current sub-ROI coordinates from the spin boxes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ROISelectionWidget.handle_mode_change">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.handle_mode_change">[docs]</a>
@@ -592,8 +603,10 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.handle_binning_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_binning_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">x_len</span><span class="p">,</span> <span class="n">y_len</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">lengths</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">x_len</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">y_len</span><span class="p">)</span></div>
+        <span class="n">max_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">max_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_x_input</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_roi_y_input</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">max_y</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
