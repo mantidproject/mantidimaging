@@ -63,6 +63,10 @@ class ROIFormWidget(BaseWidget):
         self.bin_step_spinBox.valueChanged.connect(self._binning_changed)
         self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
 
+        # Clamp values instantly when editing is finished
+        self.bin_size_spinBox.editingFinished.connect(self._clamp_bin_spinboxes)
+        self.bin_step_spinBox.editingFinished.connect(self._clamp_bin_spinboxes)
+
     @property
     def image_output_mode(self) -> str:
         return self.image_output_mode_combobox.currentText()
@@ -87,15 +91,26 @@ class ROIFormWidget(BaseWidget):
         return ROIBinner(roi, step_size=step, bin_size=bin_size)
 
     def _binning_changed(self) -> None:
+        self._update_bin_size_limit()
         binner = self.binner
-        if not binner.check_fits_exactly():
-            warning = (
-                f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
-                f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
-            self.show_rits_warning(warning)
-        else:
-            self.show_rits_warning(None)
+        warning = (f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
+                   f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported."
+                   ) if not binner.check_fits_exactly() else None
+        self.show_rits_warning(warning)
         self.binningChanged.emit(binner)
+
+    def _update_bin_size_limit(self) -> None:
+        roi = self.roi_properties_widget.to_roi()
+        max_bin_size = min(roi.width, roi.height)
+        self.bin_size_spinBox.setMaximum(max_bin_size)
+        self.bin_size_spinBox.setValue(min(self.bin_size_spinBox.value(), max_bin_size))
+        bin_size = self.bin_size_spinBox.value()
+        self.bin_step_spinBox.setMaximum(bin_size)
+        self.bin_step_spinBox.setValue(min(self.bin_step_spinBox.value(), bin_size))
+
+    def _clamp_bin_spinboxes(self) -> None:
+        self.bin_size_spinBox.setValue(min(self.bin_size_spinBox.value(), self.bin_size_spinBox.maximum()))
+        self.bin_step_spinBox.setValue(min(self.bin_step_spinBox.value(), self.bin_step_spinBox.maximum()))
 
 
 class ROIPropertiesTableWidget(BaseWidget):
