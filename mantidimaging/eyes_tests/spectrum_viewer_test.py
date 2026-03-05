@@ -113,3 +113,17 @@ class SpectrumViewerWindowTest(BaseEyesTest):
         self.imaging.spectrum_viewer.fitting_param_form.from_roi_button.click()
         self.imaging.spectrum_viewer.fittingForm.run_fit_button.click()
         self.check_target(widget=self.imaging.spectrum_viewer)
+
+    def test_spectrum_viewer_sub_roi_moves_thumbnail_image_mode(self):
+        self._generate_spectrum_dataset()
+        self.imaging.show_spectrum_viewer_window()
+        roi_form = self.imaging.spectrum_viewer.roi_form
+        roi_form.exportTabs.setCurrentWidget(roi_form.image_tab)
+        roi_form.bin_size_spinBox.setValue(2)
+        roi_form.bin_step_spinBox.setValue(2)
+        self.imaging.spectrum_viewer.formTabs.setCurrentIndex(1)
+        fitting_form = self.imaging.spectrum_viewer.fittingForm
+        roi_widget = fitting_form.roiSelectionWidget
+        roi_widget.sub_roi_x_input.setValue(2)
+        roi_widget.sub_roi_y_input.setValue(2)
+        self.check_target(widget=self.imaging.spectrum_viewer)

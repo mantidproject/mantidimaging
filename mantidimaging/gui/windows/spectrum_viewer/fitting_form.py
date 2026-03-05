@@ -10,6 +10,8 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget import FittingParamFormWidget
+from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView
@@ -68,6 +70,10 @@ class FittingFormWidgetView(QWidget):
     def current_roi_name(self) -> str:
         return self.roiSelectionWidget.current_roi_name
 
+    @property
+    def current_sub_roi_coordinates(self) -> tuple[int, int]:
+        return self.roiSelectionWidget.current_sub_roi_coordinates
+
     def set_fit_quality(self, rss: float, rss_per_dof: float) -> None:
         """
         Update the fit quality display with raw and reduced residual sum of squares.
@@ -100,11 +106,11 @@ class FittingFormWidgetPresenter:
 
     @property
     def fitting_spectrum(self) -> tuple[np.ndarray, np.ndarray]:
-        selected_fitting_roi = self.view.current_roi_name
-        if (spectrum_data := self.spectrum_viewer.spectrum_widget.spectrum_data_dict[selected_fitting_roi]) is not None:
-            return self.model.tof_data, spectrum_data
-
-        raise RuntimeError("Fitting spectrum not calculated")
+        roi = self.get_current_roi()
+        spectrum_data = self.model.get_spectrum(roi, self.spectrum_viewer.presenter.spectrum_mode)
+        if spectrum_data is None:
+            raise RuntimeError("Fitting spectrum not calculated")
+        return self.model.tof_data, spectrum_data
 
     def handle_activated(self) -> None:
         LOG.warning("Fitting form activated")
@@ -121,6 +127,27 @@ class FittingFormWidgetPresenter:
         self.update_roi_on_fitting_thumbnail()
         self.set_spectrum()
 
+    def get_current_roi(self) -> SensibleROI:
+        mode = self.spectrum_viewer.presenter.export_mode
+        if mode == ExportMode.IMAGE_MODE:
+            binner = self.spectrum_viewer.get_binner()
+            x_len, y_len = binner.lengths()
+            max_x = max(0, x_len - 1)
+            max_y = max(0, y_len - 1)
+            current_x, current_y = self.view.current_sub_roi_coordinates
+            x = min(current_x, max_x)
+            y = min(current_y, max_y)
+            if x != current_x:
+                self.view.roiSelectionWidget.sub_roi_x_input.setValue(x)
+            if y != current_y:
+                self.view.roiSelectionWidget.sub_roi_y_input.setValue(y)
+            return binner.get_sub_roi(x, y)
+        elif mode == ExportMode.ROI_MODE:
+            roi_widget = self.spectrum_viewer.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
+            return roi_widget.as_sensible_roi()
+
+        raise RuntimeError("Unknown export mode")
+
     def set_spectrum(self) -> None:
         spectrum_data = self.fitting_spectrum
         self.fitting_display_widget.update_plot(*spectrum_data)
@@ -130,8 +157,16 @@ class FittingFormWidgetPresenter:
         self.view.roiSelectionWidget.update_roi_list(roi_names)
 
     def update_roi_on_fitting_thumbnail(self) -> None:
-        roi_widget = self.spectrum_viewer.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
-        self.spectrum_viewer.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi_widget)
+        mode = self.spectrum_viewer.presenter.export_mode
+        if mode == ExportMode.IMAGE_MODE:
+            roi = self.get_current_roi()
+            color = (255, 194, 10)
+            self.spectrum_viewer.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi, color)
+        elif mode == ExportMode.ROI_MODE:
+            roi_widget = self.spectrum_viewer.spectrum_widget.roi_dict[self.view.roiSelectionWidget.current_roi_name]
+            roi = roi_widget.as_sensible_roi()
+            color = roi_widget.colour[:3]
+            self.spectrum_viewer.fittingDisplayWidget.show_roi_on_thumbnail_from_widget(roi, color)
 
     def set_default_fitting_region(self) -> None:
         self.view.fittingDisplayWidget.set_default_region_if_needed(*self.fitting_spectrum)
