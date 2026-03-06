@@ -569,7 +569,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">file_info</span> <span class="ow">in</span> <span class="n">FILE_TYPES</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">file_info</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">]:</span>
                 <span class="n">related_group</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">find_related</span><span class="p">(</span><span class="n">file_info</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">related_group</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">update_field_with_filegroup</span><span class="p">(</span><span class="n">file_info</span><span class="p">,</span> <span class="n">related_group</span><span class="p">)</span></div>
