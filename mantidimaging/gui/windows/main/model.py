@@ -74,12 +74,15 @@ class MainWindowModel:
         images = loader.load_stack_from_group(group, progress)
         return images
 
-    def do_images_saving(self, images_id: uuid.UUID, output_dir: str | Path, name_prefix: str, image_format: str,
-                         overwrite: bool, pixel_depth: str, progress: Progress) -> bool:
+    def do_images_saving(self, images_id: uuid.UUID, save_as_sino: bool, output_dir: str | Path, name_prefix: str,
+                         image_format: str, overwrite: bool, pixel_depth: str, progress: Progress) -> bool:
         logger.info(f"Starting export of ImageStack {images_id} to {output_dir} with format {image_format}")
         images = self.get_images_by_uuid(images_id)
         if images is None:
             self.raise_error_when_images_not_found(images_id)
+        if save_as_sino:
+            sino_images = ImageStack(np.array([images.sino(ind) for ind in range(images.height)]))
+            images = sino_images
 
         filenames = saver.image_save(images,
                                      output_dir=output_dir,

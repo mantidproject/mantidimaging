@@ -18,25 +18,49 @@
     <widget class="QComboBox" name="stackNames"/>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0" rowminimumheight="0,0,0,0,0,0,0">
+     <property name="horizontalSpacing">
+      <number>7</number>
+     </property>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="overwriteAll">
+       <property name="text">
+        <string>Overwrite on name conflict</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Output Directory:</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QComboBox" name="formats"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="savePath">
+     <item row="3" column="1" colspan="2">
+      <widget class="QLineEdit" name="namePrefix">
        <property name="text">
-        <string/>
+        <string>image</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="2">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Name Prefix:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Format:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
       <widget class="QComboBox" name="pixelDepth">
        <property name="enabled">
         <bool>true</bool>
@@ -59,24 +83,24 @@
        </item>
       </widget>
      </item>
-     <item row="0" column="2">
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="savePath">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QComboBox" name="formats"/>
+     </item>
+     <item row="1" column="2">
       <widget class="QPushButton" name="browseButton">
        <property name="text">
         <string>Browse</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="overwriteAll">
-       <property name="text">
-        <string>Overwrite on name conflict</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label_4">
        <property name="enabled">
         <bool>true</bool>
@@ -86,24 +110,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QLineEdit" name="namePrefix">
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="as_sino_check">
        <property name="text">
-        <string>image</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Name Prefix:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Format:</string>
+        <string>Save as sinogram</string>
        </property>
       </widget>
      </item>

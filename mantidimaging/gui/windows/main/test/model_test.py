@@ -258,6 +258,7 @@ class MainWindowModelTest(unittest.TestCase):
         images_id, images_mock = self._add_mock_image()
         images_mock.data = generate_images().data
 
+        save_as_sino = False
         output_dir = "output"
         name_prefix = "prefix"
         image_format = "image format"
@@ -267,8 +268,8 @@ class MainWindowModelTest(unittest.TestCase):
 
         save_mock.return_value = filenames = ["filename" for _ in range(len(images_mock.data))]
 
-        result = self.model.do_images_saving(images_id, output_dir, name_prefix, image_format, overwrite, pixel_depth,
-                                             progress)
+        result = self.model.do_images_saving(images_id, save_as_sino, output_dir, name_prefix, image_format, overwrite,
+                                             pixel_depth, progress)
         save_mock.assert_called_once_with(images_mock,
                                           output_dir=output_dir,
                                           name_prefix=name_prefix,
@@ -282,8 +283,8 @@ class MainWindowModelTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.main.model.saver.image_save")
     def test_image_save_when_image_not_found(self, save_mock: mock.MagicMock):
         with self.assertRaises(RuntimeError):
-            self.model.do_images_saving(uuid.uuid4(), "output", "name_prefix", "image_format", True, "pixel_depth",
-                                        mock.Mock())
+            self.model.do_images_saving(uuid.uuid4(), False, "output", "name_prefix", "image_format", True,
+                                        "pixel_depth", mock.Mock())
         save_mock.assert_not_called()
 
     def test_remove_dataset_from_model(self):
