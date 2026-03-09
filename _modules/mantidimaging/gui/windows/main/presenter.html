@@ -937,7 +937,13 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="p">,</span> <span class="n">ImageSaveDialog</span><span class="p">)</span>
 
         <span class="n">current_stack_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">stackNames</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
-        <span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;reconstruction&quot;</span> <span class="k">if</span> <span class="s2">&quot;Recon&quot;</span> <span class="ow">in</span> <span class="n">current_stack_name</span> <span class="k">else</span> <span class="s2">&quot;raw data&quot;</span>
+        <span class="n">save_as_sino</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">as_sino_check</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">save_as_sino</span><span class="p">:</span>
+            <span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;sinogram&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;Recon&quot;</span> <span class="ow">in</span> <span class="n">current_stack_name</span><span class="p">:</span>
+            <span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;reconstruction&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">export_type</span> <span class="o">=</span> <span class="s2">&quot;raw data&quot;</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">()</span>
         <span class="n">image_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">image_format</span><span class="p">()</span>
 
@@ -946,6 +952,7 @@
 
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;images_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">selected_stack</span><span class="p">,</span>
+            <span class="s1">&#39;save_as_sino&#39;</span><span class="p">:</span> <span class="n">save_as_sino</span><span class="p">,</span>
             <span class="s1">&#39;output_dir&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">save_path</span><span class="p">(),</span>
             <span class="s1">&#39;name_prefix&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">name_prefix</span><span class="p">(),</span>
             <span class="s1">&#39;image_format&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">image_format</span><span class="p">(),</span>
