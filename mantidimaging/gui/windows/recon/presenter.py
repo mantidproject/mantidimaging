@@ -175,6 +175,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
+        self.view.update_projection_pair_dropdown()
 
     def _setup_new_stack_previews(self) -> None:
         """
