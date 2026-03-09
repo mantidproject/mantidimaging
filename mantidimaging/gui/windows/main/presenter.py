@@ -263,18 +263,19 @@ class MainWindowPresenter(BasePresenter):
 
     def _on_proj_angle_load_done(self, task: TaskWorkerThread) -> None:
         if isinstance(task.error, TaskCancelled):
-            getLogger(__name__).info("Loading was cancelled by the user.")
+            LOG.info("Loading was cancelled by the user.")
             return
 
         if task.was_successful() and task.result is not None:
-            images = self.model.get_images_by_uuid(task.result[0])
+            images_id, proj_angles = task.result
+            images = self.model.get_images_by_uuid(images_id)
             if images is None:
-                self.model.raise_error_when_images_not_found(task.result[0])
-            images.set_projection_angles(task.result[1])
+                self.model.raise_error_when_images_not_found(images_id)
+            images.set_projection_angles(proj_angles)
 
-            self.stack_visualisers[task.result[0]].image_view.setImage(images.data)
+            self.stack_visualisers[images_id].image_view.setImage(images.data)
 
-            self.stack_visualisers[task.result[0]].image_view.angles = task.result[1]
+            self.stack_visualisers[images_id].image_view.angles = proj_angles
             task.result = None
         else:
             raise RuntimeError(self.LOAD_ANGLE_ERROR_STRING.format(task.error))
