@@ -65,6 +65,9 @@ class ROIFormWidget(BaseWidget):
         self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
         self.roi_properties_widget.roi_changed.connect(self._update_bin_size_limit)
 
+    def update_bin_size_limit(self):
+        self._update_bin_size_limit()
+
     @property
     def image_output_mode(self) -> str:
         return self.image_output_mode_combobox.currentText()
@@ -89,6 +92,7 @@ class ROIFormWidget(BaseWidget):
         return ROIBinner(roi, step_size=step, bin_size=bin_size)
 
     def _binning_changed(self) -> None:
+        self._update_bin_size_limit()
         binner = self.binner
         if len(binner.left_indexes) == 0 or len(binner.top_indexes) == 0:
             warning = (
