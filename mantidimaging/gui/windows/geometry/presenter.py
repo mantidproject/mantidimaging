@@ -113,6 +113,9 @@ class GeometryWindowPresenter(BasePresenter):
         stack.geometry.set_source_detector_positions(updated_source_pos, updated_detector_pos)
 
         self.refresh_plot(stack)
+        # Notify main window that stack was modified (so recon window can update COR/Tilt)
+        if hasattr(self.main_window, 'stack_modified'):
+            self.main_window.stack_modified.emit()
 
     def refresh_plot(self, stack: ImageStack) -> None:
         figure = self.model.generate_figure(stack)

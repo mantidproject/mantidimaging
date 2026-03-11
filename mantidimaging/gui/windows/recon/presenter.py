@@ -171,7 +171,13 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.reset_recon_and_sino_previews()
         self.view.clear_cor_table()
         self.model.initial_select_data(images)
-        self.view.rotation_centre = self.model.last_cor.value
+        # Set COR and Tilt from geometry if available
+        if images is not None and images.geometry is not None:
+            self.view.rotation_centre = images.geometry.cor.value
+            self.view.tilt = images.geometry.tilt
+        else:
+            self.view.rotation_centre = self.model.last_cor.value
+            self.view.tilt = 0.0
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
