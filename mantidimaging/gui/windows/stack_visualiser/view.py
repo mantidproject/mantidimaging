@@ -56,8 +56,7 @@ class StackVisualiserView(QDockWidget):
                          ("Export stack as GIF animation", self._request_create_gif),
                          ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
                          ("Duplicate current ROI of data",
-                          lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
-                         ("Mark as projections/sinograms", self.mark_as_sinograms), ("", None),
+                          lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)), ("", None),
                          ("Toggle averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
                          ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
                          ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
@@ -199,18 +198,6 @@ class StackVisualiserView(QDockWidget):
     def _request_create_gif(self) -> None:
         """Request GIF creation from main window presenter"""
         self._main_window.presenter._create_gif(self.presenter.images)
-
-    def mark_as_sinograms(self) -> None:
-        # 1 is position of sinograms, 0 is projections
-        current = 1 if self.presenter.images._is_sinograms else 0
-        item, accepted = QInputDialog.getItem(self,
-                                              "Select if projections or sinograms",
-                                              "Images are:", ["projections", "sinograms"],
-                                              current,
-                                              flags=INPUT_DIALOG_FLAGS)
-        if accepted:
-            self.presenter.images._is_sinograms = False if item == "projections" else True
-            self._main_window.stack_modified.emit()
 
     def cleanup(self):
         self._main_window.stack_modified.disconnect(self.connection_stack_modified)
