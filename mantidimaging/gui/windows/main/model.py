@@ -128,8 +128,7 @@ class MainWindowModel:
             angles = proj_angles.value
             angle_order = np.argsort(angles)
             proj_angles.value = angles[angle_order]
-            image_data = images.data[angle_order]
-            images.data = image_data
+            images.reorder_images_by_index(angle_order)
             if images.filenames is not None:
                 images.filenames = [images.filenames[i] for i in angle_order]
         else:
