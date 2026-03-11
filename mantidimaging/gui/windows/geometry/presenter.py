@@ -145,6 +145,8 @@ class GeometryWindowPresenter(BasePresenter):
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
         stack.geometry.set_source_detector_positions(new_source_position, new_detector_position)
 
+        self.main_window.presenter.add_projection_angles_to_sample(stack.id, new_angles)
+
         self.handle_stack_changed()
 
     def handle_convert_geometry(self) -> None:
