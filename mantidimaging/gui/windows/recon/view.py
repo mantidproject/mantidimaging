@@ -568,3 +568,19 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def get_selected_projection_pair(self) -> tuple[float, float]:
         return self.projectionPairDropdown.currentData()
+
+    def set_algorithm_options_by_geometry(self, geometry_type):
+        model = self.algorithmNameComboBox.model()
+        for i in range(self.algorithmNameComboBox.count()):
+            model.item(i).setEnabled(True)
+        if geometry_type is not None and geometry_type.value == "Cone 3D":
+            for i in range(self.algorithmNameComboBox.count()):
+                if self.algorithmNameComboBox.itemText(i) != "CIL_PDHG-TV":
+                    model.item(i).setEnabled(False)
+            idx = self.algorithmNameComboBox.findText("CIL_PDHG-TV")
+            if idx != -1:
+                self.algorithmNameComboBox.setCurrentIndex(idx)
+        else:
+            idx = self.algorithmNameComboBox.findText("Gridrec")
+            if idx != -1:
+                self.algorithmNameComboBox.setCurrentIndex(idx)
