@@ -277,6 +277,7 @@ class MainWindowPresenter(BasePresenter):
 
             self.stack_visualisers[images_id].image_view.angles = proj_angles
             task.result = None
+            self.view.stack_modified.emit()
         else:
             raise RuntimeError(self.LOAD_ANGLE_ERROR_STRING.format(task.error))
 
