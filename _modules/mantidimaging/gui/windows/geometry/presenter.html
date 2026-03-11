@@ -620,7 +620,9 @@
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">updated_cor</span><span class="p">,</span> <span class="n">updated_tilt</span><span class="p">)</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">updated_source_pos</span><span class="p">,</span> <span class="n">updated_detector_pos</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
+        <span class="c1"># Notify main window that stack was modified (so recon window can update COR/Tilt)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="GeometryWindowPresenter.refresh_plot">
