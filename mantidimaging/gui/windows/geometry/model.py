@@ -23,5 +23,6 @@ class GeometryWindowModel:
         plt.style.use("dark_background")
         figure: Figure = show_geometry(geometry, show=False).figure
         figure.set_facecolor("black")
+        figure.subplots_adjust(top=0.85)
 
         return figure

@@ -115,8 +115,8 @@ class GeometryWindowView(BaseMainWindowView):
         left_scroll_area.setFrameShape(QFrame.NoFrame)
         left_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         left_scroll_area.setWidgetResizable(True)
-        left_scroll_area.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred))
-
+        left_scroll_area.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        left_scroll_area.setFixedWidth(340)
         left_container = QWidget()
         left_layout = QVBoxLayout(left_container)
 
