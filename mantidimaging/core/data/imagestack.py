@@ -490,3 +490,21 @@ class ImageStack:
         num_pixels = (self.width, self.height)
         pixel_size = (1.0, 1.0)
         self.geometry.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
+
+    def reorder_images_by_index(self, index: np.ndarray) -> None:
+        n, *m = self.data.shape
+        been_there = np.zeros(n, bool)
+        keep = np.empty(m, self.data.dtype)
+        for i in range(n):
+            if been_there[i]:
+                continue
+            keep[:] = self.data[i]
+            been_there[i] = True
+            j = i
+            k = index[i]
+            while not been_there[k]:
+                self.data[j] = self.data[k]
+                been_there[k] = True
+                j = k
+                k = index[k]
+            self.data[j] = keep
