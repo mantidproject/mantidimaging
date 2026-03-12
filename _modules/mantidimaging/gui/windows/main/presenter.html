@@ -567,6 +567,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">MainWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
     <span class="n">LOAD_ERROR_STRING</span> <span class="o">=</span> <span class="s2">&quot;Failed to load stack. Error: </span><span class="si">{}</span><span class="s2">&quot;</span>
     <span class="n">SAVE_ERROR_STRING</span> <span class="o">=</span> <span class="s2">&quot;Failed to save data. Error: </span><span class="si">{}</span><span class="s2">&quot;</span>
+    <span class="n">LOAD_ANGLE_ERROR_STRING</span> <span class="o">=</span> <span class="s2">&quot;Failed to load angles. Error: </span><span class="si">{}</span><span class="s2">&quot;</span>
 
     <span class="n">view</span><span class="p">:</span> <span class="n">MainWindowView</span>
 
@@ -783,6 +784,26 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_open_window_if_not_open</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOAD_ERROR_STRING</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_proj_angle_load_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">TaskCancelled</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading was cancelled by the user.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">was_successful</span><span class="p">()</span> <span class="ow">and</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">images_id</span><span class="p">,</span> <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">result</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">raise_error_when_images_not_found</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">proj_angles</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">images_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">images_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOAD_ANGLE_ERROR_STRING</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_dataset_to_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1045,8 +1066,10 @@
 <div class="viewcode-block" id="MainWindowPresenter.add_projection_angles_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_projection_angles_to_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span></div>
+        <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_proj_angle_load_done</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s1">&#39;images_id&#39;</span><span class="p">:</span> <span class="n">stack_id</span><span class="p">,</span>
+            <span class="s1">&#39;proj_angles&#39;</span><span class="p">:</span> <span class="n">proj_angles</span>
+        <span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.load_stacks_from_folder">

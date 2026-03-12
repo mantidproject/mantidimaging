@@ -641,11 +641,19 @@
 
 <div class="viewcode-block" id="MainWindowModel.add_projection_angles_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_projection_angles_to_sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_projection_angles_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span>
+                                        <span class="n">proj_angles</span><span class="p">:</span> <span class="n">ProjectionAngles</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">ProjectionAngles</span><span class="p">]:</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_when_images_not_found</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
-        <span class="n">images</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">proj_angles</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">angle_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+            <span class="n">proj_angles</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="n">angle_order</span><span class="p">]</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">reorder_images_by_index</span><span class="p">(</span><span class="n">angle_order</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">angle_order</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">images_id</span><span class="p">,</span> <span class="n">proj_angles</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.raise_error_when_images_not_found">
