@@ -380,6 +380,25 @@ class MainWindowView(BaseMainWindowView):
             return
 
         self.presenter.add_log_to_sample(stack_id=stack_to_add_log_to, log_file=Path(selected_file))
+        self.stack_modified.emit()
+
+        if self.recon is not None:
+            # Update recon with log
+            self.recon.activateWindow()
+            self.recon.raise_()
+            presenter = getattr(self.recon, 'presenter', None)
+            if presenter:
+                uuid = getattr(self.recon.stackSelector, 'current', lambda: None)() if hasattr(
+                    self.recon, 'stackSelector') else None
+                if uuid and hasattr(presenter, 'set_current_stack'):
+                    presenter.set_current_stack(uuid)
+                for method_name, kwargs in [('_update_geometry_dependent_ui', {}),
+                                            ('do_preview_reconstruct_slice', {
+                                                'reset_roi': True
+                                            }), ('do_update_projection', {})]:
+                    method = getattr(presenter, method_name, None)
+                    if callable(method):
+                        method(**kwargs)
 
         QMessageBox.information(self, "Load complete",
                                 f"{selected_file} was loaded as a log into {stack_to_add_log_to}.")

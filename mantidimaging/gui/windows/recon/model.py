@@ -239,9 +239,9 @@ class ReconstructWindowModel:
         :param recon_params: Reconstruction parameters
         :param progress: Progress reporter
         """
-        if self.images is None:
-            LOG.warning("No image stack loaded; returning default COR=0.0")
-            return [0.0]
+
+        if self.images is None or self.images.geometry is None:
+            raise RuntimeError("No geometry found for stack. Load angles/geometry before running COR minimisation.")
 
         initial_cor = []
         for slc in slices:
