@@ -92,6 +92,7 @@ class RecordResidualsCallback(Callback):
 
 
 class CILRecon(BaseRecon):
+    supported_geometry_types = {GeometryType.PARALLEL3D, GeometryType.CONE3D}
 
     @staticmethod
     def set_up_TV_regularisation(
