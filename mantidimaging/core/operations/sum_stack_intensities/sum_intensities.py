@@ -9,7 +9,6 @@ from collections.abc import Callable
 from mantidimaging import helper as helper
 import numpy as np
 
-from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
@@ -64,12 +63,12 @@ class SumIntensitiesFilter(BaseFilter):
                 'Append Stacks may be a more suitable operation for stacks that differ in the number of slices.')
 
         params = {'stack_type': stack_type, 'secondary_stack': secondary_stack}
-        SumIntensitiesFilter.compute_function(images, params, progress)
+        SumIntensitiesFilter.compute_function(images, params)
 
         return images
 
     @staticmethod
-    def sum_tof_stacks(primary_stack:ImageStack, secondary_stack: ImageStack, progress=None) -> None:
+    def sum_tof_stacks(primary_stack: ImageStack, secondary_stack: ImageStack, progress=None) -> None:
         """
         Sum ToF stacks by index position
 
@@ -79,7 +78,41 @@ class SumIntensitiesFilter(BaseFilter):
         primary_stack.data[:num_slices] += secondary_stack.data[:num_slices]
 
     @staticmethod
-    def compute_function(primary_stack: ImageStack, params: dict[str, Any], progress: Any = None) -> None:
+    def _prepare_angles(primary_stack: ImageStack, secondary_stack: ImageStack) -> tuple[np.ndarray, np.ndarray] | None:
+        """
+        Extract angles from both stacks and return in degrees, or synthetic indices if angles
+        unavailable.
+        """
+        primary_stack_angles = primary_stack.projection_angles()
+        secondary_stack_angles = secondary_stack.projection_angles()
+
+        if primary_stack_angles is not None and secondary_stack_angles is not None:
+            return (np.rad2deg(primary_stack_angles.value), np.rad2deg(secondary_stack_angles.value))
+
+        return None
+
+    @staticmethod
+    def sum_tomography_stacks(primary_stack: ImageStack, secondary_stack: ImageStack) -> None:
+        """
+        Sum tompgrahpy stacks by matching projections on their rotion angle or just by projection order if no
+        angles are available.
+
+        For each projection in primary stack, the closest-angle projection in the secondary stack is found
+        and added in-place.  If no angles exist, just match by projection order
+        """
+
+        stack_angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack)
+
+        for projection in range(primary_stack.num_images):
+            if stack_angles is not None:
+                primary_stack_angles_deg, secondary_stack_angles_deg = stack_angles
+                secondary_idx = np.argmin(np.abs(secondary_stack_angles_deg - primary_stack_angles_deg[projection]))
+            else:
+                secondary_idx = min(projection, secondary_stack.num_images - 1)
+            primary_stack.data[projection] += secondary_stack.data[secondary_idx]
+
+    @staticmethod
+    def compute_function(primary_stack: ImageStack, params: dict[str, Any]) -> None:
         """
         Dispatch to the appropriate summation method based on stack type.
         """
@@ -87,9 +120,9 @@ class SumIntensitiesFilter(BaseFilter):
         secondary_stack = params['secondary_stack']
 
         if stack_type == 'Tomography':
-            pass
+            SumIntensitiesFilter.sum_tomography_stacks(primary_stack, secondary_stack)
         elif stack_type == 'Time of Flight (ToF)':
-            SumIntensitiesFilter.sum_tof_stacks(primary_stack, secondary_stack, progress)
+            SumIntensitiesFilter.sum_tof_stacks(primary_stack, secondary_stack)
         else:
             raise ValueError(f"Unsupported stack type: {stack_type}")
 
