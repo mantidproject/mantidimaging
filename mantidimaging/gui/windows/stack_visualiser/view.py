@@ -59,7 +59,6 @@ class StackVisualiserView(QDockWidget):
                          ("View as sinograms/projections", self.view_stack_as_sinograms),
                           lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)), ("", None),
                          ("Toggle averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
-                         ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
                          ("Set ROI", self.set_roi), ("Copy ROI to clipboard", self.copy_roi_to_clipboard), ("", None),
                          ("Change window name", self.change_window_name_clicked),
                          ("Goto projection", self.goto_projection), ("Goto angle", self.goto_angle),
