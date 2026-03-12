@@ -176,10 +176,8 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
 
-        geometry_type = None
         if images is not None and images.geometry is not None:
-            geometry_type = images.geometry.type
-        self.view.set_algorithm_options_by_geometry(geometry_type)
+            self.view.set_algorithm_options_by_geometry(images.geometry.type)
 
     def _setup_new_stack_previews(self) -> None:
         """

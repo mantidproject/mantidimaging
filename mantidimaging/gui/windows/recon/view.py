@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInpu
 from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
 from mantidimaging.core.utility.cuda_check import CudaChecker
@@ -570,7 +571,7 @@ class ReconstructWindowView(BaseMainWindowView):
     def get_selected_projection_pair(self) -> tuple[float, float]:
         return self.projectionPairDropdown.currentData()
 
-    def set_algorithm_options_by_geometry(self, geometry_type):
+    def set_algorithm_options_by_geometry(self, geometry_type: GeometryType):
         model = self.algorithmNameComboBox.model()
         enabled_idx = None
         for i in range(self.algorithmNameComboBox.count()):
@@ -580,5 +581,6 @@ class ReconstructWindowView(BaseMainWindowView):
             model.item(i).setEnabled(supported)
             if supported and enabled_idx is None:
                 enabled_idx = i
+        # If current algorithm is disabled, switch to first enabled one
         if enabled_idx is not None and not model.item(self.algorithmNameComboBox.currentIndex()).isEnabled():
             self.algorithmNameComboBox.setCurrentIndex(enabled_idx)
