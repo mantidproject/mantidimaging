@@ -625,15 +625,6 @@ class MainWindowPresenter(BasePresenter):
         parent_id = self.model.get_parent_dataset(stack_id)
         self.add_images_to_existing_dataset(parent_id, recon_data, "Recon")
 
-    def add_sinograms_to_dataset_and_update_view(self, sino_stack: ImageStack, original_stack_id: uuid.UUID) -> None:
-        """
-        Adds sinograms to a dataset or replaces an existing one.
-        :param sino_stack: The sinogram stack.
-        :param original_stack_id: The ID of a stack in the dataset.
-        """
-        parent_id = self.model.get_parent_dataset(original_stack_id)
-        self.add_images_to_existing_dataset(parent_id, sino_stack, "Sinograms")
-
     def _show_add_stack_to_dataset_dialog(self, container_id: uuid.UUID) -> None:
         """
         Asks the user to add a stack to a given dataset.
