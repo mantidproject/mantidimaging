@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInpu
 from PyQt5.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import ImageStack
+from mantidimaging.core.reconstruct import get_reconstructor_for
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE, open_help_webpage
 from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import Degrees, ReconstructionParameters, ScalarCoR, Slope
@@ -571,16 +572,13 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def set_algorithm_options_by_geometry(self, geometry_type):
         model = self.algorithmNameComboBox.model()
+        enabled_idx = None
         for i in range(self.algorithmNameComboBox.count()):
-            model.item(i).setEnabled(True)
-        if geometry_type is not None and geometry_type.value == "Cone 3D":
-            for i in range(self.algorithmNameComboBox.count()):
-                if self.algorithmNameComboBox.itemText(i) != "CIL_PDHG-TV":
-                    model.item(i).setEnabled(False)
-            idx = self.algorithmNameComboBox.findText("CIL_PDHG-TV")
-            if idx != -1:
-                self.algorithmNameComboBox.setCurrentIndex(idx)
-        else:
-            idx = self.algorithmNameComboBox.findText("Gridrec")
-            if idx != -1:
-                self.algorithmNameComboBox.setCurrentIndex(idx)
+            alg_name = self.algorithmNameComboBox.itemText(i)
+            supported_types = get_reconstructor_for(alg_name).supported_geometry_types
+            supported = geometry_type in supported_types
+            model.item(i).setEnabled(supported)
+            if supported and enabled_idx is None:
+                enabled_idx = i
+        if enabled_idx is not None and not model.item(self.algorithmNameComboBox.currentIndex()).isEnabled():
+            self.algorithmNameComboBox.setCurrentIndex(enabled_idx)
