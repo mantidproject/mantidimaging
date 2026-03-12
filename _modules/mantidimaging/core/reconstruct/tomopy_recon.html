@@ -506,6 +506,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.reconstruct.base_recon</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRecon</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.optional_imports</span><span class="w"> </span><span class="kn">import</span> <span class="n">safe_import</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryType</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructionParameters</span>
@@ -517,6 +518,8 @@
 <div class="viewcode-block" id="TomopyRecon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TomopyRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
+
+    <span class="n">supported_geometry_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">}</span>
 
 <div class="viewcode-block" id="TomopyRecon.find_cor">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.find_cor">[docs]</a>

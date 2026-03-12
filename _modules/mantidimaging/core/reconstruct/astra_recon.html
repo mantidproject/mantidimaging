@@ -511,6 +511,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.cuda_check</span><span class="w"> </span><span class="kn">import</span> <span class="n">CudaChecker</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">ScalarCoR</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryType</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">astra_mutex</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
@@ -576,6 +577,7 @@
 <div class="viewcode-block" id="AstraRecon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AstraRecon</span><span class="p">(</span><span class="n">BaseRecon</span><span class="p">):</span>
+    <span class="n">supported_geometry_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_count_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>

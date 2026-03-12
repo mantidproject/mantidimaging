@@ -506,11 +506,14 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructionParameters</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryType</span>
 
 
 <div class="viewcode-block" id="BaseRecon">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.base_recon.html#mantidimaging.core.reconstruct.base_recon.BaseRecon">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseRecon</span><span class="p">:</span>
+
+    <span class="n">supported_geometry_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">GeometryType</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BaseRecon.find_cor">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.base_recon.html#mantidimaging.core.reconstruct.base_recon.BaseRecon.find_cor">[docs]</a>
