@@ -34,6 +34,7 @@ class SumIntensitiesFilter(BaseFilter):
 
     filter_name = 'Sum Stack Intensities'
     link_histograms = True
+    allow_for_180_projection = False
     valid_types = ['Tomography', 'Time of Flight (ToF)']
 
     @staticmethod
@@ -53,30 +54,42 @@ class SumIntensitiesFilter(BaseFilter):
         if secondary_stack is None:
             raise ValueError("Secondary stack cannot be None.")
 
-        if images.full_stack_shape != secondary_stack.data.shape:
+        primary_shape = images.full_stack_shape or images.data.shape
+        secondary_shape = secondary_stack.full_stack_shape or secondary_stack.data.shape
+        if primary_shape != secondary_shape:
             raise ValueError(
                 f'The primary and secondary stacks must have the same shape. '
-                f'The primary stack shape is: { images.full_stack_shape }, '
-                f'The secondary stack shape is: {secondary_stack.data.shape}. '
+                f'The primary stack shape is: {primary_shape}, '
+                f'The secondary stack shape is: {secondary_shape}. '
                 'Append Stacks may be a more suitable operation for stacks that differ in the number of slices.')
 
         params = {'stack_type': stack_type, 'secondary_stack': secondary_stack}
-        ps.run_compute_func(SumIntensitiesFilter.compute_function, images.data.shape[0], images.shared_array, params,
-                            progress)
+        SumIntensitiesFilter.compute_function(images, params, progress)
 
         return images
 
     @staticmethod
-    def compute_function(i: int, array: np.ndarray, params: dict):
+    def sum_tof_stacks(primary_stack:ImageStack, secondary_stack: ImageStack, progress=None) -> None:
         """
-        Function to compute the sum of stack intensities
+        Sum ToF stacks by index position
+
+        All bins added directl. If stacks differ in bin number only, overlapping prefix (min of two counts) is summed.
+       """
+        num_slices = min(primary_stack.data.shape[0], secondary_stack.data.shape[0])
+        primary_stack.data[:num_slices] += secondary_stack.data[:num_slices]
+
+    @staticmethod
+    def compute_function(primary_stack: ImageStack, params: dict[str, Any], progress: Any = None) -> None:
+        """
+        Dispatch to the appropriate summation method based on stack type.
         """
         stack_type = params['stack_type']
+        secondary_stack = params['secondary_stack']
 
         if stack_type == 'Tomography':
             pass
         elif stack_type == 'Time of Flight (ToF)':
-            pass
+            SumIntensitiesFilter.sum_tof_stacks(primary_stack, secondary_stack, progress)
         else:
             raise ValueError(f"Unsupported stack type: {stack_type}")
 
