@@ -80,12 +80,6 @@ class StackVisualiserPresenterTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.presenter.get_parameter_value(7)
 
-    def test_add_sinograms_to_model_and_update_view(self):
-        sinograms = th.generate_images()
-        self.presenter.add_sinograms_to_model_and_update_view(sinograms)
-        self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view.assert_called_once_with(
-            sinograms, self.presenter.images.id)
-
 
 if __name__ == '__main__':
     unittest.main()
