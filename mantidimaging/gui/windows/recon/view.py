@@ -108,6 +108,8 @@ class ReconstructWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
 
+        self.stackSelector.stack_selected_uuid.connect(lambda: self.update_projection_pair_dropdown())
+
         self.algorithmNameComboBox.insertItem(1, "FBP_CUDA")
         self.algorithmNameComboBox.insertItem(2, "SIRT_CUDA")
         self.algorithmNameComboBox.insertItem(3, "CIL_PDHG-TV")
@@ -568,3 +570,33 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def get_selected_projection_pair(self) -> tuple[float, float]:
         return self.projectionPairDropdown.currentData()
+
+    def update_projection_pair_dropdown(self):
+        """
+        Enable only valid projection pairs in the dropdown based on available angles in the current stack.
+        """
+        images = getattr(self.presenter.model, 'images', None)
+        angles = None
+        if images is not None and hasattr(images, 'projection_angles'):
+            pa = images.projection_angles()
+            if pa is not None:
+                angles = np.rad2deg(pa.value)
+        pairs = [
+            (0, 'proj180'),
+            (1, (0, 180)),
+            (2, (90, 270)),
+            (3, (180, 360)),
+            (4, (-90, 90)),
+        ]
+        for idx, pair in pairs:
+            item = self.projectionPairDropdown.model().item(idx)
+            if angles is None:
+                # If no angles, only allow 'proj180' (first item)
+                item.setEnabled(pair == 'proj180')
+            elif pair == 'proj180':
+                item.setEnabled(True)
+            else:
+                a1, a2 = pair
+                valid1 = np.any(np.abs(angles - a1) <= 2)
+                valid2 = np.any(np.abs(angles - a2) <= 2)
+                item.setEnabled(bool(valid1 and valid2))
