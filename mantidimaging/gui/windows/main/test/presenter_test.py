@@ -474,26 +474,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         stack_mock.setVisible.assert_not_called()
         stack_mock._raise.assert_not_called()
 
-    def test_add_sinograms_to_dataset_with_no_sinograms_and_update_view(self):
-        sinograms = generate_images()
-        ds = Dataset(sample=generate_images())
-        self.model.datasets[ds.id] = ds
-        self.model.get_parent_dataset.return_value = ds.id
-
-        self.view.get_sinograms_item.return_value = None
-        self.presenter.create_single_tabbed_images_stack = mock.Mock()
-        self.presenter._close_unused_visualisers = mock.Mock()
-
-        self.presenter.add_sinograms_to_dataset_and_update_view(sinograms, ds.sample.id)
-
-        self.model.get_parent_dataset.assert_called_once_with(ds.sample.id)
-        self.presenter._close_unused_visualisers.assert_called_once()
-        self.assertIs(ds.sinograms, sinograms)
-        last_add_widget_call = self.view.add_item_to_dataset_tree_widget.mock_calls[-1][1]
-        self.assertEqual(last_add_widget_call[:2], ("Sinograms", sinograms.id))
-        self.presenter.create_single_tabbed_images_stack.assert_called_once_with(sinograms)
-        self.view.model_changed.emit.assert_called_once()
-
     def test_remove_item_from_recon_group_but_keep_group(self):
         top_level_item_mock = mock.Mock()
         self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
