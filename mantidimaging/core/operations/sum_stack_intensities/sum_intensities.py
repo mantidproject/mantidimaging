@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QComboBox
+    from PyQt5.QtWidgets import QFormLayout
     from mantidimaging.core.data import ImageStack
 
 
@@ -37,18 +37,12 @@ class SumIntensitiesFilter(BaseFilter):
     valid_types = ['Tomography', 'Time of Flight (ToF)']
 
     @staticmethod
-    def filter_func(images: ImageStack,
-                    stack_type: str | None = None,
-                    secondary_stack: ImageStack | None = None,
-                    progress: Any = None) -> ImageStack:
+    def filter_func(images: ImageStack, secondary_stack: ImageStack | None = None, progress: Any = None) -> ImageStack:
         """
         Validate and prepare stacks for summing intensities.
         """
         helper.check_data_stack(images)
         helper.check_data_stack(secondary_stack)
-
-        if not stack_type or stack_type not in SumIntensitiesFilter.valid_types:
-            raise ValueError(f"Invalid stack type: {stack_type}. Valid types are: {SumIntensitiesFilter.valid_types}")
 
         if secondary_stack is None:
             raise ValueError("Secondary stack cannot be None.")
@@ -62,19 +56,18 @@ class SumIntensitiesFilter(BaseFilter):
                 f'The secondary stack shape is: {secondary_shape}. '
                 'Append Stacks may be a more suitable operation for stacks that differ in the number of slices.')
 
-        params = {'stack_type': stack_type, 'secondary_stack': secondary_stack}
-        SumIntensitiesFilter.compute_function(images, params)
+        SumIntensitiesFilter.compute_function(images, {'secondary_stack': secondary_stack})
 
         return images
 
     @staticmethod
-    def sum_tof_stacks(primary_stack: ImageStack, secondary_stack: ImageStack, progress=None) -> None:
+    def sum_stacks_by_index(primary_stack: ImageStack, secondary_stack: ImageStack) -> None:
         """
-        Sum ToF stacks by index position
+        Sum stacks element-wise by index position.
 
-        All bins added directl. If stacks differ in bin number only, overlapping prefix (min of two counts) is summed.
-       """
-        num_slices = min(primary_stack.data.shape[0], secondary_stack.data.shape[0])
+        All slices are added directly. If stacks differ in slice count, only the overlapping prefix is summed.
+        """
+        num_slices = min(primary_stack.num_images, secondary_stack.num_images)
         primary_stack.data[:num_slices] += secondary_stack.data[:num_slices]
 
     @staticmethod
@@ -92,54 +85,34 @@ class SumIntensitiesFilter(BaseFilter):
         return None
 
     @staticmethod
-    def sum_tomography_stacks(primary_stack: ImageStack, secondary_stack: ImageStack) -> None:
+    def sum_stacks_by_angle(primary_stack: ImageStack, secondary_stack: ImageStack, angles: tuple[np.ndarray,
+                                                                                                  np.ndarray]) -> None:
         """
-        Sum tompgrahpy stacks by matching projections on their rotion angle or just by projection order if no
-        angles are available.
-
-        For each projection in primary stack, the closest-angle projection in the secondary stack is found
-        and added in-place.  If no angles exist, just match by projection order
+        Sum stacks by matching each projection to the closest rotation angle in the secondary stack.
         """
-
-        stack_angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack)
-
+        primary_angles_deg, secondary_angles_deg = angles
         for projection in range(primary_stack.num_images):
-            if stack_angles is not None:
-                primary_stack_angles_deg, secondary_stack_angles_deg = stack_angles
-                secondary_idx = np.argmin(np.abs(secondary_stack_angles_deg - primary_stack_angles_deg[projection]))
-            else:
-                secondary_idx = min(projection, secondary_stack.num_images - 1)
+            secondary_idx = np.argmin(np.abs(secondary_angles_deg - primary_angles_deg[projection]))
             primary_stack.data[projection] += secondary_stack.data[secondary_idx]
 
     @staticmethod
     def compute_function(primary_stack: ImageStack, params: dict[str, Any]) -> None:
         """
-        Dispatch to the appropriate summation method based on stack type.
+        Dispatch to angle-matched or index-order summation based on angle availability.
         """
-        stack_type = params['stack_type']
         secondary_stack = params['secondary_stack']
+        angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack)
 
-        if stack_type == 'Tomography':
-            SumIntensitiesFilter.sum_tomography_stacks(primary_stack, secondary_stack)
-        elif stack_type == 'Time of Flight (ToF)':
-            SumIntensitiesFilter.sum_tof_stacks(primary_stack, secondary_stack)
+        if angles is not None:
+            SumIntensitiesFilter.sum_stacks_by_angle(primary_stack, secondary_stack, angles)
         else:
-            raise ValueError(f"Unsupported stack type: {stack_type}")
+            SumIntensitiesFilter.sum_stacks_by_index(primary_stack, secondary_stack)
 
     @staticmethod
     def register_gui(form: QFormLayout, on_change: Callable, view: Any) -> dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
-        _, stack_type_widget = add_property_to_form(
-            "Type",
-            Type.CHOICE,
-            valid_values=SumIntensitiesFilter.valid_types,
-            form=form,
-            filters_view=view,
-            on_change=on_change,
-            tooltip="Select the type of stack to sum intensities. i.e. Time of Flight (ToF) or Tomography")
-
-        _, stack_to_sum_widget = add_property_to_form("Select Stack Stack to Sum",
+        _, stack_to_sum_widget = add_property_to_form("Stack to Sum",
                                                       Type.STACK,
                                                       form=form,
                                                       filters_view=view,
@@ -150,16 +123,13 @@ class SumIntensitiesFilter(BaseFilter):
         stack_to_sum_widget.setMaximumWidth(375)
         stack_to_sum_widget.subscribe_to_main_window(view.main_window)
 
-        return {'stack_type_widget': stack_type_widget, 'stack_to_sum_widget': stack_to_sum_widget}
+        return {'stack_to_sum_widget': stack_to_sum_widget}
 
     @staticmethod
     def execute_wrapper(  # type: ignore
-            stack_type_widget: QComboBox, stack_to_sum_widget: DatasetSelectorWidgetView) -> partial:
-        stack_type_value = stack_type_widget.currentText()
+            stack_to_sum_widget: DatasetSelectorWidgetView) -> partial:
         secondary_stack_value = BaseFilter.get_images_from_stack(stack_to_sum_widget, "Sum Intensities")
-        return partial(SumIntensitiesFilter.filter_func,
-                       stack_type=stack_type_value,
-                       secondary_stack=secondary_stack_value)
+        return partial(SumIntensitiesFilter.filter_func, secondary_stack=secondary_stack_value)
 
     @staticmethod
     def group_name() -> FilterGroup:
