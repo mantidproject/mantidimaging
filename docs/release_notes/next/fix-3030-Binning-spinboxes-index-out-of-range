@@ -1,0 +1,1 @@
+#3030: Fix IndexError for invalid bin/step size in Spectrum Viewer ROI binning
