@@ -57,7 +57,7 @@ class StackVisualiserView(QDockWidget):
                          ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
                          ("Duplicate current ROI of data",
                           lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
-                         ("View as sinograms", self.view_stack_as_sinograms),
+                         ("View as sinograms/projections", self.view_stack_as_sinograms),
                          ("Mark as projections/sinograms", self.mark_as_sinograms), ("", None),
                          ("Toggle averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
                          ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
