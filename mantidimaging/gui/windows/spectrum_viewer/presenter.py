@@ -61,6 +61,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view = view
         self.main_window = main_window
         self.model = SpectrumViewerWindowModel(self)
+        #self.roiSelectionWidget = ROISelectionWidget(self)
         self.export_mode = ExportMode.ROI_MODE
         self.main_window.stack_modified.connect(self.handle_stack_modified)
 
@@ -641,36 +642,56 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
         self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
+    def compute_spectrum_fit(self, spectrum, fitting_region, tof_data, init_params, bound_params):
+        """Fit a single spectrum and return result, rss_per_dof, status."""
+        try:
+            result, rss, rss_per_dof = self.model.fit_single_region(spectrum,
+                                                                    fitting_region,
+                                                                    tof_data,
+                                                                    init_params,
+                                                                    bounds=bound_params)
+            return result, rss, rss_per_dof, "Fitted"
+        except (ValueError, BadFittingRoiError) as e:
+            LOG.warning(f"Failed to find fit: {e}")
+            param_names = self.model.fitting_engine.get_parameter_names()
+            result = {p: 0 for p in param_names}
+            return result, 0, 0, "Failed"
+
+    def fit_roi_and_update_table(self, roi_name, roi, fitting_region, tof_data, init_params, bound_params):
+        """ Fit a single ROI or subROI and update the export table with results."""
+        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        result, rss, rss_per_dof, status = self.compute_spectrum_fit(spectrum, fitting_region, tof_data, init_params,
+                                                                     bound_params)
+        self.view.exportDataTableWidget.update_roi_data(
+            roi_name=roi_name,
+            params=result,
+            status=status,
+            chi2=rss_per_dof,
+        )
+        LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, rss_per_dof)
+
     def fit_all_regions(self) -> None:
+        """Fit all ROIs/subROIs and update the export table."""
+        self.view.exportDataTableWidget.clear_table()
+
         init_params = self.view.fitting_param_form.get_initial_param_values()
         bound_params = self.view.fitting_param_form.get_bound_parameters()
-        for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
-            if roi_name == "rits_roi":
-                continue
-            roi = roi_widget.as_sensible_roi()
-            spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
-            fitting_region = self.view.get_fitting_region()
-            try:
-                result, rss, rss_per_dof = self.model.fit_single_region(spectrum,
-                                                                        fitting_region,
-                                                                        self.model.tof_data,
-                                                                        init_params,
-                                                                        bounds=bound_params)
-                status = "Fitted"
-            except (ValueError, BadFittingRoiError) as e:
-                LOG.warning(f"Failed to find fit for ROI '{roi_name}': {e}")
-                param_names = self.model.fitting_engine.get_parameter_names()
-                result = {param_name: 0 for param_name in param_names}
-                status = "Failed"
-                rss_per_dof = 0
+        fitting_region = self.view.get_fitting_region()
+        tof_data = self.model.tof_data
 
-            self.view.exportDataTableWidget.update_roi_data(
-                roi_name=roi_name,
-                params=result,
-                status=status,
-                chi2=rss_per_dof,
-            )
-            LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, rss_per_dof)
+        if self.export_mode == ExportMode.IMAGE_MODE:
+            binner = self.view.get_binner()
+            roi_name = self.view.table_view.current_roi_name
+            for row, col in np.ndindex(len(binner.left_indexes), len(binner.top_indexes)):
+                roi = binner.get_sub_roi(col, row)
+                sub_roi_name = f"ROI_bin:(x={col},y={row})"
+                self.fit_roi_and_update_table(sub_roi_name, roi, fitting_region, tof_data, init_params, bound_params)
+        else:
+            for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
+                if roi_name == "rits_roi":
+                    continue
+                roi = roi_widget.as_sensible_roi()
+                self.fit_roi_and_update_table(roi_name, roi, fitting_region, tof_data, init_params, bound_params)
 
     def handle_export_table(self) -> None:
         """
