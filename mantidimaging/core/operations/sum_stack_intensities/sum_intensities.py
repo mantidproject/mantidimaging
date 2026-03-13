@@ -109,6 +109,25 @@ class SumIntensitiesFilter(BaseFilter):
             SumIntensitiesFilter.sum_stacks_by_index(primary_stack, secondary_stack)
 
     @staticmethod
+    def _update_angle_notification(view: Any, stack_to_sum_widget: DatasetSelectorWidgetView) -> None:
+        """
+        Notify if  angle-matched or index-order summation will be used.
+        """
+        secondary_stack = BaseFilter.get_images_from_stack(stack_to_sum_widget, "Sum Intensities")
+        if secondary_stack is None:
+            return
+        primary_stack = view.main_window.get_stack(view.stackSelector.current())
+        has_angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack) is not None
+
+        angle_notification = (
+            "Projection angles available: summation will be applied in angle order." if has_angles else
+            "No projection angles available in one of both stacks: summation will be applied in projection order.")
+
+        existing = view.notification_text.toPlainText()
+        view.notification_text.show()
+        view.notification_text.setText(f"{existing}\n{angle_notification}" if existing else angle_notification)
+
+    @staticmethod
     def register_gui(form: QFormLayout, on_change: Callable, view: Any) -> dict[str, Any]:
         from mantidimaging.gui.utility import add_property_to_form
 
@@ -122,6 +141,11 @@ class SumIntensitiesFilter(BaseFilter):
         assert isinstance(stack_to_sum_widget, DatasetSelectorWidgetView)
         stack_to_sum_widget.setMaximumWidth(375)
         stack_to_sum_widget.subscribe_to_main_window(view.main_window)
+
+        def update() -> None:
+            SumIntensitiesFilter._update_angle_notification(view, stack_to_sum_widget)
+
+        view.previews_updated.connect(update)
 
         return {'stack_to_sum_widget': stack_to_sum_widget}
 
