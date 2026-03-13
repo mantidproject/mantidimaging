@@ -47,12 +47,8 @@ class MainWindowModel:
         if parameters.sinograms:
             sample.name = "Sinograms"
             ds = Dataset(sample=sample.copy(flip_axes=True))
-            ds.set_stack_by_type_name("SINOGRAMS", sample)
         else:
-            sino_stack = sample.copy(flip_axes=True)
-            sino_stack.name = "Sinograms"
             ds = Dataset(sample=sample)
-            ds.set_stack_by_type_name("SINOGRAMS", sino_stack)
         sample.pixel_size = parameters.pixel_size
 
         for file_type in [

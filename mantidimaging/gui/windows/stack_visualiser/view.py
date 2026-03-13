@@ -57,6 +57,7 @@ class StackVisualiserView(QDockWidget):
                          ("Duplicate whole data", lambda: self.presenter.notify(SVNotification.DUPE_STACK)),
                          ("Duplicate current ROI of data",
                           lambda: self.presenter.notify(SVNotification.DUPE_STACK_ROI)),
+                         ("View as sinograms", self.view_stack_as_sinograms),
                          ("Mark as projections/sinograms", self.mark_as_sinograms), ("", None),
                          ("Toggle averaged image", lambda: self.presenter.notify(SVNotification.TOGGLE_IMAGE_MODE)),
                          ("Create sinograms from stack", lambda: self.presenter.notify(SVNotification.SWAP_AXES)),
@@ -215,3 +216,7 @@ class StackVisualiserView(QDockWidget):
     def cleanup(self):
         self._main_window.stack_modified.disconnect(self.connection_stack_modified)
         self.presenter = None
+
+    def view_stack_as_sinograms(self):
+        sino_view = self.presenter.images.data.swapaxes(0, 1)
+        self.image_view.setImage(sino_view)
