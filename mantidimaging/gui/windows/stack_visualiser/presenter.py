@@ -76,6 +76,7 @@ class StackVisualiserPresenter(BasePresenter):
             self.view.image = self.model.sum_images(self.images.data)
         else:
             self.view.set_image(self.images)
+            self.view.view_as_sino_check = False
 
     def get_parameter_value(self, parameter: SVParameters) -> Any:
         """

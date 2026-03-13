@@ -84,6 +84,8 @@ class StackVisualiserView(QDockWidget):
         self.connection_stack_modified = self._main_window.stack_modified.connect(
             lambda: self.presenter.notify(SVNotification.REFRESH_IMAGE))
 
+        self.view_as_sino_check = False
+
     @property
     def name(self) -> str:
         return self.windowTitle()
@@ -218,5 +220,9 @@ class StackVisualiserView(QDockWidget):
         self.presenter = None
 
     def view_stack_as_sinograms(self):
-        sino_view = self.presenter.images.data.swapaxes(0, 1)
-        self.image_view.setImage(sino_view)
+        self.view_as_sino_check = not self.view_as_sino_check
+        if self.view_as_sino_check:
+            image_to_view = self.presenter.images.data.swapaxes(0, 1)
+        else:
+            image_to_view = self.presenter.images.data
+        self.image_view.setImage(image_to_view)
