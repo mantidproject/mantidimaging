@@ -65,7 +65,7 @@ class ROIFormWidget(BaseWidget):
         self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
         self.roi_properties_widget.roi_changed.connect(self._update_bin_size_limit)
 
-    def update_bin_size_limit(self):
+    def update_bin_size_limit(self) -> None:
         self._update_bin_size_limit()
 
     @property
@@ -108,14 +108,17 @@ class ROIFormWidget(BaseWidget):
             self.show_rits_warning(None)
         self.binningChanged.emit(binner)
 
-    def _update_bin_size_limit(self):
-        """Set bin_size_spinBox maximum to max(roi.width, roi.height) to prevent invalid bin sizes."""
+    def _update_bin_size_limit(self) -> tuple[int, int]:
+        """Set sensible limits for binning controls based on ROI size."""
         roi = self.roi_properties_widget.to_roi()
-        max_dim = max(roi.width, roi.height)
+        min_dim = min(roi.width, roi.height)
         with QSignalBlocker(self.bin_size_spinBox):
-            self.bin_size_spinBox.setMaximum(max_dim)
-            if self.bin_size_spinBox.value() > max_dim:
-                self.bin_size_spinBox.setValue(max_dim)
+            self.bin_size_spinBox.setMaximum(min_dim)
+        bin_size = self.bin_size_spinBox.value()
+        step_max = max(1, min_dim - bin_size + 1)
+        with QSignalBlocker(self.bin_step_spinBox):
+            self.bin_step_spinBox.setMaximum(step_max)
+        return min_dim, step_max
 
 
 class ROIPropertiesTableWidget(BaseWidget):
