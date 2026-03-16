@@ -543,8 +543,11 @@
             <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_stack_from_image_params</span><span class="p">(</span><span class="n">im_param</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="n">sample</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">])</span>
-        <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">)</span>
-        <span class="n">sample</span><span class="o">.</span><span class="n">_is_sinograms</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sinograms</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sinograms</span><span class="p">:</span>
+            <span class="n">sample</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Sinograms&quot;</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">)</span>
         <span class="n">sample</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pixel_size</span>
 
         <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="p">[</span>

@@ -551,6 +551,7 @@
                          <span class="p">(</span><span class="s2">&quot;Duplicate whole data&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">DUPE_STACK</span><span class="p">)),</span>
                          <span class="p">(</span><span class="s2">&quot;Duplicate current ROI of data&quot;</span><span class="p">,</span>
                           <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">DUPE_STACK_ROI</span><span class="p">)),</span>
+                         <span class="p">(</span><span class="s2">&quot;View as sinograms/projections&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_stack_as_sinograms</span><span class="p">),</span>
                          <span class="p">(</span><span class="s2">&quot;Mark as projections/sinograms&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_as_sinograms</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                          <span class="p">(</span><span class="s2">&quot;Toggle averaged image&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">TOGGLE_IMAGE_MODE</span><span class="p">)),</span>
                          <span class="p">(</span><span class="s2">&quot;Create sinograms from stack&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">SWAP_AXES</span><span class="p">)),</span>
@@ -576,6 +577,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">connection_stack_modified</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">SVNotification</span><span class="o">.</span><span class="n">REFRESH_IMAGE</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view_as_sino_check</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -744,6 +747,17 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_stack_modified</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="StackVisualiserView.view_stack_as_sinograms">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.view.html#mantidimaging.gui.windows.stack_visualiser.view.StackVisualiserView.view_stack_as_sinograms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">view_stack_as_sinograms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view_as_sino_check</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_as_sino_check</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_as_sino_check</span><span class="p">:</span>
+            <span class="n">image_to_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_to_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image_to_view</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
