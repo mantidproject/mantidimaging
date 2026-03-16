@@ -82,7 +82,7 @@ class TomopyRecon(BaseRecon):
         kwargs = {
             'ncore': ncores,
             'tomo': BaseRecon.prepare_sinogram(images.data, recon_params),
-            'sinogram_order': images._is_sinograms,
+            'sinogram_order': False,
             'theta': projection_angles.value,
             'center': [cor.value for cor in cors],
             'algorithm': recon_params.algorithm,
