@@ -51,10 +51,7 @@ class RemoveAllStripesFilter(BaseFilter):
         if images.num_projections < 2:
             return images
         params = {"snr": snr, "la_size": la_size, "sm_size": sm_size, "dim": dim}
-        if images.is_sinograms:
-            compute_func = RemoveAllStripesFilter.compute_function_sino
-        else:
-            compute_func = RemoveAllStripesFilter.compute_function
+        compute_func = RemoveAllStripesFilter.compute_function
 
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images

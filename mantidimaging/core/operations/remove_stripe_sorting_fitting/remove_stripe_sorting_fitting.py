@@ -48,10 +48,7 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         if images.num_projections < 2:
             return images
         params = {'order': order, 'sigma': sigma, 'sort': True}
-        if images.is_sinograms:
-            compute_func = RemoveStripeSortingFittingFilter.compute_function_sino
-        else:
-            compute_func = RemoveStripeSortingFittingFilter.compute_function
+        compute_func = RemoveStripeSortingFittingFilter.compute_function
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
 
         return images
