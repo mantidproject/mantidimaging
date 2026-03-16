@@ -661,6 +661,8 @@
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">new_cor</span><span class="p">,</span> <span class="n">new_tilt</span><span class="p">)</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">new_source_position</span><span class="p">,</span> <span class="n">new_detector_position</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_angles</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span></div>
 
 
