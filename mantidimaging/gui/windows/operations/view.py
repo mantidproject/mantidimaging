@@ -250,7 +250,7 @@ class FiltersWindowView(BaseMainWindowView):
             self.show_error_dialog(str(err))
 
     def _update_apply_all_button(self, filter_name):
-        list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding"]
+        list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding", "Sum Stack Intensities"]
         if filter_name in list_of_apply_single_stack:
             self.applyToAllButton.setEnabled(False)
         else:
