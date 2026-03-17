@@ -90,9 +90,7 @@ class ImageStackTest(unittest.TestCase):
     def test_copy(self):
         images = generate_images()
         images.record_operation("Test", "Display", 123)
-        self.assertFalse(images.is_sinograms)
         copy = images.copy()
-        self.assertFalse(copy.is_sinograms)
 
         self.assertEqual(images, copy)
 
@@ -104,9 +102,7 @@ class ImageStackTest(unittest.TestCase):
     def test_copy_flip_axes(self):
         images = generate_images()
         images.record_operation("Test", "Display", 123)
-        self.assertFalse(images.is_sinograms)
         copy = images.copy(flip_axes=True)
-        self.assertTrue(copy.is_sinograms)
 
         self.assertEqual(copy, images.sinograms)
 
@@ -118,7 +114,6 @@ class ImageStackTest(unittest.TestCase):
     def test_copy_roi(self):
         images = generate_images()
         images.record_operation("Test", "Display", 123)
-        self.assertFalse(images.is_sinograms)
         cropped_copy = images.copy_roi(SensibleROI(0, 0, 5, 5))
 
         self.assertEqual(cropped_copy, images.data[:, 0:5, 0:5])
@@ -143,21 +138,6 @@ class ImageStackTest(unittest.TestCase):
         images.filenames = ["filename"] * images.num_projections
         self.assertIsNotNone(images.filenames)
 
-    def test_load_metadata(self):
-        meta = io.StringIO(f'{{"{const.SINOGRAMS}": true}}')
-        images = generate_images()
-        images.load_metadata(meta)
-        self.assertTrue(images.is_sinograms)
-
-    def test_save_metadata(self):
-        images = generate_images()
-        images._is_sinograms = True
-        stream = io.StringIO()
-        images.save_metadata(stream)
-        self.assertEqual(stream.getvalue(), f'''{{
-    "{const.SINOGRAMS}": true
-}}''')
-
     def test_helper_properties(self):
         images = generate_images((42, 100, 350))
         self.assertEqual(images.height, 100)
@@ -171,10 +151,6 @@ class ImageStackTest(unittest.TestCase):
         images = generate_images((10, 100, 350))
         self.assertEqual(images.projection(0).shape, (100, 350))
         self.assertEqual(images.sino(0).shape, (10, 350))
-
-        images._is_sinograms = True
-        self.assertEqual(images.projection(0).shape, (10, 350))
-        self.assertEqual(images.sino(0).shape, (100, 350))
 
     def test_clear_proj180deg(self):
         images = generate_images((10, 100, 350))
@@ -298,7 +274,7 @@ class ImageStackTest(unittest.TestCase):
 
     def test_slice_as_stack(self):
         raw_pixels = np.arange(60, dtype=np.float32).reshape((3, 4, 5))
-        image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=False)
+        image = ImageStack(raw_pixels.copy(), name="tomo")
         slice_0 = image.slice_as_image_stack(0)
         slice_2 = image.slice_as_image_stack(2)
 
@@ -315,18 +291,11 @@ class ImageStackTest(unittest.TestCase):
         copy = image.slice_as_image_stack(0)
         copy.data += 1
         np.testing.assert_array_equal(raw_pixels, image.data)
-
-        image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=True)
-        slice = image.slice_as_image_stack(0)
-        self.assertEqual(slice.height, 1)
-        self.assertEqual(slice.width, image.width)
-        self.assertEqual(slice.num_projections, image.num_projections)
-
         np.testing.assert_array_equal(raw_pixels[[0], :, :], slice.data)
 
     def test_sino_as_stack(self):
         raw_pixels = np.arange(60, dtype=np.float32).reshape((3, 4, 5))
-        image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=False)
+        image = ImageStack(raw_pixels.copy(), name="tomo")
 
         sino_0 = image.sino_as_image_stack(0)
         sino_3 = image.sino_as_image_stack(3)
@@ -345,10 +314,6 @@ class ImageStackTest(unittest.TestCase):
         copy.data += 1
         np.testing.assert_array_equal(raw_pixels, image.data)
 
-        image = ImageStack(raw_pixels.copy(), name="tomo", sinograms=True)
-        sino_0 = image.sino_as_image_stack(0)
-        np.testing.assert_array_equal(raw_pixels[[0], :, :].swapaxes(0, 1), sino_0.data)
-
     def test_processed_is_true(self):
         images = generate_images()
         images.record_operation("", "")
@@ -365,7 +330,7 @@ class ImageStackTest(unittest.TestCase):
         npt.assert_array_equal(images.geometry.config.panel.num_pixels, np.array(num_pixels))
         npt.assert_array_equal(images.geometry.config.panel.pixel_size, np.array(pixel_size))
 
-    @parameterized.expand([("shapes_match", 10, 10, 10, 10, True), ("shapes_do_not_match", 10, 10, 20, 10, False)])
+    @parameterized.expand([("shapes_match", 8, 10, 8, 10, True), ("shapes_do_not_match", 8, 10, 20, 10, False)])
     def test_proj_180_degree_shape_matches_images(self, _, height, width, proj180_height, proj180_width, expected):
         images = generate_images_with_geometry(max_angle=360.0)
         angles = range(0, 360)
@@ -380,7 +345,6 @@ class ImageStackTest(unittest.TestCase):
         images._proj180deg.height = proj180_height
         images._proj180deg.width = proj180_width
         images.has_proj180deg = mock.MagicMock(return_value=True)
-        images._is_sinograms = True
 
         self.assertEqual(images.proj_180_degree_shape_matches_images(), expected)
 
