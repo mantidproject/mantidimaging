@@ -239,6 +239,15 @@ class OperationsWindowTest(BaseEyesTest):
 
         self.check_target(widget=self.imaging.filters)
 
+    def test_operations_sum_stack_intensities_parameters(self):
+        self._load_strict_data_set()
+
+        self.imaging.show_filters_window()
+        self.imaging.filters.filterSelector.setCurrentText("Sum Stack Intensities")
+        QApplication.processEvents()
+
+        self.check_target(widget=self.imaging.filters)
+
     def test_operations_roi_visualiser_window(self):
         self._load_strict_data_set()
 
