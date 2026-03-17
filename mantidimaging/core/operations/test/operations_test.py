@@ -36,7 +36,7 @@ def get_filter_func_args():
         "Ring Removal": {"theta_min": 2},
         "ROI Normalisation": {"region_of_interest": [0, 0, 5, 5]},
         "Rotate Stack": {"angle": 10},
-        "Sum Stack Intensities": {"stack_type":"Tomography","secondary_stack": th.generate_images()}
+        "Sum Stack Intensities": {"secondary_stack": th.generate_images()}
     }  # yapf: disable
     return filter_func_args
 
