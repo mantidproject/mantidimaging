@@ -23,23 +23,23 @@ class SumIntensitiesFilter(BaseFilter):
     Sum stack intensities as a new stack to emulate longer exposure times for Tomography and
     Time of Flight (ToF) datasets.
 
-    Use cases:
-        - The stacks to be summed have exactly the same shape (x,y) and number of slices (z).
-        The z-axis could be either rotation angle or ToF bin.
-        - Stacks where values on the z-axis are identical, e.g. 2 tomography scans taken at the same rotation angles.
+    The stacks to be summed should have exactly the same shape (x,y) and number of slices (z).
+    The z-axis could be either rotation angle or ToF bin.
+    If angles differ acros stacks, a notification highlighting this will be raised
 
-    The new stack will be saved either in-place or as a new stack within a new dataset, depending on the user's choice.
+    The new stack will be saved in-place.
     """
 
     filter_name = 'Sum Stack Intensities'
     link_histograms = True
     allow_for_180_projection = False
     valid_types = ['Tomography', 'Time of Flight (ToF)']
+    angle_variance_threshold = 0.1
 
     @staticmethod
     def filter_func(images: ImageStack, secondary_stack: ImageStack | None = None, progress: Any = None) -> ImageStack:
         """
-        Validate and prepare stacks for summing intensities.
+        Validate stacks and sum their intensities in-place.
         """
         helper.check_data_stack(images)
         helper.check_data_stack(secondary_stack)
@@ -47,34 +47,43 @@ class SumIntensitiesFilter(BaseFilter):
         if secondary_stack is None:
             raise ValueError("Secondary stack cannot be None.")
 
-        primary_shape = images.full_stack_shape or images.data.shape
-        secondary_shape = secondary_stack.full_stack_shape or secondary_stack.data.shape
-        if primary_shape != secondary_shape:
-            raise ValueError(
-                f'The primary and secondary stacks must have the same shape. '
-                f'The primary stack shape is: {primary_shape}, '
-                f'The secondary stack shape is: {secondary_shape}. '
-                'Append Stacks may be a more suitable operation for stacks that differ in the number of slices.')
+        shape_error = SumIntensitiesFilter._check_shapes_match(images, secondary_stack)
+        if shape_error:
+            raise ValueError(shape_error)
 
-        SumIntensitiesFilter.compute_function(images, {'secondary_stack': secondary_stack})
-
+        SumIntensitiesFilter.sum_stacks(images, secondary_stack)
         return images
 
     @staticmethod
-    def sum_stacks_by_index(primary_stack: ImageStack, secondary_stack: ImageStack) -> None:
+    def _check_shapes_match(primary_stack: ImageStack, secondary_stack: ImageStack) -> str | None:
         """
-        Sum stacks element-wise by index position.
+        Returns an error message string if shapes differ
+        """
+        primary_shape = primary_stack.full_stack_shape or primary_stack.data.shape
+        secondary_shape = secondary_stack.full_stack_shape or secondary_stack.data.shape
+        if primary_shape != secondary_shape:
+            return (f'Stacks must have the same shape.\n'
+                    f'{primary_stack.name}: {primary_shape},\n'
+                    f'{secondary_stack.name}: {secondary_shape}.\n'
+                    'Append Stacks may be a more suitable operation.')
+        return None
 
-        All slices are added directly. If stacks differ in slice count, only the overlapping prefix is summed.
+    @staticmethod
+    def sum_stacks(primary_stack: ImageStack, secondary_stack: ImageStack) -> None:
         """
-        num_slices = min(primary_stack.num_images, secondary_stack.num_images)
-        primary_stack.data[:num_slices] += secondary_stack.data[:num_slices]
+        Sum stacks element-wise.
+
+        Primary stack is modified in-place, secondary stack is left unchanged.
+        Assumes stacks have already been validated for shape compatibility.
+        During preview, primary_stack may be a single-slice subset; secondary is sliced to match.
+        """
+        primary_stack.data += secondary_stack.data[:len(primary_stack.data)]
 
     @staticmethod
     def _prepare_angles(primary_stack: ImageStack, secondary_stack: ImageStack) -> tuple[np.ndarray, np.ndarray] | None:
         """
-        Extract angles from both stacks and return in degrees, or synthetic indices if angles
-        unavailable.
+        Extract angles from both stacks and return them in degrees.
+        Returns None if angles are unavailable in either stack.
         """
         primary_stack_angles = primary_stack.projection_angles()
         secondary_stack_angles = secondary_stack.projection_angles()
@@ -85,47 +94,62 @@ class SumIntensitiesFilter(BaseFilter):
         return None
 
     @staticmethod
-    def sum_stacks_by_angle(primary_stack: ImageStack, secondary_stack: ImageStack, angles: tuple[np.ndarray,
-                                                                                                  np.ndarray]) -> None:
+    def _check_angle_mismatch(primary_angles_deg: np.ndarray, secondary_angles_deg: np.ndarray) -> list[str]:
         """
-        Sum stacks by matching each projection to the closest rotation angle in the secondary stack.
+        Check for projection angle variance > angle_variance_threshold degrees between matched projections.
+        Returns a list of up to 3 mismatch description strings.
         """
-        primary_angles_deg, secondary_angles_deg = angles
-        for projection in range(primary_stack.num_images):
-            secondary_idx = np.argmin(np.abs(secondary_angles_deg - primary_angles_deg[projection]))
-            primary_stack.data[projection] += secondary_stack.data[secondary_idx]
+        num_projections = min(len(primary_angles_deg), len(secondary_angles_deg))
+        mismatches = []
+        for proj in range(num_projections):
+            diff = abs(primary_angles_deg[proj] - secondary_angles_deg[proj])
+            if diff > SumIntensitiesFilter.angle_variance_threshold:
+                mismatches.append(
+                    f"[{proj}]: ({primary_angles_deg[proj]:.1f}°, {secondary_angles_deg[proj]:.1f}°) -> Δ{diff:.1f}°")
+                if len(mismatches) == 3:
+                    break
+        return mismatches
 
     @staticmethod
-    def compute_function(primary_stack: ImageStack, params: dict[str, Any]) -> None:
+    def _get_notification_text(primary_stack: ImageStack, secondary_stack: ImageStack) -> str | None:
         """
-        Dispatch to angle-matched or index-order summation based on angle availability.
-        """
-        secondary_stack = params['secondary_stack']
-        angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack)
+        Returns a warning string when stacks may not be compatible, or None when they are.
 
-        if angles is not None:
-            SumIntensitiesFilter.sum_stacks_by_angle(primary_stack, secondary_stack, angles)
-        else:
-            SumIntensitiesFilter.sum_stacks_by_index(primary_stack, secondary_stack)
+        Returns None when projection angles are present and match within the threshold —
+        the expected good state that requires no user attention.
+        """
+        shape_error = SumIntensitiesFilter._check_shapes_match(primary_stack, secondary_stack)
+        if shape_error:
+            return shape_error
+
+        angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack)
+        if angles is None:
+            return ("No projection angles available in one or both stacks: "
+                    "summation will be applied in projection order.")
+
+        mismatches = SumIntensitiesFilter._check_angle_mismatch(*angles)
+        if mismatches:
+            mismatch_lines = "\n".join(mismatches)
+            return (f"Warning: projection angle variance > {SumIntensitiesFilter.angle_variance_threshold}° "
+                    f"detected:\n{mismatch_lines}\nAppend Stacks may be a more suitable operation.")
+        return None
 
     @staticmethod
     def _update_angle_notification(view: Any, stack_to_sum_widget: DatasetSelectorWidgetView) -> None:
         """
-        Notify if  angle-matched or index-order summation will be used.
+        Update notification text based on stack selection angle and shape validation
         """
         secondary_stack = BaseFilter.get_images_from_stack(stack_to_sum_widget, "Sum Intensities")
         if secondary_stack is None:
+            view.clear_notification_dialog()
             return
+
         primary_stack = view.main_window.get_stack(view.stackSelector.current())
-        has_angles = SumIntensitiesFilter._prepare_angles(primary_stack, secondary_stack) is not None
-
-        angle_notification = (
-            "Projection angles available: summation will be applied in angle order." if has_angles else
-            "No projection angles available in one of both stacks: summation will be applied in projection order.")
-
-        existing = view.notification_text.toPlainText()
-        view.notification_text.show()
-        view.notification_text.setText(f"{existing}\n{angle_notification}" if existing else angle_notification)
+        notification = SumIntensitiesFilter._get_notification_text(primary_stack, secondary_stack)
+        if notification is None:
+            view.clear_notification_dialog()
+        else:
+            view.show_error_dialog(notification)
 
     @staticmethod
     def register_gui(form: QFormLayout, on_change: Callable, view: Any) -> dict[str, Any]:
