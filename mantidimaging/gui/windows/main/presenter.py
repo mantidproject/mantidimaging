@@ -502,6 +502,7 @@ class MainWindowPresenter(BasePresenter):
             'images_id': stack_id,
             'proj_angles': proj_angles
         })
+        self.stack_visualisers[stack_id].image_view.angles = proj_angles
 
     def load_stacks_from_folder(self, file_path: str) -> bool:
         loading_params = create_loading_parameters_for_file_path(Path(file_path))
