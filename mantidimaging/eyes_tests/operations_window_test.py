@@ -16,6 +16,8 @@ class OperationsWindowTest(BaseEyesTest):
     def tearDown(self):
         if self.imaging.filters:
             self.imaging.filters.close()
+            self.imaging.filters = None
+            QApplication.processEvents()
         super().tearDown()
 
     def test_operation_window_opens(self):

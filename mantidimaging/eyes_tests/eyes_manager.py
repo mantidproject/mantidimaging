@@ -81,6 +81,8 @@ class EyesManager:
 
     def close_imaging(self):
         self.imaging.close()
+        QApplication.processEvents()
+        self.imaging = None
 
     def start_imaging(self):
         self.imaging = MainWindowView(open_dialogs=False)
