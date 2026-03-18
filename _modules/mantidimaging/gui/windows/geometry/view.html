@@ -499,10 +499,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">QScrollArea</span><span class="p">,</span>
-    <span class="n">QFrame</span><span class="p">,</span>
     <span class="n">QWidget</span><span class="p">,</span>
     <span class="n">QVBoxLayout</span><span class="p">,</span>
     <span class="n">QDoubleSpinBox</span><span class="p">,</span>
@@ -608,21 +605,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">central_container</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_left_pane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
-        <span class="n">left_scroll_area</span> <span class="o">=</span> <span class="n">QScrollArea</span><span class="p">()</span>
-        <span class="n">left_scroll_area</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">NoFrame</span><span class="p">)</span>
-        <span class="n">left_scroll_area</span><span class="o">.</span><span class="n">setHorizontalScrollBarPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ScrollBarAlwaysOff</span><span class="p">)</span>
-        <span class="n">left_scroll_area</span><span class="o">.</span><span class="n">setWidgetResizable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">left_scroll_area</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Fixed</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Preferred</span><span class="p">))</span>
-
         <span class="n">left_container</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">left_container</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Maximum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Preferred</span><span class="p">)</span>
         <span class="n">left_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">left_container</span><span class="p">)</span>
-
         <span class="n">left_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_imagestack_selector_group</span><span class="p">())</span>
         <span class="n">left_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_geometry_pages_widget</span><span class="p">())</span>
         <span class="n">left_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
 
-        <span class="n">left_scroll_area</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">left_container</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">left_scroll_area</span>
+        <span class="k">return</span> <span class="n">left_container</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_imagestack_selector_group</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
         <span class="n">stack_selector_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Stack&quot;</span><span class="p">)</span>
