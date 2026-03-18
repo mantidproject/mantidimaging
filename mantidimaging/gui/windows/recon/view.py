@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import numpy as np
 from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
@@ -101,6 +101,34 @@ class ReconstructWindowView(BaseMainWindowView):
     # Image section
 
     imageLayout: QVBoxLayout
+
+    PROJECTION_OPTIONS = [
+        {
+            "label": "180° projection",
+            "value": "proj180",
+            "requires_pair": False
+        },
+        {
+            "label": "0° and 180°",
+            "value": (0, 180),
+            "requires_pair": True
+        },
+        {
+            "label": "90° and 270°",
+            "value": (90, 270),
+            "requires_pair": True
+        },
+        {
+            "label": "180° and 360°",
+            "value": (180, 360),
+            "requires_pair": True
+        },
+        {
+            "label": "-90° and 90°",
+            "value": (-90, 90),
+            "requires_pair": True
+        },
+    ]
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(None, 'gui/ui/recon_window.ui')
@@ -572,31 +600,22 @@ class ReconstructWindowView(BaseMainWindowView):
         return self.projectionPairDropdown.currentData()
 
     def update_projection_pair_dropdown(self):
-        """
-        Enable only valid projection pairs in the dropdown based on available angles in the current stack.
-        """
-        images = getattr(self.presenter.model, 'images', None)
-        angles = None
-        if images is not None and hasattr(images, 'projection_angles'):
-            pa = images.projection_angles()
-            if pa is not None:
-                angles = np.rad2deg(pa.value)
-        pairs = [
-            (0, 'proj180'),
-            (1, (0, 180)),
-            (2, (90, 270)),
-            (3, (180, 360)),
-            (4, (-90, 90)),
-        ]
-        for idx, pair in pairs:
-            item = self.projectionPairDropdown.model().item(idx)
-            if angles is None:
-                # If no angles, only allow 'proj180' (first item)
-                item.setEnabled(pair == 'proj180')
-            elif pair == 'proj180':
-                item.setEnabled(True)
+        model = self.projectionPairDropdown.model()
+        for idx, option in enumerate(self.PROJECTION_OPTIONS):
+            item = model.item(idx)
+            if not option["requires_pair"]:
+                enabled = True
             else:
-                a1, a2 = pair
-                valid1 = np.any(np.abs(angles - a1) <= 2)
-                valid2 = np.any(np.abs(angles - a2) <= 2)
-                item.setEnabled(bool(valid1 and valid2))
+                pair = cast(tuple[float, float], option["value"])
+                enabled = self.presenter.is_pair_valid(pair)
+            item.setEnabled(enabled)
+        self._ensure_valid_selection()
+
+    def _ensure_valid_selection(self):
+        current_index = self.projectionPairDropdown.currentIndex()
+        model = self.projectionPairDropdown.model()
+        if not model.item(current_index).isEnabled():
+            for i in range(model.rowCount()):
+                if model.item(i).isEnabled():
+                    self.projectionPairDropdown.setCurrentIndex(i)
+                    break
