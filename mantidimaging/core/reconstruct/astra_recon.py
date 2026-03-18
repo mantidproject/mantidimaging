@@ -16,6 +16,7 @@ from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.cuda_check import CudaChecker
 from mantidimaging.core.utility.data_containers import ProjectionAngles, ReconstructionParameters, ScalarCoR
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.data.geometry import GeometryType
 
 LOG = getLogger(__name__)
 astra_mutex = Lock()
@@ -73,6 +74,7 @@ def _managed_recon(sino: np.ndarray, cfg, proj_geom, vol_geom) -> Generator[tupl
 
 
 class AstraRecon(BaseRecon):
+    supported_geometry_types = {GeometryType.PARALLEL3D}
 
     @staticmethod
     def _count_gpus() -> int:

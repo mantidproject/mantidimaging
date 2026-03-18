@@ -11,9 +11,12 @@ if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
     from mantidimaging.core.utility.data_containers import ReconstructionParameters
     from mantidimaging.core.utility.progress_reporting import Progress
+    from mantidimaging.core.data.geometry import GeometryType
 
 
 class BaseRecon:
+
+    supported_geometry_types: set[GeometryType] = set()
 
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:

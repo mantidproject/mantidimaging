@@ -401,3 +401,14 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(idx_tol, np.argmin(np.abs(angles - 99)))
         with self.assertRaises(ValueError):
             images.find_image_from_angle(200, tol=1)
+
+    def test_reorder_images_by_index(self):
+        number_images = 10
+        init_vals = np.random.default_rng().random(size=number_images, dtype=np.float32)
+        data = np.ones((number_images, 8, 9)) * np.array(init_vals).reshape(number_images, 1, 1)
+        images = ImageStack(data)
+        index_order = np.argsort(init_vals)
+        images.reorder_images_by_index(index_order)
+        init_vals.sort()
+        npt.assert_array_equal(images.data[:, 1, 1], init_vals)
+        npt.assert_array_equal(images.data.shape, data.shape)

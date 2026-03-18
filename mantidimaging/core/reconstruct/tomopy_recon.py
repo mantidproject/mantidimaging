@@ -11,6 +11,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.reconstruct.base_recon import BaseRecon
 from mantidimaging.core.utility.optional_imports import safe_import
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.data.geometry import GeometryType
 
 if TYPE_CHECKING:
     from mantidimaging.core.utility.data_containers import ReconstructionParameters
@@ -20,6 +21,8 @@ tomopy = safe_import('tomopy')
 
 
 class TomopyRecon(BaseRecon):
+
+    supported_geometry_types = {GeometryType.PARALLEL3D}
 
     @staticmethod
     def find_cor(images: ImageStack, slice_idx: int, start_cor: float, recon_params: ReconstructionParameters) -> float:

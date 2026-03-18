@@ -113,6 +113,8 @@ class GeometryWindowPresenter(BasePresenter):
         stack.geometry.set_source_detector_positions(updated_source_pos, updated_detector_pos)
 
         self.refresh_plot(stack)
+        # Notify main window that stack was modified (so recon window can update COR/Tilt)
+        self.main_window.stack_modified.emit()
 
     def refresh_plot(self, stack: ImageStack) -> None:
         figure = self.model.generate_figure(stack)
@@ -144,6 +146,8 @@ class GeometryWindowPresenter(BasePresenter):
         assert stack.geometry is not None
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
         stack.geometry.set_source_detector_positions(new_source_position, new_detector_position)
+
+        self.main_window.presenter.add_projection_angles_to_sample(stack.id, new_angles)
 
         self.handle_stack_changed()
 

@@ -44,8 +44,11 @@ class MainWindowModel:
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
 
         sample = load(parameters.image_stacks[FILE_TYPES.SAMPLE])
-        ds = Dataset(sample=sample)
-        sample._is_sinograms = parameters.sinograms
+        if parameters.sinograms:
+            sample.name = "Sinograms"
+            ds = Dataset(sample=sample.copy(flip_axes=True))
+        else:
+            ds = Dataset(sample=sample)
         sample.pixel_size = parameters.pixel_size
 
         for file_type in [
@@ -124,11 +127,19 @@ class MainWindowModel:
             return dataset.proj180deg.id
         return None
 
-    def add_projection_angles_to_sample(self, images_id: uuid.UUID, proj_angles: ProjectionAngles) -> None:
+    def add_projection_angles_to_sample(self, images_id: uuid.UUID,
+                                        proj_angles: ProjectionAngles) -> tuple[uuid.UUID, ProjectionAngles]:
         images = self.get_images_by_uuid(images_id)
-        if images is None:
-            self.raise_error_when_images_not_found(images_id)
-        images.set_projection_angles(proj_angles)
+        if images is not None:
+            angles = proj_angles.value
+            angle_order = np.argsort(angles)
+            proj_angles.value = angles[angle_order]
+            images.reorder_images_by_index(angle_order)
+            if images.filenames is not None:
+                images.filenames = [images.filenames[i] for i in angle_order]
+        else:
+            raise RuntimeError(f"Failed to get ImageStack with ID {images_id}")
+        return images_id, proj_angles
 
     def raise_error_when_images_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise StackNotFoundError(f"Failed to get ImageStack with ID {images_id}")
