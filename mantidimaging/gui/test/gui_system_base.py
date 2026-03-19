@@ -55,7 +55,10 @@ class GuiSystemBase(unittest.TestCase):
 
         QTimer.singleShot(SHORT_DELAY, lambda: self._click_messageBox("Yes"))
         self.main_window.close()
-        QTest.qWait(SHORT_DELAY)
+        wait_until(lambda: not self.main_window.isVisible(),
+                   delay=0.05,
+                   max_retry=60,
+                   message="Main window did not close within 3 seconds")
         self.assertDictEqual(self.main_window.presenter.model.datasets, {})
 
         # if self._outcome.result._excinfo is None then there were no AssertionErrors during the test
