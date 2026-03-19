@@ -488,6 +488,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.redraw_all_rois()
         self.view.display_normalise_error()
         self.update_displayed_image(autoLevels=True)
+        self.view.on_visibility_change()
 
     def set_shuttercount_error(self, enabled: bool = False) -> None:
         """
