@@ -73,3 +73,25 @@ should note that the execution time of the algorithms increases greatly with the
     :alt: The auto colour palette menu
     :width: 50%
     :align: center
+
+Viewing Image Data as Sinograms
+---------------------------
+
+Image data is loaded into Mantid Imaging as projections, but the user may want to view the sinogram version of the
+data. To view the sinogram stack, use the right-click menu in the image view and select *view as sinograms/projections*
+to toggle between viewing the stack as projections or sinograms:
+
+.. image:: ../../../_static/view_as_sinograms_menu.png
+    :alt: The image view right-click menu with "view as sinograms/projections" highlighted
+    :width: 20%
+    :align: center
+
+|
+
+.. image:: ../../../_static/image_view_sinograms.png
+    :alt: The sinogram view of in the Main Window image view
+    :width: 90%
+    :align: center
+
+Note that even when the data is being displayed as sinograms, the original image stack is not modified and other parts
+of Mantid Imaging will take the projection version of the stack as normal.

@@ -41,6 +41,18 @@ left at the default value of *float32*.
 .. note::
     Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.
 
+.. _load-dataset-as-sino:
+
+Load Sinograms
+************
+
+Sinograms can be loaded by checking the "Images are sinograms" checkbox:
+
+.. image:: ../../../_static/load_sinograms.png
+    :alt: Load dialog with "Images as sinograms" checked
+
+Once loaded, Mantid Imaging will convert the sinogram data into projections in the Main Window.
+
 Load Images
 ***********
 
@@ -112,13 +124,16 @@ Save as Image Files
 
 When *Save as Image Files* is selected the save images dialog appears:
 
-.. image:: ../../../_static/gui_save_dialog.png
+.. image:: ../../../_static/save_as_image_files.png
     :alt: Save dialog
 
-This prompts you to select the image stack you wish to save, the directory in
-which you wish to save it and the name prefix. In the case of TIFF and FITS the
-individual image filenames will be a concatenation of this prefix and the index
-of the image in the stack.
+This prompts you to select the image stack you wish to save, whether to save as
+a sinogram stack the directory in which you wish to save it and the name prefix.
+In the case of TIFF and FITS the individual image filenames will be a concatenation
+of this prefix and the index of the image in the stack.
+
+The *Save as sinogram* option will convert the selected stack to a sinogram stack
+during the saving process so that the user can use the sinogram data elsewhere.
 
 The *Overwrite* option removes checking for existing data of the same name. When
 disabled an error will be raised if the specified output directory is not empty
