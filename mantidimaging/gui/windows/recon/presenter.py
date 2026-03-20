@@ -181,6 +181,7 @@ class ReconstructWindowPresenter(BasePresenter):
         self.view.pixel_size = self.get_pixel_size_from_images()
         self.do_update_projection()
         self.view.update_recon_hist_needed = True
+        self.view.update_projection_pair_dropdown()
 
         if images is not None and images.geometry is not None:
             self.view.set_algorithm_options_by_geometry(images.geometry.type)
@@ -448,6 +449,15 @@ class ReconstructWindowPresenter(BasePresenter):
         self.do_update_projection()
         self._update_imagestack_geometry_data()
         self.do_preview_reconstruct_slice()
+
+    def is_pair_valid(self, pair: tuple[float, float], tolerance: float = 2) -> bool:
+        try:
+            a1, a2 = pair
+            self.model.images.find_image_from_angle(a1, tol=tolerance)
+            self.model.images.find_image_from_angle(a2, tol=tolerance)
+            return True
+        except Exception:
+            return False
 
     def _auto_find_correlation(self) -> None:
         pair = self.view.get_selected_projection_pair()
