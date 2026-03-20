@@ -1235,18 +1235,6 @@
         <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parent_dataset</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">recon_data</span><span class="p">,</span> <span class="s2">&quot;Recon&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MainWindowPresenter.add_sinograms_to_dataset_and_update_view">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_sinograms_to_dataset_and_update_view">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_sinograms_to_dataset_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sino_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">original_stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds sinograms to a dataset or replaces an existing one.</span>
-<span class="sd">        :param sino_stack: The sinogram stack.</span>
-<span class="sd">        :param original_stack_id: The ID of a stack in the dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parent_dataset</span><span class="p">(</span><span class="n">original_stack_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">sino_stack</span><span class="p">,</span> <span class="s2">&quot;Sinograms&quot;</span><span class="p">)</span></div>
-
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_show_add_stack_to_dataset_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Asks the user to add a stack to a given dataset.</span>
