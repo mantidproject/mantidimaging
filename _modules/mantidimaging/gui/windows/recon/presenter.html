@@ -693,6 +693,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pixel_size_from_images</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_update_projection</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">update_recon_hist_needed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">update_projection_pair_dropdown</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_algorithm_options_by_geometry</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
@@ -1005,6 +1006,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">do_update_projection</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_imagestack_geometry_data</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">do_preview_reconstruct_slice</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ReconstructWindowPresenter.is_pair_valid">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.presenter.html#mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter.is_pair_valid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_pair_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">pair</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find_image_from_angle</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find_image_from_angle</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_auto_find_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_projection_pair</span><span class="p">()</span>
