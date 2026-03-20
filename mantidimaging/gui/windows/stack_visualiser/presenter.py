@@ -9,7 +9,6 @@ from logging import getLogger
 from typing import TYPE_CHECKING, Any
 
 from mantidimaging.core.data import ImageStack
-from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.mvp_base import BasePresenter
 from .model import SVModel
@@ -56,8 +55,6 @@ class StackVisualiserPresenter(BasePresenter):
                 self.refresh_image()
             elif signal == SVNotification.TOGGLE_IMAGE_MODE:
                 self.toggle_image_mode()
-            elif signal == SVNotification.SWAP_AXES:
-                self.create_swapped_axis_stack()
             elif signal == SVNotification.DUPE_STACK:
                 self.dupe_stack()
             elif signal == SVNotification.DUPE_STACK_ROI:
@@ -97,14 +94,6 @@ class StackVisualiserPresenter(BasePresenter):
 
         self.refresh_image()
 
-    def create_swapped_axis_stack(self) -> None:
-        with operation_in_progress("Creating sinograms, copying data, this may take a while",
-                                   "The data is being copied, this may take a while.", self.view):
-            new_stack = self.images.copy(flip_axes=True)
-            new_stack.name = self.images.name + "_sino"
-            new_stack.record_operation(const.OPERATION_NAME_AXES_SWAP, display_name="Axes Swapped")
-            self.add_sinograms_to_model_and_update_view(new_stack)
-
     def dupe_stack(self) -> None:
         with operation_in_progress("Copying data, this may take a while",
                                    "The data is being copied, this may take a while.", self.view):
@@ -142,6 +131,3 @@ class StackVisualiserPresenter(BasePresenter):
         assert projection_angles is not None
 
         return len(projection_angles.value)
-
-    def add_sinograms_to_model_and_update_view(self, new_stack: ImageStack) -> None:
-        self.view._main_window.presenter.add_sinograms_to_dataset_and_update_view(new_stack, self.images.id)
