@@ -7,10 +7,7 @@ from typing import TYPE_CHECKING
 import os
 from uuid import UUID
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
-    QScrollArea,
-    QFrame,
     QWidget,
     QVBoxLayout,
     QDoubleSpinBox,
@@ -111,21 +108,14 @@ class GeometryWindowView(BaseMainWindowView):
         self.setCentralWidget(central_container)
 
     def _build_left_pane(self) -> QWidget:
-        left_scroll_area = QScrollArea()
-        left_scroll_area.setFrameShape(QFrame.NoFrame)
-        left_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        left_scroll_area.setWidgetResizable(True)
-        left_scroll_area.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred))
-
         left_container = QWidget()
+        left_container.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
         left_layout = QVBoxLayout(left_container)
-
         left_layout.addWidget(self._build_imagestack_selector_group())
         left_layout.addWidget(self._build_geometry_pages_widget())
         left_layout.addStretch()
 
-        left_scroll_area.setWidget(left_container)
-        return left_scroll_area
+        return left_container
 
     def _build_imagestack_selector_group(self) -> QWidget:
         stack_selector_group = QGroupBox("Stack")
