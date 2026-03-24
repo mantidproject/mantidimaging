@@ -71,11 +71,8 @@ class LegacyIMATLogFile(InstrumentLogParser):
         if filename.lower()[-4:] not in [".txt", ".csv"]:
             return False
 
-        has_header = False
         for line in lines:
-            if not has_header and cls._has_imat_header(line):
-                has_header = True
-            elif has_header and cls._has_imat_data_line(line):
+            if cls._has_imat_header(line) or cls._has_imat_data_line(line):
                 return True
 
         return False
