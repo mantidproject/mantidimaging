@@ -170,8 +170,9 @@ class InstrumentLog:
         image_numbers = [ifile[ifile.rfind("_") + 1:] for ifile in image_filenames]
 
         if self.length != len(image_numbers):
-            RuntimeError(f"Log size mismatch. Found {self.length} log entries,"
-                         f"but {len(image_numbers)} images")
+            raise RuntimeError(f"Log size mismatch. Found {self.length} log entries, "
+                               f"but {len(image_numbers)} images. The log file may not correspond "
+                               f"to this sample stack.")
 
         if LogColumn.PROJECTION_NUMBER in self.data:
             for projection_num, image_num in zip(self.projection_numbers(), image_numbers, strict=True):
