@@ -5,14 +5,16 @@ from __future__ import annotations
 import csv
 from enum import Enum
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, NamedTuple
 
+from collections.abc import Iterator
 from logging import getLogger
 
+from mantidimaging.core.fitting.fitting_engine import BoundType
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
 
-from mantidimaging.core.fitting.fitting_functions import BadFittingRoiError
+from mantidimaging.core.fitting.fitting_functions import BadFittingRoiError, FittingRegion
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -36,6 +38,14 @@ class ExportMode(Enum):
 
 
 MODE_TO_LABEL = {v["mode"]: (k, v["label"]) for k, v in allowed_modes.items()}
+
+
+class SpectrumFitResult(NamedTuple):
+    """Result of fitting single spectrum."""
+    params: dict[str, float]
+    rss: float
+    rss_per_dof: float
+    status: Literal["Fitted", "Failed"]
 
 
 class SpectrumViewerWindowPresenter(BasePresenter):
@@ -642,36 +652,100 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.adjust_roi(new_roi, roi_name)
         self.handle_notify_roi_moved(self.view.spectrum_widget.roi_dict[roi_name])
 
+    def get_rois_to_fit(self) -> Iterator[tuple[str, SensibleROI]]:
+        """
+        Get the ROIs to fit based on the current export mode.
+        """
+        if self.export_mode == ExportMode.IMAGE_MODE:
+            binner = self.view.get_binner()
+
+            n_rows = len(binner.top_indexes)
+            n_cols = len(binner.left_indexes)
+
+            for row, col in np.ndindex(n_rows, n_cols):
+                roi = binner.get_sub_roi(col, row)
+                roi_name = f"ROI_bin:(x={col},y={row})"
+                yield roi_name, roi
+        else:
+            for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
+                if roi_name == "rits_roi":
+                    continue
+                yield roi_name, roi_widget.as_sensible_roi()
+
+    def compute_spectrum_fit(self, spectrum: np.ndarray, fitting_region: FittingRegion, tof_data: np.ndarray,
+                             init_params: list[float], bound_params: list[BoundType]) -> SpectrumFitResult:
+        """
+        Fit a single spectrum and return result, rss, rss_per_dof, and status.
+
+        Parameters
+        ----------
+        spectrum: The spectrum data to fit.
+        fitting_region: The region of the spectrum to fit, defined as a tuple of (min, max) in the current ToF units.
+        tof_data: The ToF data corresponding to the spectrum, used for determining the x-axis values for fitting.
+        init_params: A dictionary of initial parameter guesses for the fitting function, keyed by parameter name.
+        bound_params: A dictionary of parameter bounds for the fitting function, keyed by parameter name, where each
+                      value is a tuple of (min_bound, max_bound).
+
+        Returns
+        -------
+
+        SpectrumFitResult
+        A named tuple containing:
+        - params: A dictionary of fitted parameter values, keyed by parameter name.
+        - rss: The residual sum of squares of the fit.
+        - rss_per_dof: The residual sum of squares per degree of freedom of the fit.
+        - status: A string indicating whether the fit was successful ("Fitted") or failed ("Failed").
+        """
+        try:
+            result, rss, rss_per_dof = self.model.fit_single_region(spectrum,
+                                                                    fitting_region,
+                                                                    tof_data,
+                                                                    init_params,
+                                                                    bounds=bound_params)
+            return SpectrumFitResult(params=result, rss=rss, rss_per_dof=rss_per_dof, status="Fitted")
+        except (ValueError, BadFittingRoiError) as e:
+            LOG.warning(f"Failed to find fit: {e}")
+            param_names = self.model.fitting_engine.get_parameter_names()
+            failed_params = {p: 0.0 for p in param_names}
+            return SpectrumFitResult(params=failed_params, rss=0.0, rss_per_dof=0.0, status="Failed")
+
+    def fit_roi_and_update_table(self, roi_name: str, roi: SensibleROI, fitting_region: FittingRegion,
+                                 tof_data: np.ndarray, init_params: list[float], bound_params: list[BoundType]) -> None:
+        """
+        Fit a single ROI or subROI and update the export table with results.
+
+        Parameters
+        ----------
+        roi_name: The name of the ROI to fit, used for updating the table.
+        roi: The SensibleROI object defining the region to fit.
+        fitting_region: The region of the spectrum to fit, defined as a tuple of (min, max) in the current ToF units.
+        tof_data: The ToF data corresponding to the spectrum, used for determining the x-axis values for fitting.
+        init_params: A dictionary of initial parameter guesses for the fitting function, keyed by parameter name.
+        bound_params: A dictionary of parameter bounds for the fitting function, keyed by parameter name, where each
+                      value is a tuple of (min_bound, max_bound).
+        """
+        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
+        fit_result = self.compute_spectrum_fit(spectrum, fitting_region, tof_data, init_params, bound_params)
+        self.view.exportDataTableWidget.update_roi_data(
+            roi_name=roi_name,
+            params=fit_result.params,
+            status=fit_result.status,
+            chi2=fit_result.rss_per_dof,
+        )
+        LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, fit_result.params,
+                 fit_result.rss_per_dof)
+
     def fit_all_regions(self) -> None:
+        """ Fit all ROIs or subROIs based on the current export mode and update the export table with results."""
+        self.view.exportDataTableWidget.clear_table()
+
         init_params = self.view.fitting_param_form.get_initial_param_values()
         bound_params = self.view.fitting_param_form.get_bound_parameters()
-        for roi_name, roi_widget in self.view.spectrum_widget.roi_dict.items():
-            if roi_name == "rits_roi":
-                continue
-            roi = roi_widget.as_sensible_roi()
-            spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
-            fitting_region = self.view.get_fitting_region()
-            try:
-                result, rss, rss_per_dof = self.model.fit_single_region(spectrum,
-                                                                        fitting_region,
-                                                                        self.model.tof_data,
-                                                                        init_params,
-                                                                        bounds=bound_params)
-                status = "Fitted"
-            except (ValueError, BadFittingRoiError) as e:
-                LOG.warning(f"Failed to find fit for ROI '{roi_name}': {e}")
-                param_names = self.model.fitting_engine.get_parameter_names()
-                result = {param_name: 0 for param_name in param_names}
-                status = "Failed"
-                rss_per_dof = 0
+        fitting_region = self.view.get_fitting_region()
+        tof_data = self.model.tof_data
 
-            self.view.exportDataTableWidget.update_roi_data(
-                roi_name=roi_name,
-                params=result,
-                status=status,
-                chi2=rss_per_dof,
-            )
-            LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, result, rss_per_dof)
+        for roi_name, roi in self.get_rois_to_fit():
+            self.fit_roi_and_update_table(roi_name, roi, fitting_region, tof_data, init_params, bound_params)
 
     def handle_export_table(self) -> None:
         """
