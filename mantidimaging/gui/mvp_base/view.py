@@ -95,6 +95,17 @@ class BaseDialogView(QDialog):
         """
         QMessageBox.critical(self, "Error", str(msg))
 
+    def show_question_dialog(self, title: str, msg: str) -> bool:
+        """
+        Shows a question dialog box. Returns True if the user selects "Yes", False otherwise.
+
+        :param title: The title of the dialog.
+        :param msg: The message to show.
+        :return: True if the user selects "Yes", False otherwise.
+        """
+        response = QMessageBox.question(self, title, msg)
+        return response == QMessageBox.Yes
+
 
 class BaseWidget(QWidget):
 
