@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from enum import Enum, auto
 from logging import getLogger
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -16,6 +17,23 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog  # pragma: no cover
 
 logger = getLogger(__name__)
+
+
+class _LogScenario(Enum):
+    """
+    Relationship between log entry count and the sample projection count.
+
+    MATCH: log == slice == full stack; normal full-stack validation.
+    FULL_STACK_NARROWED: log == full stack, slice < full stack; silent accept — loader slices angles to match.
+    PARTIAL_SLICE_MATCH: log == slice < full stack; warn — angles may not correspond to the selected images.
+    PARTIAL_BETWEEN: slice < log < full stack; warn — ambiguous match, angles may not correspond.
+    MISMATCH: log count matches neither slice nor full stack; error.
+    """
+    MATCH = auto()
+    FULL_STACK_NARROWED = auto()
+    PARTIAL_SLICE_MATCH = auto()
+    PARTIAL_BETWEEN = auto()
+    MISMATCH = auto()
 
 
 class LoadPresenter:
@@ -197,18 +215,93 @@ class LoadPresenter:
 
     def do_update_sample_log(self, field: Field, file_name: str) -> None:
         """
-        Update the sample log if a sample is set. Also check log is consistent with sample
+        Update the sample log if a sample is set.
+        Check log is consistent with sample and handle field updates.
+
+        :param field: The log field in the load dialog to update.
+        :param file_name: Path to the selected log file.
         """
         if self.sample_fg is None:
             raise RuntimeError("Please select sample data to be loaded first!")
 
-        sample_names = [p.name for p in self.sample_fg.all_files()]
-        self.ensure_sample_log_consistency(field, file_name, sample_names)
+        indices = self.view.fields[FILE_TYPES.SAMPLE.fname].indices
+        full_stack_filenames = [file_path.name for file_path in self.sample_fg.all_files()]
+        sample_names = full_stack_filenames[indices.start:indices.end:indices.step]
+        if self.validate_sample_log(field, file_name, sample_names, full_stack_filenames):
+            self._update_field_action(field, file_name)
 
-    def ensure_sample_log_consistency(self, field: Field, file_name: str, image_filenames: list[str]) -> None:
+    def validate_sample_log(self, field: Field, file_name: str, selected_filenames: list[str],
+                            full_stack_filenames: list[str]) -> bool:
+        """
+        Validate that the log file is consistent with the images to be loaded.
+
+        :param field: Log field in the load dialog to update.
+        :param file_name: Path to the selected log file.
+        :param selected_filenames: Filenames after index selection.
+        :param full_stack_filenames: All filenames in the full stack.
+        :return: True if the log is accepted, False if rejected.
+        """
         if file_name is None or file_name == "":
-            return
+            return False
 
         log = load_log(Path(file_name))
-        log.raise_if_angle_missing(image_filenames)
-        self._update_field_action(field, file_name)
+        scenario = self._classify_log_scenario(log.length, len(selected_filenames), len(full_stack_filenames))
+
+        match scenario:
+            case _LogScenario.MATCH:
+                log.raise_if_angle_missing(selected_filenames)
+                return True
+            case _LogScenario.FULL_STACK_NARROWED:
+                return True
+            case _LogScenario.PARTIAL_SLICE_MATCH | _LogScenario.PARTIAL_BETWEEN:
+                return self._warn_partial_log(field, log.length, len(selected_filenames), len(full_stack_filenames))
+            case _LogScenario.MISMATCH:
+                self._show_log_mismatch_error(log.length, len(selected_filenames), len(full_stack_filenames))
+                field.clear()
+                return False
+
+    @staticmethod
+    def _classify_log_scenario(log_length: int, slice_count: int, full_count: int) -> _LogScenario:
+        """Classify the log/stack size relationship into one of various scenarios."""
+        if log_length == full_count:
+            return _LogScenario.FULL_STACK_NARROWED if slice_count < full_count else _LogScenario.MATCH
+        if log_length == slice_count < full_count:
+            return _LogScenario.PARTIAL_SLICE_MATCH
+        if slice_count < log_length < full_count:
+            return _LogScenario.PARTIAL_BETWEEN
+        return _LogScenario.MISMATCH
+
+    def _warn_partial_log(self, field: Field, log_length: int, slice_count: int, full_count: int) -> bool:
+        """
+        Show a confirmation dialog for scenarios FULL_STACK_NARROWED and PARTIAL_SLICE_MATCH.
+        Returns True if the user confirms.
+        Clears the field and returns False if the user declines.
+        """
+        if log_length == slice_count:
+            detail = f"The current index selection of {slice_count} images matches the log size"
+        else:
+            detail = f"The log is larger than the current index selection of {slice_count} images"
+
+        if not self.view.show_question_dialog(
+                "Warning: Log size mismatch",
+                f"The log file contains {log_length} entries, fewer than the full sample stack "
+                f"({full_count} images). {detail}, but the projection angles may not correctly "
+                f"correspond to the selected images.\n\n"
+                f"Do you want to continue?"):
+            field.clear()
+
+            return False
+        return True
+
+    def _show_log_mismatch_error(self, log_length: int, slice_count: int, full_count: int) -> None:
+        """
+        Show an error dialog for a genuine log/stack mismatch.
+        """
+        if slice_count != full_count:
+            stack_desc = (f"{slice_count} images in the selected index range "
+                          f"and {full_count} images in the full stack")
+        else:
+            stack_desc = f"{full_count} images in the stack"
+
+        self.view.show_error_dialog(f"Log size mismatch. Found {log_length} log entries but {stack_desc}. "
+                                    f"The log file may not correspond to this sample stack.")
