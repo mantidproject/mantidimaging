@@ -127,8 +127,8 @@ When *Save as Image Files* is selected the save images dialog appears:
 .. image:: ../../../_static/save_as_image_files.png
     :alt: Save dialog
 
-This prompts you to select the image stack you wish to save, whether to save as
-a sinogram stack the directory in which you wish to save it and the name prefix.
+This prompts you to select the image stack you wish to save, choose whether to save
+it as a sinogram stack, specify the destination directory and set the filename prefix.
 In the case of TIFF and FITS the individual image filenames will be a concatenation
 of this prefix and the index of the image in the stack.
 

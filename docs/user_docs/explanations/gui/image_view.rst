@@ -93,5 +93,6 @@ to toggle between viewing the stack as projections or sinograms:
     :width: 90%
     :align: center
 
-Note that even when the data is being displayed as sinograms, the original image stack is not modified and other parts
-of Mantid Imaging will take the projection version of the stack as normal.
+.. note::
+    Note that even when the data is being displayed as sinograms, the original image stack is not modified and other
+    parts of Mantid Imaging will take the projection version of the stack as normal.
