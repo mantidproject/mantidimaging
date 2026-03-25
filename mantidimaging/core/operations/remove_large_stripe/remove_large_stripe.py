@@ -49,10 +49,6 @@ class RemoveLargeStripesFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
-        array[index] = remove_large_stripe(array[index], **params)
-
-    @staticmethod
     def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_large_stripe(array[:, index, :], **params)
 

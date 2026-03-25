@@ -54,10 +54,6 @@ class RemoveStripeSortingFittingFilter(BaseFilter):
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
-        array[index] = remove_stripe_based_fitting(array[index], **params)
-
-    @staticmethod
     def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_stripe_based_fitting(array[:, index, :], **params)
 
