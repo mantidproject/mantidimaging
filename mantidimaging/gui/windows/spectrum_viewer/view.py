@@ -101,7 +101,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
         self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
-        self.exportSettingsWidget.fitAllButton.clicked.connect(self.presenter.fit_all_regions)
+        self.exportSettingsWidget.fitAllButton.clicked.connect(self.presenter._run_fit_async)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changing.connect(self.presenter.handle_notify_roi_moved)
