@@ -77,9 +77,9 @@ should note that the execution time of the algorithms increases greatly with the
 Viewing Image Data as Sinograms
 ---------------------------
 
-Image data is loaded into Mantid Imaging as projections, but the user may want to view the sinogram version of the
-data. To view the sinogram stack, use the right-click menu in the image view and select *view as sinograms/projections*
-to toggle between viewing the stack as projections or sinograms:
+Image data is loaded into Mantid Imaging as projections, but if you would like to view the
+sinogram version of the data, use the right-click menu in the image view and select
+*view as sinograms/projections* to toggle between viewing the stack as projections or sinograms:
 
 .. image:: ../../../_static/view_as_sinograms_menu.png
     :alt: The image view right-click menu with "view as sinograms/projections" highlighted
