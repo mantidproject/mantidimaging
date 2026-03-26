@@ -680,7 +680,10 @@
         <span class="n">log</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">])</span>
-        <span class="n">images</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log</span></div>
+        <span class="n">images</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="s1">&#39;has_projection_angles&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.add_shutter_counts_to_sample">

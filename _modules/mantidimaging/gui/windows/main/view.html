@@ -921,7 +921,24 @@
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="o">=</span><span class="n">stack_to_add_log_to</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">selected_file</span><span class="p">))</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Update recon with log</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">activateWindow</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
+            <span class="n">presenter</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="p">,</span> <span class="s1">&#39;presenter&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">presenter</span><span class="p">:</span>
+                <span class="n">uuid</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">stackSelector</span><span class="p">,</span> <span class="s1">&#39;current&#39;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span><span class="p">)()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="p">,</span> <span class="s1">&#39;stackSelector&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">uuid</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">presenter</span><span class="p">,</span> <span class="s1">&#39;set_current_stack&#39;</span><span class="p">):</span>
+                    <span class="n">presenter</span><span class="o">.</span><span class="n">set_current_stack</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;_update_geometry_dependent_ui&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                                            <span class="p">(</span><span class="s1">&#39;do_preview_reconstruct_slice&#39;</span><span class="p">,</span> <span class="p">{</span>
+                                                <span class="s1">&#39;reset_roi&#39;</span><span class="p">:</span> <span class="kc">True</span>
+                                            <span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;do_update_projection&#39;</span><span class="p">,</span> <span class="p">{})]:</span>
+                    <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">presenter</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+                        <span class="n">method</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Load complete&quot;</span><span class="p">,</span>
                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">selected_file</span><span class="si">}</span><span class="s2"> was loaded as a log into </span><span class="si">{</span><span class="n">stack_to_add_log_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 

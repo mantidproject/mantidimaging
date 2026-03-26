@@ -1069,7 +1069,8 @@
         <span class="n">start_async_task_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_proj_angle_load_done</span><span class="p">,</span> <span class="p">{</span>
             <span class="s1">&#39;images_id&#39;</span><span class="p">:</span> <span class="n">stack_id</span><span class="p">,</span>
             <span class="s1">&#39;proj_angles&#39;</span><span class="p">:</span> <span class="n">proj_angles</span>
-        <span class="p">})</span></div>
+        <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.load_stacks_from_folder">
