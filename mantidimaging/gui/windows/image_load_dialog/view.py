@@ -2,9 +2,9 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-
-from PyQt5.QtWidgets import QComboBox, QCheckBox, QTreeWidget, QTreeWidgetItem, QPushButton, QSizePolicy, \
-    QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QComboBox, QCheckBox, QLabel, QMessageBox, QTreeWidget, QTreeWidgetItem, QPushButton, \
+    QSizePolicy, QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH, \
     LoadingParameters
@@ -109,6 +109,16 @@ class ImageLoadDialog(BaseDialogView):
 
     def get_parameters(self) -> LoadingParameters:
         return self.presenter.get_parameters()
+
+    def show_unrecognised_log_format_error(self, filename: str) -> None:
+        url = "https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack"
+        msg = QMessageBox(QMessageBox.Critical, "Error", "", parent=self)
+        msg.setTextFormat(Qt.RichText)
+        msg.setText(f"The log file '{filename}' could not be read: file format not recognised.<br>"
+                    f"See <a href='{url}'>documentation</a> for details of supported formats.")
+        if label := msg.findChild(QLabel):
+            label.setOpenExternalLinks(True)
+        msg.exec()
 
     def enable_preview_all_buttons(self) -> None:
         self.step_preview.setEnabled(True)
