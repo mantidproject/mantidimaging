@@ -44,16 +44,9 @@ class RemoveLargeStripesFilter(BaseFilter):
         :return: The ImageStack object with large stripes removed.
         """
         params = {"snr": snr, "size": la_size}
-        if images.is_sinograms:
-            compute_func = RemoveLargeStripesFilter.compute_function_sino
-        else:
-            compute_func = RemoveLargeStripesFilter.compute_function
+        compute_func = RemoveLargeStripesFilter.compute_function
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images
-
-    @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
-        array[index] = remove_large_stripe(array[index], **params)
 
     @staticmethod
     def compute_function(index: int, array: ndarray, params: dict[str, Any]):

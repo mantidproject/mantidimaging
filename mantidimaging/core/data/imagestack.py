@@ -46,14 +46,12 @@ class ImageStack:
                  filenames: list[Path] | None = None,
                  indices: list[int] | Indices | None = None,
                  metadata: dict[str, Any] | None = None,
-                 sinograms: bool = False,
                  name: str | None = None):
         """
         :param data: a numpy array or SharedArray object containing the images of the Sample/Projection data
         :param filenames: All filenames that were matched for loading
         :param indices: Indices that were actually loaded
         :param metadata: Properties to copy when creating a new stack from an existing one
-        :param sinograms: Set data ordering, if false: [t,y,x] if true: [y,t,x]
         :param name: A name for the stack
         """
 
@@ -68,7 +66,6 @@ class ImageStack:
         self._filenames = filenames
 
         self.metadata: dict[str, Any] = deepcopy(metadata) if metadata else {}
-        self._is_sinograms = sinograms
 
         self._proj180deg: ImageStack | None = None
         self._log_file: InstrumentLog | None = None
@@ -88,7 +85,6 @@ class ImageStack:
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, ImageStack):
             return np.array_equal(self.data, other.data) \
-                   and self.is_sinograms == other.is_sinograms \
                    and self.metadata == other.metadata \
                    and self.indices == other.indices
         elif isinstance(other, np.ndarray):
@@ -123,11 +119,8 @@ class ImageStack:
         Load metadata json without overwriting existing values
         """
         self.metadata = json.load(f) | self.metadata
-        self._is_sinograms = self.metadata.get(const.SINOGRAMS, False)
 
     def save_metadata(self, f: TextIO, rescale_params: dict[str, str | float] | None = None) -> None:
-        self.metadata[const.SINOGRAMS] = self.is_sinograms
-
         if rescale_params is not None:
             self.metadata[const.RESCALED] = rescale_params
 
@@ -171,10 +164,7 @@ class ImageStack:
         else:
             data_copy.array[:] = self.data[:]
 
-        images = ImageStack(data_copy,
-                            indices=deepcopy(self.indices),
-                            metadata=deepcopy(self.metadata),
-                            sinograms=not self.is_sinograms if flip_axes else self.is_sinograms)
+        images = ImageStack(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata))
         return images
 
     def copy_roi(self, roi: SensibleROI) -> ImageStack:
@@ -183,17 +173,14 @@ class ImageStack:
         data_copy = pu.create_array(shape, self.data.dtype)
         data_copy.array[:] = self.data[:, roi.top:roi.bottom, roi.left:roi.right]
 
-        images = ImageStack(data_copy,
-                            indices=deepcopy(self.indices),
-                            metadata=deepcopy(self.metadata),
-                            sinograms=self._is_sinograms)
+        images = ImageStack(data_copy, indices=deepcopy(self.indices), metadata=deepcopy(self.metadata))
 
         mark_cropped(images, roi)
         return images
 
     def slice_as_image_stack(self, index: int) -> ImageStack:
         "A slice, either projection or sinogram depending on current ordering"
-        return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata), sinograms=self.is_sinograms)
+        return ImageStack(self.slice_as_array(index), metadata=deepcopy(self.metadata))
 
     def sino_as_image_stack(self, index: int) -> ImageStack:
         "A single sinogram slice as an ImageStack in projection ordering"
@@ -204,10 +191,7 @@ class ImageStack:
 
     @property
     def height(self) -> int:
-        if not self._is_sinograms:
-            return self.shape[1]
-        else:
-            return self.shape[0]
+        return self.shape[1]
 
     @property
     def width(self) -> int:
@@ -226,26 +210,17 @@ class ImageStack:
 
     @property
     def num_projections(self) -> int:
-        if not self._is_sinograms:
-            return self.shape[0]
-        else:
-            return self.shape[1]
+        return self.shape[0]
 
     @property
     def num_sinograms(self) -> int:
         return self.height
 
     def sino(self, slice_idx: int) -> np.ndarray:
-        if not self._is_sinograms:
-            return np.swapaxes(self.data, 0, 1)[slice_idx]
-        else:
-            return self.data[slice_idx]
+        return np.swapaxes(self.data, 0, 1)[slice_idx]
 
     def projection(self, projection_idx: int) -> np.ndarray:
-        if self._is_sinograms:
-            return np.swapaxes(self.data, 0, 1)[projection_idx]
-        else:
-            return self.data[projection_idx]
+        return self.data[projection_idx]
 
     def proj_180_degree_shape_matches_images(self) -> bool:
         if self.proj180deg is not None:
@@ -267,11 +242,11 @@ class ImageStack:
 
     @property
     def projections(self) -> np.ndarray:
-        return self.data if not self._is_sinograms else np.swapaxes(self.data, 0, 1)
+        return self.data
 
     @property
     def sinograms(self) -> np.ndarray:
-        return self.data if self._is_sinograms else np.swapaxes(self.data, 0, 1)
+        return self.data.swapaxes(0, 1)
 
     @property
     def data(self) -> np.ndarray:
@@ -352,10 +327,6 @@ class ImageStack:
     def create_empty_image_stack(shape: tuple[int, ...], dtype: npt.DTypeLike, metadata: dict[str, Any]) -> ImageStack:
         arr = pu.create_array(shape, dtype)
         return ImageStack(arr, metadata=metadata)
-
-    @property
-    def is_sinograms(self) -> bool:
-        return self._is_sinograms
 
     @property
     def log_file(self) -> InstrumentLog | None:

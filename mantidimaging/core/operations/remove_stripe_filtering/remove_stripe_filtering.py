@@ -52,33 +52,18 @@ class RemoveStripeFilteringFilter(BaseFilter):
                  filtering and sorting technique.
         """
         params = {"sigma": sigma, "size": size, "dim": window_dim}
-        if images.is_sinograms:
-            if filtering_dim == 1:
-                params["sort"] = True
-                compute_func = RemoveStripeFilteringFilter.compute_function_sino
-            else:
-                compute_func = RemoveStripeFilteringFilter.compute_function_2d_sino
+        if filtering_dim == 1:
+            params["sort"] = True
+            compute_func = RemoveStripeFilteringFilter.compute_function
         else:
-            if filtering_dim == 1:
-                params["sort"] = True
-                compute_func = RemoveStripeFilteringFilter.compute_function
-            else:
-                compute_func = RemoveStripeFilteringFilter.compute_function_2d
+            compute_func = RemoveStripeFilteringFilter.compute_function_2d
 
         ps.run_compute_func(compute_func, images.num_sinograms, images.shared_array, params, progress)
         return images
 
     @staticmethod
-    def compute_function_sino(index: int, array: ndarray, params: dict[str, Any]):
-        array[index] = remove_stripe_based_filtering(array[index], **params)
-
-    @staticmethod
     def compute_function(index: int, array: ndarray, params: dict[str, Any]):
         array[:, index, :] = remove_stripe_based_filtering(array[:, index, :], **params)
-
-    @staticmethod
-    def compute_function_2d_sino(index: int, array: ndarray, params: dict[str, Any]):
-        array[index] = remove_stripe_based_2d_filtering_sorting(array[index], **params)
 
     @staticmethod
     def compute_function_2d(index: int, array: ndarray, params: dict[str, Any]):
