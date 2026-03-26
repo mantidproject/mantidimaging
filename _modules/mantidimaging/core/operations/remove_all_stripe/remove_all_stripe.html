@@ -547,20 +547,10 @@
         <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">num_projections</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">images</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;snr&quot;</span><span class="p">:</span> <span class="n">snr</span><span class="p">,</span> <span class="s2">&quot;la_size&quot;</span><span class="p">:</span> <span class="n">la_size</span><span class="p">,</span> <span class="s2">&quot;sm_size&quot;</span><span class="p">:</span> <span class="n">sm_size</span><span class="p">,</span> <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="n">dim</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_sinograms</span><span class="p">:</span>
-            <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveAllStripesFilter</span><span class="o">.</span><span class="n">compute_function_sino</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveAllStripesFilter</span><span class="o">.</span><span class="n">compute_function</span>
+        <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveAllStripesFilter</span><span class="o">.</span><span class="n">compute_function</span>
 
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">compute_func</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">num_sinograms</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
-
-
-<div class="viewcode-block" id="RemoveAllStripesFilter.compute_function_sino">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_all_stripe.remove_all_stripe.html#mantidimaging.core.operations.remove_all_stripe.remove_all_stripe.RemoveAllStripesFilter.compute_function_sino">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function_sino</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
-        <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">remove_all_stripe</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RemoveAllStripesFilter.compute_function">

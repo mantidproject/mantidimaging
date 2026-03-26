@@ -548,28 +548,14 @@
 <span class="sd">                 filtering and sorting technique.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="n">window_dim</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_sinograms</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">filtering_dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function_sino</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function_2d_sino</span>
+        <span class="k">if</span> <span class="n">filtering_dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">filtering_dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function_2d</span>
+            <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function_2d</span>
 
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">compute_func</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">num_sinograms</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
-
-
-<div class="viewcode-block" id="RemoveStripeFilteringFilter.compute_function_sino">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.html#mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.RemoveStripeFilteringFilter.compute_function_sino">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function_sino</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
-        <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">remove_stripe_based_filtering</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RemoveStripeFilteringFilter.compute_function">
@@ -577,13 +563,6 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="n">array</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">remove_stripe_based_filtering</span><span class="p">(</span><span class="n">array</span><span class="p">[:,</span> <span class="n">index</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="RemoveStripeFilteringFilter.compute_function_2d_sino">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.html#mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.RemoveStripeFilteringFilter.compute_function_2d_sino">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function_2d_sino</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
-        <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">remove_stripe_based_2d_filtering_sorting</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RemoveStripeFilteringFilter.compute_function_2d">

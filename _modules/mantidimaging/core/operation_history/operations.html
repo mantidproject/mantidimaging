@@ -499,8 +499,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_filter_packages</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">const</span>
 
@@ -568,11 +566,6 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operation_history.operations.html#mantidimaging.core.operation_history.operations.ops_to_partials">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ops_to_partials</span><span class="p">(</span><span class="n">filter_ops</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ImageOperation</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">partial</span><span class="p">]:</span>
     <span class="n">filter_funcs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">filter_func</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">load_filter_packages</span><span class="p">()}</span>
-    <span class="n">fixed_funcs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_AXES_SWAP</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">img</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-        <span class="c1"># const.OPERATION_NAME_TOMOPY_RECON: lambda img, **kwargs: TomopyReconWindowModel.do_recon(img, **kwargs),</span>
-    <span class="p">}</span>
-    <span class="n">filter_funcs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fixed_funcs</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">to_partial</span><span class="p">(</span><span class="n">filter_funcs</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">filter_ops</span><span class="p">)</span></div>
 
 </pre></div>

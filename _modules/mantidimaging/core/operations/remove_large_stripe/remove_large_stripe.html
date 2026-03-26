@@ -540,19 +540,9 @@
 <span class="sd">        :return: The ImageStack object with large stripes removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;snr&quot;</span><span class="p">:</span> <span class="n">snr</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">la_size</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_sinograms</span><span class="p">:</span>
-            <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveLargeStripesFilter</span><span class="o">.</span><span class="n">compute_function_sino</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveLargeStripesFilter</span><span class="o">.</span><span class="n">compute_function</span>
+        <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveLargeStripesFilter</span><span class="o">.</span><span class="n">compute_function</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">compute_func</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">num_sinograms</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
-
-
-<div class="viewcode-block" id="RemoveLargeStripesFilter.compute_function_sino">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_large_stripe.remove_large_stripe.html#mantidimaging.core.operations.remove_large_stripe.remove_large_stripe.RemoveLargeStripesFilter.compute_function_sino">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function_sino</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
-        <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">remove_large_stripe</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RemoveLargeStripesFilter.compute_function">

@@ -937,15 +937,7 @@
             <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images.geometry is not set&quot;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">is_sinograms</span><span class="p">:</span>
-                <span class="n">data_order</span> <span class="o">=</span> <span class="n">DataOrder</span><span class="o">.</span><span class="n">ASTRA_AG_LABELS</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">data_order</span> <span class="o">=</span> <span class="n">DataOrder</span><span class="o">.</span><span class="n">TIGRE_AG_LABELS</span>
-
-            <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;images.geometry is not set&quot;</span><span class="p">)</span>
-
-            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span><span class="n">data_order</span><span class="p">)</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span><span class="n">DataOrder</span><span class="o">.</span><span class="n">TIGRE_AG_LABELS</span><span class="p">)</span>
             <span class="n">ig</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_ImageGeometry</span><span class="p">()</span>
 
             <span class="n">data</span> <span class="o">=</span> <span class="n">CILRecon</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">BaseRecon</span><span class="o">.</span><span class="n">prepare_sinogram</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">),</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
