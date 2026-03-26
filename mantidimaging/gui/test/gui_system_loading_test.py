@@ -117,7 +117,7 @@ class TestGuiSystemLoading(GuiSystemBase):
 
         # After loading angles should match file
         log_angle = math.radians(self._get_log_angle(log_path))
-        self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, 12)
+        self.assertAlmostEqual(sample.projection_angles().value[1], log_angle, delta=1e-9)
 
     def _make_angles_file(self, angles):
         angles_file = tempfile.NamedTemporaryFile("w", delete=False)
