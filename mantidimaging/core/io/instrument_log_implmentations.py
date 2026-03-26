@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import locale
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -71,11 +72,11 @@ class LegacyIMATLogFile(InstrumentLogParser):
         if filename.lower()[-4:] not in [".txt", ".csv"]:
             return False
 
-        for line in lines:
-            if cls._has_imat_header(line) or cls._has_imat_data_line(line):
-                return True
+        first_non_blank = next((line for line in lines if line.strip()), None)
+        if first_non_blank is None:
+            return False
 
-        return False
+        return cls._has_imat_header(first_non_blank) or cls._has_imat_data_line(first_non_blank)
 
     def parse(self) -> LogDataType:
         imat_log_file = IMATLogFile(self.lines, Path(""))
@@ -107,11 +108,15 @@ class LegacyIMATLogFile(InstrumentLogParser):
     @classmethod
     def _has_imat_data_line(cls, line: str) -> bool:
         try:
-            _ = cls.read_imat_date(line[:24])
+            cls.read_imat_date(line[:24])
         except ValueError:
             return False
 
-        if not ("Projection" in line or "Radiography" in line):
+        if "Projection" not in line and "Radiography" not in line:
+            return False
+        if not re.search(r'Monitor \d+ before:\s*\d+', line):
+            return False
+        if not re.search(r'Monitor \d+ after:\s*\d+', line):
             return False
 
         return True
