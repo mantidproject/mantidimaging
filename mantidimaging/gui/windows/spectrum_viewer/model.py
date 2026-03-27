@@ -591,3 +591,13 @@ class SpectrumViewerWindowModel:
 
     def get_fit_results(self) -> list[tuple[str, SpectrumFitResult]] | None:
         return self.fit_results
+    def load_rois_from_csv(self, path: Path):
+        loaded_rois = []
+        with open(path, encoding='utf-8', mode='r') as f:
+            csv_reader = csv.DictReader(f)
+            header = csv_reader.fieldnames
+            for line in csv_reader:
+                loaded_rois.append(line)
+
+        print(f"{loaded_rois=}")
+        print(f"{header=}")
