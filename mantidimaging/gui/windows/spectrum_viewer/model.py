@@ -606,3 +606,5 @@ class SpectrumViewerWindowModel:
             if roi_dict["ROI"] != 'rits_roi':
                 coords = [int(roi_dict[field]) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
                 self.presenter.do_add_roi(roi_name=roi_dict["ROI"], coords=coords, from_load=True)
+                LOG.info(f"ROI loaded: name={roi_dict["ROI"]}, coords=({coords})")
+
