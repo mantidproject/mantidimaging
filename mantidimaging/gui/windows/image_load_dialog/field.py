@@ -40,6 +40,12 @@ class Field:
             self.path = image_files[0]
             self.update_shape(len(image_files))
 
+    def clear(self) -> None:
+        """Reset the field to an unselected state."""
+        self.path_widget.setText(1, "")
+        self.widget.setText(1, "")
+        self.use.setChecked(False)
+
     @property
     def widget(self) -> QTreeWidgetItem:
         """

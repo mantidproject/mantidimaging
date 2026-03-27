@@ -6,8 +6,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from parameterized import parameterized
+
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.io.instrument_log import InstrumentLog, NoParserFound
 from mantidimaging.gui.windows.image_load_dialog.field import Field
 from mantidimaging.gui.windows.image_load_dialog.presenter import LoadPresenter
 from mantidimaging.core.utility.data_containers import FILE_TYPES, Indices
@@ -20,31 +22,31 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
 
     def setUp(self):
         self.fields = {ft.fname: mock.create_autospec(Field, instance=True) for ft in FILE_TYPES}
-        self.v = mock.MagicMock(fields=self.fields)
-        self.v.sample = self.fields["Sample"]
-        self.p = LoadPresenter(self.v)
+        self.view = mock.MagicMock(fields=self.fields)
+        self.view.sample = self.fields["Sample"]
+        self.presenter = LoadPresenter(self.view)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_flat_or_dark")
     def test_do_update_field(self, mock_do_update_flat_or_dark):
         selected_file = "SelectedFile"
-        self.v.select_file.return_value = selected_file
+        self.view.select_file.return_value = selected_file
         ft = FILE_TYPES.FLAT_BEFORE
         field = mock.MagicMock(file_info=ft)
 
-        self.p.do_update_field(field)
+        self.presenter.do_update_field(field)
 
-        self.v.select_file.assert_called_once_with(ft.fname, True)
+        self.view.select_file.assert_called_once_with(ft.fname, True)
         mock_do_update_flat_or_dark.assert_called_once_with(field, selected_file)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_flat_or_dark")
     def test_do_update_field_when_no_file_selected(self, mock_do_update_flat_or_dark):
-        self.v.select_file.return_value = None
+        self.view.select_file.return_value = None
         ft = FILE_TYPES.FLAT_BEFORE
         field = mock.MagicMock(file_info=ft)
 
-        self.p.do_update_field(field)
+        self.presenter.do_update_field(field)
 
-        self.v.select_file.assert_called_once_with(ft.fname, True)
+        self.view.select_file.assert_called_once_with(ft.fname, True)
         mock_do_update_flat_or_dark.assert_not_called()
 
     def test_update_field_with_filegroup_sample(self):
@@ -58,7 +60,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_field_path = mock.PropertyMock()
         type(self.fields["Sample Log"]).path = mock_field_path
 
-        self.p.update_field_with_filegroup(FILE_TYPES.SAMPLE, mock_file_group)
+        self.presenter.update_field_with_filegroup(FILE_TYPES.SAMPLE, mock_file_group)
 
         mock_file_group.find_all_files.assert_called_once_with()
         mock_file_group.find_log_file.assert_called_once_with()
@@ -70,7 +72,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_list = [mock.Mock()]
         mock_file_group.all_files.return_value = file_list
 
-        self.p.update_field_with_filegroup(FILE_TYPES.DARK_BEFORE, mock_file_group)
+        self.presenter.update_field_with_filegroup(FILE_TYPES.DARK_BEFORE, mock_file_group)
 
         mock_file_group.find_all_files.assert_called_once_with()
         mock_file_group.find_log_file.assert_not_called()
@@ -87,12 +89,12 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_sample_fg.all_indexes = [0, 1, 2, 3]
         mock_sample_fg.find_related.return_value = None
 
-        self.p.do_update_sample(selected_file)
+        self.presenter.do_update_sample(selected_file)
 
         mock_update_field.assert_called_once_with(FILE_TYPES.SAMPLE, mock_sample_fg)
         self.fields["Sample"].update_indices.assert_called_once_with(4)
         self.fields["Sample"].update_shape.assert_called_once_with([10, 11])
-        self.v.ok_button.setEnabled.assert_called_once_with(True)
+        self.view.ok_button.setEnabled.assert_called_once_with(True)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup")
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.read_image_dimensions")
@@ -107,7 +109,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         mock_sample_fg.all_indexes = [0, 1, 2, 3]
         mock_sample_fg.find_related.side_effect = lambda ft: mock_fb_fg if ft == FILE_TYPES.FLAT_BEFORE else None
 
-        self.p.do_update_sample(selected_file)
+        self.presenter.do_update_sample(selected_file)
 
         updated_fields = [c.args[0] for c in mock_update_field.mock_calls]
         self.assertIn(FILE_TYPES.SAMPLE, updated_fields)
@@ -125,7 +127,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         files_list = [file_name, "aaa_0001.tiff"]
         mock_all_files.return_value = files_list
 
-        self.p.do_update_flat_or_dark(field, file_name)
+        self.presenter.do_update_flat_or_dark(field, file_name)
 
         field.set_images.assert_called_once_with(files_list)
 
@@ -133,7 +135,7 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_name = "file_name"
         field = mock.MagicMock(file_info=FILE_TYPES.PROJ_180)
 
-        self.p._update_field_action(field, file_name)
+        self.presenter._update_field_action(field, file_name)
 
         self.assertEqual(field.path, Path(file_name))
 
@@ -141,64 +143,138 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         file_name = "file_name"
         field = mock.MagicMock(file_info=FILE_TYPES.PROJ_180)
 
-        self.p._update_field_action(field, None)
+        self.presenter._update_field_action(field, None)
 
         self.assertNotEqual(field.path, file_name)
 
     def test_do_update_sample_log_no_sample_selected(self):
         field = mock.MagicMock()
-        self.p.sample_fg = None
-        self.assertRaises(RuntimeError, self.p.do_update_sample_log, field, "")
+        self.presenter.sample_fg = None
+        self.assertRaises(RuntimeError, self.presenter.do_update_sample_log, field, "")
 
-    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency")
-    def test_do_update_sample_log(self, mock_ensure):
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.validate_sample_log")
+    def test_do_update_sample_log(self, mock_validate):
         file_name = "file_name"
 
         field = mock.MagicMock(file_info=FILE_TYPES.SAMPLE_LOG)
 
-        self.p.sample_fg = mock.create_autospec(FilenameGroup, instance=True)
-        self.p.do_update_sample_log(field, file_name)
+        self.presenter.sample_fg = mock.create_autospec(FilenameGroup, instance=True)
+        self.presenter.do_update_sample_log(field, file_name)
 
-        mock_ensure.assert_called_once_with(field, file_name, [])
+        mock_validate.assert_called_once_with(file_name, [], [])
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.validate_sample_log")
+    def test_do_update_sample_log_clears_field_on_failure(self, mock_validate):
+        mock_validate.return_value = False
+        field = mock.MagicMock(file_info=FILE_TYPES.SAMPLE_LOG)
+        self.presenter.sample_fg = mock.create_autospec(FilenameGroup, instance=True)
+        self.presenter.do_update_sample_log(field, "log.txt")
+
+        field.clear.assert_called_once()
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
-    def test_ensure_sample_log_consistency_matching(self, mock_load_log):
+    def test_validate_sample_log_matching(self, mock_load_log):
         """
-        Test behaviour when the number of projection angles and files matches
+        Test behaviour when the number of projection angles and files matches (MATCH scenario)
         """
         mock_log = mock.create_autospec(InstrumentLog, instance=True)
+        mock_log.length = 2
         mock_load_log.return_value = mock_log
         file_name = "file_name"
-        field = mock.MagicMock()
-        field.path = None
-        field.use = None
         test_filenames = ["file1", "file2"]
-
-        self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
+        self.presenter.validate_sample_log(file_name, test_filenames, test_filenames)
 
         mock_load_log.assert_called_once_with(Path(file_name))
         mock_log.raise_if_angle_missing.assert_called_once_with(test_filenames)
-        self.assertIsNotNone(field.path)
-        self.assertIsNotNone(field.use)
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
-    def test_ensure_sample_log_consistency_exits_when_none_or_empty_str(self, mock_load_log):
+    def test_validate_sample_log_exits_when_none_or_empty_str(self, mock_load_log):
         mock_log = mock.create_autospec(InstrumentLog, instance=True)
         mock_load_log.return_value = mock_log
         file_name = None
-        field = mock.MagicMock()
         test_filenames = ["file1", "file2"]
-
-        self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
+        self.presenter.validate_sample_log(file_name, test_filenames, test_filenames)
 
         mock_load_log.assert_not_called()
         mock_log.raise_if_angle_missing.assert_not_called()
 
         file_name = ""
-        self.p.ensure_sample_log_consistency(field, file_name, test_filenames)
+        self.presenter.validate_sample_log(file_name, test_filenames, test_filenames)
 
         mock_load_log.assert_not_called()
         mock_log.raise_if_angle_missing.assert_not_called()
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
+    def test_validate_sample_log_smaller_than_selection_returns_false(self, mock_load_log):
+        mock_log = mock.create_autospec(InstrumentLog, instance=True)
+        mock_log.length = 3
+        selected_filenames = ["img.tiff"] * 5
+        full_stack_filenames = ["img.tiff"] * 10
+        mock_load_log.return_value = mock_log
+        result = self.presenter.validate_sample_log("log.txt", selected_filenames, full_stack_filenames)
+
+        self.assertFalse(result)
+        self.view.show_error_dialog.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
+    def test_validate_sample_log_larger_than_full_stack_returns_false(self, mock_load_log):
+        """log_count > full_count: always reject"""
+        mock_log = mock.create_autospec(InstrumentLog, instance=True)
+        mock_log.length = 15
+        selected_filenames = ["img.tiff"] * 5
+        full_stack_filenames = ["img.tiff"] * 10
+        mock_load_log.return_value = mock_log
+        result = self.presenter.validate_sample_log("log.txt", selected_filenames, full_stack_filenames)
+
+        self.assertFalse(result)
+        self.view.show_error_dialog.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
+    def test_validate_sample_log_partial_match_warns_user(self, mock_load_log):
+        """selected_count <= log_count < full_count: warn and defer to user"""
+        mock_log = mock.create_autospec(InstrumentLog, instance=True)
+        mock_log.length = 7
+        selected_filenames = ["img.tiff"] * 5
+        full_stack_filenames = ["img.tiff"] * 10
+        mock_load_log.return_value = mock_log
+        self.view.show_question_dialog.return_value = True
+        result = self.presenter.validate_sample_log("log.txt", selected_filenames, full_stack_filenames)
+
+        self.assertTrue(result)
+        self.view.show_question_dialog.assert_called_once()
+
+    @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.load_log")
+    def test_validate_sample_log_unrecognised_format_returns_false(self, mock_load_log):
+        """NoParserFound: always reject with specific error"""
+        mock_load_log.side_effect = NoParserFound
+        result = self.presenter.validate_sample_log("log.txt", [], [])
+
+        self.assertFalse(result)
+        self.view.show_unrecognised_log_format_error.assert_called_once()
+
+    def test_warn_partial_log_user_accepts_returns_true(self):
+        self.view.show_question_dialog.return_value = True
+        result = self.presenter._warn_partial_log(5, 5, 10)
+
+        self.assertTrue(result)
+
+    def test_warn_partial_log_user_declines_returns_false(self):
+        self.view.show_question_dialog.return_value = False
+        result = self.presenter._warn_partial_log(5, 5, 10)
+
+        self.assertFalse(result)
+
+    @parameterized.expand([
+        ("no_sample_loaded", False),
+        ("log_field_unchecked", True),
+    ])
+    def test_validate_log_against_current_indices_returns_true_when_no_log_to_validate(self, _, use_sample_fg):
+        if use_sample_fg:
+            self.presenter.sample_fg = mock.create_autospec(FilenameGroup, instance=True)
+            self.fields["Sample Log"].use.isChecked.return_value = False
+        else:
+            self.presenter.sample_fg = None
+        self.assertTrue(self.presenter.validate_log_against_current_indices())
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup.find_all_files")
     def test_get_parameters(self, _):
@@ -231,11 +307,11 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         pixel_size = 24
         dtype = "float32"
         sinograms = True
-        self.v.pixelSize.value.return_value = pixel_size
-        self.v.pixel_bit_depth.currentText.return_value = dtype
-        self.v.images_are_sinograms.isChecked.return_value = sinograms
+        self.view.pixelSize.value.return_value = pixel_size
+        self.view.pixel_bit_depth.currentText.return_value = dtype
+        self.view.images_are_sinograms.isChecked.return_value = sinograms
 
-        lp = self.p.get_parameters()
+        lp = self.presenter.get_parameters()
 
         lp_sample = lp.image_stacks[FILE_TYPES.SAMPLE]
         lp_flat_before = lp.image_stacks[FILE_TYPES.FLAT_BEFORE]

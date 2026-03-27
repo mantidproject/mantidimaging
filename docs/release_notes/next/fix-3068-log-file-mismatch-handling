@@ -1,0 +1,1 @@
+#3068: Synthetically add header to log file if missing provided first data entry matches expected format. Handle various log file mismatch scenarios where the number of log file entries differs from number of origional dataset projections or a subset of projections.

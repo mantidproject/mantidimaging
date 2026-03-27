@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from mantidimaging.core.io.filenames import FilenameGroup
+from mantidimaging.core.io.instrument_log import NoParserFound
 from mantidimaging.core.io.loader import load_log
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, read_image_dimensions
 from mantidimaging.core.utility.data_containers import FILE_TYPES, log_for_file_type, shuttercounts_for_file_type
@@ -197,18 +198,115 @@ class LoadPresenter:
 
     def do_update_sample_log(self, field: Field, file_name: str) -> None:
         """
-        Update the sample log if a sample is set. Also check log is consistent with sample
+        Update the sample log if a sample is set.
+        Check log is consistent with sample and handle field updates.
+
+        :param field: The log field in the load dialog to update.
+        :param file_name: Path to the selected log file.
         """
         if self.sample_fg is None:
             raise RuntimeError("Please select sample data to be loaded first!")
 
-        sample_names = [p.name for p in self.sample_fg.all_files()]
-        self.ensure_sample_log_consistency(field, file_name, sample_names)
+        selected_filenames, full_stack_filenames = self._get_sample_filenames()
+        if self.validate_sample_log(file_name, selected_filenames, full_stack_filenames):
+            self._update_field_action(field, file_name)
+        else:
+            field.clear()
 
-    def ensure_sample_log_consistency(self, field: Field, file_name: str, image_filenames: list[str]) -> None:
+    def validate_log_against_current_indices(self) -> bool:
+        """
+        Re-validate sample log against the current index selection at load time.
+        Catches cases where the index range was altered after the log was accepted into a no-longer valid state.
+        Returns True if the log is still valid (or no log is set), False and shows an error otherwise.
+        """
+        if self.sample_fg is None:
+            return True
+
+        sample_log_field = self.view.fields[log_for_file_type[FILE_TYPES.SAMPLE].fname]
+        if not sample_log_field.use.isChecked() or sample_log_field.path is None:
+            return True
+
+        selected_filenames, full_stack_filenames = self._get_sample_filenames()
+        return self.validate_sample_log(str(sample_log_field.path), selected_filenames, full_stack_filenames)
+
+    def _get_sample_filenames(self) -> tuple[list[str], list[str]]:
+        """Return filenames based on the current sample and index selection."""
+        assert self.sample_fg is not None
+        indices = self.view.fields[FILE_TYPES.SAMPLE.fname].indices
+        full_stack_filenames = [p.name for p in self.sample_fg.all_files()]
+        selected_filenames = full_stack_filenames[indices.start:indices.end:indices.step]
+        return selected_filenames, full_stack_filenames
+
+    def validate_sample_log(self, file_name: str, selected_filenames: list[str],
+                            full_stack_filenames: list[str]) -> bool:
+        """
+        Validate that the log file is consistent with the images to be loaded.
+
+        Checks the following scenarios:
+        log_count > full_count = reject
+        log_count < selected count = reject
+        log_count == full_count = accept
+        selected_count <= log_count < full_count = warn and accept if user confirms
+
+        :param file_name: Path to the selected log file.
+        :param selected_filenames: Filenames after index selection.
+        :param full_stack_filenames: All filenames in the full stack.
+        :return: True if the log is accepted, False if rejected.
+        """
         if file_name is None or file_name == "":
-            return
+            return False
 
-        log = load_log(Path(file_name))
-        log.raise_if_angle_missing(image_filenames)
-        self._update_field_action(field, file_name)
+        try:
+            log = load_log(Path(file_name))
+        except NoParserFound:
+            self.view.show_unrecognised_log_format_error(Path(file_name).name)
+            return False
+
+        log_count = log.length
+        selected_count = len(selected_filenames)
+        full_count = len(full_stack_filenames)
+
+        if log_count > full_count:
+            self._show_log_mismatch_error(log_count, selected_count, full_count)
+            return False
+
+        if log_count == full_count:
+            log.raise_if_angle_missing(full_stack_filenames)
+            return True
+
+        if log_count >= selected_count:  # selected_count <= log_count < full_count
+            return self._warn_partial_log(log_count, selected_count, full_count)
+
+        # log_count < selected_count
+        self._show_log_mismatch_error(log_count, selected_count, full_count)
+        return False
+
+    def _warn_partial_log(self, log_length: int, slice_count: int, full_count: int) -> bool:
+        """
+        Show a confirmation dialog when the log is smaller than the full stack but covers the selected subset.
+        Returns True if the user confirms, False if declined.
+        """
+        if log_length == slice_count:
+            detail = f"The log matches the current index selection of {slice_count} images"
+        else:
+            detail = f"The log is larger than the current index selection of {slice_count} images"
+
+        return self.view.show_question_dialog(
+            "Warning: Log size mismatch",
+            f"The log file contains {log_length} entries. This is fewer than the full sample stack "
+            f"({full_count} images). {detail}. Please note that the projection angles may not "
+            f"correctly correspond to the selected images.\n\n"
+            f"Do you want to continue?")
+
+    def _show_log_mismatch_error(self, log_length: int, slice_count: int, full_count: int) -> None:
+        """
+        Show an error dialog for a genuine log/stack mismatch.
+        """
+        if slice_count != full_count:
+            stack_desc = (f"{slice_count} images in the selected index range "
+                          f"and {full_count} images in the full stack")
+        else:
+            stack_desc = f"{full_count} images in the stack"
+
+        self.view.show_error_dialog(f"Log size mismatch. Found {log_length} log entries but {stack_desc}. "
+                                    f"The log file may not correspond to this sample stack.")
