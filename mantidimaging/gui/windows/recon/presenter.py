@@ -433,11 +433,17 @@ class ReconstructWindowPresenter(BasePresenter):
         Called when geometry/angles are loaded after initial dataset load.
         Refreshes UI and re-enables geometry-dependent actions if possible.
         """
-        self._update_geometry_dependent_ui()
-
-        if self.model.images is not None and self.model.images.geometry is not None:
-            self.do_update_projection()
-            self.do_preview_reconstruct_slice()
+        current_uuid = self.view.stackSelector.current()
+        if current_uuid is not None:
+            self.set_current_stack(current_uuid)
+            images = self.model.images
+            if images is not None and images.geometry is not None:
+                self.view.set_algorithm_options_by_geometry(images.geometry.type)
+        else:
+            self._update_geometry_dependent_ui()
+            if self.model.images is not None and self.model.images.geometry is not None:
+                self.do_update_projection()
+                self.do_preview_reconstruct_slice()
 
     def _update_geometry_dependent_ui(self) -> None:
         """

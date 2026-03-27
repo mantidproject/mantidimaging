@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from PyQt5.QtCore import pyqtSignal
 
 import os
 from uuid import UUID
@@ -52,6 +53,8 @@ class CustomRangeSpinBox(QDoubleSpinBox):
 
 
 class GeometryWindowView(BaseMainWindowView):
+
+    geometry_changed = pyqtSignal()
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(parent=None)
@@ -280,6 +283,9 @@ class GeometryWindowView(BaseMainWindowView):
             pyplot.close(self.figureCanvas.figure)
             self.figureCanvas.figure.clear()
             self.figureCanvas.draw_idle()
+
+    def emit_geometry_changed(self):
+        self.geometry_changed.emit()
 
     @property
     def current_stack(self) -> UUID | None:
