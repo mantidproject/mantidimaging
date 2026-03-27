@@ -115,7 +115,7 @@ class ROIFormWidget(BaseWidget):
         with QSignalBlocker(self.bin_size_spinBox):
             self.bin_size_spinBox.setMaximum(min_dim)
         bin_size = self.bin_size_spinBox.value()
-        step_max = max(1, min_dim - bin_size + 1)
+        step_max = max(1, min_dim - bin_size)
         with QSignalBlocker(self.bin_step_spinBox):
             self.bin_step_spinBox.setMaximum(step_max)
         return min_dim, step_max
