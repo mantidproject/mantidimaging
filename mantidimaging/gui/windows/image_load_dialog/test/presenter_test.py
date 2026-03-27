@@ -6,6 +6,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from parameterized import parameterized
+
 from mantidimaging.core.io.filenames import FilenameGroup
 from mantidimaging.core.io.instrument_log import InstrumentLog, NoParserFound
 from mantidimaging.gui.windows.image_load_dialog.field import Field
@@ -261,6 +263,18 @@ class ImageLoadDialogPresenterTest(unittest.TestCase):
         result = self.presenter._warn_partial_log(5, 5, 10)
 
         self.assertFalse(result)
+
+    @parameterized.expand([
+        ("no_sample_loaded", False),
+        ("log_field_unchecked", True),
+    ])
+    def test_validate_log_against_current_indices_returns_true_when_no_log_to_validate(self, _, use_sample_fg):
+        if use_sample_fg:
+            self.presenter.sample_fg = mock.create_autospec(FilenameGroup, instance=True)
+            self.fields["Sample Log"].use.isChecked.return_value = False
+        else:
+            self.presenter.sample_fg = None
+        self.assertTrue(self.presenter.validate_log_against_current_indices())
 
     @mock.patch("mantidimaging.gui.windows.image_load_dialog.presenter.FilenameGroup.find_all_files")
     def test_get_parameters(self, _):

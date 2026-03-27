@@ -207,13 +207,35 @@ class LoadPresenter:
         if self.sample_fg is None:
             raise RuntimeError("Please select sample data to be loaded first!")
 
-        indices = self.view.fields[FILE_TYPES.SAMPLE.fname].indices
-        full_stack_filenames = [file_path.name for file_path in self.sample_fg.all_files()]
-        sample_names = full_stack_filenames[indices.start:indices.end:indices.step]
-        if self.validate_sample_log(file_name, sample_names, full_stack_filenames):
+        selected_filenames, full_stack_filenames = self._get_sample_filenames()
+        if self.validate_sample_log(file_name, selected_filenames, full_stack_filenames):
             self._update_field_action(field, file_name)
         else:
             field.clear()
+
+    def validate_log_against_current_indices(self) -> bool:
+        """
+        Re-validate sample log against the current index selection at load time.
+        Catches cases where the index range was altered after the log was accepted into a no-longer valid state.
+        Returns True if the log is still valid (or no log is set), False and shows an error otherwise.
+        """
+        if self.sample_fg is None:
+            return True
+
+        sample_log_field = self.view.fields[log_for_file_type[FILE_TYPES.SAMPLE].fname]
+        if not sample_log_field.use.isChecked() or sample_log_field.path is None:
+            return True
+
+        selected_filenames, full_stack_filenames = self._get_sample_filenames()
+        return self.validate_sample_log(str(sample_log_field.path), selected_filenames, full_stack_filenames)
+
+    def _get_sample_filenames(self) -> tuple[list[str], list[str]]:
+        """Return filenames based on the current sample and index selection."""
+        assert self.sample_fg is not None
+        indices = self.view.fields[FILE_TYPES.SAMPLE.fname].indices
+        full_stack_filenames = [p.name for p in self.sample_fg.all_files()]
+        selected_filenames = full_stack_filenames[indices.start:indices.end:indices.step]
+        return selected_filenames, full_stack_filenames
 
     def validate_sample_log(self, file_name: str, selected_filenames: list[str],
                             full_stack_filenames: list[str]) -> bool:

@@ -120,6 +120,10 @@ class ImageLoadDialog(BaseDialogView):
             label.setOpenExternalLinks(True)
         msg.exec()
 
+    def accept(self) -> None:
+        if self.presenter.validate_log_against_current_indices():
+            super().accept()
+
     def enable_preview_all_buttons(self) -> None:
         self.step_preview.setEnabled(True)
         self.step_all.setEnabled(True)
