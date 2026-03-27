@@ -499,6 +499,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.filenames</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilenameGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.instrument_log</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoParserFound</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_log</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">ImageParameters</span><span class="p">,</span> <span class="n">read_image_dimensions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">log_for_file_type</span><span class="p">,</span> <span class="n">shuttercounts_for_file_type</span>
@@ -714,25 +715,125 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_sample_log">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_update_sample_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update the sample log if a sample is set. Also check log is consistent with sample</span>
+<span class="sd">        Update the sample log if a sample is set.</span>
+<span class="sd">        Check log is consistent with sample and handle field updates.</span>
+
+<span class="sd">        :param field: The log field in the load dialog to update.</span>
+<span class="sd">        :param file_name: Path to the selected log file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please select sample data to be loaded first!&quot;</span><span class="p">)</span>
 
-        <span class="n">sample_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span><span class="o">.</span><span class="n">all_files</span><span class="p">()]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_sample_log_consistency</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">sample_names</span><span class="p">)</span></div>
+        <span class="n">selected_filenames</span><span class="p">,</span> <span class="n">full_stack_filenames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_filenames</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_sample_log</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">selected_filenames</span><span class="p">,</span> <span class="n">full_stack_filenames</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="LoadPresenter.ensure_sample_log_consistency">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.ensure_sample_log_consistency">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_sample_log_consistency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="LoadPresenter.validate_log_against_current_indices">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.validate_log_against_current_indices">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_log_against_current_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Re-validate sample log against the current index selection at load time.</span>
+<span class="sd">        Catches cases where the index range was altered after the log was accepted into a no-longer valid state.</span>
+<span class="sd">        Returns True if the log is still valid (or no log is set), False and shows an error otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">sample_log_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">log_for_file_type</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_log_field</span><span class="o">.</span><span class="n">use</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="n">sample_log_field</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">selected_filenames</span><span class="p">,</span> <span class="n">full_stack_filenames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sample_filenames</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_sample_log</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sample_log_field</span><span class="o">.</span><span class="n">path</span><span class="p">),</span> <span class="n">selected_filenames</span><span class="p">,</span> <span class="n">full_stack_filenames</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_sample_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return filenames based on the current sample and index selection.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span>
+        <span class="n">full_stack_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_fg</span><span class="o">.</span><span class="n">all_files</span><span class="p">()]</span>
+        <span class="n">selected_filenames</span> <span class="o">=</span> <span class="n">full_stack_filenames</span><span class="p">[</span><span class="n">indices</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="n">indices</span><span class="o">.</span><span class="n">end</span><span class="p">:</span><span class="n">indices</span><span class="o">.</span><span class="n">step</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">selected_filenames</span><span class="p">,</span> <span class="n">full_stack_filenames</span>
+
+<div class="viewcode-block" id="LoadPresenter.validate_sample_log">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.validate_sample_log">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_sample_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selected_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                            <span class="n">full_stack_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate that the log file is consistent with the images to be loaded.</span>
+
+<span class="sd">        Checks the following scenarios:</span>
+<span class="sd">        log_count &gt; full_count = reject</span>
+<span class="sd">        log_count &lt; selected count = reject</span>
+<span class="sd">        log_count == full_count = accept</span>
+<span class="sd">        selected_count &lt;= log_count &lt; full_count = warn and accept if user confirms</span>
+
+<span class="sd">        :param file_name: Path to the selected log file.</span>
+<span class="sd">        :param selected_filenames: Filenames after index selection.</span>
+<span class="sd">        :param full_stack_filenames: All filenames in the full stack.</span>
+<span class="sd">        :return: True if the log is accepted, False if rejected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="n">log</span> <span class="o">=</span> <span class="n">load_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">(</span><span class="n">image_filenames</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_field_action</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span></div>
-</div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="n">load_log</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">NoParserFound</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_unrecognised_log_format_error</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">log_count</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">length</span>
+        <span class="n">selected_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_filenames</span><span class="p">)</span>
+        <span class="n">full_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">full_stack_filenames</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">log_count</span> <span class="o">&gt;</span> <span class="n">full_count</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_log_mismatch_error</span><span class="p">(</span><span class="n">log_count</span><span class="p">,</span> <span class="n">selected_count</span><span class="p">,</span> <span class="n">full_count</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">log_count</span> <span class="o">==</span> <span class="n">full_count</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">(</span><span class="n">full_stack_filenames</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">log_count</span> <span class="o">&gt;=</span> <span class="n">selected_count</span><span class="p">:</span>  <span class="c1"># selected_count &lt;= log_count &lt; full_count</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warn_partial_log</span><span class="p">(</span><span class="n">log_count</span><span class="p">,</span> <span class="n">selected_count</span><span class="p">,</span> <span class="n">full_count</span><span class="p">)</span>
+
+        <span class="c1"># log_count &lt; selected_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_log_mismatch_error</span><span class="p">(</span><span class="n">log_count</span><span class="p">,</span> <span class="n">selected_count</span><span class="p">,</span> <span class="n">full_count</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_warn_partial_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">slice_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">full_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show a confirmation dialog when the log is smaller than the full stack but covers the selected subset.</span>
+<span class="sd">        Returns True if the user confirms, False if declined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">log_length</span> <span class="o">==</span> <span class="n">slice_count</span><span class="p">:</span>
+            <span class="n">detail</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The log matches the current index selection of </span><span class="si">{</span><span class="n">slice_count</span><span class="si">}</span><span class="s2"> images&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">detail</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;The log is larger than the current index selection of </span><span class="si">{</span><span class="n">slice_count</span><span class="si">}</span><span class="s2"> images&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span>
+            <span class="s2">&quot;Warning: Log size mismatch&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;The log file contains </span><span class="si">{</span><span class="n">log_length</span><span class="si">}</span><span class="s2"> entries. This is fewer than the full sample stack &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">full_count</span><span class="si">}</span><span class="s2"> images). </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">. Please note that the projection angles may not &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;correctly correspond to the selected images.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Do you want to continue?&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_show_log_mismatch_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">slice_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">full_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show an error dialog for a genuine log/stack mismatch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">slice_count</span> <span class="o">!=</span> <span class="n">full_count</span><span class="p">:</span>
+            <span class="n">stack_desc</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">slice_count</span><span class="si">}</span><span class="s2"> images in the selected index range &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;and </span><span class="si">{</span><span class="n">full_count</span><span class="si">}</span><span class="s2"> images in the full stack&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stack_desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">full_count</span><span class="si">}</span><span class="s2"> images in the stack&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log size mismatch. Found </span><span class="si">{</span><span class="n">log_length</span><span class="si">}</span><span class="s2"> log entries but </span><span class="si">{</span><span class="n">stack_desc</span><span class="si">}</span><span class="s2">. &quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;The log file may not correspond to this sample stack.&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

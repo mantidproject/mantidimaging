@@ -494,9 +494,9 @@
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> \
-    <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QCheckBox</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> \
+    <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QHeaderView</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="p">,</span> <span class="n">QWidget</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PIXEL_SIZE</span><span class="p">,</span> <span class="n">DEFAULT_IS_SINOGRAM</span><span class="p">,</span> <span class="n">DEFAULT_PIXEL_DEPTH</span><span class="p">,</span> \
     <span class="n">LoadingParameters</span>
@@ -611,6 +611,26 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.get_parameters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoadingParameters</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ImageLoadDialog.show_unrecognised_log_format_error">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.show_unrecognised_log_format_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_unrecognised_log_format_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Critical</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setTextFormat</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">RichText</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The log file &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39; could not be read: file format not recognised.&lt;br&gt;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;See &lt;a href=&#39;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&#39;&gt;documentation&lt;/a&gt; for details of supported formats.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">label</span> <span class="o">:=</span> <span class="n">msg</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">QLabel</span><span class="p">):</span>
+            <span class="n">label</span><span class="o">.</span><span class="n">setOpenExternalLinks</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ImageLoadDialog.accept">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.view.html#mantidimaging.gui.windows.image_load_dialog.view.ImageLoadDialog.accept">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">validate_log_against_current_indices</span><span class="p">():</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ImageLoadDialog.enable_preview_all_buttons">
