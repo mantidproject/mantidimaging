@@ -16,11 +16,14 @@ from mantidimaging.core.io.csv_output import CSVOutput
 from mantidimaging.core.io import saver
 from mantidimaging.core.io.instrument_log import LogColumn, ShutterCountColumn
 from mantidimaging.core.utility.progress_reporting import Progress
+from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.unit_conversion import UnitConversion
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter, SpectrumFitResult
     from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
+    from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
+    from mantidimaging.core.utility.sensible_roi import ROIBinner
 
 LOG = getLogger(__name__)
 
@@ -592,12 +595,14 @@ class SpectrumViewerWindowModel:
     def get_fit_results(self) -> list[tuple[str, SpectrumFitResult]] | None:
         return self.fit_results
     def load_rois_from_csv(self, path: Path):
-        loaded_rois = []
-        with open(path, encoding='utf-8', mode='r') as f:
+        loaded_rois_list = []
+        with open(path, encoding='utf-8') as f:
             csv_reader = csv.DictReader(f)
-            header = csv_reader.fieldnames
             for line in csv_reader:
-                loaded_rois.append(line)
+                loaded_rois_list.append(line)
 
-        print(f"{loaded_rois=}")
-        print(f"{header=}")
+        for roi_dict in loaded_rois_list:
+            assert isinstance(roi_dict, dict)
+            if roi_dict["ROI"] != 'rits_roi':
+                coords = [int(roi_dict[field]) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
+                self.presenter.do_add_roi(roi_name=roi_dict["ROI"], coords=coords, from_load=True)
