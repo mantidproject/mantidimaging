@@ -160,6 +160,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         # ROI action buttons
         self.roi_form.addBtn.clicked.connect(self.set_new_roi)
         self.roi_form.removeBtn.clicked.connect(self.remove_roi)
+        self.roi_form.loadBtn.clicked.connect(self.presenter.handle_load_csv)
 
         self.roi_form.exportButton.clicked.connect(self.presenter.handle_export_csv)
         self.roi_form.exportButtonRITS.clicked.connect(self.presenter.handle_rits_export)
@@ -318,6 +319,13 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if export_path and export_path.suffix.lower() not in (".tiff", ".tif"):
             export_path = export_path.with_suffix(".tiff")
         return export_path
+
+    def get_load_csv_filename(self) -> Path | None:
+        path = QFileDialog.getOpenFileName(self, "Load CSV file", "", "CSV file (*.csv)")[0]
+        if path:
+            return Path(path)
+        else:
+            return None
 
     def get_rits_export_directory(self) -> Path | None:
         """

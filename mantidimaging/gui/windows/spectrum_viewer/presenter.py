@@ -478,6 +478,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         )
         LOG.info("CSV export successful: file saved to '%s'", path)
 
+    def handle_load_csv(self) -> None:
+        path = self.view.get_load_csv_filename()
+        if not path:
+            return
+        path = path.with_suffix(".csv") if path.suffix != ".csv" else path
+        print(f"handle_load_csv: {path=}")
+        self.model.load_rois_from_csv(path)
+
     def handle_rits_export(self) -> None:
         """
         Handle the export of the current spectrum to a RITS file format
