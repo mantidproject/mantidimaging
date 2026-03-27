@@ -548,15 +548,21 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         return list(self.view.spectrum_widget.roi_dict.keys())
 
-    def do_add_roi(self) -> None:
+    def do_add_roi(self, roi_name: str | None = None, coords: list[int] | None = None, from_load: bool = False) -> None:
         """
         Add a new ROI to the spectrum
         """
-        roi_name = self.model.roi_name_generator()
+        if roi_name is None:
+            roi_name = self.model.roi_name_generator()
+        if roi_name in self.view.spectrum_widget.roi_dict and from_load:
+            roi_name += "_loaded"
         if roi_name in self.view.spectrum_widget.roi_dict:
             raise ValueError(f"ROI name already exists: {roi_name}")
-        height, width = self.model.get_image_shape()
-        roi = SensibleROI.from_list([0, 0, width, height])
+        if coords is None:
+            height, width = self.model.get_image_shape()
+            roi = SensibleROI.from_list([0, 0, width, height])
+        else:
+            roi = SensibleROI.from_list(coords)
         LOG.info(f"ROI created: name={roi_name}, coords=({roi.left}, {roi.right}, {roi.top}, {roi.bottom})")
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
