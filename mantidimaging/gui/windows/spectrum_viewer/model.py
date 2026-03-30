@@ -19,7 +19,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.unit_conversion import UnitConversion
 
 if TYPE_CHECKING:
-    from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
+    from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter, SpectrumFitResult
     from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
 
 LOG = getLogger(__name__)
@@ -96,6 +96,8 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
+
+        self.fit_results: list[tuple[str, SpectrumFitResult]] | None = None
 
         self.units = UnitConversion()
 
@@ -582,3 +584,10 @@ class SpectrumViewerWindowModel:
         xvals = tof_data[fitting_slice]
         yvals = spectrum[fitting_slice]
         return self.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
+
+    def set_fit_results(self, results: list[tuple[str, SpectrumFitResult]] | None) -> None:
+        self.fit_results = results
+        LOG.info("Stored fit results")
+
+    def get_fit_results(self) -> list[tuple[str, SpectrumFitResult]] | None:
+        return self.fit_results

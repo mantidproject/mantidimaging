@@ -783,16 +783,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         ----------
         task : The completed task containing either results or an error.
         """
-        if task.error is not None:
+        if task.was_successful():
+            results = task.result
+
+            self._clear_export_table()
+            self._populate_export_table(results)
+            self.model.set_fit_results(results)
+        else:
             self.view.show_error_dialog(str(task.error))
-            return
-
-        results = task.result
-        if results is None:
-            return
-
-        self._clear_export_table()
-        self._populate_export_table(results)
 
     def _clear_export_table(self) -> None:
         """
