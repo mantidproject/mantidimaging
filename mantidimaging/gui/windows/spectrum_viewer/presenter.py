@@ -558,15 +558,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             roi_name += "_loaded"
         if roi_name in self.view.spectrum_widget.roi_dict:
             raise ValueError(f"ROI name already exists: {roi_name}")
-        if coords is None:
-            height, width = self.model.get_image_shape()
-            roi = SensibleROI.from_list([0, 0, width, height])
-        else:
-            roi = SensibleROI.from_list(coords)
+        height, width = self.model.get_image_shape()
+        roi = SensibleROI.from_list([0, 0, width, height])
         LOG.info(f"ROI created: name={roi_name}, coords=({roi.left}, {roi.right}, {roi.top}, {roi.bottom})")
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)
+        if coords is not None:
+            self.view.spectrum_widget.roi_dict[roi_name].setPos((coords[0], coords[1]))
+            self.view.spectrum_widget.roi_dict[roi_name].setSize((coords[2] - coords[0], coords[3] - coords[1]))
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
         self.view.update_roi_dropdown()
