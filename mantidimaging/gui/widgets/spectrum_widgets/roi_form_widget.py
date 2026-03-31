@@ -63,6 +63,10 @@ class ROIFormWidget(BaseWidget):
 
         self.bin_step_spinBox.valueChanged.connect(self._binning_changed)
         self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
+        self.roi_properties_widget.roi_changed.connect(self._update_bin_size_limit)
+
+    def update_bin_size_limit(self) -> None:
+        self._update_bin_size_limit()
 
     @property
     def image_output_mode(self) -> str:
@@ -88,8 +92,14 @@ class ROIFormWidget(BaseWidget):
         return ROIBinner(roi, step_size=step, bin_size=bin_size)
 
     def _binning_changed(self) -> None:
+        self._update_bin_size_limit()
         binner = self.binner
-        if not binner.check_fits_exactly():
+        if len(binner.left_indexes) == 0 or len(binner.top_indexes) == 0:
+            warning = (
+                f"Bin size {binner.bin_size} and step size {binner.step_size} are too large for the ROI "
+                f"({binner.roi.width}x{binner.roi.height}). No bins can be created. Please reduce bin or step size.")
+            self.show_rits_warning(warning)
+        elif not binner.check_fits_exactly():
             warning = (
                 f"Step size {binner.step_size} and bin size {binner.bin_size} do not evenly divide ROI dimensions "
                 f"({binner.roi.width}x{binner.roi.height}). Some rows or columns may not be exported.")
@@ -97,6 +107,18 @@ class ROIFormWidget(BaseWidget):
         else:
             self.show_rits_warning(None)
         self.binningChanged.emit(binner)
+
+    def _update_bin_size_limit(self) -> tuple[int, int]:
+        """Set sensible limits for binning controls based on ROI size."""
+        roi = self.roi_properties_widget.to_roi()
+        min_dim = min(roi.width, roi.height)
+        with QSignalBlocker(self.bin_size_spinBox):
+            self.bin_size_spinBox.setMaximum(min_dim)
+        bin_size = self.bin_size_spinBox.value()
+        step_max = max(1, min_dim - bin_size)
+        with QSignalBlocker(self.bin_step_spinBox):
+            self.bin_step_spinBox.setMaximum(step_max)
+        return min_dim, step_max
 
 
 class ROIPropertiesTableWidget(BaseWidget):
