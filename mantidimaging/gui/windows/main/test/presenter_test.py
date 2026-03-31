@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import unittest
 import uuid
-from pathlib import Path
 
 from unittest import mock
-from unittest.mock import patch, call
+from unittest.mock import call
 
 import numpy as np
 from parameterized import parameterized
@@ -18,7 +17,7 @@ from mantidimaging.gui.dialogs.async_task import TaskWorkerThread
 from mantidimaging.gui.windows.image_load_dialog import ImageLoadDialog
 from mantidimaging.gui.windows.main import MainWindowView, MainWindowPresenter, MainWindowModel
 from mantidimaging.gui.windows.main.presenter import Notification, RECON_TEXT
-from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset, generate_angles
+from mantidimaging.test_helpers.unit_test_helper import generate_images, generate_standard_dataset
 
 
 class MainWindowPresenterTest(unittest.TestCase):
@@ -141,37 +140,6 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.create_dataset_stack_visualisers(self.dataset)
         self.assertEqual(8, len(self.presenter.stack_visualisers))
 
-    def test_create_new_stack_dataset_and_use_threshold_180(self):
-        self.model.datasets[self.dataset.id] = self.dataset
-        self.dataset.sample.set_projection_angles(
-            ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
-
-        self.view.ask_to_use_closest_to_180.return_value = False
-
-        self.dataset.sample.proj180deg = None
-        self.presenter.add_alternative_180_if_required(self.dataset)
-
-    def test_threshold_180_is_separate_data(self):
-        self.model.datasets[self.dataset.id] = self.dataset
-        self.dataset.sample.set_projection_angles(
-            ProjectionAngles(np.linspace(0, np.pi, self.dataset.sample.num_images)))
-
-        self.presenter.get_stack_visualiser = mock.Mock()
-        self.presenter._create_and_tabify_stack_window = mock.Mock()
-        self.dataset.sample.proj180deg = None
-        self.presenter.add_alternative_180_if_required(self.dataset)
-
-        self.assertIsNotNone(self.dataset.proj180deg.shared_array._shared_memory)
-
-    def test_create_new_stack_dataset_and_reject_180(self):
-        self.view.ask_to_use_closest_to_180.return_value = False
-
-        test_angles = generate_angles(360, self.dataset.sample.num_projections)
-        self.dataset.sample.set_projection_angles(test_angles)
-        self.dataset.sample.proj180deg = None
-        self.presenter.add_alternative_180_if_required(self.dataset)
-        self.assertIsNone(self.dataset.proj180deg)
-
     def test_wizard_action_load(self):
         self.presenter.wizard_action_load()
         self.view.show_image_load_dialog.assert_called_once()
@@ -185,15 +153,6 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_wizard_action_show_reconstruction(self):
         self.presenter.wizard_action_show_reconstruction()
         self.view.show_recon_window.assert_called_once()
-
-    @mock.patch("mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_alternative_180_if_required")
-    def test_nexus_load_success_calls_show_information(self, _):
-        self.view.nexus_load_dialog = mock.Mock()
-        data_title = "data tile"
-        self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
-        self.presenter.create_dataset_stack_visualisers = mock.Mock()
-        self.presenter.load_nexus_file()
-        self.presenter.create_dataset_stack_visualisers.assert_called_once_with(self.dataset)
 
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
@@ -433,15 +392,6 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter._add_dataset_to_view.assert_called_once_with(result_mock)
         self.view.model_changed.emit.assert_called_once()
-
-    @patch("mantidimaging.gui.windows.main.presenter.find_projection_closest_to_180")
-    def test_no_need_for_alternative_180(self, find_180_mock: mock.Mock):
-        dataset = Dataset(sample=generate_images())
-        dataset.proj180deg = generate_images((1, 20, 20))
-        dataset.proj180deg.filenames = [Path("filename")]
-
-        self.presenter.add_alternative_180_if_required(dataset)
-        find_180_mock.assert_not_called()
 
     def test_create_mixed_dataset_stack_windows(self):
         n_stacks = 3
