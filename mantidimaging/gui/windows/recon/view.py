@@ -603,13 +603,22 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def update_projection_pair_dropdown(self):
         model = self.projectionPairDropdown.model()
+        # Determine if the current stack has a 180° projection
+        has_proj180 = False
+        current_uuid = self.stackSelector.current()
+        if current_uuid is not None:
+            current_stack = self.main_window.get_stack(current_uuid)
+            if current_stack is not None and hasattr(current_stack, 'has_proj180deg'):
+                has_proj180 = current_stack.has_proj180deg()
         for idx, option in enumerate(self.PROJECTION_OPTIONS):
             item = model.item(idx)
-            if not option["requires_pair"]:
-                enabled = True
-            else:
+            if option["value"] == "proj180":
+                enabled = has_proj180
+            elif option["requires_pair"]:
                 pair = cast(tuple[float, float], option["value"])
                 enabled = self.presenter.is_pair_valid(pair)
+            else:
+                enabled = True
             item.setEnabled(enabled)
         self._ensure_valid_selection()
 
