@@ -583,6 +583,12 @@ left at the default value of <em>float32</em>.</p>
 <p>Note that the image filenames must be in the form TITLE_XXXXX, with XXXXX being the image number.</p>
 </div>
 </section>
+<section id="load-sinograms">
+<span id="load-dataset-as-sino"></span><h3>Load Sinograms<a class="headerlink" href="#load-sinograms" title="Link to this heading">#</a></h3>
+<p>Sinograms can be loaded by checking the “Images are sinograms” checkbox:</p>
+<img alt="Load dialog with &quot;Images as sinograms&quot; checked" src="../../../_images/load_sinograms.png" />
+<p>Once loaded, Mantid Imaging will convert the sinogram data into projections in the Main Window.</p>
+</section>
 <section id="load-images">
 <h3>Load Images<a class="headerlink" href="#load-images" title="Link to this heading">#</a></h3>
 <p>Load images can be used to load a stack contained in a directory or a single image.</p>
@@ -634,11 +640,13 @@ loaded 180 projection. This option will only work correctly with a stack loaded 
 <section id="save-as-image-files">
 <h3>Save as Image Files<a class="headerlink" href="#save-as-image-files" title="Link to this heading">#</a></h3>
 <p>When <em>Save as Image Files</em> is selected the save images dialog appears:</p>
-<img alt="Save dialog" src="../../../_images/gui_save_dialog.png" />
-<p>This prompts you to select the image stack you wish to save, the directory in
-which you wish to save it and the name prefix. In the case of TIFF and FITS the
-individual image filenames will be a concatenation of this prefix and the index
-of the image in the stack.</p>
+<img alt="Save dialog" src="../../../_images/save_as_image_files.png" />
+<p>This prompts you to select the image stack you wish to save, choose whether to save
+it as a sinogram stack, specify the destination directory and set the filename prefix.
+In the case of TIFF and FITS the individual image filenames will be a concatenation
+of this prefix and the index of the image in the stack.</p>
+<p>The <em>Save as sinogram</em> option will convert the selected stack to a sinogram stack
+during the saving process so that the user can use the sinogram data elsewhere.</p>
 <p>The <em>Overwrite</em> option removes checking for existing data of the same name. When
 disabled an error will be raised if the specified output directory is not empty
 prior to saving.</p>
@@ -737,6 +745,7 @@ stacks as well as entire datasets.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#loading">Loading</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset">Load Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-sinograms">Load Sinograms</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-images">Load Images</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-nexus-file">Load NeXus File</a></li>
 </ul>
