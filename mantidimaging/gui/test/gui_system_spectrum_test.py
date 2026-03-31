@@ -223,6 +223,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.spectrum_window.formTabs.setCurrentIndex(2)
         self.assertEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 0)
         QTest.mouseClick(self.spectrum_window.exportSettingsWidget.fitAllButton, Qt.MouseButton.LeftButton)
+        wait_until(lambda: self.spectrum_window.exportDataTableWidget.model.rowCount() == 1)
         self.assertEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 1)
         self.assertEqual(self.spectrum_window.exportDataTableWidget.model.item(0, 0).text(), "roi")
 

@@ -11,6 +11,7 @@ from collections.abc import Iterator
 from logging import getLogger
 
 from mantidimaging.core.fitting.fitting_engine import BoundType
+from mantidimaging.core.utility.progress_reporting.progress import Progress
 import numpy as np
 from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
 
@@ -77,6 +78,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
+
+    def _run_fit_async(self):
+        """
+        Run the fitting of all ROIs in an asynchronous task to avoid blocking the UI.
+        """
+        start_async_task_view(self.view, self.fit_all_regions, self.on_fit_all_regions, kwargs={}, cancelable=True)
 
     def handle_stack_modified(self) -> None:
         """
@@ -499,7 +506,6 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.redraw_all_rois()
         self.view.display_normalise_error()
         self.update_displayed_image(autoLevels=True)
-        self.view.on_visibility_change()
 
     def set_shuttercount_error(self, enabled: bool = False) -> None:
         """
@@ -656,6 +662,13 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def get_rois_to_fit(self) -> Iterator[tuple[str, SensibleROI]]:
         """
         Get the ROIs to fit based on the current export mode.
+        In ROI mode, yields user-defined ROIs from the spectrum widget.
+        In Image mode, yields sub-ROIs defined by the current binner.
+
+        Yields
+        ------
+        Iterator[tuple[str, SensibleROI]]:
+        Tuples of (ROI name, ROI object) to be used for fitting.
         """
         if self.export_mode == ExportMode.IMAGE_MODE:
             binner = self.view.get_binner()
@@ -710,43 +723,97 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             failed_params = {p: 0.0 for p in param_names}
             return SpectrumFitResult(params=failed_params, rss=0.0, rss_per_dof=0.0, status="Failed")
 
-    def fit_roi_and_update_table(self, roi_name: str, roi: SensibleROI, fitting_region: FittingRegion,
-                                 tof_data: np.ndarray, init_params: list[float], bound_params: list[BoundType]) -> None:
+    def fit_all_regions(self, progress: Progress) -> list[tuple[str, SpectrumFitResult]]:
         """
-        Fit a single ROI or subROI and update the export table with results.
+        Retrieves ROIs from `get_rois_to_fit`, computes a fit for each, and reports
+        progress via the provided Progress object while supporting user cancellation.
 
         Parameters
         ----------
-        roi_name: The name of the ROI to fit, used for updating the table.
-        roi: The SensibleROI object defining the region to fit.
-        fitting_region: The region of the spectrum to fit, defined as a tuple of (min, max) in the current ToF units.
-        tof_data: The ToF data corresponding to the spectrum, used for determining the x-axis values for fitting.
-        init_params: A dictionary of initial parameter guesses for the fitting function, keyed by parameter name.
-        bound_params: A dictionary of parameter bounds for the fitting function, keyed by parameter name, where each
-                      value is a tuple of (min_bound, max_bound).
+        progress: Progress reporter used for updating the UI with the current progress and checking for cancellation.
+
+        Returns
+        -------
+        list[tuple[str, SpectrumFitResult]]: A list of (ROI name, fit result) tuples for each processed ROI.
+        If the operation is cancelled, only completed results are returned.
         """
-        spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
-        fit_result = self.compute_spectrum_fit(spectrum, fitting_region, tof_data, init_params, bound_params)
-        self.view.exportDataTableWidget.update_roi_data(
-            roi_name=roi_name,
-            params=fit_result.params,
-            status=fit_result.status,
-            chi2=fit_result.rss_per_dof,
-        )
-        LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, fit_result.params,
-                 fit_result.rss_per_dof)
-
-    def fit_all_regions(self) -> None:
-        """ Fit all ROIs or subROIs based on the current export mode and update the export table with results."""
-        self.view.exportDataTableWidget.clear_table()
-
         init_params = self.view.fitting_param_form.get_initial_param_values()
         bound_params = self.view.fitting_param_form.get_bound_parameters()
         fitting_region = self.view.get_fitting_region()
         tof_data = self.model.tof_data
 
-        for roi_name, roi in self.get_rois_to_fit():
-            self.fit_roi_and_update_table(roi_name, roi, fitting_region, tof_data, init_params, bound_params)
+        results: list[tuple[str, SpectrumFitResult]] = []
+
+        rois = list(self.get_rois_to_fit())
+        total_rois = len(rois)
+        progress.set_estimated_steps(total_rois)
+
+        for i, (roi_name, roi) in enumerate(rois):
+            spectrum = self.model.get_spectrum(
+                roi,
+                self.spectrum_mode,
+                self.view.shuttercount_norm_enabled(),
+            )
+
+            fit_result = self.compute_spectrum_fit(
+                spectrum,
+                fitting_region,
+                tof_data,
+                init_params,
+                bound_params,
+            )
+            LOG.info("Fit completed for ROI=%s, params=%s, RSS/DoF=%.3f", roi_name, fit_result.params,
+                     fit_result.rss_per_dof)
+
+            if progress.should_cancel:
+                LOG.info("Fit cancelled by user after completing %d out of %d fits.", i + 1, total_rois)
+                break
+
+            results.append((roi_name, fit_result))
+
+            progress.update(1, f"Fitting {roi_name}")
+
+        return results
+
+    def on_fit_all_regions(self, task: TaskWorkerThread) -> None:
+        """
+        Callback executed when the asynchronous fitting task completes.
+        Handles errors, retrieves results, and updates the export table.
+
+        Parameters
+        ----------
+        task : The completed task containing either results or an error.
+        """
+        if task.was_successful():
+            results = task.result
+
+            self._clear_export_table()
+            self._populate_export_table(results)
+            self.model.set_fit_results(results)
+        else:
+            self.view.show_error_dialog(str(task.error))
+
+    def _clear_export_table(self) -> None:
+        """
+        Clear all existing data from the export results table.
+        """
+        self.view.exportDataTableWidget.clear_table()
+
+    def _populate_export_table(self, results: list[tuple[str, SpectrumFitResult]]) -> None:
+        """
+        Populate the export results table with the provided fitting results.
+
+        Parameters
+        ----------
+        results: A list of tuples, each containing an ROI name and its corresponding SpectrumFitResult.
+        """
+        for roi_name, fit_result in results:
+            self.view.exportDataTableWidget.update_roi_data(
+                roi_name=roi_name,
+                params=fit_result.params,
+                status=fit_result.status,
+                chi2=fit_result.rss_per_dof,
+            )
 
     def handle_export_table(self) -> None:
         """
