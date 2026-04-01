@@ -530,7 +530,8 @@
             <span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_widget_stack_page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">&quot;Geometry deleted. You can now create a new geometry.&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">&quot;Geometry deleted. You can now create a new geometry.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">emit_geometry_changed</span><span class="p">()</span></div>
 
 
     <span class="n">view</span><span class="p">:</span> <span class="n">GeometryWindowView</span>
@@ -622,7 +623,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
         <span class="c1"># Notify main window that stack was modified (so recon window can update COR/Tilt)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">stack_modified</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">emit_geometry_changed</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="GeometryWindowPresenter.refresh_plot">
@@ -663,7 +664,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_angles</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">emit_geometry_changed</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="GeometryWindowPresenter.handle_convert_geometry">
@@ -692,7 +694,8 @@
         <span class="k">assert</span> <span class="n">existing_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">existing_angles</span><span class="p">,</span> <span class="n">new_type</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">emit_geometry_changed</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_current_stack_with_assert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>

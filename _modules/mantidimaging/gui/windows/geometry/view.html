@@ -495,6 +495,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyqtSignal</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
@@ -549,6 +550,8 @@
 <div class="viewcode-block" id="GeometryWindowView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.geometry.view.html#mantidimaging.gui.windows.geometry.view.GeometryWindowView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GeometryWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
+
+    <span class="n">geometry_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -785,6 +788,12 @@
             <span class="n">pyplot</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figureCanvas</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">figureCanvas</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">figureCanvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="GeometryWindowView.emit_geometry_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.geometry.view.html#mantidimaging.gui.windows.geometry.view.GeometryWindowView.emit_geometry_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">emit_geometry_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>

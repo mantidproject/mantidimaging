@@ -1114,11 +1114,19 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">GeometryWindowView</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">geometry_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_geometry_changed</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">activateWindow</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindowView.handle_geometry_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.handle_geometry_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_geometry_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_geometry_updated</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MainWindowView.show_filters_window">
