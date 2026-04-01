@@ -35,6 +35,7 @@ class GeometryWindowPresenter(BasePresenter):
         self.view.set_widget_stack_page(1)
         self.view.clear_plot()
         self.view.show_info_dialog("Geometry deleted. You can now create a new geometry.")
+        self.view.emit_geometry_changed()
 
     view: GeometryWindowView
 
@@ -114,7 +115,7 @@ class GeometryWindowPresenter(BasePresenter):
 
         self.refresh_plot(stack)
         # Notify main window that stack was modified (so recon window can update COR/Tilt)
-        self.main_window.stack_modified.emit()
+        self.view.emit_geometry_changed()
 
     def refresh_plot(self, stack: ImageStack) -> None:
         figure = self.model.generate_figure(stack)
@@ -150,6 +151,7 @@ class GeometryWindowPresenter(BasePresenter):
         self.main_window.presenter.add_projection_angles_to_sample(stack.id, new_angles)
 
         self.handle_stack_changed()
+        self.view.emit_geometry_changed()
 
     def handle_convert_geometry(self) -> None:
         stack = self._get_current_stack_with_assert()
@@ -176,6 +178,7 @@ class GeometryWindowPresenter(BasePresenter):
 
         stack.create_geometry(existing_angles, new_type)
         self.handle_stack_changed()
+        self.view.emit_geometry_changed()
 
     def _get_current_stack_with_assert(self) -> ImageStack:
         # It shouldn't be possible to call this method with an invalid stack selected

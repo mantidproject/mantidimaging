@@ -428,14 +428,14 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = Degrees(self.view.tilt)
         self._set_precalculated_cor_tilt(cor, tilt)
 
-    def on_geometry_updated(self):
+    def on_geometry_updated(self) -> None:
         """
         Called when geometry/angles are loaded after initial dataset load.
         Refreshes UI and re-enables geometry-dependent actions if possible.
         """
         self._update_geometry_dependent_ui()
-
-        if self.model.images is not None and self.model.images.geometry is not None:
+        images = self.model.images
+        if images is not None and images.geometry is not None:
             self.do_update_projection()
             self.do_preview_reconstruct_slice()
 
@@ -451,6 +451,7 @@ class ReconstructWindowPresenter(BasePresenter):
             self.view.show_status_message(NO_GEOMETRY_MESSAGE)
         else:
             self.view.show_status_message("")
+            self.view.set_algorithm_options_by_geometry(images.geometry.type)
 
     def _update_imagestack_geometry_data(self) -> None:
         # TODO: Clean up when tilt/COR logic moves to Geometry window

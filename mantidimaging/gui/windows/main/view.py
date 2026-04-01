@@ -528,11 +528,16 @@ class MainWindowView(BaseMainWindowView):
 
         if not self.geometry:
             self.geometry = GeometryWindowView(self)
+            self.geometry.geometry_changed.connect(self.handle_geometry_changed)
             self.geometry.show()
         else:
             self.geometry.activateWindow()
             self.geometry.raise_()
             self.geometry.show()
+
+    def handle_geometry_changed(self) -> None:
+        if self.recon is not None:
+            self.recon.presenter.on_geometry_updated()
 
     def show_filters_window(self) -> None:
         if not self.filters:
