@@ -21,8 +21,6 @@ from mantidimaging.core.utility.unit_conversion import UnitConversion
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter, SpectrumFitResult
     from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
-    from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter
-    from mantidimaging.core.utility.sensible_roi import ROIBinner
 
 LOG = getLogger(__name__)
 
@@ -609,12 +607,13 @@ class SpectrumViewerWindowModel:
         height, width = self.get_image_shape()
         for roi_dict in loaded_rois_list:
             assert isinstance(roi_dict, dict)
-            if roi_dict["ROI"] != 'rits_roi' and '' not in roi_dict.values():
+            roi_name = roi_dict["ROI"]
+            if roi_name != 'rits_roi' and '' not in roi_dict.values():
                 roi_dict["X Min"] = 0 if float(roi_dict["X Min"]) < 0 else float(roi_dict["X Min"])
                 roi_dict["Y Min"] = 0 if float(roi_dict["Y Min"]) < 0 else float(roi_dict["Y Min"])
                 roi_dict["X Max"] = width if float(roi_dict["X Max"]) > width else float(roi_dict["X Max"])
                 roi_dict["Y Max"] = height if float(roi_dict["Y Max"]) > height else float(roi_dict["Y Max"])
                 coords = [int(float(roi_dict[field])) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
                 coords = [0 if coord < 0 else coord for coord in coords]
-                self.presenter.do_add_roi(roi_name=roi_dict["ROI"], coords=coords, from_load=True)
-                LOG.info(f"ROI loaded: name={roi_dict["ROI"]}, coords=({coords})")
+                self.presenter.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
+                LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
