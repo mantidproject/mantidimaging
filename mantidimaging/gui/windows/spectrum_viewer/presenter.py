@@ -787,17 +787,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if task.was_successful():
             results = task.result
 
-            self._clear_export_table()
             self._populate_export_table(results)
             self.model.set_fit_results(results)
         else:
             self.view.show_error_dialog(str(task.error))
-
-    def _clear_export_table(self) -> None:
-        """
-        Clear all existing data from the export results table.
-        """
-        self.view.exportDataTableWidget.clear_table()
 
     def _populate_export_table(self, results: list[tuple[str, SpectrumFitResult]]) -> None:
         """
