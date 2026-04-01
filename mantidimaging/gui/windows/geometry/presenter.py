@@ -115,7 +115,6 @@ class GeometryWindowPresenter(BasePresenter):
 
         self.refresh_plot(stack)
         # Notify main window that stack was modified (so recon window can update COR/Tilt)
-        self.main_window.stack_modified.emit()
         self.view.emit_geometry_changed()
 
     def refresh_plot(self, stack: ImageStack) -> None:
