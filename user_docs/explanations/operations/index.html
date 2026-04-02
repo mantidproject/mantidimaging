@@ -971,8 +971,8 @@
 <section id="sum-stack-intensities">
 <h3>Sum Stack Intensities<a class="headerlink" href="#sum-stack-intensities" title="Link to this heading">#</a></h3>
 <p>Sum stack intensities as a new stack to emulate longer exposure times for Tomography and Time of Flight (ToF) datasets.</p>
-<p>Use cases:     - The stacks to be summed have exactly the same shape (x,y) and number of slices (z).     The z-axis could be either rotation angle or ToF bin.     - Stacks where values on the z-axis are identical, e.g. 2 tomography scans taken at the same rotation angles.</p>
-<p>The new stack will be saved either in-place or as a new stack within a new dataset, depending on the user’s choice.</p>
+<p>The stacks to be summed should have exactly the same shape (x,y) and number of slices (z). The z-axis could be either rotation angle or ToF bin. If angles differ acros stacks, a notification highlighting this will be raised</p>
+<p>The new stack will be saved in-place.</p>
 <p><a class="reference internal" href="../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#module-mantidimaging.core.operations.sum_stack_intensities.sum_intensities" title="mantidimaging.core.operations.sum_stack_intensities.sum_intensities"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sum</span> <span class="pre">Stack</span> <span class="pre">Intensities</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
 </section>
 </section>

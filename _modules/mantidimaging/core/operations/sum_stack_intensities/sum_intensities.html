@@ -501,13 +501,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">helper</span> <span class="k">as</span> <span class="n">helper</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.parallel</span><span class="w"> </span><span class="kn">import</span> <span class="n">shared</span> <span class="k">as</span> <span class="n">ps</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.base_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilter</span><span class="p">,</span> <span class="n">FilterGroup</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">QComboBox</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFormLayout</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 
 
@@ -518,67 +517,139 @@
 <span class="sd">    Sum stack intensities as a new stack to emulate longer exposure times for Tomography and</span>
 <span class="sd">    Time of Flight (ToF) datasets.</span>
 
-<span class="sd">    Use cases:</span>
-<span class="sd">        - The stacks to be summed have exactly the same shape (x,y) and number of slices (z).</span>
-<span class="sd">        The z-axis could be either rotation angle or ToF bin.</span>
-<span class="sd">        - Stacks where values on the z-axis are identical, e.g. 2 tomography scans taken at the same rotation angles.</span>
+<span class="sd">    The stacks to be summed should have exactly the same shape (x,y) and number of slices (z).</span>
+<span class="sd">    The z-axis could be either rotation angle or ToF bin.</span>
+<span class="sd">    If angles differ acros stacks, a notification highlighting this will be raised</span>
 
-<span class="sd">    The new stack will be saved either in-place or as a new stack within a new dataset, depending on the user&#39;s choice.</span>
+<span class="sd">    The new stack will be saved in-place.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">filter_name</span> <span class="o">=</span> <span class="s1">&#39;Sum Stack Intensities&#39;</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">allow_for_180_projection</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">valid_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tomography&#39;</span><span class="p">,</span> <span class="s1">&#39;Time of Flight (ToF)&#39;</span><span class="p">]</span>
+    <span class="n">angle_variance_threshold</span> <span class="o">=</span> <span class="mf">0.1</span>
 
 <div class="viewcode-block" id="SumIntensitiesFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
-                    <span class="n">stack_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">progress</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate and prepare stacks for summing intensities.</span>
+<span class="sd">        Validate stacks and sum their intensities in-place.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">helper</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
         <span class="n">helper</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">secondary_stack</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">stack_type</span> <span class="ow">or</span> <span class="n">stack_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">valid_types</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid stack type: </span><span class="si">{</span><span class="n">stack_type</span><span class="si">}</span><span class="s2">. Valid types are: </span><span class="si">{</span><span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">valid_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">secondary_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Secondary stack cannot be None.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">full_stack_shape</span> <span class="o">!=</span> <span class="n">secondary_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;The primary and secondary stacks must have the same shape. &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;The primary stack shape is: </span><span class="si">{</span><span class="w"> </span><span class="n">images</span><span class="o">.</span><span class="n">full_stack_shape</span><span class="w"> </span><span class="si">}</span><span class="s1">, &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;The secondary stack shape is: </span><span class="si">{</span><span class="n">secondary_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">. &#39;</span>
-                <span class="s1">&#39;Append Stacks may be a more suitable operation for stacks that differ in the number of slices.&#39;</span><span class="p">)</span>
+        <span class="n">shape_error</span> <span class="o">=</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">_check_shapes_match</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">shape_error</span><span class="p">)</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;stack_type&#39;</span><span class="p">:</span> <span class="n">stack_type</span><span class="p">,</span> <span class="s1">&#39;secondary_stack&#39;</span><span class="p">:</span> <span class="n">secondary_stack</span><span class="p">}</span>
-        <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span>
-                            <span class="n">progress</span><span class="p">)</span>
-
+        <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">sum_stacks</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
 
 
-<div class="viewcode-block" id="SumIntensitiesFilter.compute_function">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.compute_function">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_shapes_match</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function to compute the sum of stack intensities</span>
+<span class="sd">        Returns an error message string if shapes differ</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">stack_type</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;stack_type&#39;</span><span class="p">]</span>
+        <span class="n">primary_shape</span> <span class="o">=</span> <span class="n">primary_stack</span><span class="o">.</span><span class="n">full_stack_shape</span> <span class="ow">or</span> <span class="n">primary_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">secondary_shape</span> <span class="o">=</span> <span class="n">secondary_stack</span><span class="o">.</span><span class="n">full_stack_shape</span> <span class="ow">or</span> <span class="n">secondary_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">primary_shape</span> <span class="o">!=</span> <span class="n">secondary_shape</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Stacks must have the same shape.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">primary_stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">primary_shape</span><span class="si">}</span><span class="s1">,</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">secondary_stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">secondary_shape</span><span class="si">}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;Append Stacks may be a more suitable operation.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="n">stack_type</span> <span class="o">==</span> <span class="s1">&#39;Tomography&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">stack_type</span> <span class="o">==</span> <span class="s1">&#39;Time of Flight (ToF)&#39;</span><span class="p">:</span>
-            <span class="k">pass</span>
+<div class="viewcode-block" id="SumIntensitiesFilter.sum_stacks">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.sum_stacks">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sum_stacks</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sum stacks element-wise.</span>
+
+<span class="sd">        Primary stack is modified in-place, secondary stack is left unchanged.</span>
+<span class="sd">        Assumes stacks have already been validated for shape compatibility.</span>
+<span class="sd">        During preview, primary_stack may be a single-slice subset; secondary is sliced to match.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">primary_stack</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">secondary_stack</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">primary_stack</span><span class="o">.</span><span class="n">data</span><span class="p">)]</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_angles</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract angles from both stacks and return them in degrees.</span>
+<span class="sd">        Returns None if angles are unavailable in either stack.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">primary_stack_angles</span> <span class="o">=</span> <span class="n">primary_stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+        <span class="n">secondary_stack_angles</span> <span class="o">=</span> <span class="n">secondary_stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">primary_stack_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">secondary_stack_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">primary_stack_angles</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">secondary_stack_angles</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_angle_mismatch</span><span class="p">(</span><span class="n">primary_angles_deg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">secondary_angles_deg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check for projection angle variance &gt; angle_variance_threshold degrees between matched projections.</span>
+<span class="sd">        Returns a list of up to 3 mismatch description strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_projections</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">primary_angles_deg</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">secondary_angles_deg</span><span class="p">))</span>
+        <span class="n">mismatches</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">proj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_projections</span><span class="p">):</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">primary_angles_deg</span><span class="p">[</span><span class="n">proj</span><span class="p">]</span> <span class="o">-</span> <span class="n">secondary_angles_deg</span><span class="p">[</span><span class="n">proj</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">angle_variance_threshold</span><span class="p">:</span>
+                <span class="n">mismatches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">proj</span><span class="si">}</span><span class="s2">]: (</span><span class="si">{</span><span class="n">primary_angles_deg</span><span class="p">[</span><span class="n">proj</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°, </span><span class="si">{</span><span class="n">secondary_angles_deg</span><span class="p">[</span><span class="n">proj</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°) -&gt; Δ</span><span class="si">{</span><span class="n">diff</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mismatches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">mismatches</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_notification_text</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a warning string when stacks may not be compatible, or None when they are.</span>
+
+<span class="sd">        Returns None when projection angles are present and match within the threshold —</span>
+<span class="sd">        the expected good state that requires no user attention.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shape_error</span> <span class="o">=</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">_check_shapes_match</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape_error</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">shape_error</span>
+
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">_prepare_angles</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;No projection angles available in one or both stacks: &quot;</span>
+                    <span class="s2">&quot;summation will be applied in projection order.&quot;</span><span class="p">)</span>
+
+        <span class="n">mismatches</span> <span class="o">=</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">_check_angle_mismatch</span><span class="p">(</span><span class="o">*</span><span class="n">angles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mismatches</span><span class="p">:</span>
+            <span class="n">mismatch_lines</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mismatches</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: projection angle variance &gt; </span><span class="si">{</span><span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">angle_variance_threshold</span><span class="si">}</span><span class="s2">° &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;detected:</span><span class="se">\n</span><span class="si">{</span><span class="n">mismatch_lines</span><span class="si">}</span><span class="se">\n</span><span class="s2">Append Stacks may be a more suitable operation.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_angle_notification</span><span class="p">(</span><span class="n">view</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">stack_to_sum_widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update notification text based on stack selection angle and shape validation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">secondary_stack</span> <span class="o">=</span> <span class="n">BaseFilter</span><span class="o">.</span><span class="n">get_images_from_stack</span><span class="p">(</span><span class="n">stack_to_sum_widget</span><span class="p">,</span> <span class="s2">&quot;Sum Intensities&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">secondary_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">clear_notification_dialog</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="n">primary_stack</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">current</span><span class="p">())</span>
+        <span class="n">notification</span> <span class="o">=</span> <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">_get_notification_text</span><span class="p">(</span><span class="n">primary_stack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">notification</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">clear_notification_dialog</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported stack type: </span><span class="si">{</span><span class="n">stack_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
+            <span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="n">notification</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SumIntensitiesFilter.register_gui">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.register_gui">[docs]</a>
@@ -586,16 +657,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">stack_type_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span>
-            <span class="s2">&quot;Type&quot;</span><span class="p">,</span>
-            <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
-            <span class="n">valid_values</span><span class="o">=</span><span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">valid_types</span><span class="p">,</span>
-            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
-            <span class="n">filters_view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span>
-            <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Select the type of stack to sum intensities. i.e. Time of Flight (ToF) or Tomography&quot;</span><span class="p">)</span>
-
-        <span class="n">_</span><span class="p">,</span> <span class="n">stack_to_sum_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Select Stack Stack to Sum&quot;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">stack_to_sum_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Stack to Sum&quot;</span><span class="p">,</span>
                                                       <span class="n">Type</span><span class="o">.</span><span class="n">STACK</span><span class="p">,</span>
                                                       <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                       <span class="n">filters_view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span>
@@ -606,19 +668,21 @@
         <span class="n">stack_to_sum_widget</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">375</span><span class="p">)</span>
         <span class="n">stack_to_sum_widget</span><span class="o">.</span><span class="n">subscribe_to_main_window</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">main_window</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;stack_type_widget&#39;</span><span class="p">:</span> <span class="n">stack_type_widget</span><span class="p">,</span> <span class="s1">&#39;stack_to_sum_widget&#39;</span><span class="p">:</span> <span class="n">stack_to_sum_widget</span><span class="p">}</span></div>
+        <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">_update_angle_notification</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">stack_to_sum_widget</span><span class="p">)</span>
+
+        <span class="n">view</span><span class="o">.</span><span class="n">previews_updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;stack_to_sum_widget&#39;</span><span class="p">:</span> <span class="n">stack_to_sum_widget</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="SumIntensitiesFilter.execute_wrapper">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-            <span class="n">stack_type_widget</span><span class="p">:</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">stack_to_sum_widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
-        <span class="n">stack_type_value</span> <span class="o">=</span> <span class="n">stack_type_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="n">stack_to_sum_widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
         <span class="n">secondary_stack_value</span> <span class="o">=</span> <span class="n">BaseFilter</span><span class="o">.</span><span class="n">get_images_from_stack</span><span class="p">(</span><span class="n">stack_to_sum_widget</span><span class="p">,</span> <span class="s2">&quot;Sum Intensities&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span>
-                       <span class="n">stack_type</span><span class="o">=</span><span class="n">stack_type_value</span><span class="p">,</span>
-                       <span class="n">secondary_stack</span><span class="o">=</span><span class="n">secondary_stack_value</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">SumIntensitiesFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="o">=</span><span class="n">secondary_stack_value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SumIntensitiesFilter.group_name">
