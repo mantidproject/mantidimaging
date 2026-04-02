@@ -184,6 +184,7 @@ class FittingFormWidgetPresenter:
         self.setup_fitting_model()
 
     def setup_fitting_model(self) -> None:
+        self.spectrum_viewer.exportDataTableWidget.clear_table()
         param_names = self.model.fitting_engine.get_parameter_names()
         self.view.fitting_param_form.set_parameters(param_names)
         self.spectrum_viewer.exportDataTableWidget.set_parameters(param_names)
