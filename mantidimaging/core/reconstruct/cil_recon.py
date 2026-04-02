@@ -297,10 +297,14 @@ class CILRecon(BaseRecon):
 
             if geom_type == GeometryType.PARALLEL3D:
                 ag = AcquisitionGeometry.create_Parallel2D(rotation_axis_position=[rot_pos_x, 0])
+            elif geom_type == GeometryType.CONE3D:
+                source_pos = images.geometry.source_position
+                detector_pos = images.geometry.detector_position
+                ag = AcquisitionGeometry.create_Cone3D([0, source_pos, 0], [0, detector_pos, 0])
             else:
                 source_pos = images.geometry.source_position
                 detector_pos = images.geometry.detector_position
-                ag = AcquisitionGeometry.create_Cone2D([0, source_pos, 0], [0, detector_pos, 0])
+                ag = AcquisitionGeometry.create_Cone2D([0, source_pos], [0, detector_pos])
 
             ag.set_panel(pixel_num_h, pixel_size=pixel_size)
             ag.set_labels(DataOrder.ASTRA_AG_LABELS)
