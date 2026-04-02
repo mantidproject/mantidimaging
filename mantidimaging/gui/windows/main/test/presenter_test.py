@@ -154,6 +154,14 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.wizard_action_show_reconstruction()
         self.view.show_recon_window.assert_called_once()
 
+    def test_nexus_load_success_calls_show_information(self):
+        self.view.nexus_load_dialog = mock.Mock()
+        data_title = "data tile"
+        self.view.nexus_load_dialog.presenter.get_dataset.return_value = self.dataset, data_title
+        self.presenter.create_dataset_stack_visualisers = mock.Mock()
+        self.presenter.load_nexus_file()
+        self.presenter.create_dataset_stack_visualisers.assert_called_once_with(self.dataset)
+
     def test_get_stack_widget_by_name_success(self):
         stack_window = mock.Mock()
         stack_window.id = "id"
