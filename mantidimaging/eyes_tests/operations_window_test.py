@@ -16,6 +16,8 @@ class OperationsWindowTest(BaseEyesTest):
     def tearDown(self):
         if self.imaging.filters:
             self.imaging.filters.close()
+            self.imaging.filters = None
+            QApplication.processEvents()
         super().tearDown()
 
     def test_operation_window_opens(self):
@@ -235,6 +237,15 @@ class OperationsWindowTest(BaseEyesTest):
 
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("Append Stacks")
+        QApplication.processEvents()
+
+        self.check_target(widget=self.imaging.filters)
+
+    def test_operations_sum_stack_intensities_parameters(self):
+        self._load_strict_data_set()
+
+        self.imaging.show_filters_window()
+        self.imaging.filters.filterSelector.setCurrentText("Sum Stack Intensities")
         QApplication.processEvents()
 
         self.check_target(widget=self.imaging.filters)

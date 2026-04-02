@@ -2,11 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 import functools
+import logging
 from typing import TYPE_CHECKING
 
 from PyQt5.QtCore import pyqtSignal, QSettings
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
-                             QVBoxLayout)
+                             QTextEdit, QVBoxLayout)
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs
 from mantidimaging.gui.mvp_base import BaseMainWindowView
@@ -24,6 +25,8 @@ if TYPE_CHECKING:
 
 settings = QSettings('mantidproject', 'Mantid Imaging')
 
+LOG = logging.getLogger(__name__)
+
 
 def _strip_filter_name(filter_name: str):
     """
@@ -37,6 +40,7 @@ def _strip_filter_name(filter_name: str):
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = pyqtSignal()
     filter_applied = pyqtSignal()
+    previews_updated = pyqtSignal()
     window_ready = False
 
     splitter: QSplitter
@@ -53,7 +57,7 @@ class FiltersWindowView(BaseMainWindowView):
     stackSelector: DatasetSelectorWidgetView
 
     notification_icon: QLabel
-    notification_text: QLabel
+    notification_text: QTextEdit
 
     presenter: FiltersWindowPresenter
 
@@ -160,6 +164,10 @@ class FiltersWindowView(BaseMainWindowView):
             return
 
         # Remove all existing items from the properties layout
+        try:
+            self.previews_updated.disconnect()
+        except TypeError:
+            LOG.debug('previews_updated has no connections to disconnect — expected on first filter selection')
         delete_all_widgets_from_layout(self.filterPropertiesLayout)
 
         # Do registration of new filter
@@ -186,6 +194,7 @@ class FiltersWindowView(BaseMainWindowView):
 
         # Enable the spinbox widget once the preview has been created
         self.previewImageIndex.setEnabled(True)
+        self.previews_updated.emit()
 
     def handle_auto_update_preview_selection(self):
         if self.previewAutoUpdate.isChecked():
@@ -241,7 +250,7 @@ class FiltersWindowView(BaseMainWindowView):
             self.show_error_dialog(str(err))
 
     def _update_apply_all_button(self, filter_name):
-        list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding"]
+        list_of_apply_single_stack = ["ROI Normalisation", "Flat-fielding", "Sum Stack Intensities"]
         if filter_name in list_of_apply_single_stack:
             self.applyToAllButton.setEnabled(False)
         else:
