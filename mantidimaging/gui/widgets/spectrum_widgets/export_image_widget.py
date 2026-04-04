@@ -2,9 +2,14 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
 import numpy as np
+from PyQt5.QtGui import QTransform
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import pyqtgraph as pg
+
+if TYPE_CHECKING:
+    from mantidimaging.core.utility.sensible_roi import ROIBinner
 
 
 class ExportImageViewWidget(QWidget):
@@ -24,6 +29,11 @@ class ExportImageViewWidget(QWidget):
         self.image_view.ui.histogram.hide()
 
         layout.addWidget(self.image_view)
+
+        self.param_overlay = pg.ImageItem()
+        self.param_overlay.hide()
+        self.image_view.getView().addItem(self.param_overlay)
+
         self.clear()
 
     def update_image(self, image: np.ndarray | None, autoLevels: bool = True) -> None:
@@ -39,6 +49,33 @@ class ExportImageViewWidget(QWidget):
     def clear(self) -> None:
         """Show a blank canvas."""
         self.image_view.setImage(np.zeros((1, 1), dtype=np.float32), autoLevels=True)
+        self.image_view.ui.histogram.setImageItem(self.image_view.imageItem)
+        self.image_view.ui.histogram.hide()
+        self.param_overlay.hide()
+
+    def populate_parameter_selector(self, param_names: list[str]) -> None:
+        """Populate the parameter selector combobox with fitted parameter names"""
+        self.parent().exportSettingsWidget.populate_parameter_selector(param_names)
+
+    def show_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> None:
+        """Display the parameter map with 50% transaparency and viridis over sample"""
+
+        self.param_overlay.setColorMap('viridis')
+        self.param_overlay.setOpacity(0.5)
+
+        # Align mapping with sample and scale to match binned resolution
+        transform = QTransform()
+        transform.translate(binner.left_indexes[0], binner.top_indexes[0])
+        transform.scale(binner.step_size, binner.step_size)
+        self.param_overlay.setImage(map_array.T, autoLevels=False)
+        self.param_overlay.setTransform(transform)
+        self.param_overlay.show()
+
+        # connect histogram to parameter values and match colourmap
+        hist = self.image_view.ui.histogram
+        hist.setImageItem(self.param_overlay)
+        hist.gradient.setColorMap(pg.colormap.get('viridis'))
+        hist.show()
 
     @property
     def image_data(self) -> np.ndarray | None:
