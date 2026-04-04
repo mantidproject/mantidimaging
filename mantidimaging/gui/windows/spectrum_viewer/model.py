@@ -597,6 +597,22 @@ class SpectrumViewerWindowModel:
     def get_fit_results(self) -> list[tuple[str, SpectrumFitResult]] | None:
         return self.fit_results
 
+    def compute_chi2_threshold(self, percentile: float = 95.0) -> float | None:
+        """
+        Return a given percentile of good-fit rss_per_dof values, or None if unavailable.
+        Acts as a good starting point to be altered based on data and preference
+
+        @param percentile: The percentile of rss_per_dof values to return as the chi2 threshold
+        @return: The chi2 threshold value or None if no valid fit results are available
+        """
+        if self.fit_results is None:
+            return None
+        valid_chi2_values = [
+            result.rss_per_dof for _, result in self.fit_results
+            if result.is_good_fit and np.isfinite(result.rss_per_dof) and result.rss_per_dof > 0
+        ]
+        return float(np.percentile(valid_chi2_values, percentile)) if valid_chi2_values else None
+
     def build_parameter_map(self,
                             param_name: str,
                             binner: ROIBinner,
