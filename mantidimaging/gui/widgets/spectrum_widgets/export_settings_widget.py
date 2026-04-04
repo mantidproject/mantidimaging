@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QGroupBox)
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QSpinBox, QDoubleSpinBox, QGroupBox)
 
 
 class FitExportFormWidget(QWidget):
@@ -26,6 +26,22 @@ class FitExportFormWidget(QWidget):
         self.parameterDropdown.setEnabled(False)
         self.parameterDropdown.setPlaceholderText("Run fit to populate")
         map_layout.addWidget(self.parameterDropdown)
+
+        map_layout.addWidget(QLabel("Map Transparency (%)"))
+        self.transparencySpinBox = QSpinBox()
+        self.transparencySpinBox.setRange(0, 100)
+        self.transparencySpinBox.setValue(50)
+        self.transparencySpinBox.setSuffix("%")
+        map_layout.addWidget(self.transparencySpinBox)
+
+        map_layout.addWidget(QLabel("chi\u00b2 threshold"))
+        self.chiSquaredThresholdSpinBox = QDoubleSpinBox()
+        self.chiSquaredThresholdSpinBox.setRange(0.0, 1e6)
+        self.chiSquaredThresholdSpinBox.setDecimals(6)
+        self.chiSquaredThresholdSpinBox.setSingleStep(0.0001)
+        self.chiSquaredThresholdSpinBox.setToolTip("Pixels with reduced chi\u00b2 above threshold are masked. "
+                                                   "Initialised to the 95th percentile of good fits.")
+        map_layout.addWidget(self.chiSquaredThresholdSpinBox)
 
         outer_layout.addWidget(map_group)
 
@@ -69,6 +85,14 @@ class FitExportFormWidget(QWidget):
     @property
     def parameter_selected(self):
         return self.parameterDropdown.currentTextChanged
+
+    @property
+    def overlay_opacity(self) -> float:
+        """
+        Return overlay opacity spinbox. Opacity flipped so that
+        0% transparency = 100% opacity to improve intuitivenessl
+        """
+        return (100 - self.transparencySpinBox.value()) / 100.0
 
     def selected_format(self) -> str:
         return self.formatDropdown.currentText()

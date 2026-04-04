@@ -799,6 +799,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             if results:
                 param_names = self.model.fitting_engine.get_parameter_names()
                 self.view.exportSettingsWidget.populate_parameter_selector(param_names)
+                if (threshold := self.model.compute_chi2_threshold()) is not None:
+                    self.view.exportSettingsWidget.chiSquaredThresholdSpinBox.setValue(threshold)
                 self.update_parameter_map()
         else:
             self.view.show_error_dialog(str(task.error))
@@ -817,9 +819,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if not param_name:
             return
         binner = self.view.get_binner()
-        chi2_threshold = None  # ToDo Add Ui Control
+        chi2_threshold = self.view.exportSettingsWidget.chiSquaredThresholdSpinBox.value()
         map_array = self.model.build_parameter_map(param_name, binner, chi2_threshold)
         self.view.display_parameter_map(map_array, binner)
+
+    def on_map_display_settings_changed(self, value: int) -> None:
+        self.update_parameter_map()
 
     def handle_parameter_map_changed(self, param_name: str) -> None:
         self.update_parameter_map()

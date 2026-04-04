@@ -57,17 +57,17 @@ class ExportImageViewWidget(QWidget):
         """Populate the parameter selector combobox with fitted parameter names"""
         self.parent().exportSettingsWidget.populate_parameter_selector(param_names)
 
-    def show_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> None:
+    def show_parameter_map(self, map_array: np.ndarray, binner: ROIBinner, opacity: float = 0.5) -> None:
         """Display the parameter map with 50% transaparency and viridis over sample"""
 
         self.param_overlay.setColorMap('viridis')
-        self.param_overlay.setOpacity(0.5)
+        self.param_overlay.setOpacity(opacity)
 
         # Align mapping with sample and scale to match binned resolution
         transform = QTransform()
         transform.translate(binner.left_indexes[0], binner.top_indexes[0])
         transform.scale(binner.step_size, binner.step_size)
-        self.param_overlay.setImage(map_array.T, autoLevels=False)
+        self.param_overlay.setImage(map_array, autoLevels=True)
         self.param_overlay.setTransform(transform)
         self.param_overlay.show()
 
