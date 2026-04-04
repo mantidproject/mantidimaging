@@ -783,7 +783,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def on_fit_all_regions(self, task: TaskWorkerThread) -> None:
         """
         Callback executed when the asynchronous fitting task completes.
-        Handles errors, retrieves results, and updates the export table.
+        Handles errors, retrieves results, and updates the export table and parameter map
 
         Parameters
         ----------
@@ -795,6 +795,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             self._clear_export_table()
             self._populate_export_table(results)
             self.model.set_fit_results(results)
+
+            if results:
+                param_names = self.model.fitting_engine.get_parameter_names()
+                self.view.exportSettingsWidget.populate_parameter_selector(param_names)
+                self.update_parameter_map()
         else:
             self.view.show_error_dialog(str(task.error))
 
@@ -803,6 +808,21 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         Clear all existing data from the export results table.
         """
         self.view.exportDataTableWidget.clear_table()
+
+    def update_parameter_map(self) -> None:
+        """
+        Update the map based on the selected parameter in the export settings.
+        """
+        param_name = self.view.exportSettingsWidget.parameterDropdown.currentText()
+        if not param_name:
+            return
+        binner = self.view.get_binner()
+        chi2_threshold = None  # ToDo Add Ui Control
+        map_array = self.model.build_parameter_map(param_name, binner, chi2_threshold)
+        self.view.display_parameter_map(map_array, binner)
+
+    def handle_parameter_map_changed(self, param_name: str) -> None:
+        self.update_parameter_map()
 
     def _populate_export_table(self, results: list[tuple[str, SpectrumFitResult]]) -> None:
         """
