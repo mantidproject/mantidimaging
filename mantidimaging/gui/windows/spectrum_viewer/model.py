@@ -96,11 +96,9 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
-
         self.fit_results: list[tuple[str, SpectrumFitResult]] | None = None
-
+        self._good_fits_by_roi_name: dict[str, SpectrumFitResult] = {}
         self.units = UnitConversion()
-
         self.fitting_engine = FittingEngine(ErfStepFunction())
 
     def roi_name_generator(self) -> str:
@@ -586,8 +584,45 @@ class SpectrumViewerWindowModel:
         return self.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
 
     def set_fit_results(self, results: list[tuple[str, SpectrumFitResult]] | None) -> None:
+        """
+        Store filtered fit results to only good fits and create a lookup for building parameter maps
+        """
         self.fit_results = results
+        self._good_fits_by_roi_name = {
+            name: result
+            for name, result in results if result.is_good_fit
+        } if results else {}
         LOG.info("Stored fit results")
 
     def get_fit_results(self) -> list[tuple[str, SpectrumFitResult]] | None:
         return self.fit_results
+
+    def build_parameter_map(self,
+                            param_name: str,
+                            binner: ROIBinner,
+                            chi2_threshold: float | None = None) -> np.ndarray:
+        """
+        Build a 2D parameter map from stored fit results for the given parameter name.
+
+        Grid dimensions are derived from the binner sub-ROIs.
+        Fits higher than chi2_threshold excluded from map.
+
+        @param param_name: The name of the fitted parameter to map
+        @param binner: The ROIBinner used when generating for fit
+        @param  chi2_threshold: Optional upper bound on rss_per_dof. Exclude fits if reduced chi2 higher than threshold
+        @return np.ndarray: 2D array of parameters (n_cols, n_rows) matching binner dimensions.
+        """
+        if self.fit_results is None:
+            raise ValueError("No fit results available. Run 'Fit All' before building a parameter map.")
+
+        n_cols, n_rows = binner.lengths()
+        param_map = np.full((n_cols, n_rows), np.nan, dtype=np.float64)
+
+        for col, row in np.ndindex(n_cols, n_rows):
+            if (fit_result := self._good_fits_by_roi_name.get(binner.get_roi_name(col, row))) is None:
+                continue
+            if chi2_threshold is not None and fit_result.rss_per_dof > chi2_threshold:
+                continue
+            param_map[col, row] = fit_result.params[param_name]
+
+        return param_map

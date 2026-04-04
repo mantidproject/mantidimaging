@@ -48,6 +48,11 @@ class SpectrumFitResult(NamedTuple):
     rss_per_dof: float
     status: Literal["Fitted", "Failed"]
 
+    @property
+    def is_good_fit(self) -> bool:
+        """True if the fit converged and produced valid chi2 residuals """
+        return self.status != "Failed" and np.isfinite(self.rss_per_dof)
+
 
 class SpectrumViewerWindowPresenter(BasePresenter):
     """
