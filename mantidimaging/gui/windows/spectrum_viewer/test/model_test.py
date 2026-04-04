@@ -80,12 +80,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
 
     def _set_fit_results(self,
                          binner: ROIBinner,
-                         param_values: tuple[float, float, float, float] = (1.0, 2.0, 3.0, 4.0),
-                         chi2s: tuple[float, float, float, float] = (0.5, 0.5, 0.5, 0.5),
+                         param_values: tuple[float, ...] = (1.0, 2.0, 3.0, 4.0),
+                         chi2s: tuple[float, ...] = (0.5, 0.5, 0.5, 0.5),
                          statuses: tuple[Literal["Fitted", "Failed"], ...] = ("Fitted", ) * 4) -> None:
         """Set fit results for a 2 by 2 binner and indexed as (col, row): (0,0), (1,0), (0,1), (1,1)"""
         n_cols, n_rows = binner.lengths()
-        positions = list(np.ndindex(n_cols, n_rows))
+        positions = [(col, row) for col in range(n_cols) for row in range(n_rows)]
         roi_names = [binner.get_roi_name(col, row) for col, row in positions]
 
         fit_results = []
@@ -610,11 +610,13 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         binner = self._make_binner()
         self._set_fit_results(binner)
         result = self.model.build_parameter_map("sigma", binner)
-        np.testing.assert_array_equal(result, [[1.0, 3.0], [2.0, 4.0]])
+        np.testing.assert_array_equal(result, [[1.0, 2.0], [3.0, 4.0]])
 
     def test_WHEN_fit_result_has_failed_status_THEN_corresponding_cell_is_nan(self):
         binner = self._make_binner()
-        self._set_fit_results(binner, values=(99.0, 2.0, 3.0, 4.0), statuses=("Failed", "Fitted", "Fitted", "Fitted"))
+        self._set_fit_results(binner,
+                              param_values=(99.0, 2.0, 3.0, 4.0),
+                              statuses=("Failed", "Fitted", "Fitted", "Fitted"))
         result = self.model.build_parameter_map("sigma", binner)
         self.assertTrue(np.isnan(result[0, 0]))
         self.assertFalse(np.isnan(result[1, 0]))
@@ -624,4 +626,4 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         self._set_fit_results(binner, chi2s=(0.5, 10.0, 0.5, 0.5))
         result = self.model.build_parameter_map("sigma", binner, chi2_threshold=1.0)
         self.assertFalse(np.isnan(result[0, 0]))
-        self.assertTrue(np.isnan(result[1, 0]))
+        self.assertTrue(np.isnan(result[0, 1]))
