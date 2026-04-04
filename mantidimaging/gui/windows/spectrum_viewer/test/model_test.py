@@ -3,6 +3,7 @@
 from __future__ import annotations
 import unittest
 from pathlib import Path, PurePath
+from typing import Literal
 from unittest import mock
 import io
 import math
@@ -18,6 +19,7 @@ from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, ErrorMode
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
+from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumFitResult
 
 
 class CloseCheckStream(io.StringIO):
@@ -70,6 +72,28 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_path = mock.create_autospec(Path, instance=True)
         mock_path.open.return_value = mock_stream
         return mock_stream, mock_path
+
+    def _make_binner(self) -> ROIBinner:
+        """Create a 2 by 2 bins at (0,0), (1,0), (0,1), (1,1)"""
+        roi = SensibleROI(left=0, top=0, right=20, bottom=20)
+        return ROIBinner(roi, step_size=10, bin_size=10)
+
+    def _set_fit_results(self,
+                         binner: ROIBinner,
+                         param_values: tuple[float, ...] = (1.0, 2.0, 3.0, 4.0),
+                         chi2s: tuple[float, ...] = (0.5, 0.5, 0.5, 0.5),
+                         statuses: tuple[Literal["Fitted", "Failed"], ...] = ("Fitted", ) * 4) -> None:
+        """Set fit results for a 2 by 2 binner and indexed as (col, row): (0,0), (1,0), (0,1), (1,1)"""
+        n_cols, n_rows = binner.lengths()
+        positions = [(col, row) for col in range(n_cols) for row in range(n_rows)]
+        roi_names = [binner.get_roi_name(col, row) for col, row in positions]
+
+        fit_results = []
+        for param_value, chi2, status in zip(param_values, chi2s, statuses, strict=True):
+            fit_results.append(
+                SpectrumFitResult(params={"sigma": param_value}, rss=chi2, rss_per_dof=chi2, status=status))
+
+        self.model.set_fit_results(list(zip(roi_names, fit_results, strict=True)))
 
     def test_set_stack(self):
         stack, _ = self._set_sample_stack()
@@ -581,3 +605,66 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
     def test_get_transmission_error_propogated_raises_runtimeerror_if_no_stack(self):
         with self.assertRaises(RuntimeError):
             self.model.get_transmission_error_propagated("roi")
+
+    def test_WHEN_fit_results_set_THEN_parameter_map_values_placed_at_correct_grid_cell(self):
+        binner = self._make_binner()
+        self._set_fit_results(binner)
+        result = self.model.build_parameter_map("sigma", binner)
+        np.testing.assert_array_equal(result, [[1.0, 3.0], [2.0, 4.0]])
+
+    def test_WHEN_fit_result_has_failed_status_THEN_corresponding_cell_is_nan(self):
+        binner = self._make_binner()
+        self._set_fit_results(binner,
+                              param_values=(99.0, 2.0, 3.0, 4.0),
+                              statuses=("Failed", "Fitted", "Fitted", "Fitted"))
+        result = self.model.build_parameter_map("sigma", binner)
+        self.assertTrue(np.isnan(result[0, 0]))
+        self.assertFalse(np.isnan(result[1, 0]))
+
+    def test_WHEN_fit_result_chi2_exceeds_threshold_THEN_corresponding_cell_is_nan(self):
+        binner = self._make_binner()
+        self._set_fit_results(binner, chi2s=(0.5, 10.0, 0.5, 0.5))
+        result = self.model.build_parameter_map("sigma", binner, chi2_threshold=1.0)
+        self.assertFalse(np.isnan(result[0, 0]))
+        self.assertTrue(np.isnan(result[1, 0]))
+
+    @parameterized.expand([
+        ("value_written_to_correct_block", [[np.nan, 7.0], [np.nan,
+                                                            np.nan]], (0, 10, 10, 20), 7.0, (0, 10, 0, 10), np.nan),
+        ("nan_leaves_pixel_block_as_nan", [[3.0, 3.0], [np.nan, 3.0]], (10, 20, 0, 10), np.nan, (0, 10, 0, 10), 3.0),
+    ])
+    def test_WHEN_build_full_sample_parameter_map_THEN(self, _, map_vals, block1, val1, block2, val2):
+        self.model.set_stack(ImageStack(np.zeros([1, 20, 20])))
+        binner = self._make_binner()
+        full_map = self.model.build_full_sample_parameter_map(np.array(map_vals, dtype=np.float64), binner)
+        y1, y2, x1, x2 = block1
+        npt.assert_array_equal(full_map[y1:y2, x1:x2], np.full((y2 - y1, x2 - x1), val1))
+        y1, y2, x1, x2 = block2
+        npt.assert_array_equal(full_map[y1:y2, x1:x2], np.full((y2 - y1, x2 - x1), val2))
+
+    def test_WHEN_build_full_sample_parameter_map_overlapping_bins_THEN_each_bin_occupies_step_size_pixels(self):
+        """Each bin writes exactly step_size pixels so no edge artefacts from overlapping bins"""
+        self.model.set_stack(ImageStack(np.zeros([1, 20, 20])))
+        binner = ROIBinner(SensibleROI(0, 0, 20, 20), step_size=5, bin_size=10)
+        map_array = np.arange(9, dtype=np.float32).reshape(3, 3)
+        full_map = self.model.build_full_sample_parameter_map(map_array, binner)
+
+        expected = np.full((20, 20), np.nan, dtype=np.float32)
+        for col, row in np.ndindex(3, 3):
+            x, y = binner.left_indexes[col], binner.top_indexes[row]
+            expected[y:y + 5, x:x + 5] = map_array[row, col]
+
+        npt.assert_array_equal(full_map, expected)
+
+    def test_WHEN_build_full_sample_parameter_map_overlapping_bins_THEN_trailing_region_is_nan(self):
+        """
+        Pixels beyond the last bin's step_size block remain NaN and aren't filled with the last bin's
+        value causing edge artifcats
+        """
+        self.model.set_stack(ImageStack(np.zeros([1, 20, 20])))
+        binner = ROIBinner(SensibleROI(0, 0, 20, 20), step_size=5, bin_size=10)
+        map_array = np.ones((3, 3), dtype=np.float32)
+        full_map = self.model.build_full_sample_parameter_map(map_array, binner)
+
+        npt.assert_array_equal(full_map[15:, :], np.full((5, 20), np.nan))
+        npt.assert_array_equal(full_map[:, 15:], np.full((20, 5), np.nan))
