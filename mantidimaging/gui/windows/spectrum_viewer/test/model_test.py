@@ -3,6 +3,7 @@
 from __future__ import annotations
 import unittest
 from pathlib import Path, PurePath
+from typing import Literal
 from unittest import mock
 import io
 import math
@@ -18,6 +19,7 @@ from mantidimaging.gui.windows.spectrum_viewer.model import SpecType, ErrorMode
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI, ROIBinner
+from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumFitResult
 
 
 class CloseCheckStream(io.StringIO):
@@ -70,6 +72,28 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         mock_path = mock.create_autospec(Path, instance=True)
         mock_path.open.return_value = mock_stream
         return mock_stream, mock_path
+
+    def _make_binner(self) -> ROIBinner:
+        """Create a 2 by 2 bins at (0,0), (1,0), (0,1), (1,1)"""
+        roi = SensibleROI(left=0, top=0, right=20, bottom=20)
+        return ROIBinner(roi, step_size=10, bin_size=10)
+
+    def _set_fit_results(self,
+                         binner: ROIBinner,
+                         param_values: tuple[float, float, float, float] = (1.0, 2.0, 3.0, 4.0),
+                         chi2s: tuple[float, float, float, float] = (0.5, 0.5, 0.5, 0.5),
+                         statuses: tuple[Literal["Fitted", "Failed"], ...] = ("Fitted", ) * 4) -> None:
+        """Set fit results for a 2 by 2 binner and indexed as (col, row): (0,0), (1,0), (0,1), (1,1)"""
+        n_cols, n_rows = binner.lengths()
+        positions = list(np.ndindex(n_cols, n_rows))
+        roi_names = [binner.get_roi_name(col, row) for col, row in positions]
+
+        fit_results = []
+        for param_value, chi2, status in zip(param_values, chi2s, statuses, strict=True):
+            fit_results.append(
+                SpectrumFitResult(params={"sigma": param_value}, rss=chi2, rss_per_dof=chi2, status=status))
+
+        self.model.set_fit_results(list(zip(roi_names, fit_results, strict=True)))
 
     def test_set_stack(self):
         stack, _ = self._set_sample_stack()
@@ -581,3 +605,23 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
     def test_get_transmission_error_propogated_raises_runtimeerror_if_no_stack(self):
         with self.assertRaises(RuntimeError):
             self.model.get_transmission_error_propagated("roi")
+
+    def test_WHEN_fit_results_set_THEN_parameter_map_values_placed_at_correct_grid_cell(self):
+        binner = self._make_binner()
+        self._set_fit_results(binner)
+        result = self.model.build_parameter_map("sigma", binner)
+        np.testing.assert_array_equal(result, [[1.0, 3.0], [2.0, 4.0]])
+
+    def test_WHEN_fit_result_has_failed_status_THEN_corresponding_cell_is_nan(self):
+        binner = self._make_binner()
+        self._set_fit_results(binner, values=(99.0, 2.0, 3.0, 4.0), statuses=("Failed", "Fitted", "Fitted", "Fitted"))
+        result = self.model.build_parameter_map("sigma", binner)
+        self.assertTrue(np.isnan(result[0, 0]))
+        self.assertFalse(np.isnan(result[1, 0]))
+
+    def test_WHEN_fit_result_chi2_exceeds_threshold_THEN_corresponding_cell_is_nan(self):
+        binner = self._make_binner()
+        self._set_fit_results(binner, chi2s=(0.5, 10.0, 0.5, 0.5))
+        result = self.model.build_parameter_map("sigma", binner, chi2_threshold=1.0)
+        self.assertFalse(np.isnan(result[0, 0]))
+        self.assertTrue(np.isnan(result[1, 0]))
