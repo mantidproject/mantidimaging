@@ -102,6 +102,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
         self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
         self.exportSettingsWidget.fitAllButton.clicked.connect(self.presenter._run_fit_async)
+        self.exportSettingsWidget.parameter_selected.connect(self.presenter.handle_parameter_map_changed)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changing.connect(self.presenter.handle_notify_roi_moved)
@@ -204,6 +205,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def handle_export_change_tab(self, tab_index: int):
         if self.export_display_tabs.tabText(tab_index) == "Image":
             self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
+
+    def display_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> None:
+        """Display the parameter map on the image tab of the export view."""
+        self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
+        self._export_image_widget.show_parameter_map(map_array, binner)
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""
