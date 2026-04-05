@@ -52,6 +52,12 @@ class ErrorMode(Enum):
         raise ValueError(f"Unknown error mode: {value}")
 
 
+class ColourRangeMode(Enum):
+    IQR = "1.5\u00d7IQR"
+    MAD = "Median \u00b13\u00d7MAD"
+    PERCENTILE = "2nd - 98th %ile"
+
+
 class AllowedModesTypedDict(TypedDict):
     mode: ToFUnitMode
     label: str
@@ -642,3 +648,50 @@ class SpectrumViewerWindowModel:
             param_map[col, row] = fit_result.params[param_name]
 
         return param_map
+
+    def calculate_colour_levels(self, map_array: np.ndarray, mode: ColourRangeMode) -> tuple[float, float]:
+        """
+        Handle a various outlier exclusion options to handle various distributions, falling back
+        to full range if needed for IQR and percentile
+        Return (lower, upper) display levels for a parameter map based on user colour range selection
+
+        @param map_array: 2D parameter map array
+        @param mode: Colour range selection
+        @return: (lower, upper) tuple image display levels
+        """
+        finite_values = map_array[np.isfinite(map_array)]
+        if finite_values.size == 0:
+            return 0.0, 1.0
+
+        strategies = {
+            ColourRangeMode.IQR: self._colour_levels_iqr,
+            ColourRangeMode.MAD: self._colour_levels_mad,
+            ColourRangeMode.PERCENTILE: self._colour_levels_percentile,
+        }
+        lower, upper = strategies[mode](finite_values)
+
+        if lower >= upper:
+            return float(finite_values.min()), float(finite_values.max())
+        return lower, upper
+
+    @staticmethod
+    def _colour_levels_percentile(finite_values: np.ndarray) -> tuple[float, float]:
+        """Show only 2nd-98th percentile range"""
+        return float(np.percentile(finite_values, 2)), float(np.percentile(finite_values, 98))
+
+    @staticmethod
+    def _colour_levels_mad(finite_values: np.ndarray) -> tuple[float, float]:
+        """Clips to median +- 3xMAD and falls back to full range when MAD = 0 to exclude outliers"""
+        median = np.median(finite_values)
+        mad = np.median(np.abs(finite_values - median))
+        if mad == 0:
+            return float(finite_values.min()), float(finite_values.max())
+        return float(max(finite_values.min(), median - 3.0 * mad)), float(min(finite_values.max(), median + 3.0 * mad))
+
+    @staticmethod
+    def _colour_levels_iqr(finite_values: np.ndarray) -> tuple[float, float]:
+        """Clips outliers beyond 1.5xIQR to exclude outliers"""
+        lower_quartile, upper_quartile = np.percentile(finite_values, [25, 75])
+        iqr = upper_quartile - lower_quartile
+        return (float(max(finite_values.min(),
+                          lower_quartile - 1.5 * iqr)), float(min(finite_values.max(), upper_quartile + 1.5 * iqr)))

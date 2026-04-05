@@ -20,7 +20,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
-    ToFUnitMode, allowed_modes
+    ToFUnitMode, allowed_modes, ColourRangeMode
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -83,6 +83,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
+
+    def setup_colour_range_dropdown(self) -> None:
+        """Populate colour range dropdown with available options"""
+        self.view.exportSettingsWidget.colourRangeDropdown.addItems([mode.value for mode in ColourRangeMode])
 
     def _run_fit_async(self):
         """
@@ -821,7 +825,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         binner = self.view.get_binner()
         chi2_threshold = self.view.exportSettingsWidget.chiSquaredThresholdSpinBox.value()
         map_array = self.model.build_parameter_map(param_name, binner, chi2_threshold)
-        self.view.display_parameter_map(map_array, binner)
+        colour_mode = ColourRangeMode(self.view.exportSettingsWidget.selected_colour_range_mode)
+        levels = self.model.calculate_colour_levels(map_array, colour_mode)
+        self.view.display_parameter_map(map_array, binner, levels)
 
     def on_map_display_settings_changed(self, value: int) -> None:
         self.update_parameter_map()

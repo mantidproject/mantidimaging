@@ -35,6 +35,10 @@ class FitExportFormWidget(QWidget):
         self.transparencySpinBox.setSuffix("%")
         map_layout.addWidget(self.transparencySpinBox)
 
+        map_layout.addWidget(QLabel("Colour Range"))
+        self.colourRangeDropdown = QComboBox()
+        map_layout.addWidget(self.colourRangeDropdown)
+
         map_layout.addWidget(QLabel("chi\u00b2 threshold"))
         self.chiSquaredThresholdSpinBox = QDoubleSpinBox()
         self.chiSquaredThresholdSpinBox.setRange(0.0, 1e6)
@@ -108,6 +112,10 @@ class FitExportFormWidget(QWidget):
         0% transparency = 100% opacity to improve intuitivenessl
         """
         return (100 - self.transparencySpinBox.value()) / 100.0
+
+    @property
+    def selected_colour_range_mode(self) -> str:
+        return self.colourRangeDropdown.currentText()
 
     def selected_format(self) -> str:
         return self.formatDropdown.currentText()
