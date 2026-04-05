@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+from PyQt5.QtCore import QSignalBlocker
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QSpinBox, QDoubleSpinBox, QGroupBox)
 
 
@@ -77,10 +78,24 @@ class FitExportFormWidget(QWidget):
         self.areaDropdown.blockSignals(False)
 
     def populate_parameter_selector(self, param_names: list[str]) -> None:
-        """Populate the parameter selector combo with fitted parameter names and enable it."""
-        self.parameterDropdown.clear()
-        self.parameterDropdown.addItems(param_names)
-        self.parameterDropdown.setEnabled(bool(param_names))
+        """
+        Populate the parameter selector combo with fitted parameter names and enable it
+        after all data is written to export table
+        """
+        with QSignalBlocker(self.parameterDropdown):
+            self.parameterDropdown.clear()
+            self.parameterDropdown.addItems(param_names)
+            self.parameterDropdown.setEnabled(bool(param_names))
+            if param_names:
+                self.parameterDropdown.setCurrentIndex(0)
+
+    def set_chi2_threshold(self, value: float) -> None:
+        """
+        Set the chi2 threshold without emitting signals to avoid pre-maturely
+        updating the map display before all data is written to table
+        """
+        with QSignalBlocker(self.chiSquaredThresholdSpinBox):
+            self.chiSquaredThresholdSpinBox.setValue(value)
 
     @property
     def parameter_selected(self):

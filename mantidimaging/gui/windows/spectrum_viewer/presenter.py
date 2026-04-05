@@ -799,7 +799,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 param_names = self.model.fitting_engine.get_parameter_names()
                 self.view.exportSettingsWidget.populate_parameter_selector(param_names)
                 if (threshold := self.model.compute_chi2_threshold()) is not None:
-                    self.view.exportSettingsWidget.chiSquaredThresholdSpinBox.setValue(threshold)
+                    self.view.exportSettingsWidget.set_chi2_threshold(threshold)
+                self.view.show_image_tab()
                 self.update_parameter_map()
         else:
             self.view.show_error_dialog(str(task.error))

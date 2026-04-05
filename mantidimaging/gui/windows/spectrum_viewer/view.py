@@ -210,6 +210,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         if self.export_display_tabs.tabText(tab_index) == "Image":
             self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
 
+    def show_image_tab(self) -> None:
+        """Switch the export display to the Image tab."""
+        self.export_display_tabs.setCurrentIndex(self.export_display_tabs.indexOf(self._export_image_widget))
+
     def display_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> None:
         """Display the parameter map on the image tab of the export view."""
         self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
