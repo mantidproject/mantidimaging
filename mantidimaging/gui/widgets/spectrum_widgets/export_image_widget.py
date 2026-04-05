@@ -63,9 +63,13 @@ class ExportImageViewWidget(QWidget):
         """Populate the parameter selector combobox with fitted parameter names"""
         self.parent().exportSettingsWidget.populate_parameter_selector(param_names)
 
-    def show_parameter_map(self, map_array: np.ndarray, binner: ROIBinner, opacity: float = 0.5) -> None:
+    def show_parameter_map(self,
+                           map_array: np.ndarray,
+                           binner: ROIBinner,
+                           opacity: float = 0.5,
+                           levels: tuple[float, float] = (0.0, 1.0)) -> None:
         """Display the parameter map with 50% transaparency and viridis over sample"""
-
+        lower_level, upper_level = levels
         self.param_overlay.setColorMap('viridis')
         self.param_overlay.setOpacity(opacity)
 
@@ -74,6 +78,7 @@ class ExportImageViewWidget(QWidget):
         transform.translate(binner.left_indexes[0], binner.top_indexes[0])
         transform.scale(binner.step_size, binner.step_size)
         self.param_overlay.setImage(map_array, autoLevels=True)
+        self.param_overlay.setLevels(lower_level, upper_level)
         self.param_overlay.setTransform(transform)
         self.param_overlay.show()
 
@@ -81,6 +86,7 @@ class ExportImageViewWidget(QWidget):
         hist = self.image_view.ui.histogram
         hist.setImageItem(self.param_overlay)
         hist.gradient.setColorMap(pg.colormap.get('viridis'))
+        hist.setLevels(lower_level, upper_level)
         hist.show()
 
     @property

@@ -78,13 +78,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.spectrum = self.spectrum_widget.spectrum_plot_widget
         self.imageLayout.addWidget(self.spectrum_widget)
 
-        self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
-
         self.fittingDisplayWidget = FittingDisplayWidget()
         self.fittingForm = FittingFormWidgetView(self)
         self.fittingFormContainer.layout().addWidget(self.fittingForm)
 
-        self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.fittingLayout.addWidget(self.fittingDisplayWidget)
 
         self.fitting_param_form = self.fittingForm.fitting_param_form
@@ -100,12 +97,18 @@ class SpectrumViewerWindowView(BaseMainWindowView):
 
         self.exportSettingsWidget = FitExportFormWidget()
         self.exportFormLayout.layout().addWidget(self.exportSettingsWidget)
+        self.presenter.setup_colour_range_dropdown()
+
+        self.spectrum.range_changed.connect(self.presenter.handle_range_slide_moved)
+        self.fittingDisplayWidget.unit_changed.connect(self.presenter.handle_tof_unit_change_via_menu)
         self.exportSettingsWidget.exportButton.clicked.connect(self.presenter.handle_export_table)
         self.exportSettingsWidget.fitAllButton.clicked.connect(self.presenter._run_fit_async)
         self.exportSettingsWidget.parameter_selected.connect(self.presenter.handle_parameter_map_changed)
         self.exportSettingsWidget.transparencySpinBox.valueChanged.connect(
             self.presenter.on_map_display_settings_changed)
         self.exportSettingsWidget.chiSquaredThresholdSpinBox.valueChanged.connect(
+            self.presenter.on_map_display_settings_changed)
+        self.exportSettingsWidget.colourRangeDropdown.currentIndexChanged.connect(
             self.presenter.on_map_display_settings_changed)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
@@ -214,11 +217,11 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         """Switch the export display to the Image tab."""
         self.export_display_tabs.setCurrentIndex(self.export_display_tabs.indexOf(self._export_image_widget))
 
-    def display_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> None:
+    def display_parameter_map(self, map_array: np.ndarray, binner: ROIBinner, levels: tuple[float, float]) -> None:
         """Display the parameter map on the image tab of the export view."""
         self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
         opacity = self.exportSettingsWidget.overlay_opacity
-        self._export_image_widget.show_parameter_map(map_array, binner, opacity)
+        self._export_image_widget.show_parameter_map(map_array, binner, opacity, levels)
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""
