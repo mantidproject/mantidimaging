@@ -199,29 +199,55 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.set_roi_properties()
         self.presenter.initial_roi_calc()
 
+    def _sync_export_background(self) -> None:
+        """Copy current image main spectrum view to the export widget"""
+        self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
+
+    def get_export_background_image(self) -> np.ndarray | None:
+        return self._export_image_widget.image_data
+
     def handle_change_tab(self, tab_index: int):
         if self.formTabs.tabText(tab_index) == "Export":
             if self.exportDataTableWidget.model.rowCount() == 0:
                 self.fittingForm.presenter.setup_fitting_model()
             if self.export_display_tabs.tabText(self.export_display_tabs.currentIndex()) == "Image":
-                self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
+                self._sync_export_background()
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
         LOG.debug("Tab changed: index=%d", tab_index)
 
     def handle_export_change_tab(self, tab_index: int):
         if self.export_display_tabs.tabText(tab_index) == "Image":
-            self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
+            self._sync_export_background()
 
     def show_image_tab(self) -> None:
         """Switch the export display to the Image tab."""
         self.export_display_tabs.setCurrentIndex(self.export_display_tabs.indexOf(self._export_image_widget))
 
+    @property
+    def selected_param_name(self) -> str:
+        return self.exportSettingsWidget.parameterDropdown.currentText()
+
+    @property
+    def chi2_threshold(self) -> float:
+        return self.exportSettingsWidget.chiSquaredThresholdSpinBox.value()
+
+    @property
+    def export_full_sample(self) -> bool:
+        return self.exportSettingsWidget.is_full_sample_export
+
+    @property
+    def overlay_opacity(self) -> float:
+        return self.exportSettingsWidget.overlay_opacity
+
+    @property
+    def colour_range_mode(self) -> str:
+        return self.exportSettingsWidget.selected_colour_range_mode
+
     def display_parameter_map(self, map_array: np.ndarray, binner: ROIBinner, levels: tuple[float, float]) -> None:
         """Display the parameter map on the image tab of the export view."""
-        self._export_image_widget.update_image(self.spectrum_widget.image.image_item.image)
-        opacity = self.exportSettingsWidget.overlay_opacity
-        self._export_image_widget.show_parameter_map(map_array, binner, opacity, levels)
+        self._sync_export_background()
+        self._export_image_widget.show_parameter_map(map_array, binner, self.overlay_opacity, levels)
 
     def sync_unit_menus(self, unit_name: str) -> None:
         """Sync the checked unit in both the image and fitting tab unit menus."""
@@ -271,12 +297,24 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def get_normalise_stack(self) -> UUID | None:
         return self.normaliseStackSelector.current()
 
+    def _get_save_filename(self, title: str, file_filter: str) -> Path | None:
+        """Open a save-file dialog and return the chosen path, or None if cancelled"""
+        path, _ = QFileDialog.getSaveFileName(self, title, "", file_filter)
+        return Path(path) if path else None
+
     def get_csv_filename(self) -> Path | None:
-        path = QFileDialog.getSaveFileName(self, "Save CSV file", "", "CSV file (*.csv)")[0]
-        if path:
-            return Path(path)
-        else:
-            return None
+        return self._get_save_filename("Save CSV file", "CSV file (*.csv)")
+
+    def get_map_export_filename(self) -> Path | None:
+        """
+        Open a save-file dialog for the parameter map export
+
+        @return: path.tiff or None is cancelled
+        """
+        export_path = self._get_save_filename("Export Parameter Map", "TIFF (*.tiff *.tif)")
+        if export_path and export_path.suffix.lower() not in (".tiff", ".tif"):
+            export_path = export_path.with_suffix(".tiff")
+        return export_path
 
     def get_rits_export_directory(self) -> Path | None:
         """
@@ -289,14 +327,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             return None
 
     def get_rits_export_filename(self) -> Path | None:
-        """
-        Get the path to save the RITS file too
-        """
-        path = QFileDialog.getSaveFileName(self, "Save DAT file", "", "DAT file (*.dat)")[0]
-        if path:
-            return Path(path)
-        else:
-            return None
+        return self._get_save_filename("Save DAT file", "DAT file (*.dat)")
 
     def set_image(self, image_data: np.ndarray, autoLevels: bool = True) -> None:
         self.spectrum_widget.image.setImage(image_data, autoLevels=autoLevels)
