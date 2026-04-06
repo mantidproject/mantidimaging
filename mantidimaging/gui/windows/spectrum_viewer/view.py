@@ -110,6 +110,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
             self.presenter.on_map_display_settings_changed)
         self.exportSettingsWidget.colourRangeDropdown.currentIndexChanged.connect(
             self.presenter.on_map_display_settings_changed)
+        self.exportSettingsWidget.exportMappedImageButton.clicked.connect(self.presenter.handle_export_parameter_map)
 
         self.spectrum_widget.roi_clicked.connect(self.presenter.handle_roi_clicked)
         self.spectrum_widget.roi_changing.connect(self.presenter.handle_notify_roi_moved)
