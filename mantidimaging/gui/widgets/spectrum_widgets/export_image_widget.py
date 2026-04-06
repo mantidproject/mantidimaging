@@ -42,7 +42,7 @@ class ExportImageViewWidget(QWidget):
 
         self.clear()
 
-    def update_image(self, image: np.ndarray | None, autoLevels: bool = True) -> None:
+    def update_image(self, image: np.ndarray | None) -> None:
         if image is None:
             self.clear()
             return
@@ -50,7 +50,9 @@ class ExportImageViewWidget(QWidget):
         arr = np.asarray(image)
         if arr.ndim == 3 and arr.shape[0] > 0:
             arr = arr.mean(axis=0)
-        self.image_view.setImage(arr, autoLevels=autoLevels)
+        finite = arr[np.isfinite(arr)]
+        levels = (float(np.percentile(finite, 0.5)), float(np.percentile(finite, 99.5))) if finite.size else (0.0, 1.0)
+        self.image_view.setImage(arr, autoLevels=False, levels=levels)
 
     def clear(self) -> None:
         """Show a blank canvas."""
@@ -68,7 +70,7 @@ class ExportImageViewWidget(QWidget):
                            binner: ROIBinner,
                            opacity: float = 0.5,
                            levels: tuple[float, float] = (0.0, 1.0)) -> None:
-        """Display the parameter map with 50% transaparency and viridis over sample"""
+        """Display the parameter map overlay using viridis with the given opacity and colour levels."""
         lower_level, upper_level = levels
         self.param_overlay.setColorMap('viridis')
         self.param_overlay.setOpacity(opacity)
@@ -77,8 +79,8 @@ class ExportImageViewWidget(QWidget):
         transform = QTransform()
         transform.translate(binner.left_indexes[0], binner.top_indexes[0])
         transform.scale(binner.step_size, binner.step_size)
-        self.param_overlay.setImage(map_array, autoLevels=True)
-        self.param_overlay.setLevels(lower_level, upper_level)
+
+        self.param_overlay.setImage(map_array, autoLevels=False, levels=(lower_level, upper_level))
         self.param_overlay.setTransform(transform)
         self.param_overlay.show()
 
