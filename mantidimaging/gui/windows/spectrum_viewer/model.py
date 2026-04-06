@@ -632,20 +632,20 @@ class SpectrumViewerWindowModel:
         @param param_name: The name of the fitted parameter to map
         @param binner: The ROIBinner used when generating for fit
         @param  chi2_threshold: Optional upper bound on rss_per_dof. Exclude fits if reduced chi2 higher than threshold
-        @return np.ndarray: 2D array of parameters (n_cols, n_rows) matching binner dimensions.
+        @return np.ndarray: 2D array of parameters (n_rows, n_cols) matching binner dimensions.
         """
         if self.fit_results is None:
             raise ValueError("No fit results available. Run 'Fit All' before building a parameter map.")
 
         n_cols, n_rows = binner.lengths()
-        param_map = np.full((n_cols, n_rows), np.nan, dtype=np.float64)
+        param_map = np.full((n_rows, n_cols), np.nan, dtype=np.float64)
 
         for col, row in np.ndindex(n_cols, n_rows):
             if (fit_result := self._good_fits_by_roi_name.get(binner.get_roi_name(col, row))) is None:
                 continue
             if chi2_threshold is not None and fit_result.rss_per_dof > chi2_threshold:
                 continue
-            param_map[col, row] = fit_result.params[param_name]
+            param_map[row, col] = fit_result.params[param_name]
 
         return param_map
 
@@ -666,7 +666,7 @@ class SpectrumViewerWindowModel:
         strategies = {
             ColourRangeMode.IQR: self._colour_levels_iqr,
             ColourRangeMode.MAD: self._colour_levels_mad,
-            ColourRangeMode.PERCENTILE: self._colour_levels_percentile,
+            ColourRangeMode.PERCENTILE: self.colour_levels_percentile,
         }
         lower, upper = strategies[mode](finite_values)
 
@@ -675,8 +675,8 @@ class SpectrumViewerWindowModel:
         return lower, upper
 
     @staticmethod
-    def _colour_levels_percentile(finite_values: np.ndarray) -> tuple[float, float]:
-        """Show only 2nd-98th percentile range"""
+    def colour_levels_percentile(finite_values: np.ndarray) -> tuple[float, float]:
+        """Return the 2nd-98th percentile range of the given finite values."""
         return float(np.percentile(finite_values, 2)), float(np.percentile(finite_values, 98))
 
     @staticmethod
@@ -695,3 +695,40 @@ class SpectrumViewerWindowModel:
         iqr = upper_quartile - lower_quartile
         return (float(max(finite_values.min(),
                           lower_quartile - 1.5 * iqr)), float(min(finite_values.max(), upper_quartile + 1.5 * iqr)))
+
+    def build_full_sample_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> np.ndarray:
+        """
+        Create array matching sample image size filled with NaN and insert parameter map over ROI region
+        set by binner for overlaying over sample image.
+
+        Each bin occupies exactly step_size pixels in both axes to avoid edge artefacts
+        using bin_size which may be larger when bins overlap.
+
+        @param map_array: parameter map
+        @param binner: The binner used when generating the map
+        @return: Array of shape (height, width) matching the sample stack dimensions
+        """
+        img_height, img_width = self.get_image_shape()
+        full_map = np.full((img_height, img_width), np.nan, dtype=np.float32)
+        step = binner.step_size
+
+        n_cols, n_rows = binner.lengths()
+        for col, row in np.ndindex(n_cols, n_rows):
+            param_value = map_array[row, col]
+            if np.isfinite(param_value):
+                x_start = binner.left_indexes[col]
+                x_end = min(x_start + step, img_width)
+                y_start = binner.top_indexes[row]
+                y_end = min(y_start + step, img_height)
+                full_map[y_start:y_end, x_start:x_end] = np.float32(param_value)
+
+        return full_map
+
+    def save_parameter_map(self, path: Path, map_array: np.ndarray) -> None:
+        """
+        Save parameter map array to a TIFF file
+
+        @param path: File path for the TIFF
+        @param map_array: Parameter Map
+        """
+        saver.write_img(map_array, str(path))
