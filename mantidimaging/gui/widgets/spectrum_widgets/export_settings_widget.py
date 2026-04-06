@@ -48,6 +48,15 @@ class FitExportFormWidget(QWidget):
                                                    "Initialised to the 95th percentile of good fits.")
         map_layout.addWidget(self.chiSquaredThresholdSpinBox)
 
+        map_layout.addWidget(QLabel("Image Export Region"))
+        self.exportContentDropdown = QComboBox()
+        self.exportContentDropdown.addItems(["Mapped region only", "Full sample image"])
+        map_layout.addWidget(self.exportContentDropdown)
+
+        self.exportMappedImageButton = QPushButton("Export Map...")
+        self.exportMappedImageButton.setEnabled(False)
+        map_layout.addWidget(self.exportMappedImageButton)
+
         outer_layout.addWidget(map_group)
 
         # Table export group
@@ -90,6 +99,7 @@ class FitExportFormWidget(QWidget):
             self.parameterDropdown.clear()
             self.parameterDropdown.addItems(param_names)
             self.parameterDropdown.setEnabled(bool(param_names))
+            self.exportMappedImageButton.setEnabled(bool(param_names))
             if param_names:
                 self.parameterDropdown.setCurrentIndex(0)
 
@@ -112,6 +122,11 @@ class FitExportFormWidget(QWidget):
         0% transparency = 100% opacity to improve intuitivenessl
         """
         return (100 - self.transparencySpinBox.value()) / 100.0
+
+    @property
+    def is_full_sample_export(self) -> bool:
+        """True when the user has selected 'Full sample image' in the Image Export Region dropdown."""
+        return self.exportContentDropdown.currentText() == "Full sample image"
 
     @property
     def selected_colour_range_mode(self) -> str:
