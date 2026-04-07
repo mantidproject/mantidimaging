@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
+import numpy.testing as npt
 from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
 from parameterized import parameterized
 
@@ -15,9 +16,10 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget import ROIFormWidget, ROIPropertiesTableWidget, \
     ROITableWidget
 from mantidimaging.gui.windows.main import MainWindowView
-from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView, SpectrumViewerWindowPresenter
+from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView
 from mantidimaging.gui.windows.spectrum_viewer.model import ErrorMode, ToFUnitMode, ROI_RITS, SpecType, \
     SpectrumViewerWindowModel
+from mantidimaging.gui.windows.spectrum_viewer.presenter import SpectrumViewerWindowPresenter, SpectrumFitResult
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumWidget, SpectrumPlotWidget, SpectrumROI, \
     MIPlotItem
 from mantidimaging.gui.widgets.spectrum_widgets.tof_properties import ExperimentSetupFormWidget
@@ -445,3 +447,41 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertEqual(self.presenter.spectrum_mode, initial_spectrum_mode)
         self.presenter.redraw_all_rois.assert_not_called()
         self.view.display_normalise_error.assert_not_called()
+
+    def test_WHEN_normalise_background_normal_image_THEN_returns_normalised_rgb(self):
+        sample = np.array([[0.0, 128.0], [255.0, 64.0]])
+        result = self.presenter._normalise_background(sample)
+        self.assertEqual(result.shape, (2, 2, 3))
+        npt.assert_array_equal(result[..., 0], result[..., 1])
+        self.assertAlmostEqual(result[1, 0, 0], 1.0)
+        self.assertAlmostEqual(result[0, 0, 0], 0.0)
+
+    def test_WHEN_normalise_background_flat_image_THEN_returns_zeros(self):
+        sample = np.ones((3, 3)) * 5.0
+        result = self.presenter._normalise_background(sample)
+        npt.assert_array_equal(result, np.zeros((3, 3, 3)))
+
+    def test_WHEN_build_composite_image_no_sample_THEN_background_is_black(self):
+        full_map = np.full((4, 4), np.nan)
+        result = self.presenter.build_composite_image(full_map, (0.0, 1.0), opacity=1.0, sample_image=None)
+        self.assertEqual(result.shape, (4, 4, 3))
+        npt.assert_array_equal(result, np.zeros((4, 4, 3), dtype=np.uint8))
+
+    def test_WHEN_build_composite_image_opacity_zero_THEN_only_background_visible(self):
+        sample = np.ones((4, 4))
+        full_map = np.zeros((4, 4))
+        result = self.presenter.build_composite_image(full_map, (0.0, 1.0), opacity=0.0, sample_image=sample)
+        background = self.presenter._normalise_background(sample)
+        expected = (np.clip(background, 0.0, 1.0) * 255).astype(np.uint8)
+        npt.assert_array_equal(result, expected)
+
+    @parameterized.expand([
+        ("failed_status", {}, 0.0, 0.0, "Failed", False),
+        ("rss_per_dof_nan", {}, 0.0, float('nan'), "Fitted", False),
+        ("fitted_and_finite", {
+            "sigma": 1.0
+        }, 0.5, 0.5, "Fitted", True),
+    ])
+    def test_WHEN_fit_result_THEN_is_good_fit_correct(self, _, params, rss, rss_per_dof, status, expected):
+        result = SpectrumFitResult(params=params, rss=rss, rss_per_dof=rss_per_dof, status=status)
+        self.assertEqual(result.is_good_fit, expected)
