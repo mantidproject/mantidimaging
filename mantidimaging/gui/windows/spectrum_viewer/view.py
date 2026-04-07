@@ -213,6 +213,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
                 self.fittingForm.presenter.setup_fitting_model()
             if self.export_display_tabs.tabText(self.export_display_tabs.currentIndex()) == "Image":
                 self._sync_export_background()
+                self.presenter.update_parameter_map()
         self.imageTabs.setCurrentIndex(tab_index)
         self.presenter.update_unit_labels_and_menus()
         LOG.debug("Tab changed: index=%d", tab_index)
@@ -220,6 +221,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
     def handle_export_change_tab(self, tab_index: int):
         if self.export_display_tabs.tabText(tab_index) == "Image":
             self._sync_export_background()
+            self.presenter.update_parameter_map()
 
     def show_image_tab(self) -> None:
         """Switch the export display to the Image tab."""
