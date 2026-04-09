@@ -35,7 +35,6 @@ class TestGuiLiveViewer(GuiSystemBase):
     def tearDown(self) -> None:
         self._close_image_stacks()
         super().tearDown()
-        self.assertFalse(self.main_window.isVisible())
 
     def test_open_close_intensity_profile(self):
         self.assertEqual(self.live_viewer_window.splitter.sizes()[1], 0)

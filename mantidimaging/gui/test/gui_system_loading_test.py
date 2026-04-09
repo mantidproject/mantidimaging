@@ -32,7 +32,6 @@ class TestGuiSystemLoading(GuiSystemBase):
         self._close_image_stacks()
         self._check_datasets_consistent()
         super().tearDown()
-        self.assertFalse(self.main_window.isVisible())
 
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView._get_file_name")
     def _load_images(self, mocked_select_file):

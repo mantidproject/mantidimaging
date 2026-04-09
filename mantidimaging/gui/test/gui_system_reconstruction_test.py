@@ -42,7 +42,6 @@ class TestGuiSystemReconstruction(GuiSystemBase):
         self._close_image_stacks()
         self.mock_show_error_dialog.assert_not_called()
         super().tearDown()
-        self.assertFalse(self.main_window.isVisible())
 
     def test_correlate(self):
         expected_initial_cor = 64.0

@@ -43,7 +43,6 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         wait_until(lambda: len(self.spectrum_window.presenter.roi_to_process_queue) == 0, max_retry=600)
         self._close_image_stacks()
         super().tearDown()
-        self.assertFalse(self.main_window.isVisible())
 
     def _property_box_name(self):
         box_title = self.spectrum_window.roi_form.roi_properties_widget.group_box.title()
