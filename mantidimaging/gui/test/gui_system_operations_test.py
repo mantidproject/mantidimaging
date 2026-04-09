@@ -74,7 +74,6 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.qWait(SHOW_DELAY)
         self._close_image_stacks()
         super().tearDown()
-        self.assertFalse(self.main_window.isVisible())
 
     @staticmethod
     def _get_operation_parameter_widget(form: QFormLayout, param_name: str) -> QWidget:

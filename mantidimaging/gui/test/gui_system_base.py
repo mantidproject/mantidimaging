@@ -61,6 +61,7 @@ class GuiSystemBase(unittest.TestCase):
                    max_retry=60,
                    message="Main window did not close within 3 seconds")
         self.assertDictEqual(self.main_window.presenter.model.datasets, {})
+        del self.main_window
 
         # if self._outcome.result._excinfo is None then there were no AssertionErrors during the test
         test_error = self._outcome.result._excinfo  # type: ignore

@@ -13,7 +13,6 @@ class TestGuiSystemWindows(GuiSystemBase):
     def tearDown(self) -> None:
         self._close_image_stacks()
         super().tearDown()
-        self.assertFalse(self.main_window.isVisible())
 
     def test_main_window_shows(self):
         self.assertTrue(self.main_window.isVisible())
