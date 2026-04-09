@@ -1,0 +1,1 @@
+#3078: Fixes a bug where the export table headers were not updating on changing the fitting model.
