@@ -138,8 +138,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.main_window = main_window
         self.presenter = ReconstructWindowPresenter(self, main_window)
 
-        self.stackSelector.stack_selected_uuid.connect(lambda: self.update_projection_pair_dropdown())
-
         self.algorithmNameComboBox.insertItem(1, "FBP_CUDA")
         self.algorithmNameComboBox.insertItem(2, "SIRT_CUDA")
         self.algorithmNameComboBox.insertItem(3, "CIL_PDHG-TV")
@@ -603,13 +601,16 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def update_projection_pair_dropdown(self):
         model = self.projectionPairDropdown.model()
+        has_proj180 = self.presenter.model.images is not None and self.presenter.model.images.has_proj180deg()
         for idx, option in enumerate(self.PROJECTION_OPTIONS):
             item = model.item(idx)
-            if not option["requires_pair"]:
-                enabled = True
-            else:
+            if option["value"] == "proj180":
+                enabled = has_proj180
+            elif option["requires_pair"]:
                 pair = cast(tuple[float, float], option["value"])
                 enabled = self.presenter.is_pair_valid(pair)
+            else:
+                enabled = True
             item.setEnabled(enabled)
         self._ensure_valid_selection()
 
