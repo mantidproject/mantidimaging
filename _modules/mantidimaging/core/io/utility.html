@@ -523,20 +523,6 @@
                     <span class="k">return</span> <span class="n">possible_file</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
-
-
-<div class="viewcode-block" id="find_projection_closest_to_180">
-<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.utility.html#mantidimaging.core.io.utility.find_projection_closest_to_180">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">find_projection_closest_to_180</span><span class="p">(</span><span class="n">projections</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">projection_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Finds the projection closest to 180 and returns it with the difference.</span>
-<span class="sd">    :param projections: The array of projection images.</span>
-<span class="sd">    :param projection_angles: The array of projection angles.</span>
-<span class="sd">    :return: The 180 projection/the closest non-180 projection and the difference between its angle and 180.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">projection_angles</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">projections</span><span class="p">[</span><span class="n">diff</span><span class="o">.</span><span class="n">argmin</span><span class="p">()],</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span></div>
-
 </pre></div>
 
                 </article>

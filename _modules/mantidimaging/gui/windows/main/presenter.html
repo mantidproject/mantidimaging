@@ -501,7 +501,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NamedTuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSettings</span><span class="p">,</span> <span class="n">Qt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFont</span><span class="p">,</span> <span class="n">QPalette</span><span class="p">,</span> <span class="n">QColor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QTabBar</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QMessageBox</span>
@@ -510,7 +509,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_stack_data_type</span><span class="p">,</span> <span class="n">Dataset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span><span class="p">,</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_projection_closest_to_180</span><span class="p">,</span> <span class="n">THRESHOLD_180</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting.progress</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskCancelled</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.async_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_async_task_view</span>
@@ -807,14 +805,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_dataset_to_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Takes a loaded dataset and tries to find a substitute 180 projection (if required) then creates the stack window</span>
-<span class="sd">        and dataset tree view items.</span>
+<span class="sd">        Takes a loaded dataset, creates the stack window and dataset tree view items.</span>
 <span class="sd">        :param dataset: The loaded dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_dataset_tree</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_dataset_stack_visualisers</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_alternative_180_if_required</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_and_tabify_stack_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -841,30 +836,6 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.get_all_180_projections">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_all_180_projections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">proj180s</span></div>
-
-
-<div class="viewcode-block" id="MainWindowPresenter.add_alternative_180_if_required">
-<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_alternative_180_if_required">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_alternative_180_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if the dataset has a 180 projection and tries to find an alternative if one is missing.</span>
-<span class="sd">        :param dataset: The loaded dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span> <span class="ow">and</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">filenames</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
-            <span class="k">return</span>
-
-        <span class="n">projection_angles</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">projection_angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">closest_projection</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">projection</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">num_projections</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="n">diff</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">closest_projection</span><span class="p">,</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">find_projection_closest_to_180</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">projections</span><span class="p">,</span>
-                                                                      <span class="n">projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;=</span> <span class="n">THRESHOLD_180</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">ask_to_use_closest_to_180</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
-            <span class="n">_180_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">closest_projection</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="n">closest_projection</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">proj180deg</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">_180_arr</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_180&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_images_to_existing_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">,</span> <span class="s2">&quot;proj_180&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowPresenter.create_dataset_stack_visualisers">

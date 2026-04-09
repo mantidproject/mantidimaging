@@ -632,8 +632,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">ReconstructWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">stack_selected_uuid</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_projection_pair_dropdown</span><span class="p">())</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;FBP_CUDA&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;SIRT_CUDA&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">insertItem</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;CIL_PDHG-TV&quot;</span><span class="p">)</span>
@@ -1204,13 +1202,16 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.update_projection_pair_dropdown">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_projection_pair_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projectionPairDropdown</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+        <span class="n">has_proj180</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">has_proj180deg</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PROJECTION_OPTIONS</span><span class="p">):</span>
             <span class="n">item</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">option</span><span class="p">[</span><span class="s2">&quot;requires_pair&quot;</span><span class="p">]:</span>
-                <span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">option</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;proj180&quot;</span><span class="p">:</span>
+                <span class="n">enabled</span> <span class="o">=</span> <span class="n">has_proj180</span>
+            <span class="k">elif</span> <span class="n">option</span><span class="p">[</span><span class="s2">&quot;requires_pair&quot;</span><span class="p">]:</span>
                 <span class="n">pair</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">option</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
                 <span class="n">enabled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">is_pair_valid</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">enabled</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">item</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_valid_selection</span><span class="p">()</span></div>
 
