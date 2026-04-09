@@ -12,6 +12,8 @@ from numpy.testing._private.utils import assert_array_equal
 from parameterized import parameterized
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
 
+import multiprocessing
+from multiprocessing import shared_memory
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.spectrum_viewer.model import SpecType
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
@@ -41,6 +43,13 @@ class TestGuiSpectrumViewer(GuiSystemBase):
     def tearDown(self) -> None:
         assert self.main_window.spectrum_viewer is not None
         wait_until(lambda: len(self.spectrum_window.presenter.roi_to_process_queue) == 0, max_retry=600)
+        try:
+            for proc in multiprocessing.active_children():
+                proc.join(timeout=5)
+            if shared_memory is not None:
+                pass
+        except Exception as e:
+            print(f"[DEBUG] Multiprocessing cleanup failed: {e}")
         self._close_image_stacks()
         super().tearDown()
         self.assertFalse(self.main_window.isVisible())
