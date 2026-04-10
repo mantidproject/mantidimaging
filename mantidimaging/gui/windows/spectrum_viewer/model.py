@@ -52,6 +52,12 @@ class ErrorMode(Enum):
         raise ValueError(f"Unknown error mode: {value}")
 
 
+class ColourRangeMode(Enum):
+    IQR = "1.5\u00d7IQR"
+    MAD = "Median \u00b13\u00d7MAD"
+    PERCENTILE = "2nd - 98th %ile"
+
+
 class AllowedModesTypedDict(TypedDict):
     mode: ToFUnitMode
     label: str
@@ -96,11 +102,9 @@ class SpectrumViewerWindowModel:
     def __init__(self, presenter: SpectrumViewerWindowPresenter):
         self.presenter = presenter
         self._roi_id_counter = 0
-
         self.fit_results: list[tuple[str, SpectrumFitResult]] | None = None
-
+        self._good_fits_by_roi_name: dict[str, SpectrumFitResult] = {}
         self.units = UnitConversion()
-
         self.fitting_engine = FittingEngine(ErfStepFunction())
 
     def roi_name_generator(self) -> str:
@@ -586,8 +590,145 @@ class SpectrumViewerWindowModel:
         return self.fitting_engine.find_best_fit(xvals, yvals, init_params, params_bounds=bounds)
 
     def set_fit_results(self, results: list[tuple[str, SpectrumFitResult]] | None) -> None:
+        """
+        Store filtered fit results to only good fits and create a lookup for building parameter maps
+        """
         self.fit_results = results
+        self._good_fits_by_roi_name = {
+            name: result
+            for name, result in results if result.is_good_fit
+        } if results else {}
         LOG.info("Stored fit results")
 
     def get_fit_results(self) -> list[tuple[str, SpectrumFitResult]] | None:
         return self.fit_results
+
+    def compute_chi2_threshold(self, percentile: float = 95.0) -> float | None:
+        """
+        Return a given percentile of good-fit rss_per_dof values, or None if unavailable.
+        Acts as a good starting point to be altered based on data and preference
+
+        @param percentile: The percentile of rss_per_dof values to return as the chi2 threshold
+        @return: The chi2 threshold value or None if no valid fit results are available
+        """
+        if self.fit_results is None:
+            return None
+        valid_chi2_values = [
+            result.rss_per_dof for _, result in self.fit_results
+            if result.is_good_fit and np.isfinite(result.rss_per_dof) and result.rss_per_dof > 0
+        ]
+        return float(np.percentile(valid_chi2_values, percentile)) if valid_chi2_values else None
+
+    def build_parameter_map(self,
+                            param_name: str,
+                            binner: ROIBinner,
+                            chi2_threshold: float | None = None) -> np.ndarray:
+        """
+        Build a 2D parameter map from stored fit results for the given parameter name.
+
+        Grid dimensions are derived from the binner sub-ROIs.
+        Fits higher than chi2_threshold excluded from map.
+
+        @param param_name: The name of the fitted parameter to map
+        @param binner: The ROIBinner used when generating for fit
+        @param  chi2_threshold: Optional upper bound on rss_per_dof. Exclude fits if reduced chi2 higher than threshold
+        @return np.ndarray: 2D array of parameters (n_rows, n_cols) matching binner dimensions.
+        """
+        if self.fit_results is None:
+            raise ValueError("No fit results available. Run 'Fit All' before building a parameter map.")
+
+        n_cols, n_rows = binner.lengths()
+        param_map = np.full((n_rows, n_cols), np.nan, dtype=np.float64)
+
+        for col, row in np.ndindex(n_cols, n_rows):
+            if (fit_result := self._good_fits_by_roi_name.get(binner.get_roi_name(col, row))) is None:
+                continue
+            if chi2_threshold is not None and fit_result.rss_per_dof > chi2_threshold:
+                continue
+            param_map[row, col] = fit_result.params[param_name]
+
+        return param_map
+
+    def calculate_colour_levels(self, map_array: np.ndarray, mode: ColourRangeMode) -> tuple[float, float]:
+        """
+        Handle a various outlier exclusion options to handle various distributions, falling back
+        to full range if needed for IQR and percentile
+        Return (lower, upper) display levels for a parameter map based on user colour range selection
+
+        @param map_array: 2D parameter map array
+        @param mode: Colour range selection
+        @return: (lower, upper) tuple image display levels
+        """
+        finite_values = map_array[np.isfinite(map_array)]
+        if finite_values.size == 0:
+            return 0.0, 1.0
+
+        strategies = {
+            ColourRangeMode.IQR: self._colour_levels_iqr,
+            ColourRangeMode.MAD: self._colour_levels_mad,
+            ColourRangeMode.PERCENTILE: self.colour_levels_percentile,
+        }
+        lower, upper = strategies[mode](finite_values)
+
+        if lower >= upper:
+            return float(finite_values.min()), float(finite_values.max())
+        return lower, upper
+
+    @staticmethod
+    def colour_levels_percentile(finite_values: np.ndarray) -> tuple[float, float]:
+        """Return the 2nd-98th percentile range of the given finite values."""
+        return float(np.percentile(finite_values, 2)), float(np.percentile(finite_values, 98))
+
+    @staticmethod
+    def _colour_levels_mad(finite_values: np.ndarray) -> tuple[float, float]:
+        """Clips to median +- 3xMAD and falls back to full range when MAD = 0 to exclude outliers"""
+        median = np.median(finite_values)
+        mad = np.median(np.abs(finite_values - median))
+        if mad == 0:
+            return float(finite_values.min()), float(finite_values.max())
+        return float(max(finite_values.min(), median - 3.0 * mad)), float(min(finite_values.max(), median + 3.0 * mad))
+
+    @staticmethod
+    def _colour_levels_iqr(finite_values: np.ndarray) -> tuple[float, float]:
+        """Clips outliers beyond 1.5xIQR to exclude outliers"""
+        lower_quartile, upper_quartile = np.percentile(finite_values, [25, 75])
+        iqr = upper_quartile - lower_quartile
+        return (float(max(finite_values.min(),
+                          lower_quartile - 1.5 * iqr)), float(min(finite_values.max(), upper_quartile + 1.5 * iqr)))
+
+    def build_full_sample_parameter_map(self, map_array: np.ndarray, binner: ROIBinner) -> np.ndarray:
+        """
+        Create array matching sample image size filled with NaN and insert parameter map over ROI region
+        set by binner for overlaying over sample image.
+
+        Each bin occupies exactly step_size pixels in both axes to avoid edge artefacts
+        using bin_size which may be larger when bins overlap.
+
+        @param map_array: parameter map
+        @param binner: The binner used when generating the map
+        @return: Array of shape (height, width) matching the sample stack dimensions
+        """
+        img_height, img_width = self.get_image_shape()
+        full_map = np.full((img_height, img_width), np.nan, dtype=np.float32)
+        step = binner.step_size
+
+        n_cols, n_rows = binner.lengths()
+        for col, row in np.ndindex(n_cols, n_rows):
+            param_value = map_array[row, col]
+            if np.isfinite(param_value):
+                x_start = binner.left_indexes[col]
+                x_end = min(x_start + step, img_width)
+                y_start = binner.top_indexes[row]
+                y_end = min(y_start + step, img_height)
+                full_map[y_start:y_end, x_start:x_end] = np.float32(param_value)
+
+        return full_map
+
+    def save_parameter_map(self, path: Path, map_array: np.ndarray) -> None:
+        """
+        Save parameter map array to a TIFF file
+
+        @param path: File path for the TIFF
+        @param map_array: Parameter Map
+        """
+        saver.write_img(map_array, str(path))

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
 from PyQt5.QtGui import QColor, QResizeEvent
@@ -30,6 +30,8 @@ if TYPE_CHECKING:
     from mantidimaging.gui.windows.main import MainWindowView  # noqa:F401   # pragma: no cover
 
 LOG = getLogger(__name__)
+
+_graveyard: list[Any] = []
 
 
 class SpectrumROI(ROI):
@@ -134,7 +136,6 @@ class SpectrumWidget(QWidget):
         super().__init__()
 
         self.vbox = QVBoxLayout(self)
-
         self.image_widget = SpectrumProjectionWidget(main_window)
         self.image = self.image_widget.image
         self.spectrum_plot_widget = SpectrumPlotWidget()
@@ -397,6 +398,7 @@ class MIPlotItem(PlotItem):
     def __init__(self, *args, **kwds) -> None:
         super().__init__(*args, **kwds)
         self.vb = self.getViewBox()
+        _graveyard.append(self.vb)
         self.base_menu = self.getMenu()
 
         self.plot_menu = self.base_menu.addMenu("Plot Style")

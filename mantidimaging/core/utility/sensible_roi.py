@@ -107,3 +107,7 @@ class ROIBinner:
         right_edge = self.left_indexes[-1] + self.bin_size
         bottom_edge = self.top_indexes[-1] + self.bin_size
         return right_edge == self.roi.right and bottom_edge == self.roi.bottom
+
+    def get_roi_name(self, col: int, row: int) -> str:
+        """Return ROI name for bin grid position (col, row)."""
+        return f"ROI_bin:(x={col},y={row})"

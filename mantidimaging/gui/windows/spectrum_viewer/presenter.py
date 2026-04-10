@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Literal, NamedTuple
 from collections.abc import Iterator
 from logging import getLogger
 
+import pyqtgraph as pg
 from mantidimaging.core.fitting.fitting_engine import BoundType
 from mantidimaging.core.utility.progress_reporting.progress import Progress
 import numpy as np
@@ -20,7 +21,8 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.dialogs.async_task import start_async_task_view, TaskWorkerThread
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.spectrum_viewer.model import SpectrumViewerWindowModel, SpecType, ROI_RITS, ErrorMode, \
-    ToFUnitMode, allowed_modes
+    ToFUnitMode, allowed_modes, ColourRangeMode
+from mantidimaging.core.utility.sensible_roi import ROIBinner
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer.view import SpectrumViewerWindowView  # pragma: no cover
@@ -47,6 +49,11 @@ class SpectrumFitResult(NamedTuple):
     rss: float
     rss_per_dof: float
     status: Literal["Fitted", "Failed"]
+
+    @property
+    def is_good_fit(self) -> bool:
+        """True if the fit converged and produced valid chi2 residuals """
+        return self.status != "Failed" and np.isfinite(self.rss_per_dof)
 
 
 class SpectrumViewerWindowPresenter(BasePresenter):
@@ -78,6 +85,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.handle_roi_change_timer = QTimer()
         self.handle_roi_change_timer.setSingleShot(True)
         self.handle_roi_change_timer.timeout.connect(self.handle_roi_moved)
+
+    def setup_colour_range_dropdown(self) -> None:
+        """Populate colour range dropdown with available options"""
+        self.view.exportSettingsWidget.colourRangeDropdown.addItems([mode.value for mode in ColourRangeMode])
 
     def _run_fit_async(self):
         """
@@ -778,7 +789,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def on_fit_all_regions(self, task: TaskWorkerThread) -> None:
         """
         Callback executed when the asynchronous fitting task completes.
-        Handles errors, retrieves results, and updates the export table.
+        Handles errors, retrieves results, and updates the export table and parameter map
 
         Parameters
         ----------
@@ -789,8 +800,126 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
             self._populate_export_table(results)
             self.model.set_fit_results(results)
+
+            if results:
+                param_names = self.model.fitting_engine.get_parameter_names()
+                self.view.exportSettingsWidget.populate_parameter_selector(param_names)
+                if (threshold := self.model.compute_chi2_threshold()) is not None:
+                    self.view.exportSettingsWidget.set_chi2_threshold(threshold)
+                self.view.show_image_tab()
+                self.update_parameter_map()
         else:
             self.view.show_error_dialog(str(task.error))
+
+    def _clear_export_table(self) -> None:
+        """
+        Clear all existing data from the export results table.
+        """
+        self.view.exportDataTableWidget.clear_table()
+
+    def _get_display_image(self) -> np.ndarray | None:
+        """
+        Match image in main view for backgroud in full sample parameter map
+        @return: image to use as background for mapped param export, or None if no stack is loaded
+        """
+        return (self.model.get_normalized_averaged_image()
+                if self.view.normalisation_enabled() else self.model.get_averaged_image())
+
+    def update_parameter_map(self) -> None:
+        """
+        Update the map based on the selected parameter in the export settings.
+        """
+        if not self.view.selected_param_name:
+            return
+        binner = self.view.get_binner()
+        map_array = self.model.build_parameter_map(self.view.selected_param_name, binner, self.view.chi2_threshold)
+        colour_mode = ColourRangeMode(self.view.colour_range_mode)
+        levels = self.model.calculate_colour_levels(map_array, colour_mode)
+
+        self.view.display_parameter_map(map_array, binner, levels)
+
+    def on_map_display_settings_changed(self, value: int) -> None:
+        self.update_parameter_map()
+
+    def handle_parameter_map_changed(self, param_name: str) -> None:
+        self.update_parameter_map()
+
+    def handle_export_parameter_map(self) -> None:
+        """Select array shape based on export selection"""
+        if not (path := self.view.get_map_export_filename()):
+            return
+
+        fit_parameter = self.view.selected_param_name
+        binner = self.view.get_binner()
+        chi2_threshold = self.view.chi2_threshold
+        map_array = self.model.build_parameter_map(fit_parameter, binner, chi2_threshold)
+
+        if self.view.export_full_sample:
+            array_to_save = self._build_full_sample_export(map_array, binner)
+        else:
+            array_to_save = map_array
+
+        self.model.save_parameter_map(path, array_to_save)
+        LOG.info("Parameter map '%s' exported to %s", self.view.selected_param_name, path)
+
+    def _build_full_sample_export(self, map_array: np.ndarray, binner: ROIBinner) -> np.ndarray:
+        """
+        Build colour parameter map (viridis) over the sample image for export
+
+        @param map_array: 2D array of parameter values for each binned ROI
+        @param binner: ROIBinner object containing the definitions of the binned ROIs
+        @return: 3D Colour array for export matching sample shape
+        """
+        colour_mode = ColourRangeMode(self.view.colour_range_mode)
+        levels = self.model.calculate_colour_levels(map_array, colour_mode)
+        full_map = self.model.build_full_sample_parameter_map(map_array, binner)
+        display_image = self._get_display_image()
+        assert display_image is not None, "Stack must be loaded to export full sample image"
+        return self.build_composite_image(full_map, levels, self.view.overlay_opacity, sample_image=display_image)
+
+    def _normalise_background(self, sample_image: np.ndarray) -> np.ndarray:
+        """
+        Normalise sample image using percentile levels
+
+        @param sample_image: the image to be normalised
+        @return: normalised colour image
+        """
+        sample = sample_image.astype(float)
+        finite_pixels = sample[np.isfinite(sample)]
+        lower, upper = self.model.colour_levels_percentile(finite_pixels)
+        if upper > lower:
+            sample_normalised = np.clip((sample - lower) / (upper - lower), 0.0, 1.0)
+        else:
+            sample_normalised = np.zeros_like(sample)
+        return np.stack([sample_normalised] * 3, axis=-1)
+
+    def build_composite_image(self,
+                              full_map: np.ndarray,
+                              levels: tuple[float, float],
+                              opacity: float,
+                              sample_image: np.ndarray | None = None) -> np.ndarray:
+        """Colour (viridis) parameter map overlay over sample image.
+
+        @param full_map: Full-resolution float32 NaN canvas from build_full_sample_parameter_map
+        @param levels: (lower, upper) colour limits used to normalise the overlay
+        @param opacity: Overlay opacity between 0 and 1
+        @param sample_image: Background image to composite over. Pass None for map-only export.
+        @return: colour array
+        """
+        map_lower, map_upper = levels
+        fitted_pixel_mask = np.isfinite(full_map)
+        blank_background = np.zeros((*full_map.shape, 3))
+        background_rgb = self._normalise_background(sample_image) if sample_image is not None else blank_background
+
+        # only apply map to overlay over fitted pixels within levels exlcuidg outliers
+        if fitted_pixel_mask.any() and map_upper > map_lower:
+            map_normalised = np.clip((full_map - map_lower) / (map_upper - map_lower), 0.0, 1.0)
+            viridis_rgb = pg.colormap.get('viridis').map(map_normalised, mode='float')[..., :3]
+            foreground = viridis_rgb[fitted_pixel_mask]
+            background = background_rgb[fitted_pixel_mask]
+            background_rgb[fitted_pixel_mask] = opacity * foreground + (1.0 - opacity) * background
+
+        return (np.clip(background_rgb, 0.0, 1.0) * 255).astype(np.uint8)
 
     def _populate_export_table(self, results: list[tuple[str, SpectrumFitResult]]) -> None:
         """

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from logging import getLogger
+from typing import Any
 
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
@@ -23,6 +24,8 @@ diff_pen = (0, 0, 200)
 
 OVERLAY_THRESHOLD = 1e-6
 OVERLAY_COLOUR_DIFFERENCE = [0, 255, 255, 255]
+
+_graveyard: list[Any] = []
 
 
 def _data_valid_for_histogram(data) -> bool:
@@ -74,6 +77,7 @@ class FilterPreviews(GraphicsLayoutWidget):
         self.nextRow()
 
         self.histogram = self.init_histogram()
+        _graveyard.append(self.histogram.vb)
 
         # Work around for https://github.com/mantidproject/mantidimaging/issues/565
         self.scene().contextMenu = [item for item in self.scene().contextMenu if "export" not in item.text().lower()]
