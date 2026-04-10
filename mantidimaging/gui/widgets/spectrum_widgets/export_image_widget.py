@@ -2,9 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import pyqtgraph as pg
+
+_graveyard: list[Any] = []
 
 
 class ExportImageViewWidget(QWidget):
@@ -19,6 +23,9 @@ class ExportImageViewWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         self.image_view = pg.ImageView()
+        _graveyard.append(self.image_view.view)
+        _graveyard.append(self.image_view.getRoiPlot().plotItem.vb)
+        _graveyard.append(self.image_view.getHistogramWidget().vb)
         self.image_view.ui.roiBtn.hide()
         self.image_view.ui.menuBtn.hide()
         self.image_view.ui.histogram.hide()
