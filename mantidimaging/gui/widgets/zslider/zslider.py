@@ -2,9 +2,13 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from typing import Any
+
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
 from pyqtgraph import PlotItem, InfiniteLine
+
+_graveyard: list[Any] = []
 
 
 class ZSlider(PlotItem):
@@ -24,6 +28,7 @@ class ZSlider(PlotItem):
 
     def __init__(self) -> None:
         super().__init__()
+        _graveyard.append(self.vb)
         self.setFixedHeight(40)
         self.hideAxis("left")
         self.setXRange(0, 1)

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from itertools import chain, tee
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from weakref import WeakSet
 
 from PyQt5.QtCore import QTimer
@@ -22,7 +22,7 @@ import numpy as np
 if TYPE_CHECKING:
     from PyQt5.QtWidgets import QWidget
 
-graveyard = []
+graveyard: list[Any] = []
 
 
 # https://docs.python.org/3/library/itertools.html?highlight=itertools#itertools.pairwise
