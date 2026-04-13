@@ -493,7 +493,8 @@
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSignalBlocker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QDoubleSpinBox</span><span class="p">,</span> <span class="n">QGroupBox</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FitExportFormWidget">
@@ -506,25 +507,71 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">outer_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Parameter map group</span>
+        <span class="n">map_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Parameter Map&quot;</span><span class="p">)</span>
+        <span class="n">map_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">map_group</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fitAllButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Fit All&quot;</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitAllButton</span><span class="p">)</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitAllButton</span><span class="p">)</span>
+
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Map Parameter&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;Run fit to populate&quot;</span><span class="p">)</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="p">)</span>
+
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Map Transparency (%)&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparencySpinBox</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparencySpinBox</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparencySpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparencySpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">)</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transparencySpinBox</span><span class="p">)</span>
+
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Colour Range&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colourRangeDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colourRangeDropdown</span><span class="p">)</span>
+
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;chi</span><span class="se">\u00b2</span><span class="s2"> threshold&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span> <span class="o">=</span> <span class="n">QDoubleSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="o">.</span><span class="n">setSingleStep</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Pixels with reduced chi</span><span class="se">\u00b2</span><span class="s2"> above threshold are masked. &quot;</span>
+                                                   <span class="s2">&quot;Initialised to the 95th percentile of good fits.&quot;</span><span class="p">)</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="p">)</span>
+
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Image Export Region&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportContentDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportContentDropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;Mapped region only&quot;</span><span class="p">,</span> <span class="s2">&quot;Full sample image&quot;</span><span class="p">])</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportContentDropdown</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportMappedImageButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Export Map...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportMappedImageButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">map_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportMappedImageButton</span><span class="p">)</span>
+
+        <span class="n">outer_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">map_group</span><span class="p">)</span>
+
+        <span class="c1"># Table export group</span>
+        <span class="n">table_group</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s2">&quot;Table Export&quot;</span><span class="p">)</span>
+        <span class="n">table_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">table_group</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">formatDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">formatDropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;CSV&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;All&quot;</span><span class="p">)</span>
 
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Export Format&quot;</span><span class="p">))</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatDropdown</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Export Area&quot;</span><span class="p">))</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span><span class="p">)</span>
+        <span class="n">table_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Export Format&quot;</span><span class="p">))</span>
+        <span class="n">table_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatDropdown</span><span class="p">)</span>
+        <span class="n">table_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Export Area&quot;</span><span class="p">))</span>
+        <span class="n">table_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">exportButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Export&quot;</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportButton</span><span class="p">)</span>
+        <span class="n">table_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportButton</span><span class="p">)</span>
 
-        <span class="n">layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
+        <span class="n">outer_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">table_group</span><span class="p">)</span>
+        <span class="n">outer_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FitExportFormWidget.set_roi_names">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_roi_names">[docs]</a>
@@ -539,6 +586,54 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">areaDropdown</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="FitExportFormWidget.populate_parameter_selector">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.populate_parameter_selector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_parameter_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Populate the parameter selector combo with fitted parameter names and enable it</span>
+<span class="sd">        after all data is written to export table</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">param_names</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exportMappedImageButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">param_names</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">param_names</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FitExportFormWidget.set_chi2_threshold">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_chi2_threshold">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_chi2_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the chi2 threshold without emitting signals to avoid pre-maturely</span>
+<span class="sd">        updating the map display before all data is written to table</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chiSquaredThresholdSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameter_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameterDropdown</span><span class="o">.</span><span class="n">currentTextChanged</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlay_opacity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return overlay opacity spinbox. Opacity flipped so that</span>
+<span class="sd">        0% transparency = 100% opacity to improve intuitivenessl</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">100</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">transparencySpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">())</span> <span class="o">/</span> <span class="mf">100.0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_full_sample_export</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True when the user has selected &#39;Full sample image&#39; in the Image Export Region dropdown.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exportContentDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Full sample image&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">selected_colour_range_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">colourRangeDropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FitExportFormWidget.selected_format">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format">[docs]</a>

@@ -556,6 +556,15 @@
 
 
 
+<div class="viewcode-block" id="ColourRangeMode">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.ColourRangeMode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ColourRangeMode</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">IQR</span> <span class="o">=</span> <span class="s2">&quot;1.5</span><span class="se">\u00d7</span><span class="s2">IQR&quot;</span>
+    <span class="n">MAD</span> <span class="o">=</span> <span class="s2">&quot;Median </span><span class="se">\u00b1</span><span class="s2">3</span><span class="se">\u00d7</span><span class="s2">MAD&quot;</span>
+    <span class="n">PERCENTILE</span> <span class="o">=</span> <span class="s2">&quot;2nd - 98th </span><span class="si">%i</span><span class="s2">le&quot;</span></div>
+
+
+
 <div class="viewcode-block" id="AllowedModesTypedDict">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.AllowedModesTypedDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AllowedModesTypedDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
@@ -605,11 +614,9 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumFitResult</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_good_fits_by_roi_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumFitResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">UnitConversion</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_engine</span> <span class="o">=</span> <span class="n">FittingEngine</span><span class="p">(</span><span class="n">ErfStepFunction</span><span class="p">())</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowModel.roi_name_generator">
@@ -1190,7 +1197,14 @@
 <div class="viewcode-block" id="SpectrumViewerWindowModel.set_fit_results">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.set_fit_results">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_fit_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumFitResult</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Store filtered fit results to only good fits and create a lookup for building parameter maps</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_results</span> <span class="o">=</span> <span class="n">results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_good_fits_by_roi_name</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">result</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_good_fit</span>
+        <span class="p">}</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stored fit results&quot;</span><span class="p">)</span></div>
 
 
@@ -1198,6 +1212,154 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_fit_results">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_fit_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumFitResult</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_results</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.compute_chi2_threshold">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.compute_chi2_threshold">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_chi2_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percentile</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">95.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a given percentile of good-fit rss_per_dof values, or None if unavailable.</span>
+<span class="sd">        Acts as a good starting point to be altered based on data and preference</span>
+
+<span class="sd">        @param percentile: The percentile of rss_per_dof values to return as the chi2 threshold</span>
+<span class="sd">        @return: The chi2 threshold value or None if no valid fit results are available</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">valid_chi2_values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">rss_per_dof</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_results</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">is_good_fit</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">rss_per_dof</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">rss_per_dof</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">valid_chi2_values</span><span class="p">,</span> <span class="n">percentile</span><span class="p">))</span> <span class="k">if</span> <span class="n">valid_chi2_values</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.build_parameter_map">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.build_parameter_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">,</span>
+                            <span class="n">chi2_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a 2D parameter map from stored fit results for the given parameter name.</span>
+
+<span class="sd">        Grid dimensions are derived from the binner sub-ROIs.</span>
+<span class="sd">        Fits higher than chi2_threshold excluded from map.</span>
+
+<span class="sd">        @param param_name: The name of the fitted parameter to map</span>
+<span class="sd">        @param binner: The ROIBinner used when generating for fit</span>
+<span class="sd">        @param  chi2_threshold: Optional upper bound on rss_per_dof. Exclude fits if reduced chi2 higher than threshold</span>
+<span class="sd">        @return np.ndarray: 2D array of parameters (n_rows, n_cols) matching binner dimensions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No fit results available. Run &#39;Fit All&#39; before building a parameter map.&quot;</span><span class="p">)</span>
+
+        <span class="n">n_cols</span><span class="p">,</span> <span class="n">n_rows</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">lengths</span><span class="p">()</span>
+        <span class="n">param_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">n_cols</span><span class="p">,</span> <span class="n">n_rows</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">fit_result</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_good_fits_by_roi_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">binner</span><span class="o">.</span><span class="n">get_roi_name</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">)))</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">chi2_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fit_result</span><span class="o">.</span><span class="n">rss_per_dof</span> <span class="o">&gt;</span> <span class="n">chi2_threshold</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">param_map</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">param_map</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.calculate_colour_levels">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.calculate_colour_levels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_colour_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">ColourRangeMode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle a various outlier exclusion options to handle various distributions, falling back</span>
+<span class="sd">        to full range if needed for IQR and percentile</span>
+<span class="sd">        Return (lower, upper) display levels for a parameter map based on user colour range selection</span>
+
+<span class="sd">        @param map_array: 2D parameter map array</span>
+<span class="sd">        @param mode: Colour range selection</span>
+<span class="sd">        @return: (lower, upper) tuple image display levels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">finite_values</span> <span class="o">=</span> <span class="n">map_array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">map_array</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">finite_values</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span>
+
+        <span class="n">strategies</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ColourRangeMode</span><span class="o">.</span><span class="n">IQR</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colour_levels_iqr</span><span class="p">,</span>
+            <span class="n">ColourRangeMode</span><span class="o">.</span><span class="n">MAD</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colour_levels_mad</span><span class="p">,</span>
+            <span class="n">ColourRangeMode</span><span class="o">.</span><span class="n">PERCENTILE</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour_levels_percentile</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="n">strategies</span><span class="p">[</span><span class="n">mode</span><span class="p">](</span><span class="n">finite_values</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">lower</span> <span class="o">&gt;=</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.colour_levels_percentile">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.colour_levels_percentile">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">colour_levels_percentile</span><span class="p">(</span><span class="n">finite_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the 2nd-98th percentile range of the given finite values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">finite_values</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">finite_values</span><span class="p">,</span> <span class="mi">98</span><span class="p">))</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_colour_levels_mad</span><span class="p">(</span><span class="n">finite_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clips to median +- 3xMAD and falls back to full range when MAD = 0 to exclude outliers&quot;&quot;&quot;</span>
+        <span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">finite_values</span><span class="p">)</span>
+        <span class="n">mad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">finite_values</span> <span class="o">-</span> <span class="n">median</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">mad</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">median</span> <span class="o">-</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">mad</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">median</span> <span class="o">+</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">mad</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_colour_levels_iqr</span><span class="p">(</span><span class="n">finite_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clips outliers beyond 1.5xIQR to exclude outliers&quot;&quot;&quot;</span>
+        <span class="n">lower_quartile</span><span class="p">,</span> <span class="n">upper_quartile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">finite_values</span><span class="p">,</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">])</span>
+        <span class="n">iqr</span> <span class="o">=</span> <span class="n">upper_quartile</span> <span class="o">-</span> <span class="n">lower_quartile</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                          <span class="n">lower_quartile</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">iqr</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">finite_values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">upper_quartile</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">iqr</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.build_full_sample_parameter_map">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.build_full_sample_parameter_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_full_sample_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create array matching sample image size filled with NaN and insert parameter map over ROI region</span>
+<span class="sd">        set by binner for overlaying over sample image.</span>
+
+<span class="sd">        Each bin occupies exactly step_size pixels in both axes to avoid edge artefacts</span>
+<span class="sd">        using bin_size which may be larger when bins overlap.</span>
+
+<span class="sd">        @param map_array: parameter map</span>
+<span class="sd">        @param binner: The binner used when generating the map</span>
+<span class="sd">        @return: Array of shape (height, width) matching the sample stack dimensions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_height</span><span class="p">,</span> <span class="n">img_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()</span>
+        <span class="n">full_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">img_height</span><span class="p">,</span> <span class="n">img_width</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">step_size</span>
+
+        <span class="n">n_cols</span><span class="p">,</span> <span class="n">n_rows</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">lengths</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">n_cols</span><span class="p">,</span> <span class="n">n_rows</span><span class="p">):</span>
+            <span class="n">param_value</span> <span class="o">=</span> <span class="n">map_array</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">param_value</span><span class="p">):</span>
+                <span class="n">x_start</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">left_indexes</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+                <span class="n">x_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_start</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">img_width</span><span class="p">)</span>
+                <span class="n">y_start</span> <span class="o">=</span> <span class="n">binner</span><span class="o">.</span><span class="n">top_indexes</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+                <span class="n">y_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">y_start</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">img_height</span><span class="p">)</span>
+                <span class="n">full_map</span><span class="p">[</span><span class="n">y_start</span><span class="p">:</span><span class="n">y_end</span><span class="p">,</span> <span class="n">x_start</span><span class="p">:</span><span class="n">x_end</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">param_value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">full_map</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.save_parameter_map">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_parameter_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">map_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save parameter map array to a TIFF file</span>
+
+<span class="sd">        @param path: File path for the TIFF</span>
+<span class="sd">        @param map_array: Parameter Map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">saver</span><span class="o">.</span><span class="n">write_img</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
 </div>
 
 </pre></div>

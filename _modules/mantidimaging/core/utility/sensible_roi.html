@@ -624,6 +624,13 @@
         <span class="n">right_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_indexes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span>
         <span class="n">bottom_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indexes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_size</span>
         <span class="k">return</span> <span class="n">right_edge</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">right</span> <span class="ow">and</span> <span class="n">bottom_edge</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">bottom</span></div>
+
+
+<div class="viewcode-block" id="ROIBinner.get_roi_name">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.sensible_roi.html#mantidimaging.core.utility.sensible_roi.ROIBinner.get_roi_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ROI name for bin grid position (col, row).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ROI_bin:(x=</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">,y=</span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 </div>
 
 </pre></div>

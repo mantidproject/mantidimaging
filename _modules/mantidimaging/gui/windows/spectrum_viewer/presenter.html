@@ -502,6 +502,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.fitting.fitting_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoundType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting.progress</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -512,7 +513,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.async_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_async_task_view</span><span class="p">,</span> <span class="n">TaskWorkerThread</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowModel</span><span class="p">,</span> <span class="n">SpecType</span><span class="p">,</span> <span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">ErrorMode</span><span class="p">,</span> \
-    <span class="n">ToFUnitMode</span><span class="p">,</span> <span class="n">allowed_modes</span>
+    <span class="n">ToFUnitMode</span><span class="p">,</span> <span class="n">allowed_modes</span><span class="p">,</span> <span class="n">ColourRangeMode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.sensible_roi</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROIBinner</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.spectrum_viewer.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumViewerWindowView</span>  <span class="c1"># pragma: no cover</span>
@@ -543,7 +545,12 @@
     <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="n">rss</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">rss_per_dof</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">status</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Fitted&quot;</span><span class="p">,</span> <span class="s2">&quot;Failed&quot;</span><span class="p">]</span></div>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Fitted&quot;</span><span class="p">,</span> <span class="s2">&quot;Failed&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_good_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the fit converged and produced valid chi2 residuals &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;Failed&quot;</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rss_per_dof</span><span class="p">)</span></div>
 
 
 
@@ -578,6 +585,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span><span class="o">.</span><span class="n">setSingleShot</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_moved</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.setup_colour_range_dropdown">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.setup_colour_range_dropdown">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_colour_range_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate colour range dropdown with available options&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">colourRangeDropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="n">mode</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">ColourRangeMode</span><span class="p">])</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_run_fit_async</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1415,7 +1429,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">on_fit_all_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Callback executed when the asynchronous fitting task completes.</span>
-<span class="sd">        Handles errors, retrieves results, and updates the export table.</span>
+<span class="sd">        Handles errors, retrieves results, and updates the export table and parameter map</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1426,8 +1440,141 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_populate_export_table</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_fit_results</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+                <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fitting_engine</span><span class="o">.</span><span class="n">get_parameter_names</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">populate_parameter_selector</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">threshold</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">compute_chi2_threshold</span><span class="p">())</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">set_chi2_threshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_image_tab</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_parameter_map</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_export_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear all existing data from the export results table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_display_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Match image in main view for backgroud in full sample parameter map</span>
+<span class="sd">        @return: image to use as background for mapped param export, or None if no stack is loaded</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_normalized_averaged_image</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalisation_enabled</span><span class="p">()</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_averaged_image</span><span class="p">())</span>
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.update_parameter_map">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.update_parameter_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the map based on the selected parameter in the export settings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">selected_param_name</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">binner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_binner</span><span class="p">()</span>
+        <span class="n">map_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">build_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">selected_param_name</span><span class="p">,</span> <span class="n">binner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">chi2_threshold</span><span class="p">)</span>
+        <span class="n">colour_mode</span> <span class="o">=</span> <span class="n">ColourRangeMode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">colour_range_mode</span><span class="p">)</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">calculate_colour_levels</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="n">colour_mode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">display_parameter_map</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="n">binner</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.on_map_display_settings_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.on_map_display_settings_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_map_display_settings_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_parameter_map</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_parameter_map_changed">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_parameter_map_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_parameter_map_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_parameter_map</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.handle_export_parameter_map">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.handle_export_parameter_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_export_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select array shape based on export selection&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">path</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_map_export_filename</span><span class="p">()):</span>
+            <span class="k">return</span>
+
+        <span class="n">fit_parameter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">selected_param_name</span>
+        <span class="n">binner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_binner</span><span class="p">()</span>
+        <span class="n">chi2_threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">chi2_threshold</span>
+        <span class="n">map_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">build_parameter_map</span><span class="p">(</span><span class="n">fit_parameter</span><span class="p">,</span> <span class="n">binner</span><span class="p">,</span> <span class="n">chi2_threshold</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">export_full_sample</span><span class="p">:</span>
+            <span class="n">array_to_save</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_full_sample_export</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="n">binner</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">array_to_save</span> <span class="o">=</span> <span class="n">map_array</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">save_parameter_map</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">array_to_save</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parameter map &#39;</span><span class="si">%s</span><span class="s2">&#39; exported to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">selected_param_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_full_sample_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build colour parameter map (viridis) over the sample image for export</span>
+
+<span class="sd">        @param map_array: 2D array of parameter values for each binned ROI</span>
+<span class="sd">        @param binner: ROIBinner object containing the definitions of the binned ROIs</span>
+<span class="sd">        @return: 3D Colour array for export matching sample shape</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">colour_mode</span> <span class="o">=</span> <span class="n">ColourRangeMode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">colour_range_mode</span><span class="p">)</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">calculate_colour_levels</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="n">colour_mode</span><span class="p">)</span>
+        <span class="n">full_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">build_full_sample_parameter_map</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="n">binner</span><span class="p">)</span>
+        <span class="n">display_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_display_image</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">display_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Stack must be loaded to export full sample image&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_composite_image</span><span class="p">(</span><span class="n">full_map</span><span class="p">,</span> <span class="n">levels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">overlay_opacity</span><span class="p">,</span> <span class="n">sample_image</span><span class="o">=</span><span class="n">display_image</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalise_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Normalise sample image using percentile levels</span>
+
+<span class="sd">        @param sample_image: the image to be normalised</span>
+<span class="sd">        @return: normalised colour image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">sample_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">finite_pixels</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">sample</span><span class="p">)]</span>
+        <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">colour_levels_percentile</span><span class="p">(</span><span class="n">finite_pixels</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">upper</span> <span class="o">&gt;</span> <span class="n">lower</span><span class="p">:</span>
+            <span class="n">sample_normalised</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">sample</span> <span class="o">-</span> <span class="n">lower</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">upper</span> <span class="o">-</span> <span class="n">lower</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sample_normalised</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">sample_normalised</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpectrumViewerWindowPresenter.build_composite_image">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.build_composite_image">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_composite_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">full_map</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                              <span class="n">levels</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                              <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">sample_image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Colour (viridis) parameter map overlay over sample image.</span>
+
+<span class="sd">        @param full_map: Full-resolution float32 NaN canvas from build_full_sample_parameter_map</span>
+<span class="sd">        @param levels: (lower, upper) colour limits used to normalise the overlay</span>
+<span class="sd">        @param opacity: Overlay opacity between 0 and 1</span>
+<span class="sd">        @param sample_image: Background image to composite over. Pass None for map-only export.</span>
+<span class="sd">        @return: colour array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">map_lower</span><span class="p">,</span> <span class="n">map_upper</span> <span class="o">=</span> <span class="n">levels</span>
+        <span class="n">fitted_pixel_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">full_map</span><span class="p">)</span>
+        <span class="n">blank_background</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">full_map</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">background_rgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise_background</span><span class="p">(</span><span class="n">sample_image</span><span class="p">)</span> <span class="k">if</span> <span class="n">sample_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">blank_background</span>
+
+        <span class="c1"># only apply map to overlay over fitted pixels within levels exlcuidg outliers</span>
+        <span class="k">if</span> <span class="n">fitted_pixel_mask</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="n">map_upper</span> <span class="o">&gt;</span> <span class="n">map_lower</span><span class="p">:</span>
+            <span class="n">map_normalised</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">full_map</span> <span class="o">-</span> <span class="n">map_lower</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">map_upper</span> <span class="o">-</span> <span class="n">map_lower</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">viridis_rgb</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">colormap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">map_normalised</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">foreground</span> <span class="o">=</span> <span class="n">viridis_rgb</span><span class="p">[</span><span class="n">fitted_pixel_mask</span><span class="p">]</span>
+            <span class="n">background</span> <span class="o">=</span> <span class="n">background_rgb</span><span class="p">[</span><span class="n">fitted_pixel_mask</span><span class="p">]</span>
+            <span class="n">background_rgb</span><span class="p">[</span><span class="n">fitted_pixel_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span> <span class="o">*</span> <span class="n">foreground</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">opacity</span><span class="p">)</span> <span class="o">*</span> <span class="n">background</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">background_rgb</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_populate_export_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SpectrumFitResult</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

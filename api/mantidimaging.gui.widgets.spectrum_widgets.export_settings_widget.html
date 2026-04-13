@@ -575,15 +575,52 @@
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.</span></span><span class="sig-name descname"><span class="pre">FitExportFormWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
 <p>Export Format and Export Area dropdowns.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.is_full_sample_export">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_full_sample_export</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.is_full_sample_export" title="Link to this definition">#</a></dt>
+<dd><p>True when the user has selected ‘Full sample image’ in the Image Export Region dropdown.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.overlay_opacity">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overlay_opacity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.overlay_opacity" title="Link to this definition">#</a></dt>
+<dd><p>Return overlay opacity spinbox. Opacity flipped so that
+0% transparency = 100% opacity to improve intuitivenessl</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.parameter_selected">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameter_selected</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.parameter_selected" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.populate_parameter_selector">
+<span class="sig-name descname"><span class="pre">populate_parameter_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.populate_parameter_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.populate_parameter_selector" title="Link to this definition">#</a></dt>
+<dd><p>Populate the parameter selector combo with fitted parameter names and enable it
+after all data is written to export table</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_area">
 <span class="sig-name descname"><span class="pre">selected_area</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.selected_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_area" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_colour_range_mode">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_colour_range_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_colour_range_mode" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format">
 <span class="sig-name descname"><span class="pre">selected_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.selected_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_chi2_threshold">
+<span class="sig-name descname"><span class="pre">set_chi2_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/export_settings_widget.html#FitExportFormWidget.set_chi2_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_chi2_threshold" title="Link to this definition">#</a></dt>
+<dd><p>Set the chi2 threshold without emitting signals to avoid pre-maturely
+updating the map display before all data is written to table</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_roi_names">
@@ -643,8 +680,14 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.is_full_sample_export"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.is_full_sample_export</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.overlay_opacity"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.overlay_opacity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.parameter_selected"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.parameter_selected</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.populate_parameter_selector"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.populate_parameter_selector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_area"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.selected_area()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_colour_range_mode"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.selected_colour_range_mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.selected_format"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.selected_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_chi2_threshold"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.set_chi2_threshold()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget.FitExportFormWidget.set_roi_names"><code class="docutils literal notranslate"><span class="pre">FitExportFormWidget.set_roi_names()</span></code></a></li>
 </ul>
 </li>
