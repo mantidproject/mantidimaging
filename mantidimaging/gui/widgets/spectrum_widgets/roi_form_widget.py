@@ -63,7 +63,7 @@ class ROIFormWidget(BaseWidget):
 
         self.bin_step_spinBox.valueChanged.connect(self._binning_changed)
         self.bin_size_spinBox.valueChanged.connect(self._binning_changed)
-        self.roi_properties_widget.roi_changed.connect(self._update_bin_size_limit)
+        self.roi_properties_widget.roi_changed.connect(self._binning_changed)
 
     def update_bin_size_limit(self) -> None:
         self._update_bin_size_limit()
