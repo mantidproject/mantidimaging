@@ -733,28 +733,16 @@ class SpectrumViewerWindowModel:
         """
         saver.write_img(map_array, str(path))
 
-    def load_rois_from_csv(self, path: Path):
+    def load_rois_from_csv(self, path: Path) -> list[str]:
         loaded_rois_list = []
         with open(path, encoding='utf-8') as f:
             csv_reader = csv.DictReader(f)
             header = csv_reader.fieldnames
             for line in csv_reader:
-                loaded_rois_list.append(line)
+                loaded_rois_list.append(str(line))
 
-        assert header is not None
+        assert header is not None, "No header has been found in the CSV file, please check the file."
         assert all(field in header for field in ["X Min", "Y Min", "X Max", "Y Max"]), \
             "ROI fields not found in CSV file. Please use exported ROIs instead."
 
-        height, width = self.get_image_shape()
-        for roi_dict in loaded_rois_list:
-            assert isinstance(roi_dict, dict)
-            roi_name = roi_dict["ROI"]
-            if roi_name != 'rits_roi' and '' not in roi_dict.values():
-                roi_dict["X Min"] = 0 if float(roi_dict["X Min"]) < 0 else float(roi_dict["X Min"])
-                roi_dict["Y Min"] = 0 if float(roi_dict["Y Min"]) < 0 else float(roi_dict["Y Min"])
-                roi_dict["X Max"] = width if float(roi_dict["X Max"]) > width else float(roi_dict["X Max"])
-                roi_dict["Y Max"] = height if float(roi_dict["Y Max"]) > height else float(roi_dict["Y Max"])
-                coords = [int(float(roi_dict[field])) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
-                coords = [0 if coord < 0 else coord for coord in coords]
-                self.presenter.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
-                LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
+        return loaded_rois_list

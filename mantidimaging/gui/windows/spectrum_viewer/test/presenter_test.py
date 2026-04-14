@@ -270,7 +270,8 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_image_shape")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.setPos")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.setSize")
-    def test_WHEN_do_add_roi_with_coords_THEN_new_roi_added_resized(self, mock_set_size, mock_set_pos, mock_image_shape):
+    def test_WHEN_do_add_roi_with_coords_THEN_new_roi_added_resized(self, mock_set_size, mock_set_pos,
+                                                                    mock_image_shape):
         self.view.spectrum_widget.roi_dict = {"all": mock.Mock()}
         mock_image_shape.return_value = 100, 100
         height, width = 100, 100
