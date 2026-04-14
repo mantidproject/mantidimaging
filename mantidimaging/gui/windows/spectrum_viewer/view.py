@@ -531,6 +531,7 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.roi_form.roi_properties_widget.set_roi_name(roi_name)
         self.roi_form.roi_properties_widget.set_roi_values(current_roi)
         self.roi_form.roi_properties_widget.enable_roi_spinboxes(True)
+        self.roi_form._binning_changed()
 
     def disable_roi_properties(self) -> None:
         self.roi_form.roi_properties_widget.set_roi_name("None selected")
