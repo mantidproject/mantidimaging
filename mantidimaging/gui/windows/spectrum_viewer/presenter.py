@@ -477,8 +477,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if not path:
             return
         path = path.with_suffix(".csv") if path.suffix != ".csv" else path
-        print(f"handle_load_csv: {path=}")
-        self.model.load_rois_from_csv(path)
+        loaded_rois_list = self.model.load_rois_from_csv(path)
+        self.add_loaded_rois(loaded_rois_list)
+
+    def add_loaded_rois(self, loaded_rois_list: list[str]) -> None:
+        height, width = self.model.get_image_shape()
+        for roi_dict in loaded_rois_list:
+            assert isinstance(roi_dict, dict)
+            roi_name = roi_dict["ROI"]
+            if roi_name != 'rits_roi' and '' not in roi_dict.values():
+                roi_dict["X Min"] = 0 if float(roi_dict["X Min"]) < 0 else float(roi_dict["X Min"])
+                roi_dict["Y Min"] = 0 if float(roi_dict["Y Min"]) < 0 else float(roi_dict["Y Min"])
+                roi_dict["X Max"] = width if float(roi_dict["X Max"]) > width else float(roi_dict["X Max"])
+                roi_dict["Y Max"] = height if float(roi_dict["Y Max"]) > height else float(roi_dict["Y Max"])
+                coords = [int(float(roi_dict[field])) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
+                coords = [0 if coord < 0 else coord for coord in coords]
+                self.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
+                LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
 
     def handle_rits_export(self) -> None:
         """
