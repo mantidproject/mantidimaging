@@ -300,7 +300,7 @@ class CILRecon(BaseRecon):
             else:
                 source_pos = images.geometry.source_position
                 detector_pos = images.geometry.detector_position
-                ag = AcquisitionGeometry.create_Cone2D([0, source_pos, 0], [0, detector_pos, 0])
+                ag = AcquisitionGeometry.create_Cone2D([0, source_pos], [0, detector_pos])
 
             ag.set_panel(pixel_num_h, pixel_size=pixel_size)
             ag.set_labels(DataOrder.ASTRA_AG_LABELS)
