@@ -97,7 +97,9 @@ class LoadPresenter:
             if getattr(file_group, file_path_attr):
                 field = self.view.fields[file_type_dict[file_info].fname]
                 field.path = getattr(file_group, file_path_attr)
-                field.use = True
+                # If log if flat or dark, don't auto select to avoid issues loading sample log with angles
+                is_log = file_type_dict is log_for_file_type
+                field.use = not is_log or file_info == FILE_TYPES.SAMPLE
 
     def do_update_shutter_counts(self, field: Field, selected_file: str) -> None:
         """
