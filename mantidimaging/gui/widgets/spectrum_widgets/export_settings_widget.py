@@ -39,12 +39,12 @@ class FitExportFormWidget(QWidget):
         self.colourRangeDropdown = QComboBox()
         map_layout.addWidget(self.colourRangeDropdown)
 
-        map_layout.addWidget(QLabel("chi\u00b2 threshold"))
+        map_layout.addWidget(QLabel("RSS/DoF threshold"))
         self.chiSquaredThresholdSpinBox = QDoubleSpinBox()
         self.chiSquaredThresholdSpinBox.setRange(0.0, 1e6)
         self.chiSquaredThresholdSpinBox.setDecimals(6)
         self.chiSquaredThresholdSpinBox.setSingleStep(0.0001)
-        self.chiSquaredThresholdSpinBox.setToolTip("Pixels with reduced chi\u00b2 above threshold are masked. "
+        self.chiSquaredThresholdSpinBox.setToolTip("Pixels with RSS/DoF above threshold are masked. "
                                                    "Initialised to the 95th percentile of good fits.")
         map_layout.addWidget(self.chiSquaredThresholdSpinBox)
 

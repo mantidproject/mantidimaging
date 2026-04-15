@@ -42,7 +42,7 @@ class ExportDataTableWidget(QWidget):
         Clears any existing data in the table.
         """
         self.parameter_names = parameter_names
-        headers = ["ROI Name"] + parameter_names + ["χ²", "Export Status"]
+        headers = ["ROI Name"] + parameter_names + ["RSS/DoF", "Export Status"]
         self.model.setColumnCount(len(headers))
         self.model.setHorizontalHeaderLabels(headers)
 
@@ -72,7 +72,7 @@ class ExportDataTableWidget(QWidget):
                 self.model.setItem(row_index, col, item)
         else:
             self.model.appendRow(items)
-        LOG.info("Export table updated: ROI=%s, Params=%s, χ²=%s, Status=%s", roi_name, params, chi2, status)
+        LOG.info("Export table updated: ROI=%s, Params=%s, RSS/DoF=%s, Status=%s", roi_name, params, chi2, status)
 
     def _make_item(self, value: float | int | str) -> QStandardItem:
         item = QStandardItem()
