@@ -600,7 +600,9 @@
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file_group</span><span class="p">,</span> <span class="n">file_path_attr</span><span class="p">):</span>
                 <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">file_type_dict</span><span class="p">[</span><span class="n">file_info</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">]</span>
                 <span class="n">field</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">file_group</span><span class="p">,</span> <span class="n">file_path_attr</span><span class="p">)</span>
-                <span class="n">field</span><span class="o">.</span><span class="n">use</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># If log if flat or dark, don&#39;t auto select to avoid issues loading sample log with angles</span>
+                <span class="n">is_log</span> <span class="o">=</span> <span class="n">file_type_dict</span> <span class="ow">is</span> <span class="n">log_for_file_type</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">use</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_log</span> <span class="ow">or</span> <span class="n">file_info</span> <span class="o">==</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span>
 
 <div class="viewcode-block" id="LoadPresenter.do_update_shutter_counts">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.presenter.html#mantidimaging.gui.windows.image_load_dialog.presenter.LoadPresenter.do_update_shutter_counts">[docs]</a>
