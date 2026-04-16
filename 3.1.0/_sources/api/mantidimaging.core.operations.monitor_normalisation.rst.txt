@@ -1,0 +1,15 @@
+mantidimaging.core.operations.monitor\_normalisation package
+============================================================
+
+.. automodule:: mantidimaging.core.operations.monitor_normalisation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.monitor_normalisation.monitor_normalisation

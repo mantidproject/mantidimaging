@@ -1,0 +1,7 @@
+mantidimaging.gui.gui module
+============================
+
+.. automodule:: mantidimaging.gui.gui
+   :members:
+   :show-inheritance:
+   :undoc-members:

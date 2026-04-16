@@ -1,0 +1,16 @@
+mantidimaging.gui.windows.move\_stack\_dialog package
+=====================================================
+
+.. automodule:: mantidimaging.gui.windows.move_stack_dialog
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.move_stack_dialog.presenter
+   mantidimaging.gui.windows.move_stack_dialog.view

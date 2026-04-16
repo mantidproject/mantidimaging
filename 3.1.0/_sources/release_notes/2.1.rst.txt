@@ -1,0 +1,51 @@
+Mantid Imaging 2.1
+==================
+
+This release brings some new features and bug fixes.
+
+Mantid Imaging now requires python 3.8
+
+New features
+------------
+
+- `#778 <https://github.com/mantidproject/mantidimaging/issues/778>`_: Load images with drag and drop
+- `#823 <https://github.com/mantidproject/mantidimaging/issues/823>`_: Automatically transpose colour palette
+- `#567 <https://github.com/mantidproject/mantidimaging/issues/567>`_: Add new user wizard
+- `#886 <https://github.com/mantidproject/mantidimaging/issues/886>`_: Don't reset zoom when changing operation parameters
+- `#873 <https://github.com/mantidproject/mantidimaging/issues/873>`_: Link histogram scales in operations window
+- `#914 <https://github.com/mantidproject/mantidimaging/issues/914>`_: Modes for ROI normalisation
+- `#872 <https://github.com/mantidproject/mantidimaging/issues/872>`_: Histogram improvement
+- `#920 <https://github.com/mantidproject/mantidimaging/issues/920>`_: Don't forget parameters when closing and reopening recon window
+
+Fixes
+-----
+
+- `#816 <https://github.com/mantidproject/mantidimaging/issues/816>`_: Error finding screen size in some dual screen set ups
+- `#820 <https://github.com/mantidproject/mantidimaging/issues/820>`_: Help links go to wrong page
+- `#836 <https://github.com/mantidproject/mantidimaging/issues/836>`_: Median filter returning data from wrong images
+- `#846 <https://github.com/mantidproject/mantidimaging/issues/846>`_: Fixing AstropyDeprecationWarning
+- `#843 <https://github.com/mantidproject/mantidimaging/issues/843>`_: Error loading stack
+- `#856 <https://github.com/mantidproject/mantidimaging/issues/856>`_: Move shared array allocation to `multiprocessing.Array` when on Python 3.8
+- `#854 <https://github.com/mantidproject/mantidimaging/issues/854>`_: Ops window, image selector in preview section skips by 2
+- `#856 <https://github.com/mantidproject/mantidimaging/issues/856>`_: Operations auto update not triggered on spinbox changes
+- `#874 <https://github.com/mantidproject/mantidimaging/issues/874>`_: Widgets in Operations window need minimum sizes
+- `#866 <https://github.com/mantidproject/mantidimaging/issues/866>`_: Warning if running Flat-fielding again
+- `#878 <https://github.com/mantidproject/mantidimaging/issues/878>`_: Update update instructions in version check
+- `#885 <https://github.com/mantidproject/mantidimaging/issues/885>`_: RuntimeError after closing wizard
+- `#805 <https://github.com/mantidproject/mantidimaging/issues/805>`_, `#875 <https://github.com/mantidproject/mantidimaging/issues/875>`_, `#891 <https://github.com/mantidproject/mantidimaging/issues/891>`_: Fix segmentation fault due to object lifetime
+- `#716 <https://github.com/mantidproject/mantidimaging/issues/716>`_: Prevent simultaneous operations
+- `#901 <https://github.com/mantidproject/mantidimaging/issues/901>`_: Rebin Operation failed: '<' not supported between instances of 'Progress' and 'int'
+- `#912 <https://github.com/mantidproject/mantidimaging/issues/912>`_: Fix ROI normalise due to rescale changes
+- `#921 <https://github.com/mantidproject/mantidimaging/issues/921>`_: Ops window Image spin box looses focus after key press
+- `#914 <https://github.com/mantidproject/mantidimaging/issues/914>`_: Outliers acts as median in dark mode
+- `#919 <https://github.com/mantidproject/mantidimaging/issues/919>`_: Median min kernel size
+- `#905 <https://github.com/mantidproject/mantidimaging/issues/905>`_: Ring Removal has no effect
+- `#906 <https://github.com/mantidproject/mantidimaging/issues/906>`_: Clip values
+- `#931 <https://github.com/mantidproject/mantidimaging/issues/931>`_: Crop Coordinates error if image is smaller than 200x200
+
+Developer Changes
+-----------------
+
+- `#770 <https://github.com/mantidproject/mantidimaging/issues/770>`_: Use multiprocessing.Array
+- `#709 <https://github.com/mantidproject/mantidimaging/issues/709>`_: Applitools GUI tests
+- `#908 <https://github.com/mantidproject/mantidimaging/issues/908>`_: Fix GUI test failure

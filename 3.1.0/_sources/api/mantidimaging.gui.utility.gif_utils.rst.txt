@@ -1,0 +1,7 @@
+mantidimaging.gui.utility.gif\_utils module
+===========================================
+
+.. automodule:: mantidimaging.gui.utility.gif_utils
+   :members:
+   :show-inheritance:
+   :undoc-members:

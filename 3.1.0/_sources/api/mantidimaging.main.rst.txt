@@ -1,0 +1,7 @@
+mantidimaging.main module
+=========================
+
+.. automodule:: mantidimaging.main
+   :members:
+   :show-inheritance:
+   :undoc-members:

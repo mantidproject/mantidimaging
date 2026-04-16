@@ -1,0 +1,15 @@
+mantidimaging.core.operations.nan\_removal package
+==================================================
+
+.. automodule:: mantidimaging.core.operations.nan_removal
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.nan_removal.nan_removal

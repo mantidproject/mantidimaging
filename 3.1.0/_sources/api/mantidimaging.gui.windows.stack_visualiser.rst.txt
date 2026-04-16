@@ -1,0 +1,18 @@
+mantidimaging.gui.windows.stack\_visualiser package
+===================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_visualiser
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.stack_visualiser.metadata_dialog
+   mantidimaging.gui.windows.stack_visualiser.model
+   mantidimaging.gui.windows.stack_visualiser.presenter
+   mantidimaging.gui.windows.stack_visualiser.view

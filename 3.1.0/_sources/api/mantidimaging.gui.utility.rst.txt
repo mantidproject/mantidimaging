@@ -1,0 +1,17 @@
+mantidimaging.gui.utility package
+=================================
+
+.. automodule:: mantidimaging.gui.utility
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.utility.common
+   mantidimaging.gui.utility.gif_utils
+   mantidimaging.gui.utility.qt_helpers

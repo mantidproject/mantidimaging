@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.viewer\_3d.view module
+================================================
+
+.. automodule:: mantidimaging.gui.windows.viewer_3d.view
+   :members:
+   :show-inheritance:
+   :undoc-members:

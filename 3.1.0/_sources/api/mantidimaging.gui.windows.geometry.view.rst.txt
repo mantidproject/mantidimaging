@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.geometry.view module
+==============================================
+
+.. automodule:: mantidimaging.gui.windows.geometry.view
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+mantidimaging.core.fitting.bounding\_box module
+===============================================
+
+.. automodule:: mantidimaging.core.fitting.bounding_box
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>mantidimaging.core.data package &#8212; MantidImaging 3.0.0a1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=517e76a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=840a91ac"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/mantidimaging.core.data';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '3.0.0a1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mantidimaging.core.data.dataset module" href="mantidimaging.core.data.dataset.html" />
+    <link rel="prev" title="mantidimaging.core package" href="mantidimaging.core.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="3.0" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 3.0.0a1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/tutorials/installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_docs/index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/tutorials/installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_docs/index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes/index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_docs/tutorials/index.html">Tutorials</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/tutorials/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/tutorials/quick_start_guides/quick_start_guides.html">Quick Start Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/tutorials/quick_start_guides/tomography_workflow_guide.html">Quick Start: Example Reconstruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/tutorials/quick_start_guides/time_of_flight_workflow_guide.html">Quick Start: Example Time of Flight (ToF) Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_docs/how-to-guides/index.html">How-To Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="simple">
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user_docs/explanations/index.html">Explanations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/explanations/overview.html">Overview</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../user_docs/explanations/gui/index.html">Graphical User Interface (GUI)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/gui/loading_saving.html">Loading and Saving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/gui/image_view.html">Image view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/gui/operations_window.html">Operations Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/gui/recon_window.html">Reconstruction Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/gui/spectrum_viewer.html">Spectrum Viewer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/explanations/operations/index.html">Operations</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../user_docs/explanations/reconstructions/index.html">Reconstruction Help page</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/reconstructions/center_of_rotation.html">Center of Rotation and Tilt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/reconstructions/algorithms.html">Reconstruction Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_docs/explanations/reconstructions/filters.html">Reconstruction Filters</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../user_docs/reference/index.html">Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../support.html">Support</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../api.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="mantidimaging.html">mantidimaging package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="reference internal" href="mantidimaging.core.html">mantidimaging.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.gui.html">mantidimaging.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.helper.html">mantidimaging.helper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mantidimaging.main.html">mantidimaging.main module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../release_notes/next.html">Mantid Imaging next release</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_docs/index.html" class="nav-link">User Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../user_docs/reference/index.html" class="nav-link">Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.html" class="nav-link">mantidimaging package</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mantidimaging.core.html" class="nav-link">mantidimaging.core package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mantidimaging.core.data package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-mantidimaging.core.data">
+<span id="mantidimaging-core-data-package"></span><h1>mantidimaging.core.data package<a class="headerlink" href="#module-mantidimaging.core.data" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.data.dataset.html">mantidimaging.core.data.dataset module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset"><code class="docutils literal notranslate"><span class="pre">Dataset</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_recon"><code class="docutils literal notranslate"><span class="pre">Dataset.add_recon()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.add_stack"><code class="docutils literal notranslate"><span class="pre">Dataset.add_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.all"><code class="docutils literal notranslate"><span class="pre">Dataset.all</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.all_image_ids"><code class="docutils literal notranslate"><span class="pre">Dataset.all_image_ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.delete_recons"><code class="docutils literal notranslate"><span class="pre">Dataset.delete_recons()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.delete_stack"><code class="docutils literal notranslate"><span class="pre">Dataset.delete_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.id"><code class="docutils literal notranslate"><span class="pre">Dataset.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.image_keys"><code class="docutils literal notranslate"><span class="pre">Dataset.image_keys</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.is_processed"><code class="docutils literal notranslate"><span class="pre">Dataset.is_processed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.nexus_arrays"><code class="docutils literal notranslate"><span class="pre">Dataset.nexus_arrays</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.nexus_rotation_angles"><code class="docutils literal notranslate"><span class="pre">Dataset.nexus_rotation_angles</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.proj180deg"><code class="docutils literal notranslate"><span class="pre">Dataset.proj180deg</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.recons"><code class="docutils literal notranslate"><span class="pre">Dataset.recons</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack"><code class="docutils literal notranslate"><span class="pre">Dataset.set_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack_by_type_name"><code class="docutils literal notranslate"><span class="pre">Dataset.set_stack_by_type_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.sinograms"><code class="docutils literal notranslate"><span class="pre">Dataset.sinograms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.stacks"><code class="docutils literal notranslate"><span class="pre">Dataset.stacks</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.remove_nones"><code class="docutils literal notranslate"><span class="pre">remove_nones()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.data.geometry.html">mantidimaging.core.data.geometry module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry"><code class="docutils literal notranslate"><span class="pre">Geometry</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.cor"><code class="docutils literal notranslate"><span class="pre">Geometry.cor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.detector_position"><code class="docutils literal notranslate"><span class="pre">Geometry.detector_position</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.get_all_cors"><code class="docutils literal notranslate"><span class="pre">Geometry.get_all_cors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.get_cor_at_slice_index"><code class="docutils literal notranslate"><span class="pre">Geometry.get_cor_at_slice_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt"><code class="docutils literal notranslate"><span class="pre">Geometry.set_geometry_from_cor_tilt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_source_detector_positions"><code class="docutils literal notranslate"><span class="pre">Geometry.set_source_detector_positions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.source_position"><code class="docutils literal notranslate"><span class="pre">Geometry.source_position</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.tilt"><code class="docutils literal notranslate"><span class="pre">Geometry.tilt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.type"><code class="docutils literal notranslate"><span class="pre">Geometry.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.GeometryType"><code class="docutils literal notranslate"><span class="pre">GeometryType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.GeometryType.CONE3D"><code class="docutils literal notranslate"><span class="pre">GeometryType.CONE3D</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.GeometryType.PARALLEL3D"><code class="docutils literal notranslate"><span class="pre">GeometryType.PARALLEL3D</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.data.imagestack.html">mantidimaging.core.data.imagestack module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack"><code class="docutils literal notranslate"><span class="pre">ImageStack</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.cleanup"><code class="docutils literal notranslate"><span class="pre">ImageStack.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.copy"><code class="docutils literal notranslate"><span class="pre">ImageStack.copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.copy_roi"><code class="docutils literal notranslate"><span class="pre">ImageStack.copy_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.count"><code class="docutils literal notranslate"><span class="pre">ImageStack.count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.counts"><code class="docutils literal notranslate"><span class="pre">ImageStack.counts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_empty_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.create_empty_image_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_geometry"><code class="docutils literal notranslate"><span class="pre">ImageStack.create_geometry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.create_geometry_from_cil_acq"><code class="docutils literal notranslate"><span class="pre">ImageStack.create_geometry_from_cil_acq()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.data"><code class="docutils literal notranslate"><span class="pre">ImageStack.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.dtype"><code class="docutils literal notranslate"><span class="pre">ImageStack.dtype</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.filenames"><code class="docutils literal notranslate"><span class="pre">ImageStack.filenames</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.find_image_from_angle"><code class="docutils literal notranslate"><span class="pre">ImageStack.find_image_from_angle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.full_stack_shape"><code class="docutils literal notranslate"><span class="pre">ImageStack.full_stack_shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.geometry"><code class="docutils literal notranslate"><span class="pre">ImageStack.geometry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.h_middle"><code class="docutils literal notranslate"><span class="pre">ImageStack.h_middle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.has_proj180deg"><code class="docutils literal notranslate"><span class="pre">ImageStack.has_proj180deg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.height"><code class="docutils literal notranslate"><span class="pre">ImageStack.height</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.id"><code class="docutils literal notranslate"><span class="pre">ImageStack.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.is_processed"><code class="docutils literal notranslate"><span class="pre">ImageStack.is_processed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.is_temporary"><code class="docutils literal notranslate"><span class="pre">ImageStack.is_temporary</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.load_metadata"><code class="docutils literal notranslate"><span class="pre">ImageStack.load_metadata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.log_file"><code class="docutils literal notranslate"><span class="pre">ImageStack.log_file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.make_name_unique"><code class="docutils literal notranslate"><span class="pre">ImageStack.make_name_unique()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.name"><code class="docutils literal notranslate"><span class="pre">ImageStack.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.ndim"><code class="docutils literal notranslate"><span class="pre">ImageStack.ndim</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.num_images"><code class="docutils literal notranslate"><span class="pre">ImageStack.num_images</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.num_projections"><code class="docutils literal notranslate"><span class="pre">ImageStack.num_projections</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.num_sinograms"><code class="docutils literal notranslate"><span class="pre">ImageStack.num_sinograms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.pixel_size"><code class="docutils literal notranslate"><span class="pre">ImageStack.pixel_size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.proj180deg"><code class="docutils literal notranslate"><span class="pre">ImageStack.proj180deg</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.proj_180_degree_shape_matches_images"><code class="docutils literal notranslate"><span class="pre">ImageStack.proj_180_degree_shape_matches_images()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.projection"><code class="docutils literal notranslate"><span class="pre">ImageStack.projection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.projection_angles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.projections"><code class="docutils literal notranslate"><span class="pre">ImageStack.projections</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.record_operation"><code class="docutils literal notranslate"><span class="pre">ImageStack.record_operation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.reorder_images_by_index"><code class="docutils literal notranslate"><span class="pre">ImageStack.reorder_images_by_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.save_metadata"><code class="docutils literal notranslate"><span class="pre">ImageStack.save_metadata()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.set_geometry_panels"><code class="docutils literal notranslate"><span class="pre">ImageStack.set_geometry_panels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.set_projection_angles"><code class="docutils literal notranslate"><span class="pre">ImageStack.set_projection_angles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.shape"><code class="docutils literal notranslate"><span class="pre">ImageStack.shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.shared_array"><code class="docutils literal notranslate"><span class="pre">ImageStack.shared_array</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.shutter_count_file"><code class="docutils literal notranslate"><span class="pre">ImageStack.shutter_count_file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.sino"><code class="docutils literal notranslate"><span class="pre">ImageStack.sino()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.sino_as_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.sino_as_image_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.sinograms"><code class="docutils literal notranslate"><span class="pre">ImageStack.sinograms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.size"><code class="docutils literal notranslate"><span class="pre">ImageStack.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.slice_as_array"><code class="docutils literal notranslate"><span class="pre">ImageStack.slice_as_array()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.slice_as_image_stack"><code class="docutils literal notranslate"><span class="pre">ImageStack.slice_as_image_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.uses_shared_memory"><code class="docutils literal notranslate"><span class="pre">ImageStack.uses_shared_memory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.ImageStack.width"><code class="docutils literal notranslate"><span class="pre">ImageStack.width</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.imagestack.html#mantidimaging.core.data.imagestack.StackNotFoundError"><code class="docutils literal notranslate"><span class="pre">StackNotFoundError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.data.reconlist.html">mantidimaging.core.data.reconlist module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.reconlist.html#mantidimaging.core.data.reconlist.ReconList"><code class="docutils literal notranslate"><span class="pre">ReconList</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.reconlist.html#mantidimaging.core.data.reconlist.ReconList.id"><code class="docutils literal notranslate"><span class="pre">ReconList.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.reconlist.html#mantidimaging.core.data.reconlist.ReconList.ids"><code class="docutils literal notranslate"><span class="pre">ReconList.ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mantidimaging.core.data.reconlist.html#mantidimaging.core.data.reconlist.ReconList.stacks"><code class="docutils literal notranslate"><span class="pre">ReconList.stacks</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mantidimaging.core.data.utility.html">mantidimaging.core.data.utility module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mantidimaging.core.data.utility.html#mantidimaging.core.data.utility.mark_cropped"><code class="docutils literal notranslate"><span class="pre">mark_cropped()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mantidimaging.core.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">mantidimaging.core package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mantidimaging.core.data.dataset.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">mantidimaging.core.data.dataset module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/mantidimaging.core.data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2025, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

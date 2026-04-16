@@ -1,0 +1,23 @@
+mantidimaging.gui.widgets.spectrum\_widgets package
+===================================================
+
+.. automodule:: mantidimaging.gui.widgets.spectrum_widgets
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget
+   mantidimaging.gui.widgets.spectrum_widgets.export_image_widget
+   mantidimaging.gui.widgets.spectrum_widgets.export_settings_widget
+   mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget
+   mantidimaging.gui.widgets.spectrum_widgets.fitting_param_form_widget
+   mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget
+   mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget
+   mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget
+   mantidimaging.gui.widgets.spectrum_widgets.tof_properties

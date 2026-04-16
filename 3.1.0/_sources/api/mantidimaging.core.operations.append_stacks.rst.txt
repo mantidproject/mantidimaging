@@ -1,0 +1,15 @@
+mantidimaging.core.operations.append\_stacks package
+====================================================
+
+.. automodule:: mantidimaging.core.operations.append_stacks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.append_stacks.append_stacks

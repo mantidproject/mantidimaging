@@ -1,0 +1,15 @@
+mantidimaging.core.operations.rebin package
+===========================================
+
+.. automodule:: mantidimaging.core.operations.rebin
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.rebin.rebin

@@ -1,0 +1,15 @@
+mantidimaging.core.operations.gaussian package
+==============================================
+
+.. automodule:: mantidimaging.core.operations.gaussian
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.gaussian.gaussian
