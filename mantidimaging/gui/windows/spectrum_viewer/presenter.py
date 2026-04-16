@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import csv
-from ast import literal_eval
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING, Literal, NamedTuple
@@ -487,24 +486,19 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         loaded_rois_list = self.model.load_rois_from_csv(path)
         self.add_loaded_rois(loaded_rois_list)
 
-    def add_loaded_rois(self, loaded_rois_list: list[str]) -> None:
+    def add_loaded_rois(self, loaded_rois_list: list[dict[str, str]]) -> None:
         height, width = self.model.get_image_shape()
-        print(loaded_rois_list)
         for roi_dict in loaded_rois_list:
-            roi_dict = literal_eval(roi_dict)
-            print(f"{type(roi_dict)}, {roi_dict=}")
             assert isinstance(roi_dict, dict)
             roi_name = roi_dict["ROI"]
             if roi_name != 'rits_roi' and '' not in roi_dict.values():
-                roi_dict["X Min"] = 0 if float(roi_dict["X Min"]) < 0 else float(roi_dict["X Min"])
-                roi_dict["Y Min"] = 0 if float(roi_dict["Y Min"]) < 0 else float(roi_dict["Y Min"])
-                roi_dict["X Max"] = width if float(roi_dict["X Max"]) > width else float(roi_dict["X Max"])
-                roi_dict["Y Max"] = height if float(roi_dict["Y Max"]) > height else float(roi_dict["Y Max"])
+                roi_dict["X Min"] = '0' if float(roi_dict["X Min"]) < 0 else roi_dict["X Min"]
+                roi_dict["Y Min"] = '0' if float(roi_dict["Y Min"]) < 0 else roi_dict["Y Min"]
+                roi_dict["X Max"] = str(width) if float(roi_dict["X Max"]) > width else roi_dict["X Max"]
+                roi_dict["Y Max"] = str(height) if float(roi_dict["Y Max"]) > height else roi_dict["Y Max"]
                 coords = [int(float(roi_dict[field])) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
                 coords = [0 if coord < 0 else coord for coord in coords]
-                print("add_loaded_rois 1")
                 self.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
-                print("add_loaded_rois 2")
 
                 LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
 
