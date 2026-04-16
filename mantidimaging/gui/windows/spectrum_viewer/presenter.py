@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+from ast import literal_eval
 from enum import Enum
 from functools import partial
 from typing import TYPE_CHECKING, Literal, NamedTuple
@@ -482,7 +483,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def add_loaded_rois(self, loaded_rois_list: list[str]) -> None:
         height, width = self.model.get_image_shape()
+        print(loaded_rois_list)
         for roi_dict in loaded_rois_list:
+            roi_dict = literal_eval(roi_dict)
+            print(f"{type(roi_dict)}, {roi_dict=}")
             assert isinstance(roi_dict, dict)
             roi_name = roi_dict["ROI"]
             if roi_name != 'rits_roi' and '' not in roi_dict.values():
@@ -492,7 +496,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                 roi_dict["Y Max"] = height if float(roi_dict["Y Max"]) > height else float(roi_dict["Y Max"])
                 coords = [int(float(roi_dict[field])) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
                 coords = [0 if coord < 0 else coord for coord in coords]
+                print("add_loaded_rois 1")
                 self.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
+                print("add_loaded_rois 2")
+
                 LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
 
     def handle_rits_export(self) -> None:
@@ -573,12 +580,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.spectrum_widget.add_roi(roi, roi_name)
         spectrum = self.model.get_spectrum(roi, self.spectrum_mode, self.view.shuttercount_norm_enabled())
         self.view.set_spectrum(roi_name, spectrum)
-        if coords is not None:
-            self.view.spectrum_widget.roi_dict[roi_name].setPos((coords[0], coords[1]))
-            self.view.spectrum_widget.roi_dict[roi_name].setSize((coords[2] - coords[0], coords[3] - coords[1]))
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
         self.view.update_roi_dropdown()
+        if coords is not None:
+            self.view.spectrum_widget.roi_dict[roi_name].setPos((coords[0], coords[1]))
+            self.view.spectrum_widget.roi_dict[roi_name].setSize((coords[2] - coords[0], coords[3] - coords[1]))
 
     def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int, int]) -> None:
         """
