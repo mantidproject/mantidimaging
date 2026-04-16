@@ -1,1 +1,0 @@
-#2896: PyInstaller now correctly collects all required files, reflecting recent dependency changes
