@@ -72,8 +72,9 @@ root_doc = 'index'
 project = 'MantidImaging'
 copyright = '2017-2026, Mantid Project'
 author = (
-    "Dolica Akello-Egwel, Jack Allen, Hussam Alhassan, Rachel Baust, James Cornal, Martyn Gigg, Despina Ioannide, "
-    "Samuel Jones, Ashley Meigh, Daniel Nixon, Samuel Stock, Michael Sullivan, Dimitar Tasev, Will Taylor, Sam Tygier")
+    "Dolica Akello-Egwel, Hussam Alhassan, Jack Allen, Rachel Baust, James Cornal, Martyn Gigg, Despina Ioannide, "
+    "Samuel Jones, Rasmia Kulan, Ashley Meigh, Daniel Nixon, Samuel Stock, Michael Sullivan, Dimitar Tasev,"
+    " Will Taylor, Sam Tygier")
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
