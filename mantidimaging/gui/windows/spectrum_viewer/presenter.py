@@ -486,12 +486,11 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             assert isinstance(roi_dict, dict)
             roi_name = roi_dict["ROI"]
             if roi_name != 'rits_roi' and '' not in roi_dict.values():
-                roi_dict["X Min"] = '0' if float(roi_dict["X Min"]) < 0 else roi_dict["X Min"]
-                roi_dict["Y Min"] = '0' if float(roi_dict["Y Min"]) < 0 else roi_dict["Y Min"]
-                roi_dict["X Max"] = str(width) if float(roi_dict["X Max"]) > width else roi_dict["X Max"]
-                roi_dict["Y Max"] = str(height) if float(roi_dict["Y Max"]) > height else roi_dict["Y Max"]
-                coords = [int(float(roi_dict[field])) for field in ["X Min", "Y Min", "X Max", "Y Max"]]
-                coords = [0 if coord < 0 else coord for coord in coords]
+                roi_dict["X Max"] = str(width) if int(roi_dict["X Max"]) > width else roi_dict["X Max"]
+                roi_dict["Y Max"] = str(height) if int(roi_dict["Y Max"]) > height else roi_dict["Y Max"]
+                coords = []
+                for field in ["X Min", "Y Min", "X Max", "Y Max"]:
+                    coords.append(0 if int(roi_dict[field]) < 0 else int(roi_dict[field]))
                 self.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
 
                 LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
