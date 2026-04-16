@@ -1,1 +1,0 @@
-#2902: Updated fitting engine to return both Residual Sum of Squares (RSS) and Reduced RSS (RSS/DoF).
