@@ -733,16 +733,17 @@ class SpectrumViewerWindowModel:
         """
         saver.write_img(map_array, str(path))
 
-    def load_rois_from_csv(self, path: Path) -> list[str]:
+    def load_rois_from_csv(self, path: Path) -> list[dict[str, str]]:
         loaded_rois_list = []
         with open(path, encoding='utf-8') as f:
             csv_reader = csv.DictReader(f)
             header = csv_reader.fieldnames
             for line in csv_reader:
-                loaded_rois_list.append(str(line))
+                loaded_rois_list.append(line)
 
-        assert header is not None, "No header has been found in the CSV file, please check the file."
-        assert all(field in header for field in ["X Min", "Y Min", "X Max", "Y Max"]), \
-            "ROI fields not found in CSV file. Please use exported ROIs instead."
+        if header is None:
+            raise RuntimeError("No header has been found in the CSV file, please check the file.")
+        if not all(field in header for field in ["X Min", "Y Min", "X Max", "Y Max"]):
+            raise RuntimeError("ROI fields not found in CSV file. Please use exported ROIs instead.")
 
         return loaded_rois_list
