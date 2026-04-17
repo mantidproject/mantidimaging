@@ -1360,6 +1360,24 @@
 <span class="sd">        @param map_array: Parameter Map</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">saver</span><span class="o">.</span><span class="n">write_img</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SpectrumViewerWindowModel.load_rois_from_csv">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.model.html#mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.load_rois_from_csv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_rois_from_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="n">loaded_rois_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">csv_reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">csv_reader</span><span class="o">.</span><span class="n">fieldnames</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">csv_reader</span><span class="p">:</span>
+                <span class="n">loaded_rois_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No header has been found in the CSV file, please check the file.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">field</span> <span class="ow">in</span> <span class="n">header</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;X Min&quot;</span><span class="p">,</span> <span class="s2">&quot;Y Min&quot;</span><span class="p">,</span> <span class="s2">&quot;X Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Y Max&quot;</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ROI fields not found in CSV file. Please use exported ROIs instead.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loaded_rois_list</span></div>
 </div>
 
 </pre></div>
