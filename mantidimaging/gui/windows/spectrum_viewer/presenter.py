@@ -341,6 +341,12 @@ class SpectrumViewerWindowPresenter(BasePresenter):
     def thread_cleanup(self, thread: TaskWorkerThread) -> None:
         if thread.error is not None:
             raise thread.error
+
+        roi_name = thread.kwargs["roi"].name
+        if roi_name not in self.view.spectrum_widget.roi_dict:
+            LOG.warning("Spectrum calculation thread finished, but ROI no longer exists")
+            return
+
         if self.thread.result is not None:
             self.thread_finished_processing(self.thread)
         self.view.show_visible_spectrums()
