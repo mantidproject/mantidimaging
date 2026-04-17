@@ -35,7 +35,7 @@ As part of preparations for the release of Mantid Imaging version [**VERSION***]
 - [ ] `docs/conf.py`
     - Release Date:
     - Version: `release = 'V.V.V<tag>'` (alpha/beta/rc)
-    - Version: `smv_tag_whitelist = r'^(2.3.0|2.4.0|2.5.0|2.6.0|2.7.0|2.8.0|3.0.0|3.0.1|3.1.0)$'`
+    - Version: `smv_tag_whitelist = r'^(2.3.0|2.4.0|2.5.0|2.6.0|2.7.0)$'`
 - [ ] `docs/index.rst`
     - Year: update year within Citation if out of date
     - Version: update version within Citation
