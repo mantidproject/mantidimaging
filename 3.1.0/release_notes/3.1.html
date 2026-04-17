@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mantid Imaging 3.1.0 &#8212; MantidImaging 3.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=517e76a2" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=dd1205ac"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'release_notes/3.1';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '3.1.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="icon" href="../_static/mantid_imaging_64px.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mantid Imaging 3.0" href="3.0.html" />
+    <link rel="prev" title="Release Notes" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="3.1" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">MantidImaging 3.1.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/tutorials/installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/explanations/overview.html">
+    Overview
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/tutorials/installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_docs/index.html">
+    User Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_docs/index.html">
+    Developer Doc
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    Release Notes
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../troubleshooting.html">
+    Troubleshooting
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/mantidproject/mantidimaging">
+    Code Repository
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://anaconda.org/mantidimaging/mantidimaging">
+    Anaconda Package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mantidproject/mantidimaging" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="next.html">Mantid Imaging next release</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mantid Imaging 3.1.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3.0.html">Mantid Imaging 3.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.8.html">Mantid Imaging 2.8</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.7.html">Mantid Imaging 2.7</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.6.html">Mantid Imaging 2.6</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.5.html">Mantid Imaging 2.5</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="2.4.html">Mantid Imaging 2.4</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.3.html">Mantid Imaging 2.3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.2.html">Mantid Imaging 2.2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.1.html">Mantid Imaging 2.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.0.html">Mantid Imaging 2.0</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Release Notes</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Mantid Imaging 3.1.0</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="mantid-imaging-3-1-0">
+<h1>Mantid Imaging 3.1.0<a class="headerlink" href="#mantid-imaging-3-1-0" title="Link to this heading">#</a></h1>
+<p>We are happy to announce the release of Mantid Imaging 3.1.0, which delivers a powerful set of features and improvements including an interactive 3D viewer, cone beam geometry support for tomographic reconstructions, Bragg edge fitting for neutron energy resolve imaging, and a host of other improvements.</p>
+<section id="key-highlights">
+<h2>Key Highlights:<a class="headerlink" href="#key-highlights" title="Link to this heading">#</a></h2>
+<p><strong>Bragg Edge Analysis:</strong>
+Mantid Imaging 3.1.0 introduces the capability to perform Binned Bragg edge fitting analysis on energy-resolved neutron images, exporting the data to a table and fitted parameter overlay mapped onto the sample image. This powerful feature enables a range of scientific techniques for measuring structural and elemental properties across samples.</p>
+<p><strong>3D Viewer:</strong>
+A dedicated 3D viewer has been added to Mantid Imaging which embeds the <a class="reference external" href="https://github.com/TomographicImaging/CILViewer">CILViewer widget</a> to allow for improved viewing of 3D samples, providing a level of control to toggle which planes are visible, slice visibility and volume render visibility.</p>
+<p><strong>Geometry:</strong>
+A new dedicate window has been introduced into Mantid Imaging which allows for the creation and management of parallel and cone beam geometries for loaded datasets. Now that the geometry configuration is handled independently of the reconstruction window, users have greater control over geometry parameters.</p>
+<p><strong>Operations:</strong>
+Two new operations have been added to Mantid Imaging which allow for the appending of image stacks or the summing of them. Summing allows for the emulation of increased exposure while appending allows various stacks which may be from the sample acquisition to be merged into one larger stack.</p>
+<p><strong>Outreach</strong>
+Mantid Imaging now supports the exporting of a sub-sampled image stack as an animated GIF, making it easy to share and present data visually. It’s a simple as right-clicking your sample in the main window and exporting as GIF.</p>
+</section>
+<section id="new-features">
+<h2>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2136">#2136</a>: Mantid Imaging now supports cancelling a dataset on load</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2326">#2326</a>: Updated the code to display warnings for zero, negative, and NaN values using user-friendly colors in the operation and reconstruction windows.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2347">#2347</a>: Support for Differently-Sized ROIs in Spectrum Normalisation.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2395">#2395</a>: Adds an Image preview to the Export tab and makes the Table/Image view switchable from within the Export tab.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2759">#2759</a>: Added a new Geometry window for editing, visualising, and creating new ImageStack Geometry data</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2766">#2766</a>: Implement backend logic and tests to enable <code class="docutils literal notranslate"><span class="pre">Sum</span> <span class="pre">Stack</span> <span class="pre">Intensities</span></code> operation which can sum tomography and time-of-flight datasets to emulate increased exposure.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2783">#2783</a>: The initial guess for the ROI in the Cropping Operation now selects the important data in the image stack</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2800">#2800</a>: Updated the code so that the ROI created in the Operations window for Crop Coordinates, as well as the ROI set in the Main window, can now be resized from all four corners.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2827">#2827</a>: Added support for 3D cone beam geometry</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2828">#2828</a>: The rois in the spectrum viewer now persist when the selected stack is changed.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2844">#2844</a>: Fitting parameters in the Spectrum Viewer can now by bounded by a range or fixed number in the GUI.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2848">#2848</a>: Added a dedicated 3D Viewer window in Mantid Imaging, providing the basis for embedding the CILViewer widget.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2849">#2849</a>: Embedded the 3D viewer and stack selector widget in the viewer window.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2874">#2874</a>: The user can now save sinogram data via Main Window-&gt;File-&gt;Save as Image Files and checking “Save as sinogram”</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2888">#2888</a>: Limit recon algorithm selection based on geometry</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2892">#2892</a>: The ROI Normalisation Operation now selects the largest air region available automatically.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2902">#2902</a>: Updated fitting engine to return both Residual Sum of Squares (RSS) and Reduced RSS (RSS/DoF).</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2909">#2909</a>: When an angle csv file is loaded after the dataset, the dataset is ordered according to the angle data.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2954">#2954</a>: Allow running fit on sub ROIs to update the export table</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2955">#2955</a>: Map fitted parameters over sample image, providing various control options for map visualisation and the ability to export mapped area only or mapping over sample image.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2978">#2978</a>: The user can now right click a stack in the Main Window TreeView and rename it.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2984">#2984</a>: Add a right-click context menu option in the main window image view to “Export stack as GIF animation”.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3008">#3008</a>: The Append Stack Operation is now functional. It allows the user to append two stacks together and sort them according to the projection angle data supplied in the associated log files.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3015">#3015</a>: Add Cancel button and close confirmation to CoR/Iteration Refinement dialogs</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3016">#3016</a>: Add Delete Geometry button to Geometry Window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3023">#3023</a>: Update main window angles after geometry creation</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3024">#3024</a>: Read COR and Tilt from geometry in recon window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3038">#3038</a>: In the Main Window, the projection stack can be viewed as sinograms via the right click menu without modifying the ImageStack.</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h2>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2753">#2753</a>: Fixed a bug where the Stack Visualiser wasn’t being updated after new Projection Angles were manually loaded</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2803">#2803</a>: Fixes a bug in the Overlay Difference view for filters like Ring Removal.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2870">#2870</a>: Fixes a bug in Pyinstaller where image codec modules were not being explicitly imported, leading to missing codecs in the packaged application due to automatic delayed imports did not include them.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2872">#2872</a>: Fixes a bug that was not displaying the 3D widget in the 3D viewer on Linux.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2879">#2879</a>: Fixes a bug that was preventing the progress bar from updating during the flat fielding operation and added a progress bar for rescale operation.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2920">#2920</a>: In the Spectrum Viewer, the normalise stack is selected automatically even if it doesnt have “flat” or “dark” in the filenames</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2923">#2923</a>: Fix Geometry window layout and figure overlap</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2979">#2979</a>: When selecting Sample data, related files are found in more cases than previously, eg. GR data</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2988">#2988</a>: The spectrum viewer image, fitting and export tab user interface states now gracefully clear when the active dataset is deleted.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2993">#2993</a>: Fixed Geometry Warning when closing</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3030">#3030</a>: Fix IndexError for invalid ROI binning values in Spectrum Viewer. ROI bin/step sizes are limited to ROI bounds.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3036">#3036</a>: Synchronize Geometry changes with Reconstruction Window</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3068">#3068</a>: Synthetically add header to log file if missing provided first data entry matches expected format. Handle various log file mismatch scenarios where the number of log file entries differs from number of origional dataset projections or a subset of projections.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3078">#3078</a>: Fixes a bug where the export table headers were not updating on changing the fitting model.</p></li>
+</ul>
+</section>
+<section id="developer-changes">
+<h2>Developer Changes<a class="headerlink" href="#developer-changes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1619">#1619</a>: Updated the code to prevent the sidebar from minimising at all.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2057">#2057</a>: Updated the code to allow resetting the GUI to the default layout, including floating windows, through both the View menu and the right-click menu.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2236">#2236</a>: Add format checkers for JSON and YAML files</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2638">#2638</a>: Update Geometry object COR and tilt methods to accept and return mi-convention COR/tilt data rather than CIL-convention data</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2484">#2484</a>: COR/tilt inputs in the reconstruction window now update Geometry data directly rather than passing it on to CIL reconstruction</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2485">#2485</a>: Updated reconstruction algorithms to accept an ImageStack object, extracting data at point of use.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2614">#2614</a>: ProjectionAngles are no longer stored in both Geometry and ImageStack, only Geometry.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2640">#2640</a>: Create a Pre-Commit check that validates the format of a release notes’ filename and contents. The Pre-commit also checks for duplicate issue/PR numbers in the same directory and validates that the issue number matches an existing issue/PR in the remote repository.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2659">#2659</a>: PyInstaller has been updated to 6.14.* to include fixes for pkg_resources depreciation</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2665">#2665</a>: Update astropy from 6.0.1 to 7.1.0</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2668">#2668</a>: Updated scikit-image from 0.22.0 to 0.25.2.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2672">#2672</a>: Updated Sphinx to 8.2.3 and PyData-Sphinx-Theme to 0.16.1</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2674">#2674</a>: Update coverage from 7.3.4 to 7.4</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2680">#2680</a>: Updated mypy to 1.17</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2682">#2682</a>: Used imports have now been removed including iPython.py and references to pydevd and ptvsd</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2687">#2687</a>: Replaced all os.path usage with pathlib.Path for more robust, readable, and modern path handling.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2693">#2693</a>: Moved 180 degree projection check code from the reconstruction window to the ImageStack</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2705">#2705</a>: Simplify reconstruction window’s get_stack logic by removing extraneous functions, replacing with MainWindow’s get_stack()</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2707">#2707</a>: Update the reconstruction window’s showEvent handler, moving some code to the presenter to better adhere to MVP principles.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2710">#2710</a>: Update method names in the reconstruction window to differentiate between modifying stack contents and switching stacks</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2748">#2748</a>: Update developer testing documentation to include details about running GUI tests on Windows</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2763">#2763</a>: Only publish on <a class="reference external" href="https://anaconda.org/mantidimaging/mantidimaging">https://anaconda.org/mantidimaging/mantidimaging</a></p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2794">#2794</a>: Updated developer testing documentation to include instructions for running tests on the Ada platform and using example datasets for manual testing.</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2795">#2795</a>: Allow operation validation method to access image stack</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2811">#2811</a>: Updated CIL 25.0.*</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2834">#2834</a>: Added a new <cite>type</cite> property to the Geometry class</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2846">#2846</a>: Add CIL 3D Viewer (ccpi-viewer) dependency</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2859">#2859</a>: Replaced the various implementations of the question dialog with a standard one in BaseMainWindow</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2877">#2877</a>: Add documentation on setting up Mantid Imaging in Ada</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2885">#2885</a>: The ccpi-regulariser package has been updated to 25.0.* to fix Windows Build timeout on Github Actions. Numexpr has also been upgrade to 2.10.*</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2886">#2886</a>: Use Agg instead of Qt5AGG if QT_QPA_PLATFORM is set to offscreen to enable headless testing</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2896">#2896</a>: PyInstaller now correctly collects all required files, reflecting recent dependency changes</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2918">#2918</a>: The test Leak Tracker only prints information when a test explicitly fails due to a large amount of leaked objects</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2925">#2925</a>: Updated the 3D Viewer default background color to match Mantid Imaging’s theme</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2953">#2953</a>: Connect spectrum to sub-roi and update sub-roi thumbnail when spinbox values change</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2973">#2973</a>: Create a bootstrap 5 carousel to replace the static image content for Mantid Imaging documentation index (homepage) to display multiple images showcasing Mantid Imaging features.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Release Notes</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="3.0.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Mantid Imaging 3.0</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-highlights">Key Highlights:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-changes">Developer Changes</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/release_notes/3.1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2017-2026, Mantid Project.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
