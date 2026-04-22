@@ -478,6 +478,29 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         )
         LOG.info("CSV export successful: file saved to '%s'", path)
 
+    def handle_load_csv(self) -> None:
+        path = self.view.get_load_csv_filename()
+        if not path:
+            return
+        path = path.with_suffix(".csv") if path.suffix != ".csv" else path
+        loaded_rois_list = self.model.load_rois_from_csv(path)
+        self.add_loaded_rois(loaded_rois_list)
+
+    def add_loaded_rois(self, loaded_rois_list: list[dict[str, str]]) -> None:
+        height, width = self.model.get_image_shape()
+        for roi_dict in loaded_rois_list:
+            assert isinstance(roi_dict, dict)
+            roi_name = roi_dict["ROI"]
+            if roi_name != 'rits_roi' and '' not in roi_dict.values():
+                roi_dict["X Max"] = str(width) if int(roi_dict["X Max"]) > width else roi_dict["X Max"]
+                roi_dict["Y Max"] = str(height) if int(roi_dict["Y Max"]) > height else roi_dict["Y Max"]
+                coords = []
+                for field in ["X Min", "Y Min", "X Max", "Y Max"]:
+                    coords.append(0 if int(roi_dict[field]) < 0 else int(roi_dict[field]))
+                self.do_add_roi(roi_name=roi_name, coords=coords, from_load=True)
+
+                LOG.info(f"ROI loaded: name={roi_name}, coords=({coords})")
+
     def handle_rits_export(self) -> None:
         """
         Handle the export of the current spectrum to a RITS file format
@@ -540,11 +563,14 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         """
         return list(self.view.spectrum_widget.roi_dict.keys())
 
-    def do_add_roi(self) -> None:
+    def do_add_roi(self, roi_name: str | None = None, coords: list[int] | None = None, from_load: bool = False) -> None:
         """
         Add a new ROI to the spectrum
         """
-        roi_name = self.model.roi_name_generator()
+        if roi_name is None:
+            roi_name = self.model.roi_name_generator()
+        if roi_name in self.view.spectrum_widget.roi_dict and from_load:
+            roi_name += "_loaded"
         if roi_name in self.view.spectrum_widget.roi_dict:
             raise ValueError(f"ROI name already exists: {roi_name}")
         height, width = self.model.get_image_shape()
@@ -556,6 +582,9 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         self.view.auto_range_image()
         self.do_add_roi_to_table(roi_name)
         self.view.update_roi_dropdown()
+        if coords is not None:
+            self.view.spectrum_widget.roi_dict[roi_name].setPos((coords[0], coords[1]))
+            self.view.spectrum_widget.roi_dict[roi_name].setSize((coords[2] - coords[0], coords[3] - coords[1]))
 
     def change_roi_colour(self, roi_name: str, new_colour: tuple[int, int, int, int]) -> None:
         """

@@ -259,6 +259,30 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.assertIn("roi_1", self.view.spectrum_widget.roi_dict)
         self.assertEqual(len(self.view.spectrum_widget.roi_dict), 3)
 
+    def test_WHEN_do_add_roi_with_name_THEN_new_roi_added_with_name(self):
+        self.view.spectrum_widget.roi_dict = {"all": mock.Mock()}
+        self.view.spectrum_widget.add_roi.side_effect = lambda roi, name: self.view.spectrum_widget.roi_dict.update(
+            {name: mock.Mock()})
+        self.presenter.model.set_stack(generate_images())
+        self.presenter.do_add_roi(roi_name="test_roi")
+        self.assertIn("test_roi", self.view.spectrum_widget.roi_dict)
+
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.get_image_shape")
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.setPos")
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.setSize")
+    def test_WHEN_do_add_roi_with_coords_THEN_new_roi_added_resized(self, mock_set_size, mock_set_pos,
+                                                                    mock_image_shape):
+        self.view.spectrum_widget.roi_dict = {"all": mock.Mock()}
+        mock_image_shape.return_value = 100, 100
+        height, width = 100, 100
+        self.view.spectrum_widget.add_roi.side_effect = lambda roi, name: self.view.spectrum_widget.roi_dict.update(
+            {name: SpectrumROI(name, SensibleROI.from_list([0, 0, width, height]))})
+        self.presenter.model.set_stack(generate_images())
+        coords = [0, 30, 45, 60]
+        self.presenter.do_add_roi(coords=coords)
+        mock_set_pos.assert_called_with((coords[0], coords[1]))
+        mock_set_size.assert_called_with((coords[2] - coords[0], coords[3] - coords[1]))
+
     def test_WHEN_do_add_roi_given_dupelicate_THEN_exception_raised(self):
         self.presenter.model.set_stack(generate_images())
         with (mock.patch.object(self.presenter.model, "roi_name_generator") as

@@ -32,6 +32,7 @@ class ROIFormWidget(BaseWidget):
     image_output_mode_combobox: QComboBox
     addBtn: QPushButton
     removeBtn: QPushButton
+    loadBtn: QPushButton
     exportButton: QPushButton
     exportButtonRITS: QPushButton
     transmission_error_mode_combobox: QComboBox
