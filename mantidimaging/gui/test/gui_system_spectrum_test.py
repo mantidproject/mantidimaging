@@ -91,10 +91,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertNotIn(expected_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertEqual('roi', self._property_box_name())
 
-    @parameterized.expand([
-        ('roi_load', '54', '217', '45', '133'),
-        ('roi_load', '-32', '10', '10', '2')
-    ])
+    @parameterized.expand([('roi_load', '54', '217', '45', '133'), ('roi_load', '-32', '10', '10', '2')])
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_load_csv_filename")
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.load_rois_from_csv")
     def test_load_roi(self, mock_roi_name, x_min, x_max, y_min, y_max, mock_load_roi_dict, mock_csv_filename) -> None:
@@ -113,7 +110,6 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertIn(mock_roi_dict_exp['ROI'], self.spectrum_window.table_view.roi_table_model.roi_names())
         self.assertIn(mock_roi_dict_exp['ROI'], self.spectrum_window.spectrum_widget.roi_dict)
         self.assertEqual(mock_roi_dict_exp['ROI'], self._property_box_name())
-
 
     def test_change_roi_color(self):
         QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
