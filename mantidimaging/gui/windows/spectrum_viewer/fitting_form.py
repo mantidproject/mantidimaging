@@ -115,13 +115,22 @@ class FittingFormWidgetPresenter:
     def handle_activated(self) -> None:
         LOG.warning("Fitting form activated")
         self.update_roi_dropdown()
-        self.update_roi_on_fitting_thumbnail()
-        self.set_spectrum()
-        self.set_default_fitting_region()
-        self.set_binning()
-        if self.first_activation:
-            self.setup_fitting_model()
-            self.first_activation = False
+        if (self.spectrum_viewer.presenter.export_mode == ExportMode.ROI_MODE
+                and self.view.roiSelectionWidget.current_roi_name == ''):
+            self.fitting_display_widget.update_plot(np.array([]), np.array([]))
+            self.set_binning()
+            self.view.run_fit_button.setEnabled(False)
+            self.view.fitting_param_form.from_roi_button.setEnabled(False)
+        else:
+            self.update_roi_on_fitting_thumbnail()
+            self.set_spectrum()
+            self.set_default_fitting_region()
+            self.set_binning()
+            self.view.run_fit_button.setEnabled(True)
+            self.view.fitting_param_form.from_roi_button.setEnabled(True)
+            if self.first_activation:
+                self.setup_fitting_model()
+                self.first_activation = False
 
     def handle_roi_selection_changes(self) -> None:
         self.update_roi_on_fitting_thumbnail()
