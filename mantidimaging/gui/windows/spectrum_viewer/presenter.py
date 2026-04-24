@@ -111,6 +111,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
+        self.view.set_normalise_error(self.model.normalise_issue())
+        self.handle_button_enabled()
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
@@ -242,9 +244,23 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         return None if stack_id is None else self.main_window.get_dataset_id_from_stack_uuid(stack_id)
 
     def update_displayed_image(self, autoLevels: bool = True) -> None:
-        """Fetches the correct image (normalized or not) and updates the display."""
-        averaged_image = (self.model.get_normalized_averaged_image()
-                          if self.view.normalisation_enabled() else self.model.get_averaged_image())
+        """
+        Fetches the correct image (normalized or not) and updates the display
+
+        If normalisation is enabled, but no longer valud due to changes to image stacks,
+        the normalisation error message will be updated and the unnormalised image will be shown
+        until the issue is resolved.
+
+        :param autoLevels: Whether to automatically set the levels of the displayed image, or keep them fixed.
+        :return: None
+        """
+        averaged_image = self.model.get_averaged_image()
+        if self.view.normalisation_enabled():
+            normalised = self.model.get_normalized_averaged_image()
+            if normalised is None:
+                self.view.set_normalise_error(self.model.normalise_issue())
+            else:
+                averaged_image = normalised
         if averaged_image is None:
             image_shape = self.model.get_image_shape()
             averaged_image = np.zeros(image_shape, dtype=np.float32)
