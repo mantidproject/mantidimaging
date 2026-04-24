@@ -32,11 +32,13 @@ runs:
 
     - name: Build package
       shell: bash -l {0}
+      env:
+        ANACONDA_AUTH_API_KEY: ${{ inputs.token }}
       run: |
         conda activate build-env
         conda config --set anaconda_upload no
         # if the upload silently fails - check the token expiration. Conda can fail silently!
         conda mambabuild $GITHUB_WORKSPACE/conda
-        anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2 |& tee upload.log
+        anaconda upload --user ${{ inputs.repository }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2 |& tee upload.log
         # Check that upload completed
         grep "Upload complete" upload.log

@@ -116,7 +116,7 @@ jobs:
         with:
           label: test
           token: ${{ secrets.ANACONDA_API_TOKEN_MANTIDIMAGING }}
-        timeout-minutes: 60
+        timeout-minutes: 20
 
       - name: Show disk space at end
         if: ${{ !cancelled() }}
