@@ -111,6 +111,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
             except RuntimeError:
                 norm_stack = None
             self.model.set_normalise_stack(norm_stack)
+        self.view.set_normalise_error(self.model.normalise_issue())
+        self.handle_button_enabled()
         self.model.set_tof_unit_mode_for_stack()
         self.model.spectrum_cache.clear()
         sample_roi = SensibleROI.from_list([0, 0, *self.model.get_image_shape()])
@@ -243,8 +245,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
     def update_displayed_image(self, autoLevels: bool = True) -> None:
         """Fetches the correct image (normalized or not) and updates the display."""
-        averaged_image = (self.model.get_normalized_averaged_image()
-                          if self.view.normalisation_enabled() else self.model.get_averaged_image())
+        averaged_image = None
+        if self.view.normalisation_enabled():
+            averaged_image = self.model.get_normalized_averaged_image()
+            if averaged_image is None:
+                # Normalisation is enabled but no longer valid (e.g. shape mismatch after crop)
+                self.view.set_normalise_error(self.model.normalise_issue())
+                averaged_image = self.model.get_averaged_image()
+        else:
+            averaged_image = self.model.get_averaged_image()
         if averaged_image is None:
             image_shape = self.model.get_image_shape()
             averaged_image = np.zeros(image_shape, dtype=np.float32)
