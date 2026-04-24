@@ -115,8 +115,9 @@ class FittingFormWidgetPresenter:
     def handle_activated(self) -> None:
         LOG.warning("Fitting form activated")
         self.update_roi_dropdown()
-        if (self.spectrum_viewer.presenter.export_mode == ExportMode.ROI_MODE
-                and self.view.roiSelectionWidget.current_roi_name == ''):
+        roi_names = self.spectrum_viewer.presenter.get_roi_names()
+        mode = self.spectrum_viewer.presenter.export_mode
+        if mode == ExportMode.ROI_MODE and not roi_names:
             self.fitting_display_widget.update_plot(np.array([]), np.array([]))
             self.set_binning()
             self.view.run_fit_button.setEnabled(False)
