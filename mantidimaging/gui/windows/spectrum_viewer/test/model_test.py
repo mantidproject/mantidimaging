@@ -146,6 +146,12 @@ class SpectrumViewerWindowModelTest(unittest.TestCase):
         expected_value = (self.model._stack.data.mean() / self.model._normalise_stack.data.mean()) / 2.0
         self.assertAlmostEqual(av_img[0, 0], expected_value, places=7)
 
+    def test_WHEN_normalise_stack_shape_differs_THEN_get_normalized_averaged_image_returns_none(self):
+        self.model.set_stack(ImageStack(np.ones([10, 11, 12])))
+        self.model.set_normalise_stack(ImageStack(np.ones([10, 5, 6])))
+        result = self.model.get_normalized_averaged_image()
+        self.assertIsNone(result)
+
     def test_get_spectrum(self):
         stack, spectrum = self._set_sample_stack()
         roi = SensibleROI(left=0, top=0, right=12, bottom=11)
