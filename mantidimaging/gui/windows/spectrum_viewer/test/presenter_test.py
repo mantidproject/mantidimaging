@@ -485,6 +485,19 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         result = self.presenter._normalise_background(sample)
         npt.assert_array_equal(result, np.zeros((3, 3, 3)))
 
+    def test_WHEN_normalised_image_is_none_THEN_averaged_image_used_and_error_set(self):
+        self.view.normalisation_enabled.return_value = True
+        self.presenter.model.get_normalized_averaged_image = mock.Mock(return_value=None)
+        self.presenter.model.get_averaged_image = mock.Mock(return_value=np.zeros((5, 5)))
+        self.presenter.model.normalise_issue = mock.Mock(return_value="Stack shapes must match")
+
+        self.presenter.update_displayed_image()
+
+        self.view.set_normalise_error.assert_called_once_with("Stack shapes must match")
+        self.view.set_image.assert_called_once_with(mock.ANY, autoLevels=True)
+        called_image = self.view.set_image.call_args[0][0]
+        np.testing.assert_array_equal(called_image, np.zeros((5, 5)))
+
     def test_WHEN_build_composite_image_no_sample_THEN_background_is_black(self):
         full_map = np.full((4, 4), np.nan)
         result = self.presenter.build_composite_image(full_map, (0.0, 1.0), opacity=1.0, sample_image=None)
