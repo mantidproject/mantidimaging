@@ -616,6 +616,8 @@
             <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
                 <span class="n">norm_stack</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_normalise_stack</span><span class="p">(</span><span class="n">norm_stack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_normalise_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">normalise_issue</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_button_enabled</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_tof_unit_mode_for_stack</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">spectrum_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">sample_roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()])</span>
@@ -768,9 +770,23 @@
 <div class="viewcode-block" id="SpectrumViewerWindowPresenter.update_displayed_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.presenter.html#mantidimaging.gui.windows.spectrum_viewer.presenter.SpectrumViewerWindowPresenter.update_displayed_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_displayed_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoLevels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetches the correct image (normalized or not) and updates the display.&quot;&quot;&quot;</span>
-        <span class="n">averaged_image</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_normalized_averaged_image</span><span class="p">()</span>
-                          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalisation_enabled</span><span class="p">()</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_averaged_image</span><span class="p">())</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches the correct image (normalized or not) and updates the display</span>
+
+<span class="sd">        If normalisation is enabled, but no longer valud due to changes to image stacks,</span>
+<span class="sd">        the normalisation error message will be updated and the unnormalised image will be shown</span>
+<span class="sd">        until the issue is resolved.</span>
+
+<span class="sd">        :param autoLevels: Whether to automatically set the levels of the displayed image, or keep them fixed.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">averaged_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_averaged_image</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">normalisation_enabled</span><span class="p">():</span>
+            <span class="n">normalised</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_normalized_averaged_image</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">normalised</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_normalise_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">normalise_issue</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">averaged_image</span> <span class="o">=</span> <span class="n">normalised</span>
         <span class="k">if</span> <span class="n">averaged_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">image_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_image_shape</span><span class="p">()</span>
             <span class="n">averaged_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
