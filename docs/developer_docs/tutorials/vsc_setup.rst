@@ -73,7 +73,7 @@ This built in feature can be enabled by following these steps:
 
 - Open the File -> Preferences -> Settings menu
 - Search for "Auto Save"
-- Select the preferred auto save option. It is recommended to use :code:`onFocusChange` as it will save the file whenever the editor loses focus, which can help prevent data loss while working on multiple files.
+- Select the preferred auto save option. It is recommended to use ``onFocusChange`` as it will save the file whenever the editor loses focus, which can help prevent data loss while working on multiple files.
 
 Debugging with Python
 ---------------------
@@ -84,15 +84,16 @@ Prerequisites
 Before debugging, ensure VSCode is using the correct Python environment by following these steps:
 
 - Open the Command Palette (Ctrl+Shift+P) and search for "Python: Select Interpreter"
-- Choose the Python environment that corresponds to your Mantid Imaging development setup i.e, :code:`mantidimaging-dev` or the path similar to `"...\\AppData\\Local\\miniforge3\\envs\\mantidimaging-dev\\python.exe"`
+- Choose the Python environment that corresponds to your Mantid Imaging development setup i.e, ``mantidimaging-dev`` or the path similar to `"...\\AppData\\Local\\miniforge3\\envs\\mantidimaging-dev\\python.exe"`
 - Verify that the selected interpreter is correct by opening a python file and checking the bottom right corner of VSCode, it should display the name of the selected environment.
 
 Configuring the Debugger
 ~~~~~~~~~~~~~~~~~~~~~~~~
 - Make sure the `Python Debugger` extension is installed (see above for details)
-- Open the existing launch.json file through the the file finder and update the "args" in :code:`Python: Pytest` configuration to specify the tests to run. To enable eyes and system tests, the args should be updated to::
+- Open the existing ``launch.json`` file through the the file finder and update the ``args`` in ``Python: Pytest``` configuration to specify the tests to run. To enable unit, eyes and system tests, make the following updates::
 
     "args": [
+      "--run-unit-tests",
       "--run-eyes-tests",
       "--run-system-tests",
       "-pno:django",
