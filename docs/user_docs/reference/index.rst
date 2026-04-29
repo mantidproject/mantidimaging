@@ -9,3 +9,4 @@ Reference
    ../../../support
    ../../../api
    ../../../release_notes/next
+   mi_in_research
