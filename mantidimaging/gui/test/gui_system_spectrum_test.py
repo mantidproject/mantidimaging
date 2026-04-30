@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+from pathlib import Path
 from unittest import mock
 
 import numpy as np
@@ -89,6 +90,26 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.assertNotIn(expected_name, self.spectrum_window.table_view.roi_table_model.roi_names())
         self.assertNotIn(expected_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertEqual('roi', self._property_box_name())
+
+    @parameterized.expand([('roi_load', '54', '217', '45', '133'), ('roi_load', '-32', '10', '10', '2')])
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_load_csv_filename")
+    @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.load_rois_from_csv")
+    def test_load_roi(self, mock_roi_name, x_min, x_max, y_min, y_max, mock_load_roi_dict, mock_csv_filename) -> None:
+        wait_until(lambda: "roi" not in self.spectrum_window.presenter.roi_to_process_queue, max_retry=600)
+        QTest.mouseClick(self.spectrum_window.roi_form.removeBtn, Qt.MouseButton.LeftButton)
+
+        self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 0)
+        mock_roi_dict_exp = {'ROI': mock_roi_name, 'X Min': x_min, 'X Max': x_max, 'Y Min': y_min, 'Y Max': y_max}
+
+        mock_load_roi_dict.return_value = [mock_roi_dict_exp]
+        mock_csv_filename.return_value = Path('test_roi.csv')
+        self.spectrum_window.presenter.handle_load_csv()
+        QTest.qWait(SHORT_DELAY)
+
+        self.assertEqual(self.spectrum_window.table_view.roi_table_model.rowCount(), 1)
+        self.assertIn(mock_roi_dict_exp['ROI'], self.spectrum_window.table_view.roi_table_model.roi_names())
+        self.assertIn(mock_roi_dict_exp['ROI'], self.spectrum_window.spectrum_widget.roi_dict)
+        self.assertEqual(mock_roi_dict_exp['ROI'], self._property_box_name())
 
     def test_change_roi_color(self):
         QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
