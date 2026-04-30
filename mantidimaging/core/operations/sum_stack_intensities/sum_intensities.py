@@ -20,14 +20,19 @@ if TYPE_CHECKING:
 
 class SumIntensitiesFilter(BaseFilter):
     """
-    Sum stack intensities as a new stack to emulate longer exposure times for Tomography and
-    Time of Flight (ToF) datasets.
+    Sum stack intensities to emulate longer exposure times.
 
-    The stacks to be summed should have exactly the same shape (x,y) and number of slices (z).
-    The z-axis could be either rotation angle or ToF bin.
-    If angles differ acros stacks, a notification highlighting this will be raised
+    Intended to be used on: Tomography or Time of Flight (ToF) datasets.
 
-    The new stack will be saved in-place.
+    When: Combining repeated acquisitions of the same dataset to improve
+    signal-to-noise ratio.
+
+    Note:
+    - Both stacks must have identical shape (x, y, z).
+    - The z-axis typically represents projection angle or ToF bin.
+    - Projection angles are not required but, if present, are checked for
+      consistency and may trigger a warning if mismatched.
+    - The primary stack is modified in-place.
     """
 
     filter_name = 'Sum Stack Intensities'
@@ -39,7 +44,12 @@ class SumIntensitiesFilter(BaseFilter):
     @staticmethod
     def filter_func(images: ImageStack, secondary_stack: ImageStack | None = None, progress: Any = None) -> ImageStack:
         """
-        Validate stacks and sum their intensities in-place.
+        :param images: Primary ImageStack to be modified.
+        :param secondary_stack: Secondary ImageStack whose values are added.
+        :param progress: Progress reporting object (unused).
+
+        :return: The modified primary ImageStack.
+
         """
         helper.check_data_stack(images)
         helper.check_data_stack(secondary_stack)
