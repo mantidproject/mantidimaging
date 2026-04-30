@@ -318,9 +318,10 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
     def default_roi(self) -> None | list[int]:
         # Recommend an ROI that covers the top left quadrant
         # However set min dimensions to avoid an ROI that is so small it's difficult to work with
-        if self.image_data is None:
+        if self.image_data is None or self.image_data.ndim < 2:
             return None
         min_size = 20
-        roi_width = max(round(self.image_data.shape[2] / 2), min_size)
-        roi_height = max(round(self.image_data.shape[1] / 2), min_size)
+        height, width = self.image_data.shape[-2:]
+        roi_width = max(round(width / 2), min_size)
+        roi_height = max(round(height / 2), min_size)
         return [0, 0, roi_width, roi_height]
