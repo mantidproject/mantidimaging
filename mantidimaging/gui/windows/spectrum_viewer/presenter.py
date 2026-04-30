@@ -326,11 +326,15 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         chunk_size = 100
         if chunk_size > 0:
             nanInds = np.argwhere(np.isnan(mask[roi_name]))
-            chunk_start = int(nanInds[0, 0])
-            if len(nanInds) > chunk_size:
-                chunk_end = int(nanInds[chunk_size, 0])
+            if nanInds.size == 0:
+                # No NaNs found, return safe defaults
+                chunk_start, chunk_end = 0, -1
             else:
-                chunk_end = int(nanInds[-1, 0]) + 1
+                chunk_start = int(nanInds[0, 0])
+                if len(nanInds) > chunk_size:
+                    chunk_end = int(nanInds[chunk_size, 0])
+                else:
+                    chunk_end = int(nanInds[-1, 0]) + 1
         else:
             chunk_start, chunk_end = (0, -1)
 
