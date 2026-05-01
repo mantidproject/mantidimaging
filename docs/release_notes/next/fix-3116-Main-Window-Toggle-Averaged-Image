@@ -1,0 +1,1 @@
+#3126: Add stack shape validation checks on stack modification to Spectrum Viewer to resolve shape mismatch Value Errors being raised when stack is normalised in spectrum viewer and cropped in operations window, making the normalisation invalid as stack shapes must be identical.
