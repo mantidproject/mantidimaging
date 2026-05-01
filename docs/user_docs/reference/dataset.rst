@@ -32,7 +32,7 @@ This repository currently includes:
 
   - Acquired at IMAT at ISIS Neutron and Muon Source
   - Format: TIFF image stack
-  - Suitable for:
+  - Use cases:
 
     - Basic visualization
     - Reconstruction workflows
@@ -42,7 +42,7 @@ This repository currently includes:
 
   - Acquired at beamline i13 at Diamond Light Source
   - Format: NXTomo (NeXus) file
-  - Useful for:
+  - Use cases:
 
     - Testing NeXus file handling
     - Comparing neutron vs X-ray workflows
@@ -61,6 +61,7 @@ Recommended neutron datasets include:
 **Lego Man Neutron Tomography Dataset**
 
 - DOI: https://doi.org/10.5281/zenodo.17814677
+- Format: TIFF projection images + metadata
 - Description:
 
   A neutron tomography dataset of a Lego figure, acquired with both equidistant
@@ -75,6 +76,7 @@ Recommended neutron datasets include:
 **Aluminium Cylinder – Flexible Neutron Tomography Dataset**
 
 - DOI: https://doi.org/10.5281/zenodo.18956581
+- Format: TIFF projection images + metadata
 - Description:
 
   A flexible neutron tomography dataset acquired with multiple exposure times and
@@ -89,6 +91,7 @@ Recommended neutron datasets include:
 **Cone Beam CT Dataset**
 
 - DOI: https://doi.org/10.5281/zenodo.11397266
+- Format: TIFF projection images + metadata
 - Description:
 
   X-ray cone-beam CT dataset of a walnut acquired at multiple dose levels.
@@ -101,7 +104,7 @@ Recommended neutron datasets include:
   - Practicing correction steps (dark/flat field)
 
 
-Internal ISIS Datasets
+Internal ISIS Example Datasets
 ----------------------
 
 Additional datasets are available internally via the ISIS Data Analysis
@@ -115,7 +118,7 @@ as a Service `Ada <https://ada.stfc.ac.uk/login>`_ system.
 
   Available to ISIS users and STFC staff
 
-- Notes:
+.. note::
 
   - See :ref:`getting-started-with-ada` in **Tutorials** if you're new to using Ada.
 
