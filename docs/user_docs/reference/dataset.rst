@@ -105,7 +105,7 @@ Recommended neutron datasets include:
 
 
 Internal ISIS Example Datasets
-----------------------
+------------------------------
 
 Additional datasets are available internally via the ISIS Data Analysis
 as a Service `Ada <https://ada.stfc.ac.uk/login>`_ system.
@@ -120,5 +120,5 @@ as a Service `Ada <https://ada.stfc.ac.uk/login>`_ system.
 
 .. note::
 
-  - See :ref:`getting-started-with-ada` in **Tutorials** if you're new to using Ada.
+  - See the :doc:`Using Mantid Imaging on IDAaaS <../tutorials/installation>` guide if you're new to using Ada.
 
