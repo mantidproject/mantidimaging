@@ -462,6 +462,29 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.init_roi_field(mock_roi_field)
         assert_called_once_with(mock_roi_field.setText, "0, 0, 100, 100")
 
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.get_bounding_box")
+    def test_init_roi_field_called_with_auto_bounding_box_on_different_stacks(self, mock_bounding_box):
+        mock_roi_field = mock.Mock()
+
+        first_stack = mock.Mock()
+        first_stack.data = np.ones((2, 201, 201))
+
+        second_stack = mock.Mock()
+        second_stack.data = np.ones((2, 143, 140))
+
+        mock_bounding_box.side_effect = [SensibleROI(0, 0, 100, 100), SensibleROI(0, 0, 80, 70)]
+
+        self.presenter.stack = first_stack
+        self.presenter.init_roi_field(mock_roi_field)
+
+        self.presenter.stack = second_stack
+        self.presenter.init_roi_field(mock_roi_field)
+
+        expected_calls = [mock.call("0, 0, 100, 100"), mock.call("0, 0, 80, 70")]
+        mock_roi_field.setText.assert_has_calls(expected_calls)
+
+        assert mock_bounding_box.call_count == 2
+
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
         self.presenter.view.safeApply.isChecked.return_value = False

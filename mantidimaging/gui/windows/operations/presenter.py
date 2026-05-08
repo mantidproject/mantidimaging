@@ -170,6 +170,9 @@ class FiltersWindowPresenter(BasePresenter):
                 if isinstance(widget, DatasetSelectorWidgetView):
                     widget._handle_loaded_datasets_changed()
 
+        if self.view.get_selected_filter() == CROP_COORDINATES and "roi_field" in self.model.filter_widget_kwargs:
+            self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
+
         self.do_update_previews()
 
     def set_preview_image_index(self, image_idx: int):
