@@ -15,7 +15,7 @@ dependencies:
   - yapf==0.43.*
   - mypy==1.17
   - types-requests
-  - types-PyYAML
+  - types-pyyaml
   - types-docutils
   - pytest==7.4.*
   - pytest-cov==4.1.*
