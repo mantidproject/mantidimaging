@@ -1,0 +1,1 @@
+#3149: Update Miniconda and update deprecated fields in the workflow yaml files. This is to ensure that the latest version of Miniconda is used and to remove any deprecated fields that may cause issues in the future which presently output warnings in workflows
