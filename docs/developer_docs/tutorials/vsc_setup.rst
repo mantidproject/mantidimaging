@@ -41,6 +41,18 @@ Selecting the Python interpreter
 1. Open the Command Palette (Ctrl+Shift+P) and search for "Python: Select Interpreter"
 2. Choose the Python environment that corresponds to your Mantid Imaging development setup i.e, ``mantidimaging-dev`` or the path similar to `"...\\AppData\\Local\\miniforge3\\envs\\mantidimaging-dev\\python.exe"`
 
+.. image:: /_static/gifs/select_python_interpreter_light.gif
+    :alt: Selecting the Python interpreter in VSCode
+    :width: 70%
+    :align: center
+    :class: only-light
+
+.. image:: /_static/gifs/select_python_interpreter_dark.gif
+    :alt: Selecting the Python interpreter in VSCode
+    :width: 70%
+    :align: center
+    :class: only-dark
+
 Verify that the selected interpreter is correct by opening a python file and checking the bottom right corner of VSCode, it should display the name of the selected environment.
 
 How to enable auto-save
@@ -53,6 +65,18 @@ This built in feature can be enabled by:
 2. Search for "Auto Save"
 3. Select the preferred auto save option. It is recommended to use ``onFocusChange`` as it will save the file whenever the editor loses focus, which can help prevent data loss while working on multiple files.
 
+.. image:: /_static/gifs/enable_auto_save_light.gif
+    :alt: Enabling auto-save in VSCode
+    :width: 70%
+    :align: center
+    :class: only-light
+
+.. image:: /_static/gifs/enable_auto_save_dark.gif
+    :alt: Enabling auto-save in VSCode
+    :width: 70%
+    :align: center
+    :class: only-dark
+
 How to debug Python tests
 -------------------------
 
@@ -64,15 +88,29 @@ Ensure the `Python Debugger <https://marketplace.visualstudio.com/items?itemName
 Configure the debugger
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Open the existing ``launch.json`` file through the the file finder and update the ``args`` in ``Python: Pytest``` configuration to specify the tests to run. To enable unit, eyes and system tests, make the following updates::
+Open the existing ``launch.json`` file through the the file finder and update the ``args`` in ``Python: Pytest``` configuration to specify the tests to run. To enable unit, eyes and system tests, make the following updates:
 
-    "args": [
-      "--run-unit-tests",
-      "--run-eyes-tests",
-      "--run-system-tests",
-      "-pno:django",
-      "${file}"
-    ],
+.. image:: /_static/gifs/enable_test_run_light.gif
+    :alt: Enabling test run in VSCode
+    :width: 70%
+    :align: center
+    :class: only-light
+
+.. image:: /_static/gifs/enable_test_run_dark.gif
+    :alt: Enabling test run in VSCode
+    :width: 70%
+    :align: center
+    :class: only-dark
+
+::
+
+  "args": [
+    "--run-unit-tests",
+    "--run-eyes-tests",
+    "--run-system-tests",
+    "-pno:django",
+    "${file}"
+  ],
 
 Run the debugger
 ~~~~~~~~~~~~~~~~
@@ -82,6 +120,18 @@ Run the debugger
 3. Open the Run and Debug sidebar
 4. Select ``Python: Pytest``
 5. Press the green play button
+
+.. image:: /_static/gifs/run_eyes_test_light.gif
+    :alt: Running eyes tests in VSCode
+    :width: 100%
+    :align: center
+    :class: only-light
+
+.. image:: /_static/gifs/run_eyes_test_dark.gif
+    :alt: Running eyes tests in VSCode
+    :width: 100%
+    :align: center
+    :class: only-dark
 
 The debugger will pause execution at breakpoints, allowing variables and execution flow to be inspected.
 
