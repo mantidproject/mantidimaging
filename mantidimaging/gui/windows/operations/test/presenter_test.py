@@ -17,8 +17,8 @@ from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERAT
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
-from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, FLAT_FIELDING, _find_nan_change, \
-    _group_consecutive_values, FLAT_FIELD_REGION
+from mantidimaging.gui.windows.operations.presenter import CROP_COORDINATES, REPEAT_FLAT_FIELDING_MSG, \
+    FLAT_FIELDING ,_find_nan_change, _group_consecutive_values, FLAT_FIELD_REGION
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
 
@@ -462,28 +462,23 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.init_roi_field(mock_roi_field)
         assert_called_once_with(mock_roi_field.setText, "0, 0, 100, 100")
 
-    @mock.patch("mantidimaging.gui.windows.operations.presenter.get_bounding_box")
-    def test_init_roi_field_called_with_auto_bounding_box_on_different_stacks(self, mock_bounding_box):
+    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_roi_field')
+    def test_set_stack_initialises_roi_for_crop_coordinates(self, mock_init_roi_field):
         mock_roi_field = mock.Mock()
 
-        first_stack = mock.Mock()
-        first_stack.data = np.ones((2, 201, 201))
+        self.view.get_selected_filter.return_value = CROP_COORDINATES
+        self.presenter.model.filter_widget_kwargs = {"roi_field": mock_roi_field}
 
-        second_stack = mock.Mock()
-        second_stack.data = np.ones((2, 143, 140))
+        stack = mock.Mock(
+            name="test_stack",
+            shape=(2, 201, 201),
+            num_images=2,
+            num_sinograms=201,
+        )
+        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
+            self.presenter.set_stack(stack)
 
-        mock_bounding_box.side_effect = [SensibleROI(0, 0, 100, 100), SensibleROI(0, 0, 80, 70)]
-
-        self.presenter.stack = first_stack
-        self.presenter.init_roi_field(mock_roi_field)
-
-        self.presenter.stack = second_stack
-        self.presenter.init_roi_field(mock_roi_field)
-
-        expected_calls = [mock.call("0, 0, 100, 100"), mock.call("0, 0, 80, 70")]
-        mock_roi_field.setText.assert_has_calls(expected_calls)
-
-        assert mock_bounding_box.call_count == 2
+        mock_init_roi_field.assert_called_once_with(mock_roi_field)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
