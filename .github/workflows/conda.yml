@@ -144,6 +144,7 @@ jobs:
         with:
           label: unstable
           token: ${{ secrets.ANACONDA_API_TOKEN_MANTIDIMAGING }}
+        timeout-minutes: 120
 
       - name: Show disk space at end
         if: ${{ !cancelled() }}
