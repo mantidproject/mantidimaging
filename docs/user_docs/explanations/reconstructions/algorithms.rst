@@ -3,48 +3,62 @@
 Reconstruction Algorithms
 =========================
 
+Overview
+--------
+
+This page gives explanations of different reconstruction algorithms available in Mantid Imaging, including implementation details, hardware requirements, and links to the upstream documentation for the algorithms.
+
 ASTRA Toolbox
-----------------------
-These filters are used from the ASTRA Toolbox package.
+-------------
 
-`Link to the original documentation for FBP_CUDA <http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html>`_.
+The ASTRA Toolbox provides GPU-accelerated tomographic reconstruction algorithms.
 
-`Link to the original documentation for SIRT_CUDA <http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html>`_.
+This implementation supports 2D data sets, and requires a CUDA-compatible graphics card to run.
 
-This is an implementation of the algorithms for 2D data sets. They require a CUDA-compatible graphics card.
+Mantid Imaging automatically creates the required projector and geometry configurations for ASTRA reconstruction workflows.
 
-The creation of a projector and geometry is automated inside Mantid Imaging, and parallel beam geometry is assumed.
+Parallel beam vector geometry is used, allowing tilt correction to be accounted for through the centres of rotation for each slice. This means manual rotation of the images to correct the tilt shouldn't be necessary.
 
-The geometry used is the parallel beam vector geometry, which allows tilt to be taken into account via the
-centres of rotation for each slice. This means manual rotation of the images to correct the tilt shouldn't be necessary.
 
-The vector creation code was re-used from `ToMoBAR <https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70>`_.
+The vector creation implementation is adapted from `ToMoBAR <https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70>`_.
+
 
 FBP_CUDA
 ^^^^^^^^
-This algorithm has the option to use different filters to improve reconstruction quality.
+
+- Filtered back projection reconstruction algorithm
+- Supports multiple reconstruction filters 
+- Requires a CUDA-compatible GPU
+
+`Link to the original documentation for FBP_CUDA <http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html>`_
 
 For an evaluation of the filters please go to the :ref:`Reconstruction Filters` page.
 
 SIRT_CUDA
 ^^^^^^^^^
-Instead of filters for improving the reconstruction quality, this filter uses number of iterations.
 
-Have a look at our refine iterations tool on the Reconstruct tab of the Reconstruction window that
-should assist you in finding the optimal number of rotations for your data.
+- Simultaneous iterative reconstruction technique (SIRT) algorithm
+- Reconstruction quality is controlled through iteration count 
+- Requires a CUDA-compatible GPU
+
+`Link to the original documentation for SIRT_CUDA <http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html>`_.
+
+Mantid Imaging provides a refine iterations tool to assist with selecting an appropriate iteration count.
 
 TomoPy
 ------
 
 gridrec
 ^^^^^^^
-This filter is from the TomoPy package.
 
-The original documentation for gridrec can be found `here <https://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html#module-tomopy.recon.algorithm>`_.
+- CPU-based reconstruction algorithm 
+- Does not require CUDA support
+- Implemented through the TomoPy package
 
-This is a CPU filter, and does not require a CUDA graphics card to run.
+`Link to original documentation for gridrec <https://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html#module-tomopy.recon.algorithm>`_.
 
-From the TomoPy documentation, these are the paper references for this filter:
+References
+^^^^^^^^^^
 
 - Dowd BA, Campbell GH, Marr RB, Nagarkar VV, Tipnis SV, Axe L, and Siddons DP. Developments in synchrotron x-ray computed microtomography at the national synchrotron light source. In Proc. SPIE, volume 3772, 224–236. 1999.
 - Rivers ML. Tomorecon: high-speed tomography reconstruction on workstations using multi-threading. In Proc. SPIE, volume 8506, 85060U–85060U–13. 2012.
@@ -57,7 +71,9 @@ The `Core Imaging Library (CIL) <https://www.ccpi.ac.uk/cil>`_ is an open-source
 PDHG-TV
 ^^^^^^^
 
-Primal Dual Hybrid Gradient optimiser with Total Variation regularisation. This is an advanced iterative optimised reconstruction algorithm, described in the paper below. The user can adjust regularisation parameter alpha, the figure shows a 2 values of alpha for a reconstructed slice.
+Primal Dual Hybrid Gradient optimiser with Total Variation regularisation. 
+
+This is an advanced iterative optimised reconstruction algorithm, described in the paper below. The user can adjust regularisation parameter alpha, the figure shows two values of alpha applied to a reconstructed slice.
 
 .. figure:: ../../../_static/pdhg_tv_alpha.png
     :alt: PDHG-TV with alpha=0.1 on the left and alpha=10 on the right
