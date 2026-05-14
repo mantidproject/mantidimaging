@@ -7,6 +7,7 @@ from functools import partial
 from typing import TYPE_CHECKING
 
 from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QSplitter, QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox
 from PyQt6.QtGui import QActionGroup, QAction
@@ -192,10 +193,10 @@ class SpectrumViewerWindowView(BaseMainWindowView):
         self.main_window.spectrum_viewer = None
 
     def initial_setup(self) -> None:
-        QtWidgets.qApp.processEvents()
+        QApplication.instance().processEvents()
         self._configure_dropdown(self.normaliseStackSelector)
         self._configure_dropdown(self.sampleStackSelector)
-        QtWidgets.qApp.processEvents()
+        QApplication.instance().processEvents()
         self.sampleStackSelector.select_eligible_stack()
         self.presenter.handle_tof_unit_change()
         self.set_roi_properties()
