@@ -63,7 +63,7 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
 
             h = image_data.shape[0]
             w = image_data.shape[1]
-            image_qi = QImage(image_data.data, w, h, 4 * w, QImage.Format_RGBA8888)
+            image_qi = QImage(image_data.data, w, h, 4 * w, QImage.Format.Format_RGBA8888)
 
             image_pm = QPixmap.fromImage(image_qi)
 

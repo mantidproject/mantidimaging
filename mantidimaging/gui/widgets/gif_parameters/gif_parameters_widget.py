@@ -32,7 +32,7 @@ class GifParametersWidget(QDialog):
 
         # GIF size estimation label and buttons
         self.size_label = QLabel()
-        self.size_label.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.size_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         main_layout.addWidget(self.size_label)
         button_layout = self._create_button_layout()
         main_layout.addLayout(button_layout)

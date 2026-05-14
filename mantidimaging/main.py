@@ -13,7 +13,7 @@ import darkdetect
 from PyQt6.QtCore import QSettings
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6 import QtCore
-from PyQt6.QtGui import QGuiApplication, QFont, QFontInfo
+from PyQt6.QtGui import QFont, QFontInfo
 
 import mantidimaging.core.parallel.manager as pm
 
@@ -60,7 +60,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_application() -> QApplication:
-    QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     q_application = QApplication(sys.argv)
 
     default_font = QFont()

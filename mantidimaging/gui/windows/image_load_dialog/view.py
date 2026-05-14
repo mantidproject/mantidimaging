@@ -113,7 +113,7 @@ class ImageLoadDialog(BaseDialogView):
     def show_unrecognised_log_format_error(self, filename: str) -> None:
         url = "https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack"
         msg = QMessageBox(QMessageBox.Critical, "Error", "", parent=self)
-        msg.setTextFormat(Qt.RichText)
+        msg.setTextFormat(Qt.TextFormat.RichText)
         msg.setText(f"The log file '{filename}' could not be read: file format not recognised.<br>"
                     f"See <a href='{url}'>documentation</a> for details of supported formats.")
         if label := msg.findChild(QLabel):

@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 
 from PyQt6 import QtWidgets
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import (QSplitter, QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox,
-                             QActionGroup, QAction)
+from PyQt6.QtWidgets import QSplitter, QTabWidget, QCheckBox, QVBoxLayout, QFileDialog, QLabel, QGroupBox
+from PyQt6.QtGui import QActionGroup, QAction
 from PyQt6.QtCore import QModelIndex
 from logging import getLogger
 

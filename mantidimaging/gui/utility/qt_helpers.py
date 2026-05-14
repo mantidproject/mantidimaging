@@ -14,14 +14,16 @@ from collections.abc import Callable
 
 from PyQt6 import uic, sip  # type: ignore
 from PyQt6.QtCore import QObject, Qt
-from PyQt6.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy,
+from PyQt6.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QMenu,
+                             QPushButton, QLayout, QFileDialog, QComboBox)
 from PyQt6.QtGui import QAction
-                             QMenu, QPushButton, QLayout, QFileDialog, QComboBox)
 
 from mantidimaging.core.utility import finder
 
 MAX_SPIN_BOX = 2147483647
-INPUT_DIALOG_FLAGS = Qt.WindowSystemMenuHint | Qt.WindowTitleHint | Qt.WindowCloseButtonHint
+INPUT_DIALOG_FLAGS = (Qt.WindowType.WindowSystemMenuHint
+                      | Qt.WindowType.WindowTitleHint
+                      | Qt.WindowType.WindowCloseButtonHint)
 
 
 class BlockQtSignals:

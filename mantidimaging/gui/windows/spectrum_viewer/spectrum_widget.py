@@ -141,7 +141,7 @@ class SpectrumWidget(QWidget):
         self.image = self.image_widget.image
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter = QSplitter(Qt.Orientation.Vertical)
         self.splitter.addWidget(self.image_widget)
         self.splitter.addWidget(self.spectrum_plot_widget)
         self.vbox.addWidget(self.splitter)

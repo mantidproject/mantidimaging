@@ -38,7 +38,7 @@ class WelcomeScreenPresenter:
     def set_up_links(self) -> None:
         """Gets link colour from main/presenter.py"""
         palette = QApplication.instance().palette()
-        text_color = palette.color(QPalette.WindowText).name()
+        text_color = palette.color(QPalette.ColorRole.WindowText).name()
 
         for link_name, url in WELCOME_LINKS:
             rich_text = (f'<a href="{url}" '

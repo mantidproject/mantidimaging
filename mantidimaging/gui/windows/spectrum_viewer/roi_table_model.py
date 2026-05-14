@@ -58,20 +58,20 @@ class TableModel(QAbstractTableModel):
         @param role: Qt.DisplayRole or Qt.BackgroundRole
         @return: ROI name or colour values and background colour of colour column
         """
-        if role == Qt.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole:
             if index.column() == 2:
                 return None
             return self._data[index.row()][index.column()]
 
-        if role == Qt.BackgroundRole:
+        if role == Qt.ItemDataRole.BackgroundRole:
             if index.column() == 1:
                 return QBrush(QColor(*self._data[index.row()][index.column()]))
 
-        if role == Qt.CheckStateRole:
+        if role == Qt.ItemDataRole.CheckStateRole:
             if index.column() == 2:
                 if self._data[index.row()][index.column()]:
-                    return Qt.Checked
-                return Qt.Unchecked
+                    return Qt.CheckState.Checked
+                return Qt.CheckState.Unchecked
 
     def update_color(self, row: int, new_color: tuple[int, int, int]) -> None:
         if 0 <= row < len(self._data):
@@ -89,7 +89,7 @@ class TableModel(QAbstractTableModel):
         """
 
         match (index.column(), index.row(), role):
-            case 0, row, Qt.EditRole:
+            case 0, row, Qt.ItemDataRole.EditRole:
                 assert isinstance(value, str)
                 old_name = self.get_element(row, 0)
                 new_name = value.strip()

@@ -35,7 +35,7 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.setWindowTitle(f"Mantid Imaging - Live Viewer - {str(self.path)}")
         self.presenter = LiveViewerWindowPresenter(self, main_window)
         self.live_viewer = LiveViewWidget()
-        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter = QSplitter(Qt.Orientation.Vertical)
         self.imageLayout.addWidget(self.splitter)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 

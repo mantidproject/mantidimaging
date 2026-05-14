@@ -82,7 +82,7 @@ class ExportDataTableWidget(QWidget):
         else:
             item.setText(value)
             item.setData(value)
-        item.setTextAlignment(Qt.AlignCenter)
+        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         return item
 
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:
