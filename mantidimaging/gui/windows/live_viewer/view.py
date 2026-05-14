@@ -4,9 +4,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSignalBlocker, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QSplitter
-from PyQt5.Qt import QAction, QActionGroup
+from PyQt6.QtCore import QSignalBlocker, Qt
+from PyQt6.QtWidgets import QVBoxLayout, QSplitter
+from PyQt6.QtGui import QAction, QActionGroup
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
 from .live_view_widget import LiveViewWidget

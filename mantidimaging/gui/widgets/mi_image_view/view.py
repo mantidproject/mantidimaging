@@ -7,8 +7,8 @@ from time import sleep
 from typing import TYPE_CHECKING
 from collections.abc import Callable
 
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
 from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 

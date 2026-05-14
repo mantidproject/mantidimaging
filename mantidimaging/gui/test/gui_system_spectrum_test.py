@@ -5,9 +5,9 @@ from __future__ import annotations
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtCore import Qt
-from PyQt5.QtTest import QTest
-from PyQt5.QtGui import QColor
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
+from PyQt6.QtGui import QColor
 from numpy.testing._private.utils import assert_array_equal
 from parameterized import parameterized
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem

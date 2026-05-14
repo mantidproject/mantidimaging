@@ -2,8 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtCore import Qt, QEventLoop
-from PyQt5.QtWidgets import QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
+from PyQt6.QtCore import Qt, QEventLoop
+from PyQt6.QtWidgets import QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
     QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel, QSpinBox
 

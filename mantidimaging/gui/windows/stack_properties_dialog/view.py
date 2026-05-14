@@ -5,7 +5,7 @@ from __future__ import annotations
 from math import degrees
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QLabel, QGridLayout
+from PyQt6.QtWidgets import QLabel, QGridLayout
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.move_stack_dialog.presenter import Notification

@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from PyQt5.QtWidgets import QWidget, QDialog
+from PyQt6.QtWidgets import QWidget, QDialog
 
 from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog import DatasetSelectorDialog
 from mantidimaging.test_helpers import start_qapplication

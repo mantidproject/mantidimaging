@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from PyQt5.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QLabel
+from PyQt6.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QLabel
 from logging import getLogger
 
 from mantidimaging.core.utility import finder
@@ -16,7 +16,7 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox, QWidget
+    from PyQt6.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox, QWidget
 
 LOG = getLogger(__name__)
 

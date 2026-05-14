@@ -9,8 +9,8 @@ from typing import cast, overload, Literal
 # and display it in the spectrum viewer.
 
 # Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, pyqtSignal
-from PyQt5.QtGui import QColor, QBrush
+from PyQt6.QtCore import QAbstractTableModel, Qt, QModelIndex, pyqtSignal
+from PyQt6.QtGui import QColor, QBrush
 
 from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
 

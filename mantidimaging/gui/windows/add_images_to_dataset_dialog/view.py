@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel
+from PyQt6.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter, Notification

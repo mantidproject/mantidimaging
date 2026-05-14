@@ -4,7 +4,7 @@ from __future__ import annotations
 from math import isnan
 
 import numpy as np
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 from pyqtgraph import GraphicsLayoutWidget, InfiniteLine
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint

@@ -10,8 +10,8 @@ from tempfile import mkdtemp
 import logging
 from uuid import uuid4
 
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QMainWindow, QMenu, QWidget, QApplication
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset

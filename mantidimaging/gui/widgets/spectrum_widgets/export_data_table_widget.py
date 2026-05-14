@@ -3,9 +3,9 @@
 from __future__ import annotations
 from logging import getLogger
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
+from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtCore import Qt
 
 LOG = getLogger(__name__)
 

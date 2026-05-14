@@ -10,10 +10,10 @@ import os
 from pathlib import Path
 
 import darkdetect
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5 import QtCore
-from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
+from PyQt6.QtCore import QSettings
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6 import QtCore
+from PyQt6.QtGui import QGuiApplication, QFont, QFontInfo
 
 import mantidimaging.core.parallel.manager as pm
 

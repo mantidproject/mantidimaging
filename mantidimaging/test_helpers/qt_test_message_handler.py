@@ -1,6 +1,6 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 
 def qt_message_handler(mode, context, message):

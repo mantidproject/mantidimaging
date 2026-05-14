@@ -3,9 +3,9 @@
 from __future__ import annotations
 from logging import getLogger
 
-from PyQt5.QtCore import QSettings
-from PyQt5.QtGui import QPalette
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtCore import QSettings
+from PyQt6.QtGui import QPalette
+from PyQt6.QtWidgets import QApplication
 
 from mantidimaging.core.utility import cuda_check
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView

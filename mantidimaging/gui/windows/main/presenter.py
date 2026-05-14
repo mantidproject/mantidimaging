@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
-from PyQt5.QtCore import QSettings, Qt
-from PyQt5.QtGui import QFont, QPalette, QColor
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QMessageBox
+from PyQt6.QtCore import QSettings, Qt
+from PyQt6.QtGui import QFont, QPalette, QColor
+from PyQt6.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QMessageBox
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset

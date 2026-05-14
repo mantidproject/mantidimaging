@@ -12,9 +12,10 @@ from pathlib import Path
 from typing import Any
 from collections.abc import Callable
 
-from PyQt5 import uic, sip  # type: ignore
-from PyQt5.QtCore import QObject, Qt
-from PyQt5.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy, QAction,
+from PyQt6 import uic, sip  # type: ignore
+from PyQt6.QtCore import QObject, Qt
+from PyQt6.QtWidgets import (QLabel, QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox, QWidget, QSizePolicy,
+from PyQt6.QtGui import QAction
                              QMenu, QPushButton, QLayout, QFileDialog, QComboBox)
 
 from mantidimaging.core.utility import finder

@@ -2,8 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QComboBox, QCheckBox, QLabel, QMessageBox, QTreeWidget, QTreeWidgetItem, QPushButton, \
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QComboBox, QCheckBox, QLabel, QMessageBox, QTreeWidget, QTreeWidgetItem, QPushButton, \
     QSizePolicy, QHeaderView, QSpinBox, QFileDialog, QDialogButtonBox, QWidget
 
 from mantidimaging.core.io.loader.loader import DEFAULT_PIXEL_SIZE, DEFAULT_IS_SINOGRAM, DEFAULT_PIXEL_DEPTH, \

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from PyQt5.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
+from PyQt6.QtWidgets import QTreeWidgetItem, QWidget, QSpinBox, QTreeWidget, QHBoxLayout, QLabel, QCheckBox, QPushButton
 
 from mantidimaging.core.utility import size_calculator
 from mantidimaging.core.utility.data_containers import Indices, FILE_TYPES

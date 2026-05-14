@@ -3,12 +3,12 @@
 
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 
 import os
 from uuid import UUID
 
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QDoubleSpinBox,

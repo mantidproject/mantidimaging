@@ -5,9 +5,10 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING, Any
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
-from PyQt5.QtGui import QColor, QResizeEvent
-from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
+from PyQt6.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
+from PyQt6.QtGui import QColor, QResizeEvent
+from PyQt6.QtWidgets import QColorDialog, QMenu, QSplitter, QWidget, QVBoxLayout
+from PyQt6.QtGui import QAction, QActionGroup
 
 from pyqtgraph import (
     ROI,

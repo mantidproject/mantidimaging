@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import json
 from typing import Any
-from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialogButtonBox, QVBoxLayout, QShortcut,
+from PyQt6.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialogButtonBox, QVBoxLayout, QShortcut,
                              QPushButton)
-from PyQt5.QtGui import QKeySequence, QGuiApplication
+from PyQt6.QtGui import QKeySequence, QGuiApplication
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const

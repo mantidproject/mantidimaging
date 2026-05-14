@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
-    from PyQt5.QtWidgets import QLineEdit
+    from PyQt6.QtWidgets import QLineEdit
 
 
 class CropCoordinatesFilter(BaseFilter):

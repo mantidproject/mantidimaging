@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest import mock
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtTest import QTest
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 

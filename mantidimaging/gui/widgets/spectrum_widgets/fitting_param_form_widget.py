@@ -4,10 +4,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
      QGroupBox
-from PyQt5.QtGui import QDoubleValidator
+from PyQt6.QtGui import QDoubleValidator
 
 from mantidimaging.core.fitting.fitting_engine import BoundType
 

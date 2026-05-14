@@ -11,7 +11,7 @@ from collections.abc import Callable
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget
 
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees

@@ -10,9 +10,10 @@ from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
-from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
+from PyQt6.QtCore import Qt, pyqtSignal, QUrl, QPoint
+from PyQt6.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
     QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout
 
 from mantidimaging.core.data import ImageStack

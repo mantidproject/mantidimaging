@@ -4,7 +4,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtWidgets import QMainWindow, QMenu, QAction, QPushButton
+from PyQt6.QtWidgets import QMainWindow, QMenu, QPushButton
+from PyQt6.QtGui import QAction
 
 from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
 
