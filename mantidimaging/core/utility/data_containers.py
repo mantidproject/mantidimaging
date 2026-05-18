@@ -103,7 +103,6 @@ class ReconstructionParameters:
     alpha: float = 0.0
     gamma: float = 1.0
     non_negative: bool = False
-    max_projection_angle: float = 360.0
     beam_hardening_coefs: list[float] | None = None
     stochastic: bool = False
     projections_per_subset: int = 50

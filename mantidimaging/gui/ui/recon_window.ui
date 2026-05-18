@@ -646,13 +646,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="maxProjAngleLabel">
-                    <property name="text">
-                     <string>Maximum projection angle</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="algorithmNameLabel">
                     <property name="text">
@@ -776,16 +769,6 @@
                    <widget class="QLabel" name="stochasticLabel">
                     <property name="text">
                      <string>Stochastic</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QDoubleSpinBox" name="maxProjAngleSpinBox">
-                    <property name="maximum">
-                     <double>9999.000000000000000</double>
-                    </property>
-                    <property name="value">
-                     <double>360.000000000000000</double>
                     </property>
                    </widget>
                   </item>
