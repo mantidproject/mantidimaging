@@ -143,6 +143,18 @@ When to use gridrec
 Interface Preview
 """""""""""""""""
 
+.. image:: /_static/gridrec_light.png
+    :alt: gridrec in reconstruction window
+    :width: 60%
+    :align: center
+    :class: only-light
+
+.. image:: /_static/gridrec_dark.png
+    :alt: gridrec in reconstruction window
+    :width: 60%
+    :align: center
+    :class: only-dark
+
 Parameters
 """"""""""
 
@@ -189,6 +201,18 @@ When to use PDHG-TV
 
 Interface Preview
 """""""""""""""""
+
+.. image:: /_static/CIL_PDHG-TV_light.png
+    :alt: PDHG-TV in reconstruction window
+    :width: 60%
+    :align: center
+    :class: only-light
+
+.. image:: /_static/CIL_PDHG-TV_dark.png
+    :alt: PDHG-TV in reconstruction window
+    :width: 60%
+    :align: center
+    :class: only-dark
 
 Parameters
 """"""""""
