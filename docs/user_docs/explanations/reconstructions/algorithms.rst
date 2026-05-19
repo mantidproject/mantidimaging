@@ -19,6 +19,9 @@ Mantid Imaging automatically creates the required projector and geometry configu
 
 Parallel beam vector geometry is used, allowing tilt correction to be accounted for through the centres of rotation for each slice. This means manual rotation of the images to correct the tilt shouldn't be necessary.
 
+**Why this matters:**
+
+Using a vector-based parallel beam geometry improves reconstruction consistency when small misalignments or sample tilt are present. Instead of requiring users to manually rotate or pre-align projection data, the geometry definition accounts for these offsets during reconstruction. This reduces preprocessing steps and helps avoid reconstruction artefacts caused by imperfect alignment.
 
 The vector creation implementation is adapted from `ToMoBAR <https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70>`_.
 
@@ -33,6 +36,15 @@ Overview
 - Supports multiple reconstruction filters 
 - Requires a CUDA-compatible GPU
 
+How it works
+""""""""""""
+
+Filtered Back Projection reconstructs the image by first applying a frequency-domain filter to each projection and then back-projecting the filtered data into image space.
+
+Because it performs a single deterministic computation, it does not iteratively refine the solution or incorporate prior assumptions about the object during reconstruction.
+
+This makes the output strongly dependent on data quality and sampling, rather than on optimisation-based refinement.
+
 When to use FBP_CUDA
 """"""""""""""""""""
 
@@ -40,22 +52,28 @@ When to use FBP_CUDA
 - Cases where speed is a priority and iterative reconstruction is not necessary
 - When classical FBP is preferred for its simplicity and interpretability
 
+FBP_CUDA is most effective when the input data is sufficiently complete that additional refinement is not required.
+
 `Link to the original documentation for FBP_CUDA <http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html>`_
 
 Interface Preview
 """""""""""""""""
 
-.. image:: /_static/FBP_CUDA_light.png
+.. figure:: /_static/FBP_CUDA_light.png
     :alt: FBP CUDA in reconstruction window
     :width: 60%
     :align: center
     :class: only-light
+    
+    FBP_CUDA in the reconstruction window (light mode)
 
-.. image:: /_static/FBP_CUDA_dark.png
+.. figure:: /_static/FBP_CUDA_dark.png
     :alt: FBP CUDA in reconstruction window
     :width: 60%
     :align: center
     :class: only-dark
+    
+    FBP_CUDA in the reconstruction window (dark mode)
 
 Parameters
 """"""""""
@@ -81,6 +99,15 @@ Overview
 - Reconstruction quality is controlled through iteration count 
 - Requires a CUDA-compatible GPU
 
+How it works
+""""""""""""
+
+SIRT_CUDA is an iterative reconstruction algorithm. Instead of computing the solution in a single step, it progressively refines the reconstruction over multiple iterations.
+
+SIRT works by repeatedly comparing simulated projections (generated from the current reconstruction estimate) against the measured projection data. The difference between these is used to compute corrections, which are then applied to update the reconstruction. This process is repeated, gradually improving agreement with the measured data over time.
+
+Because of this iterative correction process, reconstruction quality improves with the number of iterations, allowing the algorithm to reduce artefacts and handle noisy or incomplete data more effectively than direct methods such as FBP_CUDA.
+
 When to use SIRT_CUDA
 """""""""""""""""""""
 
@@ -94,17 +121,21 @@ When to use SIRT_CUDA
 Interface Preview
 """""""""""""""""
 
-.. image:: /_static/SIRT_CUDA_light.png
+.. figure:: /_static/SIRT_CUDA_light.png
     :alt: SIRT CUDA in reconstruction window
     :width: 60%
     :align: center
     :class: only-light
+    
+    SIRT_CUDA in the reconstruction window (light mode)
 
-.. image:: /_static/SIRT_CUDA_dark.png
+.. figure:: /_static/SIRT_CUDA_dark.png
     :alt: SIRT CUDA in reconstruction window
     :width: 60%
     :align: center
     :class: only-dark
+    
+    SIRT_CUDA in the reconstruction window (dark mode)
 
 Parameters
 """"""""""
@@ -133,6 +164,19 @@ Overview
 - Does not require CUDA support
 - Implemented through the TomoPy package
 
+How it works
+""""""""""""
+
+Gridrec is a fast Fourier-based reconstruction algorithm. Instead of performing back projection directly in image space, it reconstructs the image by transforming projection data into frequency space using the Fourier slice theorem.
+
+In frequency space, interpolation is used to map the data onto a regular grid, after which an inverse Fourier transform is applied to recover the reconstructed image.
+
+Because this approach operates in the frequency domain, Gridrec is very fast and does not require iterative refinement. However, its performance is more sensitive to sampling quality and interpolation accuracy, which means it works best with well-sampled, evenly spaced projection data.
+
+Gridrec performs efficiently on CPUs because it relies on Fast Fourier Transform (FFT) operations, which are highly optimised in CPU libraries and do not require iterative computation.
+
+Unlike GPU-based iterative methods such as FBP_CUDA or SIRT_CUDA, Gridrec does not gain additional benefit from massively parallel update steps. Its performance instead comes from efficient frequency-domain transforms, making it a lightweight and fast option for suitable datasets.
+
 When to use gridrec
 """""""""""""""""""
 - When GPU resources are not available
@@ -143,17 +187,21 @@ When to use gridrec
 Interface Preview
 """""""""""""""""
 
-.. image:: /_static/gridrec_light.png
+.. figure:: /_static/gridrec_light.png
     :alt: gridrec in reconstruction window
     :width: 60%
     :align: center
     :class: only-light
+    
+    gridrec in the reconstruction window (light mode)
 
-.. image:: /_static/gridrec_dark.png
+.. figure:: /_static/gridrec_dark.png
     :alt: gridrec in reconstruction window
     :width: 60%
     :align: center
     :class: only-dark
+    
+    gridrec in the reconstruction window (dark mode)
 
 Parameters
 """"""""""
@@ -191,6 +239,17 @@ Overview
 - Iterative algorithm designed for noise suppression and sparse/noisy data
 - Typically produces smoother reconstructions with edge preservation
 
+How it works
+""""""""""""
+
+PDHG-TV is an iterative optimisation-based reconstruction method that solves the reconstruction problem by minimising an objective function rather than directly computing the solution.
+
+It uses the Primal-Dual Hybrid Gradient (PDHG) algorithm to alternately update the reconstruction and the optimisation variables. At each iteration, the current estimate is compared against the measured projection data, and corrections are applied to reduce the mismatch while also enforcing regularisation constraints.
+
+A key component of PDHG-TV is Total Variation (TV) regularisation. This encourages the reconstruction to remain smooth in uniform regions while preserving sharp edges. As a result, noise and artefacts are reduced without excessively blurring structural boundaries.
+
+Because PDHG-TV explicitly incorporates both data fidelity (matching the measured projections) and regularisation (controlling image smoothness), it is more flexible than direct methods such as FBP_CUDA and more noise-robust than simpler iterative methods such as SIRT_CUDA, at the cost of increased computational complexity and parameter tuning.
+
 When to use PDHG-TV
 """""""""""""""""""
 
@@ -202,17 +261,21 @@ When to use PDHG-TV
 Interface Preview
 """""""""""""""""
 
-.. image:: /_static/CIL_PDHG-TV_light.png
+.. figure:: /_static/CIL_PDHG-TV_light.png
     :alt: PDHG-TV in reconstruction window
     :width: 60%
     :align: center
     :class: only-light
 
-.. image:: /_static/CIL_PDHG-TV_dark.png
+    PDHG-TV in the reconstruction window (light mode)
+
+.. figure:: /_static/CIL_PDHG-TV_dark.png
     :alt: PDHG-TV in reconstruction window
     :width: 60%
     :align: center
     :class: only-dark
+    
+    PDHG-TV in the reconstruction window (dark mode)
 
 Parameters
 """"""""""
@@ -238,8 +301,8 @@ Parameters
     * - Pixel size (microns)
       - Defines the physical pixel spacing used to convert image distances into real-world units, ensuring correct scaling of attenuation coefficients (e.g. cm⁻¹).
 
-References
-^^^^^^^^^^
+Example
+^^^^^^^
 
 The figure shows two values of alpha applied to a reconstructed slice.
 
@@ -252,3 +315,40 @@ The figure shows two values of alpha applied to a reconstructed slice.
 
 
 - Jørgensen JS et al. 2021 `Core Imaging Library Part I: a versatile python framework for tomographic imaging <https://doi.org/10.1098/rsta.2020.0192>`_. Phil. Trans. R. Soc. A 20200192. Code.
+
+Reconstruction Methods Comparison
+---------------------------------
+
+.. list-table::
+    :widths: 18 18 18 22 24
+    :header-rows: 1
+
+    * - Method
+      - Type
+      - Compute
+      - Strengths
+      - Best suited for
+
+    * - FBP_CUDA
+      - Direct (FBP)
+      - GPU
+      - Very fast, deterministic, simple
+      - Well-sampled, low-noise data
+
+    * - SIRT_CUDA
+      - Iterative (algebraic)
+      - GPU
+      - Robust to noise, handles missing data better than FBP
+      - Noisy or limited-angle datasets
+
+    * - Gridrec
+      - Fourier-based
+      - CPU
+      - Very fast FFT-based reconstruction
+      - Well-sampled datasets without GPU access
+
+    * - PDHG-TV
+      - Iterative (optimisation)
+      - GPU
+      - Strong noise suppression, edge-preserving reconstruction
+      - Very noisy, sparse, or artefact-heavy data
