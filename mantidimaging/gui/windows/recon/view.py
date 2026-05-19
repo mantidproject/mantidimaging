@@ -68,7 +68,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     reconTab: QWidget
 
-    #maxProjAngleSpinBox: QDoubleSpinBox
     algorithmNameComboBox: QComboBox
     filterNameComboBox: QComboBox
     numIterSpinBox: QSpinBox
@@ -416,10 +415,6 @@ class ReconstructWindowView(BaseMainWindowView):
     @slope.setter
     def slope(self, value: float) -> None:
         self.resultSlopeSpinBox.setValue(value)
-
-    # @property
-    # def max_proj_angle(self) -> float:
-    #     return self.maxProjAngleSpinBox.value()
 
     @property
     def algorithm_name(self) -> str:
