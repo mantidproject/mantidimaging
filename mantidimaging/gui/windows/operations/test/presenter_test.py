@@ -462,19 +462,15 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         self.presenter.init_roi_field(mock_roi_field)
         assert_called_once_with(mock_roi_field.setText, "0, 0, 100, 100")
 
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_roi_field')
-    def test_set_stack_initialises_roi_for_crop_coordinates(self, mock_init_roi_field):
+    def test_set_stack_initialises_roi_for_crop_coordinates(self, mock_init_roi_field, mock_do_update_previews):
         mock_roi_field = mock.Mock()
 
         self.view.get_selected_filter.return_value = CROP_COORDINATES
         self.presenter.model.filter_widget_kwargs = {"roi_field": mock_roi_field}
 
-        stack = mock.Mock(
-            name="test_stack",
-            shape=(2, 201, 201),
-            num_images=2,
-            num_sinograms=201,
-        )
+        stack = mock.Mock(num_images=2)
         with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
             self.presenter.set_stack(stack)
 
