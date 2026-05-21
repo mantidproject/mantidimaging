@@ -12,7 +12,7 @@ source:
 
 requirements:
   build:
-    - python=3.12.*
+    - python=3.12
     - setuptools=72.*
   run:
     - python=3.12.*
@@ -32,18 +32,16 @@ requirements:
     - astra-toolbox=2.1.0=cuda*
     - requests=2.32.*
     - h5py=3.13.*
-    - hdf5>=1.14.2,<1.15
     - psutil=5.9.*
     - cil=25.0.*
     - ccpi-regulariser=25.0.*
     - jenkspy=0.4.*
-    - pyqt6~=6.11.0
-    - pyqt6-sip~=13.11.1
+    - pyqt6=6.6.1
     - pyqtgraph=0.13.7
     - qt-material=2.14
     - darkdetect=0.8.0
     - ccpi-viewer=25.0.*
-    - vtk=*=qt*
+    - vtk=9.2.*
     - qt-gtk-platformtheme # [linux]
 
 
