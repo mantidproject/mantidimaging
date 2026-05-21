@@ -87,6 +87,14 @@ class GeometryWindowView(BaseMainWindowView):
         self.conversionTypeSelector = QComboBox()
         self.convertGeometryButton = QPushButton("Convert")
 
+        # Unit selectors for geometry data display
+        self.pixelSizeUnitSelector = QComboBox()
+        self.pixelSizeUnitSelector.addItems(["pixels", "mm", "m"])
+        self.sourcePosUnitSelector = QComboBox()
+        self.sourcePosUnitSelector.addItems(["pixels", "mm", "m"])
+        self.detectorPosUnitSelector = QComboBox()
+        self.detectorPosUnitSelector.addItems(["pixels", "mm", "m"])
+
         # New Geometry page
 
         self.geomTypeSelector = QComboBox()
@@ -98,6 +106,14 @@ class GeometryWindowView(BaseMainWindowView):
         self.newSourcePosBox = CustomRangeSpinBox()
         self.newDetectorPosBox = CustomRangeSpinBox()
         self.createGeometryButton = QPushButton("Create Geometry")
+
+        # Unit selectors for new geometry
+        self.newPixelSizeUnitSelector = QComboBox()
+        self.newPixelSizeUnitSelector.addItems(["pixels", "mm", "m"])
+        self.newSourcePosUnitSelector = QComboBox()
+        self.newSourcePosUnitSelector.addItems(["pixels", "mm", "m"])
+        self.newDetectorPosUnitSelector = QComboBox()
+        self.newDetectorPosUnitSelector.addItems(["pixels", "mm", "m"])
 
         self.figureCanvas = FigureCanvas()
 
@@ -154,8 +170,22 @@ class GeometryWindowView(BaseMainWindowView):
         data_display_group_layout.addRow(QLabel("Angles:"), self.angleDisplay)
         data_display_group_layout.addRow(QLabel("COR:"), self.corSpinBox)
         data_display_group_layout.addRow(QLabel("Tilt:"), self.tiltSpinBox)
-        data_display_group_layout.addRow(QLabel("Source Pos:"), self.sourcePosBox)
-        data_display_group_layout.addRow(QLabel("Detector Pos:"), self.detectorPosBox)
+
+        # Source position with unit selector
+        source_pos_widget = QWidget()
+        source_pos_layout = QHBoxLayout(source_pos_widget)
+        source_pos_layout.setContentsMargins(0, 0, 0, 0)
+        source_pos_layout.addWidget(self.sourcePosBox)
+        source_pos_layout.addWidget(self.sourcePosUnitSelector)
+        data_display_group_layout.addRow(QLabel("Source Pos:"), source_pos_widget)
+
+        # Detector position with unit selector
+        detector_pos_widget = QWidget()
+        detector_pos_layout = QHBoxLayout(detector_pos_widget)
+        detector_pos_layout.setContentsMargins(0, 0, 0, 0)
+        detector_pos_layout.addWidget(self.detectorPosBox)
+        detector_pos_layout.addWidget(self.detectorPosUnitSelector)
+        data_display_group_layout.addRow(QLabel("Detector Pos:"), detector_pos_widget)
 
         self.deleteGeometryButton = QPushButton("Delete Geometry")
         data_display_group_layout.addRow(self.deleteGeometryButton)
@@ -221,8 +251,22 @@ class GeometryWindowView(BaseMainWindowView):
         new_params_layout.addRow(QLabel(""), self.loadAnglesButton)
         new_params_layout.addRow(QLabel("COR:"), self.newCorSpinBox)
         new_params_layout.addRow(QLabel("Tilt:"), self.newTiltSpinBox)
-        new_params_layout.addRow(QLabel("Source Position:"), self.newSourcePosBox)
-        new_params_layout.addRow(QLabel("Detector Position:"), self.newDetectorPosBox)
+
+        # Source position with unit selector
+        new_source_pos_widget = QWidget()
+        new_source_pos_layout = QHBoxLayout(new_source_pos_widget)
+        new_source_pos_layout.setContentsMargins(0, 0, 0, 0)
+        new_source_pos_layout.addWidget(self.newSourcePosBox)
+        new_source_pos_layout.addWidget(self.newSourcePosUnitSelector)
+        new_params_layout.addRow(QLabel("Source Position:"), new_source_pos_widget)
+
+        # Detector position with unit selector
+        new_detector_pos_widget = QWidget()
+        new_detector_pos_layout = QHBoxLayout(new_detector_pos_widget)
+        new_detector_pos_layout.setContentsMargins(0, 0, 0, 0)
+        new_detector_pos_layout.addWidget(self.newDetectorPosBox)
+        new_detector_pos_layout.addWidget(self.newDetectorPosUnitSelector)
+        new_params_layout.addRow(QLabel("Detector Position:"), new_detector_pos_widget)
 
         return new_params_group
 
