@@ -21,7 +21,7 @@ requirements:
     - scipy=1.14.*
     - scikit-image=0.25.*
     - tifffile=2023.7.18
-    - imagecodecs=2023.9.18
+    - imagecodecs
     - imageio=2.33.*
     - numpy=1.26.*
     - numexpr=2.10.*
@@ -36,7 +36,7 @@ requirements:
     - cil=25.0.*
     - ccpi-regulariser=25.0.*
     - jenkspy=0.4.*
-    - pyqt6=6.6.1
+    - pyqt6
     - pyqtgraph=0.13.7
     - qt-material=2.14
     - darkdetect=0.8.0
