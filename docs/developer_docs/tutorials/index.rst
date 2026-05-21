@@ -12,6 +12,5 @@ Getting Started
 
    started.rst
    started_ada.rst
-   vsc_setup.rst
 
 🚧 **Note:** This section is currently under development. More tutorials will be added soon.
