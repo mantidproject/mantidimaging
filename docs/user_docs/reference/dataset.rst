@@ -120,5 +120,5 @@ as a Service `Ada <https://ada.stfc.ac.uk/login>`_ system.
 
 .. note::
 
-  - See the :doc:`Using Mantid Imaging on IDAaaS <../tutorials/installation>` guide if you're new to using Ada.
+  - See the :ref:`installing-idaaas` guide if you're new to using Ada.
 
