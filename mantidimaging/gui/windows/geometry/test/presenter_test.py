@@ -42,6 +42,10 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.view.new_max_angle = 0
         self.view.current_stack = self.uuid
         self.view.conversion_type = "Parallel 3D"
+        self.view.source_position_unit = "mm"
+        self.view.detector_position_unit = "mm"
+        self.view.new_source_position_unit = "mm"
+        self.view.new_detector_position_unit = "mm"
 
     def reset_new_stack(self):
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))

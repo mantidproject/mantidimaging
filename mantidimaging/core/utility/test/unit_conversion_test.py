@@ -52,3 +52,13 @@ class UnitConversionTest(unittest.TestCase):
     def test_WHEN_tof_converted_to_us_THEN_us_data_returned(self):
         us_data = unit_conversion.UnitConversion(self.tof_data).tof_seconds_to_us()
         assert_array_almost_equal(us_data, np.array([1000000., 2000000., 3000000., 5000000., 8000000., 9000000.]))
+
+    def test_WHEN_convert_distance_from_mm_to_m_THEN_returns_expected_value(self):
+        self.assertEqual(unit_conversion.convert_distance(1500.0, "mm", "m"), 1.5)
+
+    def test_WHEN_convert_distance_from_m_to_mm_THEN_returns_expected_value(self):
+        self.assertEqual(unit_conversion.convert_distance(2.0, "m", "mm"), 2000.0)
+
+    def test_WHEN_convert_distance_with_unknown_unit_THEN_raises_error(self):
+        with self.assertRaises(ValueError):
+            unit_conversion.convert_distance(1.0, "cm", "mm")

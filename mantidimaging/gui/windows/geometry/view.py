@@ -38,6 +38,7 @@ else:
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.core.utility.unit_conversion import convert_distance
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from mantidimaging.gui.windows.geometry.presenter import GeometryWindowPresenter
 
@@ -88,15 +89,14 @@ class GeometryWindowView(BaseMainWindowView):
         self.convertGeometryButton = QPushButton("Convert")
 
         # Unit selectors for geometry data display
-        self.pixelSizeUnitSelector = QComboBox()
-        self.pixelSizeUnitSelector.addItems(["pixels", "mm", "m"])
         self.sourcePosUnitSelector = QComboBox()
-        self.sourcePosUnitSelector.addItems(["pixels", "mm", "m"])
+        self.sourcePosUnitSelector.addItems(["mm", "m"])
         self.detectorPosUnitSelector = QComboBox()
-        self.detectorPosUnitSelector.addItems(["pixels", "mm", "m"])
+        self.detectorPosUnitSelector.addItems(["mm", "m"])
+        self.lastSourcePositionUnit = "mm"
+        self.lastDetectorPositionUnit = "mm"
 
         # New Geometry page
-
         self.geomTypeSelector = QComboBox()
         self.minAngleSpinBox = CustomRangeSpinBox(-360, 360)
         self.maxAngleSpinBox = CustomRangeSpinBox(-360, 360)
@@ -108,13 +108,10 @@ class GeometryWindowView(BaseMainWindowView):
         self.createGeometryButton = QPushButton("Create Geometry")
 
         # Unit selectors for new geometry
-        self.newPixelSizeUnitSelector = QComboBox()
-        self.newPixelSizeUnitSelector.addItems(["pixels", "mm", "m"])
         self.newSourcePosUnitSelector = QComboBox()
-        self.newSourcePosUnitSelector.addItems(["pixels", "mm", "m"])
+        self.newSourcePosUnitSelector.addItems(["mm", "m"])
         self.newDetectorPosUnitSelector = QComboBox()
-        self.newDetectorPosUnitSelector.addItems(["pixels", "mm", "m"])
-
+        self.newDetectorPosUnitSelector.addItems(["mm", "m"])
         self.figureCanvas = FigureCanvas()
 
     def _init_layout(self) -> None:
@@ -125,6 +122,25 @@ class GeometryWindowView(BaseMainWindowView):
         central_layout.addWidget(self._build_plot_visualiser())
 
         self.setCentralWidget(central_container)
+
+    def _on_unit_selector_changed(self):
+        if not self.presenter:
+            return
+        stack = self.presenter._get_current_stack_with_assert()
+        if not stack or not stack.geometry:
+            return
+        new_src_unit = self.source_position_unit
+        src_val_new_unit = convert_distance(self.source_position, self.lastSourcePositionUnit, new_src_unit)
+        self.sourcePosBox.blockSignals(True)
+        self.source_position = src_val_new_unit
+        self.sourcePosBox.blockSignals(False)
+        self.lastSourcePositionUnit = new_src_unit
+        new_det_unit = self.detector_position_unit
+        det_val_new_unit = convert_distance(self.detector_position, self.lastDetectorPositionUnit, new_det_unit)
+        self.detectorPosBox.blockSignals(True)
+        self.detector_position = det_val_new_unit
+        self.detectorPosBox.blockSignals(False)
+        self.lastDetectorPositionUnit = new_det_unit
 
     def _build_left_pane(self) -> QWidget:
         left_container = QWidget()
@@ -145,9 +161,8 @@ class GeometryWindowView(BaseMainWindowView):
 
     def _build_geometry_pages_widget(self) -> QWidget:
         self.geometryPagesWidget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-
-        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())  # page 0 (Geometry exists)
-        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())  # page 1 (Geometry doesn't exist)
+        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())
+        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())
 
         return self.geometryPagesWidget
 
@@ -305,6 +320,8 @@ class GeometryWindowView(BaseMainWindowView):
         self.convertGeometryButton.clicked.connect(self.presenter.handle_convert_geometry)
 
         self.deleteGeometryButton.clicked.connect(self.presenter.handle_delete_geometry)
+        self.sourcePosUnitSelector.currentIndexChanged.connect(self._on_unit_selector_changed)
+        self.detectorPosUnitSelector.currentIndexChanged.connect(self._on_unit_selector_changed)
 
     def set_widget_stack_page(self, index: int) -> None:
         self.geometryPagesWidget.setCurrentIndex(index)

@@ -5,6 +5,21 @@ from __future__ import annotations
 import numpy as np
 
 
+def convert_distance(value: float, from_unit: str, to_unit: str) -> float:
+    conversion_factors = {
+        "mm": 1.0,
+        "m": 1000.0,
+    }
+
+    if from_unit not in conversion_factors:
+        raise ValueError(f"Unknown unit: {from_unit}")
+    if to_unit not in conversion_factors:
+        raise ValueError(f"Unknown unit: {to_unit}")
+
+    value_mm = value * conversion_factors[from_unit]
+    return value_mm / conversion_factors[to_unit]
+
+
 class UnitConversion:
     # target_to_camera_dist = 56 m taken from https://scripts.iucr.org/cgi-bin/paper?S1600576719001730
     neutron_mass: float = 1.674927211e-27  # [kg]
