@@ -438,3 +438,43 @@ class GeometryWindowView(BaseMainWindowView):
     @property
     def conversion_type(self) -> str:
         return self.conversionTypeSelector.currentText()
+
+    @property
+    def source_position_unit(self) -> str:
+        return self.sourcePosUnitSelector.currentText()
+
+    @source_position_unit.setter
+    def source_position_unit(self, value: str) -> None:
+        idx = self.sourcePosUnitSelector.findText(value)
+        if idx != -1:
+            self.sourcePosUnitSelector.setCurrentIndex(idx)
+
+    @property
+    def detector_position_unit(self) -> str:
+        return self.detectorPosUnitSelector.currentText()
+
+    @detector_position_unit.setter
+    def detector_position_unit(self, value: str) -> None:
+        idx = self.detectorPosUnitSelector.findText(value)
+        if idx != -1:
+            self.detectorPosUnitSelector.setCurrentIndex(idx)
+
+    @property
+    def new_source_position_unit(self) -> str:
+        return self.newSourcePosUnitSelector.currentText()
+
+    @new_source_position_unit.setter
+    def new_source_position_unit(self, value: str) -> None:
+        idx = self.newSourcePosUnitSelector.findText(value)
+        if idx != -1:
+            self.newSourcePosUnitSelector.setCurrentIndex(idx)
+
+    @property
+    def new_detector_position_unit(self) -> str:
+        return self.newDetectorPosUnitSelector.currentText()
+
+    @new_detector_position_unit.setter
+    def new_detector_position_unit(self, value: str) -> None:
+        idx = self.newDetectorPosUnitSelector.findText(value)
+        if idx != -1:
+            self.newDetectorPosUnitSelector.setCurrentIndex(idx)
