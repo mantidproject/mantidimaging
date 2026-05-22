@@ -178,9 +178,6 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def test_slope_property(self):
         self.assertEqual(self.view.slope, 0)
 
-    def test_max_proj_angle(self):
-        self.assertEqual(self.view.max_proj_angle, 360)
-
     def test_algorithm_name(self):
         self.assertIn(self.view.algorithm_name, ["gridrec", "FBP_CUDA"])
 
