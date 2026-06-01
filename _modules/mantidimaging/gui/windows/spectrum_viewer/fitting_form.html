@@ -623,13 +623,24 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_activated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Fitting form activated&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_roi_dropdown</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_roi_on_fitting_thumbnail</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_fitting_region</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_binning</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_activation</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">first_activation</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="n">roi_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">()</span>
+        <span class="n">roi_names</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;rits_roi&quot;</span><span class="p">)</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_viewer</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">roi_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fitting_display_widget</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_binning</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">run_fit_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">from_roi_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_roi_on_fitting_thumbnail</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_spectrum</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_default_fitting_region</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_binning</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">run_fit_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">fitting_param_form</span><span class="o">.</span><span class="n">from_roi_button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_activation</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">first_activation</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="FittingFormWidgetPresenter.handle_roi_selection_changes">
