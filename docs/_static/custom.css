@@ -1,2 +1,11 @@
 div.sd-card-body {font-size: 120%}
 div.sd-card-title {font-size: 300%}
+
+/* OS-specific keyboard shortcut visibility */
+.shortcut-mac     { display: none; }
+.shortcut-windows { display: none; }
+.shortcut-linux   { display: none; }
+
+.os-mac     .shortcut-mac     { display: inline; }
+.os-windows .shortcut-windows { display: inline; }
+.os-linux   .shortcut-linux   { display: inline; }
