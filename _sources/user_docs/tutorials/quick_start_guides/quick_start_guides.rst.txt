@@ -10,4 +10,7 @@ This quick start guide will help you get started with the main features of the a
 - For a step-by-step guide on tomographic reconstruction, see the :doc:`Tomography Workflow Guide <tomography_workflow_guide>`.
 - For an example of time of flight analysis and using the spectrum viewer, see the :doc:`Time of Flight Workflow Guide <time_of_flight_workflow_guide>`.
 
+Example datasets for trying out these workflows are available in the
+:ref:`Example Neutron Datasets <dataset>`.
+
 For more details, please refer to the full documentation.
