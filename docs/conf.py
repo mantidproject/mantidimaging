@@ -55,6 +55,7 @@ sys.path.append(str((THIS_DIR.parent).resolve()))
 
 extensions.append("operations_user_doc")
 extensions.append("release_notes")
+extensions.append("platform_detection_rst_to_css_mapping")
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -106,6 +107,7 @@ todo_include_todos = True
 html_theme = 'pydata_sphinx_theme'
 
 html_css_files = ['custom.css']
+html_js_files = ['platform_detection.js']
 
 # Ensure sidebar displays only the current section's nested headings (local ToC)
 html_sidebars = {
