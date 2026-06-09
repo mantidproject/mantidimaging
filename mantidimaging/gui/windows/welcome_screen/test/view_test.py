@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from PyQt5.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLabel
 
 from mantidimaging.gui.windows.welcome_screen.view import WelcomeScreenView
 from mantidimaging.test_helpers import start_qapplication

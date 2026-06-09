@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt6.QtWidgets import QDialogButtonBox
 
 from mantidimaging.core.io.filenames import IMAGE_FORMAT_EXTENSIONS
 from mantidimaging.core.io.utility import DEFAULT_IO_FILE_FORMAT

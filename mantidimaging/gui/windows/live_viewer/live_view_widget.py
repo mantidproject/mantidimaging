@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 from pyqtgraph import GraphicsLayoutWidget, mkPen
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI

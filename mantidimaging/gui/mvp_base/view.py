@@ -5,9 +5,9 @@ from __future__ import annotations
 import time
 from logging import getLogger
 
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication, QWidget
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication, QWidget
 
 from mantidimaging.gui.utility import compile_ui
 

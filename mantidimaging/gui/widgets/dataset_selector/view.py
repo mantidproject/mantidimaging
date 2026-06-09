@@ -5,8 +5,8 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QComboBox
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QComboBox
 
 from mantidimaging.gui.widgets.dataset_selector.presenter import DatasetSelectorWidgetPresenter, Notification
 

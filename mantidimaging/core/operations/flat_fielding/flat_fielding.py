@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from functools import partial
 from typing import Any, TYPE_CHECKING
-from PyQt5.QtWidgets import QComboBox, QCheckBox
+from PyQt6.QtWidgets import QComboBox, QCheckBox
 
 import numpy as np
 

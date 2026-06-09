@@ -1,8 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt, QSize, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QLabel, QPushButton
+from PyQt6.QtGui import QPixmap, QIcon
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.utility import compile_ui

@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import uuid
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtWidgets import QAction, QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QGuiApplication
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QDockWidget, QInputDialog, QMenu, QMessageBox, QVBoxLayout, QWidget
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.sensible_roi import SensibleROI

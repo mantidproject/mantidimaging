@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 if TYPE_CHECKING:
     from numpy import ndarray
     from mantidimaging.core.data.imagestack import ImageStack
-    from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox
+    from PyQt6.QtWidgets import QDoubleSpinBox, QSpinBox
 
 
 class RemoveDeadStripesFilter(BaseFilter):

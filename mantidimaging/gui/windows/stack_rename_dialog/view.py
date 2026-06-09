@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QLabel, QGridLayout, QLineEdit, QDialogButtonBox
+from PyQt6.QtWidgets import QLabel, QGridLayout, QLineEdit, QDialogButtonBox
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.stack_rename_dialog.presenter import Notification

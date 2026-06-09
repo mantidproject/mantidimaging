@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget, QMessageBox
+from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget, QMessageBox
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters

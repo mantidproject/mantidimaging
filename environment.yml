@@ -7,6 +7,7 @@ channels:
   - https://software.repos.intel.com/python/conda/
 # Dependencies that can be installed with conda should be in conda/meta.yaml
 dependencies:
+  - pyqt6=6.6.1
   - mantidimaging>=2.5.0
   - conda-forge::numexpr # https://github.com/mantidproject/mantidimaging/issues/1774
   - numba==0.61.* # https://github.com/numba/numba/issues/10239

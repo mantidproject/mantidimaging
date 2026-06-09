@@ -98,12 +98,12 @@ Specific Errors
 SystemError: <built-in function connectSlotsByName> returned a result with an error set
 ---------------------------------------------------------------------------------------
 
-This means that the PyQt package is missing or an old version (it must be newer than PyQt5==5.13.2).
+This means that the PyQt package is missing or an old version (it must be newer than PyQt6==5.13.2).
 
 Suggested Fix
 ^^^^^^^^^^^^^
 
-Install PyQt5 and pyqtgraph with :code:`pip install pyqt5==5.15 pyqtgraph==0.12`.
+Install PyQt6 and pyqtgraph with :code:`pip install PyQt6==5.15 pyqtgraph==0.12`.
 
 
 

@@ -6,7 +6,7 @@ import unittest
 import uuid
 from unittest import mock
 
-from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt6.QtWidgets import QDialogButtonBox
 
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import Notification
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog

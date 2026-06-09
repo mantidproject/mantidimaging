@@ -5,7 +5,7 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING
 from skimage.transform import rotate
-from PyQt5.QtWidgets import QComboBox
+from PyQt6.QtWidgets import QComboBox
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter

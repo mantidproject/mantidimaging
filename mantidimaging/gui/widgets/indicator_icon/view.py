@@ -7,8 +7,9 @@ from collections.abc import Callable
 import numpy as np
 from PIL import Image
 from pyqtgraph import ViewBox
-from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu, QAction
-from PyQt5.QtGui import QPixmap, QImage, QColor
+from PyQt6.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu
+from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QPixmap, QImage, QColor
 
 
 class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
@@ -62,7 +63,7 @@ class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore
 
             h = image_data.shape[0]
             w = image_data.shape[1]
-            image_qi = QImage(image_data.data, w, h, 4 * w, QImage.Format_RGBA8888)
+            image_qi = QImage(image_data.data, w, h, 4 * w, QImage.Format.Format_RGBA8888)
 
             image_pm = QPixmap.fromImage(image_qi)
 

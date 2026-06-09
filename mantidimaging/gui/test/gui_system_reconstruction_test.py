@@ -4,8 +4,8 @@ from __future__ import annotations
 from unittest import mock
 
 import pytest
-from PyQt5.QtTest import QTest
-from PyQt5.QtCore import Qt, QTimer
+from PyQt6.QtTest import QTest
+from PyQt6.QtCore import Qt, QTimer
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY, SHORT_DELAY
 from mantidimaging.gui.windows.recon.view import ReconstructWindowView
