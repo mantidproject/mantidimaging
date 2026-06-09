@@ -751,6 +751,8 @@ class MainWindowView(BaseMainWindowView):
         for i in range(parent.childCount()):
             child = parent.child(i)
             if child.text(0) == SINO_TEXT:
+                if not isinstance(child, QTreeDatasetWidgetItem):
+                    return None
                 return child
         return None
 
@@ -838,8 +840,11 @@ class MainWindowView(BaseMainWindowView):
         :return: The recon group if found.
         """
         for i in range(dataset_item.childCount()):
-            if dataset_item.child(i).text(0) == RECON_GROUP_TEXT:
-                return dataset_item.child(i)
+            child = dataset_item.child(i)
+            if child.text(0) == RECON_GROUP_TEXT:
+                if not isinstance(child, QTreeDatasetWidgetItem):
+                    return None
+                return child
         return None
 
     def get_dataset_tree_view_item(self, dataset_id: uuid.UUID) -> QTreeDatasetWidgetItem:
@@ -851,6 +856,8 @@ class MainWindowView(BaseMainWindowView):
         top_level_item_count = self.dataset_tree_widget.topLevelItemCount()
         for i in range(top_level_item_count):
             top_level_item = self.dataset_tree_widget.topLevelItem(i)
+            if not isinstance(top_level_item, QTreeDatasetWidgetItem):
+                continue
             if top_level_item.id == dataset_id:
                 return top_level_item
         raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
