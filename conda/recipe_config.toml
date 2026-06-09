@@ -1,0 +1,7 @@
+default-channels = [
+    "conda-forge",
+    "ccpi",
+    "mantidimaging/label/unstable",
+    "algotom",
+    "https://software.repos.intel.com/python/conda/"
+]
