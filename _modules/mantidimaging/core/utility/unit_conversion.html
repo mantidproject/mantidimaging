@@ -498,6 +498,24 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
+<div class="viewcode-block" id="convert_distance">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.convert_distance">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_distance</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">conversion_factors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;mm&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">from_unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conversion_factors</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown unit: </span><span class="si">{</span><span class="n">from_unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">to_unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conversion_factors</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown unit: </span><span class="si">{</span><span class="n">to_unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">value_mm</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">conversion_factors</span><span class="p">[</span><span class="n">from_unit</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">value_mm</span> <span class="o">/</span> <span class="n">conversion_factors</span><span class="p">[</span><span class="n">to_unit</span><span class="p">]</span></div>
+
+
+
 <div class="viewcode-block" id="UnitConversion">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.UnitConversion">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnitConversion</span><span class="p">:</span>

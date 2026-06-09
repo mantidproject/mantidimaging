@@ -544,6 +544,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_source_position_mm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detector_position_mm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">:</span>
             <span class="n">parallel_3d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_Parallel3D</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">parallel_3d</span><span class="o">.</span><span class="n">config</span>
@@ -557,6 +560,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_panel</span><span class="p">(</span><span class="n">num_pixels</span><span class="o">=</span><span class="n">num_pixels</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_angles</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="n">angles</span><span class="p">,</span> <span class="n">angle_unit</span><span class="o">=</span><span class="n">angle_unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">source_position</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">detector_position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Geometry.set_geometry_from_cor_tilt">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt">[docs]</a>
@@ -659,27 +663,35 @@
 
 <div class="viewcode-block" id="Geometry.set_source_detector_positions">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_source_detector_positions">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_source_detector_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_pos</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">detector_pos</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">source_pos</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">source_pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_source_detector_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_pos_mm</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">detector_pos_mm</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_source_position_mm</span> <span class="o">=</span> <span class="n">source_pos_mm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detector_position_mm</span> <span class="o">=</span> <span class="n">detector_pos_mm</span>
+        <span class="n">pixel_size_mm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">source_pos_px</span> <span class="o">=</span> <span class="n">source_pos_mm</span> <span class="o">/</span> <span class="n">pixel_size_mm</span>
+        <span class="n">detector_pos_px</span> <span class="o">=</span> <span class="n">detector_pos_mm</span> <span class="o">/</span> <span class="n">pixel_size_mm</span>
+        <span class="k">if</span> <span class="n">source_pos_px</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">source_pos_px</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">detector_pos_px</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">detector</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">detector_pos_px</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
 
-        <span class="k">if</span> <span class="n">detector_pos</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">detector</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">detector_pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_position_mm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_position_mm</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detector_position_mm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detector_position_mm</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">source_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="n">source_pos</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span><span class="p">:</span>
-            <span class="n">source_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">source_pos</span>
+        <span class="n">pixel_size_mm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_position_mm</span> <span class="o">/</span> <span class="n">pixel_size_mm</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">detector_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="n">detector_pos</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span><span class="p">:</span>
-            <span class="n">detector_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">detector</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">detector_pos</span></div>
+        <span class="n">pixel_size_mm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detector_position_mm</span> <span class="o">/</span> <span class="n">pixel_size_mm</span></div>
 
 </pre></div>
 

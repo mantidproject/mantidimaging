@@ -505,6 +505,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ProjectionAngles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.unit_conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_distance</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.geometry.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryWindowModel</span>
 
@@ -585,12 +586,18 @@
         <span class="n">mi_cor</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span>
         <span class="n">mi_tilt</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tilt</span>
 
+        <span class="c1"># Geometry distances are stored internally in mm</span>
+        <span class="n">src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position_unit</span>
+        <span class="n">det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position_unit</span>
+        <span class="n">src_val</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">source_position_mm</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">)</span>
+        <span class="n">det_val</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">detector_position_mm</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">geometry_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">angle_range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">rotation_axis</span> <span class="o">=</span> <span class="n">mi_cor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tilt</span> <span class="o">=</span> <span class="n">mi_tilt</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">source_position</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">detector_position</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position</span> <span class="o">=</span> <span class="n">src_val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position</span> <span class="o">=</span> <span class="n">det_val</span></div>
 
 
 <div class="viewcode-block" id="GeometryWindowPresenter.set_default_new_parameters">
@@ -602,9 +609,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_tilt</span> <span class="o">=</span> <span class="mf">.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_min_angle</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_max_angle</span> <span class="o">=</span> <span class="mi">360</span>
-        <span class="c1"># Source and detector positions cannot be 0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_source_position</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_detector_position</span> <span class="o">=</span> <span class="mf">1.</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_source_position</span> <span class="o">=</span> <span class="o">-</span><span class="mf">100.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_detector_position</span> <span class="o">=</span> <span class="mf">100.</span></div>
 
 
 <div class="viewcode-block" id="GeometryWindowPresenter.handle_parameter_updates">
@@ -613,14 +619,16 @@
         <span class="n">updated_cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">rotation_axis</span><span class="p">)</span>
         <span class="n">updated_tilt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tilt</span>
 
-        <span class="n">updated_source_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position</span>
-        <span class="n">updated_detector_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position</span>
-
         <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_stack_with_assert</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
+        <span class="n">src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position_unit</span>
+        <span class="n">det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position_unit</span>
+        <span class="n">src_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+        <span class="n">det_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">updated_cor</span><span class="p">,</span> <span class="n">updated_tilt</span><span class="p">)</span>
-        <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">updated_source_pos</span><span class="p">,</span> <span class="n">updated_detector_pos</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">src_val_mm</span><span class="p">,</span> <span class="n">det_val_mm</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
         <span class="c1"># Notify main window that stack was modified (so recon window can update COR/Tilt)</span>
@@ -651,6 +659,12 @@
         <span class="n">new_source_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_source_position</span>
         <span class="n">new_detector_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_detector_position</span>
 
+        <span class="c1"># Convert source/detector positions from selected units to mm</span>
+        <span class="n">src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_source_position_unit</span>
+        <span class="n">det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_detector_position_unit</span>
+        <span class="n">src_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">new_source_position</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+        <span class="n">det_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">new_detector_position</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+
         <span class="n">new_angles</span> <span class="o">=</span> <span class="n">ProjectionAngles</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">new_min_angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">new_max_angle</span><span class="p">),</span> <span class="n">stack</span><span class="o">.</span><span class="n">num_projections</span><span class="p">))</span>
 
@@ -661,7 +675,7 @@
         <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">new_angles</span><span class="p">,</span> <span class="n">geometry_type</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">new_cor</span><span class="p">,</span> <span class="n">new_tilt</span><span class="p">)</span>
-        <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">new_source_position</span><span class="p">,</span> <span class="n">new_detector_position</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">src_val_mm</span><span class="p">,</span> <span class="n">det_val_mm</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_angles</span><span class="p">)</span>
 

@@ -531,6 +531,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.backends.backend_qtagg</span><span class="w"> </span><span class="kn">import</span> <span class="n">FigureCanvasQTAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseMainWindowView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.unit_conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_distance</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.dataset_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatasetSelectorWidgetView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.geometry.presenter</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryWindowPresenter</span>
 
@@ -585,8 +586,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">conversionTypeSelector</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convertGeometryButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Convert&quot;</span><span class="p">)</span>
 
-        <span class="c1"># New Geometry page</span>
+        <span class="c1"># Unit selectors for geometry data display</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastSourcePositionUnit</span> <span class="o">=</span> <span class="s2">&quot;mm&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastDetectorPositionUnit</span> <span class="o">=</span> <span class="s2">&quot;mm&quot;</span>
 
+        <span class="c1"># New Geometry page</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geomTypeSelector</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">minAngleSpinBox</span> <span class="o">=</span> <span class="n">CustomRangeSpinBox</span><span class="p">(</span><span class="o">-</span><span class="mi">360</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxAngleSpinBox</span> <span class="o">=</span> <span class="n">CustomRangeSpinBox</span><span class="p">(</span><span class="o">-</span><span class="mi">360</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
@@ -597,6 +605,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosBox</span> <span class="o">=</span> <span class="n">CustomRangeSpinBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">createGeometryButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Create Geometry&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Unit selectors for new geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosUnitSelector</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosUnitSelector</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosUnitSelector</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosUnitSelector</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figureCanvas</span> <span class="o">=</span> <span class="n">FigureCanvas</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -607,6 +620,25 @@
         <span class="n">central_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_plot_visualiser</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">central_container</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_unit_selector_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">_get_current_stack_with_assert</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stack</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">new_src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_position_unit</span>
+        <span class="n">src_val_new_unit</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastSourcePositionUnit</span><span class="p">,</span> <span class="n">new_src_unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosBox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_position</span> <span class="o">=</span> <span class="n">src_val_new_unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosBox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastSourcePositionUnit</span> <span class="o">=</span> <span class="n">new_src_unit</span>
+        <span class="n">new_det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_position_unit</span>
+        <span class="n">det_val_new_unit</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detector_position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lastDetectorPositionUnit</span><span class="p">,</span> <span class="n">new_det_unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosBox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_position</span> <span class="o">=</span> <span class="n">det_val_new_unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosBox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastDetectorPositionUnit</span> <span class="o">=</span> <span class="n">new_det_unit</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_left_pane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
         <span class="n">left_container</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
@@ -627,9 +659,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_geometry_pages_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometryPagesWidget</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometryPagesWidget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_geometry_data_display_page</span><span class="p">())</span>  <span class="c1"># page 0 (Geometry exists)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometryPagesWidget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_new_geometry_page</span><span class="p">())</span>  <span class="c1"># page 1 (Geometry doesn&#39;t exist)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometryPagesWidget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_geometry_data_display_page</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometryPagesWidget</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_new_geometry_page</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometryPagesWidget</span>
 
@@ -652,8 +683,22 @@
         <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Angles:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">angleDisplay</span><span class="p">)</span>
         <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;COR:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">corSpinBox</span><span class="p">)</span>
         <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Tilt:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tiltSpinBox</span><span class="p">)</span>
-        <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Source Pos:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosBox</span><span class="p">)</span>
-        <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Detector Pos:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosBox</span><span class="p">)</span>
+
+        <span class="c1"># Source position with unit selector</span>
+        <span class="n">source_pos_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">source_pos_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="n">source_pos_widget</span><span class="p">)</span>
+        <span class="n">source_pos_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">source_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sourcePosBox</span><span class="p">)</span>
+        <span class="n">source_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span><span class="p">)</span>
+        <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Source Pos:&quot;</span><span class="p">),</span> <span class="n">source_pos_widget</span><span class="p">)</span>
+
+        <span class="c1"># Detector position with unit selector</span>
+        <span class="n">detector_pos_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">detector_pos_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="n">detector_pos_widget</span><span class="p">)</span>
+        <span class="n">detector_pos_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">detector_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detectorPosBox</span><span class="p">)</span>
+        <span class="n">detector_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span><span class="p">)</span>
+        <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Detector Pos:&quot;</span><span class="p">),</span> <span class="n">detector_pos_widget</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">deleteGeometryButton</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Delete Geometry&quot;</span><span class="p">)</span>
         <span class="n">data_display_group_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deleteGeometryButton</span><span class="p">)</span>
@@ -719,8 +764,22 @@
         <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">loadAnglesButton</span><span class="p">)</span>
         <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;COR:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">newCorSpinBox</span><span class="p">)</span>
         <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Tilt:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">newTiltSpinBox</span><span class="p">)</span>
-        <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Source Position:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosBox</span><span class="p">)</span>
-        <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Detector Position:&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosBox</span><span class="p">)</span>
+
+        <span class="c1"># Source position with unit selector</span>
+        <span class="n">new_source_pos_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">new_source_pos_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="n">new_source_pos_widget</span><span class="p">)</span>
+        <span class="n">new_source_pos_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">new_source_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosBox</span><span class="p">)</span>
+        <span class="n">new_source_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosUnitSelector</span><span class="p">)</span>
+        <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Source Position:&quot;</span><span class="p">),</span> <span class="n">new_source_pos_widget</span><span class="p">)</span>
+
+        <span class="c1"># Detector position with unit selector</span>
+        <span class="n">new_detector_pos_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">new_detector_pos_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="n">new_detector_pos_widget</span><span class="p">)</span>
+        <span class="n">new_detector_pos_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">new_detector_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosBox</span><span class="p">)</span>
+        <span class="n">new_detector_pos_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosUnitSelector</span><span class="p">)</span>
+        <span class="n">new_params_layout</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Detector Position:&quot;</span><span class="p">),</span> <span class="n">new_detector_pos_widget</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">new_params_group</span>
 
@@ -759,6 +818,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convertGeometryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_convert_geometry</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">deleteGeometryButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_delete_geometry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_unit_selector_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_unit_selector_changed</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GeometryWindowView.set_widget_stack_page">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.geometry.view.html#mantidimaging.gui.windows.geometry.view.GeometryWindowView.set_widget_stack_page">[docs]</a>
@@ -903,7 +964,47 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">conversion_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conversionTypeSelector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conversionTypeSelector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="nd">@source_position_unit</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">source_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sourcePosUnitSelector</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detector_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="nd">@detector_position_unit</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detector_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detectorPosUnitSelector</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_source_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosUnitSelector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="nd">@new_source_position_unit</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_source_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosUnitSelector</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">newSourcePosUnitSelector</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_detector_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosUnitSelector</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="nd">@new_detector_position_unit</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_detector_position_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosUnitSelector</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">newDetectorPosUnitSelector</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
 
 </pre></div>
 
