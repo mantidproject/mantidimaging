@@ -164,6 +164,20 @@ class GeometryTest(unittest.TestCase):
         self.assertAlmostEqual(cil_offset, expected_cil_offset, places=6)
         self.assertAlmostEqual(cil_angle, tilt, places=6)
 
+    @parameterized.expand([
+        ("zero_tilt_mid_slice", 0.0, 255, ScalarCoR(128.0)),
+        ("positive_tilt_mid_slice", 1.5, 255, ScalarCoR(130.0)),
+        ("negative_tilt_mid_slice", -2.3, 100, ScalarCoR(120.0)),
+        ("large_tilt", 5.0, 400, ScalarCoR(250.0)),
+    ])
+    def test_set_cor_at_slice_index_inverts_set_to_get_original_cor(self, _, tilt, slice_idx, cor_at_slice):
+        geometry = Geometry(TEST_ANGLES, num_pixels=(512, 512))
+        geometry.tilt = tilt
+        geometry.set_cor_at_slice_index(slice_idx, cor_at_slice)
+        result = geometry.get_cor_at_slice_index(slice_idx)
+
+        self.assertAlmostEqual(result.value, cor_at_slice.value, places=6)
+
     def test_geometry_type(self):
         """
         Tests that the correct geometry type is returned.
