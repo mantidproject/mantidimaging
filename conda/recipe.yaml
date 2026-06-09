@@ -1,0 +1,79 @@
+schema_version: 1
+
+# context:
+#   version_tag: ${{ env.get("GIT_DESCRIBE_TAG", default="0.0.0") }}
+#   raw_version_number: ${{ env.get("GIT_DESCRIBE_NUMBER", default="0") }}
+#   version_number: ${{ ".post" + raw_version_number if raw_version_number != "0" else "" }}
+#   version: ${{ version_tag + version_number }}
+
+context:
+  version_tag: ${{ git.latest_tag(".") | default("0.0.0")}} # ratter-build --experimental
+  commit_number: ${{ git.latest_tag_distance(".")  | default("0")}} # ratter-build>=0.65 --experimental
+  version: ${{ version_tag + "-" + commit_number }}
+
+package:
+  name: mantidimaging
+  version: ${{ version }}
+
+source:
+  path: ../
+
+build:
+  python:
+    entry_points:
+      - mantidimaging = mantidimaging.main:main
+      - mantidimaging-ipython = mantidimaging.ipython:main
+
+requirements:
+  build:
+    - python 3.12.*
+    - setuptools 72.*
+
+  host:
+    - python 3.12.*
+    - setuptools 72.*
+    - pip
+
+  run:
+    - python 3.12.*
+    - pip
+    - astropy 7.1.*
+    - scipy 1.14.*
+    - scikit-image 0.25.*
+    - tifffile=2023.7.18
+    - imagecodecs=2023.9.18
+    - imageio 2.33.*
+    - numpy 1.26.*
+    - numexpr 2.10.*
+    - algotom 1.6.*
+    - tomopy 1.12.*
+    - cudatoolkit 11.8.*
+    - cupy 12.3.*
+    - astra-toolbox=2.1.0 cuda*
+    - requests 2.32.*
+    - h5py 3.13.*
+    - hdf5>=1.14.2,<1.15
+    - psutil 5.9.*
+    - cil 25.0.*
+    - ccpi-regulariser 25.0.*
+    - jenkspy 0.4.*
+    - pyqt 5.15.*
+    - pyqtgraph=0.13.7
+    - qt-material=2.14
+    - darkdetect=0.8.0
+    - ccpi-viewer 25.0.*
+    - vtk>=9.2.6,<9.4.0 qt*
+    - if: linux
+      then: qt-gtk-platformtheme
+
+tests:
+  - python:
+      imports:
+        - mantidimaging
+      pip_check: false
+
+about:
+  license: GPL-3.0-only
+  summary: "Mantid Imaging"
+  license_file: LICENSE.txt
+  homepage: https://github.com/mantidproject/mantidimaging
