@@ -12,7 +12,7 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QProgressBar
 from PyQt5.QtCore import QTimer
 
 
@@ -26,6 +26,12 @@ class AsyncTaskDialogView(BaseDialogView):
 
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(1000)
+
+        self.subProgressBar = QProgressBar(self)
+        self.subProgressBar.setMinimum(0)
+        self.subProgressBar.setMaximum(1000)
+        self.subProgressBar.hide()
+        self.PlotVerticalLayout.addWidget(self.subProgressBar)
 
         self.progress_plot: PlotWidget | None = None
         self.residual_image_view: ImageView | None = None
@@ -61,13 +67,23 @@ class AsyncTaskDialogView(BaseDialogView):
         self.presenter.model = None
         self._presenter = None
 
-    def set_progress(self, progress: float, message: str):
+    def set_progress(self, progress: float, message: str, extra_info: dict | None = None):
         # Set status message
         if message:
             self.infoText.setText(message)
 
         # Update progress bar
         self.progressBar.setValue(int(progress * 1000))
+
+        progress_details = (extra_info or {}).get('progress_details', {}) if extra_info else {}
+        substep = progress_details.get('substep')
+        total_substeps = progress_details.get('total_substeps')
+
+        if substep is not None and total_substeps:
+            self.subProgressBar.show()
+            self.subProgressBar.setValue(int(substep / total_substeps * 1000))
+        else:
+            self.subProgressBar.hide()
 
     def set_progress_plot(self, x: list, y: list):
         if self.progress_plot is None:

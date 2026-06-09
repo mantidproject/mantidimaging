@@ -168,7 +168,9 @@ class Progress:
                steps: int = 1,
                msg: str = "",
                force_continue: bool = False,
-               extra_info: dict | None = None) -> None:
+               extra_info: dict | None = None,
+               substep: int | None = None,
+               total_substeps: int | None = None) -> None:
         """
         Updates the progress of the task.
 
@@ -176,6 +178,8 @@ class Progress:
                       to this function
         :param msg: Message describing current step
         :param force_continue: Prevent cancellation of the async progress
+        :param substep: Optional sub-step index within the current step
+        :param total_substeps: Optional total number of sub-steps within the current step
         """
         # Acquire lock while manipulating progress state
         with self.lock:
@@ -190,11 +194,25 @@ class Progress:
             mean_time = self.calculate_mean_time(self.progress_history)
             eta = mean_time * (self.end_step - self.current_step)
 
-            msg = f"{msg} | {self.current_step}/{self.end_step} | " \
+            substep_msg = ""
+            if substep is not None and total_substeps is not None:
+                substep_msg = f" | Sub-step: {substep}/{total_substeps}"
+
+            msg = f"{msg} | {self.current_step}/{self.end_step}{substep_msg} | " \
                   f"Time: {self._format_time(self.execution_time())}, ETA: {self._format_time(eta)}"
             step_details = ProgressHistory(time.perf_counter(), self.current_step, msg)
             self.progress_history.append(step_details)
-            self.extra_info = extra_info
+
+            progress_details = {
+                "step": self.current_step,
+                "total_steps": self.end_step,
+            }
+            if substep is not None and total_substeps is not None:
+                progress_details["substep"] = substep
+                progress_details["total_substeps"] = total_substeps
+
+            self.extra_info = dict(extra_info) if extra_info else {}
+            self.extra_info["progress_details"] = progress_details
 
         # Process progress callbacks
         for cb in self.progress_handlers:

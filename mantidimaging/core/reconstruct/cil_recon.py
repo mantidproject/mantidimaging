@@ -51,9 +51,17 @@ cil_mutex = Lock()
 
 class MIProgressCallback(Callback):
 
-    def __init__(self, verbose=1, progress: Progress | None = None) -> None:
+    def __init__(self,
+                 verbose=1,
+                 progress: Progress | None = None,
+                 stochastic: bool = False,
+                 num_subsets: int = 1,
+                 num_epochs: int = 0) -> None:
         super().__init__(verbose)
         self.progress = progress
+        self.stochastic = stochastic
+        self.num_subsets = num_subsets
+        self.num_epochs = num_epochs
 
     def __call__(self, algo: Algorithm) -> None:
         if self.progress:
@@ -62,13 +70,45 @@ class MIProgressCallback(Callback):
                 extra_info = {'iterations': algo.iterations[1:], 'losses': algo.loss[1:]}
             if hasattr(algo, "last_residual") and algo.last_residual[0] == algo.iteration:
                 extra_info["residual"] = algo.last_residual[1]
-            self.progress.update(
-                steps=1,
-                msg=f'CIL: Iteration {algo.iteration} of {algo.max_iteration}'
-                f': Objective {algo.get_last_objective():.2f}',
-                force_continue=False,
-                extra_info=extra_info,
-            )
+
+            if self.stochastic and self.num_subsets > 1:
+                epoch = ((algo.iteration - 1) // self.num_subsets) + 1
+                subset = ((algo.iteration - 1) % self.num_subsets) + 1
+                epoch = min(epoch, self.num_epochs)
+
+                # Advance the main progress step once per completed epoch.
+                epoch_completed = subset == self.num_subsets
+                self.progress.update(
+                    steps=1 if epoch_completed else 0,
+                    msg=f'CIL: Epoch {epoch} of {self.num_epochs}'
+                    f': Objective {algo.get_last_objective():.2f}',
+                    force_continue=False,
+                    extra_info={
+                        **extra_info,
+                        'stage': 'reconstruction',
+                        'mode': 'spdhg',
+                        'epoch': epoch,
+                        'total_epochs': self.num_epochs,
+                        'subset': subset,
+                        'total_subsets': self.num_subsets,
+                    },
+                    substep=subset,
+                    total_substeps=self.num_subsets,
+                )
+            else:
+                self.progress.update(
+                    steps=1,
+                    msg=f'CIL: Iteration {algo.iteration} of {algo.max_iteration}'
+                    f': Objective {algo.get_last_objective():.2f}',
+                    force_continue=False,
+                    extra_info={
+                        **extra_info,
+                        'stage': 'reconstruction',
+                        'mode': 'pdhg',
+                        'iteration': algo.iteration,
+                        'total_iterations': algo.max_iteration,
+                    },
+                )
 
 
 class RecordResidualsCallback(Callback):
@@ -277,13 +317,18 @@ class CILRecon(BaseRecon):
 
         num_iter = recon_params.num_iter
         num_subsets = ceil(sino.shape[0] / recon_params.projections_per_subset)
+        progress_steps = num_iter + 2
         if recon_params.stochastic:
             # The UI will pass the number of epochs in this case
             num_iter *= num_subsets
+            progress_steps = recon_params.num_iter + 2
 
         if progress:
-            progress.add_estimated_steps(num_iter + 1)
-            progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
+            progress.add_estimated_steps(progress_steps)
+            progress.update(steps=1,
+                            msg='CIL: Setting up reconstruction',
+                            force_continue=False,
+                            extra_info={'stage': 'setup', 'mode': 'cil'})
 
         if cil_mutex.locked():
             LOG.warning("CIL recon already in progress")
@@ -342,7 +387,10 @@ class CILRecon(BaseRecon):
                 algo.run(num_iter,
                          callbacks=[
                              RecordResidualsCallback(residual_interval=update_objective_interval),
-                             MIProgressCallback(progress=progress)
+                             MIProgressCallback(progress=progress,
+                                                stochastic=recon_params.stochastic,
+                                                num_subsets=num_subsets,
+                                                num_epochs=recon_params.num_iter)
                          ])
 
             finally:
@@ -372,11 +420,13 @@ class CILRecon(BaseRecon):
 
         num_iter = recon_params.num_iter
         num_subsets = ceil(images.num_projections / recon_params.projections_per_subset)
+        progress_steps = num_iter + 2
         if recon_params.stochastic:
             # The UI will pass the number of epochs in this case
             num_iter *= num_subsets
+            progress_steps = recon_params.num_iter + 2
 
-        progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=num_iter + 1)
+        progress = Progress.ensure_instance(progress, task_name='CIL reconstruction', num_steps=progress_steps)
 
         pixel_num_h = images.width
         pixel_num_v = images.height
@@ -406,7 +456,10 @@ class CILRecon(BaseRecon):
                      f"Num iter {recon_params.num_iter}, alpha {recon_params.alpha}, "
                      f"Non-negative {recon_params.non_negative},"
                      f"Stochastic {recon_params.stochastic}, subsets {num_subsets}")
-            progress.update(steps=1, msg='CIL: Setting up reconstruction', force_continue=False)
+            progress.update(steps=1,
+                            msg='CIL: Setting up reconstruction',
+                            force_continue=False,
+                            extra_info={'stage': 'setup', 'mode': 'cil'})
 
             if images.geometry is None:
                 raise ValueError("images.geometry is not set")
@@ -448,7 +501,10 @@ class CILRecon(BaseRecon):
                 algo.run(num_iter,
                          callbacks=[
                              RecordResidualsCallback(residual_interval=update_objective_interval),
-                             MIProgressCallback(progress=progress)
+                             MIProgressCallback(progress=progress,
+                                                stochastic=recon_params.stochastic,
+                                                num_subsets=num_subsets,
+                                                num_epochs=recon_params.num_iter)
                          ])
 
                 if isinstance(algo.solution, BlockDataContainer):

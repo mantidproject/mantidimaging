@@ -20,7 +20,7 @@ class Notification(Enum):
 
 
 class AsyncTaskDialogPresenter(QObject, ProgressHandler):
-    progress_updated = pyqtSignal(float, str)
+    progress_updated = pyqtSignal(float, str, object)
     progress_plot_updated = pyqtSignal(list, list)
     progress_residual_plot_updated = pyqtSignal(np.ndarray)
 
@@ -75,7 +75,7 @@ class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     def progress_update(self) -> None:
         msg = self.progress.last_status_message()
         extra_info = self.progress.extra_info
-        self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '')
+        self.progress_updated.emit(self.progress.completion(), msg if msg is not None else '', extra_info)
 
         if extra_info:
             if 'losses' in extra_info:
