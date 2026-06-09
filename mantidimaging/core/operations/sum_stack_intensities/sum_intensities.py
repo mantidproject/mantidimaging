@@ -30,8 +30,9 @@ class SumIntensitiesFilter(BaseFilter):
     Note:
     - Both stacks must have identical shape (x, y, z).
     - The z-axis typically represents projection angle or ToF bin.
-    - Projection angles are not required but, if present, are checked for
-      consistency and may trigger a warning if mismatched.
+    - Projection angles are not required. If present, projections are sorted into angle order on load
+      (see :func:`loader.load <mantidimaging.core.io.loader.loader.load>`).
+      If matched angles between stacks to be summed together differ, a warning is raised.
     - The primary stack is modified in-place.
     """
 
@@ -45,8 +46,9 @@ class SumIntensitiesFilter(BaseFilter):
     def filter_func(images: ImageStack, secondary_stack: ImageStack | None = None, progress: Any = None) -> ImageStack:
         """
         :param images: Primary ImageStack to be modified.
-        :param secondary_stack: Secondary ImageStack whose values are added.
-        :param progress: Progress reporting object (unused).
+        :param secondary_stack: Secondary ImageStack whose values are added to the primary stack
+        :param progress: Progress reporting object (unused - no meaningful progress updates to report as operation runs
+         as a single vectorised operation).
 
         :return: The modified primary ImageStack.
 
