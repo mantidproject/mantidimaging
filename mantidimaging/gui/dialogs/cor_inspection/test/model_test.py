@@ -117,3 +117,19 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         m.recon_preview(ImageType.CURRENT)
         replace_mock.assert_called_once_with(m.recon_params, num_iter=100)
         m.reconstructor.single_sino.assert_called_once_with(m.images, m.slice_idx, replace_mock.return_value)
+
+    def test_recon_cor_preview_does_not_inflate_cor_with_tilt(self):
+        slice_idx = 5
+        cor_at_slice = ScalarCoR(20.0)
+        tilt = 2.0  # extreme tilt so gradient * slice_idx is measurable reflecting how #3158 was first discovered.
+
+        images = generate_images_with_geometry(360)
+        images.geometry.tilt = tilt
+
+        model = CORInspectionDialogModel(images, slice_idx, cor_at_slice,
+                                         ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
+        model.reconstructor = Mock()
+        model.recon_preview(ImageType.CURRENT)
+
+        result = images.geometry.get_cor_at_slice_index(slice_idx)
+        self.assertAlmostEqual(result.value, cor_at_slice.value, places=6)
