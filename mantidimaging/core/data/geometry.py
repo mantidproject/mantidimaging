@@ -46,6 +46,9 @@ class Geometry(AcquisitionGeometry):
         """
         super().__init__()
 
+        self._source_position_mm: float = 0.0
+        self._detector_position_mm: float = 0.0
+
         if type == GeometryType.PARALLEL3D:
             parallel_3d = self.create_Parallel3D(*args, units=units, **kwargs)
             self.config = parallel_3d.config
@@ -59,6 +62,7 @@ class Geometry(AcquisitionGeometry):
 
         self.set_panel(num_pixels=num_pixels, pixel_size=pixel_size)
         self.set_angles(angles=angles, angle_unit=angle_unit)
+        self.set_source_detector_positions(source_position[1], detector_position[1])
 
     def set_geometry_from_cor_tilt(self, cor: ScalarCoR, tilt: float) -> None:
         """
@@ -150,23 +154,31 @@ class Geometry(AcquisitionGeometry):
         else:
             return GeometryType.CONE3D
 
-    def set_source_detector_positions(self, source_pos: float, detector_pos: float) -> None:
-        if source_pos != 0 and self.type == GeometryType.CONE3D:
-            self.config.system.source.position = [0, source_pos, 0]
+    def set_source_detector_positions(self, source_pos_mm: float, detector_pos_mm: float) -> None:
+        self._source_position_mm = source_pos_mm
+        self._detector_position_mm = detector_pos_mm
+        pixel_size_mm = self.config.panel.pixel_size[0]
+        source_pos_px = source_pos_mm / pixel_size_mm
+        detector_pos_px = detector_pos_mm / pixel_size_mm
+        if source_pos_px != 0 and self.type == GeometryType.CONE3D:
+            self.config.system.source.position = [0, source_pos_px, 0]
+        if detector_pos_px != 0 and self.type == GeometryType.CONE3D:
+            self.config.system.detector.position = [0, detector_pos_px, 0]
 
-        if detector_pos != 0 and self.type == GeometryType.CONE3D:
-            self.config.system.detector.position = [0, detector_pos, 0]
+    @property
+    def source_position_mm(self) -> float:
+        return self._source_position_mm
+
+    @property
+    def detector_position_mm(self) -> float:
+        return self._detector_position_mm
 
     @property
     def source_position(self) -> float:
-        source_pos = 0
-        if self.type == GeometryType.CONE3D:
-            source_pos = self.config.system.source.position[1]
-        return source_pos
+        pixel_size_mm = self.config.panel.pixel_size[0]
+        return self._source_position_mm / pixel_size_mm
 
     @property
     def detector_position(self) -> float:
-        detector_pos = 0
-        if self.type == GeometryType.CONE3D:
-            detector_pos = self.config.system.detector.position[1]
-        return detector_pos
+        pixel_size_mm = self.config.panel.pixel_size[0]
+        return self._detector_position_mm / pixel_size_mm

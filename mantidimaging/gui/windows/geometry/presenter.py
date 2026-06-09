@@ -12,6 +12,7 @@ from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.data.imagestack import StackNotFoundError
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles
+from mantidimaging.core.utility.unit_conversion import convert_distance
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.windows.geometry.model import GeometryWindowModel
 
@@ -82,12 +83,18 @@ class GeometryWindowPresenter(BasePresenter):
         mi_cor = stack.geometry.cor.value
         mi_tilt = stack.geometry.tilt
 
+        # Geometry distances are stored internally in mm
+        src_unit = self.view.source_position_unit
+        det_unit = self.view.detector_position_unit
+        src_val = convert_distance(stack.geometry.source_position_mm, "mm", src_unit)
+        det_val = convert_distance(stack.geometry.detector_position_mm, "mm", det_unit)
+
         self.view.type = geometry_type
         self.view.angles = angle_range
         self.view.rotation_axis = mi_cor
         self.view.tilt = mi_tilt
-        self.view.source_position = stack.geometry.source_position
-        self.view.detector_position = stack.geometry.detector_position
+        self.view.source_position = src_val
+        self.view.detector_position = det_val
 
     def set_default_new_parameters(self, stack: ImageStack) -> None:
         default_cor = stack.width / 2
@@ -96,22 +103,23 @@ class GeometryWindowPresenter(BasePresenter):
         self.view.new_tilt = .0
         self.view.new_min_angle = 0
         self.view.new_max_angle = 360
-        # Source and detector positions cannot be 0
-        self.view.new_source_position = -1.
-        self.view.new_detector_position = 1.
+        self.view.new_source_position = -100.
+        self.view.new_detector_position = 100.
 
     def handle_parameter_updates(self) -> None:
         updated_cor = ScalarCoR(self.view.rotation_axis)
         updated_tilt = self.view.tilt
 
-        updated_source_pos = self.view.source_position
-        updated_detector_pos = self.view.detector_position
-
         stack = self._get_current_stack_with_assert()
         assert stack.geometry is not None
 
+        src_unit = self.view.source_position_unit
+        det_unit = self.view.detector_position_unit
+        src_val_mm = convert_distance(self.view.source_position, src_unit, "mm")
+        det_val_mm = convert_distance(self.view.detector_position, det_unit, "mm")
+
         stack.geometry.set_geometry_from_cor_tilt(updated_cor, updated_tilt)
-        stack.geometry.set_source_detector_positions(updated_source_pos, updated_detector_pos)
+        stack.geometry.set_source_detector_positions(src_val_mm, det_val_mm)
 
         self.refresh_plot(stack)
         # Notify main window that stack was modified (so recon window can update COR/Tilt)
@@ -136,6 +144,12 @@ class GeometryWindowPresenter(BasePresenter):
         new_source_position = self.view.new_source_position
         new_detector_position = self.view.new_detector_position
 
+        # Convert source/detector positions from selected units to mm
+        src_unit = self.view.new_source_position_unit
+        det_unit = self.view.new_detector_position_unit
+        src_val_mm = convert_distance(new_source_position, src_unit, "mm")
+        det_val_mm = convert_distance(new_detector_position, det_unit, "mm")
+
         new_angles = ProjectionAngles(
             np.linspace(np.deg2rad(new_min_angle), np.deg2rad(new_max_angle), stack.num_projections))
 
@@ -146,7 +160,7 @@ class GeometryWindowPresenter(BasePresenter):
         stack.create_geometry(new_angles, geometry_type)
         assert stack.geometry is not None
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
-        stack.geometry.set_source_detector_positions(new_source_position, new_detector_position)
+        stack.geometry.set_source_detector_positions(src_val_mm, det_val_mm)
 
         self.main_window.presenter.add_projection_angles_to_sample(stack.id, new_angles)
 

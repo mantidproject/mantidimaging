@@ -38,6 +38,7 @@ else:
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
+from mantidimaging.core.utility.unit_conversion import convert_distance
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 from mantidimaging.gui.windows.geometry.presenter import GeometryWindowPresenter
 
@@ -87,8 +88,15 @@ class GeometryWindowView(BaseMainWindowView):
         self.conversionTypeSelector = QComboBox()
         self.convertGeometryButton = QPushButton("Convert")
 
-        # New Geometry page
+        # Unit selectors for geometry data display
+        self.sourcePosUnitSelector = QComboBox()
+        self.sourcePosUnitSelector.addItems(["mm", "m"])
+        self.detectorPosUnitSelector = QComboBox()
+        self.detectorPosUnitSelector.addItems(["mm", "m"])
+        self.lastSourcePositionUnit = "mm"
+        self.lastDetectorPositionUnit = "mm"
 
+        # New Geometry page
         self.geomTypeSelector = QComboBox()
         self.minAngleSpinBox = CustomRangeSpinBox(-360, 360)
         self.maxAngleSpinBox = CustomRangeSpinBox(-360, 360)
@@ -99,6 +107,11 @@ class GeometryWindowView(BaseMainWindowView):
         self.newDetectorPosBox = CustomRangeSpinBox()
         self.createGeometryButton = QPushButton("Create Geometry")
 
+        # Unit selectors for new geometry
+        self.newSourcePosUnitSelector = QComboBox()
+        self.newSourcePosUnitSelector.addItems(["mm", "m"])
+        self.newDetectorPosUnitSelector = QComboBox()
+        self.newDetectorPosUnitSelector.addItems(["mm", "m"])
         self.figureCanvas = FigureCanvas()
 
     def _init_layout(self) -> None:
@@ -109,6 +122,25 @@ class GeometryWindowView(BaseMainWindowView):
         central_layout.addWidget(self._build_plot_visualiser())
 
         self.setCentralWidget(central_container)
+
+    def _on_unit_selector_changed(self):
+        if not self.presenter:
+            return
+        stack = self.presenter._get_current_stack_with_assert()
+        if not stack or not stack.geometry:
+            return
+        new_src_unit = self.source_position_unit
+        src_val_new_unit = convert_distance(self.source_position, self.lastSourcePositionUnit, new_src_unit)
+        self.sourcePosBox.blockSignals(True)
+        self.source_position = src_val_new_unit
+        self.sourcePosBox.blockSignals(False)
+        self.lastSourcePositionUnit = new_src_unit
+        new_det_unit = self.detector_position_unit
+        det_val_new_unit = convert_distance(self.detector_position, self.lastDetectorPositionUnit, new_det_unit)
+        self.detectorPosBox.blockSignals(True)
+        self.detector_position = det_val_new_unit
+        self.detectorPosBox.blockSignals(False)
+        self.lastDetectorPositionUnit = new_det_unit
 
     def _build_left_pane(self) -> QWidget:
         left_container = QWidget()
@@ -129,9 +161,8 @@ class GeometryWindowView(BaseMainWindowView):
 
     def _build_geometry_pages_widget(self) -> QWidget:
         self.geometryPagesWidget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-
-        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())  # page 0 (Geometry exists)
-        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())  # page 1 (Geometry doesn't exist)
+        self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())
+        self.geometryPagesWidget.addWidget(self._build_new_geometry_page())
 
         return self.geometryPagesWidget
 
@@ -154,8 +185,22 @@ class GeometryWindowView(BaseMainWindowView):
         data_display_group_layout.addRow(QLabel("Angles:"), self.angleDisplay)
         data_display_group_layout.addRow(QLabel("COR:"), self.corSpinBox)
         data_display_group_layout.addRow(QLabel("Tilt:"), self.tiltSpinBox)
-        data_display_group_layout.addRow(QLabel("Source Pos:"), self.sourcePosBox)
-        data_display_group_layout.addRow(QLabel("Detector Pos:"), self.detectorPosBox)
+
+        # Source position with unit selector
+        source_pos_widget = QWidget()
+        source_pos_layout = QHBoxLayout(source_pos_widget)
+        source_pos_layout.setContentsMargins(0, 0, 0, 0)
+        source_pos_layout.addWidget(self.sourcePosBox)
+        source_pos_layout.addWidget(self.sourcePosUnitSelector)
+        data_display_group_layout.addRow(QLabel("Source Pos:"), source_pos_widget)
+
+        # Detector position with unit selector
+        detector_pos_widget = QWidget()
+        detector_pos_layout = QHBoxLayout(detector_pos_widget)
+        detector_pos_layout.setContentsMargins(0, 0, 0, 0)
+        detector_pos_layout.addWidget(self.detectorPosBox)
+        detector_pos_layout.addWidget(self.detectorPosUnitSelector)
+        data_display_group_layout.addRow(QLabel("Detector Pos:"), detector_pos_widget)
 
         self.deleteGeometryButton = QPushButton("Delete Geometry")
         data_display_group_layout.addRow(self.deleteGeometryButton)
@@ -221,8 +266,22 @@ class GeometryWindowView(BaseMainWindowView):
         new_params_layout.addRow(QLabel(""), self.loadAnglesButton)
         new_params_layout.addRow(QLabel("COR:"), self.newCorSpinBox)
         new_params_layout.addRow(QLabel("Tilt:"), self.newTiltSpinBox)
-        new_params_layout.addRow(QLabel("Source Position:"), self.newSourcePosBox)
-        new_params_layout.addRow(QLabel("Detector Position:"), self.newDetectorPosBox)
+
+        # Source position with unit selector
+        new_source_pos_widget = QWidget()
+        new_source_pos_layout = QHBoxLayout(new_source_pos_widget)
+        new_source_pos_layout.setContentsMargins(0, 0, 0, 0)
+        new_source_pos_layout.addWidget(self.newSourcePosBox)
+        new_source_pos_layout.addWidget(self.newSourcePosUnitSelector)
+        new_params_layout.addRow(QLabel("Source Position:"), new_source_pos_widget)
+
+        # Detector position with unit selector
+        new_detector_pos_widget = QWidget()
+        new_detector_pos_layout = QHBoxLayout(new_detector_pos_widget)
+        new_detector_pos_layout.setContentsMargins(0, 0, 0, 0)
+        new_detector_pos_layout.addWidget(self.newDetectorPosBox)
+        new_detector_pos_layout.addWidget(self.newDetectorPosUnitSelector)
+        new_params_layout.addRow(QLabel("Detector Position:"), new_detector_pos_widget)
 
         return new_params_group
 
@@ -261,6 +320,8 @@ class GeometryWindowView(BaseMainWindowView):
         self.convertGeometryButton.clicked.connect(self.presenter.handle_convert_geometry)
 
         self.deleteGeometryButton.clicked.connect(self.presenter.handle_delete_geometry)
+        self.sourcePosUnitSelector.currentIndexChanged.connect(self._on_unit_selector_changed)
+        self.detectorPosUnitSelector.currentIndexChanged.connect(self._on_unit_selector_changed)
 
     def set_widget_stack_page(self, index: int) -> None:
         self.geometryPagesWidget.setCurrentIndex(index)
@@ -394,3 +455,43 @@ class GeometryWindowView(BaseMainWindowView):
     @property
     def conversion_type(self) -> str:
         return self.conversionTypeSelector.currentText()
+
+    @property
+    def source_position_unit(self) -> str:
+        return self.sourcePosUnitSelector.currentText()
+
+    @source_position_unit.setter
+    def source_position_unit(self, value: str) -> None:
+        idx = self.sourcePosUnitSelector.findText(value)
+        if idx != -1:
+            self.sourcePosUnitSelector.setCurrentIndex(idx)
+
+    @property
+    def detector_position_unit(self) -> str:
+        return self.detectorPosUnitSelector.currentText()
+
+    @detector_position_unit.setter
+    def detector_position_unit(self, value: str) -> None:
+        idx = self.detectorPosUnitSelector.findText(value)
+        if idx != -1:
+            self.detectorPosUnitSelector.setCurrentIndex(idx)
+
+    @property
+    def new_source_position_unit(self) -> str:
+        return self.newSourcePosUnitSelector.currentText()
+
+    @new_source_position_unit.setter
+    def new_source_position_unit(self, value: str) -> None:
+        idx = self.newSourcePosUnitSelector.findText(value)
+        if idx != -1:
+            self.newSourcePosUnitSelector.setCurrentIndex(idx)
+
+    @property
+    def new_detector_position_unit(self) -> str:
+        return self.newDetectorPosUnitSelector.currentText()
+
+    @new_detector_position_unit.setter
+    def new_detector_position_unit(self, value: str) -> None:
+        idx = self.newDetectorPosUnitSelector.findText(value)
+        if idx != -1:
+            self.newDetectorPosUnitSelector.setCurrentIndex(idx)

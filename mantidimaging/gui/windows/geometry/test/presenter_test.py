@@ -42,6 +42,10 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.view.new_max_angle = 0
         self.view.current_stack = self.uuid
         self.view.conversion_type = "Parallel 3D"
+        self.view.source_position_unit = "mm"
+        self.view.detector_position_unit = "mm"
+        self.view.new_source_position_unit = "mm"
+        self.view.new_detector_position_unit = "mm"
 
     def reset_new_stack(self):
         self.data = ImageStack(data=np.ndarray(shape=(128, 10, 128), dtype=np.float32))
@@ -83,3 +87,37 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_parameter_updates()
         self.assertAlmostEqual(self.data.geometry.cor.value, test_cor, places=10)
         self.assertAlmostEqual(self.data.geometry.tilt, test_tilt, places=10)
+
+    def test_update_parameters_converts_internal_mm_to_displayed_m(self):
+        self.presenter.handle_create_new_geometry()
+        assert self.data.geometry is not None
+        self.data.geometry.set_source_detector_positions(-1500.0, 2500.0)
+        self.view.source_position_unit = "m"
+        self.view.detector_position_unit = "m"
+        self.presenter.update_parameters(self.data)
+        self.assertEqual(self.view.source_position, -1.5)
+        self.assertEqual(self.view.detector_position, 2.5)
+
+    def test_handle_parameter_updates_converts_displayed_m_to_internal_mm(self):
+        self.presenter.handle_create_new_geometry()
+        assert self.data.geometry is not None
+        self.view.source_position_unit = "m"
+        self.view.detector_position_unit = "m"
+        self.view.source_position = -1.25
+        self.view.detector_position = 3.75
+        self.presenter.handle_parameter_updates()
+        self.assertEqual(self.data.geometry.source_position_mm, -1250.0)
+        self.assertEqual(self.data.geometry.detector_position_mm, 3750.0)
+        self.presenter.update_parameters(self.data)
+        self.assertEqual(self.view.source_position, -1.25)
+        self.assertEqual(self.view.detector_position, 3.75)
+
+    def test_create_new_geometry_converts_m_inputs_to_internal_mm(self):
+        self.view.new_source_position_unit = "m"
+        self.view.new_detector_position_unit = "m"
+        self.view.new_source_position = -2.0
+        self.view.new_detector_position = 4.0
+        self.presenter.handle_create_new_geometry()
+        assert self.data.geometry is not None
+        self.assertEqual(self.data.geometry.source_position_mm, -2000.0)
+        self.assertEqual(self.data.geometry.detector_position_mm, 4000.0)
