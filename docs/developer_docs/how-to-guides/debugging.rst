@@ -76,3 +76,132 @@ It can sometimes be useful to a piece of code that can be triggered from a keybo
   self.shortcut_debug.activated.connect(self.presenter.output_debug_info)
 
 And then add a :code:`output_debug_info` with the output that you need. It will be run every time Ctrl+D is pressed.
+
+.. _debugging-python-tests:
+
+How to debug Python tests
+-------------------------
+
+Prerequisites
+~~~~~~~~~~~~~
+
+Ensure the `Python Debugger <https://marketplace.visualstudio.com/items?itemName=ms-python.debugpy>`_ is installed.
+
+For more details on how VS Code debugging works, see the official `VS Code debugging documentation <https://code.visualstudio.com/docs/editor/debugging>`_.
+
+Configure the debugger
+~~~~~~~~~~~~~~~~~~~~~~
+
+Open the existing ``launch.json`` file through the the file finder and update the ``args`` in ``"Python: Debugger: Current File"`` configuration to specify the tests to run. To enable unit, eyes and system tests, make the following updates:
+
+.. figure:: /_static/gifs/configure_test_run_light.gif
+    :alt: Enabling test run in VSCode
+    :width: 70%
+    :align: center
+    :class: only-light
+
+    Enabling test run in VSCode
+
+.. figure:: /_static/gifs/configure_test_run_dark.gif
+    :alt: Enabling test run in VSCode
+    :width: 70%
+    :align: center
+    :class: only-dark
+
+    Enabling test run in VSCode
+
+Example configuration:
+
+::
+
+  {
+    "name": "Python: Debugger: Current File",
+    "type": "debugpy",
+    "request": "launch",
+    "module": "pytest",
+    "console": "integratedTerminal",
+    "args": [
+      "--run-unit-tests",
+      "--run-eyes-tests",
+      "--run-system-tests",
+      "${file}"
+    ]
+  }
+
+If a Python interpreter has been selected in VS Code, the debugger will use that interpreter automatically. See :ref:`selecting-python-interpreter`.
+
+Alternatively, an interpreter can be specified explicitly using the ``python`` field:
+
+::
+
+  "python": "C:/Users/<username>/AppData/Local/miniforge3/envs/mantidimaging-dev/python.exe"
+
+Headless / SSH configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When working over SSH or without a display server, GUI backends must be disabled.
+
+Add environment variables:
+
+::
+
+  "env": {
+    "QT_QPA_PLATFORM": "offscreen",
+    "MPLBACKEND": "Agg"
+  }
+
+Example configuration:
+
+::
+
+  {
+    "name": "Headless: All Unit Tests",
+    "type": "debugpy",
+    "request": "launch",
+    "python": "${workspaceFolder}/.pixi/envs/dev/bin/python",
+    "module": "pytest",
+    "console": "integratedTerminal",
+    "args": [
+        "--run-unit-tests",
+        "-pno:django",
+        "${workspaceFolder}/mantidimaging"
+    ],
+    "env": {
+        "QT_QPA_PLATFORM": "offscreen",
+        "MPLBACKEND": "Agg"
+    },
+    "presentation": {
+        "hidden": false,
+        "group": "Mantid Imaging",
+        "order": 3
+    }
+  },
+
+
+Run the debugger
+~~~~~~~~~~~~~~~~
+
+1. Open the test file
+2. Set breakpoints beside line numbers
+3. Open the Run and Debug sidebar
+4. Select ``Python: Debugger: Current File``
+5. Press the green play button
+
+.. figure:: /_static/gifs/debug_eyes_test_light.gif
+    :alt: Running eyes tests in VSCode
+    :width: 100%
+    :align: center
+    :class: only-light
+
+    Running eyes tests in VSCode
+
+.. figure:: /_static/gifs/debug_eyes_test_dark.gif
+    :alt: Running eyes tests in VSCode
+    :width: 100%
+    :align: center
+    :class: only-dark
+
+    Running eyes tests in VSCode
+
+The debugger will pause execution at breakpoints, allowing variables and execution flow to be inspected.
+
