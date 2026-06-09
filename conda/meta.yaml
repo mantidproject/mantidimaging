@@ -37,6 +37,7 @@ requirements:
     - cil=25.0.*
     - ccpi-regulariser=25.0.*
     - jenkspy=0.4.*
+    - pyright=1.1.410
     - pyqt=5.15.*
     - pyqtgraph=0.13.7
     - qt-material=2.14
