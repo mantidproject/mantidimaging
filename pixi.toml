@@ -344,7 +344,7 @@ check-upload-user = "python -c \"import os, sys; sys.exit(0 if os.environ.get('U
 check-anaconda-api = "python -c \"import os, sys; sys.exit(0 if os.environ.get('ANACONDA_API_TOKEN') else (print('Environment variable ANACONDA_API_TOKEN not set!', file=sys.stderr) or 1))\""
 
 # Base build commands (no authentication needed)
-build-conda-package-base = "conda config --env --add channels mantidimaging/label/unstable && conda config --env --add channels conda-forge && conda config --env --add channels astra-toolbox && conda config --env --add channels ccpi && conda config --env --add channels algotom && conda config --env --add channels https://software.repos.intel.com/python/conda/ && conda mambabuild conda --label unstable"
+build-conda-package-base ="rattler-build build -r conda/recipe.yaml --experimental --output-dir output/unstable --channel conda-forge --channel astra-toolbox --channel ccpi --channel algotom --channel https://software.repos.intel.com/python/conda/"
 
 # Build with authentication (for nightly/release)
 build-conda-package-nightly-base = "python -c \"import os, subprocess, sys; user = os.environ.get('UPLOAD_USER', ''); token = os.environ.get('ANACONDA_API_TOKEN', ''); cmd = ['conda-build', 'conda', '--user', user, '--token', token, '--label', 'nightly']; sys.exit(subprocess.call(cmd))\""
