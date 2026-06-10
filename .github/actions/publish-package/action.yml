@@ -21,31 +21,22 @@ runs:
     - name: Make build-env
       shell: bash -l {0}
       run: |
+        conda config --set always_yes yes --set changeps1 no
+        # Install build requirements
         conda create -n build-env --yes rattler-build anaconda-client
         conda activate build-env
+        # Configure the conda channels
+        conda config --env $(cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
+        conda config --show channels
 
     - name: Build package
       shell: bash -l {0}
       run: |
         conda activate build-env
-
-        rattler-build build \
-          -r $GITHUB_WORKSPACE/conda/recipe.yaml \
-          --experimental \
-          --output-dir $GITHUB_WORKSPACE/output/${{ inputs.label }} \
-          --channel conda-forge \
-          --channel astra-toolbox \
-          --channel ccpi \
-          --channel algotom \
-          --channel https://software.repos.intel.com/python/conda/
-
-    - name: Upload package
-      shell: bash -l {0}
-      run: |
-        anaconda -t ${{ inputs.token }} upload \
-        --user ${{ inputs.repository }} \
-        --label ${{ inputs.label }} \
-        $GITHUB_WORKSPACE/output/${{ inputs.label }}/**/mantidimaging*.conda \
-        |& tee upload.log
+        conda config --set anaconda_upload no
+        # if the upload silently fails - check the token expiration. Conda can fail silently!
+        rattler-build build $GITHUB_WORKSPACE/conda
+        ls -R output || true
+        anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} output/**/*.conda |& tee upload.log
         # Check that upload completed
         grep "Upload complete" upload.log
