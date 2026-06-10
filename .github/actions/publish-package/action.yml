@@ -23,8 +23,7 @@ runs:
       run: |
         conda config --set always_yes yes --set changeps1 no
         # Install build requirements
-        # We can't use the makefile target for this because the CONDA_ACTIVATE command is incompatible with GitHub Actions Windows runners
-        conda create -n build-env --yes boa anaconda-client
+        conda create -n build-env --yes rattler-build anaconda-client
         conda activate build-env
         # Configure the conda channels
         conda config --env $(cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
@@ -36,7 +35,8 @@ runs:
         conda activate build-env
         conda config --set anaconda_upload no
         # if the upload silently fails - check the token expiration. Conda can fail silently!
-        conda mambabuild $GITHUB_WORKSPACE/conda
-        anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} ${CONDA_PREFIX}/conda-bld/*/mantidimaging*.tar.bz2 |& tee upload.log
+        rattler-build build --recipe $GITHUB_WORKSPACE/conda --experimental --channel conda-forge --channel ccpi --channel mantidimaging/label/unstable --channel algotom --channel https://software.repos.intel.com/python/conda/
+        ls -R output || true
+        anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} output/**/*.conda |& tee upload.log
         # Check that upload completed
         grep "Upload complete" upload.log
