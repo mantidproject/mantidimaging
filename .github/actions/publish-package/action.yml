@@ -35,7 +35,7 @@ runs:
         conda activate build-env
         conda config --set anaconda_upload no
         # if the upload silently fails - check the token expiration. Conda can fail silently!
-        rattler-build build --recipe $GITHUB_WORKSPACE/conda
+        rattler-build build --recipe $GITHUB_WORKSPACE/conda --experimental
         ls -R output || true
         anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} output/**/*.conda |& tee upload.log
         # Check that upload completed
