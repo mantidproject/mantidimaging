@@ -5,7 +5,7 @@ from math import isnan
 
 import numpy as np
 from PyQt5 import QtCore
-from pyqtgraph import GraphicsLayoutWidget, InfiniteLine
+from pyqtgraph import GraphicsLayoutWidget, InfiniteLine, ScatterPlotItem, mkBrush, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.core.utility.data_containers import Degrees
@@ -20,6 +20,11 @@ class ReconImagesView(GraphicsLayoutWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
+        self._selected_cor_row = -1
+        self._scatter_rows: list[int] = []
+        self._scatter_cors: list[float] = []
+        self._scatter_slice_indices: list[int] = []
+        self._tilt_value: float = 0.0
 
         self.imageview_projection = MIMiniImageView(name="Projection", parent=parent)
         self.imageview_sinogram = MIMiniImageView(name="Sinogram", parent=parent)
@@ -28,6 +33,12 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.slice_line = InfiniteLine(pos=1024, angle=0, movable=True)
         self.imageview_projection.viewbox.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=False)
+        self._normal_pen = mkPen((255, 255, 0, 255), width=1)
+        self._selected_pen = mkPen((0, 255, 0, 255), width=2)
+        self._normal_brush = mkBrush(255, 255, 0, 200)
+        self._selected_brush = mkBrush(0, 255, 0, 200)
+        self.cor_scatter = ScatterPlotItem(symbol='x', size=14, pen=self._normal_pen, tip=None)
+        self.imageview_projection.viewbox.addItem(self.cor_scatter)
         self.recon_line_profile = LineProfilePlot(self.imageview_recon)
 
         self.addItem(self.imageview_projection, 0, 0)
@@ -121,6 +132,40 @@ class ReconImagesView(GraphicsLayoutWidget):
         """
         if self.tilt_line.scene() is not None:
             self.imageview_projection.viewbox.removeItem(self.tilt_line)
+
+    def update_cor_table_points(self, slice_indices: list[int], cors: list[float], tilt: float = 0.0) -> None:
+        """
+        Updates the CoR scatter points on the projection preview and the tilt line if there is a tilt
+
+        :param slice_indices: list of slice indices for the CoR points
+        :param cors: list of CoR values for the CoR points
+        :param tilt: tilt value for the tilt line, if there is a tilt
+        """
+        self._tilt_value = tilt
+        self._scatter_cors = cors
+        self._scatter_slice_indices = slice_indices
+        self._scatter_rows = list(range(len(slice_indices)))
+        self._refresh_cor_scatter()
+
+    def _make_spot(self, cor: float, slice_idx: int) -> dict:
+        """
+        Create CoR spot
+
+        :param cor: CoR value
+        :param slice_idx: slice index
+        :return: dict of spot parameters
+        """
+        return {
+            'pos': (cor, slice_idx),
+            'pen': self._normal_pen,
+            'brush': self._normal_brush,
+        }
+
+    def _refresh_cor_scatter(self) -> None:
+        """Update scatter plot with current CoR"""
+        cor_table_data = zip(self._scatter_cors, self._scatter_slice_indices, strict=True)
+        spots = [self._make_spot(cor, slice_idx) for cor, slice_idx in cor_table_data]
+        self.cor_scatter.setData(spots=spots, symbol='x', size=14, tip=None)
 
     def show_cor_line(self, tilt: Degrees, pos: float) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
