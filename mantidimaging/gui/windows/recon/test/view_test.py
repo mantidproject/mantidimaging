@@ -33,13 +33,21 @@ class ReconstructWindowViewTest(unittest.TestCase):
     def setUp(self, _) -> None:
         self.main_window = MockMainWindow()
         with mock.patch("mantidimaging.gui.windows.recon.view.ReconImagesView") as mock_riv:
-            self.image_view = mock.create_autospec(ReconImagesView, sigSliceIndexChanged=mock.Mock(), instance=True)
+            self.image_view = mock.create_autospec(ReconImagesView,
+                                                   sigSliceIndexChanged=mock.Mock(),
+                                                   sigCorPointClicked=mock.Mock(),
+                                                   instance=True)
             mock_riv.side_effect = [self.image_view]
             self.view = ReconstructWindowView(self.main_window)
 
         self.view.presenter = self.presenter = mock.Mock()
         self.view.tableView = self.tableView = mock.Mock()
+        self.view.tableView.model.return_value._points = []
         self.view.autoFindMethod = self.autoFindMethod = mock.Mock()
+
+        selection_model_mock = mock.Mock()
+        selection_model_mock.selectedRows.return_value = []
+        self.tableView.selectionModel = mock.Mock(return_value=selection_model_mock)
 
     def test_remove_selected_cor(self):
         assert self.view.remove_selected_cor() == self.tableView.removeSelectedRows.return_value
@@ -125,6 +133,26 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.update_sinogram(image_data)
         self.image_view.update_sinogram.assert_called_once_with(image_data)
 
+    def test_update_cor_scatter_with_no_points_passes_empty_lists(self):
+        self.tableView.model.return_value._points = []
+        self.view._update_cor_scatter()
+        self.image_view.update_cor_table_points.assert_called_once_with([], [], self.view.tilt)
+
+    def test_update_cor_scatter_passes_points_to_image_view(self):
+        slice_indices = [78, 125]
+        cors = [115.215625, 114.8578125]
+        tilt = 0.26
+
+        point_1 = mock.Mock(slice_index=slice_indices[0], cor=cors[0])
+        point_2 = mock.Mock(slice_index=slice_indices[1], cor=cors[1])
+
+        self.tableView.model.return_value._points = [point_1, point_2]
+        self.view.resultTiltSpinBox.setValue(tilt)
+        self.image_view.update_cor_table_points.assert_not_called()
+        self.view._update_cor_scatter()
+
+        self.image_view.update_cor_table_points.assert_called_once_with(slice_indices, cors, tilt)
+
     def test_update_recon_preview_no_hist(self):
         image_data = mock.Mock()
         self.view.update_recon_hist_needed = False
@@ -168,6 +196,10 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
         self.tableView.model.return_value.appendNewRow.assert_called_once_with(row, slice_index, cor)
         self.tableView.selectRow.assert_called_once_with(row)
+
+    def test_add_cor_table_row_updates_cor_scatter(self):
+        self.view.add_cor_table_row(3, 4, 5.0)
+        self.image_view.update_cor_table_points.assert_called()
 
     def test_rotation_centre_property(self):
         self.assertEqual(self.view.rotation_centre, 0)
