@@ -679,6 +679,9 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">):</span>
                     <span class="n">widget</span><span class="o">.</span><span class="n">_handle_loaded_datasets_changed</span><span class="p">()</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_filter</span><span class="p">()</span> <span class="o">==</span> <span class="n">CROP_COORDINATES</span> <span class="ow">and</span> <span class="s2">&quot;roi_field&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">do_update_previews</span><span class="p">()</span></div>
 
 
