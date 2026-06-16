@@ -15,7 +15,7 @@ inputs:
 
   debug_build:
     description: "List build output contents after build (for debugging)"
-    default: "true"
+    default: "false"
 
 description: Build conda package
 runs:
@@ -42,6 +42,6 @@ runs:
         # if the upload silently fails - check the token expiration. Conda can fail silently!
         rattler-build build --recipe $GITHUB_WORKSPACE/conda --experimental --config-file $GITHUB_WORKSPACE/conda/recipe_config.toml
         if [[ "${{ inputs.debug_build }}" == "true" ]]; then ls -R output; fi
-        anaconda -t ${{ inputs.token }} upload --user ${{ inputs.repository }} --label ${{ inputs.label }} output/**/*.conda |& tee upload.log
+        anaconda -t ${{ inputs.token }} upload --force --user ${{ inputs.repository }} --label ${{ inputs.label }} output/**/*.conda |& tee upload.log
         # Check that upload completed
         grep "Upload complete" upload.log
