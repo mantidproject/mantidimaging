@@ -29,8 +29,8 @@ runs:
         mkdir -p ${dir_name}
         cp -a ../docs/build/html/* ${dir_name}
         md5sum ${dir_name}/index.html # if no index then there must have been a problem
-        if [ "$(git status --porcelain | wc -l)" -gt "0" ] ; then
           git add ${dir_name}
+          if ! git diff --cached --quiet -- ${dir_name} ; then
           git commit -m "Update documentation"
           git push
         else
