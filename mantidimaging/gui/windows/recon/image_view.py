@@ -20,7 +20,7 @@ class ReconImagesView(GraphicsLayoutWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
-        self._selected_cor_row = -1
+        self._selected_cor_row: int = -1  # Default to no row selected
         self._scatter_rows: list[int] = []
         self._scatter_cors: list[float] = []
         self._scatter_slice_indices: list[int] = []
@@ -147,24 +147,30 @@ class ReconImagesView(GraphicsLayoutWidget):
         self._scatter_rows = list(range(len(slice_indices)))
         self._refresh_cor_scatter()
 
-    def _make_spot(self, cor: float, slice_idx: int) -> dict:
+    def set_selected_cor_row(self, row: int) -> None:
+        self._selected_cor_row = row
+        self._refresh_cor_scatter()
+
+    def _make_spot(self, cor: float, slice_idx: int, row: int) -> dict:
         """
-        Create CoR spot
+        Create CoR spot and update its appearance based on whether it is selected or not
 
         :param cor: CoR value
         :param slice_idx: slice index
+        :param row: row index
         :return: dict of spot parameters
         """
+        selected = row == self._selected_cor_row
         return {
             'pos': (cor, slice_idx),
-            'pen': self._normal_pen,
-            'brush': self._normal_brush,
+            'pen': self._selected_pen if selected else self._normal_pen,
+            'brush': self._selected_brush if selected else self._normal_brush,
         }
 
     def _refresh_cor_scatter(self) -> None:
-        """Update scatter plot with current CoR"""
-        cor_table_data = zip(self._scatter_cors, self._scatter_slice_indices, strict=True)
-        spots = [self._make_spot(cor, slice_idx) for cor, slice_idx in cor_table_data]
+        """Update scatter plot with current CoR by creating a list of spots and setting them to the scatter plot item"""
+        cor_table_data = zip(self._scatter_cors, self._scatter_slice_indices, self._scatter_rows, strict=True)
+        spots = [self._make_spot(cor, slice_idx, row) for cor, slice_idx, row in cor_table_data]
         self.cor_scatter.setData(spots=spots, symbol='x', size=14, tip=None)
 
     def show_cor_line(self, tilt: Degrees, pos: float) -> None:
