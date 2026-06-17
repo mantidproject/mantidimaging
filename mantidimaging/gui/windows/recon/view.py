@@ -233,6 +233,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
+        self.image_view.sigCorPointClicked.connect(self.tableView.selectRow)
 
         # Update initial UI state
         self.on_table_row_count_change()
