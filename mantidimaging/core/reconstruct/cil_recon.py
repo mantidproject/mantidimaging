@@ -14,6 +14,7 @@ import numpy as np
 
 from cil.framework import AcquisitionData, AcquisitionGeometry, ImageGeometry, BlockGeometry, BlockDataContainer
 from cil.optimisation.algorithms import PDHG, SPDHG, Algorithm
+from cil.optimisation.utilities.sampler import Sampler
 from cil.optimisation.operators import GradientOperator, BlockOperator
 from cil.optimisation.operators import SymmetrisedGradientOperator, ZeroOperator, IdentityOperator
 
@@ -323,7 +324,8 @@ class CILRecon(BaseRecon):
             if recon_params.stochastic:
                 reg_percent = recon_params.regularisation_percent
                 probs = [(1 - reg_percent / 100) / num_subsets] * num_subsets + [reg_percent / 100]
-                algo = SPDHG(f=F, g=G, operator=K, prob=probs, update_objective_interval=update_objective_interval)
+                sampler = Sampler.random_with_replacement(len(K), prob=probs)
+                algo = SPDHG(f=F, g=G, operator=K, sampler=sampler, update_objective_interval=update_objective_interval)
             else:
                 normK = K.norm()
                 sigma = 1
@@ -429,7 +431,8 @@ class CILRecon(BaseRecon):
             if recon_params.stochastic:
                 reg_percent = recon_params.regularisation_percent
                 probs = [(1 - reg_percent / 100) / num_subsets] * num_subsets + [reg_percent / 100]
-                algo = SPDHG(f=F, g=G, operator=K, prob=probs, update_objective_interval=update_objective_interval)
+                sampler = Sampler.random_with_replacement(len(K), prob=probs)
+                algo = SPDHG(f=F, g=G, operator=K, sampler=sampler, update_objective_interval=update_objective_interval)
             else:
                 normK = K.norm()
                 sigma = 1
