@@ -9,6 +9,7 @@ It includes:
 
 - Configuring VSCode for Python development
 - Enabling auto-saving 
+- Disabling auto-formatting on save
 
 How-to Guides
 =============
@@ -35,7 +36,7 @@ For code editing you are good to go! You can open any file from the left sidebar
 
 Selecting the Python interpreter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-1. Open the Command Palette ``Ctrl+Shift+P`` and search for "Python: Select Interpreter"
+1. Open the Command Palette :IsMac:`⌘+Shift+P` :IsWindows:`Ctrl+Shift+P` :IsLinux:`Ctrl+Shift+P`  and search for ``Python: Select Interpreter``
 2. Choose the Python environment that corresponds to your Mantid Imaging development setup i.e, ``mantidimaging-dev`` or the path similar to ``"...\\AppData\\Local\\miniforge3\\envs\\mantidimaging-dev\\python.exe"``
 
 .. figure:: /_static/gifs/select_python_interpreter_light.gif
@@ -56,8 +57,8 @@ Selecting the Python interpreter
 
 Verify that the selected interpreter is correct by opening a python file and checking the bottom right corner of VSCode, it should display the name of the selected environment.
 
-If you are using Pixi, the interpreter may be detected automatically from the `.pixi` folder in the project root. In that case, the Pixi environment will appear as something like:  
-   `Python 3.12.12 (dev) ./.pixi/envs/dev/bin/python`  
+If you are using Pixi, the interpreter may be detected automatically from the ``.pixi`` folder in the project root. In that case, the Pixi environment will appear as something like:  
+``Python 3.12.12 (dev) ./.pixi/envs/dev/bin/python``
 
 More details on configuring Pixi with VS Code can be found `here <https://pixi.prefix.dev/latest/integration/editor/vscode/#python-extension>`_.
 
@@ -86,6 +87,31 @@ This built in feature can be enabled by:
     :class: only-dark
 
     Enabling auto-save in VSCode
+
+How to disable auto-format on save
+----------------------------------
+VS Code stores its formatting configuration in a ``settings.json`` file. Among these settings is ``editor.formatOnSave``, which is responsible for automatically formatting code each time a file is saved.
+
+The auto-formatting feature can be disabled by:
+
+1. Locate the ``settings.json`` file located under the ``.vscode`` folder in the project root.
+2. Open the file and search for the setting ``editor.formatOnSave``. If it is set to ``true``, change it to ``false`` to disable auto-formatting on save.
+
+.. figure:: /_static/gifs/disable_auto_format_light.gif
+    :alt: Disabling auto-format on save in VSCode
+    :width: 70%
+    :align: center
+    :class: only-light
+
+    Disabling auto-format on save in VSCode
+
+.. figure:: /_static/gifs/disable_auto_format_dark.gif
+    :alt: Disabling auto-format on save in VSCode
+    :width: 70%
+    :align: center
+    :class: only-dark
+
+    Disabling auto-format on save in VSCode
 
 See Also
 ========
