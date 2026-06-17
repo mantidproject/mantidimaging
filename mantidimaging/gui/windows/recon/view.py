@@ -232,6 +232,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
+        self.image_view.sigCorPointClicked.connect(self.tableView.selectRow)
 
         # Update initial UI state
         self.on_table_row_count_change()
@@ -346,7 +347,7 @@ class ReconstructWindowView(BaseMainWindowView):
 
     def _update_cor_scatter(self) -> None:
         """Updates the COR scatter points on the projection preview"""
-        points = self.cor_table_model._points
+        points = self.cor_table_model.points
         slice_indices = [point.slice_index for point in points]
         cors = [point.cor for point in points]
         selected_rows = self.tableView.selectionModel().selectedRows()

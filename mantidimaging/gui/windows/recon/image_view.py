@@ -16,6 +16,7 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 class ReconImagesView(GraphicsLayoutWidget):
     sigSliceIndexChanged = QtCore.pyqtSignal(int)
+    sigCorPointClicked = QtCore.pyqtSignal(int)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -34,11 +35,18 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.imageview_projection.viewbox.addItem(self.slice_line)
         self.tilt_line = InfiniteLine(pos=1024, angle=90, pen=(255, 0, 0, 255), movable=False)
         self._normal_pen = mkPen((255, 255, 0, 255), width=1)
+        self._hover_pen = mkPen((0, 255, 255, 255), width=3)
         self._selected_pen = mkPen((0, 255, 0, 255), width=2)
         self._normal_brush = mkBrush(255, 255, 0, 200)
         self._selected_brush = mkBrush(0, 255, 0, 200)
-        self.cor_scatter = ScatterPlotItem(symbol='x', size=14, pen=self._normal_pen, tip=None)
+        self.cor_scatter = ScatterPlotItem(symbol='x',
+                                           size=14,
+                                           pen=self._normal_pen,
+                                           hoverable=True,
+                                           hoverPen=self._hover_pen)
+        self.cor_scatter.sigHovered.connect(self._on_cor_scatter_hovered)
         self.imageview_projection.viewbox.addItem(self.cor_scatter)
+        self.cor_scatter.sigClicked.connect(self._on_cor_scatter_clicked)
         self.recon_line_profile = LineProfilePlot(self.imageview_recon)
 
         self.addItem(self.imageview_projection, 0, 0)
@@ -163,6 +171,7 @@ class ReconImagesView(GraphicsLayoutWidget):
         selected = row == self._selected_cor_row
         return {
             'pos': (cor, slice_idx),
+            'data': row,
             'pen': self._selected_pen if selected else self._normal_pen,
             'brush': self._selected_brush if selected else self._normal_brush,
         }
@@ -172,6 +181,15 @@ class ReconImagesView(GraphicsLayoutWidget):
         cor_table_data = zip(self._scatter_cors, self._scatter_slice_indices, self._scatter_rows, strict=True)
         spots = [self._make_spot(cor, slice_idx, row) for cor, slice_idx, row in cor_table_data]
         self.cor_scatter.setData(spots=spots, symbol='x', size=14, tip=None)
+
+    def _on_cor_scatter_clicked(self, plot, spots, ev) -> None:
+        if spots:
+            row_index_from_cor_spot = spots[0].data()
+            self.sigCorPointClicked.emit(row_index_from_cor_spot)
+
+    def _on_cor_scatter_hovered(self, plot: ScatterPlotItem, points: list) -> None:
+        if plot_canvas := plot.getViewWidget():
+            plot_canvas.setCursor(QtCore.Qt.OpenHandCursor if points else QtCore.Qt.ArrowCursor)
 
     def show_cor_line(self, tilt: Degrees, pos: float) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
