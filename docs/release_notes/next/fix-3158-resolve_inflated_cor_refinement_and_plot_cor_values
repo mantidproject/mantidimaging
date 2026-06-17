@@ -1,0 +1,1 @@
+#3158: Resolve inflated CoR values caused when manually refining a given CoR where the tilt was double calculated and incorporate tests to try and avoid the re-implementation of this issue. Additionally, to improve CoR value clarity, plot the CoR values over the sample image.
