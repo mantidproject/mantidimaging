@@ -43,7 +43,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.view.presenter = self.presenter = mock.Mock()
         self._real_cor_table_model = self.view.cor_table_model
         self.view.tableView = self.tableView = mock.Mock()
-        self.view.tableView.model.return_value._points = []
+        self.view.tableView.model.return_value.points = []
         self.view.autoFindMethod = self.autoFindMethod = mock.Mock()
 
         selection_model_mock = mock.Mock()
@@ -135,7 +135,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         self.image_view.update_sinogram.assert_called_once_with(image_data)
 
     def test_update_cor_scatter_with_no_points_passes_empty_lists(self):
-        self.tableView.model.return_value._points = []
+        self.tableView.model.return_value.points = []
         self.view._update_cor_scatter()
         self.image_view.update_cor_table_points.assert_called_once_with([], [], self.view.tilt)
 
@@ -147,7 +147,7 @@ class ReconstructWindowViewTest(unittest.TestCase):
         point_1 = mock.Mock(slice_index=slice_indices[0], cor=cors[0])
         point_2 = mock.Mock(slice_index=slice_indices[1], cor=cors[1])
 
-        self.tableView.model.return_value._points = [point_1, point_2]
+        self.tableView.model.return_value.points = [point_1, point_2]
         self.view.resultTiltSpinBox.setValue(tilt)
         self.image_view.update_cor_table_points.assert_not_called()
         self.view._update_cor_scatter()
