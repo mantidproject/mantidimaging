@@ -12,7 +12,7 @@ source:
 
 requirements:
   build:
-    - python=3.12.*
+    - python=3.12
     - setuptools=72.*
   run:
     - python=3.12.*
@@ -21,7 +21,7 @@ requirements:
     - scipy=1.14.*
     - scikit-image=0.25.*
     - tifffile=2023.7.18
-    - imagecodecs=2023.9.18
+    - imagecodecs
     - imageio=2.33.*
     - numpy=1.26.*
     - numexpr=2.10.*
@@ -32,17 +32,16 @@ requirements:
     - astra-toolbox=2.1.0=cuda*
     - requests=2.32.*
     - h5py=3.13.*
-    - hdf5>=1.14.2,<1.15
     - psutil=5.9.*
     - cil=25.0.*
     - ccpi-regulariser=25.0.*
     - jenkspy=0.4.*
-    - pyqt=5.15.*
+    - pyqt6
     - pyqtgraph=0.13.7
     - qt-material=2.14
     - darkdetect=0.8.0
     - ccpi-viewer=25.0.*
-    - vtk=*=qt*
+    - vtk>=9.3,<9.4
     - qt-gtk-platformtheme # [linux]
 
 

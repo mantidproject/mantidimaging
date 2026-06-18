@@ -7,7 +7,7 @@ import os
 import sys
 import traceback
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 import pyqtgraph
 
 from mantidimaging.gui.windows.main import MainWindowView

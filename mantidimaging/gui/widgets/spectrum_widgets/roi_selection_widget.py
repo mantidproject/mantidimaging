@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from mantidimaging.core.utility.sensible_roi import ROIBinner
 from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from logging import getLogger
 
 from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode

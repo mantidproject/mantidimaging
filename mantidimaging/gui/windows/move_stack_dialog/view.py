@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 
-from PyQt5.QtWidgets import QLabel, QComboBox
+from PyQt6.QtWidgets import QLabel, QComboBox
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from mantidimaging.gui.mvp_base import BaseDialogView

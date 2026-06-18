@@ -5,9 +5,9 @@ from logging import getLogger
 from typing import TYPE_CHECKING, cast
 
 import numpy as np
-from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
+from PyQt6.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
-from PyQt5.QtCore import QSignalBlocker
+from PyQt6.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.geometry import GeometryType

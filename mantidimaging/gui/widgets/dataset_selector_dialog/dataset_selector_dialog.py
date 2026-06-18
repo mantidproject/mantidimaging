@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import numpy as np
 from functools import partial
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem, QAction, QActionGroup
-from PyQt5.QtGui import QTransform
-from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
+from PyQt6.QtGui import QAction, QActionGroup
+from PyQt6.QtGui import QTransform
+from PyQt6 import QtCore
+from PyQt6.QtCore import pyqtSignal
 from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 
 from mantidimaging.gui.windows.spectrum_viewer.model import allowed_modes

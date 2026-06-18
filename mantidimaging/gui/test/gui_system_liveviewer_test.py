@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtTest import QTest
+from PyQt6.QtTest import QTest
 from numpy.testing import assert_raises
 from parameterized import parameterized
 

@@ -90,7 +90,7 @@ class CompilePyQtUiFiles(Command):
 
     @staticmethod
     def compile_single_file(ui_filename: Path):
-        from PyQt5 import uic
+        from PyQt6 import uic
 
         py_filename = ui_filename.with_suffix(".py")
         with py_filename.open("w") as py_file:

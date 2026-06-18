@@ -1,8 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
-from PyQt5.QtCore import QSignalBlocker
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QSpinBox, QDoubleSpinBox, QGroupBox)
+from PyQt6.QtCore import QSignalBlocker
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QSpinBox, QDoubleSpinBox, QGroupBox)
 
 
 class FitExportFormWidget(QWidget):

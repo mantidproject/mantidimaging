@@ -6,8 +6,8 @@ import os
 from collections import Counter
 
 import pytest
-from PyQt5 import QtCore
-from PyQt5.QtGui import QFont
+from PyQt6 import QtCore
+from PyQt6.QtGui import QFont
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 

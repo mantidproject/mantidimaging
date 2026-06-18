@@ -3,9 +3,9 @@
 from __future__ import annotations
 from logging import getLogger
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
+from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtCore import Qt
 
 LOG = getLogger(__name__)
 
@@ -82,7 +82,7 @@ class ExportDataTableWidget(QWidget):
         else:
             item.setText(value)
             item.setData(value)
-        item.setTextAlignment(Qt.AlignCenter)
+        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         return item
 
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:

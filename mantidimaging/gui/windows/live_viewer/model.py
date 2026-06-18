@@ -10,7 +10,7 @@ from pathlib import Path
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
+from PyQt6.QtCore import QFileSystemWatcher, QObject, pyqtSignal, QTimer
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.core.utility.custom_exceptions import ImageLoadFailError

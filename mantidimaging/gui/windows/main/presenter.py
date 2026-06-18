@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, NamedTuple
 from collections.abc import Iterable
 
-from PyQt5.QtCore import QSettings, Qt
-from PyQt5.QtGui import QFont, QPalette, QColor
-from PyQt5.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QMessageBox
+from PyQt6.QtCore import QSettings, Qt
+from PyQt6.QtGui import QFont, QPalette, QColor
+from PyQt6.QtWidgets import QTabBar, QApplication, QTreeWidgetItem, QMessageBox
 from qt_material import apply_stylesheet
 
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
@@ -763,19 +763,19 @@ class MainWindowPresenter(BasePresenter):
     @staticmethod
     def use_fusion_dark_mode() -> None:
         palette = QPalette()
-        palette.setColor(QPalette.Window, QColor(53, 53, 53))
-        palette.setColor(QPalette.WindowText, Qt.white)
-        palette.setColor(QPalette.Base, QColor(25, 25, 25))
-        palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        palette.setColor(QPalette.ToolTipBase, Qt.black)
-        palette.setColor(QPalette.ToolTipText, Qt.white)
-        palette.setColor(QPalette.Text, Qt.white)
-        palette.setColor(QPalette.Button, QColor(53, 53, 53))
-        palette.setColor(QPalette.ButtonText, Qt.white)
-        palette.setColor(QPalette.BrightText, Qt.red)
-        palette.setColor(QPalette.Link, QColor(42, 130, 218))
-        palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        palette.setColor(QPalette.HighlightedText, Qt.black)
+        palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.ColorRole.WindowText, Qt.white)
+        palette.setColor(QPalette.ColorRole.Base, QColor(25, 25, 25))
+        palette.setColor(QPalette.ColorRole.AlternateBase, QColor(53, 53, 53))
+        palette.setColor(QPalette.ColorRole.ToolTipBase, Qt.black)
+        palette.setColor(QPalette.ColorRole.ToolTipText, Qt.white)
+        palette.setColor(QPalette.ColorRole.Text, Qt.white)
+        palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
+        palette.setColor(QPalette.ColorRole.ButtonText, Qt.white)
+        palette.setColor(QPalette.ColorRole.BrightText, Qt.red)
+        palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
+        palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
+        palette.setColor(QPalette.ColorRole.HighlightedText, Qt.black)
         QApplication.instance().setPalette(palette)
 
     @staticmethod

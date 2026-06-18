@@ -14,7 +14,7 @@ import pyqtgraph as pg
 from mantidimaging.core.fitting.fitting_engine import BoundType
 from mantidimaging.core.utility.progress_reporting.progress import Progress
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
+from PyQt6.QtCore import QSignalBlocker, QTimer, Qt
 
 from mantidimaging.core.fitting.fitting_functions import BadFittingRoiError, FittingRegion
 from mantidimaging.core.utility.sensible_roi import SensibleROI

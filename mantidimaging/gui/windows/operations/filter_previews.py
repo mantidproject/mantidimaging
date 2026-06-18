@@ -6,8 +6,8 @@ from logging import getLogger
 from typing import Any
 
 import numpy as np
-from PyQt5.QtCore import QPoint, QRect
-from PyQt5.QtGui import QGuiApplication, QResizeEvent
+from PyQt6.QtCore import QPoint, QRect
+from PyQt6.QtGui import QGuiApplication, QResizeEvent
 from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 

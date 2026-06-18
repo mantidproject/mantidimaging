@@ -5,9 +5,9 @@ from __future__ import annotations
 import numpy as np
 import pytest
 import os
-from PyQt5.QtCore import Qt
-from PyQt5.QtTest import QTest
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.unit_test_helper import generate_zeroed_images

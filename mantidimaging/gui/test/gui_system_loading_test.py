@@ -9,9 +9,9 @@ from pathlib import Path
 from unittest import mock
 
 import numpy
-from PyQt5.QtCore import Qt, QTimer, QEventLoop
-from PyQt5.QtTest import QTest
-from PyQt5.QtWidgets import QApplication, QDialogButtonBox
+from PyQt6.QtCore import Qt, QTimer, QEventLoop
+from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication, QDialogButtonBox
 from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, LOAD_SAMPLE, SHOW_DELAY

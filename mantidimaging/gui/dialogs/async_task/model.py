@@ -5,7 +5,7 @@ from __future__ import annotations
 from logging import getLogger
 from collections.abc import Callable
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from .task import TaskWorkerThread
 

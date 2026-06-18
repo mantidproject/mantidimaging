@@ -7,9 +7,9 @@ from unittest import mock
 from typing import TYPE_CHECKING
 
 from parameterized import parameterized
-from PyQt5.QtTest import QTest
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget, QPushButton
+from PyQt6.QtTest import QTest
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QFormLayout, QLabel, QWidget, QPushButton
 
 from mantidimaging.gui.widgets.roi_selector.view import ROISelectorView
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter

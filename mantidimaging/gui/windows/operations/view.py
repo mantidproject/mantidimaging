@@ -5,8 +5,8 @@ import functools
 import logging
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import pyqtSignal, QSettings
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
+from PyQt6.QtCore import pyqtSignal, QSettings
+from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
                              QTextEdit, QVBoxLayout)
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs
