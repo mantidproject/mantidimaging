@@ -561,36 +561,225 @@
                   
   <section id="reconstruction-algorithms">
 <span id="id1"></span><h1>Reconstruction Algorithms<a class="headerlink" href="#reconstruction-algorithms" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>This page gives explanations of different reconstruction algorithms available in Mantid Imaging, including implementation details, hardware requirements, and links to the upstream documentation for the algorithms.</p>
+</section>
 <section id="astra-toolbox">
 <h2>ASTRA Toolbox<a class="headerlink" href="#astra-toolbox" title="Link to this heading">#</a></h2>
-<p>These filters are used from the ASTRA Toolbox package.</p>
-<p><a class="reference external" href="http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html">Link to the original documentation for FBP_CUDA</a>.</p>
-<p><a class="reference external" href="http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html">Link to the original documentation for SIRT_CUDA</a>.</p>
-<p>This is an implementation of the algorithms for 2D data sets. They require a CUDA-compatible graphics card.</p>
-<p>The creation of a projector and geometry is automated inside Mantid Imaging, and parallel beam geometry is assumed.</p>
-<p>The geometry used is the parallel beam vector geometry, which allows tilt to be taken into account via the
-centres of rotation for each slice. This means manual rotation of the images to correct the tilt shouldn’t be necessary.</p>
-<p>The vector creation code was re-used from <a class="reference external" href="https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70">ToMoBAR</a>.</p>
+<p>The ASTRA Toolbox provides GPU-accelerated tomographic reconstruction algorithms.</p>
+<p>This implementation supports 2D data sets, and requires a CUDA-compatible graphics card to run.</p>
+<p>Mantid Imaging automatically creates the required projector and geometry configurations for ASTRA reconstruction workflows.</p>
+<p>Parallel beam vector geometry is used, allowing tilt correction to be accounted for through the centres of rotation for each slice. This means manual rotation of the images to correct the tilt shouldn’t be necessary.</p>
+<p><strong>Why this matters:</strong></p>
+<p>Using a vector-based parallel beam geometry improves reconstruction consistency when small misalignments or sample tilt are present. Instead of requiring users to manually rotate or pre-align projection data, the geometry definition accounts for these offsets during reconstruction. This reduces preprocessing steps and helps avoid reconstruction artefacts caused by imperfect alignment.</p>
+<p>The vector creation implementation is adapted from <a class="reference external" href="https://github.com/dkazanc/ToMoBAR/blob/master/src/Python/tomobar/supp/astraOP.py#L20-L70">ToMoBAR</a>.</p>
 <section id="fbp-cuda">
 <h3>FBP_CUDA<a class="headerlink" href="#fbp-cuda" title="Link to this heading">#</a></h3>
-<p>This algorithm has the option to use different filters to improve reconstruction quality.</p>
-<p>For an evaluation of the filters please go to the <a class="reference internal" href="filters.html#reconstruction-filters"><span class="std std-ref">Reconstruction Filters</span></a> page.</p>
+<section id="id2">
+<h4>Overview<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Filtered back projection reconstruction algorithm</p></li>
+<li><p>Supports multiple reconstruction filters</p></li>
+<li><p>Requires a CUDA-compatible GPU</p></li>
+</ul>
+</section>
+<section id="how-it-works">
+<h4>How it works<a class="headerlink" href="#how-it-works" title="Link to this heading">#</a></h4>
+<p>Filtered Back Projection reconstructs the image by first applying a frequency-domain filter to each projection and then back-projecting the filtered data into image space.</p>
+<p>Because it performs a single deterministic computation, it does not iteratively refine the solution or incorporate prior assumptions about the object during reconstruction.</p>
+<p>This makes the output strongly dependent on data quality and sampling, rather than on optimisation-based refinement.</p>
+</section>
+<section id="when-to-use-fbp-cuda">
+<h4>When to use FBP_CUDA<a class="headerlink" href="#when-to-use-fbp-cuda" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>High-quality, well-sampled tomography data</p></li>
+<li><p>Cases where speed is a priority and iterative reconstruction is not necessary</p></li>
+<li><p>When classical FBP is preferred for its simplicity and interpretability</p></li>
+</ul>
+<p>FBP_CUDA is most effective when the input data is sufficiently complete that additional refinement is not required.</p>
+<p><a class="reference external" href="http://www.astra-toolbox.com/docs/algs/FBP_CUDA.html">Link to the original documentation for FBP_CUDA</a></p>
+</section>
+<section id="interface-preview">
+<h4>Interface Preview<a class="headerlink" href="#interface-preview" title="Link to this heading">#</a></h4>
+<figure class="align-center" id="id15">
+<a class="only-light reference internal image-reference" href="../../../_images/FBP_CUDA_light.png"><img alt="FBP CUDA in reconstruction window" class="only-light" src="../../../_images/FBP_CUDA_light.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">FBP_CUDA in the reconstruction window (light mode)</span><a class="headerlink" href="#id15" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id16">
+<a class="only-dark reference internal image-reference" href="../../../_images/FBP_CUDA_dark.png"><img alt="FBP CUDA in reconstruction window" class="only-dark" src="../../../_images/FBP_CUDA_dark.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">FBP_CUDA in the reconstruction window (dark mode)</span><a class="headerlink" href="#id16" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Reconstruction filter</p></td>
+<td><p>The filter applied during filter back projection. Different filters affect the sharpness and noise characteristics of the reconstruction. For an evaluation of the filters please go to the <a class="reference internal" href="filters.html#reconstruction-filters"><span class="std std-ref">Reconstruction Filters</span></a> page.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pixel size (microns)</p></td>
+<td><p>Defines the physical pixel spacing used to convert image distances into real-world units, ensuring correct scaling of attenuation coefficients (e.g. cm⁻¹).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 <section id="sirt-cuda">
 <h3>SIRT_CUDA<a class="headerlink" href="#sirt-cuda" title="Link to this heading">#</a></h3>
-<p>Instead of filters for improving the reconstruction quality, this filter uses number of iterations.</p>
-<p>Have a look at our refine iterations tool on the Reconstruct tab of the Reconstruction window that
-should assist you in finding the optimal number of rotations for your data.</p>
+<section id="id3">
+<h4>Overview<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Simultaneous iterative reconstruction technique (SIRT) algorithm</p></li>
+<li><p>Reconstruction quality is controlled through iteration count</p></li>
+<li><p>Requires a CUDA-compatible GPU</p></li>
+</ul>
+</section>
+<section id="id4">
+<h4>How it works<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
+<p>SIRT_CUDA is an iterative reconstruction algorithm. Instead of computing the solution in a single step, it progressively refines the reconstruction over multiple iterations.</p>
+<p>SIRT works by repeatedly comparing simulated projections (generated from the current reconstruction estimate) against the measured projection data. The difference between these is used to compute corrections, which are then applied to update the reconstruction. This process is repeated, gradually improving agreement with the measured data over time.</p>
+<p>Because of this iterative correction process, reconstruction quality improves with the number of iterations, allowing the algorithm to reduce artefacts and handle noisy or incomplete data more effectively than direct methods such as FBP_CUDA.</p>
+</section>
+<section id="when-to-use-sirt-cuda">
+<h4>When to use SIRT_CUDA<a class="headerlink" href="#when-to-use-sirt-cuda" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Noisy or low-dose tomography data</p></li>
+<li><p>Sparse or limited-angle datasets</p></li>
+<li><p>Cases where classical FBP produces strong artefacts</p></li>
+<li><p>When iterative reconstruction is preferred for improved image quality</p></li>
+</ul>
+<p><a class="reference external" href="http://www.astra-toolbox.com/docs/algs/SIRT_CUDA.html">Link to the original documentation for SIRT_CUDA</a>.</p>
+</section>
+<section id="id5">
+<h4>Interface Preview<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<figure class="align-center" id="id17">
+<a class="only-light reference internal image-reference" href="../../../_images/SIRT_CUDA_light.png"><img alt="SIRT CUDA in reconstruction window" class="only-light" src="../../../_images/SIRT_CUDA_light.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">SIRT_CUDA in the reconstruction window (light mode)</span><a class="headerlink" href="#id17" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id18">
+<a class="only-dark reference internal image-reference" href="../../../_images/SIRT_CUDA_dark.png"><img alt="SIRT CUDA in reconstruction window" class="only-dark" src="../../../_images/SIRT_CUDA_dark.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">SIRT_CUDA in the reconstruction window (dark mode)</span><a class="headerlink" href="#id18" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id6">
+<h4>Parameters<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Number of iterations</p></td>
+<td><p>The number of iterations to perform. Higher iteration counts can improve reconstruction quality but will increase computation time. Mantid Imaging provides a refine iterations tool to assist with selecting an appropriate iteration count.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pixel size (microns)</p></td>
+<td><p>Defines the physical pixel spacing used to convert image distances into real-world units, ensuring correct scaling of attenuation coefficients (e.g. cm⁻¹).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 </section>
 <section id="tomopy">
 <h2>TomoPy<a class="headerlink" href="#tomopy" title="Link to this heading">#</a></h2>
 <section id="gridrec">
 <h3>gridrec<a class="headerlink" href="#gridrec" title="Link to this heading">#</a></h3>
-<p>This filter is from the TomoPy package.</p>
-<p>The original documentation for gridrec can be found <a class="reference external" href="https://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html#module-tomopy.recon.algorithm">here</a>.</p>
-<p>This is a CPU filter, and does not require a CUDA graphics card to run.</p>
-<p>From the TomoPy documentation, these are the paper references for this filter:</p>
+<section id="id7">
+<h4>Overview<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>CPU-based reconstruction algorithm</p></li>
+<li><p>Does not require CUDA support</p></li>
+<li><p>Implemented through the TomoPy package</p></li>
+</ul>
+</section>
+<section id="id8">
+<h4>How it works<a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<p>Gridrec is a fast Fourier-based reconstruction algorithm. Instead of performing back projection directly in image space, it reconstructs the image by transforming projection data into frequency space using the Fourier slice theorem.</p>
+<p>In frequency space, interpolation is used to map the data onto a regular grid, after which an inverse Fourier transform is applied to recover the reconstructed image.</p>
+<p>Because this approach operates in the frequency domain, Gridrec is very fast and does not require iterative refinement. However, its performance is more sensitive to sampling quality and interpolation accuracy, which means it works best with well-sampled, evenly spaced projection data.</p>
+<p>Gridrec performs efficiently on CPUs because it relies on Fast Fourier Transform (FFT) operations, which are highly optimised in CPU libraries and do not require iterative computation.</p>
+<p>Unlike GPU-based iterative methods such as FBP_CUDA or SIRT_CUDA, Gridrec does not gain additional benefit from massively parallel update steps. Its performance instead comes from efficient frequency-domain transforms, making it a lightweight and fast option for suitable datasets.</p>
+</section>
+<section id="when-to-use-gridrec">
+<h4>When to use gridrec<a class="headerlink" href="#when-to-use-gridrec" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>When GPU resources are not available</p></li>
+<li><p>For smaller datasets where CPU reconstruction is sufficient</p></li>
+</ul>
+<p><a class="reference external" href="https://tomopy.readthedocs.io/en/latest/api/tomopy.recon.algorithm.html#module-tomopy.recon.algorithm">Link to original documentation for gridrec</a>.</p>
+</section>
+<section id="id9">
+<h4>Interface Preview<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<figure class="align-center" id="id19">
+<a class="only-light reference internal image-reference" href="../../../_images/gridrec_light.png"><img alt="gridrec in reconstruction window" class="only-light" src="../../../_images/gridrec_light.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">gridrec in the reconstruction window (light mode)</span><a class="headerlink" href="#id19" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id20">
+<a class="only-dark reference internal image-reference" href="../../../_images/gridrec_dark.png"><img alt="gridrec in reconstruction window" class="only-dark" src="../../../_images/gridrec_dark.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">gridrec in the reconstruction window (dark mode)</span><a class="headerlink" href="#id20" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id10">
+<h4>Parameters<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Reconstruction filter</p></td>
+<td><p>The filter applied during gridrec. Different filters affect the sharpness and noise characteristics of the reconstruction. For an evaluation of the filters please go to the <a class="reference internal" href="filters.html#reconstruction-filters"><span class="std std-ref">Reconstruction Filters</span></a> page.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pixel size (microns)</p></td>
+<td><p>Defines the physical pixel spacing used to convert image distances into real-world units, ensuring correct scaling of attenuation coefficients (e.g. cm⁻¹).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="references">
+<h3>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Dowd BA, Campbell GH, Marr RB, Nagarkar VV, Tipnis SV, Axe L, and Siddons DP. Developments in synchrotron x-ray computed microtomography at the national synchrotron light source. In Proc. SPIE, volume 3772, 224–236. 1999.</p></li>
 <li><p>Rivers ML. Tomorecon: high-speed tomography reconstruction on workstations using multi-threading. In Proc. SPIE, volume 8506, 85060U–85060U–13. 2012.</p></li>
@@ -602,18 +791,148 @@ should assist you in finding the optimal number of rotations for your data.</p>
 <p>The <a class="reference external" href="https://www.ccpi.ac.uk/cil">Core Imaging Library (CIL)</a> is an open-source Python framework for tomographic imaging with particular emphasis on reconstruction of challenging datasets.</p>
 <section id="pdhg-tv">
 <h3>PDHG-TV<a class="headerlink" href="#pdhg-tv" title="Link to this heading">#</a></h3>
-<p>Primal Dual Hybrid Gradient optimiser with Total Variation regularisation. This is an advanced iterative optimised reconstruction algorithm, described in the paper below. The user can adjust regularisation parameter alpha, the figure shows a 2 values of alpha for a reconstructed slice.</p>
-<figure class="align-center" id="id2">
+<section id="id11">
+<h4>Overview<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Primal Dual Hybrid Gradient (PDHG) optimiser</p></li>
+<li><p>Total Variation (TV) regularised reconstruction method</p></li>
+<li><p>Iterative algorithm designed for noise suppression and sparse/noisy data</p></li>
+<li><p>Typically produces smoother reconstructions with edge preservation</p></li>
+</ul>
+</section>
+<section id="id12">
+<h4>How it works<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<p>PDHG-TV is an iterative optimisation-based reconstruction method that solves the reconstruction problem by minimising an objective function rather than directly computing the solution.</p>
+<p>It uses the Primal-Dual Hybrid Gradient (PDHG) algorithm to alternately update the reconstruction and the optimisation variables. At each iteration, the current estimate is compared against the measured projection data, and corrections are applied to reduce the mismatch while also enforcing regularisation constraints.</p>
+<p>A key component of PDHG-TV is Total Variation (TV) regularisation. This encourages the reconstruction to remain smooth in uniform regions while preserving sharp edges. As a result, noise and artefacts are reduced without excessively blurring structural boundaries.</p>
+<p>Because PDHG-TV explicitly incorporates both data fidelity (matching the measured projections) and regularisation (controlling image smoothness), it is more flexible than direct methods such as FBP_CUDA and more noise-robust than simpler iterative methods such as SIRT_CUDA, at the cost of increased computational complexity and parameter tuning.</p>
+</section>
+<section id="when-to-use-pdhg-tv">
+<h4>When to use PDHG-TV<a class="headerlink" href="#when-to-use-pdhg-tv" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Noisy or low-dose tomography data</p></li>
+<li><p>Sparse or limited-angle datasets</p></li>
+<li><p>Cases where classical FBP produces strong artefacts</p></li>
+<li><p>When edge-preserving smoothing is required</p></li>
+</ul>
+</section>
+<section id="id13">
+<h4>Interface Preview<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<figure class="align-center" id="id21">
+<a class="only-light reference internal image-reference" href="../../../_images/CIL_PDHG-TV_light.png"><img alt="PDHG-TV in reconstruction window" class="only-light" src="../../../_images/CIL_PDHG-TV_light.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">PDHG-TV in the reconstruction window (light mode)</span><a class="headerlink" href="#id21" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id22">
+<a class="only-dark reference internal image-reference" href="../../../_images/CIL_PDHG-TV_dark.png"><img alt="PDHG-TV in reconstruction window" class="only-dark" src="../../../_images/CIL_PDHG-TV_dark.png" style="width: 60%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">PDHG-TV in the reconstruction window (dark mode)</span><a class="headerlink" href="#id22" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id14">
+<h4>Parameters<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Number of iterations</p></td>
+<td><p>The number of iterations to perform. Higher iteration counts can improve reconstruction quality but will increase computation time.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alpha (regularisation parameter)</p></td>
+<td><p>Controls the strength of the TV regularisation. Higher alpha values lead to smoother reconstructions with stronger edge preservation, while lower alpha values allow more noise but can preserve finer details.</p></td>
+</tr>
+<tr class="row-even"><td><p>Non-negativity constraint</p></td>
+<td><p>Enforces reconstructed values to be greater than or equal to zero. Negative values are projected to zero during the optimisation process. This is often appropriate for physical quantities such as attenuation in absorption tomography.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stochastic</p></td>
+<td><p>Enables a stochastic variant of the PDHG optimisation algorithm (SPDHG). Instead of using the full dataset at each iteration, the algorithm operates on randomly selected subsets of data. This reduces the computational cost per iteration, which can improve performance for large datasets. However, it may require more iterations to converge compared to the full (deterministic) version.</p></td>
+</tr>
+<tr class="row-even"><td><p>Projections per subset</p></td>
+<td><p>When stochastic is enabled, this parameter specifies the number of projections to include in each randomly selected subset. A smaller number of projections per subset can lead to faster iterations but may increase the total number of iterations needed for convergence.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Regularisation percent</p></td>
+<td><p>When stochastic is enabled, this parameter specifies the percentage of the total number of projections to include in each subset for regularisation. This allows the regularisation step to be performed on a representative subset of the data, which can help maintain reconstruction quality while reducing computational cost.</p></td>
+</tr>
+<tr class="row-even"><td><p>Pixel size (microns)</p></td>
+<td><p>Defines the physical pixel spacing used to convert image distances into real-world units, ensuring correct scaling of attenuation coefficients (e.g. cm⁻¹).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h3>
+<p>The figure shows two values of alpha applied to a reconstructed slice.</p>
+<figure class="align-center" id="id23">
 <a class="reference internal image-reference" href="../../../_images/pdhg_tv_alpha.png"><img alt="PDHG-TV with alpha=0.1 on the left and alpha=10 on the right" src="../../../_images/pdhg_tv_alpha.png" style="width: 90%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">PDHG-TV with alpha=0.1 on the left and alpha=10 on the right</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+<p><span class="caption-text">PDHG-TV with alpha=0.1 on the left and alpha=10 on the right</span><a class="headerlink" href="#id23" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <ul class="simple">
 <li><p>Jørgensen JS et al. 2021 <a class="reference external" href="https://doi.org/10.1098/rsta.2020.0192">Core Imaging Library Part I: a versatile python framework for tomographic imaging</a>. Phil. Trans. R. Soc. A 20200192. Code.</p></li>
 </ul>
 </section>
+</section>
+<section id="reconstruction-methods-comparison">
+<h2>Reconstruction Methods Comparison<a class="headerlink" href="#reconstruction-methods-comparison" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Compute</p></th>
+<th class="head"><p>Strengths</p></th>
+<th class="head"><p>Best suited for</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FBP_CUDA</p></td>
+<td><p>Direct (FBP)</p></td>
+<td><p>GPU</p></td>
+<td><p>Very fast, deterministic, simple</p></td>
+<td><p>Well-sampled, low-noise data</p></td>
+</tr>
+<tr class="row-odd"><td><p>SIRT_CUDA</p></td>
+<td><p>Iterative (algebraic)</p></td>
+<td><p>GPU</p></td>
+<td><p>Robust to noise, handles missing data better than FBP</p></td>
+<td><p>Noisy or limited-angle datasets</p></td>
+</tr>
+<tr class="row-even"><td><p>Gridrec</p></td>
+<td><p>Fourier-based</p></td>
+<td><p>CPU</p></td>
+<td><p>Very fast FFT-based reconstruction</p></td>
+<td><p>Well-sampled datasets without GPU access</p></td>
+</tr>
+<tr class="row-odd"><td><p>PDHG-TV</p></td>
+<td><p>Iterative (optimisation)</p></td>
+<td><p>GPU</p></td>
+<td><p>Strong noise suppression, edge-preserving reconstruction</p></td>
+<td><p>Very noisy, sparse, or artefact-heavy data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 </section>
 
@@ -664,19 +983,51 @@ should assist you in finding the optimal number of rotations for your data.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#astra-toolbox">ASTRA Toolbox</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fbp-cuda">FBP_CUDA</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sirt-cuda">SIRT_CUDA</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fbp-cuda">FBP_CUDA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Overview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-works">How it works</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-fbp-cuda">When to use FBP_CUDA</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#interface-preview">Interface Preview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sirt-cuda">SIRT_CUDA</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Overview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">How it works</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-sirt-cuda">When to use SIRT_CUDA</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Interface Preview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Parameters</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tomopy">TomoPy</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gridrec">gridrec</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gridrec">gridrec</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Overview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">How it works</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-gridrec">When to use gridrec</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Interface Preview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Parameters</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-imaging-library">Core Imaging Library</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pdhg-tv">PDHG-TV</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pdhg-tv">PDHG-TV</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Overview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">How it works</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-pdhg-tv">When to use PDHG-TV</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Interface Preview</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Parameters</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstruction-methods-comparison">Reconstruction Methods Comparison</a></li>
 </ul>
   </nav></div>
 
