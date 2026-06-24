@@ -60,7 +60,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Testing" href="testing.html" />
-    <link rel="prev" title="Command Line Arguments" href="command.html" />
+    <link rel="prev" title="VSCode" href="vsc_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.2" />
@@ -454,6 +454,9 @@
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">How-To Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="command.html">Command Line Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vsc_setup.html">VSCode</a></li>
+
+
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Debugging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="release.html">Creating a Release</a></li>
@@ -478,6 +481,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../release_notes/next.html">Mantid Imaging next release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/vsc_extensions.html">VSCode Extensions</a></li>
 </ul>
 </details></li>
 </ul>
@@ -613,6 +617,114 @@
 </div>
 <p>And then add a <code class="code docutils literal notranslate"><span class="pre">output_debug_info</span></code> with the output that you need. It will be run every time Ctrl+D is pressed.</p>
 </section>
+<section id="how-to-debug-python-tests">
+<span id="debugging-python-tests"></span><h2>How to debug Python tests<a class="headerlink" href="#how-to-debug-python-tests" title="Link to this heading">#</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<p>Ensure the <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-python.debugpy">Python Debugger</a> is installed.</p>
+<p>For more details on how VS Code debugging works, see the official <a class="reference external" href="https://code.visualstudio.com/docs/editor/debugging">VS Code debugging documentation</a>.</p>
+</section>
+<section id="configure-the-debugger">
+<h3>Configure the debugger<a class="headerlink" href="#configure-the-debugger" title="Link to this heading">#</a></h3>
+<p>Open the existing <code class="docutils literal notranslate"><span class="pre">launch.json</span></code> file through the the file finder and update the <code class="docutils literal notranslate"><span class="pre">args</span></code> in <code class="docutils literal notranslate"><span class="pre">&quot;Python:</span> <span class="pre">Debugger:</span> <span class="pre">Current</span> <span class="pre">File&quot;</span></code> configuration to specify the tests to run. To enable unit, eyes and system tests, make the following updates:</p>
+<figure class="align-center" id="id1">
+<a class="only-light reference internal image-reference" href="../../_images/configure_test_run_light.gif"><img alt="Enabling test run in VSCode" class="only-light" src="../../_images/configure_test_run_light.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Enabling test run in VSCode</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id2">
+<a class="only-dark reference internal image-reference" href="../../_images/configure_test_run_dark.gif"><img alt="Enabling test run in VSCode" class="only-dark" src="../../_images/configure_test_run_dark.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Enabling test run in VSCode</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Example configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Python: Debugger: Current File&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;debugpy&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;launch&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;console&quot;</span><span class="p">:</span> <span class="s2">&quot;integratedTerminal&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;--run-unit-tests&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;--run-eyes-tests&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;--run-system-tests&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;$</span><span class="si">{file}</span><span class="s2">&quot;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If a Python interpreter has been selected in VS Code, the debugger will use that interpreter automatically. See <a class="reference internal" href="vsc_setup.html#selecting-python-interpreter"><span class="std std-ref">Selecting the Python interpreter</span></a>.</p>
+<p>Alternatively, an interpreter can be specified explicitly using the <code class="docutils literal notranslate"><span class="pre">python</span></code> field:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;python&quot;</span><span class="p">:</span> <span class="s2">&quot;C:/Users/&lt;username&gt;/AppData/Local/miniforge3/envs/mantidimaging-dev/python.exe&quot;</span>
+</pre></div>
+</div>
+<section id="headless-ssh-configuration">
+<h4>Headless / SSH configuration<a class="headerlink" href="#headless-ssh-configuration" title="Link to this heading">#</a></h4>
+<p>When working over SSH or without a display server, GUI backends must be disabled.</p>
+<p>Add environment variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;env&quot;</span><span class="p">:</span> <span class="p">{</span>
+  <span class="s2">&quot;QT_QPA_PLATFORM&quot;</span><span class="p">:</span> <span class="s2">&quot;offscreen&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;MPLBACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;Agg&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Headless: All Unit Tests&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;debugpy&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;launch&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;python&quot;</span><span class="p">:</span> <span class="s2">&quot;$</span><span class="si">{workspaceFolder}</span><span class="s2">/.pixi/envs/dev/bin/python&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="s2">&quot;pytest&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;console&quot;</span><span class="p">:</span> <span class="s2">&quot;integratedTerminal&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;--run-unit-tests&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;-pno:django&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;$</span><span class="si">{workspaceFolder}</span><span class="s2">/mantidimaging&quot;</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;env&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;QT_QPA_PLATFORM&quot;</span><span class="p">:</span> <span class="s2">&quot;offscreen&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;MPLBACKEND&quot;</span><span class="p">:</span> <span class="s2">&quot;Agg&quot;</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;presentation&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">&quot;hidden&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+      <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="mi">3</span>
+  <span class="p">}</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="run-the-debugger">
+<h3>Run the debugger<a class="headerlink" href="#run-the-debugger" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Open the test file</p></li>
+<li><p>Set breakpoints beside line numbers</p></li>
+<li><p>Open the Run and Debug sidebar</p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">Python:</span> <span class="pre">Debugger:</span> <span class="pre">Current</span> <span class="pre">File</span></code></p></li>
+<li><p>Press the green play button</p></li>
+</ol>
+<figure class="align-center" id="id3">
+<a class="only-light reference internal image-reference" href="../../_images/debug_eyes_test_light.gif"><img alt="Running eyes tests in VSCode" class="only-light" src="../../_images/debug_eyes_test_light.gif" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Running eyes tests in VSCode</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id4">
+<a class="only-dark reference internal image-reference" href="../../_images/debug_eyes_test_dark.gif"><img alt="Running eyes tests in VSCode" class="only-dark" src="../../_images/debug_eyes_test_dark.gif" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Running eyes tests in VSCode</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The debugger will pause execution at breakpoints, allowing variables and execution flow to be inspected.</p>
+</section>
+</section>
 </section>
 
 
@@ -626,12 +738,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="command.html"
+       href="vsc_setup.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Command Line Arguments</p>
+        <p class="prev-next-title">VSCode</p>
       </div>
     </a>
     <a class="right-next"
@@ -665,6 +777,15 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-debug-output">Getting Debug Output</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-github-actions">Debugging Github Actions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trigger-a-debug-function-when-running">Trigger a Debug Function When Running</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-debug-python-tests">How to debug Python tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-the-debugger">Configure the debugger</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#headless-ssh-configuration">Headless / SSH configuration</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-debugger">Run the debugger</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

@@ -10,6 +10,7 @@ Specific guides for common development tasks.
    :caption: How-To Guides:
 
    command.rst
+   vsc_setup.rst
    debugging.rst
    testing.rst
    release.rst

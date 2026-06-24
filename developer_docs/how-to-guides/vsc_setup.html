@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Explanations &#8212; MantidImaging 3.2.0a1 documentation</title>
+    <title>VSCode &#8212; MantidImaging 3.2.0a1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_docs/explanations/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_docs/how-to-guides/vsc_setup';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -59,8 +59,8 @@
     <link rel="icon" href="../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Documentation" href="documentation.html" />
-    <link rel="prev" title="Creating a Release" href="../how-to-guides/release.html" />
+    <link rel="next" title="Debugging" href="debugging.html" />
+    <link rel="prev" title="Command Line Arguments" href="command.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.2" />
@@ -452,20 +452,20 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/started_ada.html">Getting Started with Ada</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../how-to-guides/index.html">How-To Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/command.html">Command Line Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/vsc_setup.html">VSCode</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">How-To Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="command.html">Command Line Arguments</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">VSCode</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/debugging.html">Debugging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/testing.html">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/release.html">Creating a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debugging.html">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release.html">Creating a Release</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Explanations</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="documentation.html">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer_conventions.html">Developer Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="conda_packaging_and_docker_image.html">Conda Packaging and Docker images</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/documentation.html">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/developer_conventions.html">Developer Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/conda_packaging_and_docker_image.html">Conda Packaging and Docker images</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -527,7 +527,10 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Documentation</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Explanations</span></li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">How-To Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">VSCode</span></li>
   </ul>
 </nav>
 </div>
@@ -544,17 +547,122 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="explanations">
-<span id="id1"></span><h1>Explanations<a class="headerlink" href="#explanations" title="Link to this heading">#</a></h1>
-<p>In-depth conceptual explanations of the architecture and development guidelines.</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explanations:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer_conventions.html">Developer Conventions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conda_packaging_and_docker_image.html">Conda Packaging and Docker images</a></li>
+  <section id="vscode">
+<h1>VSCode<a class="headerlink" href="#vscode" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>This page is aimed at developers who use <a class="reference external" href="https://code.visualstudio.com/download">Visual Studio Code</a> (VSCode) as their Integrated development environment (IDE) for Mantid Imaging development.</p>
+<p>It includes:</p>
+<ul class="simple">
+<li><p>Configuring VSCode for Python development</p></li>
+<li><p>Enabling auto-saving</p></li>
+<li><p>Disabling auto-formatting on save</p></li>
 </ul>
-</div>
+</section>
+</section>
+<section id="how-to-guides">
+<h1>How-to Guides<a class="headerlink" href="#how-to-guides" title="Link to this heading">#</a></h1>
+<section id="how-to-open-and-prepare-vscode-for-mantid-imaging-development">
+<h2>How to open and prepare VSCode for Mantid Imaging development<a class="headerlink" href="#how-to-open-and-prepare-vscode-for-mantid-imaging-development" title="Link to this heading">#</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<p>Before starting, ensure you have:</p>
+<ol class="arabic simple">
+<li><p>An installed copy of <a class="reference external" href="https://code.visualstudio.com/download">VSCode</a></p></li>
+<li><p>A clone of the <a class="reference external" href="https://github.com/mantidproject/mantidimaging">Mantid Imaging repository</a></p></li>
+<li><p>A configured Mantid Imaging developer environment (See <a class="reference internal" href="../tutorials/started.html#getting-started"><span class="std std-ref">Getting Started</span></a> guide)</p></li>
+</ol>
+</section>
+<section id="opening-the-project">
+<h3>Opening the project<a class="headerlink" href="#opening-the-project" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Open VSCode</p></li>
+<li><p>Click File -&gt; Open Folder</p></li>
+<li><p>Navigate to your Mantid Imaging source directory and select it</p></li>
+</ol>
+<p>For code editing you are good to go! You can open any file from the left sidebar and start editing.</p>
+</section>
+<section id="selecting-the-python-interpreter">
+<span id="selecting-python-interpreter"></span><h3>Selecting the Python interpreter<a class="headerlink" href="#selecting-the-python-interpreter" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Open the Command Palette <kbd class="shortcut shortcut-mac">⌘+Shift+P</kbd> <kbd class="shortcut shortcut-windows">Ctrl+Shift+P</kbd> <kbd class="shortcut shortcut-linux">Ctrl+Shift+P</kbd>  and search for <code class="docutils literal notranslate"><span class="pre">Python:</span> <span class="pre">Select</span> <span class="pre">Interpreter</span></code></p></li>
+<li><p>Choose the Python environment that corresponds to your Mantid Imaging development setup i.e, <code class="docutils literal notranslate"><span class="pre">mantidimaging-dev</span></code> or the path similar to <code class="docutils literal notranslate"><span class="pre">&quot;...\\AppData\\Local\\miniforge3\\envs\\mantidimaging-dev\\python.exe&quot;</span></code></p></li>
+</ol>
+<figure class="align-center" id="id2">
+<a class="only-light reference internal image-reference" href="../../_images/select_python_interpreter_light.gif"><img alt="Selecting the Python interpreter in VSCode" class="only-light" src="../../_images/select_python_interpreter_light.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Selecting the Python interpreter in VSCode</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id3">
+<a class="only-dark reference internal image-reference" href="../../_images/select_python_interpreter_dark.gif"><img alt="Selecting the Python interpreter in VSCode" class="only-dark" src="../../_images/select_python_interpreter_dark.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Selecting the Python interpreter in VSCode</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Verify that the selected interpreter is correct by opening a python file and checking the bottom right corner of VSCode, it should display the name of the selected environment.</p>
+<p>If you are using Pixi, the interpreter may be detected automatically from the <code class="docutils literal notranslate"><span class="pre">.pixi</span></code> folder in the project root. In that case, the Pixi environment will appear as something like:
+<code class="docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.12.12</span> <span class="pre">(dev)</span> <span class="pre">./.pixi/envs/dev/bin/python</span></code></p>
+<p>More details on configuring Pixi with VS Code can be found <a class="reference external" href="https://pixi.prefix.dev/latest/integration/editor/vscode/#python-extension">here</a>.</p>
+</section>
+</section>
+<section id="how-to-enable-auto-save">
+<h2>How to enable auto-save<a class="headerlink" href="#how-to-enable-auto-save" title="Link to this heading">#</a></h2>
+<p>VSCode has an auto-saving feature that can be enabled to automatically save changes based on predefined conditions. This can help prevent data loss and ensure that changes are saved regularly without the need for manual intervention.</p>
+<p>This built in feature can be enabled by:</p>
+<ol class="arabic simple">
+<li><p>Open the File -&gt; Preferences -&gt; Settings menu</p></li>
+<li><p>Search for “Auto Save”</p></li>
+<li><p>Select the preferred auto save option. It is recommended to use <code class="docutils literal notranslate"><span class="pre">onFocusChange</span></code> as it will save the file whenever the editor loses focus, which can help prevent data loss while working on multiple files.</p></li>
+</ol>
+<figure class="align-center" id="id4">
+<a class="only-light reference internal image-reference" href="../../_images/enable_auto_save_light.gif"><img alt="Enabling auto-save in VSCode" class="only-light" src="../../_images/enable_auto_save_light.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Enabling auto-save in VSCode</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id5">
+<a class="only-dark reference internal image-reference" href="../../_images/enable_auto_save_dark.gif"><img alt="Enabling auto-save in VSCode" class="only-dark" src="../../_images/enable_auto_save_dark.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Enabling auto-save in VSCode</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="how-to-disable-auto-format-on-save">
+<h2>How to disable auto-format on save<a class="headerlink" href="#how-to-disable-auto-format-on-save" title="Link to this heading">#</a></h2>
+<p>VS Code stores its formatting configuration in a <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> file. Among these settings is <code class="docutils literal notranslate"><span class="pre">editor.formatOnSave</span></code>, which is responsible for automatically formatting code each time a file is saved.</p>
+<p>The auto-formatting feature can be disabled by:</p>
+<ol class="arabic simple">
+<li><p>Locate the <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> file located under the <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> folder in the project root.</p></li>
+<li><p>Open the file and search for the setting <code class="docutils literal notranslate"><span class="pre">editor.formatOnSave</span></code>. If it is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, change it to <code class="docutils literal notranslate"><span class="pre">false</span></code> to disable auto-formatting on save.</p></li>
+</ol>
+<figure class="align-center" id="id6">
+<a class="only-light reference internal image-reference" href="../../_images/disable_auto_format_light.gif"><img alt="Disabling auto-format on save in VSCode" class="only-light" src="../../_images/disable_auto_format_light.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Disabling auto-format on save in VSCode</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id7">
+<a class="only-dark reference internal image-reference" href="../../_images/disable_auto_format_dark.gif"><img alt="Disabling auto-format on save in VSCode" class="only-dark" src="../../_images/disable_auto_format_dark.gif" style="width: 70%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Disabling auto-format on save in VSCode</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="see-also">
+<h1>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="../reference/vsc_extensions.html#vsc-extensions"><span class="std std-ref">VSCode Extensions</span></a> - A list of required and recommended extensions for VSCode that can enhance the development experience.</p></li>
+<li><p><a class="reference internal" href="../reference/vsc_extensions.html#vsc-keyboard-shortcuts"><span class="std std-ref">Keybindings</span></a> - Commonly used keyboard shortcuts in VSCode for efficient coding and navigation.</p></li>
+<li><p><a class="reference internal" href="debugging.html#debugging-python-tests"><span class="std std-ref">How to debug Python tests</span></a> - A guide on how to set up and use the debugger in VSCode for Python development.</p></li>
+</ul>
 </section>
 
 
@@ -568,20 +676,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../how-to-guides/release.html"
+       href="command.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Creating a Release</p>
+        <p class="prev-next-title">Command Line Arguments</p>
       </div>
     </a>
     <a class="right-next"
-       href="documentation.html"
+       href="debugging.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Documentation</p>
+        <p class="prev-next-title">Debugging</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -597,10 +705,38 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">VSCode</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-guides">How-to Guides</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-open-and-prepare-vscode-for-mantid-imaging-development">How to open and prepare VSCode for Mantid Imaging development</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#opening-the-project">Opening the project</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-the-python-interpreter">Selecting the Python interpreter</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-enable-auto-save">How to enable auto-save</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-disable-auto-format-on-save">How to disable auto-format on save</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See Also</a></li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/developer_docs/explanations/index.rst.txt"
+      <li><a href="../../_sources/developer_docs/how-to-guides/vsc_setup.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
