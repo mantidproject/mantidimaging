@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from collections import Counter
 
+import matplotlib
 import pytest
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont
@@ -30,16 +31,24 @@ skipped_tests = []
 
 
 def pytest_collection_modifyitems(config, items):
+    qt_platform = None
     if config.getoption("--run-system-tests"):
         allowed_markers.append(pytest.mark.system.mark)
-        os.environ["QT_QPA_PLATFORM"] = "minimal"
+        qt_platform = "offscreen"
     if config.getoption("--run-system-tests-show"):
         allowed_markers.append(pytest.mark.system.mark)
-        os.environ["QT_QPA_PLATFORM"] = ""
+        qt_platform = ""
     if config.getoption("--run-eyes-tests"):
         allowed_markers.append(pytest.mark.eyes.mark)
     if config.getoption("--run-unit-tests") or len(allowed_markers) == 0:
         allowed_markers.append(pytest.mark.unit.mark)
+    if qt_platform is not None:
+        os.environ["QT_QPA_PLATFORM"] = qt_platform
+    if os.environ.get("QT_QPA_PLATFORM") in ["offscreen", "minimal"]:
+        matplotlib.use("Agg")
+    else:
+        matplotlib.use("Qt5Agg")
+
     for item in items:
         if "gui_system" in item.nodeid:
             item.add_marker(pytest.mark.system)
