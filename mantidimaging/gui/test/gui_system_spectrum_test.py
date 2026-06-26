@@ -272,12 +272,12 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         fit_results = self.spectrum_window.presenter.model.get_fit_results()
         self.assertIsNotNone(fit_results)
         self.assertTrue(any(name == roi_name for name, _ in fit_results))
-        try:
-            param_map = self.spectrum_window.presenter.model.build_param_map('centre',
-                                                                             self.spectrum_window.presenter.binner)
-            self.assertIsNotNone(param_map)
-        except Exception as e:
-            print(f"Parameter map generation skipped: {e}")
+        param_map = self.spectrum_window.presenter.model.build_parameter_map(
+            'centre',
+            self.spectrum_window.presenter.binner,
+        )
+        self.assertIsNotNone(param_map)
+        self.assertTrue(np.isfinite(param_map).any())
 
     def test_fit_multiple_rois(self):
         roi_names = []
