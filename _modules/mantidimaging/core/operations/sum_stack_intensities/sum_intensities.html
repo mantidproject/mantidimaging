@@ -515,16 +515,25 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#mantidimaging.core.operations.sum_stack_intensities.sum_intensities.SumIntensitiesFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SumIntensitiesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sum stack intensities as a new stack to emulate longer exposure times for Tomography and</span>
-<span class="sd">    Time of Flight (ToF) datasets.</span>
+<span class="sd">   Sum stack intensities to emulate longer exposure times.</span>
 
-<span class="sd">    The stacks to be summed should have exactly the same shape (x,y) and number of slices (z).</span>
-<span class="sd">    The z-axis could be either rotation angle or ToF bin.</span>
-<span class="sd">    If angles differ acros stacks, a notification highlighting this will be raised</span>
+<span class="sd">   Intended to be used on: Tomography or Time of Flight (ToF) datasets.</span>
 
-<span class="sd">    The new stack will be saved in-place.</span>
+<span class="sd">   When: Combining repeated acquisitions of the same dataset to improves signal-to-noise ratio.</span>
+
+<span class="sd">   Note:</span>
+
+<span class="sd">   - Both stacks must have identical shape (x, y, z).</span>
+
+<span class="sd">   - The z-axis typically represents projection angle or ToF bin.</span>
+
+<span class="sd">   - Projection angles are not required. If present, projections are sorted into</span>
+<span class="sd">     angle order on load (see :func:`loader.load</span>
+<span class="sd">     &lt;mantidimaging.core.io.loader.loader.load&gt;`). If matched angles between stacks</span>
+<span class="sd">     to be summed together differ, a warning is raised.</span>
+
+<span class="sd">   - The primary stack is modified in-place.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">filter_name</span> <span class="o">=</span> <span class="s1">&#39;Sum Stack Intensities&#39;</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">allow_for_180_projection</span> <span class="o">=</span> <span class="kc">False</span>
@@ -536,7 +545,13 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">secondary_stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate stacks and sum their intensities in-place.</span>
+<span class="sd">        :param images: Primary ImageStack to be modified.</span>
+<span class="sd">        :param secondary_stack: Secondary ImageStack whose values are added to the primary stack</span>
+<span class="sd">        :param progress: Progress reporting object (unused - no meaningful progress updates to report as operation runs</span>
+<span class="sd">         as a single vectorised operation).</span>
+
+<span class="sd">        :return: The modified primary ImageStack.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">helper</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
         <span class="n">helper</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">secondary_stack</span><span class="p">)</span>

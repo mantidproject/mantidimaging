@@ -973,9 +973,21 @@
 </section>
 <section id="sum-stack-intensities">
 <h3>Sum Stack Intensities<a class="headerlink" href="#sum-stack-intensities" title="Link to this heading">#</a></h3>
-<p>Sum stack intensities as a new stack to emulate longer exposure times for Tomography and Time of Flight (ToF) datasets.</p>
-<p>The stacks to be summed should have exactly the same shape (x,y) and number of slices (z). The z-axis could be either rotation angle or ToF bin. If angles differ acros stacks, a notification highlighting this will be raised</p>
-<p>The new stack will be saved in-place.</p>
+<p>Sum stack intensities to emulate longer exposure times.</p>
+<p>Intended to be used on: Tomography or Time of Flight (ToF) datasets.</p>
+<p>When: Combining repeated acquisitions of the same dataset to improves signal-to-noise ratio.</p>
+<p>Note:</p>
+<ul class="simple">
+<li><p>Both stacks must have identical shape (x, y, z).</p></li>
+<li><p>The z-axis typically represents projection angle or ToF bin.</p></li>
+<li><p>Projection angles are not required. If present, projections are sorted into   angle order on load (see <a class="reference internal" href="../../../api/mantidimaging.core.io.loader.loader.html#mantidimaging.core.io.loader.loader.load" title="mantidimaging.core.io.loader.loader.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">loader.load</span></code></a>). If matched angles between stacks   to be summed together differ, a warning is raised.</p></li>
+<li><p>The primary stack is modified in-place.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">param secondary_stack<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Secondary ImageStack whose values are added to the primary stack as a single vectorised operation).</p>
+</dd>
+</dl>
 <p><a class="reference internal" href="../../../api/mantidimaging.core.operations.sum_stack_intensities.sum_intensities.html#module-mantidimaging.core.operations.sum_stack_intensities.sum_intensities" title="mantidimaging.core.operations.sum_stack_intensities.sum_intensities"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sum</span> <span class="pre">Stack</span> <span class="pre">Intensities</span> <span class="pre">API</span> <span class="pre">docs</span></code></a></p>
 </section>
 </section>
