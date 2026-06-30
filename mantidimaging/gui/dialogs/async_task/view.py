@@ -6,7 +6,8 @@ from typing import Any
 from collections.abc import Callable
 
 import numpy as np
-from pyqtgraph import PlotWidget, ImageView
+from pyqtgraph import PlotWidget
+from pyqtgraph.imageview import ImageView
 
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView

@@ -9,7 +9,9 @@ from collections.abc import Callable
 
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
-from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
+from pyqtgraph import ROI, ImageItem
+from pyqtgraph.imageview import ImageView
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
