@@ -84,7 +84,7 @@ class CORInspectionDialogModel:
     def _recon_cor_preview(self, image: ImageType) -> np.ndarray:
         assert (self.images.geometry is not None)
         assert self.proj_angles is not None
-        self.images.geometry.cor = ScalarCoR(self.cor(image))
+        self.images.geometry.set_cor_at_slice_index(self.slice_idx, ScalarCoR(self.cor(image)))
         return self.reconstructor.single_sino(self.images, self.slice_idx, self.recon_params)
 
     def _recon_iters_preview(self, image: ImageType) -> np.ndarray:

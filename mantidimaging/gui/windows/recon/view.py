@@ -176,12 +176,17 @@ class ReconstructWindowView(BaseMainWindowView):
         self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.modelReset.connect(self.on_table_row_count_change)  # type: ignore
 
+        self.cor_table_model.rowsInserted.connect(self._update_cor_scatter)  # type: ignore
+        self.cor_table_model.rowsRemoved.connect(self._update_cor_scatter)  # type: ignore
+        self.cor_table_model.modelReset.connect(self._update_cor_scatter)  # type: ignore
+
         # Update previews when data in table changes
         def on_data_change(tl, br, _):
             # Should we auto fit on data change?
             if self.tableView.model().num_points >= 2:
                 self.presenter.notify(PresN.COR_FIT)
             self.presenter.notify(PresN.UPDATE_PROJECTION)
+            self._update_cor_scatter()
             if tl == br and tl.column() == Column.CENTRE_OF_ROTATION.value:
                 mdl = self.tableView.model()
                 slice_idx = mdl.data(mdl.index(tl.row(), Column.SLICE_INDEX.value))
@@ -213,10 +218,13 @@ class ReconstructWindowView(BaseMainWindowView):
                 slice_idx = row_data.slice_index
                 cor = row_data.cor
                 self.presenter.set_row(item.row())
+                self.image_view.set_selected_cor_row(item.row())
                 self.presenter.set_last_cor(cor)
                 self.presenter.set_preview_slice_idx(slice_idx)
                 self.image_view.slice_line.setPos(slice_idx)
                 self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE)
+            else:
+                self.image_view.set_selected_cor_row(-1)  # No row selected
 
             # Only allow buttons which act on selected row to be clicked when a valid
             # row is selected
@@ -224,6 +232,7 @@ class ReconstructWindowView(BaseMainWindowView):
                 button.setEnabled(item.isValid())
 
         self.tableView.selectionModel().currentRowChanged.connect(on_row_change)  # type: ignore
+        self.image_view.sigCorPointClicked.connect(self.tableView.selectRow)
 
         # Update initial UI state
         self.on_table_row_count_change()
@@ -334,6 +343,16 @@ class ReconstructWindowView(BaseMainWindowView):
     def update_sinogram(self, image_data) -> None:
         self.image_view.update_sinogram(image_data)
 
+    def _update_cor_scatter(self) -> None:
+        """Updates the COR scatter points on the projection preview"""
+        points = self.cor_table_model._points
+        slice_indices = [point.slice_index for point in points]
+        cors = [point.cor for point in points]
+        selected_rows = self.tableView.selectionModel().selectedRows()
+        selected_row = selected_rows[0].row() if selected_rows else -1  # -1 means no row selected
+        self.image_view.update_cor_table_points(slice_indices, cors, self.tilt)
+        self.image_view.set_selected_cor_row(selected_row)
+
     def is_auto_update_preview(self) -> bool:
         return self.previewAutoUpdate.isChecked()
 
@@ -386,6 +405,7 @@ class ReconstructWindowView(BaseMainWindowView):
         """
         self.cor_table_model.appendNewRow(row, slice_index, cor)
         self.tableView.selectRow(row)
+        self._update_cor_scatter()
         LOG.debug("Added COR table row: row=%d, slice=%d, COR=%.3f", row, slice_index, cor)
 
     def get_cor_table_selected_rows(self) -> list[int]:

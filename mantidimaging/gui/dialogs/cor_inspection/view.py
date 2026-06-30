@@ -30,7 +30,7 @@ class CORInspectionDialogView(BaseDialogView):
 
     def __init__(self, parent, images: ImageStack, slice_index: int, initial_cor: ScalarCoR,
                  recon_params: ReconstructionParameters, iters_mode: bool):
-        super().__init__(parent, 'gui/ui/cor_inspection_dialog.ui')
+        super().__init__(None, 'gui/ui/cor_inspection_dialog.ui')
         self.iters_mode = iters_mode
 
         if self.iters_mode:
