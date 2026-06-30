@@ -24,7 +24,7 @@ install-build-requirements:
 	conda run -n build-env conda config --env $(CHANNELS)
 
 build-conda-package: install-build-requirements
-	conda run -n build-env conda mambabuild conda --label unstable
+	rattler-build build -r conda/recipe.yaml --experimental --output-dir output/unstable --config-file conda/recipe_config.toml
 
 build-conda-package-nightly: .remind-for-user .remind-for-anaconda-api install-build-requirements
 	conda run -n build-env conda-build conda $(AUTHENTICATION_PARAMS) --label nightly
