@@ -169,9 +169,7 @@ class FiltersWindowPresenter(BasePresenter):
                 widget = self.view.filterPropertiesLayout.itemAt(row_id).widget()
                 if isinstance(widget, DatasetSelectorWidgetView):
                     widget._handle_loaded_datasets_changed()
-
-        if self.view.get_selected_filter() == CROP_COORDINATES and "roi_field" in self.model.filter_widget_kwargs:
-            self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
+        self.model.selected_filter.on_stack_changed(self.model.filter_widget_kwargs, self.stack)
 
         self.do_update_previews()
 
@@ -202,12 +200,11 @@ class FiltersWindowPresenter(BasePresenter):
         filter_widget_kwargs = register_func(self.view.filterPropertiesLayout, self.view.auto_update_triggered.emit,
                                              self.view)
 
-        if filter_name == CROP_COORDINATES:
-            self.init_roi_field(filter_widget_kwargs["roi_field"])
-        elif filter_name == ROI_NORMALISATION:
+        if filter_name == ROI_NORMALISATION:
             self.init_air_field(filter_widget_kwargs["roi_field"])
 
         self.model.setup_filter(filter_name, filter_widget_kwargs)
+        self.model.selected_filter.on_stack_changed(self.model.filter_widget_kwargs, self.stack)
         self.view.clear_notification_dialog()
         self.view.previews.link_before_after_histogram_scales(self.model.link_histograms())
 
@@ -332,10 +329,9 @@ class FiltersWindowPresenter(BasePresenter):
                 self.view.show_operation_completed(self.model.selected_filter.filter_name)
 
                 selected_filter = self.view.get_selected_filter()
-                if selected_filter == CROP_COORDINATES:
-                    self.init_roi_field(self.model.filter_widget_kwargs["roi_field"])
-                elif selected_filter == FLAT_FIELDING and negative_stacks:
+                if selected_filter == FLAT_FIELDING and negative_stacks:
                     self._show_negative_values_error(negative_stacks)
+                self.model.selected_filter.on_stack_changed(self.model.filter_widget_kwargs, self.stack)
 
                 self.sync_histogram_levels()
             else:

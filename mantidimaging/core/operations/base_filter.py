@@ -114,6 +114,20 @@ class BaseFilter:
             raise ValueError(f"Selected stack for {msg} does not exist") from exc
         return stack
 
+    @staticmethod
+    def on_stack_changed(filter_widget_kwargs: dict[str, Any], stack: ImageStack | None) -> None:
+        """
+        Optional hook for filters that need to refresh UI state when the selected stack changes.
+
+        :param filter_widget_kwargs: The widgets registered for the active filter.
+        :param stack: The newly selected stack, or None when selection is cleared.
+        """
+        widget = filter_widget_kwargs.get("stack_selector")
+        if widget is not None:
+            widget.set_current_stack(stack)
+
+        return
+
 
 def raise_not_implemented(function_name):
     raise NotImplementedError(f"Required method '{function_name}' not implemented for filter")
