@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
@@ -11,6 +11,7 @@ from mantidimaging.core.parallel import utility as pu
 from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.utility.qt_helpers import Type
+from mantidimaging.core.fitting.bounding_box import get_bounding_box
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -93,6 +94,19 @@ class CropCoordinatesFilter(BaseFilter):
             return partial(CropCoordinatesFilter.filter_func, region_of_interest=roi)
         except Exception as exc:
             raise ValueError(f"The provided ROI string is invalid! Error: {exc}") from exc
+
+    @staticmethod
+    def on_stack_changed(filter_widget_kwargs: dict[str, Any], stack: ImageStack | None) -> None:
+
+        if stack is None:
+            return
+
+        roi_field = filter_widget_kwargs.get("roi_field")
+        if roi_field is None:
+            return
+
+        crop_roi = get_bounding_box(stack)
+        roi_field.setText(crop_roi.to_list_string())
 
     @staticmethod
     def group_name() -> FilterGroup:
