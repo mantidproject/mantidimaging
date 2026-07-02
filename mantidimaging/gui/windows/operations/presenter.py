@@ -36,7 +36,6 @@ APPLY_TO_180_MSG = "Operations applied to the sample are also automatically appl
 FLAT_FIELDING = "Flat-fielding"
 FLAT_FIELD_REGION = [-0.2, 1.2]
 
-CROP_COORDINATES = "Crop Coordinates"
 ROI_NORMALISATION = "ROI Normalisation"
 
 if TYPE_CHECKING:

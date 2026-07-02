@@ -17,7 +17,7 @@ from mantidimaging.core.operation_history.const import OPERATION_HISTORY, OPERAT
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.windows.main import MainWindowView
 from mantidimaging.gui.windows.operations import FiltersWindowPresenter
-from mantidimaging.gui.windows.operations.presenter import CROP_COORDINATES, REPEAT_FLAT_FIELDING_MSG, \
+from mantidimaging.gui.windows.operations.presenter import REPEAT_FLAT_FIELDING_MSG, \
     FLAT_FIELDING ,_find_nan_change, _group_consecutive_values, FLAT_FIELD_REGION
 from mantidimaging.test_helpers.unit_test_helper import assert_called_once_with, generate_images
 from mantidimaging.core.data import ImageStack
@@ -463,18 +463,19 @@ class FiltersWindowPresenterTest(unittest.TestCase):
         assert_called_once_with(mock_roi_field.setText, "0, 0, 100, 100")
 
     @mock.patch("mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_update_previews")
-    @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_roi_field')
-    def test_set_stack_initialises_roi_for_crop_coordinates(self, mock_init_roi_field, mock_do_update_previews):
-        mock_roi_field = mock.Mock()
+    @mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals")
+    def test_set_stack_calls_selected_filter_on_stack_changed(self, mock_block_signals, mock_do_update_previews):
+        mock_filter = mock.Mock()
+        mock_filter.on_stack_changed = mock.Mock()
 
-        self.view.get_selected_filter.return_value = CROP_COORDINATES
-        self.presenter.model.filter_widget_kwargs = {"roi_field": mock_roi_field}
+        self.presenter.model.selected_filter = mock_filter
+        self.presenter.model.filter_widget_kwargs = {"roi_field": mock.Mock()}
 
-        stack = mock.Mock(num_images=2)
-        with mock.patch("mantidimaging.gui.windows.operations.presenter.BlockQtSignals"):
-            self.presenter.set_stack(stack)
+        stack = mock.Mock()
+        stack.num_sinograms = 2
+        self.presenter.set_stack(stack)
 
-        mock_init_roi_field.assert_called_once_with(mock_roi_field)
+        mock_filter.on_stack_changed.assert_called_once_with(self.presenter.model.filter_widget_kwargs, stack)
 
     @mock.patch('mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter._do_apply_filter_sync')
     def test_negative_values_found_in_twelve_or_less_ranges(self, do_apply_filter_sync_mock):
