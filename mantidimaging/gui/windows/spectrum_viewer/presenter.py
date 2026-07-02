@@ -1015,3 +1015,8 @@ class SpectrumViewerWindowPresenter(BasePresenter):
                     continue
                 row_data = [model.item(row, col).data() for col in range(model.columnCount())]
                 writer.writerow(row_data)
+
+    @property
+    def binner(self) -> ROIBinner:
+        """Return the current ROI binner configured in the export settings."""
+        return self.view.get_binner()
