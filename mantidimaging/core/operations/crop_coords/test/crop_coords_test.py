@@ -53,6 +53,42 @@ class CropCoordsTest(unittest.TestCase):
         self.assertRaises(ValueError, CropCoordinatesFilter.execute_wrapper, roi_mock)
         roi_mock.text.assert_called_once()
 
+    def test_on_stack_changed_updates_roi_field(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        roi_mock = mock.Mock()
+
+        filter_widget_kwargs = {"roi_field": roi_mock}
+        stack = mock.Mock()
+
+        with mock.patch(
+                "mantidimaging.core.operations.crop_coords.crop_coords.get_bounding_box") as get_bounding_box_mock:
+            mock_roi = mock.Mock()
+            mock_roi.to_list_string.return_value = "[1, 2, 3, 4]"
+            get_bounding_box_mock.return_value = mock_roi
+
+            CropCoordinatesFilter.on_stack_changed(filter_widget_kwargs, stack)
+
+            get_bounding_box_mock.assert_called_once_with(stack)
+            roi_mock.setText.assert_called_once_with("[1, 2, 3, 4]")
+
+    def test_on_stack_changed_with_no_stack_or_no_widget_does_nothing(self):
+        """
+        Test that the partial returned by execute_wrapper can be executed (kwargs are named correctly)
+        """
+        roi_mock = mock.Mock()
+        filter_widget_kwargs = {"roi_field": roi_mock}
+
+        CropCoordinatesFilter.on_stack_changed(filter_widget_kwargs, None)
+
+        roi_mock.setText.assert_not_called()
+
+        roi_mock.reset_mock()
+
+        CropCoordinatesFilter.on_stack_changed({}, mock.Mock())
+        roi_mock.setText.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()
