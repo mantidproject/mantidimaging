@@ -255,3 +255,50 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         self.spectrum_window.export_display_tabs.setCurrentIndex(1)
         spec_stack = self.main_window.get_stack(self.spectrum_window.presenter.current_stack_uuid)
         assert_array_equal(spec_stack.data.mean(axis=0), self.spectrum_window._export_image_widget.image_data)
+
+    def test_bragg_edge_workflow(self):
+        QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+        roi_name = 'roi_1'
+        self.assertIn(roi_name, self.spectrum_window.spectrum_widget.roi_dict)
+        self.spectrum_window.formTabs.setCurrentIndex(1)
+        QTest.qWait(SHORT_DELAY)
+        QTest.mouseClick(self.spectrum_window.fittingForm.fitting_param_form.from_roi_button, Qt.MouseButton.LeftButton)
+        QTest.mouseClick(self.spectrum_window.fittingForm.run_fit_button, Qt.MouseButton.LeftButton)
+        QTest.qWait(SHORT_DELAY)
+        QTest.mouseClick(self.spectrum_window.exportSettingsWidget.fitAllButton, Qt.MouseButton.LeftButton)
+        wait_until(lambda: self.spectrum_window.exportDataTableWidget.model.rowCount() >= 1)
+        self.assertGreaterEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), 1)
+        fit_results = self.spectrum_window.presenter.model.get_fit_results()
+        self.assertIsNotNone(fit_results)
+        self.assertTrue(any(name == roi_name for name, _ in fit_results))
+        param_map = self.spectrum_window.presenter.model.build_parameter_map(
+            'centre',
+            self.spectrum_window.presenter.binner,
+        )
+        self.assertIsNotNone(param_map)
+        self.assertTrue(np.isfinite(param_map).any())
+
+    def test_fit_multiple_rois(self):
+        roi_names = []
+        for i in range(1, 4):
+            QTest.mouseClick(self.spectrum_window.roi_form.addBtn, Qt.MouseButton.LeftButton)
+            QTest.qWait(SHORT_DELAY)
+            roi_names.append(f'roi_{i}')
+            self.assertIn(f'roi_{i}', self.spectrum_window.spectrum_widget.roi_dict)
+        self.spectrum_window.formTabs.setCurrentIndex(1)
+        QTest.qWait(SHORT_DELAY)
+        QTest.mouseClick(self.spectrum_window.exportSettingsWidget.fitAllButton, Qt.MouseButton.LeftButton)
+        wait_until(lambda: self.spectrum_window.exportDataTableWidget.model.rowCount() >= len(roi_names))
+        self.assertGreaterEqual(self.spectrum_window.exportDataTableWidget.model.rowCount(), len(roi_names))
+        fit_results = self.spectrum_window.presenter.model.get_fit_results()
+        self.assertIsNotNone(fit_results)
+        fit_result_names = [name for name, _ in fit_results]
+        for roi_name in roi_names:
+            self.assertIn(roi_name, fit_result_names)
+        export_names = [
+            self.spectrum_window.exportDataTableWidget.model.item(row, 0).text()
+            for row in range(self.spectrum_window.exportDataTableWidget.model.rowCount())
+        ]
+        for roi_name in roi_names:
+            self.assertIn(roi_name, export_names)
