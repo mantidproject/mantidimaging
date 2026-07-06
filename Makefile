@@ -5,8 +5,6 @@ SHELL=/bin/bash
 
 SOURCE_DIRS=mantidimaging scripts docs/ext/
 
-CHANNELS=$(shell cat environment.yml | sed -ne '/channels:/,/dependencies:/{//!p}' | grep '^  -' | sed 's/ - / --append channels /g' | tr -d '\n')
-
 ifeq ($(OS),Windows_NT)
     XVFBRUN=
 	TEST_RESULT_DIR:=$(TEMP)\mantidimaging_tests
@@ -20,11 +18,10 @@ endif
 
 install-build-requirements:
 	@echo "Installing packages required for starting the build process"
-	conda create -n build-env --yes boa anaconda-client conda-verify
-	conda run -n build-env conda config --env $(CHANNELS)
+	conda create -n build-env --yes rattler-build anaconda-client
 
 build-conda-package: install-build-requirements
-	rattler-build build -r conda/recipe.yaml --experimental --output-dir output/unstable --config-file conda/recipe_config.toml
+	conda run -n build-env rattler-build build -r conda/recipe.yaml --experimental --output-dir output/unstable --config-file conda/recipe_config.toml
 
 build-conda-package-nightly: .remind-for-user .remind-for-anaconda-api install-build-requirements
 	conda run -n build-env conda-build conda $(AUTHENTICATION_PARAMS) --label nightly

@@ -20,10 +20,6 @@ build:
       - mantidimaging-ipython = mantidimaging.ipython:main
 
 requirements:
-  build:
-    - python 3.12.*
-    - setuptools 72.*
-
   host:
     - python 3.12.*
     - setuptools 72.*
@@ -68,7 +64,7 @@ tests:
       pip_check: false
 
 about:
-  license: GPL-3.0-only
+  license: GPL-3.0-or-later
   summary: "Mantid Imaging"
   license_file: LICENSE.txt
   homepage: https://github.com/mantidproject/mantidimaging
