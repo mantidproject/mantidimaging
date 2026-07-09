@@ -2,10 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import contextlib
 import unittest
 from unittest.mock import Mock, patch
 
 import numpy.testing as npt
+from parameterized import parameterized
 
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
@@ -108,6 +110,26 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         self.assertEqual(m.centre_value, 75)
         self.assertEqual(m.step, 25)
 
+    @parameterized.expand([
+        ("success", None),
+        ("failure", RuntimeError("recon failed")),
+    ])
+    def test_recon_cor_preview_restores_geometry_on_(self, _name, recon_side_effect):
+        images = generate_images_with_geometry(360)
+        slice_idx = 5
+        # get CoR before model construction to match pre-dialog geometry state
+        original_cor = images.geometry.get_cor_at_slice_index(slice_idx)
+        recon_parameters = ReconstructionParameters("FBP_CUDA", "ram-lak")
+
+        model = CORInspectionDialogModel(images, slice_idx, ScalarCoR(20), recon_parameters, False)
+        model.reconstructor = Mock()
+        model.reconstructor.single_sino.side_effect = recon_side_effect
+
+        with contextlib.suppress(RuntimeError):
+            model.recon_preview(ImageType.LESS)
+
+        self.assertEqual(images.geometry.get_cor_at_slice_index(slice_idx).value, original_cor.value)
+
     @patch('mantidimaging.gui.dialogs.cor_inspection.model.replace')
     def test_recon_iters_preview(self, replace_mock):
         images = generate_images_with_geometry(360)
@@ -126,10 +148,13 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         images = generate_images_with_geometry(360)
         images.geometry.tilt = tilt
 
-        model = CORInspectionDialogModel(images, slice_idx, cor_at_slice,
-                                         ReconstructionParameters('FBP_CUDA', 'ram-lak'), False)
+        recon_params = ReconstructionParameters('FBP_CUDA', 'ram-lak')
+        model = CORInspectionDialogModel(images, slice_idx, cor_at_slice, recon_params, False)
         model.reconstructor = Mock()
-        model.recon_preview(ImageType.CURRENT)
 
-        result = images.geometry.get_cor_at_slice_index(slice_idx)
-        self.assertAlmostEqual(result.value, cor_at_slice.value, places=6)
+        geometry = images.geometry
+        with patch.object(geometry, "set_cor_at_slice_index", wraps=geometry.set_cor_at_slice_index) as mock_set_cor:
+            model.recon_preview(ImageType.CURRENT)
+
+        preview_cor = mock_set_cor.call_args_list[0].args[1]
+        self.assertAlmostEqual(preview_cor.value, cor_at_slice.value, places=6)
