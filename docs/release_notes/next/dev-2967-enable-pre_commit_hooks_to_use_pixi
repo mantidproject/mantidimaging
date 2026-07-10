@@ -1,0 +1,1 @@
+#2967: Enable pre-commit hooks to use pixi, add pixi tasks for checking licenses,release notes format and pre-commit install, and update documentation.

@@ -63,7 +63,7 @@ Mantid Imaging uses `pre-commit <https://pre-commit.com/>`_ to run pre-commit ho
 
 To enable pre-commit hooks, you must manually install them by running::
 
-    pre-commit install
+    pixi run -e dev setup-pre-commit
 
 Once installed, the hooks will execute automatically with every commit.
 
@@ -78,7 +78,7 @@ Unit testing
 
 Unit tests can be run using `pytest <https://docs.pytest.org/>`_, e.g.::
 
-    make pytest
+    pixi run test-base
 
 For options such as running a subset of tests, see `PyTest Docs <https://docs.pytest.org/en/stable/usage.html>`_.
 
@@ -89,18 +89,20 @@ Static analysis
 Mantid Imaging uses several tools to ensure high code quality and consistency:
 
 - `mypy <http://mypy-lang.org/>`_: Enforces type correctness to catch potential type errors early.
+- `pyright <https://github.com/microsoft/pyright>`_: Performs fast static type analysis with advanced type inference to identify potential type issues and improve type safety.
 - `ruff <https://beta.ruff.rs/docs/>`_: Checks for common syntax and style issues to maintain clean, readable code.
 - `yapf <https://github.com/google/yapf>`_: Formats code according to PEP 8 standards, ensuring consistent style.
 
 These tools can be run collectively with:
 
-- :code:`make check`: Runs all static analysis tools together for a comprehensive check.
+- :code:`pixi run lint-all`: Runs all static analysis tools together for a comprehensive check.
 
 Or individually for specific tasks:
 
-- :code:`make mypy`: Perform static type checks.
-- :code:`make ruff`: Lint the code for syntax and style issues.
-- :code:`make yapf`: Automatically format code according to PEP 8.
+- :code:`pixi run mypy`: Perform static type checks.
+- :code:`pixi run pyright`: Run Pyright's static type analysis with additional type inference checks.
+- :code:`pixi run ruff`: Lint the code for syntax and style issues.
+- :code:`pixi run yapf`: Automatically format code according to PEP 8.
 
 
 GUI Screenshot Testing
