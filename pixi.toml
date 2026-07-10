@@ -271,6 +271,8 @@ release-notes-base = { cmd = "python setup.py release_notes", description = "Bas
 check-licenses = { cmd = "python -m CheckLicensesInFiles" }
 check-release-notes-format = { cmd = "python -m CheckReleaseNoteFormat" }
 
+setup-pre-commit = { cmd = "pre-commit install", description = "Install the Git pre-commit hook" }
+
 [tasks]
 #Run Mantid Imaging Application
 MI-base = { cmd = "python -m mantidimaging", description = "Base task to launch Mantid Imaging GUI (used by other tasks)" }
