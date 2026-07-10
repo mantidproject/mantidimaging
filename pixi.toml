@@ -268,6 +268,8 @@ build-docs-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\",
 build-docs-headless-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\", ignore_errors=True)' && sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' '**/tests' 'mantidimaging/ipython' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to build Sphinx documentation in headless mode" }
 serve-docs-base = { cmd = "python -m http.server 8000", cwd = "docs/build/html", description = "Base task to serve built documentation on http://localhost:8000" }
 release-notes-base = { cmd = "python setup.py release_notes", description = "Base task to generate release notes" }
+check-licenses = { cmd = "python -m CheckLicensesInFiles" }
+check-release-notes-format = { cmd = "python -m CheckReleaseNoteFormat" }
 
 [tasks]
 #Run Mantid Imaging Application
