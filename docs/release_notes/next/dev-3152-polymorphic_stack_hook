@@ -1,1 +1,1 @@
-#3152: Add a polymorphic on_stack_changed hook and refactor code accordingly
+#3152: Adds support for filters to respond to stack changes, allowing filter settings to update automatically based on the selected data.

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from mantidimaging import helper as h
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
@@ -15,7 +15,7 @@ from mantidimaging.core.fitting.bounding_box import get_bounding_box
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
-    from PyQt5.QtWidgets import QLineEdit
+    from PyQt5.QtWidgets import QLineEdit, QWidget
 
 
 class CropCoordinatesFilter(BaseFilter):
@@ -96,7 +96,10 @@ class CropCoordinatesFilter(BaseFilter):
             raise ValueError(f"The provided ROI string is invalid! Error: {exc}") from exc
 
     @staticmethod
-    def on_stack_changed(filter_widget_kwargs: dict[str, Any], stack: ImageStack | None) -> None:
+    def on_stack_changed(filter_widget_kwargs: dict[str, QWidget], stack: ImageStack | None) -> None:
+        """
+        Update the ROI field with the bounding box of the newly selected stack.
+        """
 
         if stack is None:
             return
