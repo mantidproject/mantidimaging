@@ -11,6 +11,7 @@ Specific guides for common development tasks.
 
    command.rst
    vsc_setup.rst
+   pycharm_setup.rst
    debugging.rst
    testing.rst
    release.rst
