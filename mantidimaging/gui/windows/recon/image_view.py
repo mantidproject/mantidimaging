@@ -183,13 +183,13 @@ class ReconImagesView(GraphicsLayoutWidget):
         self.cor_scatter.setData(spots=spots, symbol='x', size=14, tip=None)
 
     def _on_cor_scatter_clicked(self, plot, spots, ev) -> None:
-        if spots:
+        if len(spots):
             row_index_from_cor_spot = spots[0].data()
             self.sigCorPointClicked.emit(row_index_from_cor_spot)
 
     def _on_cor_scatter_hovered(self, plot: ScatterPlotItem, points: list) -> None:
         if plot_canvas := plot.getViewWidget():
-            plot_canvas.setCursor(QtCore.Qt.OpenHandCursor if points else QtCore.Qt.ArrowCursor)
+            plot_canvas.setCursor(QtCore.Qt.OpenHandCursor if len(points) else QtCore.Qt.ArrowCursor)
 
     def show_cor_line(self, tilt: Degrees, pos: float) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical
