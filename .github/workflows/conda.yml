@@ -55,10 +55,6 @@ jobs:
         with:
           pixi-version: v0.59.0
 
-          cache: true
-          auth-host: prefix.dev
-          auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
-
       # - name: Cache Miniforge environment
       #   uses: actions/cache@v4
       #   id: cache-miniforge-environment
@@ -111,7 +107,7 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run: |
-          xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+          pixi run -e dev xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
