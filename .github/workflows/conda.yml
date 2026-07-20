@@ -126,10 +126,6 @@ jobs:
       - name: GUI Tests Screenshots Applitools
         if: github.event_name == 'pull_request'
         shell: bash -l {0}
-        env:
-          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
-          APPLITOOLS_BATCH_ID: ${{ github.sha }}
-          GITHUB_BRANCH_NAME: ${{ github.head_ref }}
         run: |
           pixi run -e dev test-screenshots-cpu
         timeout-minutes: 15
@@ -140,7 +136,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          coveralls --service=github
+          pixi run -e dev coveralls --service=github
 
       # Always label as unstable. Builds of stable releases can be manually labeled to 'main' once tested
       - name: publish 'unstable' package
