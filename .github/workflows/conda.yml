@@ -82,8 +82,6 @@ jobs:
       - name: List versions
         shell: bash -l {0}
         run: |
-          pixi list
-          pixi info
           pixi run -e dev python --version
           pixi run -e dev python -m pip list
 
