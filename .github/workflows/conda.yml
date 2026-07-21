@@ -77,11 +77,11 @@ jobs:
           sudo apt update -y
           sudo apt-get install -y xvfb libxcb* libxkb*
 
-      # - name: List versions
-      #   shell: bash -l {0}
-      #   run: |
-      #     mamba env list
-      #     python --version; mamba list ; pip list
+      - name: List versions
+        shell: bash -l {0}
+        run: |
+          pixi run -e dev python --version
+          pixi run -e dev python -m pip list
 
       - name: Yapf
         shell: bash -l {0}
