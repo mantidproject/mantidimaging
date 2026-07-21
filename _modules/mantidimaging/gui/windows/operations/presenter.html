@@ -529,7 +529,6 @@
 <span class="n">FLAT_FIELDING</span> <span class="o">=</span> <span class="s2">&quot;Flat-fielding&quot;</span>
 <span class="n">FLAT_FIELD_REGION</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]</span>
 
-<span class="n">CROP_COORDINATES</span> <span class="o">=</span> <span class="s2">&quot;Crop Coordinates&quot;</span>
 <span class="n">ROI_NORMALISATION</span> <span class="o">=</span> <span class="s2">&quot;ROI Normalisation&quot;</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -678,9 +677,7 @@
                 <span class="n">widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="n">row_id</span><span class="p">)</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">):</span>
                     <span class="n">widget</span><span class="o">.</span><span class="n">_handle_loaded_datasets_changed</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_filter</span><span class="p">()</span> <span class="o">==</span> <span class="n">CROP_COORDINATES</span> <span class="ow">and</span> <span class="s2">&quot;roi_field&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">on_stack_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">do_update_previews</span><span class="p">()</span></div>
 
@@ -717,12 +714,11 @@
         <span class="n">filter_widget_kwargs</span> <span class="o">=</span> <span class="n">register_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">auto_update_triggered</span><span class="o">.</span><span class="n">emit</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">CROP_COORDINATES</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_roi_field</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">ROI_NORMALISATION</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">ROI_NORMALISATION</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init_air_field</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setup_filter</span><span class="p">(</span><span class="n">filter_name</span><span class="p">,</span> <span class="n">filter_widget_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">on_stack_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_notification_dialog</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">link_before_after_histogram_scales</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">link_histograms</span><span class="p">())</span>
 
@@ -860,10 +856,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_operation_completed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">filter_name</span><span class="p">)</span>
 
                 <span class="n">selected_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_filter</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">selected_filter</span> <span class="o">==</span> <span class="n">CROP_COORDINATES</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
-                <span class="k">elif</span> <span class="n">selected_filter</span> <span class="o">==</span> <span class="n">FLAT_FIELDING</span> <span class="ow">and</span> <span class="n">negative_stacks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">selected_filter</span> <span class="o">==</span> <span class="n">FLAT_FIELDING</span> <span class="ow">and</span> <span class="n">negative_stacks</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_show_negative_values_error</span><span class="p">(</span><span class="n">negative_stacks</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">on_stack_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">sync_histogram_levels</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>

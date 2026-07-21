@@ -631,6 +631,19 @@
             <span class="c1"># Can happen if stack is closed while selected in the form</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="k">return</span> <span class="n">stack</span></div>
+
+
+<div class="viewcode-block" id="BaseFilter.on_stack_changed">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.on_stack_changed">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_stack_changed</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">],</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Optional hook for filters that need to refresh UI state when the selected stack changes.</span>
+
+<span class="sd">        :param filter_widget_kwargs: The widgets registered for the active filter.</span>
+<span class="sd">        :param stack: The newly selected stack, or None when selection is cleared.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span></div>
 </div>
 
 
