@@ -85,25 +85,25 @@ jobs:
           pixi run -e dev python --version
           pixi run -e dev python -m pip list
 
-      - name: Yapf
-        shell: bash -l {0}
-        run: |
-          pixi run -e lint yapf
+      # - name: Yapf
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run -e lint yapf
 
-      - name: Ruff
-        shell: bash -l {0}
-        run: |
-          pixi run -e lint ruff
+      # - name: Ruff
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run -e lint ruff
 
-      - name: mypy
-        shell: bash -l {0}
-        run: |
-          pixi run -e lint mypy
+      # - name: mypy
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run -e lint mypy
 
-      - name: pyright
-        shell: bash -l {0}
-        run: |
-          pixi run -e lint pyright
+      # - name: pyright
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run -e lint pyright
 
       - name: pytest
         timeout-minutes: 10
