@@ -54,6 +54,9 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.9.3
         with:
           pixi-version: v0.59.0
+          environments: >-
+            dev
+            lint
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
@@ -83,27 +86,27 @@ jobs:
         shell: bash -l {0}
         run: |
           pixi run -e dev python --version
-          pixi run -e dev python -m pip list
+          pixi list -e dev
 
       - name: Yapf
         shell: bash -l {0}
         run: |
-          pixi run -e lint yapf
+          pixi run yapf
 
       - name: Ruff
         shell: bash -l {0}
         run: |
-          pixi run -e lint ruff
+          pixi run ruff
 
       - name: mypy
         shell: bash -l {0}
         run: |
-          pixi run -e lint mypy
+          pixi run mypy
 
       - name: pyright
         shell: bash -l {0}
         run: |
-          pixi run -e lint pyright
+          pixi run pyright
 
       - name: pytest
         timeout-minutes: 10
@@ -122,14 +125,14 @@ jobs:
       - name: GUI Tests System
         shell: bash -l {0}
         run: |
-          pixi run -e dev test-system-cpu
+          pixi run test-system-cpu
         timeout-minutes: 30
 
       - name: GUI Tests Screenshots Applitools
         if: github.event_name == 'pull_request'
         shell: bash -l {0}
         run: |
-          pixi run -e dev test-screenshots-cpu
+          pixi run test-screenshots-cpu
         timeout-minutes: 15
 
       - name: Coveralls
@@ -138,7 +141,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pixi run -e dev coveralls --service=github
+          pixi run -e dev coveralls
 
       # Always label as unstable. Builds of stable releases can be manually labeled to 'main' once tested
       - name: publish 'unstable' package
