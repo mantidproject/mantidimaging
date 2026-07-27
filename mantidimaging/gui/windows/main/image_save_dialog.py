@@ -25,9 +25,9 @@ def sort_by_tomo_and_recon(stack_id: StackId):
 
 
 class ImageSaveDialog(BaseDialogView):
-    selected_stack = uuid.UUID | None
+    selected_stack: uuid.UUID | None
 
-    def __init__(self, parent, stack_list):
+    def __init__(self, parent, stack_list, selected_stack_uuid: uuid.UUID | None = None):
         super().__init__(parent, 'gui/ui/image_save_dialog.ui')
 
         self.browseButton.clicked.connect(lambda: select_directory(self.savePath, "Browse"))
@@ -50,6 +50,9 @@ class ImageSaveDialog(BaseDialogView):
             self.stack_uuids, user_friendly_names = zip(*user_friendly_stack_list, strict=True)
 
             self.stackNames.addItems(user_friendly_names)
+
+            if selected_stack_uuid in self.stack_uuids:
+                self.stackNames.setCurrentIndex(self.stack_uuids.index(selected_stack_uuid))
 
         self.selected_stack = None
 

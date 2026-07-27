@@ -43,3 +43,29 @@ class SaveDialogQtTest(unittest.TestCase):
         self.assertEqual(mwsd.stack_uuids[0], stack_list[4].id)
         # the Tomo stack is 2nd choice
         self.assertEqual(mwsd.stack_uuids[1], stack_list[3].id)
+
+    def test_init_uses_selected_stack_as_default(self):
+        stack_list = [
+            StackId(uuid.uuid4(), "Stack 1"),
+            StackId(uuid.uuid4(), "Stack 2"),
+            StackId(uuid.uuid4(), "Stack 3"),
+        ]
+        selected_stack_id = stack_list[1].id
+        mwsd = ImageSaveDialog(None, stack_list, selected_stack_uuid=selected_stack_id)
+
+        self.assertEqual(mwsd.stackNames.currentIndex(), 1)
+        self.assertEqual(mwsd.stack_uuids[mwsd.stackNames.currentIndex()], selected_stack_id)
+
+    def test_init_falls_back_to_existing_default_when_selected_stack_not_present(self):
+        stack_list = [
+            StackId(uuid.uuid4(), "Stack 1"),
+            StackId(uuid.uuid4(), "Stack 2"),
+            StackId(uuid.uuid4(), "Stack 3"),
+            StackId(uuid.uuid4(), "Stack Tomo"),
+            StackId(uuid.uuid4(), "Stack Recon"),
+        ]
+        mwsd = ImageSaveDialog(None, stack_list, selected_stack_uuid=uuid.uuid4())
+
+        # Existing behavior defaults to Recon/Tomo preference sorting.
+        self.assertEqual(mwsd.stack_uuids[0], stack_list[4].id)
+        self.assertEqual(mwsd.stackNames.currentIndex(), 0)
