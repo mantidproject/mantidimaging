@@ -252,7 +252,9 @@ description = "Run screenshot tests (GPU)"
 mypy-base = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS", description = "Run mypy type checks (fail on error)" }
 pyright-base = { cmd = "python -m pyright", description = "Run pyright type checks (fail on error)" }
 yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS", description = "Check code formatting with yapf (fail on error)" }
+yapf-staged-base = { cmd = "python -m yapf --parallel --diff", description = "Check formatting of staged files with yapf (for pre-commit)" }  
 ruff-base = { cmd = "ruff check $SOURCE_DIRS", description = "Run ruff linter (fail on error)" }
+ruff-staged-base = { cmd = "ruff check", description = "Run ruff on staged files (for pre-commit)" }
 
 # Base linting tasks - CONTINUE ON ERROR (with || true)
 mypy-base-continue = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true", description = "Run mypy type checks (continue on error)" }
@@ -268,6 +270,8 @@ build-docs-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\",
 build-docs-headless-base = { cmd = "python -c 'import shutil; shutil.rmtree(\"docs/api\", ignore_errors=True)' && sphinx-apidoc -f -M -e -T -d 3 mantidimaging '**/test' '**/test_helpers' '**/eyes_tests' '**/tests' 'mantidimaging/ipython' -o docs/api/ && sphinx-build -b html docs/ docs/build/html", cwd = ".", env = { QT_QPA_PLATFORM = "offscreen" }, description = "Base task to build Sphinx documentation in headless mode" }
 serve-docs-base = { cmd = "python -m http.server 8000", cwd = "docs/build/html", description = "Base task to serve built documentation on http://localhost:8000" }
 release-notes-base = { cmd = "python setup.py release_notes", description = "Base task to generate release notes" }
+mypy-staged-base = { cmd = "python -m mypy --ignore-missing-imports", description = "Run mypy on staged files (for pre-commit)" }  
+pyright-staged-base = { cmd = "python -m pyright", description = "Run pyright on staged files (for pre-commit)" }  
 check-licenses = { cmd = "python -m CheckLicensesInFiles" }
 check-release-notes-format = { cmd = "python -m CheckReleaseNoteFormat" }
 

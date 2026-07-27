@@ -12,7 +12,6 @@ repos:
         entry: pixi run -e dev check-licenses
         language: system
         types: [python]
-        files: ^mantidimaging/
 
       - id: check-release-notes-format
         name: Check Release Notes Format
@@ -24,38 +23,37 @@ repos:
       - id: yapf
         name: yapf
         description: Checks that all files pass yapf checks
-        entry: pixi run -e dev yapf
+        entry: pixi run -e lint yapf-staged-base
         language: system
         types: [python]
         files: ^mantidimaging/
-        pass_filenames: false
+        pass_filenames: true
 
       - id: mypy
         name: mypy
         description: Checks that all files pass mypy checks
-        entry: pixi run -e dev mypy
+        entry: pixi run -e dev mypy-staged-base
         language: system
         types: [python]
         files: ^mantidimaging/
-        pass_filenames: false
+        pass_filenames: true
 
       - id: pyright
         name: pyright
         description: Checks that all files pass pyright checks
-        entry: pixi run -e dev pyright
+        entry: pixi run -e dev pyright-staged-base
         language: system
         types: [python]
-        files: ^mantidimaging/
-        pass_filenames: false
+        pass_filenames: true
 
       - id: ruff
         name: ruff
         description: Checks that all files pass ruff checks
-        entry: pixi run -e dev ruff
+        entry: pixi run -e lint ruff-staged-base
         language: system
         types: [python]
         files: ^mantidimaging/
-        pass_filenames: false
+        pass_filenames: true
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.0.0
