@@ -21,6 +21,7 @@ dev = ["runtime", "runtime-cpu", "dev", "test", "lint"]
 dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
 build-cpu = ["runtime", "runtime-cpu", "build"]
 build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
+ci = ["runtime", "runtime-cpu", "dev", "test", "lint", "ci"]
 
 # Linting packages
 [feature.lint.dependencies]
@@ -46,7 +47,7 @@ parameterized = "0.9.*"
 [feature.dev.dependencies]
 gitpython = "3.1.*"
 coverage = ">=7.0,<7.5"
-coveralls = "4.0.*"
+coveralls = "4.1.*"
 pyinstaller = "6.14.*"
 make = "==4.3"
 pre-commit = "3.5.*"
@@ -146,6 +147,10 @@ SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 APPLITOOLS_API_KEY = "local"
 CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
 
+# Set environment variables for CI environment during environment activation
+[feature.ci.activation.env]
+QT_QPA_PLATFORM = "offscreen"
+
 # Set environment variables for build environment during environment activation
 [feature.build.activation.env]
 UPLOAD_USER = "mantidimaging"
@@ -196,6 +201,20 @@ cmd = [
 env = { QT_QPA_PLATFORM = "offscreen" }
 description = "Run screenshot tests (Linux) without GUI display"
 
+[target.linux-64.tasks.test-screenshots-ci-base]
+cmd = [
+    "bash",
+    "-c",
+    """
+    mkdir -p screenshot_tests_output
+    echo "Screenshots directory: screenshot_tests_output"
+    APPLITOOLS_IMAGE_DIR=screenshot_tests_output pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
+    echo "Screenshots written to screenshot_tests_output"
+    """,
+]
+env = { QT_QPA_PLATFORM = "offscreen" }
+description = "Run screenshot tests (Linux) in CI mode (requires APPLITOOLS_API_KEY)"
+
 [target.win-64.tasks.test-system-base]
 cmd = [
     "cmd",
@@ -241,6 +260,10 @@ description = "Run system tests with GUI display (GPU)"
 [tasks.test-screenshots-cpu]
 depends-on = [{ task = "test-screenshots-base", environment = "dev" }]
 description = "Run screenshot tests (CPU)"
+
+[tasks.test-screenshots-cpu-ci]
+depends-on = [{ task = "test-screenshots-ci-base", environment = "ci" }]
+description = "Run screenshot tests in CI (CPU) - CI mode (requires APPLITOOLS_API_KEY)"
 
 [tasks.test-screenshots-gpu]
 depends-on = [{ task = "test-screenshots-base", environment = "dev-gpu" }]

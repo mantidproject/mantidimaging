@@ -31,25 +31,6 @@ jobs:
           echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
         shell: bash
 
-      # - name: Cache Miniforge and Pip packages
-      #   uses: actions/cache@v4
-      #   env:
-      #     CACHE_NUMBER: 0
-      #   with:
-      #     path: |
-      #       ~/conda_pkgs_dir
-      #       ~/.cache/pip
-      #     key: ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
-
-      # - name: Setup Miniforge
-      #   uses: conda-incubator/setup-miniconda@v4
-      #   with:
-      #     miniforge-version: latest
-      #     activate-environment: mantidimaging-dev
-      #     auto-activate: false
-      #     use-mamba: true
-      #     conda-remove-defaults: true
-
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.9.3
         with:
@@ -57,24 +38,9 @@ jobs:
           environments: >-
             dev
             lint
+            ci
           cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-
-      # - name: Cache Miniforge environment
-      #   uses: actions/cache@v4
-      #   id: cache-miniforge-environment
-      #   env:
-      #     CACHE_NUMBER: 0
-      #   with:
-      #     path: ~/miniconda3/envs/mantidimaging-dev
-      #     key: ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml', 'setup.py')}}
-
-      # - name: Mantid Imaging developer dependencies
-      #   if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
-      #   shell: bash -l {0}
-      #   run: |
-      #     conda deactivate
-      #     python3 ./setup.py create_dev_env
 
       - name: Other dependencies
         shell: bash -l {0}
@@ -131,8 +97,12 @@ jobs:
       - name: GUI Tests Screenshots Applitools
         if: github.event_name == 'pull_request'
         shell: bash -l {0}
+        env:
+          APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+          APPLITOOLS_BATCH_ID: ${{ github.sha }}
+          GITHUB_BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          pixi run test-screenshots-cpu
+          pixi run test-screenshots-cpu-ci
         timeout-minutes: 15
 
       - name: Coveralls
