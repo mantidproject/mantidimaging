@@ -1,0 +1,15 @@
+mantidimaging.core.operations.flat\_fielding package
+====================================================
+
+.. automodule:: mantidimaging.core.operations.flat_fielding
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.flat_fielding.flat_fielding

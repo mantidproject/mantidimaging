@@ -1,0 +1,16 @@
+mantidimaging.gui.windows.stack\_rename\_dialog package
+=======================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_rename_dialog
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.stack_rename_dialog.presenter
+   mantidimaging.gui.windows.stack_rename_dialog.view

@@ -1,0 +1,7 @@
+mantidimaging.core.data.geometry module
+=======================================
+
+.. automodule:: mantidimaging.core.data.geometry
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,15 @@
+mantidimaging.gui.widgets.gif\_parameters package
+=================================================
+
+.. automodule:: mantidimaging.gui.widgets.gif_parameters
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget

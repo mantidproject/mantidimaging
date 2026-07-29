@@ -1,0 +1,17 @@
+mantidimaging.gui.windows.geometry package
+==========================================
+
+.. automodule:: mantidimaging.gui.windows.geometry
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.gui.windows.geometry.model
+   mantidimaging.gui.windows.geometry.presenter
+   mantidimaging.gui.windows.geometry.view

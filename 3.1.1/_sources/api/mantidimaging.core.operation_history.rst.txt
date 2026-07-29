@@ -1,0 +1,16 @@
+mantidimaging.core.operation\_history package
+=============================================
+
+.. automodule:: mantidimaging.core.operation_history
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operation_history.const
+   mantidimaging.core.operation_history.operations

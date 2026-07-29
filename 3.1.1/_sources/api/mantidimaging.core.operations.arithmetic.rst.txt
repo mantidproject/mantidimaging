@@ -1,0 +1,15 @@
+mantidimaging.core.operations.arithmetic package
+================================================
+
+.. automodule:: mantidimaging.core.operations.arithmetic
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 3
+
+   mantidimaging.core.operations.arithmetic.arithmetic

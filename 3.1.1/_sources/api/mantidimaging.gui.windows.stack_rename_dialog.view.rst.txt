@@ -1,0 +1,7 @@
+mantidimaging.gui.windows.stack\_rename\_dialog.view module
+===========================================================
+
+.. automodule:: mantidimaging.gui.windows.stack_rename_dialog.view
+   :members:
+   :show-inheritance:
+   :undoc-members:

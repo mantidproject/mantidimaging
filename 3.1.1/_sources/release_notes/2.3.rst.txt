@@ -1,0 +1,100 @@
+Mantid Imaging 2.3
+==================
+
+This release brings some significant new features:
+
+Bad data indicators
+   Show pixel values that can cause issues during reconstruction, NaNs (not a number) caused by missing data or invalid math operations and non-positive values caused by noise or issues with dark frame subtraction.
+
+Beam hardening correction
+  Mantid Imaging now implements a linearization correction to compensate for the beam hardening effect.
+
+Dataset side-bar
+   The main window now shows a tree-view of loaded datasets and their stacks. Internally Mantid Imaging now has a more structured view of the loaded data, which will allow further user interface improvements.
+
+User interface improvements
+   The parameter controls in operations and reconstruction windows now have finer step sizes and better defaults. Auto preview in the reconstruction window can be disabled.
+
+There have also been many smaller changes and fixes which are listed below.
+
+New Features
+------------
+
+- `#1044 <https://github.com/mantidproject/mantidimaging/issues/1044>`_: Command line argument to load a dataset
+- `#1023 <https://github.com/mantidproject/mantidimaging/issues/1023>`_: Switch from Sarepy to Algotom
+- `#1049 <https://github.com/mantidproject/mantidimaging/issues/1049>`_: NeXus Loader: 180deg images
+- `#1167 <https://github.com/mantidproject/mantidimaging/issues/1167>`_: Bad data indicator icons
+- `#1185 <https://github.com/mantidproject/mantidimaging/issues/1185>`_: Bad data overlays
+- `#1168 <https://github.com/mantidproject/mantidimaging/issues/1168>`_: Dataset tree view
+- `#1202 <https://github.com/mantidproject/mantidimaging/issues/1202>`_: NaN Removal filter - replace with median
+- `#1205 <https://github.com/mantidproject/mantidimaging/issues/1205>`_: Linearisation correction for beam hardening
+- `#1197 <https://github.com/mantidproject/mantidimaging/issues/1197>`_: Dataset Tree View: Delete image stack
+- `#1197 <https://github.com/mantidproject/mantidimaging/issues/1197>`_: Dataset Tree View : Show tab from treeview
+- `#1200 <https://github.com/mantidproject/mantidimaging/issues/1200>`_: Default save option set to float32
+- `#1235 <https://github.com/mantidproject/mantidimaging/issues/1235>`_: Improvements to input value defaults and spin box step sizes
+- `#1230 <https://github.com/mantidproject/mantidimaging/issues/1230>`_: Update CIL to 21.3 reducing memory requirements
+- `#1191 <https://github.com/mantidproject/mantidimaging/issues/1191>`_: Loading 180 should only show datasets
+- `#1279 <https://github.com/mantidproject/mantidimaging/issues/1279>`_: Add auto update checkbox option to turn off live reconstruction
+- `#1273 <https://github.com/mantidproject/mantidimaging/issues/1273>`_: Move sinograms into the Dataset
+- `#1220 <https://github.com/mantidproject/mantidimaging/issues/1220>`_: Make reconstruction window side bar scrollable for smaller screens
+- `#1280 <https://github.com/mantidproject/mantidimaging/issues/1280>`_: Don't display full file path for loaded images in the tree view
+
+
+Fixes
+-----
+
+- `#1138 <https://github.com/mantidproject/mantidimaging/issues/1138>`_: Improve version number handling
+- `#1134 <https://github.com/mantidproject/mantidimaging/issues/1134>`_: NeXus Loader: OSError
+- `#1178 <https://github.com/mantidproject/mantidimaging/issues/1178>`_: --operation argument sometimes opens wrong operation
+- `#1117 <https://github.com/mantidproject/mantidimaging/issues/1117>`_: Median operation preserves NaNs
+- `#1151 <https://github.com/mantidproject/mantidimaging/issues/1151>`_: IndexError with sinograms and stripe tools
+- `#1174 <https://github.com/mantidproject/mantidimaging/issues/1174>`_: TypeError in link_before_after_histogram_scales
+- `#1161 <https://github.com/mantidproject/mantidimaging/issues/1161>`_: Remove run_ring_removal argument from Ring Removal operation and always run filter
+- `#1226 <https://github.com/mantidproject/mantidimaging/issues/1226>`_: AttributeError when trying to open reconstruction auto colour dialog
+- `#1236 <https://github.com/mantidproject/mantidimaging/issues/1236>`_: Aspect ratio not preserved in COR inspector or operations window
+- `#1162 <https://github.com/mantidproject/mantidimaging/issues/1162>`_: Raise exceptions when invalid parameter values are passed to filter functions
+- `#1248 <https://github.com/mantidproject/mantidimaging/issues/1248>`_: Rebin operations not working for small image dimensions
+- `#1190 <https://github.com/mantidproject/mantidimaging/issues/1190>`_: Add recon item to right part of tree view
+- `#1239 <https://github.com/mantidproject/mantidimaging/issues/1239>`_: 180 warning when applying ring removal to recon
+- `#1297 <https://github.com/mantidproject/mantidimaging/issues/1297>`_: Auto colour dialog not working in compare images
+- `#1292 <https://github.com/mantidproject/mantidimaging/issues/1292>`_: Attribute error if apply filter after closing and re-opening Operations window
+- `#1294 <https://github.com/mantidproject/mantidimaging/issues/1294>`_: Dataset Tree View: Allow for deleting recons
+- `#1289 <https://github.com/mantidproject/mantidimaging/issues/1289>`_: Trigger recon redraws when stack is modified
+- `#1299 <https://github.com/mantidproject/mantidimaging/issues/1299>`_: CIL: when reconstructing from sinograms use right dimensions and ordering
+- `#1305 <https://github.com/mantidproject/mantidimaging/issues/1305>`_: Delete recon group from tree view
+- `#1285 <https://github.com/mantidproject/mantidimaging/issues/1285>`_: Error when load two 180 stacks
+- `#1278 <https://github.com/mantidproject/mantidimaging/issues/1278>`_: It should not be possible to attempt loading 180 projections to a MixedDataset
+- `#1311 <https://github.com/mantidproject/mantidimaging/issues/1311>`_: Operation applied to 180 twice
+- `#1310 <https://github.com/mantidproject/mantidimaging/issues/1310>`_: Disable Auto color menu item when no image shown
+- `#1295 <https://github.com/mantidproject/mantidimaging/issues/1295>`_: Failed recon still increments recon counter
+- `#1313 <https://github.com/mantidproject/mantidimaging/issues/1313>`_: Restore metadata when choosing original
+- `#1324 <https://github.com/mantidproject/mantidimaging/issues/1324>`_: Bad data overlay not showing with large files
+
+
+Developer Changes
+-----------------
+
+- `#1022 <https://github.com/mantidproject/mantidimaging/issues/1022>`_: Switch to use Mambaforge
+- `#1085 <https://github.com/mantidproject/mantidimaging/issues/1085>`_: Fix rotation of images in GUI tests
+- `#1045 <https://github.com/mantidproject/mantidimaging/issues/1045>`_: Command line argument to open Operation or Reconstruction windows
+- `#1154 <https://github.com/mantidproject/mantidimaging/issues/1154>`_: collections.abc is deprecated
+- `#1155 <https://github.com/mantidproject/mantidimaging/issues/1155>`_: DeprecationWarning an integer is required self.progressBar.setValue
+- `#1153 <https://github.com/mantidproject/mantidimaging/issues/1153>`_: Remove package_name argument from load_filter_packages
+- `#1172 <https://github.com/mantidproject/mantidimaging/issues/1172>`_: Add MIMiniImageView widget
+- `#1070 <https://github.com/mantidproject/mantidimaging/issues/1070>`_: Remove pytest repeat
+- `#1182 <https://github.com/mantidproject/mantidimaging/issues/1182>`_: Handle exception in _post_filter
+- `#1173 <https://github.com/mantidproject/mantidimaging/issues/1173>`_: Sometimes tests open many operations windows
+- `#860 <https://github.com/mantidproject/mantidimaging/issues/860>`_: Clean up super calls to use python 3 syntax
+- `#1181 <https://github.com/mantidproject/mantidimaging/issues/1181>`_: Version check update command uses mamba if available
+- `#1212 <https://github.com/mantidproject/mantidimaging/issues/1212>`_: Model Change: Put everything in datasets
+- `#1245 <https://github.com/mantidproject/mantidimaging/issues/1245>`_: Remove empty init methods from test classes
+- `#1251 <https://github.com/mantidproject/mantidimaging/issues/1251>`_: System tests: test_correlate ValueError
+- `#1259 <https://github.com/mantidproject/mantidimaging/issues/1259>`_: Update license year in code files and add pre-commit check
+- `#1243 <https://github.com/mantidproject/mantidimaging/issues/1243>`_ `#1276 <https://github.com/mantidproject/mantidimaging/issues/1276>`_: Stack selector based on datasets
+- `#1184 <https://github.com/mantidproject/mantidimaging/issues/1184>`_: Make more use of QTest in gui testing
+
+
+2.3.1
+-----
+
+- `#1332 <https://github.com/mantidproject/mantidimaging/issues/1332>`_: Load dataset dialog wont accept non standard names
