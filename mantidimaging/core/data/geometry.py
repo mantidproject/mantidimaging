@@ -96,6 +96,19 @@ class Geometry(AcquisitionGeometry):
         cor = (gradient * slice_idx) + self.cor.value
         return ScalarCoR(cor)
 
+    def set_cor_at_slice_index(self, slice_idx: int, cor: ScalarCoR) -> None:
+        """
+        Sets geometry.cor from a COR value measured at a specific slice index.
+
+        Back-calculatethe COR at slice 0 so that get_cor_at_slice_index(slice_idx)
+        returns the given cor value at the given slice_idx when the tilt is taken into account.
+
+        :param slice_idx: The slice index the COR was measured at
+        :param cor: The COR value at that slice index
+        """
+        gradient = -tan(radians(self.tilt))
+        self.cor = ScalarCoR(cor.value - gradient * slice_idx)
+
     def get_all_cors(self) -> list[ScalarCoR]:
         """
         Returns all cors across How many cors will be generated,

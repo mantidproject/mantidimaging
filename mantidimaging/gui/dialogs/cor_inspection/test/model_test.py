@@ -2,10 +2,12 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import contextlib
 import unittest
 from unittest.mock import Mock, patch
 
 import numpy.testing as npt
+from parameterized import parameterized
 
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.dialogs.cor_inspection import CORInspectionDialogModel
@@ -108,6 +110,26 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         self.assertEqual(m.centre_value, 75)
         self.assertEqual(m.step, 25)
 
+    @parameterized.expand([
+        ("success", None),
+        ("failure", RuntimeError("recon failed")),
+    ])
+    def test_recon_cor_preview_restores_geometry_on_(self, _name, recon_side_effect):
+        images = generate_images_with_geometry(360)
+        slice_idx = 5
+        # get CoR before model construction to match pre-dialog geometry state
+        original_cor = images.geometry.get_cor_at_slice_index(slice_idx)
+        recon_parameters = ReconstructionParameters("FBP_CUDA", "ram-lak")
+
+        model = CORInspectionDialogModel(images, slice_idx, ScalarCoR(20), recon_parameters, False)
+        model.reconstructor = Mock()
+        model.reconstructor.single_sino.side_effect = recon_side_effect
+
+        with contextlib.suppress(RuntimeError):
+            model.recon_preview(ImageType.LESS)
+
+        self.assertEqual(images.geometry.get_cor_at_slice_index(slice_idx).value, original_cor.value)
+
     @patch('mantidimaging.gui.dialogs.cor_inspection.model.replace')
     def test_recon_iters_preview(self, replace_mock):
         images = generate_images_with_geometry(360)
@@ -117,3 +139,22 @@ class CORInspectionDialogModelTest(unittest.TestCase):
         m.recon_preview(ImageType.CURRENT)
         replace_mock.assert_called_once_with(m.recon_params, num_iter=100)
         m.reconstructor.single_sino.assert_called_once_with(m.images, m.slice_idx, replace_mock.return_value)
+
+    def test_recon_cor_preview_does_not_inflate_cor_with_tilt(self):
+        slice_idx = 5
+        cor_at_slice = ScalarCoR(20.0)
+        tilt = 2.0  # extreme tilt so gradient * slice_idx is measurable reflecting how #3158 was first discovered.
+
+        images = generate_images_with_geometry(360)
+        images.geometry.tilt = tilt
+
+        recon_params = ReconstructionParameters('FBP_CUDA', 'ram-lak')
+        model = CORInspectionDialogModel(images, slice_idx, cor_at_slice, recon_params, False)
+        model.reconstructor = Mock()
+
+        geometry = images.geometry
+        with patch.object(geometry, "set_cor_at_slice_index", wraps=geometry.set_cor_at_slice_index) as mock_set_cor:
+            model.recon_preview(ImageType.CURRENT)
+
+        preview_cor = mock_set_cor.call_args_list[0].args[1]
+        self.assertAlmostEqual(preview_cor.value, cor_at_slice.value, places=6)

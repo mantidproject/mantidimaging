@@ -117,6 +117,10 @@ class CorTiltDataModel:
         return [float(p.cor) for p in self._points]
 
     @property
+    def points(self) -> list[Point]:
+        return list(self._points)
+
+    @property
     def gradient(self) -> Slope:
         if self._cached_gradient is not None:
             return Slope(self._cached_gradient)
