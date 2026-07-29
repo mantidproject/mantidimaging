@@ -1,9 +1,9 @@
 schema_version: 1
 
 context:
-  version_tag: ${{ git.latest_tag(".") | default("0.0.0")}} # ratter-build --experimental
-  commit_number: ${{ git.latest_tag_distance(".")  | default("0")}} # ratter-build>=0.65 --experimental
-  version: ${{ version_tag + commit_number }}
+  version_tag: ${{ git.latest_tag(".") | default("0.0.0")}} # rattler-build --experimental
+  commit_number: ${{ git.latest_tag_distance(".") | default("0")}} # ratter-build>=0.65 --experimental
+  version: ${{ version_tag ~ (".post" ~ commit_number if commit_number > 0 else "") }}
 
 package:
   name: mantidimaging
