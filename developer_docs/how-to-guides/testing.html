@@ -604,7 +604,7 @@ See the Pytest docs for additional <a class="reference external" href="https://d
 <h2>Pre-commit<a class="headerlink" href="#pre-commit" title="Link to this heading">#</a></h2>
 <p>Mantid Imaging uses <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to run pre-commit hooks, ensuring code quality and consistency before changes are committed. These hooks include tasks such as linting, type checks, and formatting.</p>
 <p>To enable pre-commit hooks, you must manually install them by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">install</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pixi</span> <span class="n">run</span> <span class="o">-</span><span class="n">e</span> <span class="n">dev</span> <span class="n">setup</span><span class="o">-</span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span>
 </pre></div>
 </div>
 <p>Once installed, the hooks will execute automatically with every commit.</p>
@@ -617,7 +617,7 @@ See the Pytest docs for additional <a class="reference external" href="https://d
 <section id="unit-testing">
 <h2>Unit testing<a class="headerlink" href="#unit-testing" title="Link to this heading">#</a></h2>
 <p>Unit tests can be run using <a class="reference external" href="https://docs.pytest.org/">pytest</a>, e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">pytest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pixi</span> <span class="n">run</span> <span class="n">test</span><span class="o">-</span><span class="n">base</span>
 </pre></div>
 </div>
 <p>For options such as running a subset of tests, see <a class="reference external" href="https://docs.pytest.org/en/stable/usage.html">PyTest Docs</a>.</p>
@@ -627,18 +627,20 @@ See the Pytest docs for additional <a class="reference external" href="https://d
 <p>Mantid Imaging uses several tools to ensure high code quality and consistency:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://mypy-lang.org/">mypy</a>: Enforces type correctness to catch potential type errors early.</p></li>
+<li><p><a class="reference external" href="https://github.com/microsoft/pyright">pyright</a>: Performs fast static type analysis with advanced type inference to identify potential type issues and improve type safety.</p></li>
 <li><p><a class="reference external" href="https://beta.ruff.rs/docs/">ruff</a>: Checks for common syntax and style issues to maintain clean, readable code.</p></li>
 <li><p><a class="reference external" href="https://github.com/google/yapf">yapf</a>: Formats code according to PEP 8 standards, ensuring consistent style.</p></li>
 </ul>
 <p>These tools can be run collectively with:</p>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">check</span></code>: Runs all static analysis tools together for a comprehensive check.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pixi</span> <span class="pre">run</span> <span class="pre">lint-all</span></code>: Runs all static analysis tools together for a comprehensive check.</p></li>
 </ul>
 <p>Or individually for specific tasks:</p>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">mypy</span></code>: Perform static type checks.</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">ruff</span></code>: Lint the code for syntax and style issues.</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">yapf</span></code>: Automatically format code according to PEP 8.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pixi</span> <span class="pre">run</span> <span class="pre">mypy</span></code>: Perform static type checks.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pixi</span> <span class="pre">run</span> <span class="pre">pyright</span></code>: Run Pyright’s static type analysis with additional type inference checks.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pixi</span> <span class="pre">run</span> <span class="pre">ruff</span></code>: Lint the code for syntax and style issues.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">pixi</span> <span class="pre">run</span> <span class="pre">yapf</span></code>: Automatically format code according to PEP 8.</p></li>
 </ul>
 </section>
 <section id="gui-screenshot-testing">
