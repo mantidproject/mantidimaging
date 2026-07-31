@@ -1,0 +1,1 @@
+#3127: Fix IndexError in spectrum viewer when dataset contains no NaNs
