@@ -1,11 +1,16 @@
 [
   {
-    "name": "v3.1.0 (dev)",
-    "version": "3.1.0a1",
+    "name": "v3.1.1 (dev)",
+    "version": "3.1.1a1",
     "url": "/mantidimaging/"
   },
   {
-    "name": "v3.1.0 (stable)",
+    "name": "v3.1.1 (stable)",
+    "version": "3.1.1",
+    "url": "/mantidimaging/3.1.1"
+  },
+  {
+    "name": "v3.1.0",
     "version": "3.1.0",
     "url": "/mantidimaging/3.1.0"
   },
