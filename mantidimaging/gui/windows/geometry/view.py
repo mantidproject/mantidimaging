@@ -4,8 +4,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from PyQt5.QtCore import pyqtSignal
-
-import os
 from uuid import UUID
 
 from PyQt5.QtWidgets import (
@@ -24,17 +22,10 @@ from PyQt5.QtWidgets import (
     QStyle,
 )
 
-import matplotlib
 from matplotlib import pyplot
 from matplotlib.figure import Figure
 
 from mantidimaging.core.data.geometry import GeometryType
-
-if os.environ.get('QT_QPA_PLATFORM') == 'offscreen':
-    matplotlib.use('Agg')
-else:
-    matplotlib.use('Qt5Agg')
-
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView

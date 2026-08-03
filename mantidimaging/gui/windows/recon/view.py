@@ -68,7 +68,6 @@ class ReconstructWindowView(BaseMainWindowView):
 
     reconTab: QWidget
 
-    maxProjAngleSpinBox: QDoubleSpinBox
     algorithmNameComboBox: QComboBox
     filterNameComboBox: QComboBox
     numIterSpinBox: QSpinBox
@@ -233,8 +232,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.stackSelector.stack_selected_uuid.connect(lambda: self.presenter.notify(PresN.SET_CURRENT_STACK))
         self.stackSelector.select_eligible_stack()
 
-        self.maxProjAngleSpinBox.valueChanged.connect(
-            lambda: self.presenter.notify(PresN.RECONSTRUCT_PREVIEW_SLICE))  # type: ignore
         self.algorithmNameComboBox.currentTextChanged.connect(
             lambda: self.presenter.notify(PresN.ALGORITHM_CHANGED))  # type: ignore
         self.presenter.notify(PresN.ALGORITHM_CHANGED)
@@ -420,10 +417,6 @@ class ReconstructWindowView(BaseMainWindowView):
         self.resultSlopeSpinBox.setValue(value)
 
     @property
-    def max_proj_angle(self) -> float:
-        return self.maxProjAngleSpinBox.value()
-
-    @property
     def algorithm_name(self) -> str:
         return self.algorithmNameComboBox.currentText()
 
@@ -502,7 +495,6 @@ class ReconstructWindowView(BaseMainWindowView):
                                         non_negative=self.non_negative,
                                         stochastic=self.stochastic,
                                         projections_per_subset=self.projections_per_subset,
-                                        max_projection_angle=self.max_proj_angle,
                                         regularisation_percent=self.regularisation_percent,
                                         regulariser=self.regulariser,
                                         beam_hardening_coefs=self.beam_hardening_coefs)
