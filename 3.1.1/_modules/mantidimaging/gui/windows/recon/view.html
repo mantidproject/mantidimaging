@@ -562,7 +562,6 @@
 
     <span class="n">reconTab</span><span class="p">:</span> <span class="n">QWidget</span>
 
-    <span class="n">maxProjAngleSpinBox</span><span class="p">:</span> <span class="n">QDoubleSpinBox</span>
     <span class="n">algorithmNameComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
     <span class="n">filterNameComboBox</span><span class="p">:</span> <span class="n">QComboBox</span>
     <span class="n">numIterSpinBox</span><span class="p">:</span> <span class="n">QSpinBox</span>
@@ -727,8 +726,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">stack_selected_uuid</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">SET_CURRENT_STACK</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stackSelector</span><span class="o">.</span><span class="n">select_eligible_stack</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxProjAngleSpinBox</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">RECONSTRUCT_PREVIEW_SLICE</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">ALGORITHM_CHANGED</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">PresN</span><span class="o">.</span><span class="n">ALGORITHM_CHANGED</span><span class="p">)</span>
@@ -971,10 +968,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resultSlopeSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">max_proj_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxProjAngleSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">algorithm_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
@@ -1055,7 +1048,6 @@
                                         <span class="n">non_negative</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">non_negative</span><span class="p">,</span>
                                         <span class="n">stochastic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stochastic</span><span class="p">,</span>
                                         <span class="n">projections_per_subset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">projections_per_subset</span><span class="p">,</span>
-                                        <span class="n">max_projection_angle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_proj_angle</span><span class="p">,</span>
                                         <span class="n">regularisation_percent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regularisation_percent</span><span class="p">,</span>
                                         <span class="n">regulariser</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regulariser</span><span class="p">,</span>
                                         <span class="n">beam_hardening_coefs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">beam_hardening_coefs</span><span class="p">)</span></div>
