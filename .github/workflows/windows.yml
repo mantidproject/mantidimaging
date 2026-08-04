@@ -22,80 +22,90 @@ jobs:
       CONDA_OVERRIDE_CUDA: 11.8
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # Needed to get tags so that git describe works during package build
           fetch-depth: "0"
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
-        shell: bash
+      # - name: Get Date
+      #   id: get-date
+      #   run: |
+      #     echo "date=$(/bin/date -u "+%Y%V")" >> $GITHUB_OUTPUT
+      #   shell: bash
 
-      - name: Cache Miniforge and Pip packages
-        uses: actions/cache@v5
-        env:
-          CACHE_NUMBER: 0
+      # - name: Cache Miniforge and Pip packages
+      #   uses: actions/cache@v5
+      #   env:
+      #     CACHE_NUMBER: 0
+      #   with:
+      #     path: |
+      #       ~/conda_pkgs_dir
+      #       ~/.cache/pip
+      #     key: ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      # - name: Setup Miniforge
+      #   uses: conda-incubator/setup-miniconda@v4
+      #   with:
+      #     miniforge-version: latest
+      #     activate-environment: mantidimaging-dev
+      #     auto-activate: false
+      #     use-mamba: true
+      #     conda-remove-defaults: true
+
+      # - name: Cache Miniforge environment
+      #   uses: actions/cache@v5
+      #   id: cache-miniforge-environment
+      #   env:
+      #     CACHE_NUMBER: 0
+      #   with:
+      #     path: ${{env.CONDA}}/envs/mantidimaging-dev
+      #     key: ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
         with:
-          path: |
-            ~/conda_pkgs_dir
-            ~/.cache/pip
-          key: ${{runner.os}}-condapkg-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
+          pixi-version: v0.59.0
+          environments: >-
+            dev
+            lint
+          cache: false #enable this after linux testing workflow migration to pixi is merged
+          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
-      - name: Setup Miniforge
-        uses: conda-incubator/setup-miniconda@v4
-        with:
-          miniforge-version: latest
-          activate-environment: mantidimaging-dev
-          auto-activate: false
-          use-mamba: true
-          conda-remove-defaults: true
+      # - name: Install setuptools for system Python
+      #   run: python -m pip install --upgrade pip setuptools
 
-      - name: Cache Miniforge environment
-        uses: actions/cache@v5
-        id: cache-miniforge-environment
-        env:
-          CACHE_NUMBER: 0
-        with:
-          path: ${{env.CONDA}}/envs/mantidimaging-dev
-          key: ${{runner.os}}-condaenv-${{env.CACHE_NUMBER}}-${{steps.get-date.outputs.date}}-${{hashFiles('environment-dev.yml','conda/meta.yaml')}}
-
-      - name: Install setuptools for system Python
-        run: python -m pip install --upgrade pip setuptools
-
-      - name: Mantid Imaging developer dependencies
-        if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
-        shell: bash -l {0}
-        run: |
-          conda deactivate
-          python ./setup.py create_dev_env
+      # - name: Mantid Imaging developer dependencies
+      #   if: steps.cache-miniforge-environment.outputs.cache-hit != 'true'
+      #   shell: bash -l {0}
+      #   run: |
+      #     conda deactivate
+      #     python ./setup.py create_dev_env
 
       - name: List versions
         shell: bash -l {0}
         run: |
-          mamba env list
-          python --version; mamba list ; pip list
+          pixi run -e dev python --version
+          pixi list -e dev
 
       - name: Yapf
         shell: bash -l {0}
         run: |
-          yapf --parallel --diff --recursive .
+          pixi run yapf
 
       - name: Ruff
         shell: bash -l {0}
         run: |
-          ruff check .
+          pixi run ruff
 
       - name: mypy
         shell: bash -l {0}
         run: |
-          mypy --ignore-missing-imports mantidimaging
+          pixi run mypy
 
       - name: pyright
         shell: bash -l {0}
         run: |
-          pyright mantidimaging
+          pixi run pyright
 
       - name: pytest
         timeout-minutes: 10
