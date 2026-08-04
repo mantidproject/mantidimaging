@@ -82,10 +82,20 @@ class CORInspectionDialogModel:
             return self.centre_value + self.step
 
     def _recon_cor_preview(self, image: ImageType) -> np.ndarray:
-        assert (self.images.geometry is not None)
+        """
+        Reconstructs a preview of the rotation centre for the given image
+        Ensures geometry is preserved on exit, even if the reconstruction fails
+        """
+        assert self.images.geometry is not None
         assert self.proj_angles is not None
-        self.images.geometry.cor = ScalarCoR(self.cor(image))
-        return self.reconstructor.single_sino(self.images, self.slice_idx, self.recon_params)
+
+        original = self.images.geometry.get_cor_at_slice_index(self.slice_idx)
+        self.images.geometry.set_cor_at_slice_index(self.slice_idx, ScalarCoR(self.cor(image)))
+
+        try:
+            return self.reconstructor.single_sino(self.images, self.slice_idx, self.recon_params)
+        finally:
+            self.images.geometry.set_cor_at_slice_index(self.slice_idx, original)
 
     def _recon_iters_preview(self, image: ImageType) -> np.ndarray:
         assert self.proj_angles is not None
