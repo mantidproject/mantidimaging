@@ -68,7 +68,7 @@ jobs:
           environments: >-
             dev
             lint
-          cache: false #enable this after linux testing workflow migration to pixi is merged
+          cache: true
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       # - name: Install setuptools for system Python
@@ -81,37 +81,37 @@ jobs:
       #     conda deactivate
       #     python ./setup.py create_dev_env
 
-      - name: List versions
-        shell: bash -l {0}
-        run: |
-          pixi run -e dev python --version
-          pixi list -e dev
+      # - name: List versions
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run -e dev python --version
+      #     pixi list -e dev
 
-      - name: Yapf
-        shell: bash -l {0}
-        run: |
-          pixi run yapf
+      # - name: Yapf
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run yapf
 
-      - name: Ruff
-        shell: bash -l {0}
-        run: |
-          pixi run ruff
+      # - name: Ruff
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run ruff
 
-      - name: mypy
-        shell: bash -l {0}
-        run: |
-          pixi run mypy
+      # - name: mypy
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run mypy
 
-      - name: pyright
-        shell: bash -l {0}
-        run: |
-          pixi run pyright
+      # - name: pyright
+      #   shell: bash -l {0}
+      #   run: |
+      #     pixi run pyright
 
       - name: pytest
         timeout-minutes: 10
         shell: bash -l {0}
         run: |
-          python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+          pixi run -e dev python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         shell: bash -l {0}
