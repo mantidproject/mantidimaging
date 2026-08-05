@@ -45,8 +45,8 @@ parameterized = "0.9.*"
 # Packages required for development and building
 [feature.dev.dependencies]
 gitpython = "3.1.*"
-coverage = ">=7.0,<7.6"
-coveralls = "4.0.*"
+coverage = ">=7.0,<7.5"
+coveralls = "4.1.*"
 pyinstaller = "6.14.*"
 make = "==4.3"
 pre-commit = "3.5.*"
@@ -143,7 +143,6 @@ conda-build = "*"
 # Set environment variables for development environment during environment activation
 [feature.dev.activation.env]
 SOURCE_DIRS = "mantidimaging scripts docs/ext/"
-APPLITOOLS_API_KEY = "local"
 CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
 
 # Set environment variables for build environment during environment activation
@@ -166,7 +165,7 @@ cmd = [
     "-c",
     """
     mkdir -p system_tests_output
-    APPLITOOLS_IMAGE_DIR=system_tests_output TEST_RESULT_DIR=system_tests_output python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/
+    APPLITOOLS_IMAGE_DIR=system_tests_output TEST_RESULT_DIR=system_tests_output python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --durations=10 --run-system-tests mantidimaging/gui/test/
     """,
 ]
 env = { QT_QPA_PLATFORM = "offscreen" }
@@ -196,11 +195,27 @@ cmd = [
 env = { QT_QPA_PLATFORM = "offscreen" }
 description = "Run screenshot tests (Linux) without GUI display"
 
+[target.linux-64.tasks.test-screenshots-ci-base]
+cmd = [
+    "xvfb-run",
+    "--auto-servernum",
+    "bash",
+    "-c",
+    """
+    mkdir -p screenshot_tests_output
+    echo "Screenshots directory: screenshot_tests_output"
+    APPLITOOLS_IMAGE_DIR=screenshot_tests_output pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests
+    echo "Screenshots written to screenshot_tests_output"
+    """,
+]
+env = { QT_QPA_PLATFORM = "offscreen" }
+description = "Run screenshot tests (Linux) in CI mode (requires APPLITOOLS_API_KEY, uses xvfb)"
+
 [target.win-64.tasks.test-system-base]
 cmd = [
     "cmd",
     "/c",
-    "mkdir system_tests_output 2>nul & set TEST_RESULT_DIR=system_tests_output & set APPLITOOLS_IMAGE_DIR=system_tests_output & python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --run-system-tests mantidimaging/gui/test/",
+    "mkdir system_tests_output 2>nul & set TEST_RESULT_DIR=system_tests_output & set APPLITOOLS_IMAGE_DIR=system_tests_output & python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --durations=10 --run-system-tests mantidimaging/gui/test/",
 ]
 env = { QT_QPA_PLATFORM = "offscreen" }
 description = "Run system tests (Windows)"
@@ -241,6 +256,10 @@ description = "Run system tests with GUI display (GPU)"
 [tasks.test-screenshots-cpu]
 depends-on = [{ task = "test-screenshots-base", environment = "dev" }]
 description = "Run screenshot tests (CPU)"
+
+[tasks.test-screenshots-cpu-ci]
+depends-on = [{ task = "test-screenshots-ci-base", environment = "dev" }]
+description = "Run screenshot tests in CI (CPU) - CI mode (requires APPLITOOLS_API_KEY)"
 
 [tasks.test-screenshots-gpu]
 depends-on = [{ task = "test-screenshots-base", environment = "dev-gpu" }]
