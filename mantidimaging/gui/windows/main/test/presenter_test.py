@@ -575,8 +575,8 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_select_tree_widget_item(self):
         tree_widget_item = mock.Mock()
         self.presenter._select_tree_widget_item(tree_widget_item)
-        tree_widget_item.setSelected.assert_called_once_with(True)
         self.view.dataset_tree_widget.clearSelection.assert_called_once()
+        self.view.dataset_tree_widget.setCurrentItem.assert_called_once_with(tree_widget_item)
 
     def test_select_top_level_item(self):
         self.view.dataset_tree_widget.topLevelItemCount.return_value = 1
@@ -585,7 +585,7 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.presenter._set_tree_view_selection_with_id(mock_id)
         self.view.dataset_tree_widget.clearSelection.assert_called_once()
-        mock_top_level_item.setSelected.assert_called_once_with(True)
+        self.view.dataset_tree_widget.setCurrentItem.assert_called_once_with(mock_top_level_item)
 
     def test_select_stack_item(self):
         mock_stack_widget = mock.Mock()
@@ -602,7 +602,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.notify(Notification.TAB_CLICKED, stack=mock_stack_widget)
 
         self.view.dataset_tree_widget.clearSelection.assert_called_once()
-        mock_stack_item.setSelected.assert_called_once_with(True)
+        self.view.dataset_tree_widget.setCurrentItem.assert_called_once_with(mock_stack_item)
 
     def test_select_recon_item(self):
         mock_recon_widget = mock.Mock()
@@ -622,7 +622,7 @@ class MainWindowPresenterTest(unittest.TestCase):
         self.presenter.notify(Notification.TAB_CLICKED, stack=mock_recon_widget)
 
         self.view.dataset_tree_widget.clearSelection.assert_called_once()
-        mock_recon_item.setSelected.assert_called_once_with(True)
+        self.view.dataset_tree_widget.setCurrentItem.assert_called_once_with(mock_recon_item)
 
     def test_all_stack_ids(self):
         mixed_stacks = [generate_images() for _ in range(5)]
