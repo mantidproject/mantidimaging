@@ -136,9 +136,10 @@ __cuda = "11.8.*"
 
 # Packages required for building and uploading conda packages
 [feature.build.dependencies]
-boa = "*"
+boa = "*" #could potentially be removed with the migration to rattler-build
 anaconda-client = "*"
-conda-build = "*"
+conda-build = "*" #could potentially be removed with the migration to pixi
+rattler-build = "*"
 
 # Set environment variables for development environment during environment activation
 [feature.dev.activation.env]
