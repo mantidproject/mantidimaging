@@ -1127,11 +1127,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_select_tree_widget_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree_widget_item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Clears the existing selection on the dataset tree view and selects a given item.</span>
+<span class="sd">        Clears the existing selection on the dataset tree view and sets a given current item.</span>
 <span class="sd">        :param tree_widget_item: The item to select.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">clearSelection</span><span class="p">()</span>
-        <span class="n">tree_widget_item</span><span class="o">.</span><span class="n">setSelected</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">setCurrentItem</span><span class="p">(</span><span class="n">tree_widget_item</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_remove_recon_item_from_tree_view</span><span class="p">(</span><span class="n">recon_group</span><span class="p">,</span> <span class="n">uuid_remove</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

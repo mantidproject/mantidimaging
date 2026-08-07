@@ -523,9 +523,9 @@
 <div class="viewcode-block" id="ImageSaveDialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.image_save_dialog.html#mantidimaging.gui.windows.main.image_save_dialog.ImageSaveDialog">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageSaveDialog</span><span class="p">(</span><span class="n">BaseDialogView</span><span class="p">):</span>
-    <span class="n">selected_stack</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">selected_stack</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">stack_list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">stack_list</span><span class="p">,</span> <span class="n">selected_stack_uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/image_save_dialog.ui&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">browseButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">select_directory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">savePath</span><span class="p">,</span> <span class="s2">&quot;Browse&quot;</span><span class="p">))</span>
@@ -548,6 +548,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">stack_uuids</span><span class="p">,</span> <span class="n">user_friendly_names</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">user_friendly_stack_list</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">stackNames</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">user_friendly_names</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">selected_stack_uuid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_uuids</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stackNames</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack_uuids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">selected_stack_uuid</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_stack</span> <span class="o">=</span> <span class="kc">None</span>
 

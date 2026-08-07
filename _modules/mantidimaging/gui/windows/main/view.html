@@ -1071,7 +1071,7 @@
 <div class="viewcode-block" id="MainWindowView.show_image_save_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.show_image_save_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_image_save_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_save_dialog</span> <span class="o">=</span> <span class="n">ImageSaveDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_save_dialog</span> <span class="o">=</span> <span class="n">ImageSaveDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_stack_from_tree</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_save_dialog</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
@@ -1183,6 +1183,23 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stack_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">StackId</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stack_visualiser_list</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">selected_stack_from_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">selected_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree_item_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_tree_widget</span><span class="o">.</span><span class="n">currentItem</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">selected_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">selected_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">all_stack_ids</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">selected_id</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tree_item_id</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">QTreeDatasetWidgetItem</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stack_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
