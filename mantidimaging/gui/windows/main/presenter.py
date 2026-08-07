@@ -545,11 +545,11 @@ class MainWindowPresenter(BasePresenter):
 
     def _select_tree_widget_item(self, tree_widget_item: QTreeWidgetItem) -> None:
         """
-        Clears the existing selection on the dataset tree view and selects a given item.
+        Clears the existing selection on the dataset tree view and sets a given current item.
         :param tree_widget_item: The item to select.
         """
         self.view.dataset_tree_widget.clearSelection()
-        tree_widget_item.setSelected(True)
+        self.view.dataset_tree_widget.setCurrentItem(tree_widget_item)
 
     @staticmethod
     def _remove_recon_item_from_tree_view(recon_group, uuid_remove: uuid.UUID) -> bool:

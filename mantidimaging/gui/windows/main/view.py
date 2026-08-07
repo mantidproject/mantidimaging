@@ -496,7 +496,7 @@ class MainWindowView(BaseMainWindowView):
                               new_name=new_dataset_name)
 
     def show_image_save_dialog(self) -> None:
-        self.image_save_dialog = ImageSaveDialog(self, self.stack_list)
+        self.image_save_dialog = ImageSaveDialog(self, self.stack_list, self.selected_stack_from_tree)
         self.image_save_dialog.show()
 
     def show_nexus_save_dialog(self) -> None:
@@ -577,6 +577,23 @@ class MainWindowView(BaseMainWindowView):
     @property
     def stack_list(self) -> list[StackId]:
         return self.presenter.stack_visualiser_list
+
+    @property
+    def selected_stack_from_tree(self) -> uuid.UUID | None:
+        selected_id = self._tree_item_id(self.dataset_tree_widget.currentItem())
+        if selected_id is None:
+            return None
+
+        if selected_id in self.presenter.all_stack_ids:
+            return selected_id
+
+        return None
+
+    @staticmethod
+    def _tree_item_id(item: QTreeWidgetItem | None) -> uuid.UUID | None:
+        if isinstance(item, QTreeDatasetWidgetItem):
+            return item.id
+        return None
 
     @property
     def stack_names(self) -> list[str]:
