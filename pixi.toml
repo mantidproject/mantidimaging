@@ -108,26 +108,26 @@ cuda-version = "12.9.*"
 # Linux-specific GPU packages - Linux (CUDA-enabled builds)
 [feature.runtime-gpu.target.linux-64.dependencies]
 ccpi-regulariser = { version = "25.0.*", build = "cuda*" }
-astra-toolbox = { version = "2.4.1.*", build = "cudapy312*" }
-libastra = { version = "2.4.1.*", build = "cuda_12_0" }
+astra-toolbox = { version = "2.4.1.*", build = "cuda*" }
+libastra = { version = "2.4.1.*", build = "cuda*" }
 
 # Windows-specific GPU packages - Windows (CUDA-enabled builds with specific hashes)
 [feature.runtime-gpu.target.win-64.dependencies]
 ccpi-regulariser = { version = "25.0.*", build = "cuda*" }
-astra-toolbox = { version = "2.4.1.*", build = "cudapy312*" }
-libastra = { version = "2.4.1.*", build = "cuda_12_0" }
+astra-toolbox = { version = "2.4.1.*", build = "cuda*" }
+libastra = { version = "2.4.1.*", build = "cuda*" }
 
 # CPU-specific packages (non-CUDA builds)
 [feature.runtime-cpu.target.linux-64.dependencies]
 ccpi-regulariser = { version = "25.0.*", build = "cpu*" }
-astra-toolbox = { version = "2.3.1.*", build = "py312*" }
-libastra = { version = "2.3.1.*", build = "h*" }
+astra-toolbox =  "2.3.1.*"
+libastra =  "2.3.1.*"
 
 # Windows-specific CPU packages - Windows (non-CUDA builds with specific hashes)
 [feature.runtime-cpu.target.win-64.dependencies]
 ccpi-regulariser = { version = "25.0.*", build = "cpu*" }
-astra-toolbox = { version = "2.3.1.*", build = "py312*" }
-libastra = { version = "2.3.1.*", build = "h*" }
+astra-toolbox = "2.3.1.*"
+libastra = "2.3.1.*"
 
 # GPU verification feature - adds __cuda requirement - needed to ensure GPU builds only go to GPU-capable systems
 [feature.gpu-verify.system-requirements]
