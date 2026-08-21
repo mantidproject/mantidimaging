@@ -521,22 +521,22 @@
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">APPLY_TO_180_MSG</span> <span class="o">=</span> <span class="s2">&quot;Operations applied to the sample are also automatically applied to the &quot;</span> \
-      <span class="s2">&quot;180 degree projection. Please avoid applying an operation unless you&#39;re&quot;</span> \
-      <span class="s2">&quot; absolutely certain you need to.</span><span class="se">\n</span><span class="s2">Are you sure you want to apply to 180&quot;</span> \
-      <span class="s2">&quot; degree projection?&quot;</span>
+<span class="n">APPLY_TO_180_MSG</span> <span class="o">=</span> <span class="s2">"Operations applied to the sample are also automatically applied to the "</span> \
+      <span class="s2">"180 degree projection. Please avoid applying an operation unless you're"</span> \
+      <span class="s2">" absolutely certain you need to.</span><span class="se">\n</span><span class="s2">Are you sure you want to apply to 180"</span> \
+      <span class="s2">" degree projection?"</span>
 
-<span class="n">FLAT_FIELDING</span> <span class="o">=</span> <span class="s2">&quot;Flat-fielding&quot;</span>
+<span class="n">FLAT_FIELDING</span> <span class="o">=</span> <span class="s2">"Flat-fielding"</span>
 <span class="n">FLAT_FIELD_REGION</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]</span>
 
-<span class="n">ROI_NORMALISATION</span> <span class="o">=</span> <span class="s2">&quot;ROI Normalisation&quot;</span>
+<span class="n">ROI_NORMALISATION</span> <span class="o">=</span> <span class="s2">"ROI Normalisation"</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiltersWindowView</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMiniImageView</span>
 
-<span class="n">REPEAT_FLAT_FIELDING_MSG</span> <span class="o">=</span> <span class="s2">&quot;Do you want to run flat-fielding again? This could cause you to lose data.&quot;</span>
+<span class="n">REPEAT_FLAT_FIELDING_MSG</span> <span class="o">=</span> <span class="s2">"Do you want to run flat-fielding again? This could cause you to lose data."</span>
 
 
 <div class="viewcode-block" id="Notification">
@@ -552,12 +552,12 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_nan_change</span><span class="p">(</span><span class="n">before_image</span><span class="p">,</span> <span class="n">filtered_image_data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a bool array of all the placed where a NaN has been removed.</span>
 <span class="sd">    :param before_image: The before image.</span>
 <span class="sd">    :param filtered_image_data: The filter result.</span>
 <span class="sd">    :return: The indexes of the pixels with removed NaNs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">before_nan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">before_image</span><span class="p">)</span>
     <span class="n">after_nan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">filtered_image_data</span><span class="p">)</span>
     <span class="n">nan_change</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">before_nan</span><span class="p">,</span> <span class="o">~</span><span class="n">after_nan</span><span class="p">)</span>
@@ -567,28 +567,28 @@
 <div class="viewcode-block" id="sub">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.sub">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Subtracts two tuples. Helper method for generating the negative slice list.</span>
 <span class="sd">    :param x: The int tuple.</span>
 <span class="sd">    :return: The first value subtracted from the second value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_group_consecutive_values</span><span class="p">(</span><span class="n">slices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Creates a list of slices with negative indices in a readable format.</span>
 <span class="sd">    :param slices: The list of indices of the slices that contain negative values.</span>
 <span class="sd">    :return: A list of strings for the index ranges e.g. 1-5, 7-20, etc</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">iterable</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">slices</span><span class="p">),</span> <span class="n">sub</span><span class="p">):</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">rng</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">rng</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ranges</span>
@@ -599,7 +599,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">FiltersWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
     <span class="n">view</span><span class="p">:</span> <span class="n">FiltersWindowView</span>
     <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">divider</span> <span class="o">=</span> <span class="s2">&quot;------------------------------------&quot;</span>
+    <span class="n">divider</span> <span class="o">=</span> <span class="s2">"------------------------------------"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">FiltersWindowView</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
@@ -637,7 +637,7 @@
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Notification handler failed"</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -663,9 +663,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="n">stack</span>
         <span class="k">if</span> <span class="n">stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stack changed: name=</span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, shape=</span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stack changed: name=</span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, shape=</span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stack selection cleared (None)&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Stack selection cleared (None)"</span><span class="p">)</span>
 
         <span class="c1"># Update the preview image index</span>
         <span class="k">with</span> <span class="n">BlockQtSignals</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">]):</span>
@@ -685,9 +685,9 @@
 <div class="viewcode-block" id="FiltersWindowPresenter.set_preview_image_index">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.set_preview_image_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_preview_image_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets the current preview image index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_image_idx</span> <span class="o">=</span> <span class="n">image_idx</span>
 
         <span class="c1"># Set preview index spin box to new index</span>
@@ -710,12 +710,12 @@
         <span class="c1"># Get registration function for new filter</span>
         <span class="n">register_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_registration_func</span><span class="p">(</span><span class="n">filter_name</span><span class="p">)</span>
 
-        <span class="c1"># Register new filter (adding it&#39;s property widgets to the properties layout)</span>
+        <span class="c1"># Register new filter (adding it's property widgets to the properties layout)</span>
         <span class="n">filter_widget_kwargs</span> <span class="o">=</span> <span class="n">register_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">auto_update_triggered</span><span class="o">.</span><span class="n">emit</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="n">ROI_NORMALISATION</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">init_air_field</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">&quot;roi_field&quot;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_air_field</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">[</span><span class="s2">"roi_field"</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setup_filter</span><span class="p">(</span><span class="n">filter_name</span><span class="p">,</span> <span class="n">filter_widget_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">on_stack_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
@@ -747,17 +747,17 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_already_run_flat_fielding</span><span class="p">():</span>
-            <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">&quot;Confirm action&quot;</span><span class="p">,</span> <span class="n">REPEAT_FLAT_FIELDING_MSG</span><span class="p">)</span>
+            <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">"Confirm action"</span><span class="p">,</span> <span class="n">REPEAT_FLAT_FIELDING_MSG</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">user_confirmed</span><span class="p">:</span>
                 <span class="k">return</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
-            <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Safe Apply: Copying Data&quot;</span><span class="p">,</span> <span class="s2">&quot;-------------------------------------&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">"Safe Apply: Copying Data"</span><span class="p">,</span> <span class="s2">"-------------------------------------"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">original_images_stack</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">copy</span><span class="p">()}</span>
 
         <span class="c1"># if is a 180degree stack and a user says no, cancel apply filter.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_a_proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">):</span>
-            <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">&quot;Confirm action&quot;</span><span class="p">,</span> <span class="n">APPLY_TO_180_MSG</span><span class="p">)</span>
+            <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">"Confirm action"</span><span class="p">,</span> <span class="n">APPLY_TO_180_MSG</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">user_confirmed</span><span class="p">:</span>
                 <span class="k">return</span>
 
@@ -770,35 +770,35 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.do_apply_filter_to_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter_to_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">user_confirmed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span>
-            <span class="s2">&quot;Confirm action&quot;</span><span class="p">,</span> <span class="s2">&quot;Apply this filter to the dataset of the SELECTED stack in the Operations window?&quot;</span><span class="p">)</span>
+            <span class="s2">"Confirm action"</span><span class="p">,</span> <span class="s2">"Apply this filter to the dataset of the SELECTED stack in the Operations window?"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">user_confirmed</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">selected_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span>
 
         <span class="k">if</span> <span class="n">selected_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">&quot;No stack is currently selected in the operations window.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">"No stack is currently selected in the operations window."</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_dataset_id_from_stack_uuid</span><span class="p">(</span><span class="n">selected_stack</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dataset_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">&quot;Could not find a dataset for the selected stack.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">"Could not find a dataset for the selected stack."</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">current_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dataset </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> not found."</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">stacks</span> <span class="o">=</span> <span class="n">current_dataset</span><span class="o">.</span><span class="n">all</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">stacks</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">&quot;No stacks found in that dataset.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">"No stacks found in that dataset."</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">operation_in_progress</span>
-            <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Safe Apply: Copying Data&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">"Safe Apply: Copying Data"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">original_images_stack</span> <span class="o">=</span> <span class="p">{</span><span class="n">stk</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">stk</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">stk</span> <span class="ow">in</span> <span class="n">stacks</span><span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">applying_to_all</span> <span class="o">=</span> <span class="kc">True</span>
@@ -849,7 +849,7 @@
 
             <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
                 <span class="c1"># task failed, show why</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Operation failed: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Operation failed: </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">use_new_data</span><span class="p">:</span>
                 <span class="c1"># Feedback to user</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_notification_dialog</span><span class="p">()</span>
@@ -918,7 +918,7 @@
             <span class="n">squeeze_axis</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">num_projections</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="s2">&quot;This filter requires a stack with multiple projections&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="s2">"This filter requires a stack with multiple projections"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_previews</span><span class="p">()</span>
                 <span class="k">return</span>
             <span class="n">subset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">sino_as_image_stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">preview_image_idx</span><span class="p">)</span>
@@ -933,9 +933,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">validate_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">apply_to_images</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">is_preview</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Error applying filter for preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Error applying filter for preview: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-            <span class="c1"># Can&#39;t continue be need the before image drawn</span>
+            <span class="c1"># Can't continue be need the before image drawn</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_preview_image</span><span class="p">(</span><span class="n">before_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">preview_image_before</span><span class="p">)</span>
             <span class="k">return</span>
 
@@ -964,7 +964,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_preview_image</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">preview_image_difference</span><span class="p">)</span>
 
-        <span class="c1"># Ensure all of it is visible if the lock zoom isn&#39;t checked</span>
+        <span class="c1"># Ensure all of it is visible if the lock zoom isn't checked</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">lockZoomCheckBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">or</span> <span class="n">is_new_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">auto_range</span><span class="p">()</span>
 
@@ -1008,9 +1008,9 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_already_run_flat_fielding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :return: True if this is not the first time flat-fielding is being run, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat_fielding_is_selected</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">OPERATION_HISTORY</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
@@ -1019,22 +1019,22 @@
                    <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">OPERATION_HISTORY</span><span class="p">])</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_apply_buttons_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">apply_single_enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">apply_all_enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Changes the state of the apply buttons before/after an operation is run.</span>
 <span class="sd">        :param apply_single_enabled: The desired state for the apply button.</span>
 <span class="sd">        :param apply_all_enabled: The desired state for the apply to all button.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">applyButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">apply_single_enabled</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">applyToAllButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">apply_all_enabled</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FiltersWindowPresenter.init_roi_field">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_roi_field">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">init_roi_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the initial value of the crop coordinates line edit widget so that it doesn&#39;t contain values that are</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Sets the initial value of the crop coordinates line edit widget so that it doesn't contain values that are</span>
 <span class="sd">        larger than the image.</span>
 <span class="sd">        :param roi_field: The ROI field line edit widget.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -1047,11 +1047,11 @@
 <div class="viewcode-block" id="FiltersWindowPresenter.init_air_field">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.presenter.html#mantidimaging.gui.windows.operations.presenter.FiltersWindowPresenter.init_air_field">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">init_air_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets the initial value of the air region coordinates line edit widget based on the auto bounding box found</span>
 <span class="sd">        around the sample.</span>
 <span class="sd">        :param roi_field: The ROI field line edit widget.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -1071,38 +1071,38 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_show_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">negative_stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Shows information on the view and in the log about negative values in the output.</span>
 <span class="sd">        :param negative_stacks: A list of stacks with negative values in the data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">operation_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">filter_name</span>
-        <span class="n">gui_error</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> completed.&quot;</span><span class="p">]</span>
+        <span class="n">gui_error</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> completed."</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">negative_stacks</span><span class="p">:</span>
             <span class="n">negative_slices</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
                     <span class="n">negative_slices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="n">stack_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Slices containing negative values in </span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">: &#39;</span>
+            <span class="n">stack_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'Slices containing negative values in </span><span class="si">{</span><span class="n">stack</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">: '</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_slices</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
-                <span class="n">slices_msg</span> <span class="o">=</span> <span class="n">stack_msg</span> <span class="o">+</span> <span class="s2">&quot;all slices.&quot;</span>
+                <span class="n">slices_msg</span> <span class="o">=</span> <span class="n">stack_msg</span> <span class="o">+</span> <span class="s2">"all slices."</span>
                 <span class="n">gui_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slices_msg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ranges</span> <span class="o">=</span> <span class="n">_group_consecutive_values</span><span class="p">(</span><span class="n">negative_slices</span><span class="p">)</span>
-                <span class="n">slices_msg</span> <span class="o">=</span> <span class="n">stack_msg</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="n">slices_msg</span> <span class="o">=</span> <span class="n">stack_msg</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span><span class="si">}</span><span class="s1">.'</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">negative_slices</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">12</span><span class="p">:</span>
                     <span class="n">gui_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slices_msg</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">gui_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">stack_msg</span><span class="si">}{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span><span class="si">}</span><span class="s1"> ... </span><span class="si">{</span><span class="n">ranges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                    <span class="n">gui_error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">stack_msg</span><span class="si">}{</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span><span class="si">}</span><span class="s1"> ... </span><span class="si">{</span><span class="n">ranges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
             <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">slices_msg</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_error</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gui_error</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_show_preview_negative_values_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Shows a message that the operation preview contains negative values.</span>
 <span class="sd">        :param slice_idx: The index of the preview slice.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Negative values found in result preview for slice </span><span class="si">{</span><span class="n">slice_idx</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_error_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Negative values found in result preview for slice </span><span class="si">{</span><span class="n">slice_idx</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_flat_fielding_is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">get_selected_filter</span><span class="p">()</span> <span class="o">==</span> <span class="n">FLAT_FIELDING</span></div>

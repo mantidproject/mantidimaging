@@ -449,6 +449,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="next.html">Mantid Imaging next release</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Mantid Imaging 3.1.0</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="3.0.html">Mantid Imaging 3.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2.8.html">Mantid Imaging 2.8</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2.7.html">Mantid Imaging 2.7</a></li>
@@ -630,6 +631,30 @@ Mantid Imaging now supports the exporting of a sub-sampled image stack as an ani
 </ul>
 </section>
 </section>
+<section id="mantid-imaging-3-1-1">
+<h1>Mantid Imaging 3.1.1<a class="headerlink" href="#mantid-imaging-3-1-1" title="Link to this heading">#</a></h1>
+<p>This release includes a range of user-facing and developer fixes, improvements to the application, and the migration to Rattler-Build for package management.</p>
+<section id="id79">
+<h2>Fixes<a class="headerlink" href="#id79" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/1851">#1851</a>: Disable’s maximum projection angle if dataset is loaded with angles</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3115">#3115</a>: Fixes crop coordinates and auto crop not updating on stack change</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3116">#3116</a>: Improves IndexError handling when toggling average image view</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3127">#3127</a>: Fixes spectrum viewer producing IndexError after NaN removal operation</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3158">#3158</a>: Improved CoR refinement with extreme angles</p></li>
+</ul>
+</section>
+<section id="id85">
+<h2>Developer Changes<a class="headerlink" href="#id85" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2757">#2757</a>: Fixes doc build failures on release branches in GitHub Actions</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/2926">#2926</a>: Fixes headless system tests failing due to Qt offscreen/backend interaction</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3111">#3111</a>: Updated pre-commit to use the same ruff version as pixi.toml</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3136">#3136</a>: Migrated to Rattler-Build for package management</p></li>
+<li><p><a class="reference external" href="https://github.com/mantidproject/mantidimaging/issues/3182">#3182</a>: Fixes the rattler-build version inconsistency between the generated recipe and the GUI</p></li>
+</ul>
+</section>
+</section>
 
 
                 </article>
@@ -678,11 +703,20 @@ Mantid Imaging now supports the exporting of a sub-sampled image stack as an ani
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Mantid Imaging 3.1.0</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-highlights">Key Highlights:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New Features</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-changes">Developer Changes</a></li>
 </ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#mantid-imaging-3-1-1">Mantid Imaging 3.1.1</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id79">Fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id85">Developer Changes</a></li>
+</ul>
+</li>
+</ul>
+
   </nav></div>
 
   <div class="sidebar-secondary-item">

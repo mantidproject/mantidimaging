@@ -493,14 +493,14 @@
   <h1>Source code for mantidimaging.core.utility.data_containers</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Containers for data. They don&#39;t do much apart from storing the data,</span>
+<span class="sd">"""</span>
+<span class="sd">Containers for data. They don't do much apart from storing the data,</span>
 <span class="sd">and optionally provide helpful operations.</span>
 
 <span class="sd">The biggest benefit is explicitly marking what the value represents (e.g. Degrees),</span>
 <span class="sd">and helps the type hints to tell you that you might be passing the wrong value (e.g. ScalarCoR to a VectorCoR),</span>
-<span class="sd">while they&#39;re both Float underneath and the value can be used, it just will produce nonsense.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">while they're both Float underneath and the value can be used, it just will produce nonsense.</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -515,14 +515,14 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.SingleValue">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SingleValue</span><span class="p">:</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="n">Any</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SingleValue</span><span class="p">):</span>
@@ -534,7 +534,7 @@
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">SingleValue</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SingleValue</span><span class="p">),</span> <span class="s2">&quot;Can only compare against other `SingleValue`s&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SingleValue</span><span class="p">),</span> <span class="s2">"Can only compare against other `SingleValue`s"</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span></div>
 
 
@@ -543,7 +543,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ScalarCoR">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScalarCoR</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
 
 <div class="viewcode-block" id="ScalarCoR.to_vec">
@@ -558,7 +558,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.VectorCoR">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VectorCoR</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
 
 <div class="viewcode-block" id="VectorCoR.to_scalar">
@@ -573,11 +573,11 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Degrees">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Degrees</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">°&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">°"</span></div>
 
 
 
@@ -585,7 +585,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Slope">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Slope</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
@@ -594,7 +594,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ProjectionAngles">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProjectionAngles</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span></div>
 
 
@@ -603,7 +603,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Counts">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Counts</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span></div>
 
 
@@ -612,7 +612,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.Micron">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Micron</span><span class="p">(</span><span class="n">SingleValue</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'value'</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">int</span></div>
 
 
@@ -632,48 +632,48 @@
     <span class="n">stochastic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">projections_per_subset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span>
     <span class="n">regularisation_percent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>
-    <span class="n">regulariser</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">regulariser</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
 
 <div class="viewcode-block" id="ReconstructionParameters.to_dict">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.ReconstructionParameters.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;algorithm&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
-            <span class="s1">&#39;filter_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_name</span><span class="p">,</span>
-            <span class="s1">&#39;num_iter&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_iter</span><span class="p">,</span>
-            <span class="s1">&#39;pixel_size&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">,</span>
-            <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
-            <span class="s1">&#39;stochastic&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stochastic</span><span class="p">,</span>
-            <span class="s1">&#39;projections_per_subset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">projections_per_subset</span><span class="p">,</span>
-            <span class="s1">&#39;regularisation_percent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">regularisation_percent</span><span class="p">,</span>
-            <span class="s1">&#39;regulariser&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">regulariser</span><span class="p">,</span>
+            <span class="s1">'algorithm'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
+            <span class="s1">'filter_name'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_name</span><span class="p">,</span>
+            <span class="s1">'num_iter'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_iter</span><span class="p">,</span>
+            <span class="s1">'pixel_size'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">,</span>
+            <span class="s1">'alpha'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="s1">'gamma'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
+            <span class="s1">'stochastic'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">stochastic</span><span class="p">,</span>
+            <span class="s1">'projections_per_subset'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">projections_per_subset</span><span class="p">,</span>
+            <span class="s1">'regularisation_percent'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">regularisation_percent</span><span class="p">,</span>
+            <span class="s1">'regulariser'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">regulariser</span><span class="p">,</span>
         <span class="p">}</span></div>
 </div>
 
 
 
-<span class="n">Indices</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;Indices&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)])</span>
+<span class="n">Indices</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">"Indices"</span><span class="p">,</span> <span class="p">[(</span><span class="s2">"start"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s2">"end"</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s2">"step"</span><span class="p">,</span> <span class="nb">int</span><span class="p">)])</span>
 
 
 <div class="viewcode-block" id="FILE_TYPES">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.data_containers.html#mantidimaging.core.utility.data_containers.FILE_TYPES">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FILE_TYPES</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Order must match order of files in load dialog menu</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SAMPLE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;sample&quot;</span><span class="p">)</span>
-    <span class="n">FLAT_BEFORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat&quot;</span><span class="p">,</span> <span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
-    <span class="n">FLAT_AFTER</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat&quot;</span><span class="p">,</span> <span class="s2">&quot;After&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
-    <span class="n">DARK_BEFORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Dark&quot;</span><span class="p">,</span> <span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
-    <span class="n">DARK_AFTER</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Dark&quot;</span><span class="p">,</span> <span class="s2">&quot;After&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
-    <span class="n">PROJ_180</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;180 degree&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;180&quot;</span><span class="p">)</span>
-    <span class="n">SAMPLE_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample Log&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">)</span>
-    <span class="n">SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sample Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">)</span>
-    <span class="n">FLAT_BEFORE_SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat Before Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">)</span>
-    <span class="n">FLAT_AFTER_SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat After Shutter Counts&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;ShutterCount&quot;</span><span class="p">)</span>
-    <span class="n">FLAT_BEFORE_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat Before Log&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">)</span>
-    <span class="n">FLAT_AFTER_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Flat After Log&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">SAMPLE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Sample"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"sample"</span><span class="p">)</span>
+    <span class="n">FLAT_BEFORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Flat"</span><span class="p">,</span> <span class="s2">"Before"</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">)</span>
+    <span class="n">FLAT_AFTER</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Flat"</span><span class="p">,</span> <span class="s2">"After"</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">)</span>
+    <span class="n">DARK_BEFORE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Dark"</span><span class="p">,</span> <span class="s2">"Before"</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">)</span>
+    <span class="n">DARK_AFTER</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Dark"</span><span class="p">,</span> <span class="s2">"After"</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">)</span>
+    <span class="n">PROJ_180</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"180 degree"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"180"</span><span class="p">)</span>
+    <span class="n">SAMPLE_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Sample Log"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"log"</span><span class="p">)</span>
+    <span class="n">SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Sample Shutter Counts"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"ShutterCount"</span><span class="p">)</span>
+    <span class="n">FLAT_BEFORE_SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Flat Before Shutter Counts"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"ShutterCount"</span><span class="p">)</span>
+    <span class="n">FLAT_AFTER_SHUTTER_COUNTS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Flat After Shutter Counts"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"ShutterCount"</span><span class="p">)</span>
+    <span class="n">FLAT_BEFORE_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Flat Before Log"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"log"</span><span class="p">)</span>
+    <span class="n">FLAT_AFTER_LOG</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Flat After Log"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"log"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tname</span> <span class="o">=</span> <span class="n">tname</span>
@@ -682,7 +682,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">fname</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tname</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tname</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 
 
 

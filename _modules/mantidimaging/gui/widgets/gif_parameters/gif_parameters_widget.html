@@ -502,21 +502,21 @@
 <div class="viewcode-block" id="GifParametersWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#mantidimaging.gui.widgets.gif_parameters.GifParametersWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GifParametersWidget</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Dialog for GIF export parameters: frame step size and Gif duration</span>
 
 <span class="sd">    The dialog provides estimated GIF size in MB based on selected parameters.</span>
 <span class="sd">    The estimation is based on LWZ compression testing with a IMAT00010675 flower dataset.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">,</span> <span class="n">optimal_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;GIF Parameters&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">"GIF Parameters"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_stack</span> <span class="o">=</span> <span class="n">image_stack</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_ui</span><span class="p">(</span><span class="n">optimal_skip</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimal_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the UI components&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build the UI components"""</span>
         <span class="n">main_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">main_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
         <span class="n">main_layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
@@ -537,21 +537,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_size_estimate</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_inputs_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimal_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QHBoxLayout</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create frame skip and duration input controls&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create frame skip and duration input controls"""</span>
         <span class="n">inputs_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">inputs_layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
 
         <span class="c1"># Frame step size</span>
         <span class="n">frame_skip_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">frame_skip_layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-        <span class="n">frame_skip_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Frame Step:&quot;</span><span class="p">)</span>
+        <span class="n">frame_skip_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">"Frame Step:"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_stack</span><span class="o">.</span><span class="n">num_projections</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">optimal_skip</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Show every Nth frame (e.g., 2 = show every 2nd frame). &quot;</span>
-                                           <span class="s2">&quot;Increase to reduce GIF size and frame count.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">"Show every Nth frame (e.g., 2 = show every 2nd frame). "</span>
+                                           <span class="s2">"Increase to reduce GIF size and frame count."</span><span class="p">)</span>
         <span class="n">frame_skip_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">frame_skip_label</span><span class="p">)</span>
         <span class="n">frame_skip_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="p">)</span>
         <span class="n">inputs_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">frame_skip_layout</span><span class="p">)</span>
@@ -559,15 +559,15 @@
         <span class="c1"># Gif duration</span>
         <span class="n">duration_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">duration_layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-        <span class="n">duration_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Duration (sec):&quot;</span><span class="p">)</span>
+        <span class="n">duration_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">"Duration (sec):"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span> <span class="o">=</span> <span class="n">QDoubleSpinBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mf">3600.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Total time in seconds for the complete animation rotation. &quot;</span>
-                                         <span class="s2">&quot;Shorter = faster animation, longer = slower animation.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">"Total time in seconds for the complete animation rotation. "</span>
+                                         <span class="s2">"Shorter = faster animation, longer = slower animation."</span><span class="p">)</span>
         <span class="n">duration_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">duration_label</span><span class="p">)</span>
         <span class="n">duration_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="p">)</span>
         <span class="n">inputs_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">duration_layout</span><span class="p">)</span>
@@ -576,12 +576,12 @@
         <span class="k">return</span> <span class="n">inputs_layout</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_button_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QHBoxLayout</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create OK and Cancel buttons&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create OK and Cancel buttons"""</span>
         <span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">button_layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-        <span class="n">ok_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
-        <span class="n">cancel_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Cancel&quot;</span><span class="p">)</span>
+        <span class="n">ok_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">"OK"</span><span class="p">)</span>
+        <span class="n">cancel_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">"Cancel"</span><span class="p">)</span>
         <span class="n">ok_button</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
         <span class="n">cancel_button</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
         <span class="n">ok_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
@@ -593,14 +593,14 @@
         <span class="k">return</span> <span class="n">button_layout</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_size_estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update the estimated GIF size based on current frame skip spinbox value.</span>
 
 <span class="sd">        Displays:</span>
 <span class="sd">        - Estimated compressed GIF size with current frame skip</span>
 <span class="sd">        - Full stack size without frame skip</span>
 <span class="sd">        - Size difference from frame skip to show compression savings</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">frame_skip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="n">total_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_stack</span><span class="o">.</span><span class="n">num_projections</span>
         <span class="n">selected_frames</span> <span class="o">=</span> <span class="n">total_frames</span> <span class="o">//</span> <span class="n">frame_skip</span>
@@ -610,22 +610,22 @@
         <span class="n">compressed_size_no_skip_mb</span> <span class="o">=</span> <span class="n">estimate_gif_size</span><span class="p">(</span><span class="n">total_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_stack</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_stack</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
         <span class="n">size_reduction_mb</span> <span class="o">=</span> <span class="n">compressed_size_no_skip_mb</span> <span class="o">-</span> <span class="n">compressed_size_with_skip_mb</span>
 
-        <span class="n">size_text</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Estimated size: </span><span class="si">{</span><span class="n">selected_frames</span><span class="si">}</span><span class="s2"> frames, ~</span><span class="si">{</span><span class="n">compressed_size_with_skip_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB</span><span class="se">\n</span><span class="s2">&quot;</span>
-                     <span class="sa">f</span><span class="s2">&quot;Without frame skip: </span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2"> frames, ~</span><span class="si">{</span><span class="n">compressed_size_no_skip_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB</span><span class="se">\n</span><span class="s2">&quot;</span>
-                     <span class="sa">f</span><span class="s2">&quot;Size reduction: </span><span class="si">{</span><span class="n">size_reduction_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+        <span class="n">size_text</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"Estimated size: </span><span class="si">{</span><span class="n">selected_frames</span><span class="si">}</span><span class="s2"> frames, ~</span><span class="si">{</span><span class="n">compressed_size_with_skip_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB</span><span class="se">\n</span><span class="s2">"</span>
+                     <span class="sa">f</span><span class="s2">"Without frame skip: </span><span class="si">{</span><span class="n">total_frames</span><span class="si">}</span><span class="s2"> frames, ~</span><span class="si">{</span><span class="n">compressed_size_no_skip_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB</span><span class="se">\n</span><span class="s2">"</span>
+                     <span class="sa">f</span><span class="s2">"Size reduction: </span><span class="si">{</span><span class="n">size_reduction_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">size_text</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GifParametersWidget.get_frame_skip">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#mantidimaging.gui.widgets.gif_parameters.GifParametersWidget.get_frame_skip">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_frame_skip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the selected frame skip value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the selected frame skip value"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_skip_spinbox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="GifParametersWidget.get_duration">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.gif_parameters.gif_parameters_widget.html#mantidimaging.gui.widgets.gif_parameters.GifParametersWidget.get_duration">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the selected duration value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the selected duration value"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration_spinbox</span><span class="o">.</span><span class="n">value</span><span class="p">()</span></div>
 </div>
 

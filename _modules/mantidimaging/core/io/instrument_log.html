@@ -548,9 +548,9 @@
 <div class="viewcode-block" id="BaseParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseParser</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Base class for parsers</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
@@ -560,7 +560,7 @@
     <span class="nd">@classmethod</span>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the name and content of the file is likely to be readable by this parser.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if the name and content of the file is likely to be readable by this parser."""</span>
         <span class="o">...</span></div>
 
 
@@ -568,14 +568,14 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.parse">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the log file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse the log file"""</span>
         <span class="o">...</span></div>
 
 
 <div class="viewcode-block" id="BaseParser.cleaned_lines">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.BaseParser.cleaned_lines">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cleaned_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">]</span></div>
 </div>
 
 
@@ -583,7 +583,7 @@
 <div class="viewcode-block" id="InstrumentLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstrumentLogParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A base class for parsing instrument log files.</span>
 
 <span class="sd">    This class provides a template for parsing instrument log files. Subclasses should</span>
@@ -595,17 +595,17 @@
 <span class="sd">    Methods:</span>
 <span class="sd">        parse: Parse the log file and return the parsed data.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically register subclasses&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Automatically register subclasses"""</span>
         <span class="n">InstrumentLog</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentLogParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLogParser.parse">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the log file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse the log file"""</span>
         <span class="o">...</span></div>
 </div>
 
@@ -614,7 +614,7 @@
 <div class="viewcode-block" id="InstrumentShutterCountParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstrumentShutterCountParser</span><span class="p">(</span><span class="n">BaseParser</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A parser for instrument shutter count logs.</span>
 
 <span class="sd">    This class is responsible for parsing instrument shutter count log files</span>
@@ -626,17 +626,17 @@
 <span class="sd">    Methods:</span>
 <span class="sd">        parse: Parse the log file and return the shutter count data.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Automatically register subclasses&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Automatically register subclasses"""</span>
         <span class="n">ShutterCount</span><span class="o">.</span><span class="n">register_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentShutterCountParser.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentShutterCountParser.parse">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ShutterCountType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the log file and return the shutter count data&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse the log file and return the shutter count data"""</span>
         <span class="o">...</span></div>
 </div>
 
@@ -645,10 +645,10 @@
 <div class="viewcode-block" id="InstrumentLog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstrumentLog</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiformat instrument log reader</span>
+<span class="w">    </span><span class="sd">"""Multiformat instrument log reader</span>
 
 <span class="sd">    New parsers can be implemented by subclassing InstrumentLogParser</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">parsers</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">InstrumentLogParser</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">parser</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">InstrumentLogParser</span><span class="p">]</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span>
@@ -667,9 +667,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
                 <span class="k">return</span>
         <span class="k">raise</span> <span class="n">NoParserFound</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;File format not recognised for log file: &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
-            <span class="s2">&quot;See documentation for details of supported formats: &quot;</span>
-            <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack&quot;</span>
+            <span class="sa">f</span><span class="s2">"File format not recognised for log file: '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">source_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">'. "</span>
+            <span class="s2">"See documentation for details of supported formats: "</span>
+            <span class="s2">"https://mantidproject.github.io/mantidimaging/user_docs/explanations/gui/loading_saving.html#load-log-for-stack"</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="InstrumentLog.parse">
@@ -679,7 +679,7 @@
 
         <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lengths</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mismatch in column lengths: </span><span class="si">{</span><span class="n">lengths</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mismatch in column lengths: </span><span class="si">{</span><span class="n">lengths</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
@@ -718,25 +718,25 @@
 <div class="viewcode-block" id="InstrumentLog.raise_if_angle_missing">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.raise_if_angle_missing">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">raise_if_angle_missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">image_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ifile</span><span class="p">[</span><span class="n">ifile</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="n">image_filenames</span><span class="p">]</span>
+        <span class="n">image_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="n">ifile</span><span class="p">[</span><span class="n">ifile</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="n">image_filenames</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_numbers</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Log size mismatch. Found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> log entries, &quot;</span>
-                               <span class="sa">f</span><span class="s2">&quot;but </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">image_numbers</span><span class="p">)</span><span class="si">}</span><span class="s2"> images. The log file may not correspond &quot;</span>
-                               <span class="sa">f</span><span class="s2">&quot;to this sample stack.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Log size mismatch. Found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="si">}</span><span class="s2"> log entries, "</span>
+                               <span class="sa">f</span><span class="s2">"but </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">image_numbers</span><span class="p">)</span><span class="si">}</span><span class="s2"> images. The log file may not correspond "</span>
+                               <span class="sa">f</span><span class="s2">"to this sample stack."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">projection_num</span><span class="p">,</span> <span class="n">image_num</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">projection_numbers</span><span class="p">(),</span> <span class="n">image_numbers</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">projection_num</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">image_num</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mismatching angle for projection </span><span class="si">{</span><span class="n">projection_num</span><span class="si">}</span><span class="s2"> &quot;</span>
-                                       <span class="sa">f</span><span class="s2">&quot;was going to be used for image file </span><span class="si">{</span><span class="n">image_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mismatching angle for projection </span><span class="si">{</span><span class="n">projection_num</span><span class="si">}</span><span class="s2"> "</span>
+                                       <span class="sa">f</span><span class="s2">"was going to be used for image file </span><span class="si">{</span><span class="n">image_num</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.counts">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.counts">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counts</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">and</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_AFTER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Log does not have counts&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Log does not have counts"</span><span class="p">)</span>
 
         <span class="n">counts_before</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_BEFORE</span><span class="p">))</span>
         <span class="n">counts_after</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">COUNTS_AFTER</span><span class="p">))</span>
@@ -749,7 +749,7 @@
 <div class="viewcode-block" id="ShutterCount">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.ShutterCount">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShutterCount</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Represents a shutter count log.</span>
 
 <span class="sd">    Attributes:</span>
@@ -765,9 +765,9 @@
 <span class="sd">        register_parser(cls, parser: type[InstrumentShutterCountParser]) -&gt; None: Registers a parser for the log.</span>
 <span class="sd">        get_column(self, key: ShutterCountColumn) -&gt; list[float | int]: Returns the specified column from the log data.</span>
 <span class="sd">        pulse_per_shutter_range_numbers(self) -&gt; np.array: Returns an array of pulse per shutter range numbers.</span>
-<span class="sd">        has_Pulse(self) -&gt; bool: Checks if the log contains the &#39;PULSE&#39; column.</span>
+<span class="sd">        has_Pulse(self) -&gt; bool: Checks if the log contains the 'PULSE' column.</span>
 <span class="sd">        raise_if_counts_missing(self): Raises an exception if the counts are missing in the log.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">parsers</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">InstrumentShutterCountParser</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">parser</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">InstrumentShutterCountParser</span><span class="p">]</span>
@@ -795,7 +795,7 @@
 
         <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lengths</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mismatch in column lengths: </span><span class="si">{</span><span class="n">lengths</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidLog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mismatch in column lengths: </span><span class="si">{</span><span class="n">lengths</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 

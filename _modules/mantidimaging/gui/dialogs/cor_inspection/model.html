@@ -548,10 +548,10 @@
 <div class="viewcode-block" id="CORInspectionDialogModel.adjust">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.adjust">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Adjusts the rotation centre/number of iterations and step after an image is selected as the</span>
 <span class="sd">        optimal of an iteration.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
         <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">MORE</span><span class="p">:</span>
@@ -563,9 +563,9 @@
 <div class="viewcode-block" id="CORInspectionDialogModel.cor">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.model.html#mantidimaging.gui.dialogs.cor_inspection.model.CORInspectionDialogModel.cor">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Gets the rotation centre for a given image in the current iteration.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">LESS</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_extents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">centre_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">image</span> <span class="o">==</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">:</span>
@@ -586,10 +586,10 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_recon_cor_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">ImageType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Reconstructs a preview of the rotation centre for the given image</span>
 <span class="sd">        Ensures geometry is preserved on exit, even if the reconstruction fails</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 

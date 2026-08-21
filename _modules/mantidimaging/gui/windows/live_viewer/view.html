@@ -516,18 +516,18 @@
 <div class="viewcode-block" id="LiveViewerWindowView">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LiveViewerWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Live Viewer window view class.</span>
 <span class="sd">    This class is responsible for handling user interaction with the window.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">imageLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">,</span> <span class="n">live_dir_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;gui/ui/live_viewer_window.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'gui/ui/live_viewer_window.ui'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">live_dir_path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging - Live Viewer - </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mantid Imaging - Live Viewer - </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">LiveViewerWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span> <span class="o">=</span> <span class="n">LiveViewWidget</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Vertical</span><span class="p">)</span>
@@ -545,23 +545,23 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">right_click_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">menu</span>
-        <span class="n">operations_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_click_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Operations&quot;</span><span class="p">)</span>
+        <span class="n">operations_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_click_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">"Operations"</span><span class="p">)</span>
 
-        <span class="n">rotate_menu</span> <span class="o">=</span> <span class="n">operations_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Rotate Image&quot;</span><span class="p">)</span>
+        <span class="n">rotate_menu</span> <span class="o">=</span> <span class="n">operations_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">"Rotate Image"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">allowed_angles</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">allowed_angles</span><span class="p">:</span>
-            <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;°&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"°"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">rotate_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_image_rotation_angle</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">angle</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_as_dataset_action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_click_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Load as dataset&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_as_dataset_action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_click_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">"Load as dataset"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_as_dataset_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">load_as_dataset</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">intensity_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Calculate Intensity Profile&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intensity_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">"Calculate Intensity Profile"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intensity_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">operations_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intensity_action</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intensity_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_intensity_visibility</span><span class="p">)</span>
@@ -570,7 +570,7 @@
 <div class="viewcode-block" id="LiveViewerWindowView.show">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show the window&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Show the window"""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">activateWindow</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">watch_directory</span><span class="p">()</span></div>
@@ -579,31 +579,31 @@
 <div class="viewcode-block" id="LiveViewerWindowView.show_most_recent_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.show_most_recent_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_most_recent_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Show the most recently modified image in the image view.</span>
 <span class="sd">        @param image: The image to show</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">show_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowView.watch_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.watch_directory">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">watch_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show the most recent image arrived in the selected directory&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Show the most recent image arrived in the selected directory"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_dataset_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowView.remove_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.remove_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the image from the view.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Remove the image from the view."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">handle_deleted</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowView.set_image_range">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_range">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_image_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the range on the z-slider, without triggering valueChanged signal&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the range on the z-slider, without triggering valueChanged signal"""</span>
         <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">z_slider</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">z_slider</span><span class="o">.</span><span class="n">set_range</span><span class="p">(</span><span class="o">*</span><span class="n">index_range</span><span class="p">)</span></div>
 
@@ -611,7 +611,7 @@
 <div class="viewcode-block" id="LiveViewerWindowView.set_image_index">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_image_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the position on the z-slider, triggering valueChanged signal once&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the position on the z-slider, triggering valueChanged signal once"""</span>
         <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">z_slider</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">z_slider</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">z_slider</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div>
@@ -620,7 +620,7 @@
 <div class="viewcode-block" id="LiveViewerWindowView.closeEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.closeEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the window and remove it from the main window list&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the window and remove it from the main window list"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">live_viewer_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">handle_deleted</span><span class="p">()</span>
@@ -631,13 +631,13 @@
 <div class="viewcode-block" id="LiveViewerWindowView.set_image_rotation_angle">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.view.html#mantidimaging.gui.windows.live_viewer.view.LiveViewerWindowView.set_image_rotation_angle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_image_rotation_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the image rotation angle which will be read in by the presenter&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;0°&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;Rotate Stack&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="s2">&quot;Rotate Stack&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">"""Set the image rotation angle which will be read in by the presenter"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"0°"</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"Rotate Stack"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="s2">"Rotate Stack"</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">image_rotation_angle</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;°&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="s2">&quot;Rotate Stack&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">image_rotation_angle</span><span class="p">}}</span>
+            <span class="n">image_rotation_angle</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotate_angles_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'°'</span><span class="p">,</span> <span class="s1">''</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="s2">"Rotate Stack"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"angle"</span><span class="p">:</span> <span class="n">image_rotation_angle</span><span class="p">}}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_image_operation</span><span class="p">()</span></div>
 
 

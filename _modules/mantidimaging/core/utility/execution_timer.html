@@ -493,17 +493,17 @@
   <h1>Source code for mantidimaging.core.utility.execution_timer</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Context managers for logging execution time or profile of code.</span>
 
 <span class="sd">These are not used in the code, but are here as developer tools. They can be used by wrapping the code of interest::</span>
 
-<span class="sd">    with ExecutionProfiler(msg=&quot;a_slow_function()&quot;):</span>
+<span class="sd">    with ExecutionProfiler(msg="a_slow_function()"):</span>
 <span class="sd">        a_slow_function()</span>
 
 <span class="sd">They will display to the performance log if a logger object is not given. See the developer docs to enable performance</span>
 <span class="sd">logging.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -513,17 +513,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">Logger</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pstats</span><span class="w"> </span><span class="kn">import</span> <span class="n">Stats</span>
 
-<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;perf.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">"perf."</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ExecutionTimer">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionTimer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExecutionTimer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Context manager used to time the execution of code in its context.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Elapsed time&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">perf_logger</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Elapsed time'</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">perf_logger</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
 
@@ -531,9 +531,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time_end</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s1">: &#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s1">: '</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="k">else</span> <span class="s1">''</span>
         <span class="n">sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_seconds</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">sec</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">sec</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;unknown&quot;</span><span class="si">}</span><span class="s1"> seconds&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">sec</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">sec</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">"unknown"</span><span class="si">}</span><span class="s1"> seconds'</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
@@ -545,10 +545,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">total_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Gets the total number of seconds the timer was running for, returns</span>
 <span class="sd">        None if the timer has not been run or is still running.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_start</span> <span class="k">if</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">time_start</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_end</span> <span class="k">else</span> <span class="mi">0</span></div>
 
@@ -557,17 +557,17 @@
 <div class="viewcode-block" id="ExecutionProfiler">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionProfiler">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExecutionProfiler</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Context manager used to profile the execution of code in its context.</span>
 
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Elapsed time&#39;</span><span class="p">,</span>
+                 <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'Elapsed time'</span><span class="p">,</span>
                  <span class="n">logger</span><span class="p">:</span> <span class="n">Logger</span> <span class="o">=</span> <span class="n">perf_logger</span><span class="p">,</span>
                  <span class="n">max_lines</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-                 <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cumtime&quot;</span><span class="p">):</span>
+                 <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"cumtime"</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_lines</span> <span class="o">=</span> <span class="n">max_lines</span>
@@ -577,7 +577,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s1">: </span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="si">}</span><span class="s1">: </span><span class="se">\n</span><span class="s1">'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="k">else</span> <span class="s1">''</span><span class="p">)</span>
 
         <span class="n">ps</span> <span class="o">=</span> <span class="n">Stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pr</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">sort_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_by</span><span class="p">)</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
@@ -589,7 +589,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pr</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">perf_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_lines</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_lines</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
 
 </pre></div>

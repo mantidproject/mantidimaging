@@ -509,19 +509,19 @@
 <div class="viewcode-block" id="LegacySpectraLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LegacySpectraLogParser</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Parser for spectra files without a header</span>
 
 <span class="sd">    Tab separated columns of Time of flight [s], Counts</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span>
+<span class="sd">    """</span>
+    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\t</span><span class="s1">'</span>
 
 <div class="viewcode-block" id="LegacySpectraLogParser.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacySpectraLogParser.match">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;spectra.txt&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"spectra.txt"</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">delimiter</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -544,17 +544,17 @@
 <div class="viewcode-block" id="LegacyShutterCountLogParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LegacyShutterCountLogParser</span><span class="p">(</span><span class="n">InstrumentShutterCountParser</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parser for shutter count files without a header searching for files ending in &quot;ShutterCount.txt&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Parser for shutter count files without a header searching for files ending in "ShutterCount.txt"</span>
 <span class="sd">    Tab separated columns of Pulse number, Shutter count</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span>
+<span class="sd">    """</span>
+    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">'</span><span class="se">\t</span><span class="s1">'</span>
 
 <div class="viewcode-block" id="LegacyShutterCountLogParser.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyShutterCountLogParser.match">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;shuttercount.txt&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"shuttercount.txt"</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
             <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">delimiter</span><span class="p">)</span>
@@ -578,13 +578,13 @@
 <div class="viewcode-block" id="LegacyIMATLogFile">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LegacyIMATLogFile</span><span class="p">(</span><span class="n">InstrumentLogParser</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap existing IMATLogFile class&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Wrap existing IMATLogFile class"""</span>
 
 <div class="viewcode-block" id="LegacyIMATLogFile.match">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.match">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;.csv&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">".txt"</span><span class="p">,</span> <span class="s2">".csv"</span><span class="p">]:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="n">first_non_blank</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="kc">None</span><span class="p">)</span>
@@ -597,7 +597,7 @@
 <div class="viewcode-block" id="LegacyIMATLogFile.parse">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log_implmentations.html#mantidimaging.core.io.instrument_log_implmentations.LegacyIMATLogFile.parse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogDataType</span><span class="p">:</span>
-        <span class="n">imat_log_file</span> <span class="o">=</span> <span class="n">IMATLogFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">))</span>
+        <span class="n">imat_log_file</span> <span class="o">=</span> <span class="n">IMATLogFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">""</span><span class="p">))</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">LogDataType</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">]</span>
         <span class="n">data</span><span class="p">[</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">]</span> <span class="o">=</span> <span class="n">imat_log_file</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">IMATLogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">]</span>
@@ -613,8 +613,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">read_imat_date</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
         <span class="n">lc</span> <span class="o">=</span> <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%c</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">time_stamp</span><span class="p">,</span> <span class="s2">"</span><span class="si">%c</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_TIME</span><span class="p">,</span> <span class="n">lc</span><span class="p">)</span></div>
 
@@ -622,8 +622,8 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_has_imat_header</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">HEADERS</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image&quot;</span><span class="p">,</span>
+            <span class="s2">"TIME STAMP,IMAGE TYPE,IMAGE COUNTER,COUNTS BM3 before image,COUNTS BM3 after image"</span><span class="p">,</span>
+            <span class="s2">"TIME STAMP  IMAGE TYPE   IMAGE COUNTER   COUNTS BM3 before image   COUNTS BM3 after image"</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="n">HEADERS</span>
 
@@ -634,11 +634,11 @@
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="k">if</span> <span class="s2">&quot;Projection&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;Radiography&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"Projection"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">"Radiography"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Monitor \d+ before:\s*\d+&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'Monitor \d+ before:\s*\d+'</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Monitor \d+ after:\s*\d+&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">'Monitor \d+ after:\s*\d+'</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>

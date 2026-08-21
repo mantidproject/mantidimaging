@@ -498,15 +498,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QUrl</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDesktopServices</span>
 
-<span class="n">DOCS_BASE</span> <span class="o">=</span> <span class="s2">&quot;https://mantidproject.github.io/mantidimaging&quot;</span>
-<span class="n">SECTION_USER_GUIDE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DOCS_BASE</span><span class="si">}</span><span class="s2">/user_docs/&quot;</span>
+<span class="n">DOCS_BASE</span> <span class="o">=</span> <span class="s2">"https://mantidproject.github.io/mantidimaging"</span>
+<span class="n">SECTION_USER_GUIDE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">DOCS_BASE</span><span class="si">}</span><span class="s2">/user_docs/"</span>
 
 
 <div class="viewcode-block" id="open_user_operation_docs">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.net.help_pages.html#mantidimaging.core.net.help_pages.open_user_operation_docs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">open_user_operation_docs</span><span class="p">(</span><span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">page_url</span> <span class="o">=</span> <span class="s2">&quot;explanations/operations/index&quot;</span>
-    <span class="n">section</span> <span class="o">=</span> <span class="n">operation_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="n">page_url</span> <span class="o">=</span> <span class="s2">"explanations/operations/index"</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="n">operation_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span>
     <span class="n">open_help_webpage</span><span class="p">(</span><span class="n">SECTION_USER_GUIDE</span><span class="p">,</span> <span class="n">page_url</span><span class="p">,</span> <span class="n">section</span><span class="p">)</span></div>
 
 
@@ -515,12 +515,12 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.net.help_pages.html#mantidimaging.core.net.help_pages.open_help_webpage">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">open_help_webpage</span><span class="p">(</span><span class="n">section_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">page_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">section</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">section_url</span><span class="si">}{</span><span class="n">page_url</span><span class="si">}</span><span class="s2">.html#</span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">section_url</span><span class="si">}{</span><span class="n">page_url</span><span class="si">}</span><span class="s2">.html#</span><span class="si">{</span><span class="n">section</span><span class="si">}</span><span class="s2">"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">section_url</span><span class="si">}{</span><span class="n">page_url</span><span class="si">}</span><span class="s2">.html&quot;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">section_url</span><span class="si">}{</span><span class="n">page_url</span><span class="si">}</span><span class="s2">.html"</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">QDesktopServices</span><span class="o">.</span><span class="n">openUrl</span><span class="p">(</span><span class="n">QUrl</span><span class="p">(</span><span class="n">url</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Url could not be opened: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Url could not be opened: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 </pre></div>
 

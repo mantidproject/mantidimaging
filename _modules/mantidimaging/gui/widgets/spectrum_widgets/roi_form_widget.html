@@ -517,9 +517,9 @@
 <div class="viewcode-block" id="ROIFormWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ROIFormWidget</span><span class="p">(</span><span class="n">BaseWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Collection of widgets for adding, removing and adjusting ROIs in the spectrum viewer</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">exportTabs</span><span class="p">:</span> <span class="n">QTabWidget</span>
     <span class="n">image_tab</span><span class="p">:</span> <span class="n">QWidget</span>
     <span class="n">roi_properties_widget</span><span class="p">:</span> <span class="n">ROIPropertiesTableWidget</span>
@@ -536,18 +536,18 @@
     <span class="n">binningChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">ROIBinner</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="s1">&#39;gui/ui/roi_form_widget.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="s1">'gui/ui/roi_form_widget.ui'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_output_mode_combobox</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_binning_visibility</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_binning_visibility</span><span class="p">()</span>
 
-        <span class="n">icon_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;gui&quot;</span> <span class="o">/</span> <span class="s2">&quot;ui&quot;</span> <span class="o">/</span> <span class="s2">&quot;images&quot;</span> <span class="o">/</span> <span class="s2">&quot;exclamation-triangle-red.png&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+        <span class="n">icon_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">"gui"</span> <span class="o">/</span> <span class="s2">"ui"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"exclamation-triangle-red.png"</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rits_warning_icon_pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">icon_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rits_warning_icon_pixmap</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
         <span class="n">sp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">sizePolicy</span><span class="p">()</span>
         <span class="n">sp</span><span class="o">.</span><span class="n">setRetainSizeWhenHidden</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -574,7 +574,7 @@
 <div class="viewcode-block" id="ROIFormWidget.set_binning_visibility">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIFormWidget.set_binning_visibility">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_binning_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">hide_binning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_output_mode</span> <span class="o">!=</span> <span class="s2">&quot;2D Binned&quot;</span>
+        <span class="n">hide_binning</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_output_mode</span> <span class="o">!=</span> <span class="s2">"2D Binned"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_size_label</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">hide_binning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_size_spinBox</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">hide_binning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_step_label</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">hide_binning</span><span class="p">)</span>
@@ -586,7 +586,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">show_rits_warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">visible</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">message</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ritsWarningIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">message</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -601,20 +601,20 @@
         <span class="n">binner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binner</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">binner</span><span class="o">.</span><span class="n">left_indexes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">binner</span><span class="o">.</span><span class="n">top_indexes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">warning</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Bin size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">bin_size</span><span class="si">}</span><span class="s2"> and step size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">step_size</span><span class="si">}</span><span class="s2"> are too large for the ROI &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">). No bins can be created. Please reduce bin or step size.&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">"Bin size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">bin_size</span><span class="si">}</span><span class="s2"> and step size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">step_size</span><span class="si">}</span><span class="s2"> are too large for the ROI "</span>
+                <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">). No bins can be created. Please reduce bin or step size."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_rits_warning</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">binner</span><span class="o">.</span><span class="n">check_fits_exactly</span><span class="p">():</span>
             <span class="n">warning</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Step size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">step_size</span><span class="si">}</span><span class="s2"> and bin size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">bin_size</span><span class="si">}</span><span class="s2"> do not evenly divide ROI dimensions &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">). Some rows or columns may not be exported.&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">"Step size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">step_size</span><span class="si">}</span><span class="s2"> and bin size </span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">bin_size</span><span class="si">}</span><span class="s2"> do not evenly divide ROI dimensions "</span>
+                <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">binner</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">). Some rows or columns may not be exported."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_rits_warning</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_rits_warning</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binningChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">binner</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_bin_size_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set sensible limits for binning controls based on ROI size.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set sensible limits for binning controls based on ROI size."""</span>
         <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">to_roi</span><span class="p">()</span>
         <span class="n">min_dim</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">QSignalBlocker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_size_spinBox</span><span class="p">):</span>
@@ -630,9 +630,9 @@
 <div class="viewcode-block" id="ROIPropertiesTableWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIPropertiesTableWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ROIPropertiesTableWidget</span><span class="p">(</span><span class="n">BaseWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Widget for manually adjusting the current selected ROI</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">spin_left</span><span class="p">:</span> <span class="n">QSpinBox</span>
     <span class="n">spin_right</span><span class="p">:</span> <span class="n">QSpinBox</span>
     <span class="n">spin_top</span><span class="p">:</span> <span class="n">QSpinBox</span>
@@ -644,7 +644,7 @@
     <span class="n">roi_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="s1">&#39;gui/ui/roi_properties_table_widget.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="s1">'gui/ui/roi_properties_table_widget.ui'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spin_boxes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">spin_left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_right</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_top</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin_bottom</span><span class="p">]</span>
 
@@ -654,7 +654,7 @@
 <div class="viewcode-block" id="ROIPropertiesTableWidget.set_roi_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROIPropertiesTableWidget.set_roi_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">group_box</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Roi Properties: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_box</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Roi Properties: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROIPropertiesTableWidget.set_roi_values">
@@ -667,7 +667,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">spin_bottom</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">label_width</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">label_height</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI bounds set: left=</span><span class="si">%d</span><span class="s2">, right=</span><span class="si">%d</span><span class="s2">, top=</span><span class="si">%d</span><span class="s2">, bottom=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI bounds set: left=</span><span class="si">%d</span><span class="s2">, right=</span><span class="si">%d</span><span class="s2">, top=</span><span class="si">%d</span><span class="s2">, bottom=</span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROIPropertiesTableWidget.set_roi_limits">
@@ -713,9 +713,9 @@
 <div class="viewcode-block" id="ROITableWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ROITableWidget</span><span class="p">(</span><span class="n">RemovableRowTableView</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A class to represent the ROI table widget in the spectrum viewer window.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ElementType</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">bool</span>
     <span class="n">RowType</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]</span>
     <span class="n">selected_row</span><span class="p">:</span> <span class="nb">int</span>
@@ -765,9 +765,9 @@
 <div class="viewcode-block" id="ROITableWidget.get_roi_name_by_row">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.get_roi_name_by_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Retrieve the name an ROI by its row index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
@@ -778,27 +778,27 @@
 <div class="viewcode-block" id="ROITableWidget.get_roi_visibility_by_row">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.get_roi_visibility_by_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_roi_visibility_by_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Retrieve the visibility status of an ROI by its row index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.row_count">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.row_count">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">row_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the number of rows in the ROI table model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.find_row_for_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.find_row_for_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_row_for_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns row index for ROI name, or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="o">==</span> <span class="n">roi_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">row</span>
@@ -808,9 +808,9 @@
 <div class="viewcode-block" id="ROITableWidget.update_roi_color">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.update_roi_color">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Finds ROI by name in table and updates it&#39;s colour (R, G, B) format.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Finds ROI by name in table and updates it's colour (R, G, B) format.</span>
+<span class="sd">        """</span>
         <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_row_for_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">row</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">update_color</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">new_color</span><span class="p">)</span></div>
@@ -819,34 +819,34 @@
 <div class="viewcode-block" id="ROITableWidget.add_row">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.add_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">roi_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add a new row to the ROI table</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">appendNewRow</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI added to table: name=</span><span class="si">%s</span><span class="s2">, color=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI added to table: name=</span><span class="si">%s</span><span class="s2">, color=</span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.remove_row">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.remove_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Remove a row from the ROI table</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">remove_row</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectRow</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI row removed: row=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI row removed: row=</span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.clear_table">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.html#mantidimaging.gui.widgets.spectrum_widgets.roi_form_widget.ROITableWidget.clear_table">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clears the ROI table in the spectrum viewer.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_table_model</span><span class="o">.</span><span class="n">clear_table</span><span class="p">()</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI table cleared&quot;</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI table cleared"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ROITableWidget.select_roi">

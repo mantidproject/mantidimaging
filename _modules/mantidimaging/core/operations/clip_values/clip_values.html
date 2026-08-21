@@ -510,7 +510,7 @@
 <div class="viewcode-block" id="ClipValuesFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.clip_values.clip_values.html#mantidimaging.core.operations.clip_values.clip_values.ClipValuesFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ClipValuesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clips grey values of the image based on the parameters. Can be used to remove outliers</span>
+<span class="w">    </span><span class="sd">"""Clips grey values of the image based on the parameters. Can be used to remove outliers</span>
 <span class="sd">    and noise (e.g. negative values) from reconstructed images.</span>
 
 <span class="sd">    Intended to be used on: Projections and reconstructed slices</span>
@@ -518,8 +518,8 @@
 <span class="sd">    When: To remove a range of pixel values from the data.</span>
 
 <span class="sd">    Caution: Make sure the value range does not clip information from the sample.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Clip Values&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Clip Values"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ClipValuesFilter.filter_func">
@@ -531,7 +531,7 @@
                     <span class="n">clip_min_new_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">clip_max_new_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clip values below the min and above the max pixels.</span>
+<span class="w">        </span><span class="sd">"""Clip values below the min and above the max pixels.</span>
 
 <span class="sd">        :param data: Input data as a 3D numpy.ndarray.</span>
 <span class="sd">        :param clip_min: The minimum value to be clipped from the data.</span>
@@ -550,15 +550,15 @@
 <span class="sd">                                   is used.</span>
 
 <span class="sd">        :return: The processed 3D numpy.ndarray.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># We&#39;re using is None because 0.0 is a valid value</span>
+<span class="sd">        """</span>
+        <span class="c1"># We're using is None because 0.0 is a valid value</span>
         <span class="k">if</span> <span class="n">clip_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">clip_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At least one of clip_min or clip_max must be supplied&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'At least one of clip_min or clip_max must be supplied'</span><span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;clip_min&#39;</span><span class="p">:</span> <span class="n">clip_min</span><span class="p">,</span>
-            <span class="s1">&#39;clip_max&#39;</span><span class="p">:</span> <span class="n">clip_max</span><span class="p">,</span>
-            <span class="s1">&#39;clip_min_new_value&#39;</span><span class="p">:</span> <span class="n">clip_min_new_value</span><span class="p">,</span>
-            <span class="s1">&#39;clip_max_new_value&#39;</span><span class="p">:</span> <span class="n">clip_max_new_value</span>
+            <span class="s1">'clip_min'</span><span class="p">:</span> <span class="n">clip_min</span><span class="p">,</span>
+            <span class="s1">'clip_max'</span><span class="p">:</span> <span class="n">clip_max</span><span class="p">,</span>
+            <span class="s1">'clip_min_new_value'</span><span class="p">:</span> <span class="n">clip_min_new_value</span><span class="p">,</span>
+            <span class="s1">'clip_max_new_value'</span><span class="p">:</span> <span class="n">clip_max_new_value</span>
         <span class="p">}</span>
 
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">ClipValuesFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">],</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
@@ -571,10 +571,10 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
         <span class="nb">slice</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">clip_min</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_min&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_min&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-        <span class="n">clip_max</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_max&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_max&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="n">clip_min_new_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_min_new_value&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_min_new_value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">clip_min</span>
-        <span class="n">clip_max_new_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_max_new_value&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;clip_max_new_value&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">clip_max</span>
+        <span class="n">clip_min</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_min'</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_min'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">clip_max</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_max'</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_max'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">slice</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">clip_min_new_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_min_new_value'</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_min_new_value'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">clip_min</span>
+        <span class="n">clip_max_new_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_max_new_value'</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">'clip_max_new_value'</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">clip_max</span>
 
         <span class="c1"># Clip the values</span>
         <span class="nb">slice</span><span class="p">[</span><span class="nb">slice</span> <span class="o">&lt;</span> <span class="n">clip_min</span><span class="p">]</span> <span class="o">=</span> <span class="n">clip_min_new_value</span>
@@ -589,39 +589,39 @@
 
         <span class="n">value_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">clip_min_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Clip Min&#39;</span><span class="p">,</span>
-                                                 <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">clip_min_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Clip Min'</span><span class="p">,</span>
+                                                 <span class="s1">'float'</span><span class="p">,</span>
                                                  <span class="n">valid_values</span><span class="o">=</span><span class="n">value_range</span><span class="p">,</span>
                                                  <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                  <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Any pixel with a value below this number will be clipped&quot;</span><span class="p">)</span>
+                                                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Any pixel with a value below this number will be clipped"</span><span class="p">)</span>
         <span class="n">clip_min_field</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">clip_max_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Clip Max&#39;</span><span class="p">,</span>
-                                                 <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">clip_max_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Clip Max'</span><span class="p">,</span>
+                                                 <span class="s1">'float'</span><span class="p">,</span>
                                                  <span class="n">valid_values</span><span class="o">=</span><span class="n">value_range</span><span class="p">,</span>
                                                  <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                  <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Any pixel with a value above this number will be clipped&quot;</span><span class="p">)</span>
+                                                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Any pixel with a value above this number will be clipped"</span><span class="p">)</span>
         <span class="n">clip_max_field</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">clip_min_new_value_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span>
-            <span class="s1">&#39;Min Replacement Value&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+            <span class="s1">'Min Replacement Value'</span><span class="p">,</span>
+            <span class="s1">'float'</span><span class="p">,</span>
             <span class="n">valid_values</span><span class="o">=</span><span class="n">value_range</span><span class="p">,</span>
             <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
             <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s1">&#39;The value that will be used to replace pixel values &#39;</span>
-            <span class="s1">&#39;that fall below Clip Min.&#39;</span><span class="p">)</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="s1">'The value that will be used to replace pixel values '</span>
+            <span class="s1">'that fall below Clip Min.'</span><span class="p">)</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">clip_max_new_value_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span>
-            <span class="s1">&#39;Max Replacement Value&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+            <span class="s1">'Max Replacement Value'</span><span class="p">,</span>
+            <span class="s1">'float'</span><span class="p">,</span>
             <span class="n">valid_values</span><span class="o">=</span><span class="n">value_range</span><span class="p">,</span>
             <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
             <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s1">&#39;The value that will be used to replace pixel values &#39;</span>
-            <span class="s1">&#39;that are above Clip Max.&#39;</span><span class="p">)</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="s1">'The value that will be used to replace pixel values '</span>
+            <span class="s1">'that are above Clip Max.'</span><span class="p">)</span>
 
         <span class="n">clip_min_new_value_field</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
         <span class="n">clip_max_new_value_field</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
@@ -638,10 +638,10 @@
             <span class="k">lambda</span><span class="p">:</span> <span class="n">update_field_on_value_changed</span><span class="p">(</span><span class="n">clip_max_field</span><span class="p">,</span> <span class="n">clip_max_new_value_field</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;clip_min_field&quot;</span><span class="p">:</span> <span class="n">clip_min_field</span><span class="p">,</span>
-            <span class="s2">&quot;clip_max_field&quot;</span><span class="p">:</span> <span class="n">clip_max_field</span><span class="p">,</span>
-            <span class="s2">&quot;clip_min_new_value_field&quot;</span><span class="p">:</span> <span class="n">clip_min_new_value_field</span><span class="p">,</span>
-            <span class="s2">&quot;clip_max_new_value_field&quot;</span><span class="p">:</span> <span class="n">clip_max_new_value_field</span>
+            <span class="s2">"clip_min_field"</span><span class="p">:</span> <span class="n">clip_min_field</span><span class="p">,</span>
+            <span class="s2">"clip_max_field"</span><span class="p">:</span> <span class="n">clip_max_field</span><span class="p">,</span>
+            <span class="s2">"clip_min_new_value_field"</span><span class="p">:</span> <span class="n">clip_min_new_value_field</span><span class="p">,</span>
+            <span class="s2">"clip_max_new_value_field"</span><span class="p">:</span> <span class="n">clip_max_new_value_field</span>
         <span class="p">}</span></div>
 
 

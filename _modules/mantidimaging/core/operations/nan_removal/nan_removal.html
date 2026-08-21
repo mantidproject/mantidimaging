@@ -515,14 +515,14 @@
 <div class="viewcode-block" id="enable_correct_fields_only">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.enable_correct_fields_only">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">enable_correct_fields_only</span><span class="p">(</span><span class="n">mode_field</span><span class="p">,</span> <span class="n">replace_value_field</span><span class="p">):</span>
-    <span class="n">replace_value_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">mode_field</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Constant&quot;</span><span class="p">)</span></div>
+    <span class="n">replace_value_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">mode_field</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"Constant"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="NaNRemovalFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NaNRemovalFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Replaces the NaNs with a specified value or the median of neighbouring pixels.</span>
 
 <span class="sd">    Intended to be used on: Projections</span>
@@ -530,34 +530,34 @@
 <span class="sd">    When: To remove NaNs before reconstruction.</span>
 
 <span class="sd">    Note that the median method cannot remove continuous blocks of NaNs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;NaN Removal&quot;</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"NaN Removal"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">MODES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;Median&quot;</span><span class="p">]</span>
+    <span class="n">MODES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Constant"</span><span class="p">,</span> <span class="s2">"Median"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="NaNRemovalFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">replace_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode_value</span><span class="o">=</span><span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">replace_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode_value</span><span class="o">=</span><span class="s2">"Constant"</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param data: The input data.</span>
-<span class="sd">        :param mode_value: Values to replace NaNs with. One of [&quot;Constant&quot;, &quot;Median&quot;]</span>
+<span class="sd">        :param mode_value: Values to replace NaNs with. One of ["Constant", "Median"]</span>
 <span class="sd">        :param replace_value: In constant mode, the value to replace NaNs with.</span>
 <span class="sd">        :param progress: The optional Progress object.</span>
 <span class="sd">        :return: The ImageStack object with the NaNs replaced.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
-        <span class="k">if</span> <span class="n">mode_value</span> <span class="o">==</span> <span class="s2">&quot;Constant&quot;</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;replace_value&#39;</span><span class="p">:</span> <span class="n">replace_value</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">mode_value</span> <span class="o">==</span> <span class="s2">"Constant"</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'replace_value'</span><span class="p">:</span> <span class="n">replace_value</span><span class="p">}</span>
             <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">compute_constant_function</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span>
                                 <span class="n">progress</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">mode_value</span> <span class="o">==</span> <span class="s2">&quot;Median&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">mode_value</span> <span class="o">==</span> <span class="s2">"Median"</span><span class="p">:</span>
             <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">compute_median_function</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="p">{},</span>
                                 <span class="n">progress</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown mode: &#39;</span><span class="si">{</span><span class="n">mode_value</span><span class="si">}</span><span class="s2">&#39;. Should be one of </span><span class="si">{</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">MODES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown mode: '</span><span class="si">{</span><span class="n">mode_value</span><span class="si">}</span><span class="s2">'. Should be one of </span><span class="si">{</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">MODES</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">data</span></div>
 
@@ -566,7 +566,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.compute_constant_function">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_constant_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">replace_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;replace_value&#39;</span><span class="p">]</span>
+        <span class="n">replace_value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'replace_value'</span><span class="p">]</span>
         <span class="n">nan_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">nan_idxs</span><span class="p">]</span> <span class="o">=</span> <span class="n">replace_value</span></div>
 
@@ -575,7 +575,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.nan_removal.nan_removal.html#mantidimaging.core.operations.nan_removal.nan_removal.NaNRemovalFilter.compute_median_function">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_median_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">_nan_to_median</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">edgemode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span></div>
+        <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">_nan_to_median</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">edgemode</span><span class="o">=</span><span class="s1">'reflect'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NaNRemovalFilter.register_gui">
@@ -586,33 +586,33 @@
 
         <span class="n">value_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">mode_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Replace with&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">mode_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Replace with'</span><span class="p">,</span>
                                              <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
                                              <span class="n">valid_values</span><span class="o">=</span><span class="n">NaNRemovalFilter</span><span class="o">.</span><span class="n">MODES</span><span class="p">,</span>
                                              <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Values used to replace NaNs&quot;</span><span class="p">)</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Values used to replace NaNs"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">replace_value_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Replacement Value&quot;</span><span class="p">,</span>
-                                                      <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">replace_value_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">"Replacement Value"</span><span class="p">,</span>
+                                                      <span class="s1">'float'</span><span class="p">,</span>
                                                       <span class="n">valid_values</span><span class="o">=</span><span class="n">value_range</span><span class="p">,</span>
                                                       <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                       <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                                      <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The value to replace the NaNs with&quot;</span><span class="p">)</span>
+                                                      <span class="n">tooltip</span><span class="o">=</span><span class="s2">"The value to replace the NaNs with"</span><span class="p">)</span>
         <span class="n">replace_value_field</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 
         <span class="n">mode_field</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">enable_correct_fields_only</span><span class="p">(</span><span class="n">mode_field</span><span class="p">,</span> <span class="n">replace_value_field</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mode_field&quot;</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">,</span> <span class="s2">&quot;replace_value_field&quot;</span><span class="p">:</span> <span class="n">replace_value_field</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"mode_field"</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">,</span> <span class="s2">"replace_value_field"</span><span class="p">:</span> <span class="n">replace_value_field</span><span class="p">}</span></div>
 
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_nan_to_median</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edgemode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Replaces NaN values in data with median, based on a kernel &#39;size&#39; and &#39;edgemode&#39;.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Replaces NaN values in data with median, based on a kernel 'size' and 'edgemode'.</span>
 <span class="sd">        Initially converts NaNs to -inf to avoid calculation issues, applies a median filter.</span>
 <span class="sd">        After -inf changes back to NaNs to indicate unprocessed blocks.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">nans</span><span class="p">):</span>
             <span class="n">median_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nans</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>

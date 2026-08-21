@@ -544,8 +544,8 @@
     <span class="n">exportLayout</span><span class="p">:</span> <span class="n">QVBoxLayout</span>
     <span class="n">normaliseErrorIcon</span><span class="p">:</span> <span class="n">QLabel</span>
     <span class="n">shuttercountErrorIcon</span><span class="p">:</span> <span class="n">QLabel</span>
-    <span class="n">normalise_error_issue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">shuttercount_error_issue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">normalise_error_issue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">shuttercount_error_issue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
 
     <span class="n">spectrum_widget</span><span class="p">:</span> <span class="n">SpectrumWidget</span>
     <span class="n">experimentSetupGroupBox</span><span class="p">:</span> <span class="n">QGroupBox</span>
@@ -553,18 +553,18 @@
     <span class="n">roi_form</span><span class="p">:</span> <span class="n">ROIFormWidget</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;gui/ui/spectrum_viewer.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'gui/ui/spectrum_viewer.ui'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
-        <span class="n">splitter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">QSplitter</span><span class="p">,</span> <span class="s2">&quot;splitter&quot;</span><span class="p">)</span>
-        <span class="n">sidebar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">QTabWidget</span><span class="p">,</span> <span class="s2">&quot;formTabs&quot;</span><span class="p">)</span>
+        <span class="n">splitter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">QSplitter</span><span class="p">,</span> <span class="s2">"splitter"</span><span class="p">)</span>
+        <span class="n">sidebar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">QTabWidget</span><span class="p">,</span> <span class="s2">"formTabs"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">splitter</span> <span class="ow">and</span> <span class="n">sidebar</span><span class="p">:</span>
             <span class="c1"># prevent collapsing</span>
             <span class="n">splitter</span><span class="o">.</span><span class="n">setCollapsible</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># set sidebar index</span>
             <span class="n">splitter</span><span class="o">.</span><span class="n">setCollapsible</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># set main area index</span>
 
-        <span class="n">icon_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">&quot;gui&quot;</span> <span class="o">/</span> <span class="s2">&quot;ui&quot;</span> <span class="o">/</span> <span class="s2">&quot;images&quot;</span> <span class="o">/</span> <span class="s2">&quot;exclamation-triangle-red.png&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+        <span class="n">icon_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">finder</span><span class="o">.</span><span class="n">ROOT_PATH</span> <span class="o">/</span> <span class="s2">"gui"</span> <span class="o">/</span> <span class="s2">"ui"</span> <span class="o">/</span> <span class="s2">"images"</span> <span class="o">/</span> <span class="s2">"exclamation-triangle-red.png"</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_icon_pixmap</span> <span class="o">=</span> <span class="n">QPixmap</span><span class="p">(</span><span class="n">icon_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">SpectrumViewerWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
@@ -583,10 +583,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exportDataTableWidget</span> <span class="o">=</span> <span class="n">ExportDataTableWidget</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="p">,</span> <span class="s2">&quot;Table&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="p">,</span> <span class="s2">"Table"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_export_image_widget</span> <span class="o">=</span> <span class="n">ExportImageViewWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_export_image_widget</span><span class="p">,</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_export_image_widget</span><span class="p">,</span> <span class="s2">"Image"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_export_change_tab</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exportLayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="p">)</span>
 
@@ -612,7 +612,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">roiColorChangeRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">change_roi_colour</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_right_click_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">spectrum_viewbox</span><span class="o">.</span><span class="n">menu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_right_click_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Units&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_right_click_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">"Units"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">allowed_modes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -621,7 +621,7 @@
             <span class="n">action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_tof_unit_change_via_menu</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;Wavelength&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"Wavelength"</span><span class="p">:</span>
                 <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">tof_data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -638,10 +638,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">handle_button_enabled</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Use same ROI&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">"Use same ROI"</span><span class="p">)</span>
 
         <span class="n">row_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
-        <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Normalise against:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+        <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Normalise against:"</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
         <span class="n">row_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="p">)</span>
         <span class="n">row_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
@@ -706,7 +706,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_sync_export_background</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy current image main spectrum view to the export widget&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Copy current image main spectrum view to the export widget"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_export_image_widget</span><span class="o">.</span><span class="n">update_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_export_background_image">
@@ -718,21 +718,21 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_change_tab">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_change_tab">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_change_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formTabs</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Export&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formTabs</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"Export"</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exportDataTableWidget</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">fittingForm</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">setup_fitting_model</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">())</span> <span class="o">==</span> <span class="s2">"Image"</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sync_export_background</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_parameter_map</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imageTabs</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_unit_labels_and_menus</span><span class="p">()</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Tab changed: index=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Tab changed: index=</span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_export_change_tab">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_export_change_tab">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_export_change_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="n">tab_index</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"Image"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sync_export_background</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">update_parameter_map</span><span class="p">()</span></div>
 
@@ -740,7 +740,7 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.show_image_tab">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.show_image_tab">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_image_tab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Switch the export display to the Image tab.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Switch the export display to the Image tab."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_display_tabs</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_export_image_widget</span><span class="p">))</span></div>
 
 
@@ -767,7 +767,7 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.display_parameter_map">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_parameter_map">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">display_parameter_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">,</span> <span class="n">levels</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the parameter map on the image tab of the export view.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Display the parameter map on the image tab of the export view."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_export_background</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_export_image_widget</span><span class="o">.</span><span class="n">show_parameter_map</span><span class="p">(</span><span class="n">map_array</span><span class="p">,</span> <span class="n">binner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlay_opacity</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span></div>
 
@@ -775,7 +775,7 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.sync_unit_menus">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.sync_unit_menus">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sync_unit_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync the checked unit in both the image and fitting tab unit menus.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Sync the checked unit in both the image and fitting tab unit menus."""</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fittingDisplayWidget</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">actions</span><span class="p">():</span>
                 <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="n">unit_name</span><span class="p">)</span></div>
@@ -784,9 +784,9 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.on_visibility_change">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.on_visibility_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_visibility_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        When the visibility of an ROI is changed, update the visibility of the ROI in the spectrum widget</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">export_mode</span> <span class="o">==</span> <span class="n">ExportMode</span><span class="o">.</span><span class="n">ROI_MODE</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">ROI_RITS</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -836,34 +836,34 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_save_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open a save-file dialog and return the chosen path, or None if cancelled&quot;&quot;&quot;</span>
-        <span class="n">path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Open a save-file dialog and return the chosen path, or None if cancelled"""</span>
+        <span class="n">path</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">file_filter</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span> <span class="k">else</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_csv_filename">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_csv_filename">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_csv_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_save_filename</span><span class="p">(</span><span class="s2">&quot;Save CSV file&quot;</span><span class="p">,</span> <span class="s2">&quot;CSV file (*.csv)&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_save_filename</span><span class="p">(</span><span class="s2">"Save CSV file"</span><span class="p">,</span> <span class="s2">"CSV file (*.csv)"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_map_export_filename">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_map_export_filename">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_map_export_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Open a save-file dialog for the parameter map export</span>
 
 <span class="sd">        @return: path.tiff or None is cancelled</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">export_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_save_filename</span><span class="p">(</span><span class="s2">&quot;Export Parameter Map&quot;</span><span class="p">,</span> <span class="s2">&quot;TIFF (*.tiff *.tif)&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">export_path</span> <span class="ow">and</span> <span class="n">export_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;.tiff&quot;</span><span class="p">,</span> <span class="s2">&quot;.tif&quot;</span><span class="p">):</span>
-            <span class="n">export_path</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.tiff&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">export_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_save_filename</span><span class="p">(</span><span class="s2">"Export Parameter Map"</span><span class="p">,</span> <span class="s2">"TIFF (*.tiff *.tif)"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">export_path</span> <span class="ow">and</span> <span class="n">export_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">".tiff"</span><span class="p">,</span> <span class="s2">".tif"</span><span class="p">):</span>
+            <span class="n">export_path</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">".tiff"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">export_path</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_load_csv_filename">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_load_csv_filename">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_load_csv_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Load CSV file&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;CSV file (*.csv)&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Load CSV file"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"CSV file (*.csv)"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -873,10 +873,10 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_rits_export_directory">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_directory">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_rits_export_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get the path to save the RITS file too</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Select Directory&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">ShowDirsOnly</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Select Directory"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">ShowDirsOnly</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -886,7 +886,7 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_rits_export_filename">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_rits_export_filename">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_rits_export_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_save_filename</span><span class="p">(</span><span class="s2">&quot;Save DAT file&quot;</span><span class="p">,</span> <span class="s2">&quot;DAT file (*.dat)&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_save_filename</span><span class="p">(</span><span class="s2">"Save DAT file"</span><span class="p">,</span> <span class="s2">"DAT file (*.dat)"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.set_image">
@@ -898,10 +898,10 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.set_spectrum">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_spectrum">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spectrum_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Try to set the spectrum data for a given ROI assuming the</span>
 <span class="sd">        roi may not exist in the spectrum widget yet depending on when method is called</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_visible_spectrums</span><span class="p">()</span></div>
 
@@ -909,12 +909,12 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.clear">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clear spectrum viewer data and reset the UI states:</span>
 <span class="sd">        - Spectrum data and plots</span>
 <span class="sd">        - Export table data</span>
 <span class="sd">        - Normalisation checkbox</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum_data_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
@@ -946,7 +946,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">normaliseErrorIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">normaliseErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normaliseErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">redraw_spectrum</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span></div>
@@ -969,19 +969,19 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.handle_shuttercount_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_shuttercount_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">set_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalise_ShutterCount_CheckBox</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span> <span class="o">==</span> <span class="s2">""</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.display_shuttercount_error">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.display_shuttercount_error">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">display_shuttercount_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalisation_enabled</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_norm_enabled</span><span class="p">()</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_issue</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_issue</span> <span class="o">==</span> <span class="s2">""</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalise_error_icon_pixmap</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shuttercount_error_issue</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QPixmap</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shuttercountErrorIcon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.get_open_beam_roi_choice">
@@ -994,7 +994,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.get_open_beam_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_open_beam_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">choice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_open_beam_roi_choice</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">&quot;Use same ROI&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="s2">"Use same ROI"</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">get_roi</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span></div>
 
@@ -1002,21 +1002,21 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.update_roi_dropdown">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.update_roi_dropdown">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_roi_dropdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates the ROI dropdown menus with the available ROIs. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">""" Updates the ROI dropdown menus with the available ROIs. """</span>
         <span class="n">roi_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">set_roi_names</span><span class="p">(</span><span class="n">roi_names</span><span class="p">)</span>
         <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Use same ROI&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">"Use same ROI"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">roi_names</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;rits_roi&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">"rits_roi"</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">idx</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">openBeamRoiCombo</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI dropdown updated in view&quot;</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI dropdown updated in view"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.shuttercount_norm_enabled">
@@ -1028,13 +1028,13 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.set_new_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_new_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_new_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set a new ROI on the image</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_add_roi</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">enable_roi_spinboxes</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_properties</span><span class="p">()</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New ROI creation triggered by user&quot;</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"New ROI creation triggered by user"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumViewerWindowView.handle_table_click">
@@ -1055,11 +1055,11 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.set_roi_visibility_flags">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.set_roi_visibility_flags">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_roi_visibility_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set the visibility for the selected ROI and update the spectrum to reflect the change.</span>
 <span class="sd">        A check is made on the spectrum to see if it exists as it may not have been created yet.</span>
 <span class="sd">        @param visible: Whether the ROI is visible.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_widget</span><span class="o">.</span><span class="n">set_roi_visibility_flags</span><span class="p">(</span><span class="n">roi_name</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="n">visible</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_visible_spectrums</span><span class="p">()</span></div>
 
@@ -1083,12 +1083,12 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.add_roi_table_row">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.add_roi_table_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_roi_table_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add a new row to the ROI table</span>
 
 <span class="sd">        @param name: The name of the ROI</span>
 <span class="sd">        @param colour: The colour of the ROI</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">get_roi_names</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">removeBtn</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
@@ -1096,11 +1096,11 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.remove_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.remove_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clear the selected ROI in the table view</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">roi_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">get_roi_name_by_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI removed by user: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI removed by user: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">remove_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_view</span><span class="o">.</span><span class="n">selected_row</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">do_remove_roi</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
@@ -1162,7 +1162,7 @@
 <div class="viewcode-block" id="SpectrumViewerWindowView.disable_roi_properties">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.view.html#mantidimaging.gui.windows.spectrum_viewer.view.SpectrumViewerWindowView.disable_roi_properties">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">disable_roi_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_name</span><span class="p">(</span><span class="s2">&quot;None selected&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">set_roi_name</span><span class="p">(</span><span class="s2">"None selected"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_form</span><span class="o">.</span><span class="n">roi_properties_widget</span><span class="o">.</span><span class="n">enable_roi_spinboxes</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 

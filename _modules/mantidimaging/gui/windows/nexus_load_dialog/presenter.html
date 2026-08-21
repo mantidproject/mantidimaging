@@ -535,26 +535,26 @@
 
 
 
-<span class="n">IMAGE_TITLE_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="n">ImageKeys</span><span class="o">.</span><span class="n">Projections</span><span class="p">:</span> <span class="s2">&quot;Projections&quot;</span><span class="p">,</span> <span class="n">ImageKeys</span><span class="o">.</span><span class="n">FlatField</span><span class="p">:</span> <span class="s2">&quot;Flat&quot;</span><span class="p">,</span> <span class="n">ImageKeys</span><span class="o">.</span><span class="n">DarkField</span><span class="p">:</span> <span class="s2">&quot;Dark&quot;</span><span class="p">}</span>
-<span class="n">BEFORE_TITLE_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;Before&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;After&quot;</span><span class="p">}</span>
+<span class="n">IMAGE_TITLE_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="n">ImageKeys</span><span class="o">.</span><span class="n">Projections</span><span class="p">:</span> <span class="s2">"Projections"</span><span class="p">,</span> <span class="n">ImageKeys</span><span class="o">.</span><span class="n">FlatField</span><span class="p">:</span> <span class="s2">"Flat"</span><span class="p">,</span> <span class="n">ImageKeys</span><span class="o">.</span><span class="n">DarkField</span><span class="p">:</span> <span class="s2">"Dark"</span><span class="p">}</span>
+<span class="n">BEFORE_TITLE_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">"Before"</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">"After"</span><span class="p">}</span>
 
-<span class="n">TOMO_ENTRY</span> <span class="o">=</span> <span class="s2">&quot;tomo_entry&quot;</span>
-<span class="n">CIL_NEXUS_DATA_PATH</span> <span class="o">=</span> <span class="s2">&quot;data/data&quot;</span>
-<span class="n">CIL_ROTATION_ANGLE_PATH</span> <span class="o">=</span> <span class="s2">&quot;data/rotation_angle&quot;</span>
-<span class="n">DATA_PATH</span> <span class="o">=</span> <span class="s2">&quot;instrument/detector/data&quot;</span>
-<span class="n">IMAGE_KEY_PATH</span> <span class="o">=</span> <span class="s2">&quot;instrument/detector/image_key&quot;</span>
-<span class="n">ROTATION_ANGLE_PATH</span> <span class="o">=</span> <span class="s2">&quot;sample/rotation_angle&quot;</span>
-<span class="n">DEFINITION</span> <span class="o">=</span> <span class="s2">&quot;definition&quot;</span>
-<span class="n">NXTOMOPROC</span> <span class="o">=</span> <span class="s2">&quot;NXtomoproc&quot;</span>
+<span class="n">TOMO_ENTRY</span> <span class="o">=</span> <span class="s2">"tomo_entry"</span>
+<span class="n">CIL_NEXUS_DATA_PATH</span> <span class="o">=</span> <span class="s2">"data/data"</span>
+<span class="n">CIL_ROTATION_ANGLE_PATH</span> <span class="o">=</span> <span class="s2">"data/rotation_angle"</span>
+<span class="n">DATA_PATH</span> <span class="o">=</span> <span class="s2">"instrument/detector/data"</span>
+<span class="n">IMAGE_KEY_PATH</span> <span class="o">=</span> <span class="s2">"instrument/detector/image_key"</span>
+<span class="n">ROTATION_ANGLE_PATH</span> <span class="o">=</span> <span class="s2">"sample/rotation_angle"</span>
+<span class="n">DEFINITION</span> <span class="o">=</span> <span class="s2">"definition"</span>
+<span class="n">NXTOMOPROC</span> <span class="o">=</span> <span class="s2">"NXtomoproc"</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_missing_data_message</span><span class="p">(</span><span class="n">data_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Creates a message for logging when certain data is missing in the NeXus file.</span>
 <span class="sd">    :param data_string: The name of the missing data.</span>
 <span class="sd">    :return: A string telling the user that the data is missing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;The NeXus file does not contain the </span><span class="si">{</span><span class="n">data_string</span><span class="si">}</span><span class="s2"> data.&quot;</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"The NeXus file does not contain the </span><span class="si">{</span><span class="n">data_string</span><span class="si">}</span><span class="s2"> data."</span>
 
 
 <div class="viewcode-block" id="NexusLoadPresenter">
@@ -566,10 +566,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -591,22 +591,22 @@
 <div class="viewcode-block" id="NexusLoadPresenter.scan_nexus_file">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.scan_nexus_file">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">scan_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Try to open the NeXus file and display its contents on the view.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filePathLineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_nxtomo_entry</span><span class="p">()</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span>
-                <span class="k">if</span> <span class="s1">&#39;creator&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;creator&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s1">'creator'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'creator'</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">=</span> <span class="s2">""</span>
 
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">!=</span> <span class="s2">&quot;NEXUSDataWriter.py&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">!=</span> <span class="s2">"NEXUSDataWriter.py"</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_load_standard_nexus_file</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_load_cil_nexus_file</span><span class="p">()</span>
@@ -618,11 +618,11 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span>
 
-                <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No unit information found for rotation angles. Will infer from array values.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">"units"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"No unit information found for rotation angles. Will infer from array values."</span><span class="p">)</span>
                     <span class="n">degrees</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">degrees</span> <span class="o">=</span> <span class="s2">&quot;deg&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
+                    <span class="n">degrees</span> <span class="o">=</span> <span class="s2">"deg"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">])</span>
 
                 <span class="k">if</span> <span class="n">degrees</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">)</span>
@@ -636,7 +636,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_data_title</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-            <span class="n">unable_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unable to read NeXus data from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">unable_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Unable to read NeXus data from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">unable_message</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_data_error</span><span class="p">(</span><span class="n">unable_message</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span></div>
@@ -649,17 +649,17 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">acquisition_geometry</span><span class="p">,</span> <span class="n">AcquisitionGeometry</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">acquisition_geometry</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Acquisition geometry is not of expected type.&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Acquisition geometry is not of expected type."</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_rotation_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Reads the rotation angles array and coverts them to radians if needed.</span>
 <span class="sd">        :param image_key: The image key for the angles to read.</span>
 <span class="sd">        :param before: Whether the rotation angles are for before/after images. This is None when rotation angles</span>
 <span class="sd">            for sample images are being read.</span>
 <span class="sd">        :return: A numpy array of the rotation angles or None if all angles provided are 0.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">before</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">rotation_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">==</span> <span class="n">image_key</span><span class="p">)]</span>
@@ -676,44 +676,44 @@
         <span class="k">return</span> <span class="n">rotation_angles</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">rotation_angles</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_missing_data_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a missing data message and display it on the view.</span>
-<span class="sd">        :param field: The name of the field that couldn&#39;t be found in the NeXus file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;rotation_angle&quot;</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
+<span class="sd">        :param field: The name of the field that couldn't be found in the NeXus file.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="s2">"rotation_angle"</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
             <span class="n">error_msg</span> <span class="o">=</span> <span class="n">_missing_data_message</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">_missing_data_message</span><span class="p">(</span><span class="s2">&quot;required &quot;</span> <span class="o">+</span> <span class="n">field</span><span class="p">)</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">_missing_data_message</span><span class="p">(</span><span class="s2">"required "</span> <span class="o">+</span> <span class="n">field</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_data_error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Looks for the data in the NeXus file and adds information about it to the view if it&#39;s found.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Looks for the data in the NeXus file and adds information about it to the view if it's found.</span>
 <span class="sd">        :param field: The name of the NeXus field.</span>
-<span class="sd">        :param position: The position of the field information row in the view&#39;s QTreeWidget.</span>
+<span class="sd">        :param position: The position of the field information row in the view's QTreeWidget.</span>
 <span class="sd">        :return: The h5py Group/Dataset if it could be found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_missing_data_error</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">field</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">"/"</span> <span class="o">+</span> <span class="n">field</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_cil_nexus_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">position</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data</span><span class="p">(</span><span class="n">CIL_NEXUS_DATA_PATH</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">CIL_NEXUS_DATA_PATH</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">"/"</span> <span class="o">+</span> <span class="n">CIL_NEXUS_DATA_PATH</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">dataset</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_missing_data_error</span><span class="p">(</span><span class="n">CIL_NEXUS_DATA_PATH</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
@@ -721,30 +721,30 @@
         <span class="n">position</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">DATA_PATH</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">+</span> <span class="s2">"/"</span> <span class="o">+</span> <span class="n">DATA_PATH</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">dataset</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">NEXUS_PROCESSED_DATA_PATH</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">:</span>
-                <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">NEXUS_PROCESSED_DATA_PATH</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+                <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">NEXUS_PROCESSED_DATA_PATH</span><span class="p">][</span><span class="s2">"data"</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">NEXUS_PROCESSED_DATA_PATH</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">dataset</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_missing_data_error</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_nxtomo_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Look for a tomo_entry field in the NeXus file. Generate an error and disable the view OK button if it can&#39;t be</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Look for a tomo_entry field in the NeXus file. Generate an error and disable the view OK button if it can't be</span>
 <span class="sd">        found.</span>
 <span class="sd">        :return: The first tomo_entry group if one could be found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">TOMO_ENTRY</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">TOMO_ENTRY</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tomo_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">TOMO_ENTRY</span><span class="si">}</span><span class="s2">"</span>
                 <span class="n">entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">TOMO_ENTRY</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">entry</span>
@@ -755,23 +755,23 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_recon_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Tries to find recon entries in the NeXus file then stores the data in a list.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">DEFINITION</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">definition_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DEFINITION</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">definition_data</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">NXTOMOPROC</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">definition_data</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="o">==</span> <span class="n">NXTOMOPROC</span><span class="p">:</span>
                     <span class="n">nexus_recon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nexus_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nexus_recon</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">recon_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nexus_recon</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"data"</span><span class="p">]))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_look_for_tomo_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span> <span class="o">|</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Retrieve data from the tomo entry field.</span>
 <span class="sd">        :param entry_path: The path in which the data is found.</span>
 <span class="sd">        :return: The Nexus Group/Dataset if it exists, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span><span class="p">[</span><span class="n">entry_path</span><span class="p">]</span>
@@ -782,13 +782,13 @@
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_data_from_image_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Looks for the projection and dark/flat before/after images and update the information on the view.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_images</span><span class="p">(</span><span class="n">ImageKeys</span><span class="o">.</span><span class="n">Projections</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_images_found</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_missing_data_error</span><span class="p">(</span><span class="s2">&quot;projection images&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_missing_data_error</span><span class="p">(</span><span class="s2">"projection images"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">disable_ok_button</span><span class="p">()</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_projections_increment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -806,13 +806,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_images_found</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_key_number</span><span class="p">:</span> <span class="n">ImageKeys</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Retrieve images from the data based on an image key number.</span>
 <span class="sd">        :param image_key_number: The image key number.</span>
 <span class="sd">        :param before: True if the function should return before images, False if the function should return after</span>
 <span class="sd">                       images. Ignored when getting projection images.</span>
 <span class="sd">        :return: The set of images that correspond with a given image key.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="o">.</span><span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">image_key_number</span> <span class="ow">is</span> <span class="n">ImageKeys</span><span class="o">.</span><span class="n">Projections</span><span class="p">:</span>
@@ -823,40 +823,40 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="p">[:]</span> <span class="o">==</span> <span class="n">image_key_number</span><span class="o">.</span><span class="n">value</span>
                 <span class="n">indices</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="c1"># Shouldn&#39;t have to use numpy.where but h5py doesn&#39;t allow indexing with bool arrays currently</span>
+        <span class="c1"># Shouldn't have to use numpy.where but h5py doesn't allow indexing with bool arrays currently</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_data_title</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Find the title field in the tomo_entry.</span>
-<span class="sd">        :return: The title if it was found, &quot;NeXus Data&quot; otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        :return: The title if it was found, "NeXus Data" otherwise.</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tomo_entry</span><span class="p">[</span><span class="s2">"title"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;A valid title couldn&#39;t be found. Using &#39;NeXus Data&#39; instead.&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;NeXus Data&quot;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"A valid title couldn't be found. Using 'NeXus Data' instead."</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">"NeXus Data"</span>
 
 <div class="viewcode-block" id="NexusLoadPresenter.get_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.nexus_load_dialog.presenter.html#mantidimaging.gui.windows.nexus_load_dialog.presenter.NexusLoadPresenter.get_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Dataset</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a LoadingDataset and title using the arrays that have been retrieved from the NeXus file.</span>
 <span class="sd">        :return: A tuple containing the Dataset and the data title string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">sample_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_sample_images</span><span class="p">()</span>
         <span class="n">sample_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_before_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_after_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_before_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample_images</span><span class="p">,</span>
-                     <span class="n">flat_before</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flat_before_array</span><span class="p">,</span> <span class="s2">&quot;Flat Before&quot;</span><span class="p">,</span>
+                     <span class="n">flat_before</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flat_before_array</span><span class="p">,</span> <span class="s2">"Flat Before"</span><span class="p">,</span>
                                                                  <span class="n">ImageKeys</span><span class="o">.</span><span class="n">FlatField</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
-                     <span class="n">flat_after</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flat_after_array</span><span class="p">,</span> <span class="s2">&quot;Flat After&quot;</span><span class="p">,</span>
+                     <span class="n">flat_after</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flat_after_array</span><span class="p">,</span> <span class="s2">"Flat After"</span><span class="p">,</span>
                                                                 <span class="n">ImageKeys</span><span class="o">.</span><span class="n">FlatField</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
-                     <span class="n">dark_before</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_before_array</span><span class="p">,</span> <span class="s2">&quot;Dark Before&quot;</span><span class="p">,</span>
+                     <span class="n">dark_before</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_before_array</span><span class="p">,</span> <span class="s2">"Dark Before"</span><span class="p">,</span>
                                                                  <span class="n">ImageKeys</span><span class="o">.</span><span class="n">DarkField</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
-                     <span class="n">dark_after</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span><span class="p">,</span> <span class="s2">&quot;Dark After&quot;</span><span class="p">,</span>
+                     <span class="n">dark_after</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dark_after_array</span><span class="p">,</span> <span class="s2">"Dark After"</span><span class="p">,</span>
                                                                 <span class="n">ImageKeys</span><span class="o">.</span><span class="n">DarkField</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
                      <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
 
@@ -866,17 +866,17 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_sample_images</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Creates the sample ImageStack object.</span>
 <span class="sd">        :return: An ImageStack object containing projections. If given, projection angles, pixel size, and 180deg are</span>
 <span class="sd">            also set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="c1"># Create sample array and ImageStack object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">start_widget</span><span class="o">.</span><span class="n">value</span><span class="p">():</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">stop_widget</span><span class="o">.</span><span class="n">value</span><span class="p">():</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span>
                                               <span class="n">step_widget</span><span class="o">.</span><span class="n">value</span><span class="p">()]</span>
-        <span class="n">sample_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_images</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="p">,</span> <span class="s2">&quot;Projections&quot;</span><span class="p">)</span>
+        <span class="n">sample_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_images</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_array</span><span class="p">,</span> <span class="s2">"Projections"</span><span class="p">)</span>
 
         <span class="c1"># Set attributes</span>
         <span class="n">sample_images</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">pixelSizeSpinBox</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
@@ -888,30 +888,30 @@
         <span class="k">return</span> <span class="n">sample_images</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Use a data array to create an ImageStack object.</span>
 <span class="sd">        :param data_array: The images array obtained from the NeXus file.</span>
 <span class="sd">        :param name: The name of the image dataset.</span>
 <span class="sd">        :return: An ImageStack object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">data_array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">pixelDepthComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
         <span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">data_array</span>
-        <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">"</span><span class="p">)])</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_images_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create the ImageStack objects if the corresponding data was found in the NeXus file, and the user checked the</span>
-<span class="sd">        &quot;Use?&quot; checkbox.</span>
+<span class="sd">        "Use?" checkbox.</span>
 <span class="sd">        :param data_array: The images data array.</span>
 <span class="sd">        :param name: The name of the images.</span>
 <span class="sd">        :param image_key: The image key index for the image type.</span>
 <span class="sd">        :return: An ImageStack object or None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">data_array</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">checkboxes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">image_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_images</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">image_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">projection_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_rotation_angles</span><span class="p">(</span><span class="n">image_key</span><span class="p">,</span> <span class="s2">&quot;Before&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">projection_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_rotation_angles</span><span class="p">(</span><span class="n">image_key</span><span class="p">,</span> <span class="s2">"Before"</span> <span class="ow">in</span> <span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">image_stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">projection_angles</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">image_stack</span>
@@ -924,18 +924,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_image_data_and_update_view</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="n">IMAGE_KEY_PATH</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="p">())</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="p">())</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="n">ROTATION_ANGLE_PATH</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_cil_nexus_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_cil_nexus_data</span><span class="p">()</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not a valid NXTomo, loading as a NEXUSDataWriter file&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Not a valid NXTomo, loading as a NEXUSDataWriter file"</span><span class="p">)</span>
         <span class="n">stack</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack_data</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">stack</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack_data</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -945,7 +945,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_data_found</span><span class="p">(</span>
             <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">found</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;Assuming all images are projections&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">"Assuming all images are projections"</span><span class="p">,</span>
             <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key_dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rotation_angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_tomo_data_and_update_view</span><span class="p">(</span><span class="n">CIL_ROTATION_ANGLE_PATH</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -953,7 +953,7 @@
         <span class="n">acquisition_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_geometry</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">acquisition_geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stack_data</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">create_geometry_from_cil_acq</span><span class="p">(</span><span class="n">acquisition_geometry</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Created geometry from CIL acquisition geometry.&quot;</span><span class="p">)</span></div>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Created geometry from CIL acquisition geometry."</span><span class="p">)</span></div>
 
 </pre></div>
 

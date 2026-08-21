@@ -545,7 +545,7 @@
 
         <span class="n">sample</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">image_stacks</span><span class="p">[</span><span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sinograms</span><span class="p">:</span>
-            <span class="n">sample</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Sinograms&quot;</span>
+            <span class="n">sample</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Sinograms"</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">)</span>
@@ -588,7 +588,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_images_saving">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_images_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">save_as_sino</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span> <span class="n">name_prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                          <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">pixel_depth</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting export of ImageStack </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2"> with format </span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Starting export of ImageStack </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s2"> with format </span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_when_images_not_found</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
@@ -605,38 +605,38 @@
                                      <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
 
         <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="n">filenames</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Export completed. Files saved: </span><span class="si">{</span><span class="n">filenames</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}{</span><span class="s1">&#39; ...&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;(total </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span><span class="si">}</span><span class="s2"> files)&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Export completed. Files saved: </span><span class="si">{</span><span class="n">filenames</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="si">}{</span><span class="s1">' ...'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="sa">f</span><span class="s2">"(total </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span><span class="si">}</span><span class="s2"> files)"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.do_nexus_saving">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_nexus_saving">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_nexus_saving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting NeXus export for dataset </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> to file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Starting NeXus export for dataset </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> to file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to get Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> does not have a sample&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> does not have a sample"</span><span class="p">)</span>
         <span class="n">saver</span><span class="o">.</span><span class="n">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;NeXus export completed successfully for dataset </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">. File saved at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"NeXus export completed successfully for dataset </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">. File saved at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.get_existing_180_id">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_existing_180_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_existing_180_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Gets the ID of the 180 projection object in a Dataset.</span>
 <span class="sd">        :param dataset_id: The Dataset ID.</span>
 <span class="sd">        :return: The 180 ID if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to get Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> does not have a sample&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dataset with ID </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> does not have a sample"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">,</span> <span class="n">ImageStack</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span>
@@ -656,20 +656,20 @@
             <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">angle_order</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to get ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images_id</span><span class="p">,</span> <span class="n">proj_angles</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.raise_error_when_images_not_found">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.raise_error_when_images_not_found">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">raise_error_when_images_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to get ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.raise_error_when_parent_dataset_not_found">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.raise_error_when_parent_dataset_not_found">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">raise_error_when_parent_dataset_not_found</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to find dataset containing ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to find dataset containing ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MainWindowModel.add_log_to_sample">
@@ -682,7 +682,7 @@
         <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">])</span>
         <span class="n">images</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="s1">&#39;has_projection_angles&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="s1">'has_projection_angles'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
             <span class="n">images</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
 
@@ -690,13 +690,13 @@
 <div class="viewcode-block" id="MainWindowModel.add_shutter_counts_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_shutter_counts_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">shutter_counts_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Adds the shutter counts file to the sample associated with the given images ID.</span>
 <span class="sd">        :param images_id (uuid.UUID): The ID of the images.</span>
 <span class="sd">        :param shutter_counts_file (Path): The path to the shutter counts file.</span>
 <span class="sd">        :raises RuntimeError: If the images with the given ID cannot be found.</span>
 <span class="sd">        :returns None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span>
@@ -704,22 +704,22 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_remove_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Removes a dataset and the image stacks it contains from the model.</span>
 <span class="sd">        :param dataset_id: The dataset ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span>
 
 <div class="viewcode-block" id="MainWindowModel.remove_container">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.remove_container">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Removes a container from the model.</span>
 
 <span class="sd">        :param container_id: The ID of the dataset or image stack.</span>
 <span class="sd">        :return: A list of the IDs of all the image stacks that were deleted from the model if a match was found, None</span>
 <span class="sd">            otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">container_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">:</span>
             <span class="n">stacks_in_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">container_id</span><span class="p">]</span><span class="o">.</span><span class="n">all_image_ids</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_remove_dataset</span><span class="p">(</span><span class="n">container_id</span><span class="p">)</span>
@@ -728,7 +728,7 @@
             <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">container_id</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
                     <span class="n">proj_180_id</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="c1"># If we&#39;re deleting a sample then any linked 180 projection will also be</span>
+                    <span class="c1"># If we're deleting a sample then any linked 180 projection will also be</span>
                     <span class="c1"># deleted</span>
                     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="p">:</span>
                         <span class="k">assert</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -774,11 +774,11 @@
 <div class="viewcode-block" id="MainWindowModel.get_parent_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.get_parent_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_parent_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Takes the ID of an image stack and returns the ID of its parent dataset.</span>
 <span class="sd">        :param member_id: The ID of the image stack.</span>
 <span class="sd">        :return: The ID of the parent dataset if found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">member_id</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">id</span>
@@ -799,7 +799,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.create_gif_from_stack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_gif_from_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">frame_skip</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                               <span class="n">rotation_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create an animated GIF from an image stack.</span>
 
 <span class="sd">        Applies percentile-based auto-scaling (2-98 percentile) for improved contrast,</span>
@@ -810,7 +810,7 @@
 <span class="sd">        :param output_path: Path where the GIF will be saved</span>
 <span class="sd">        :param frame_skip: Show every Nth frame (e.g., 10 = every 10th frame)</span>
 <span class="sd">        :param rotation_duration: Duration in seconds for the complete rotation (assumes 360 degrees)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">data_low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">data_high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">98</span><span class="p">)</span>

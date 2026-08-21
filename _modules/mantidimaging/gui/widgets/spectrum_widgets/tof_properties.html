@@ -503,7 +503,7 @@
 <div class="viewcode-block" id="ExperimentSetupFormWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.tof_properties.html#mantidimaging.gui.widgets.spectrum_widgets.tof_properties.ExperimentSetupFormWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExperimentSetupFormWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGroupBox</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A custom Qt widget for setting up experiment properties related to Time of Flight (ToF).</span>
 
 <span class="sd">    This widget contains input fields for flight path and time delay.</span>
@@ -514,7 +514,7 @@
 <span class="sd">        flightPathLabel: Label for the flight path input field.</span>
 <span class="sd">        timeDelaySpinBox: Spin box for inputting the time delay value.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -523,7 +523,7 @@
 <div class="viewcode-block" id="ExperimentSetupFormWidget.setupUi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.tof_properties.html#mantidimaging.gui.widgets.spectrum_widgets.tof_properties.ExperimentSetupFormWidget.setupUi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;experimentSetupGroupBox&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">"experimentSetupGroupBox"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">94</span><span class="p">)</span>
         <span class="n">sizePolicy</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">MinimumExpanding</span><span class="p">)</span>
@@ -539,32 +539,32 @@
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">flightPathLabel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathLabel</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;flightPathLabel&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Flight path: &quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathLabel</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">"flightPathLabel"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Flight path: "</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flightPathLabel</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDoubleSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">&quot; m&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">" m"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mf">1e10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;flightPathSpinBox&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">"flightPathSpinBox"</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">timeDelayLabel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelayLabel</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;timeDelayLabel&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelayLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Time delay: &quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelayLabel</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">"timeDelayLabel"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelayLabel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Time delay: "</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeDelayLabel</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDoubleSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">&quot; </span><span class="se">\u03BC</span><span class="s2">s&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setSuffix</span><span class="p">(</span><span class="s2">" </span><span class="se">\u03BC</span><span class="s2">s"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="mf">1e10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;timeDelaySpinBox&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">"timeDelaySpinBox"</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Time of Flight Properties&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s2">&quot;Time of Flight Properties&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">"Time of Flight Properties"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s2">"Time of Flight Properties"</span><span class="p">)</span>
 
         <span class="n">QtCore</span><span class="o">.</span><span class="n">QMetaObject</span><span class="o">.</span><span class="n">connectSlotsByName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
@@ -576,7 +576,7 @@
     <span class="nd">@flight_path</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">flight_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flightPathSpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Flight path set to: </span><span class="si">%.3f</span><span class="s2"> m&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Flight path set to: </span><span class="si">%.3f</span><span class="s2"> m"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">time_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -585,7 +585,7 @@
     <span class="nd">@time_delay</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">time_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeDelaySpinBox</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Time delay set to: </span><span class="si">%.3f</span><span class="s2"> µs&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Time delay set to: </span><span class="si">%.3f</span><span class="s2"> µs"</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ExperimentSetupFormWidget.connect_value_changed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.tof_properties.html#mantidimaging.gui.widgets.spectrum_widgets.tof_properties.ExperimentSetupFormWidget.connect_value_changed">[docs]</a>

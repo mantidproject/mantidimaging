@@ -574,7 +574,7 @@
 </pre></div>
 </div>
 <p>If you are using <cite>pytest</cite>, you can run tests that match a specific keyword by using the <code class="docutils literal notranslate"><span class="pre">-k</span></code> flag:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">k</span> <span class="s2">&quot;test_valid_login&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">k</span> <span class="s2">"test_valid_login"</span>
 </pre></div>
 </div>
 <p>These commands allow you to target specific areas of the codebase during development, making it easier to test and debug individual components or workflows.
@@ -716,13 +716,13 @@ See the Pytest docs for additional <a class="reference external" href="https://d
 </ul>
 <p>The context managers <a class="reference internal" href="../../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionTimer" title="mantidimaging.core.utility.execution_timer.ExecutionTimer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionTimer</span></code></a> and <a class="reference internal" href="../../api/mantidimaging.core.utility.execution_timer.html#mantidimaging.core.utility.execution_timer.ExecutionProfiler" title="mantidimaging.core.utility.execution_timer.ExecutionProfiler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionProfiler</span></code></a> can be used to wrap some lines of code to record and log its run time.</p>
 <p>To profile a function and log the time spent in each function call, you can use <cite>ExecutionProfiler</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;a_slow_function()&quot;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">"a_slow_function()"</span><span class="p">):</span>
     <span class="n">a_slow_function</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>will record and log a profile of function calls and times within <code class="code docutils literal notranslate"><span class="pre">a_slow_function()</span></code>.</p>
 <p>Alternatively, to benchmark the execution time of a specific block of code, use <cite>ExecutionTimer</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionTimer</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;a_block_of_code&quot;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionTimer</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">"a_block_of_code"</span><span class="p">):</span>
     <span class="c1"># Code block to benchmark</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">some_function</span><span class="p">()</span>
 </pre></div>

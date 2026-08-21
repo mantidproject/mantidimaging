@@ -516,7 +516,7 @@
 <div class="viewcode-block" id="RotateFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#mantidimaging.core.operations.rotate_stack.rotate_stack.RotateFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RotateFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotates the image data by an arbitrary degree counter-clockwise.</span>
+<span class="w">    </span><span class="sd">"""Rotates the image data by an arbitrary degree counter-clockwise.</span>
 
 <span class="sd">    Intended to be used on: Projections</span>
 
@@ -525,26 +525,26 @@
 <span class="sd">    Caution: Rotations of images others than multiples of 90 degrees could introduce additional</span>
 <span class="sd">    artifacts in the reconstructed volume. Such rotations are usually not required as</span>
 <span class="sd">    small tilts can be taken into account at the reconstruction stage.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Rotate Stack&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Rotate Stack"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RotateFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rotate_stack.rotate_stack.html#mantidimaging.core.operations.rotate_stack.rotate_stack.RotateFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Rotates images by an arbitrary degree.</span>
 
 <span class="sd">        param data: stack of sample images</span>
 <span class="sd">        param angle: The rotation to be performed, in degrees</span>
 
 <span class="sd">        return: The rotated images</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">angle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Value must be provided for angle parameter&#39;</span><span class="p">)</span>
-        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Rotate Stack&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Value must be provided for angle parameter'</span><span class="p">)</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">'Rotate Stack'</span><span class="p">)</span>
         <span class="n">_do_rotation</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
@@ -556,24 +556,24 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
         <span class="n">dropdown</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
-        <span class="n">dropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;180&#39;</span><span class="p">,</span> <span class="s1">&#39;270&#39;</span><span class="p">,</span> <span class="s1">&#39;Custom&#39;</span><span class="p">])</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">dropdown</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Angle presets (degrees)&#39;</span><span class="p">,</span>
+        <span class="n">dropdown</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s1">'90'</span><span class="p">,</span> <span class="s1">'180'</span><span class="p">,</span> <span class="s1">'270'</span><span class="p">,</span> <span class="s1">'Custom'</span><span class="p">])</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">dropdown</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Angle presets (degrees)'</span><span class="p">,</span>
                                            <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
-                                           <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;180&#39;</span><span class="p">,</span> <span class="s1">&#39;270&#39;</span><span class="p">,</span> <span class="s2">&quot;Custom&quot;</span><span class="p">),</span>
+                                           <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s1">'0'</span><span class="p">,</span> <span class="s1">'90'</span><span class="p">,</span> <span class="s1">'180'</span><span class="p">,</span> <span class="s1">'270'</span><span class="p">,</span> <span class="s2">"Custom"</span><span class="p">),</span>
                                            <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                            <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                           <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;How much degrees to rotate counter-clockwise&quot;</span><span class="p">)</span>
+                                           <span class="n">tooltip</span><span class="o">=</span><span class="s2">"How much degrees to rotate counter-clockwise"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Custom Angle of rotation</span><span class="se">\n</span><span class="s1">counter clockwise (degrees)&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">angle</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Custom Angle of rotation</span><span class="se">\n</span><span class="s1">counter clockwise (degrees)'</span><span class="p">,</span>
                                         <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                         <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">359</span><span class="p">,</span> <span class="mi">359</span><span class="p">),</span>
                                         <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                         <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;How much degrees to rotate counter-clockwise&quot;</span><span class="p">)</span>
+                                        <span class="n">tooltip</span><span class="o">=</span><span class="s2">"How much degrees to rotate counter-clockwise"</span><span class="p">)</span>
         <span class="n">angle</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="n">angle</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">dropdown</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">RotateFilter</span><span class="o">.</span><span class="n">_update_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">dropdown</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">angle</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"angle"</span><span class="p">:</span> <span class="n">angle</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="RotateFilter.execute_wrapper">
@@ -585,13 +585,13 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">dropdown</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handle Dropdown change event to set value is angle is not custom</span>
 
 <span class="sd">        :param angle: angle widget</span>
 <span class="sd">        :param dropdown: dropdown widget</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">dropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Custom&#39;</span><span class="p">:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">dropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'Custom'</span><span class="p">:</span>
             <span class="n">angle</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">angle</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dropdown</span><span class="o">.</span><span class="n">currentText</span><span class="p">()))</span>
@@ -600,19 +600,19 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_cardinal_angle</span><span class="p">(</span><span class="n">general_angle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Calculates the cardinal angle based on the general input angle by rounding to</span>
 <span class="sd">    the nearest 90 degree and then mod 360. Ths is used to determine if the angle</span>
 <span class="sd">    is a cardinal angle or not and also return a cardinal angle for in-place rotations.</span>
 
 <span class="sd">    param: value: general angle of rotation</span>
 <span class="sd">    return: angle: cardinal angle of rotation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">general_angle</span> <span class="o">/</span> <span class="mi">90</span><span class="p">)</span> <span class="o">*</span> <span class="mi">90</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_do_rotation</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Handle rotation of image slice by angle. This includes rotation of aspect</span>
 <span class="sd">    ratio and in place rotation depending on angle.</span>
 
@@ -620,7 +620,7 @@
 <span class="sd">    param data: current image data array</span>
 <span class="sd">    param angle: angle of rotation</span>
 <span class="sd">    return: new_data: rotated image data array</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">%</span> <span class="mi">360</span>
     <span class="k">if</span> <span class="n">angle</span> <span class="o">==</span> <span class="n">_get_cardinal_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
         <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span> <span class="o">=</span> <span class="n">_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
@@ -631,7 +631,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Perform a cardinal rotation of the image stack by angle if angle is cardinal and additionally</span>
 <span class="sd">    in-place rotation if general angle.</span>
 
@@ -639,7 +639,7 @@
 <span class="sd">    param: angle: angle of rotation</span>
 <span class="sd">    param: progress: progress bar</span>
 <span class="sd">    return: new_data: rotated image data array</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">z_axis</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">,</span> <span class="n">x_axis</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">rotated_shape</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">z_axis</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">)</span>
 
@@ -648,12 +648,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">new_data</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">rotated_shape</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">_compute_cardinal_rotation_per_slice</span><span class="p">,</span> <span class="n">z_axis</span><span class="p">,</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">new_data</span><span class="p">],</span>
-                            <span class="p">{</span><span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">angle</span><span class="p">},</span> <span class="n">progress</span><span class="p">)</span>
+                            <span class="p">{</span><span class="s2">"angle"</span><span class="p">:</span> <span class="n">angle</span><span class="p">},</span> <span class="n">progress</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_data</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_inplace_rotation</span><span class="p">(</span><span class="n">number_of_slices</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    In-place rotation of image slices by angle.</span>
 
 <span class="sd">    param: number_of_slices: array slices</span>
@@ -661,30 +661,30 @@
 <span class="sd">    param: angle: angle of rotation</span>
 <span class="sd">    param: progress: progress bar</span>
 <span class="sd">    return: new_data: rotated image data array</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">_compute_rotation_per_slice_inplace</span><span class="p">,</span> <span class="n">number_of_slices</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="n">angle</span><span class="p">},</span>
+<span class="sd">    """</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">_compute_rotation_per_slice_inplace</span><span class="p">,</span> <span class="n">number_of_slices</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="p">{</span><span class="s2">"angle"</span><span class="p">:</span> <span class="n">angle</span><span class="p">},</span>
                         <span class="n">progress</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_compute_cardinal_rotation_per_slice</span><span class="p">(</span><span class="n">array_index</span><span class="p">,</span> <span class="n">array_list</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Rotate array in increments of 90 degrees.</span>
 <span class="sd">    param: array_index: index of array in array_list</span>
 <span class="sd">    param: array_list: list of arrays - [old_array, new_array]</span>
 <span class="sd">    param: angle: angle of rotation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">cardinal_rotation</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">180</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">270</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
-    <span class="n">array_list</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">array_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">array_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">array_index</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">cardinal_rotation</span><span class="p">[</span><span class="n">angle</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">]])</span>
+    <span class="n">array_list</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">array_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">array_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">array_index</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">cardinal_rotation</span><span class="p">[</span><span class="n">angle</span><span class="p">[</span><span class="s2">"angle"</span><span class="p">]])</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_compute_rotation_per_slice_inplace</span><span class="p">(</span><span class="n">array_index</span><span class="p">,</span> <span class="n">array_list</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Rotate array in-place so that aspect ratio is not changed</span>
 <span class="sd">    param: array_list: list of arrays - [array]</span>
 <span class="sd">    param: angle: angle of rotation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">array_list</span><span class="p">[</span><span class="n">array_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotate</span><span class="p">(</span><span class="n">array_list</span><span class="p">[</span><span class="n">array_index</span><span class="p">],</span> <span class="n">angle</span><span class="p">[</span><span class="s2">&quot;angle&quot;</span><span class="p">])</span>
+<span class="sd">    """</span>
+    <span class="n">array_list</span><span class="p">[</span><span class="n">array_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotate</span><span class="p">(</span><span class="n">array_list</span><span class="p">[</span><span class="n">array_index</span><span class="p">],</span> <span class="n">angle</span><span class="p">[</span><span class="s2">"angle"</span><span class="p">])</span>
 </pre></div>
 
                 </article>

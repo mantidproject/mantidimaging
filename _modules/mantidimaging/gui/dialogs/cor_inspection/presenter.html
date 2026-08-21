@@ -563,7 +563,7 @@
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Notification handler failed"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CORInspectionDialogPresenter.on_load">
@@ -576,12 +576,12 @@
 <div class="viewcode-block" id="CORInspectionDialogPresenter.on_select_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.presenter.html#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.on_select_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_select_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Image selected: </span><span class="si">{</span><span class="n">img</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Image selected: </span><span class="si">{</span><span class="n">img</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
 
         <span class="n">selected_cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">centre_value</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;COR selection made: COR=</span><span class="si">%.6f</span><span class="s2">, Step=</span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">selected_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">step_size</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"COR selection made: COR=</span><span class="si">%.6f</span><span class="s2">, Step=</span><span class="si">%.2f</span><span class="s2">"</span><span class="p">,</span> <span class="n">selected_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">step_size</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">img</span> <span class="o">!=</span> <span class="n">ImageType</span><span class="o">.</span><span class="n">CURRENT</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">do_refresh</span><span class="p">()</span>
@@ -590,10 +590,10 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_cor_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;COR: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">cor</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'COR: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">cor</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_iters_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Iterations: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">iterations</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'Iterations: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">iterations</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
 
 <div class="viewcode-block" id="CORInspectionDialogPresenter.do_refresh">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.cor_inspection.presenter.html#mantidimaging.gui.dialogs.cor_inspection.presenter.CORInspectionDialogPresenter.do_refresh">[docs]</a>

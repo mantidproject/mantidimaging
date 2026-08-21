@@ -507,8 +507,8 @@
 <div class="viewcode-block" id="GeometryType">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.GeometryType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GeometryType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="n">PARALLEL3D</span> <span class="o">=</span> <span class="s2">&quot;Parallel 3D&quot;</span>
-    <span class="n">CONE3D</span> <span class="o">=</span> <span class="s2">&quot;Cone 3D&quot;</span></div>
+    <span class="n">PARALLEL3D</span> <span class="o">=</span> <span class="s2">"Parallel 3D"</span>
+    <span class="n">CONE3D</span> <span class="o">=</span> <span class="s2">"Cone 3D"</span></div>
 
 
 
@@ -519,17 +519,17 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">angles</span><span class="p">:</span> <span class="n">ndarray</span><span class="p">,</span>
-            <span class="n">angle_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;radian&quot;</span><span class="p">,</span>
+            <span class="n">angle_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"radian"</span><span class="p">,</span>
             <span class="nb">type</span><span class="p">:</span> <span class="n">GeometryType</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span><span class="p">,</span>
             <span class="n">num_pixels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
             <span class="n">pixel_size</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
             <span class="n">source_position</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">detector_position</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="n">units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+            <span class="n">units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Uses CIL conventions to determine geometry and centre of rotation.</span>
 <span class="sd">        By default, the Geometry object is instantiated using a Parallel3D configuration.</span>
 
@@ -537,11 +537,11 @@
 <span class="sd">        :type num_pixels: list, tuple</span>
 <span class="sd">        :param pixel_size: (pixel_size_h, pixel_size_v) containing the size of the pixels of the panel.</span>
 <span class="sd">        :type pixel_size: list, tuple</span>
-<span class="sd">        :param angle_unit: The units of the stored angles, &quot;degree&quot; or &quot;radian&quot;.</span>
+<span class="sd">        :param angle_unit: The units of the stored angles, "degree" or "radian".</span>
 <span class="sd">        :type angle_unit: str</span>
 <span class="sd">        :param units: The units of distance used for the configuration, consistent for geometry and panel.</span>
 <span class="sd">        :type units: str</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_source_position_mm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -565,14 +565,14 @@
 <div class="viewcode-block" id="Geometry.set_geometry_from_cor_tilt">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_geometry_from_cor_tilt">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set&#39;s the geometry&#39;s CIL-convention Offset and Angle from the MI-convention Centre-of-Rotation and Tilt.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Set's the geometry's CIL-convention Offset and Angle from the MI-convention Centre-of-Rotation and Tilt.</span>
 
 <span class="sd">        :param cor: A ScalarCoR object defining the MI-convention centre of rotation as a float value.</span>
 <span class="sd">        :type cor: ScalarCoR</span>
 <span class="sd">        :param tilt: A float value defining the tilt in degrees.</span>
 <span class="sd">        :type tilt: float</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">pixel_x_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">pixel_y_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
@@ -583,18 +583,18 @@
 
         <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="n">midpoint_cor</span> <span class="o">-</span> <span class="n">pixel_x_midpoint</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_size</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_centre_of_rotation</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">angle</span><span class="o">=-</span><span class="n">tilt</span><span class="p">,</span> <span class="n">angle_units</span><span class="o">=</span><span class="s1">&#39;degree&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_centre_of_rotation</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">angle</span><span class="o">=-</span><span class="n">tilt</span><span class="p">,</span> <span class="n">angle_units</span><span class="o">=</span><span class="s1">'degree'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Geometry.get_cor_at_slice_index">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.get_cor_at_slice_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_cor_at_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns a single scalar cor at the specified index</span>
 
 <span class="sd">        :param slice_idx: The slice index.</span>
 <span class="sd">        :return: ScalarCoR object with cor at the specified index</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">gradient</span> <span class="o">=</span> <span class="o">-</span><span class="n">tan</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tilt</span><span class="p">))</span>
         <span class="n">cor</span> <span class="o">=</span> <span class="p">(</span><span class="n">gradient</span> <span class="o">*</span> <span class="n">slice_idx</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span>
         <span class="k">return</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="p">)</span></div>
@@ -603,7 +603,7 @@
 <div class="viewcode-block" id="Geometry.set_cor_at_slice_index">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.set_cor_at_slice_index">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_cor_at_slice_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sets geometry.cor from a COR value measured at a specific slice index.</span>
 
 <span class="sd">        Back-calculatethe COR at slice 0 so that get_cor_at_slice_index(slice_idx)</span>
@@ -611,7 +611,7 @@
 
 <span class="sd">        :param slice_idx: The slice index the COR was measured at</span>
 <span class="sd">        :param cor: The COR value at that slice index</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">gradient</span> <span class="o">=</span> <span class="o">-</span><span class="n">tan</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tilt</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cor</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">gradient</span> <span class="o">*</span> <span class="n">slice_idx</span><span class="p">)</span></div>
 
@@ -619,24 +619,24 @@
 <div class="viewcode-block" id="Geometry.get_all_cors">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.Geometry.get_all_cors">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_all_cors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ScalarCoR</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns all cors across How many cors will be generated,</span>
 <span class="sd">                             this should be equal to the image height</span>
 <span class="sd">                             (i.e. number of sinograms that will be reconstructed)</span>
 <span class="sd">        :return: List of cors for every slice of the image height</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">image_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cor_at_slice_index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image_height</span><span class="p">)]</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ScalarCoR</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Converts the internal CIL-convention COR (defined at the midpoint of the image) to MI-convention.</span>
 
 <span class="sd">        :return (ScalarCoR) : the MI-convention Centre-of-Rotation (defined at the top of the image).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_centre_of_rotation</span><span class="p">()[</span><span class="s1">&#39;offset&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_centre_of_rotation</span><span class="p">()[</span><span class="s1">'offset'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">pixel_x_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">pixel_y_midpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -653,10 +653,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the tilt in degrees</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tilt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_centre_of_rotation</span><span class="p">()[</span><span class="s1">&#39;angle&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">tilt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_centre_of_rotation</span><span class="p">()[</span><span class="s1">'angle'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">degrees</span><span class="p">(</span><span class="n">tilt</span><span class="p">)</span>
 
     <span class="nd">@tilt</span><span class="o">.</span><span class="n">setter</span>
@@ -665,14 +665,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GeometryType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the MI Geometry type.</span>
 
-<span class="sd">        Wraps CIL `AcquisitionGeometry`&#39;s internal data based on the types currently supported by Mantid Imaging.</span>
+<span class="sd">        Wraps CIL `AcquisitionGeometry`'s internal data based on the types currently supported by Mantid Imaging.</span>
 
 <span class="sd">        :return (GeometryType) : The MI Geometry enum with a display-friendly value field.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;parallel&quot;</span><span class="p">:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">"parallel"</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span>

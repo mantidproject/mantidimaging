@@ -551,16 +551,16 @@
     <span class="n">rec_id</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">alg_id</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">proj_type</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">CudaChecker</span><span class="p">()</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;line&quot;</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using projection type </span><span class="si">{</span><span class="n">proj_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">proj_type</span> <span class="o">=</span> <span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">CudaChecker</span><span class="p">()</span><span class="o">.</span><span class="n">cuda_is_present</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"line"</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Using projection type </span><span class="si">{</span><span class="n">proj_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">proj_id</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">create_projector</span><span class="p">(</span><span class="n">proj_type</span><span class="p">,</span> <span class="n">proj_geom</span><span class="p">,</span> <span class="n">vol_geom</span><span class="p">)</span>
-        <span class="n">sino_id</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">data2d</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;-sino&#39;</span><span class="p">,</span> <span class="n">proj_geom</span><span class="p">,</span> <span class="n">sino</span><span class="p">)</span>
-        <span class="n">rec_id</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">data2d</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;-vol&#39;</span><span class="p">,</span> <span class="n">vol_geom</span><span class="p">)</span>
+        <span class="n">sino_id</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">data2d</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">'-sino'</span><span class="p">,</span> <span class="n">proj_geom</span><span class="p">,</span> <span class="n">sino</span><span class="p">)</span>
+        <span class="n">rec_id</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">data2d</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">'-vol'</span><span class="p">,</span> <span class="n">vol_geom</span><span class="p">)</span>
 
-        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;ReconstructionDataId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rec_id</span>
-        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;ProjectionDataId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sino_id</span>
-        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;ProjectorId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">proj_id</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">'ReconstructionDataId'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rec_id</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">'ProjectionDataId'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sino_id</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s1">'ProjectorId'</span><span class="p">]</span> <span class="o">=</span> <span class="n">proj_id</span>
 
         <span class="n">alg_id</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">algorithm</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">alg_id</span><span class="p">,</span> <span class="n">rec_id</span>
@@ -583,8 +583,8 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_count_gpus</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="n">num_gpus</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">while</span> <span class="s2">&quot;Invalid device&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">''</span>
+        <span class="k">while</span> <span class="s2">"Invalid device"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">msg</span><span class="p">:</span>
             <span class="n">num_gpus</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">get_gpu_info</span><span class="p">(</span><span class="n">num_gpus</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num_gpus</span>
@@ -594,11 +594,11 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_cor</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                  <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Find the best CoR for this slice by maximising the squared sum of the reconstructed slice.</span>
 
 <span class="sd">        Larger squared sum -&gt; bigger deviance from the mean, i.e. larger distance between noise and data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -619,7 +619,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_cor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">start_cor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">start_cor</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="n">minimized_cor</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">minimizer_function</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;nelder-mead&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">minimized_cor</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">minimizer_function</span><span class="p">,</span> <span class="n">start_cor</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"nelder-mead"</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cor</span> <span class="o">=</span> <span class="n">original_cor</span>
         <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tilt</span> <span class="o">=</span> <span class="n">original_tilt</span>
 
@@ -642,19 +642,19 @@
         <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
         <span class="k">assert</span> <span class="p">(</span><span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 
-        <span class="k">assert</span> <span class="n">sino</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Sinogram must be a 2D image&quot;</span>
+        <span class="k">assert</span> <span class="n">sino</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"Sinogram must be a 2D image"</span>
 
         <span class="n">sino</span> <span class="o">=</span> <span class="n">BaseRecon</span><span class="o">.</span><span class="n">prepare_sinogram</span><span class="p">(</span><span class="n">sino</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
         <span class="n">image_width</span> <span class="o">=</span> <span class="n">sino</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">astra_mutex</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Astra recon already in progress. Waiting&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Astra recon already in progress. Waiting"</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">astra_mutex</span><span class="p">:</span>
             <span class="n">vectors</span> <span class="o">=</span> <span class="n">vec_geom_init2d</span><span class="p">(</span><span class="n">proj_angles</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">cor</span><span class="o">.</span><span class="n">to_vec</span><span class="p">(</span><span class="n">image_width</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="n">vol_geom</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">create_vol_geom</span><span class="p">((</span><span class="n">image_width</span><span class="p">,</span> <span class="n">image_width</span><span class="p">))</span>
-            <span class="n">proj_geom</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">create_proj_geom</span><span class="p">(</span><span class="s1">&#39;parallel_vec&#39;</span><span class="p">,</span> <span class="n">image_width</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
+            <span class="n">proj_geom</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">create_proj_geom</span><span class="p">(</span><span class="s1">'parallel_vec'</span><span class="p">,</span> <span class="n">image_width</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
             <span class="n">cfg</span> <span class="o">=</span> <span class="n">astra</span><span class="o">.</span><span class="n">astra_dict</span><span class="p">(</span><span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">)</span>
-            <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;FilterType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">filter_name</span>
+            <span class="n">cfg</span><span class="p">[</span><span class="s1">'FilterType'</span><span class="p">]</span> <span class="o">=</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">filter_name</span>
 
             <span class="k">with</span> <span class="n">_managed_recon</span><span class="p">(</span><span class="n">sino</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">proj_geom</span><span class="p">,</span> <span class="n">vol_geom</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">alg_id</span><span class="p">,</span> <span class="n">rec_id</span><span class="p">):</span>
                 <span class="n">astra</span><span class="o">.</span><span class="n">algorithm</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">alg_id</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">recon_params</span><span class="o">.</span><span class="n">num_iter</span><span class="p">)</span>
@@ -670,14 +670,14 @@
         <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
         <span class="n">output_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">num_sinograms</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
         <span class="n">output_images</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">=</span> <span class="n">ImageStack</span><span class="o">.</span><span class="n">create_empty_image_stack</span><span class="p">(</span><span class="n">output_shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
-        <span class="n">output_images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="s1">&#39;AstraRecon.full&#39;</span><span class="p">,</span> <span class="s1">&#39;Volume Reconstruction&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">recon_params</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="n">output_images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span><span class="s1">'AstraRecon.full'</span><span class="p">,</span> <span class="s1">'Volume Reconstruction'</span><span class="p">,</span> <span class="o">**</span><span class="n">recon_params</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
         <span class="n">proj_angles</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
             <span class="n">output_images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">AstraRecon</span><span class="o">.</span><span class="n">single_sino</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">)</span>
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Reconstructed slice&quot;</span><span class="p">)</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"Reconstructed slice"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">output_images</span></div>
 
@@ -686,11 +686,11 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.AstraRecon.allowed_filters">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">allowed_filters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="c1"># removed from list: &#39;kaiser&#39; as it hard crashes ASTRA</span>
-        <span class="c1">#                    &#39;projection&#39;, &#39;sinogram&#39;, &#39;rprojection&#39;, &#39;rsinogram&#39; as they error</span>
+        <span class="c1"># removed from list: 'kaiser' as it hard crashes ASTRA</span>
+        <span class="c1">#                    'projection', 'sinogram', 'rprojection', 'rsinogram' as they error</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="s1">&#39;ram-lak&#39;</span><span class="p">,</span> <span class="s1">&#39;shepp-logan&#39;</span><span class="p">,</span> <span class="s1">&#39;cosine&#39;</span><span class="p">,</span> <span class="s1">&#39;hamming&#39;</span><span class="p">,</span> <span class="s1">&#39;hann&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;tukey&#39;</span><span class="p">,</span> <span class="s1">&#39;lanczos&#39;</span><span class="p">,</span> <span class="s1">&#39;triangular&#39;</span><span class="p">,</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;barlett-hann&#39;</span><span class="p">,</span> <span class="s1">&#39;blackman&#39;</span><span class="p">,</span> <span class="s1">&#39;nuttall&#39;</span><span class="p">,</span> <span class="s1">&#39;blackman-harris&#39;</span><span class="p">,</span> <span class="s1">&#39;blackman-nuttall&#39;</span><span class="p">,</span> <span class="s1">&#39;flat-top&#39;</span><span class="p">,</span> <span class="s1">&#39;parzen&#39;</span>
+            <span class="s1">'ram-lak'</span><span class="p">,</span> <span class="s1">'shepp-logan'</span><span class="p">,</span> <span class="s1">'cosine'</span><span class="p">,</span> <span class="s1">'hamming'</span><span class="p">,</span> <span class="s1">'hann'</span><span class="p">,</span> <span class="s1">'none'</span><span class="p">,</span> <span class="s1">'tukey'</span><span class="p">,</span> <span class="s1">'lanczos'</span><span class="p">,</span> <span class="s1">'triangular'</span><span class="p">,</span> <span class="s1">'gaussian'</span><span class="p">,</span>
+            <span class="s1">'barlett-hann'</span><span class="p">,</span> <span class="s1">'blackman'</span><span class="p">,</span> <span class="s1">'nuttall'</span><span class="p">,</span> <span class="s1">'blackman-harris'</span><span class="p">,</span> <span class="s1">'blackman-nuttall'</span><span class="p">,</span> <span class="s1">'flat-top'</span><span class="p">,</span> <span class="s1">'parzen'</span>
         <span class="p">]</span></div>
 </div>
 
@@ -700,9 +700,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.astra_recon.html#mantidimaging.core.reconstruct.astra_recon.allowed_recon_kwargs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;FBP_CUDA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;filter_name&#39;</span><span class="p">,</span> <span class="s1">&#39;filter_par&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;SIRT_CUDA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;num_iter&#39;</span><span class="p">,</span> <span class="s1">&#39;min_constraint&#39;</span><span class="p">,</span> <span class="s1">&#39;max_constraint&#39;</span><span class="p">,</span> <span class="s1">&#39;DetectorSuperSampling&#39;</span><span class="p">,</span> <span class="s1">&#39;PixelSuperSampling&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;SIRT3D_CUDA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;num_iter&#39;</span><span class="p">,</span> <span class="s1">&#39;min_constraint&#39;</span><span class="p">,</span> <span class="s1">&#39;max_constraint&#39;</span><span class="p">,</span> <span class="s1">&#39;DetectorSuperSampling&#39;</span><span class="p">,</span> <span class="s1">&#39;PixelSuperSampling&#39;</span><span class="p">]</span>
+        <span class="s1">'FBP_CUDA'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'filter_name'</span><span class="p">,</span> <span class="s1">'filter_par'</span><span class="p">],</span>
+        <span class="s1">'SIRT_CUDA'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'num_iter'</span><span class="p">,</span> <span class="s1">'min_constraint'</span><span class="p">,</span> <span class="s1">'max_constraint'</span><span class="p">,</span> <span class="s1">'DetectorSuperSampling'</span><span class="p">,</span> <span class="s1">'PixelSuperSampling'</span><span class="p">],</span>
+        <span class="s1">'SIRT3D_CUDA'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'num_iter'</span><span class="p">,</span> <span class="s1">'min_constraint'</span><span class="p">,</span> <span class="s1">'max_constraint'</span><span class="p">,</span> <span class="s1">'DetectorSuperSampling'</span><span class="p">,</span> <span class="s1">'PixelSuperSampling'</span><span class="p">]</span>
     <span class="p">}</span></div>
 
 </pre></div>

@@ -507,16 +507,16 @@
 <div class="viewcode-block" id="ZSlider">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.zslider.zslider.html#mantidimaging.gui.widgets.zslider.zslider.ZSlider">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ZSlider</span><span class="p">(</span><span class="n">PlotItem</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A plot item to draw a z-axis slider mimicking the slider in PyQtGraph&#39;s ImageView</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A plot item to draw a z-axis slider mimicking the slider in PyQtGraph's ImageView</span>
 
 <span class="sd">    This gives us flexibility to choose what happens when the user move through the z-axis. It can be combined with</span>
-<span class="sd">    the one or more :py:class:`~mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView`&#39;s in a</span>
+<span class="sd">    the one or more :py:class:`~mantidimaging.gui.widgets.mi_mini_image_view.view.MIMiniImageView`'s in a</span>
 <span class="sd">    GraphicsLayoutWidget. It is used in the Operations window to choose the slice to preview a filter with,</span>
 <span class="sd">    and in the Live Viewer scroll through images.</span>
 
 <span class="sd">    Emits a :code:`valueChanged` signal when the user moves the slider</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">z_line</span><span class="p">:</span> <span class="n">InfiniteLine</span>
     <span class="n">valueChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
@@ -525,7 +525,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">_graveyard</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hideAxis</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hideAxis</span><span class="p">(</span><span class="s2">"left"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setXRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMouseEnabled</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hideButtons</span><span class="p">()</span>
@@ -559,9 +559,9 @@
 <div class="viewcode-block" id="ZSlider.mousePressEvent">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.zslider.zslider.html#mantidimaging.gui.widgets.zslider.zslider.ZSlider.mousePressEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QGraphicsSceneMouseEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Adjusts built in behaviour to allow user to click anywhere on the line to jump there.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">mapSceneToView</span><span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">scenePos</span><span class="p">())</span><span class="o">.</span><span class="n">x</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

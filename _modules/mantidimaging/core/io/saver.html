@@ -521,8 +521,8 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">DEFAULT_ZFILL_LENGTH</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="n">DEFAULT_NAME_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;image&#39;</span>
-<span class="n">DEFAULT_NAME_POSTFIX</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">DEFAULT_NAME_PREFIX</span> <span class="o">=</span> <span class="s1">'image'</span>
+<span class="n">DEFAULT_NAME_POSTFIX</span> <span class="o">=</span> <span class="s1">''</span>
 <span class="n">INT16_SIZE</span> <span class="o">=</span> <span class="mi">65536</span>
 
 <span class="n">package_version</span> <span class="o">=</span> <span class="n">CheckVersion</span><span class="p">()</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
@@ -530,7 +530,7 @@
 
 <div class="viewcode-block" id="write_fits">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.write_fits">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_fits</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_fits</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">hdu</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">PrimaryHDU</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">hdulist</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">HDUList</span><span class="p">([</span><span class="n">hdu</span><span class="p">])</span>
     <span class="n">hdulist</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
@@ -539,8 +539,8 @@
 
 <div class="viewcode-block" id="write_img">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.write_img">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_img</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">)</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_img</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">"Mantid Imaging"</span><span class="p">)</span></div>
 
 
 
@@ -551,20 +551,20 @@
               <span class="n">projection_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
-    <span class="n">nxs</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">nxs</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span>
 
     <span class="c1"># appending flat and dark images is disabled for now</span>
     <span class="c1"># new shape to account for appending flat and dark images</span>
     <span class="c1"># correct_shape = (data.shape[0] + 2, data.shape[1], data.shape[2])</span>
 
-    <span class="n">dset</span> <span class="o">=</span> <span class="n">nxs</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;tomography/sample_data&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">dset</span> <span class="o">=</span> <span class="n">nxs</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"tomography/sample_data"</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">dset</span><span class="p">[:</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:]</span>
     <span class="c1"># left here if we decide to start appending the flat and dark images again</span>
     <span class="c1"># dset[-2] = flat[:]</span>
     <span class="c1"># dset[-1] = dark[:]</span>
 
     <span class="k">if</span> <span class="n">projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">rangle</span> <span class="o">=</span> <span class="n">nxs</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;tomography/rotation_angle&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">projection_angles</span><span class="p">)</span>
+        <span class="n">rangle</span> <span class="o">=</span> <span class="n">nxs</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"tomography/rotation_angle"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">projection_angles</span><span class="p">)</span>
         <span class="n">rangle</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">projection_angles</span></div>
 
 
@@ -583,7 +583,7 @@
                <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                <span class="n">pixel_depth</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Save image volume (3d) into a series of slices along the Z axis.</span>
 <span class="sd">    The Z axis in the script is the ndarray.shape[0].</span>
 <span class="sd">    :param images: Data as images/slices stores in numpy array</span>
@@ -612,8 +612,8 @@
 <span class="sd">           np.float32 or np.int16 will ensure the values are scaled</span>
 <span class="sd">           correctly to these values.</span>
 <span class="sd">    :returns: The filename/filenames of the saved data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Save&#39;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">'Save'</span><span class="p">)</span>
     <span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">make_dirs_if_needed</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">)</span>
 
@@ -621,31 +621,31 @@
     <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="n">int_16_slope</span> <span class="o">=</span> <span class="n">max_value</span> <span class="o">/</span> <span class="n">INT16_SIZE</span>
 
-    <span class="k">if</span> <span class="n">pixel_depth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;float32&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">pixel_depth</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">"float32"</span><span class="p">:</span>
         <span class="n">rescale_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">rescale_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">elif</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
-        <span class="n">rescale_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">min_value</span><span class="p">),</span> <span class="s2">&quot;slope&quot;</span><span class="p">:</span> <span class="n">int_16_slope</span><span class="p">}</span>
-        <span class="n">rescale_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;offset = </span><span class="si">{</span><span class="n">rescale_params</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> slope = </span><span class="si">{</span><span class="n">rescale_params</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">rescale_info</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">elif</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">"int16"</span><span class="p">:</span>
+        <span class="n">rescale_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"offset"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">min_value</span><span class="p">),</span> <span class="s2">"slope"</span><span class="p">:</span> <span class="n">int_16_slope</span><span class="p">}</span>
+        <span class="n">rescale_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"offset = </span><span class="si">{</span><span class="n">rescale_params</span><span class="p">[</span><span class="s1">'offset'</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> slope = </span><span class="si">{</span><span class="n">rescale_params</span><span class="p">[</span><span class="s1">'slope'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The pixel depth given is not handled: </span><span class="si">{</span><span class="n">pixel_depth</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The pixel depth given is not handled: </span><span class="si">{</span><span class="n">pixel_depth</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}</span><span class="s2">.json&quot;</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metadata filename: </span><span class="si">{</span><span class="n">metadata_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">metadata_filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">metadata_filename</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}</span><span class="s2">.json"</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Metadata filename: </span><span class="si">{</span><span class="n">metadata_filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">metadata_filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"w+"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">images</span><span class="o">.</span><span class="n">save_metadata</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">rescale_params</span><span class="p">)</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span>
     <span class="k">if</span> <span class="n">swap_axes</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;nxs&quot;</span><span class="p">]:</span>
-        <span class="n">filename_base</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}{</span><span class="n">name_postfix</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">filename_with_ext</span> <span class="o">=</span> <span class="n">filename_base</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.nxs&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"nxs"</span><span class="p">]:</span>
+        <span class="n">filename_base</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}{</span><span class="n">name_postfix</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">filename_with_ext</span> <span class="o">=</span> <span class="n">filename_base</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">".nxs"</span><span class="p">)</span>
         <span class="n">write_nxs</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename_with_ext</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite_all</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">filename_with_ext</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;fits&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"fit"</span><span class="p">,</span> <span class="s2">"fits"</span><span class="p">]:</span>
             <span class="n">write_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">write_fits</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">write_func</span> <span class="o">=</span> <span class="n">write_img</span>
@@ -658,7 +658,7 @@
 
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pixel_depth</span> <span class="o">==</span> <span class="s2">"int16"</span><span class="p">:</span>
                     <span class="n">output_data</span> <span class="o">=</span> <span class="n">RescaleFilter</span><span class="o">.</span><span class="n">filter_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span>
                                                              <span class="n">min_input</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
                                                              <span class="n">max_input</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
@@ -667,7 +667,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">write_func</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span> <span class="n">overwrite_all</span><span class="p">,</span> <span class="n">rescale_info</span><span class="p">)</span>
 
-                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">"Image"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">names</span></div>
 
@@ -676,73 +676,73 @@
 <div class="viewcode-block" id="nexus_save">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.nexus_save">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">nexus_save</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Uses information from a Dataset to create a NeXus file.</span>
 <span class="sd">    :param dataset: The dataset to save as a NeXus file.</span>
 <span class="sd">    :param path: The NeXus file path.</span>
 <span class="sd">    :param sample_name: The sample name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">nexus_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;core&quot;</span><span class="p">)</span>
+        <span class="n">nexus_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="s2">"core"</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to save NeXus file. </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unable to save NeXus file. </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_nexus_save</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="n">nexus_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to save NeXus file. </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unable to save NeXus file. </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
     <span class="n">nexus_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_nexus_save</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">sample_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Takes a NeXus file and writes the Dataset information to it.</span>
 <span class="sd">    :param nexus_file: The NeXus file.</span>
 <span class="sd">    :param dataset: The Dataset.</span>
 <span class="sd">    :param sample_name: The sample name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Top-level group</span>
-    <span class="n">entry</span> <span class="o">=</span> <span class="n">nexus_file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;entry1&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">&quot;NXentry&quot;</span><span class="p">)</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="n">nexus_file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"entry1"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="s2">"NXentry"</span><span class="p">)</span>
 
     <span class="c1"># Tomo entry</span>
-    <span class="n">tomo_entry</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;tomo_entry&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">tomo_entry</span><span class="p">,</span> <span class="s2">&quot;NXsubentry&quot;</span><span class="p">)</span>
+    <span class="n">tomo_entry</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"tomo_entry"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">tomo_entry</span><span class="p">,</span> <span class="s2">"NXsubentry"</span><span class="p">)</span>
 
     <span class="c1"># definition field</span>
-    <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;NXtomo&quot;</span><span class="p">))</span>
+    <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"definition"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"NXtomo"</span><span class="p">))</span>
 
     <span class="c1"># instrument field</span>
-    <span class="n">instrument_group</span> <span class="o">=</span> <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;instrument&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">instrument_group</span><span class="p">,</span> <span class="s2">&quot;NXinstrument&quot;</span><span class="p">)</span>
+    <span class="n">instrument_group</span> <span class="o">=</span> <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"instrument"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">instrument_group</span><span class="p">,</span> <span class="s2">"NXinstrument"</span><span class="p">)</span>
 
     <span class="c1"># instrument/detector field</span>
-    <span class="n">detector</span> <span class="o">=</span> <span class="n">instrument_group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;detector&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="s2">&quot;NXdetector&quot;</span><span class="p">)</span>
-    <span class="n">detector</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;image_key&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">image_keys</span><span class="p">)</span>
+    <span class="n">detector</span> <span class="o">=</span> <span class="n">instrument_group</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"detector"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">detector</span><span class="p">,</span> <span class="s2">"NXdetector"</span><span class="p">)</span>
+    <span class="n">detector</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"image_key"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">image_keys</span><span class="p">)</span>
 
     <span class="c1"># sample field</span>
-    <span class="n">sample_group</span> <span class="o">=</span> <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;sample&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">sample_group</span><span class="p">,</span> <span class="s2">&quot;NXsample&quot;</span><span class="p">)</span>
-    <span class="n">sample_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">sample_name</span><span class="p">))</span>
+    <span class="n">sample_group</span> <span class="o">=</span> <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"sample"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">sample_group</span><span class="p">,</span> <span class="s2">"NXsample"</span><span class="p">)</span>
+    <span class="n">sample_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">sample_name</span><span class="p">))</span>
 
     <span class="c1"># rotation angle</span>
-    <span class="n">rotation_angle</span> <span class="o">=</span> <span class="n">sample_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;rotation_angle&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">nexus_rotation_angles</span><span class="p">))</span>
-    <span class="n">rotation_angle</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;rad&quot;</span>
+    <span class="n">rotation_angle</span> <span class="o">=</span> <span class="n">sample_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"rotation_angle"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">nexus_rotation_angles</span><span class="p">))</span>
+    <span class="n">rotation_angle</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"units"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"rad"</span>
 
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">is_processed</span><span class="p">:</span>
-        <span class="n">_save_processed_data_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">,</span> <span class="n">detector</span><span class="p">[</span><span class="s2">&quot;image_key&quot;</span><span class="p">],</span> <span class="n">save_as_float</span><span class="p">)</span>
+        <span class="n">_save_processed_data_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">,</span> <span class="n">detector</span><span class="p">[</span><span class="s2">"image_key"</span><span class="p">],</span> <span class="n">save_as_float</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_save_image_stacks_to_nexus</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">detector</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>
 
     <span class="c1"># data field</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;NXdata&quot;</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;rotation_angle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_angle</span>
-    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;image_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detector</span><span class="p">[</span><span class="s2">&quot;image_key&quot;</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">tomo_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"data"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">"NXdata"</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">"rotation_angle"</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_angle</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">"image_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">detector</span><span class="p">[</span><span class="s2">"image_key"</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">recon</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">recons</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -753,16 +753,16 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_save_processed_data_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
                                   <span class="n">image_key</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">nexus_file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">NEXUS_PROCESSED_DATA_PATH</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;rotation_angle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_angle</span>
-    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;image_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_key</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;NXdata&quot;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">"rotation_angle"</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_angle</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">"image_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_key</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">"NXdata"</span><span class="p">)</span>
     <span class="n">_save_image_stacks_to_nexus</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">)</span>
 
-    <span class="n">process</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;process&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="s2">&quot;NXprocess&quot;</span><span class="p">)</span>
-    <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;program&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">))</span>
-    <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()))</span>
-    <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">package_version</span><span class="p">))</span>
+    <span class="n">process</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"process"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="s2">"NXprocess"</span><span class="p">)</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"program"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"Mantid Imaging"</span><span class="p">))</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"date"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()))</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"version"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">package_version</span><span class="p">))</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_save_image_stacks_to_nexus</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">data_group</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span> <span class="n">save_as_float</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -771,32 +771,32 @@
     <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">save_as_float</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">nexus_arrays</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;float32&quot;</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="s2">"float32"</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_convert_float_to_int</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">nexus_arrays</span><span class="p">)</span>
-        <span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;int16&quot;</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="s2">"int16"</span>
 
-    <span class="n">data_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">combined_data_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">data_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">combined_data_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-        <span class="n">data_group</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">index</span><span class="p">:</span><span class="n">index</span> <span class="o">+</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">arr</span>
+        <span class="n">data_group</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="n">index</span><span class="p">:</span><span class="n">index</span> <span class="o">+</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">arr</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_convert_float_to_int</span><span class="p">(</span><span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Scales a float array to convert it to ints.</span>
 <span class="sd">    :param arrays: The dataset arrays.</span>
 <span class="sd">    :return: A list of int arrays and a list of scaling factors.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">converted</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">factors</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">scale_row</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span> <span class="o">*</span> <span class="n">scaling_factor</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int16&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">row</span> <span class="o">*</span> <span class="n">scaling_factor</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"int16"</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
-        <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s2">&quot;int16&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s2">"int16"</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
         <span class="n">scaled_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">scale_row</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">arr</span><span class="p">)</span>
         <span class="n">converted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scaled_arr</span><span class="p">)</span>
         <span class="n">factors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scaling_factor</span><span class="p">)</span>
@@ -805,62 +805,62 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_save_recon_to_nexus</span><span class="p">(</span><span class="n">nexus_file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">sample_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Saves a recon to a NeXus file.</span>
 <span class="sd">    :param nexus_file: The NeXus file.</span>
 <span class="sd">    :param recon: The recon data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">recon_entry</span> <span class="o">=</span> <span class="n">nexus_file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">recon_entry</span><span class="p">,</span> <span class="s2">&quot;NXentry&quot;</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">recon_entry</span><span class="p">,</span> <span class="s2">"NXentry"</span><span class="p">)</span>
 
-    <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-    <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;NXtomoproc&quot;</span><span class="p">))</span>
+    <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"title"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"definition"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"NXtomoproc"</span><span class="p">))</span>
 
-    <span class="n">instrument</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;INSTRUMENT&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="s2">&quot;NXinstrument&quot;</span><span class="p">)</span>
+    <span class="n">instrument</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"INSTRUMENT"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="s2">"NXinstrument"</span><span class="p">)</span>
 
-    <span class="n">source</span> <span class="o">=</span> <span class="n">instrument</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;SOURCE&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;NXsource&quot;</span><span class="p">)</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">instrument</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"SOURCE"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"NXsource"</span><span class="p">)</span>
 
-    <span class="n">source</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;Neutron source&quot;</span><span class="p">))</span>
-    <span class="n">source</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;ISIS&quot;</span><span class="p">))</span>
-    <span class="n">source</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;probe&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;neutron&quot;</span><span class="p">))</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"type"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"Neutron source"</span><span class="p">))</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"ISIS"</span><span class="p">))</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"probe"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"neutron"</span><span class="p">))</span>
 
-    <span class="n">sample</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;SAMPLE&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="s2">&quot;NXsample&quot;</span><span class="p">)</span>
-    <span class="n">sample</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"SAMPLE"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="s2">"NXsample"</span><span class="p">)</span>
+    <span class="n">sample</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
-    <span class="n">reconstruction</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;reconstruction&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">reconstruction</span><span class="p">,</span> <span class="s2">&quot;NXprocess&quot;</span><span class="p">)</span>
+    <span class="n">reconstruction</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"reconstruction"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">reconstruction</span><span class="p">,</span> <span class="s2">"NXprocess"</span><span class="p">)</span>
 
-    <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;program&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">))</span>
-    <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">package_version</span><span class="p">))</span>
+    <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"program"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="s2">"Mantid Imaging"</span><span class="p">))</span>
+    <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"version"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">package_version</span><span class="p">))</span>
     <span class="n">recon_timestamp</span> <span class="o">=</span> <span class="n">recon</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TIMESTAMP</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">recon_timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">recon_timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-    <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">recon_timestamp</span><span class="p">))</span>
+    <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"date"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">recon_timestamp</span><span class="p">))</span>
 
-    <span class="n">parameters</span> <span class="o">=</span> <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;parameters&quot;</span><span class="p">)</span>
-    <span class="n">parameters</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;raw_file&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">sample_path</span><span class="p">))</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">reconstruction</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"parameters"</span><span class="p">)</span>
+    <span class="n">parameters</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"raw_file"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">sample_path</span><span class="p">))</span>
 
-    <span class="n">data</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
-    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;NXdata&quot;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">recon_entry</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">"data"</span><span class="p">)</span>
+    <span class="n">_set_nx_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">"NXdata"</span><span class="p">)</span>
 
-    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">recon</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">recon</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"data"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">recon</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float32"</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">recon</span><span class="o">.</span><span class="n">data</span>
 
     <span class="n">x_arr</span><span class="p">,</span> <span class="n">y_arr</span><span class="p">,</span> <span class="n">z_arr</span> <span class="o">=</span> <span class="n">_create_pixel_size_arrays</span><span class="p">(</span><span class="n">recon</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">x_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">x_arr</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">y_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">y_arr</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">z_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">z_arr</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">x_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float16"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">x_arr</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"y"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">y_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float16"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">y_arr</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">"z"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">z_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">"float16"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">z_arr</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_create_pixel_size_arrays</span><span class="p">(</span><span class="n">recon</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create the pixel size arrays for the NXtomproc x/y/z fields.</span>
 <span class="sd">    :param recon: The recon data.</span>
 <span class="sd">    :return: The tuple of the x/y/z arrays.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">pixel_size</span> <span class="o">=</span> <span class="n">recon</span><span class="o">.</span><span class="n">pixel_size</span>
     <span class="n">x_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">pixel_size</span>
     <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">recon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">pixel_size</span>
@@ -869,24 +869,24 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_set_nx_class</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Sets the NX_class attribute of data in a NeXus file.</span>
 <span class="sd">    :param group: The h5py group.</span>
 <span class="sd">    :param class_name: The class name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;NX_class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">"NX_class"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_rescale_recon_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Rescales recon data so that it can be converted to uint.</span>
 <span class="sd">    :param data: The recon data.</span>
 <span class="sd">    :return: The rescaled recon data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">min_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">min_value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">-=</span> <span class="n">min_value</span>
-    <span class="n">data</span> <span class="o">*=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s2">&quot;uint16&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="n">data</span> <span class="o">*=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s2">"uint16"</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">data</span>
 
 
@@ -910,7 +910,7 @@
     <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_images</span><span class="p">):</span>
         <span class="c1"># create the file name, and use the format as extension</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">zfill_len</span><span class="p">)</span><span class="si">}{</span><span class="n">name_postfix</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">out_format</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name_prefix</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">zfill_len</span><span class="p">)</span><span class="si">}{</span><span class="n">name_postfix</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">out_format</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="n">index</span> <span class="o">+=</span> <span class="n">increment</span>
     <span class="k">return</span> <span class="n">names</span></div>
@@ -920,13 +920,13 @@
 <div class="viewcode-block" id="make_dirs_if_needed">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.make_dirs_if_needed">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_dirs_if_needed</span><span class="p">(</span><span class="n">dirname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Makes sure that the directory needed (for example to save a file)</span>
 <span class="sd">    exists, otherwise creates it.</span>
 
 <span class="sd">    :param dirname: (output) directory to check</span>
 <span class="sd">    :param overwrite_all: Whether to allow overwriting non-empty directories</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">dirname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="c1"># Convert to Path if given as str</span>
@@ -934,15 +934,15 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_all</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The output directory is NOT empty: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                           <span class="sa">f</span><span class="s2">&quot;This can be overridden by specifying &#39;Overwrite on name conflict&#39;.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The output directory is NOT empty: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                           <span class="sa">f</span><span class="s2">"This can be overridden by specifying 'Overwrite on name conflict'."</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="create_rits_format">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.create_rits_format">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_rits_format</span><span class="p">(</span><span class="n">tof</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">transmission_error</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    create a RITS format ready for exporting to a .dat file</span>
 
 <span class="sd">    :param tof: time of flight</span>
@@ -950,26 +950,26 @@
 <span class="sd">    :param transmission_error: transmission_error value</span>
 <span class="sd">    :return: RITS format ascii</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tof</span><span class="p">,</span> <span class="n">transmission</span><span class="p">,</span> <span class="n">transmission_error</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span></div>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tof</span><span class="p">,</span> <span class="n">transmission</span><span class="p">,</span> <span class="n">transmission_error</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)])</span></div>
 
 
 
 <div class="viewcode-block" id="export_to_dat_rits_format">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.saver.html#mantidimaging.core.io.saver.export_to_dat_rits_format">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">export_to_dat_rits_format</span><span class="p">(</span><span class="n">rits_formatted_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    export a RITS formatted data to a .dat file</span>
 
 <span class="sd">    :param rits_formatted_data: RITS formatted data</span>
 <span class="sd">    :param path: path to save the .dat file</span>
 <span class="sd">    :return: None</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rits_formatted_data</span><span class="p">)</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;RITS formatted data saved to: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'RITS formatted data saved to: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
 
 </pre></div>
 

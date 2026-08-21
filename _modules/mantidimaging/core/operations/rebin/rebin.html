@@ -513,7 +513,7 @@
 <div class="viewcode-block" id="RebinFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RebinFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rebin the image to reduce the resolution.</span>
+<span class="w">    </span><span class="sd">"""Rebin the image to reduce the resolution.</span>
 
 <span class="sd">    This filter temporarily increases memory usage, while the image is being rebinned.</span>
 <span class="sd">    The memory usage will be lowered after the filter has finished executing.</span>
@@ -521,36 +521,36 @@
 <span class="sd">    Intended to be used on: Any data</span>
 
 <span class="sd">    When: If you want to reduce the data size and to smoothen the image.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Rebin&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Rebin"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RebinFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.RebinFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">rebin_param</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param images: Sample data which is to be processed. Expects radiograms</span>
 <span class="sd">        :param rebin_param: int, float or tuple</span>
 <span class="sd">                            int - Percentage of current size.</span>
 <span class="sd">                            float - Fraction of current size.</span>
 <span class="sd">                            tuple - Size of the output image (x, y).</span>
 <span class="sd">        :param mode: The mode with which to handle the edges. One of</span>
-<span class="sd">                     (&#39;constant&#39;, &#39;edge&#39;, &#39;symmetric&#39;, &#39;reflect&#39;, &#39;wrap&#39;).</span>
+<span class="sd">                     ('constant', 'edge', 'symmetric', 'reflect', 'wrap').</span>
 
 <span class="sd">        :return: The processed 3D numpy.ndarray</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rebin_param</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">new_shape</span> <span class="o">=</span> <span class="n">rebin_param</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rebin_param</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span><span class="p">)):</span>
             <span class="n">current_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="n">new_shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">current_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rebin_param</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">current_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">rebin_param</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid type for rebin_param&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Invalid type for rebin_param"</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">_create_reshaped_array</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">rebin_param</span><span class="p">)</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;new_shape&#39;</span><span class="p">:</span> <span class="n">new_shape</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'new_shape'</span><span class="p">:</span> <span class="n">new_shape</span><span class="p">,</span> <span class="s1">'mode'</span><span class="p">:</span> <span class="n">mode</span><span class="p">}</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">RebinFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">params</span><span class="p">,</span>
                             <span class="n">progress</span><span class="p">)</span>
         <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span> <span class="o">=</span> <span class="n">output</span>
@@ -563,8 +563,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">array</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">new_shape</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;new_shape&#39;</span><span class="p">]</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
+        <span class="n">new_shape</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'new_shape'</span><span class="p">]</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">]</span>
         <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">resize</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">output_shape</span><span class="o">=</span><span class="n">new_shape</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">preserve_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
@@ -573,19 +573,19 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="c1"># Rebin by uniform factor options</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Factor&#39;</span><span class="p">,</span>
-                                         <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Factor'</span><span class="p">,</span>
+                                         <span class="s1">'float'</span><span class="p">,</span>
                                          <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">),</span>
                                          <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                         <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Factor by which the data will be rebinned, &quot;</span>
-                                         <span class="s2">&quot;e.g. 0.5 is 50</span><span class="si">% r</span><span class="s2">educed size&quot;</span><span class="p">,</span>
+                                         <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Factor by which the data will be rebinned, "</span>
+                                         <span class="s2">"e.g. 0.5 is 50</span><span class="si">% r</span><span class="s2">educed size"</span><span class="p">,</span>
                                          <span class="n">single_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 
         <span class="c1"># Rebin to target shape options</span>
         <span class="n">shape_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">shape_x</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">shape_range</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">shape_y</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">shape_range</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">shape_x</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'X'</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">shape_range</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">shape_y</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Y'</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">shape_range</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QRadioButton</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span>
         <span class="n">shape_fields</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
@@ -593,7 +593,7 @@
         <span class="n">shape_fields</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">shape_y</span><span class="p">)</span>
 
         <span class="c1"># Rebin dimension selection options</span>
-        <span class="n">rebin_by_factor_radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="s2">&quot;Rebin by Factor&quot;</span><span class="p">)</span>
+        <span class="n">rebin_by_factor_radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="s2">"Rebin by Factor"</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">size_by_factor_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">):</span>
             <span class="n">factor</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
@@ -601,7 +601,7 @@
 
         <span class="n">rebin_by_factor_radio</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">size_by_factor_toggled</span><span class="p">)</span>
 
-        <span class="n">rebin_to_dimensions_radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="s2">&quot;Rebin to Dimensions&quot;</span><span class="p">)</span>
+        <span class="n">rebin_to_dimensions_radio</span> <span class="o">=</span> <span class="n">QRadioButton</span><span class="p">(</span><span class="s2">"Rebin to Dimensions"</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">size_by_dimensions_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">):</span>
             <span class="n">shape_x</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
@@ -611,7 +611,7 @@
         <span class="n">rebin_to_dimensions_radio</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">size_by_dimensions_toggled</span><span class="p">)</span>
 
         <span class="c1"># Rebin mode options</span>
-        <span class="n">label_mode</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Mode&quot;</span><span class="p">)</span>
+        <span class="n">label_mode</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">"Mode"</span><span class="p">)</span>
         <span class="n">mode_field</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="n">mode_field</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">modes</span><span class="p">())</span>
 
@@ -624,12 +624,12 @@
         <span class="n">rebin_by_factor_radio</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;rebin_to_dimensions_radio&quot;</span><span class="p">:</span> <span class="n">rebin_to_dimensions_radio</span><span class="p">,</span>
-            <span class="s2">&quot;shape_x&quot;</span><span class="p">:</span> <span class="n">shape_x</span><span class="p">,</span>
-            <span class="s2">&quot;shape_y&quot;</span><span class="p">:</span> <span class="n">shape_y</span><span class="p">,</span>
-            <span class="s2">&quot;rebin_by_factor_radio&quot;</span><span class="p">:</span> <span class="n">rebin_by_factor_radio</span><span class="p">,</span>
-            <span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="n">factor</span><span class="p">,</span>
-            <span class="s2">&quot;mode_field&quot;</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">,</span>
+            <span class="s2">"rebin_to_dimensions_radio"</span><span class="p">:</span> <span class="n">rebin_to_dimensions_radio</span><span class="p">,</span>
+            <span class="s2">"shape_x"</span><span class="p">:</span> <span class="n">shape_x</span><span class="p">,</span>
+            <span class="s2">"shape_y"</span><span class="p">:</span> <span class="n">shape_y</span><span class="p">,</span>
+            <span class="s2">"rebin_by_factor_radio"</span><span class="p">:</span> <span class="n">rebin_by_factor_radio</span><span class="p">,</span>
+            <span class="s2">"factor"</span><span class="p">:</span> <span class="n">factor</span><span class="p">,</span>
+            <span class="s2">"mode_field"</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -647,7 +647,7 @@
         <span class="k">elif</span> <span class="n">rebin_by_factor_radio</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
             <span class="n">params</span> <span class="o">=</span> <span class="n">factor</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown bin dimension mode&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Unknown bin dimension mode'</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">RebinFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode_field</span><span class="o">.</span><span class="n">currentText</span><span class="p">(),</span> <span class="n">rebin_param</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 </div>
@@ -658,7 +658,7 @@
     <span class="n">old_shape</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">num_images</span> <span class="o">=</span> <span class="n">old_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># use SciPy&#39;s calculation to find the expected dimensions</span>
+    <span class="c1"># use SciPy's calculation to find the expected dimensions</span>
     <span class="c1"># int to avoid visible deprecation warning</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rebin_param</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">expected_dimy</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rebin_param</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -674,7 +674,7 @@
 <div class="viewcode-block" id="modes">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rebin.rebin.html#mantidimaging.core.operations.rebin.rebin.modes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">():</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="s2">&quot;wrap&quot;</span><span class="p">,</span> <span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="s2">&quot;symmetric&quot;</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">"constant"</span><span class="p">,</span> <span class="s2">"edge"</span><span class="p">,</span> <span class="s2">"wrap"</span><span class="p">,</span> <span class="s2">"reflect"</span><span class="p">,</span> <span class="s2">"symmetric"</span><span class="p">]</span></div>
 
 </pre></div>
 

@@ -511,9 +511,9 @@
 <div class="viewcode-block" id="ExportImageViewWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExportImageViewWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Minimal image preview widget for the Export tab.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -555,7 +555,7 @@
 <div class="viewcode-block" id="ExportImageViewWidget.clear">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show a blank canvas.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Show a blank canvas."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">autoLevels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setImageItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageItem</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
@@ -565,7 +565,7 @@
 <div class="viewcode-block" id="ExportImageViewWidget.populate_parameter_selector">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_image_widget.ExportImageViewWidget.populate_parameter_selector">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">populate_parameter_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate the parameter selector combobox with fitted parameter names&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Populate the parameter selector combobox with fitted parameter names"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">exportSettingsWidget</span><span class="o">.</span><span class="n">populate_parameter_selector</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span></div>
 
 
@@ -576,9 +576,9 @@
                            <span class="n">binner</span><span class="p">:</span> <span class="n">ROIBinner</span><span class="p">,</span>
                            <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
                            <span class="n">levels</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the parameter map overlay using viridis with the given opacity and colour levels.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Display the parameter map overlay using viridis with the given opacity and colour levels."""</span>
         <span class="n">lower_level</span><span class="p">,</span> <span class="n">upper_level</span> <span class="o">=</span> <span class="n">levels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">param_overlay</span><span class="o">.</span><span class="n">setColorMap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_overlay</span><span class="o">.</span><span class="n">setColorMap</span><span class="p">(</span><span class="s1">'viridis'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">param_overlay</span><span class="o">.</span><span class="n">setOpacity</span><span class="p">(</span><span class="n">opacity</span><span class="p">)</span>
 
         <span class="c1"># Align mapping with sample and scale to match binned resolution</span>
@@ -593,15 +593,15 @@
         <span class="c1"># connect histogram to parameter values and match colourmap</span>
         <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span>
         <span class="n">hist</span><span class="o">.</span><span class="n">setImageItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_overlay</span><span class="p">)</span>
-        <span class="n">hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">setColorMap</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">colormap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">))</span>
+        <span class="n">hist</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">setColorMap</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">colormap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'viridis'</span><span class="p">))</span>
         <span class="n">hist</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="n">lower_level</span><span class="p">,</span> <span class="n">upper_level</span><span class="p">)</span>
         <span class="n">hist</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the currently displayed image array, or None.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageItem</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Return the currently displayed image array, or None."""</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">imageItem</span><span class="p">,</span> <span class="s2">"image"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
 
 </pre></div>
 

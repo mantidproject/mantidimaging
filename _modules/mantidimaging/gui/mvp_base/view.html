@@ -505,11 +505,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">compile_ui</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;perf.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
-<span class="n">settings</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QSettings</span><span class="p">(</span><span class="s1">&#39;mantidproject&#39;</span><span class="p">,</span> <span class="s1">&#39;Mantid Imaging&#39;</span><span class="p">)</span>
+<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">"perf."</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QSettings</span><span class="p">(</span><span class="s1">'mantidproject'</span><span class="p">,</span> <span class="s1">'Mantid Imaging'</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;theme_selection&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;theme_selection&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;theme_selection&#39;</span><span class="p">,</span> <span class="s1">&#39;Fusion&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">"theme_selection"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">"theme_selection"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'theme_selection'</span><span class="p">,</span> <span class="s1">'Fusion'</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseMainWindowView">
@@ -521,7 +521,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_shown</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;theme_selection&#39;</span><span class="p">))</span>
+        <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">'theme_selection'</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">ui_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compile_ui</span><span class="p">(</span><span class="n">ui_file</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -529,7 +529,7 @@
 <div class="viewcode-block" id="BaseMainWindowView.closeEvent">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.closeEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;UI window closed&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'UI window closed'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
@@ -537,43 +537,43 @@
 <div class="viewcode-block" id="BaseMainWindowView.cleanup">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.cleanup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Runs when the window is closed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseMainWindowView.show_error_dialog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.show_error_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_error_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;show_error_dialog(): </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"show_error_dialog(): </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Error"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BaseMainWindowView.show_info_dialog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.show_info_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_info_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;show_info_dialog(): </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Information&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"show_info_dialog(): </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Information"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BaseMainWindowView.show_warning_dialog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.show_warning_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_warning_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;show_warning_dialog(): </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Warning&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"show_warning_dialog(): </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Warning"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BaseMainWindowView.show_question_dialog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseMainWindowView.show_question_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_question_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shows a question dialog box. Returns true if the user selects &quot;OK&quot;, false otherwise.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Shows a question dialog box. Returns true if the user selects "OK", false otherwise.</span>
 
 <span class="sd">        :param title: The title of the question dialog.</span>
 <span class="sd">        :param msg: The message to show.</span>
-<span class="sd">        :return: True if the user selects &quot;OK&quot;, false otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        :return: True if the user selects "OK", false otherwise.</span>
+<span class="sd">        """</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span></div>
 
@@ -589,7 +589,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_window_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">perf_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> shown in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> shown in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_t0</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
@@ -608,25 +608,25 @@
 
 <div class="viewcode-block" id="BaseDialogView.show_error_dialog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseDialogView.show_error_dialog">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_error_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_error_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Shows an error message.</span>
 
 <span class="sd">        :param msg: Error message string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+<span class="sd">        """</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Error"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BaseDialogView.show_question_dialog">
 <a class="viewcode-back" href="../../../../api/mantidimaging.gui.mvp_base.view.html#mantidimaging.gui.mvp_base.view.BaseDialogView.show_question_dialog">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_question_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shows a question dialog box. Returns True if the user selects &quot;Yes&quot;, False otherwise.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Shows a question dialog box. Returns True if the user selects "Yes", False otherwise.</span>
 
 <span class="sd">        :param title: The title of the dialog.</span>
 <span class="sd">        :param msg: The message to show.</span>
-<span class="sd">        :return: True if the user selects &quot;Yes&quot;, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        :return: True if the user selects "Yes", False otherwise.</span>
+<span class="sd">        """</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span></div>
 </div>

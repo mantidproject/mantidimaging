@@ -504,7 +504,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_delete_stack_error_message</span><span class="p">(</span><span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Unable to delete stack: ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2"> not present in dataset.&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"Unable to delete stack: ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2"> not present in dataset."</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_image_key_list</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_images</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
@@ -525,7 +525,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sample</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">flat_before</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -547,7 +547,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dark_before</span> <span class="o">=</span> <span class="n">dark_before</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dark_after</span> <span class="o">=</span> <span class="n">dark_after</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">""</span> <span class="ow">and</span> <span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
@@ -643,7 +643,7 @@
     <span class="nd">@proj180deg</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">proj180deg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj180deg</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t set a 180 projection without a sample&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Can't set a 180 projection without a sample"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">proj180deg</span> <span class="o">=</span> <span class="n">proj180deg</span>
 
     <span class="nd">@property</span>
@@ -672,7 +672,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">image_keys</span> <span class="o">+=</span> <span class="n">_image_key_list</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to create image keys object without sample.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Unable to create image keys object without sample."</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">image_keys</span> <span class="o">+=</span> <span class="n">_image_key_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_after</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dark_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -682,24 +682,24 @@
 <div class="viewcode-block" id="Dataset.set_stack">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type</span><span class="p">:</span> <span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">attr_name</span> <span class="o">=</span> <span class="n">file_type</span><span class="o">.</span><span class="n">fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">attr_name</span> <span class="o">=</span> <span class="n">file_type</span><span class="o">.</span><span class="n">fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">PROJ_180</span><span class="p">:</span>
-            <span class="n">attr_name</span> <span class="o">=</span> <span class="s2">&quot;proj180deg&quot;</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="s2">"proj180deg"</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset does not have an attribute for </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dataset does not have an attribute for </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Dataset.set_stack_by_type_name">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.data.dataset.html#mantidimaging.core.data.dataset.Dataset.set_stack_by_type_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_stack_by_type_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">file_type_name</span> <span class="o">=</span> <span class="n">file_type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">&quot;RECON&quot;</span><span class="p">:</span>
+        <span class="n">file_type_name</span> <span class="o">=</span> <span class="n">file_type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">"RECON"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_recon</span><span class="p">(</span><span class="n">image_stack</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">&quot;IMAGES&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">"IMAGES"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image_stack</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">&quot;SINOGRAMS&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">file_type_name</span> <span class="o">==</span> <span class="s2">"SINOGRAMS"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sinograms</span> <span class="o">=</span> <span class="n">image_stack</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">file_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">FILE_TYPES</span><span class="p">,</span> <span class="n">file_type_name</span><span class="p">)</span>
@@ -708,9 +708,9 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :return: True if any of the data has been processed, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">is_processed</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -719,29 +719,29 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_stack_data_type</span><span class="p">(</span><span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find the data type as a string of a stack.</span>
 <span class="sd">    :param stack_id: The ID of the stack.</span>
 <span class="sd">    :param dataset: The parent dataset of the stack.</span>
-<span class="sd">    :return: A string of the stack&#39;s data type.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    :return: A string of the stack's data type.</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="p">[</span><span class="n">recon</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">recon</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">recons</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="s2">&quot;Recon&quot;</span>
+        <span class="k">return</span> <span class="s2">"Recon"</span>
     <span class="k">if</span> <span class="n">stack_id</span> <span class="ow">in</span> <span class="p">[</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">_stacks</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="s2">&quot;Images&quot;</span>
+        <span class="k">return</span> <span class="s2">"Images"</span>
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_id</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Sample&quot;</span>
+        <span class="k">return</span> <span class="s2">"Sample"</span>
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_id</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_before</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Flat Before&quot;</span>
+        <span class="k">return</span> <span class="s2">"Flat Before"</span>
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_id</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">flat_after</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Flat After&quot;</span>
+        <span class="k">return</span> <span class="s2">"Flat After"</span>
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_id</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_before</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Dark Before&quot;</span>
+        <span class="k">return</span> <span class="s2">"Dark Before"</span>
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_id</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dark_after</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;Dark After&quot;</span>
+        <span class="k">return</span> <span class="s2">"Dark After"</span>
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_id</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">proj180deg</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;180&quot;</span>
-    <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No stack with ID </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2"> found in dataset </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"180"</span>
+    <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No stack with ID </span><span class="si">{</span><span class="n">stack_id</span><span class="si">}</span><span class="s2"> found in dataset </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 
                 </article>

@@ -508,18 +508,18 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter.get_roi">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_roi</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">roi_pos</span><span class="p">,</span> <span class="n">roi_size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get a ROI based on the current real ROI selected. Clips it to be in-bounds of the</span>
 <span class="sd">        shape of the image, to prevent issues when passed to filters</span>
 <span class="sd">        :param image: The current image that is displayed</span>
 <span class="sd">        :param roi_pos: The top-left position of the ROI</span>
 <span class="sd">        :param roi_size: The size of the ROI in [right, bottom] direction</span>
 <span class="sd">        :return: The corrected position and size to have an in-bounds ROI</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Don&#39;t allow negative point coordinates, as they do not</span>
+<span class="sd">        """</span>
+        <span class="c1"># Don't allow negative point coordinates, as they do not</span>
         <span class="c1"># respond to any real image-data and cause issues in filters</span>
         <span class="k">if</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Region of Interest starts outside the picture! Clipping to image bounds&quot;</span><span class="p">)</span>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Region of Interest starts outside the picture! Clipping to image bounds"</span><span class="p">)</span>
             <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
@@ -533,7 +533,7 @@
         <span class="n">roi_right</span> <span class="o">=</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">roi_size</span><span class="o">.</span><span class="n">x</span>
         <span class="n">roi_bottom</span> <span class="o">=</span> <span class="n">roi_pos</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">roi_size</span><span class="o">.</span><span class="n">y</span>
 
-        <span class="c1"># Ensures that we always get a valid ROI that isn&#39;t hanging outside</span>
+        <span class="c1"># Ensures that we always get a valid ROI that isn't hanging outside</span>
         <span class="c1"># of the image, by accounting for the rectangle sticking out the right</span>
         <span class="c1"># or the bottom side of the image. The ROI is translated to be</span>
         <span class="c1"># inside the image</span>
@@ -548,13 +548,13 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.mi_image_view.presenter.html#mantidimaging.gui.widgets.mi_image_view.presenter.MIImagePresenter.get_nearest_timeline_tick">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_nearest_timeline_tick</span><span class="p">(</span><span class="n">x_pos_clicked</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">view_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the closes point to the clicked position on the histogram&#39;s timeline.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Calculate the closes point to the clicked position on the histogram's timeline.</span>
 
 <span class="sd">        :param x_pos_clicked: The X position where the mouse clicked on the histogram widget</span>
 <span class="sd">        :param x_axis: The X-axis object that knows pixel sizes of the widget</span>
 <span class="sd">        :param view_range: The view range represented on the histogram</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">frac_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_pos_clicked</span> <span class="o">-</span> <span class="n">x_axis</span><span class="o">.</span><span class="n">x</span><span class="p">())</span> <span class="o">/</span> <span class="n">x_axis</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
         <span class="n">domain_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">view_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">view_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">frac_pos</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">view_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">domain_pos</span><span class="p">)</span></div>

@@ -522,34 +522,34 @@
 <div class="viewcode-block" id="BaseFilter">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseFilter</span><span class="p">:</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Unnamed Filter&quot;</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Unnamed Filter"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">show_negative_overlay</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">operate_on_sinograms</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">allow_for_180_projection</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="n">SINOGRAM_FILTER_INFO</span> <span class="o">=</span> <span class="s2">&quot;This filter will work on a</span><span class="se">\n</span><span class="s2">sinogram view of the data.&quot;</span>
+    <span class="n">SINOGRAM_FILTER_INFO</span> <span class="o">=</span> <span class="s2">"This filter will work on a</span><span class="se">\n</span><span class="s2">sinogram view of the data."</span>
 
-    <span class="vm">__name__</span> <span class="o">=</span> <span class="s2">&quot;BaseFilter&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="vm">__name__</span> <span class="o">=</span> <span class="s2">"BaseFilter"</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The base class for filter algorithms, which should extend this class.</span>
 
 <span class="sd">    All of this classes methods must be overridden, except sv_params and the do_before and do_after wrappers</span>
 <span class="sd">    which are optional.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BaseFilter.filter_func">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Executes the filter algorithm on a given set of image data with the given parameters.</span>
 
 <span class="sd">        :param data: the image data to apply the filter to</span>
 <span class="sd">        :param kwargs: any additional arguments which the specific filter uses</span>
 <span class="sd">        :return: the image data after applying the filter</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raise_not_implemented</span><span class="p">(</span><span class="s2">&quot;filter_func&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">raise_not_implemented</span><span class="p">(</span><span class="s2">"filter_func"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([]))</span></div>
 
 
@@ -557,13 +557,13 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.execute_wrapper">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Should construct a partial call to _filter_func using values taken from the widgets passed to this function</span>
 <span class="sd">        as kwargs.</span>
 <span class="sd">        :param kwargs: widgets which contain values required for _filter_func.</span>
 <span class="sd">        :return: a partial call to _filter_func using parameters taken from the input widgets.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raise_not_implemented</span><span class="p">(</span><span class="s2">&quot;execute_wrapper&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">raise_not_implemented</span><span class="p">(</span><span class="s2">"execute_wrapper"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
@@ -571,7 +571,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">BaseMainWindowView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Adds any required input widgets to the given form and returns references to them.</span>
 
 <span class="sd">        The return values should be in a dict which can be unpacked as kwargs for a call to</span>
@@ -581,8 +581,8 @@
 <span class="sd">        :param form: the layout to create input widgets in</span>
 <span class="sd">        :param on_change: the filter view action to be bound to all created inputs</span>
 <span class="sd">        :return: the widgets bound as kwargs which are needed to call execute_wrapper</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raise_not_implemented</span><span class="p">(</span><span class="s2">&quot;register_gui&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">raise_not_implemented</span><span class="p">(</span><span class="s2">"register_gui"</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
 
@@ -590,10 +590,10 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.sv_params">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">sv_params</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Any parameters required from the StackVisualizer ie. ROI</span>
 <span class="sd">        :return: a map of parameters names</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
 
@@ -601,13 +601,13 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.validate_execute_kwargs">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_execute_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Check operation parameters to highlight issues that need to be caught before calling filter_func()</span>
 
 <span class="sd">        The method also has access to the ImageStack so it can check dimensions and metadata if needed.</span>
 
 <span class="sd">        :return: None if no issues, a string message if the is a problem</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -624,12 +624,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_images_from_stack</span><span class="p">(</span><span class="n">widget</span><span class="p">:</span> <span class="n">DatasetSelectorWidgetView</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack_uuid</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">stack_uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">stack</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_uuid</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="c1"># Can happen if stack is closed while selected in the form</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Selected stack for </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2"> does not exist"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="k">return</span> <span class="n">stack</span></div>
 
 
@@ -637,12 +637,12 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.BaseFilter.on_stack_changed">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_stack_changed</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">],</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Optional hook for filters that need to refresh UI state when the selected stack changes.</span>
 
 <span class="sd">        :param filter_widget_kwargs: The widgets registered for the active filter.</span>
 <span class="sd">        :param stack: The newly selected stack, or None when selection is cleared.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span></div>
 </div>
 
@@ -651,7 +651,7 @@
 <div class="viewcode-block" id="raise_not_implemented">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operations.base_filter.html#mantidimaging.core.operations.base_filter.raise_not_implemented">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">raise_not_implemented</span><span class="p">(</span><span class="n">function_name</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Required method &#39;</span><span class="si">{</span><span class="n">function_name</span><span class="si">}</span><span class="s2">&#39; not implemented for filter&quot;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Required method '</span><span class="si">{</span><span class="n">function_name</span><span class="si">}</span><span class="s2">' not implemented for filter"</span><span class="p">)</span></div>
 
 </pre></div>
 

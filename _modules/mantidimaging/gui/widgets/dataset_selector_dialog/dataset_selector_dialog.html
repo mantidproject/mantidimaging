@@ -527,7 +527,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Select the dataset&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">"Select the dataset"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
@@ -541,7 +541,7 @@
         <span class="c1"># Button layout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">button_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">button_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Select&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">"Select"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_ok_clicked</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">button_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok_button</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vertical_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button_layout</span><span class="p">)</span>
