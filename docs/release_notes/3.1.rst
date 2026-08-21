@@ -107,3 +107,24 @@ Developer Changes
 - `#2925 <https://github.com/mantidproject/mantidimaging/issues/2925>`_: Updated the 3D Viewer default background color to match Mantid Imaging's theme
 - `#2953 <https://github.com/mantidproject/mantidimaging/issues/2953>`_: Connect spectrum to sub-roi and update sub-roi thumbnail when spinbox values change
 - `#2973 <https://github.com/mantidproject/mantidimaging/issues/2973>`_: Create a bootstrap 5 carousel to replace the static image content for Mantid Imaging documentation index (homepage) to display multiple images showcasing Mantid Imaging features.
+
+Mantid Imaging 3.1.1
+====================
+
+This release includes a range of user-facing and developer fixes, improvements to the application, and the migration to Rattler-Build for package management.
+
+Fixes
+-----
+- `#1851 <https://github.com/mantidproject/mantidimaging/issues/1851>`_: Disable's maximum projection angle if dataset is loaded with angles
+- `#3115 <https://github.com/mantidproject/mantidimaging/issues/3115>`_: Fixes crop coordinates and auto crop not updating on stack change
+- `#3116 <https://github.com/mantidproject/mantidimaging/issues/3116>`_: Improves IndexError handling when toggling average image view
+- `#3127 <https://github.com/mantidproject/mantidimaging/issues/3127>`_: Fixes spectrum viewer producing IndexError after NaN removal operation
+- `#3158 <https://github.com/mantidproject/mantidimaging/issues/3158>`_: Improved CoR refinement with extreme angles
+
+Developer Changes
+-----------------
+- `#2757 <https://github.com/mantidproject/mantidimaging/issues/2757>`_: Fixes doc build failures on release branches in GitHub Actions
+- `#2926 <https://github.com/mantidproject/mantidimaging/issues/2926>`_: Fixes headless system tests failing due to Qt offscreen/backend interaction
+- `#3111 <https://github.com/mantidproject/mantidimaging/issues/3111>`_: Updated pre-commit to use the same ruff version as pixi.toml
+- `#3136 <https://github.com/mantidproject/mantidimaging/issues/3136>`_: Migrated to Rattler-Build for package management
+- `#3182 <https://github.com/mantidproject/mantidimaging/issues/3182>`_: Fixes the rattler-build version inconsistency between the generated recipe and the GUI
