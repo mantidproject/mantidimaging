@@ -211,7 +211,6 @@ cmd = [
     echo "Screenshots written to screenshot_tests_output"
     """,
 ]
-env = { QT_QPA_PLATFORM = "offscreen" }
 description = "Run screenshot tests (Linux) in CI mode (requires APPLITOOLS_API_KEY, uses xvfb)"
 
 [target.win-64.tasks.test-system-base]
