@@ -272,6 +272,34 @@ class ReconWindowPresenterTest(unittest.TestCase):
         mock_corview.return_value.exec.assert_called_once()
         assert self.view.num_iter == iters
 
+    @mock.patch("mantidimaging.gui.windows.recon.presenter.BlockQtSignals")
+    def test_do_algorithm_changed_shows_non_negative_for_sirt(self, _):
+        self.presenter.allowed_recon_kwargs = {
+            "SIRT_CUDA": ["num_iter", "non_negative", "min_constraint"],
+            "FBP_CUDA": ["filter_name"],
+        }
+        self.view.algorithm_name = "SIRT_CUDA"
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
+
+        self.presenter.do_algorithm_changed()
+
+        self.view.nonNegativeCheckBox.show.assert_called_once_with()
+        self.view.nonNegativeLabel.show.assert_called_once_with()
+
+    @mock.patch("mantidimaging.gui.windows.recon.presenter.BlockQtSignals")
+    def test_do_algorithm_changed_hides_non_negative_for_fbp(self, _):
+        self.presenter.allowed_recon_kwargs = {
+            "SIRT_CUDA": ["num_iter", "non_negative", "min_constraint"],
+            "FBP_CUDA": ["filter_name"],
+        }
+        self.view.algorithm_name = "FBP_CUDA"
+        self.presenter.do_preview_reconstruct_slice = mock.Mock()
+
+        self.presenter.do_algorithm_changed()
+
+        self.view.nonNegativeCheckBox.hide.assert_called_once_with()
+        self.view.nonNegativeLabel.hide.assert_called_once_with()
+
     @mock.patch("mantidimaging.gui.windows.recon.presenter.ReconstructWindowPresenter._update_imagestack_geometry_data")
     def test_do_cor_fit(self, _):
         self.presenter.do_preview_reconstruct_slice = mock.Mock()

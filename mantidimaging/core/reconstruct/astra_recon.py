@@ -146,6 +146,8 @@ class AstraRecon(BaseRecon):
             proj_geom = astra.create_proj_geom('parallel_vec', image_width, vectors)
             cfg = astra.astra_dict(recon_params.algorithm)
             cfg['FilterType'] = recon_params.filter_name
+            if recon_params.non_negative:
+                cfg['option'] = {'MinConstraint': 0.0}
 
             with _managed_recon(sino, cfg, proj_geom, vol_geom) as (alg_id, rec_id):
                 astra.algorithm.run(alg_id, iterations=recon_params.num_iter)
@@ -182,6 +184,8 @@ class AstraRecon(BaseRecon):
 def allowed_recon_kwargs() -> dict:
     return {
         'FBP_CUDA': ['filter_name', 'filter_par'],
-        'SIRT_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling', 'PixelSuperSampling'],
-        'SIRT3D_CUDA': ['num_iter', 'min_constraint', 'max_constraint', 'DetectorSuperSampling', 'PixelSuperSampling']
+        'SIRT_CUDA':
+        ['num_iter', 'non_negative', 'min_constraint', 'max_constraint', 'DetectorSuperSampling', 'PixelSuperSampling'],
+        'SIRT3D_CUDA':
+        ['num_iter', 'non_negative', 'min_constraint', 'max_constraint', 'DetectorSuperSampling', 'PixelSuperSampling']
     }
