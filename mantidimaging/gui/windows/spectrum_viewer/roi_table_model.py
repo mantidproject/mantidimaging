@@ -65,7 +65,8 @@ class TableModel(QAbstractTableModel):
 
         if role == Qt.BackgroundRole:
             if index.column() == 1:
-                return QBrush(QColor(*self._data[index.row()][index.column()]))
+                color = cast(tuple[int, int, int], self._data[index.row()][index.column()])
+                return QBrush(QColor(*color))
 
         if role == Qt.CheckStateRole:
             if index.column() == 2:
