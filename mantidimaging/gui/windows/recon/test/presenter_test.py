@@ -12,6 +12,7 @@ from parameterized import parameterized
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.geometry import Geometry
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.rotation.data_model import Point
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
 from mantidimaging.gui.windows.recon import ReconstructWindowPresenter, ReconstructWindowView, ReconstructWindowModel
@@ -489,3 +490,6 @@ class ReconWindowPresenterTest(unittest.TestCase):
 
         self.assertAlmostEqual(self.data.geometry.cor.value, cor, places=10)
         self.assertAlmostEqual(self.data.geometry.tilt, tilt, places=10)
+        geometry_metadata = self.data.metadata[const.OPERATION_HISTORY][0]
+        self.assertEqual(cor, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_ROTATION_CENTRE])
+        self.assertEqual(tilt, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_TILT_ANGLE_DEG])

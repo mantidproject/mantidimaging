@@ -31,8 +31,8 @@ class GeometryWindowPresenter(BasePresenter):
             self.view.show_info_dialog("No geometry to delete.")
             return
         stack.geometry = None
-        if hasattr(stack, 'geometry'):
-            stack.metadata.pop('angles', None)
+        stack.metadata.pop('angles', None)
+        stack.remove_geometry_metadata()
         self.view.set_widget_stack_page(1)
         self.view.clear_plot()
         self.view.show_info_dialog("Geometry deleted. You can now create a new geometry.")
@@ -120,6 +120,7 @@ class GeometryWindowPresenter(BasePresenter):
 
         stack.geometry.set_geometry_from_cor_tilt(updated_cor, updated_tilt)
         stack.geometry.set_source_detector_positions(src_val_mm, det_val_mm)
+        stack.sync_geometry_metadata()
 
         self.refresh_plot(stack)
         # Notify main window that stack was modified (so recon window can update COR/Tilt)
@@ -161,6 +162,7 @@ class GeometryWindowPresenter(BasePresenter):
         assert stack.geometry is not None
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
         stack.geometry.set_source_detector_positions(src_val_mm, det_val_mm)
+        stack.sync_geometry_metadata()
 
         self.main_window.presenter.add_projection_angles_to_sample(stack.id, new_angles)
 
@@ -191,6 +193,7 @@ class GeometryWindowPresenter(BasePresenter):
         assert existing_angles is not None
 
         stack.create_geometry(existing_angles, new_type)
+        stack.sync_geometry_metadata()
         self.handle_stack_changed()
         self.view.emit_geometry_changed()
 

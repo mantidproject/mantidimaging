@@ -149,6 +149,69 @@ class ImageStack:
             const.OPERATION_DISPLAY_NAME: display_name
         })
 
+    def _find_operation_index(self, func_name: str) -> int | None:
+        if const.OPERATION_HISTORY not in self.metadata:
+            return None
+
+        for i, operation in enumerate(self.metadata[const.OPERATION_HISTORY]):
+            if operation.get(const.OPERATION_NAME) == func_name:
+                return i
+
+        return None
+
+    def upsert_operation(self, func_name: str, display_name: str, **kwargs) -> None:
+        if const.OPERATION_HISTORY not in self.metadata:
+            self.metadata[const.OPERATION_HISTORY] = []
+
+        entry = {
+            const.TIMESTAMP: datetime.datetime.now().isoformat(),
+            const.OPERATION_NAME: func_name,
+            const.OPERATION_KEYWORD_ARGS: kwargs,
+            const.OPERATION_DISPLAY_NAME: display_name
+        }
+
+        existing_index = self._find_operation_index(func_name)
+        if existing_index is None:
+            self.metadata[const.OPERATION_HISTORY].append(entry)
+        else:
+            self.metadata[const.OPERATION_HISTORY][existing_index] = entry
+            self.metadata[const.OPERATION_HISTORY] = [
+                operation for i, operation in enumerate(self.metadata[const.OPERATION_HISTORY])
+                if i == existing_index or operation.get(const.OPERATION_NAME) != func_name
+            ]
+
+    def remove_operation(self, func_name: str) -> bool:
+        if const.OPERATION_HISTORY not in self.metadata:
+            return False
+
+        original_length = len(self.metadata[const.OPERATION_HISTORY])
+        self.metadata[const.OPERATION_HISTORY] = [
+            operation for operation in self.metadata[const.OPERATION_HISTORY]
+            if operation.get(const.OPERATION_NAME) != func_name
+        ]
+        return len(self.metadata[const.OPERATION_HISTORY]) != original_length
+
+    def sync_geometry_metadata(self) -> None:
+        if self.geometry is None:
+            return
+
+        angles = self.projection_angles()
+        self.upsert_operation(
+            const.OPERATION_NAME_GEOMETRY,
+            const.GEOMETRY_DISPLAY_NAME,
+            **{
+                const.GEOMETRY_STACK_NAME: self.name,
+                const.GEOMETRY_TYPE: self.geometry.type.value,
+                const.GEOMETRY_ANGLES_DEG: np.rad2deg(angles.value).tolist() if angles is not None else [],
+                const.COR_TILT_ROTATION_CENTRE: float(self.geometry.cor.value),
+                const.COR_TILT_TILT_ANGLE_DEG: float(self.geometry.tilt),
+                const.GEOMETRY_SOURCE_POSITION_MM: float(self.geometry.source_position_mm),
+                const.GEOMETRY_DETECTOR_POSITION_MM: float(self.geometry.detector_position_mm),
+            })
+
+    def remove_geometry_metadata(self) -> bool:
+        return self.remove_operation(const.OPERATION_NAME_GEOMETRY)
+
     @property
     def is_processed(self) -> bool:
         """
@@ -383,6 +446,7 @@ class ImageStack:
             self.create_geometry(angles)
         else:
             self.geometry.set_angles(angles=angles.value, angle_unit="radian")
+            self.sync_geometry_metadata()
 
     def projection_angles(self) -> ProjectionAngles | None:
         """
@@ -438,6 +502,7 @@ class ImageStack:
                                  type=geom_type,
                                  num_pixels=(self.width, self.height),
                                  pixel_size=(1., 1.))
+        self.sync_geometry_metadata()
 
     def create_geometry_from_cil_acq(self, acquisition_geometry: AcquisitionGeometry) -> None:
         """
@@ -446,6 +511,7 @@ class ImageStack:
         self.create_geometry(ProjectionAngles(np.zeros(0)))
         assert (self.geometry is not None)
         self.geometry.config = deepcopy(acquisition_geometry.config)
+        self.sync_geometry_metadata()
 
     def set_geometry_panels(self) -> None:
         """

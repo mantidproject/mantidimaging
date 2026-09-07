@@ -470,6 +470,7 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = self.view.tilt
         cor_top = ScalarCoR(self.view.rotation_centre)
         current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
+        current_image_stack.sync_geometry_metadata()
 
     def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)

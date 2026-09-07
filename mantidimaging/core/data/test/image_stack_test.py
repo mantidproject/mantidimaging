@@ -217,6 +217,14 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(10, len(actual.value))
         np.testing.assert_allclose(actual.value, pangles.value, atol=1e-4)
 
+        geometry_metadata = images.metadata[const.OPERATION_HISTORY][0]
+        self.assertEqual(const.OPERATION_NAME_GEOMETRY, geometry_metadata[const.OPERATION_NAME])
+        self.assertEqual(images.name, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_STACK_NAME])
+        np.testing.assert_allclose(
+            geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_ANGLES_DEG],
+            np.rad2deg(pangles.value),
+            atol=1e-4)
+
     def test_set_angles_geometry(self):
         images = generate_images()
         angles = range(0, 10)

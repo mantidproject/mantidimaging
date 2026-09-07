@@ -18,6 +18,14 @@ COR_TILT_TILT_ANGLE_DEG = 'tilt_angle_deg'
 COR_TILT_SLICE_INDICES = 'slice_indices'
 COR_TILT_ROTATION_CENTRES = 'rotation_centres'
 
+OPERATION_NAME_GEOMETRY = 'geometry'
+GEOMETRY_DISPLAY_NAME = 'Geometry'
+GEOMETRY_STACK_NAME = 'stack_name'
+GEOMETRY_TYPE = 'geometry_type'
+GEOMETRY_ANGLES_DEG = 'angles_deg'
+GEOMETRY_SOURCE_POSITION_MM = 'source_position_mm'
+GEOMETRY_DETECTOR_POSITION_MM = 'detector_position_mm'
+
 OPERATION_NAME_CROP = 'crop_coords'
 CROP_REGION_OF_INTEREST = 'region_of_interest'
 

@@ -10,6 +10,7 @@ import numpy
 import numpy as np
 
 from mantidimaging.core.data.geometry import GeometryType
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.test_helpers.unit_test_helper import generate_angles
 
@@ -87,6 +88,18 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_parameter_updates()
         self.assertAlmostEqual(self.data.geometry.cor.value, test_cor, places=10)
         self.assertAlmostEqual(self.data.geometry.tilt, test_tilt, places=10)
+        geometry_metadata = self.data.metadata[const.OPERATION_HISTORY][0]
+        self.assertEqual(test_cor, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_ROTATION_CENTRE])
+        self.assertEqual(test_tilt, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_TILT_ANGLE_DEG])
+
+    def test_delete_geometry_removes_geometry_metadata(self):
+        self.presenter.handle_create_new_geometry()
+        self.assertIn(const.OPERATION_HISTORY, self.data.metadata)
+
+        self.presenter.handle_delete_geometry()
+
+        operation_names = [entry[const.OPERATION_NAME] for entry in self.data.metadata[const.OPERATION_HISTORY]]
+        self.assertNotIn(const.OPERATION_NAME_GEOMETRY, operation_names)
 
     def test_update_parameters_converts_internal_mm_to_displayed_m(self):
         self.presenter.handle_create_new_geometry()
