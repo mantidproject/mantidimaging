@@ -38,7 +38,7 @@ PyCharm will index the project and detect Python files automatically.
 Selecting the Python interpreter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. Open ``File -> Settings`` (Windows/Linux) or ``PyCharm -> Settings`` (macOS)
-2. Navigate to ``Project: mantidimaging -> Python Interpreter``
+2. Navigate to `` Python -> Interpreter``
 3. Click ``Add Interpreter`` and select the environment that matches your Mantid Imaging developer setup (for example, ``mantidimaging-dev``)
 4. Apply the changes
 
