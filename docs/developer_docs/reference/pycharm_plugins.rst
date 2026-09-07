@@ -17,7 +17,7 @@ Python Development
 
     * - Plugin
       - Purpose
-    * - `Python (bundled with PyCharm) <https://www.jetbrains.com/help/pycharm/installing-uninstalling-and-enabling-disabling-plugins.html>`_
+     - `Python (bundled with PyCharm) <https://www.jetbrains.com/help/pycharm/managing-plugins.html>`_
       - Core Python editing, navigation, refactoring, and debugging support.
     * - `Ruff <https://plugins.jetbrains.com/plugin/20574-ruff>`_
       - Integrates Ruff linting and formatting checks into the IDE.
@@ -34,8 +34,10 @@ Code Reviews
 
     * - Plugin
       - Purpose
-    * - `GitHub <https://plugins.jetbrains.com/plugin/7499-github>`_
+    * - `GitHub <https://plugins.jetbrains.com/plugin/13115-github>`_
       - Enables pull request and issue integration directly from PyCharm.
+    * - `GitToolBox <https://plugins.jetbrains.com/plugin/7499-gittoolbox>`_
+      - Adds advanced Git status insights and productivity features inside the IDE.
 
 Markdown and Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,14 +77,15 @@ Commonly used keybindings
      - Cmd+Shift+A
      - Ctrl+Shift+A
    * - Open File
-     - Ctrl+Shift+N
-     - Cmd+Shift+O
-     - Ctrl+Shift+N
-   * - Run
-     - Shift+F10
+     - Ctrl+O
+     - Cmd+O
+     - Ctrl+O
+   * - Run Configuration/Script (Run Popup)
+     - Alt+Shift+F10
      - Control+R
-     - Shift+F10
-   * - Debug
-     - Shift+F9
+     - Alt+Shift+F10
+   * - Debug Configuration/Script (Debug Popup)
+     - Alt+Shift+F9
      - Control+D
-     - Shift+F9
+     - Alt+Shift+F9
+
