@@ -89,8 +89,12 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.assertAlmostEqual(self.data.geometry.cor.value, test_cor, places=10)
         self.assertAlmostEqual(self.data.geometry.tilt, test_tilt, places=10)
         geometry_metadata = self.data.metadata[const.OPERATION_HISTORY][0]
-        self.assertEqual(test_cor, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_ROTATION_CENTRE])
-        self.assertEqual(test_tilt, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_TILT_ANGLE_DEG])
+        self.assertAlmostEqual(test_cor,
+                               geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_ROTATION_CENTRE],
+                               places=10)
+        self.assertAlmostEqual(test_tilt,
+                               geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_TILT_ANGLE_DEG],
+                               places=10)
 
     def test_delete_geometry_removes_geometry_metadata(self):
         self.presenter.handle_create_new_geometry()

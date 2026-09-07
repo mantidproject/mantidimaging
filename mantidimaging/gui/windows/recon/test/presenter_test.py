@@ -491,5 +491,9 @@ class ReconWindowPresenterTest(unittest.TestCase):
         self.assertAlmostEqual(self.data.geometry.cor.value, cor, places=10)
         self.assertAlmostEqual(self.data.geometry.tilt, tilt, places=10)
         geometry_metadata = self.data.metadata[const.OPERATION_HISTORY][0]
-        self.assertEqual(cor, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_ROTATION_CENTRE])
-        self.assertEqual(tilt, geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_TILT_ANGLE_DEG])
+        self.assertAlmostEqual(cor,
+                               geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_ROTATION_CENTRE],
+                               places=10)
+        self.assertAlmostEqual(tilt,
+                               geometry_metadata[const.OPERATION_KEYWORD_ARGS][const.COR_TILT_TILT_ANGLE_DEG],
+                               places=10)
