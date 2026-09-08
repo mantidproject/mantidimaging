@@ -226,7 +226,7 @@ description = "Run system tests (Windows)"
 cmd = [
     "cmd",
     "/c",
-    "mkdir screenshot_tests_output 2>nul & set APPLITOOLS_API_KEY=local & set APPLITOOLS_IMAGE_DIR=%CD%\\screenshot_tests_output & pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests",
+    "mkdir screenshot_tests_output 2>nul & set APPLITOOLS_API_KEY=local & set APPLITOOLS_IMAGE_DIR=screenshot_tests_output pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests",
 ]
 description = "Run screenshot tests (Windows)"
 
