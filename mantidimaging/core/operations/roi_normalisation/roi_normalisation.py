@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from mantidimaging import helper as h
+from mantidimaging.core.fitting.bounding_box import get_bounding_box
 from mantidimaging.core.operations.base_filter import BaseFilter, FilterGroup
 from mantidimaging.core.parallel import shared as ps
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -16,6 +17,7 @@ from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
+    from PyQt5.QtWidgets import QWidget
 
 
 def modes() -> list[str]:
@@ -158,6 +160,19 @@ class RoiNormalisationFilter(BaseFilter):
                        region_of_interest=roi,
                        normalisation_mode=mode,
                        flat_field=flat_images)
+
+    @staticmethod
+    def on_stack_changed(filter_widget_kwargs: dict[str, QWidget], stack: ImageStack | None) -> None:
+        """
+        Refresh the air region ROI when the selected stack changes.
+        """
+        if stack is None:
+            return
+        roi_field = filter_widget_kwargs.get('roi_field')
+        if roi_field is None:
+            return
+        air_roi = get_bounding_box(stack)
+        roi_field.setText(air_roi.to_list_string())
 
     @staticmethod
     def group_name() -> FilterGroup:

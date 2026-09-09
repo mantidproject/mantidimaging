@@ -76,6 +76,8 @@ class OperationsWindowTest(BaseEyesTest):
         self.imaging.show_filters_window()
         self.imaging.filters.filterSelector.setCurrentText("ROI Normalisation")
         QApplication.processEvents()
+        self.imaging.filters.presenter.model.filter_widget_kwargs["roi_field"].setText("0, 0, 200, 200")
+        QApplication.processEvents()
 
         self.check_target(widget=self.imaging.filters)
 
