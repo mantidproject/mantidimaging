@@ -88,7 +88,11 @@ class TestCheckVersion(unittest.TestCase):
 
         self.assertEqual(self.versions.is_prerelease(), prerelease)
 
-    def test_conda_update_message(self):
+    @mock.patch(
+        "mantidimaging.core.utility.version_check.CheckVersion.find_conda_executable",
+        return_value="conda",
+    )
+    def test_conda_update_message(self, _):
         self.versions._conda_available_version = "2.0.0"
         msg, detailed = self.versions.conda_update_message()
         self.assertTrue("Found version 1.0.0.post1" in msg)
