@@ -90,7 +90,6 @@ jenkspy = "0.4.*"
 algotom = "1.6.*"
 tomopy = "1.12.*"
 cil = "25.0.*"
-ccpi-regulariser = "25.0.*"
 ccpi-viewer = "25.0.*"
 
 # Visualization and GUI
@@ -103,36 +102,40 @@ darkdetect = "0.8.0.*"
 
 # GPU-specific packages - common across all platforms
 [feature.runtime-gpu.dependencies]
-cudatoolkit = "11.8.*"
 cupy = "12.3.*"
+cuda-version = "12.9.*"
 
 # Linux-specific GPU packages - Linux (CUDA-enabled builds)
 [feature.runtime-gpu.target.linux-64.dependencies]
-astra-toolbox = { version = "2.1.0.*", build = "cuda*" }
-libastra = { version = "2.1.0.*", build = "cuda*" }
+ccpi-regulariser = { version = "25.0.*", build = "cuda*" }
+astra-toolbox = { version = "2.4.1.*", build = "cuda*" }
+libastra = { version = "2.4.1.*", build = "cuda*" }
 
 # Windows-specific GPU packages - Windows (CUDA-enabled builds with specific hashes)
 [feature.runtime-gpu.target.win-64.dependencies]
-astra-toolbox = { version = "2.1.0.*", build = "cudapy312h0f47501_105" }
-libastra = { version = "2.1.0.*", build = "cuda11.8hb8fb34d_111" }
+ccpi-regulariser = { version = "25.0.*", build = "cuda*" }
+astra-toolbox = { version = "2.4.1.*", build = "cuda*" }
+libastra = { version = "2.4.1.*", build = "cuda*" }
 
 # CPU-specific packages (non-CUDA builds)
 [feature.runtime-cpu.target.linux-64.dependencies]
-astra-toolbox = "2.1.0.*"
-libastra = "2.1.0.*"
+ccpi-regulariser = { version = "25.0.*", build = "cpu*" }
+astra-toolbox =  "2.3.1.*"
+libastra =  "2.3.1.*"
 
 # Windows-specific CPU packages - Windows (non-CUDA builds with specific hashes)
 [feature.runtime-cpu.target.win-64.dependencies]
-astra-toolbox = { version = "2.1.0.*", build = "py312h6965d8f_5" }
-libastra = { version = "2.1.0.*" }
+ccpi-regulariser = { version = "25.0.*", build = "cpu*" }
+astra-toolbox = "2.3.1.*"
+libastra = "2.3.1.*"
 
 # GPU verification feature - adds __cuda requirement - needed to ensure GPU builds only go to GPU-capable systems
 [feature.gpu-verify.system-requirements]
-cuda = "11.8"
+cuda = "12.9"
 
 # Virtual package to ensure CUDA is available on GPU systems - needed for windows
 [feature.gpu-verify.target.win-64.dependencies]
-__cuda = "11.8.*"
+__cuda = "12.9.*"
 
 # Packages required for building and uploading conda packages
 [feature.build.dependencies]
@@ -209,7 +212,6 @@ cmd = [
     echo "Screenshots written to screenshot_tests_output"
     """,
 ]
-env = { QT_QPA_PLATFORM = "offscreen" }
 description = "Run screenshot tests (Linux) in CI mode (requires APPLITOOLS_API_KEY, uses xvfb)"
 
 [target.win-64.tasks.test-system-base]
