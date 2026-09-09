@@ -12,7 +12,7 @@
     <a href="https://mantidproject.github.io/mantidimaging/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://anaconda.org/mantid/mantidimaging"><b>Anaconda Package</b></a>
+    <a href="https://anaconda.org/mantidimaging/mantidimaging"><b>Anaconda Package</b></a>
     ·
     <a href="https://github.com/mantidproject/mantidimaging"><b>Code Repository</b></a>
     ·
