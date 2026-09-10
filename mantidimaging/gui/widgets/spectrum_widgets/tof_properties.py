@@ -3,6 +3,7 @@
 
 from PyQt5 import QtCore, QtWidgets
 from logging import getLogger
+from collections.abc import Callable
 
 LOG = getLogger(__name__)
 
@@ -89,6 +90,6 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
         self.timeDelaySpinBox.setValue(value)
         LOG.debug("Time delay set to: %.3f µs", value)
 
-    def connect_value_changed(self, handler: QtCore.pyqtSlot):
+    def connect_value_changed(self, handler: Callable[..., None]) -> None:
         self.flightPathSpinBox.valueChanged.connect(handler)
         self.timeDelaySpinBox.valueChanged.connect(handler)

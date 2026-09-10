@@ -92,12 +92,12 @@ def setup_application() -> QApplication:
     return q_application
 
 
-def main() -> None:
+def main() -> int | None:
     args = parse_args()
     if args.version:
         from mantidimaging import __version__ as version_no
         print(version_no)
-        return
+        return 0
 
     q_application = setup_application()
     show_unclean_shutdown_warning(settings)
