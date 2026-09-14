@@ -490,7 +490,7 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../release_notes/next.html">Mantid Imaging next release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_docs/reference/mi_in_research.html">Mantid Imaging in Research</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_docs/reference/mi_in_research.html">Mantid Imaging contributions to Research</a></li>
 </ul>
 </details></li>
 </ul>
@@ -572,7 +572,7 @@
 <span id="mantidimaging-core-utility-execution-timer-module"></span><h1>mantidimaging.core.utility.execution_timer module<a class="headerlink" href="#module-mantidimaging.core.utility.execution_timer" title="Link to this heading">#</a></h1>
 <p>Context managers for logging execution time or profile of code.</p>
 <p>These are not used in the code, but are here as developer tools. They can be used by wrapping the code of interest:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">"a_slow_function()"</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;a_slow_function()&quot;</span><span class="p">):</span>
     <span class="n">a_slow_function</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -581,18 +581,18 @@ logging.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.execution_timer.ExecutionProfiler">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.execution_timer.</span></span><span class="sig-name descname"><span class="pre">ExecutionProfiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Elapsed</span> <span class="pre">time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger:</span> <span class="pre">~logging.Logger</span> <span class="pre">=</span> <span class="pre">&lt;Logger</span> <span class="pre">perf.mantidimaging.core.utility.execution_timer</span> <span class="pre">(WARNING)&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lines:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_by:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'cumtime'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/execution_timer.html#ExecutionProfiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.execution_timer.ExecutionProfiler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Context manager used to profile the execution of code in its context.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.execution_timer.ExecutionTimer">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.core.utility.execution_timer.</span></span><span class="sig-name descname"><span class="pre">ExecutionTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Elapsed</span> <span class="pre">time'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger:</span> <span class="pre">~logging.Logger</span> <span class="pre">=</span> <span class="pre">&lt;Logger</span> <span class="pre">perf.mantidimaging.core.utility.execution_timer</span> <span class="pre">(WARNING)&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/core/utility/execution_timer.html#ExecutionTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.core.utility.execution_timer.ExecutionTimer" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Context manager used to time the execution of code in its context.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.core.utility.execution_timer.ExecutionTimer.total_seconds">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.execution_timer.ExecutionTimer.total_seconds" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#mantidimaging.core.utility.execution_timer.ExecutionTimer.total_seconds" title="Link to this definition">#</a></dt>
 <dd><p>Gets the total number of seconds the timer was running for, returns
 None if the timer has not been run or is still running.</p>
 </dd></dl>

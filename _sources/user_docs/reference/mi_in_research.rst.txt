@@ -1,7 +1,7 @@
 .. _mi_in_research:
 
-Mantid Imaging in Research
-==========================
+Mantid Imaging contributions to Research
+========================================
 
 This page highlights research that has used and credited Mantid Imaging, featuring journal articles, PhD theses, and other scientific contributions demonstrating its use in practice.
 
