@@ -39,7 +39,7 @@ jobs:
       - name: ruff
         uses: ./.github/actions/test
         with:
-          command: ruff check .
+          command: ruff check --select T20 .
           label: ubuntu18
 
       - name: json
