@@ -135,16 +135,13 @@ class ROINormalisationTest(unittest.TestCase):
 
             RoiNormalisationFilter.on_stack_changed(filter_widget_kwargs, stack)
 
-            self.assertEqual(get_bounding_box_mock.call_count, 1)
             get_bounding_box_mock.assert_called_once_with(stack)
-            self.assertEqual(roi_mock.setText.call_count, 1)
             roi_mock.setText.assert_called_once_with("1, 2, 3, 4")
 
     def test_on_stack_changed_with_no_stack_does_nothing(self):
         roi_mock = mock.Mock()
         filter_widget_kwargs = {"roi_field": roi_mock}
         RoiNormalisationFilter.on_stack_changed(filter_widget_kwargs, None)
-        self.assertEqual(roi_mock.setText.call_count, 0)
         roi_mock.setText.assert_not_called()
 
     def test_on_stack_changed_with_no_widget_does_nothing(self):
@@ -152,7 +149,6 @@ class ROINormalisationTest(unittest.TestCase):
         with mock.patch("mantidimaging.core.operations.roi_normalisation.roi_normalisation.get_bounding_box"
                         ) as get_bounding_box:
             RoiNormalisationFilter.on_stack_changed({}, stack)
-            self.assertEqual(get_bounding_box.call_count, 0)
             get_bounding_box.assert_not_called()
 
 
