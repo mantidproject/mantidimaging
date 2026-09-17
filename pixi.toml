@@ -275,6 +275,7 @@ yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS",
 yapf-staged-base = { cmd = "python -m yapf --parallel --diff", description = "Check formatting of staged files with yapf (for pre-commit)" }  
 ruff-base = { cmd = "ruff check $SOURCE_DIRS", description = "Run ruff linter (fail on error)" }
 ruff-staged-base = { cmd = "ruff check", description = "Run ruff on staged files (for pre-commit)" }
+prettier-base = { cmd = "prettier --check '**/*.{json,y?(a)ml}' '!conda/recipe.yaml' '!conda/meta.yaml'", description = "Check formatting of JSON and YAML files with prettier (fail on error)" }
 
 # Base linting tasks - CONTINUE ON ERROR (with || true)
 mypy-base-continue = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true", description = "Run mypy type checks (continue on error)" }

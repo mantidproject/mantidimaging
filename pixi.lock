@@ -2399,7 +2399,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.6.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nlohmann_json-3.12.0-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nodeenv-1.10.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-24.10.0-h8c692ec_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-20.19.6-hc8774ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nomkl-1.0-h5ca1d4c_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nspr-4.38-h29cc59b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nss-3.118-h445c969_0.conda
@@ -2833,7 +2833,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.6.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/nlohmann_json-3.12.0-h5112557_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nodeenv-1.10.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-26.5.0-h80d1838_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-20.20.2-h80290e7_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numba-0.61.2-py312h9a042f1_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numexpr-2.10.2-mkl_py312h5e4250c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numpy-1.26.4-py312h8753938_0.conda
@@ -3329,7 +3329,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.6.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nlohmann_json-3.12.0-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nodeenv-1.10.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-24.10.0-h8c692ec_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-20.19.6-hc8774ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nomkl-1.0-h5ca1d4c_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nspr-4.38-h29cc59b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nss-3.118-h445c969_0.conda
@@ -3766,7 +3766,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.6.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/nlohmann_json-3.12.0-h5112557_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nodeenv-1.10.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-26.5.0-h80d1838_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-20.20.2-h80290e7_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numba-0.61.2-py312h9a042f1_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numexpr-2.10.2-mkl_py312h5e4250c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numpy-1.26.4-py312h8753938_0.conda
@@ -4235,7 +4235,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.6.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nlohmann_json-3.12.0-h54a6638_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nodeenv-1.10.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-24.10.0-h8c692ec_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-20.19.6-hc8774ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nomkl-1.0-h5ca1d4c_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nspr-4.38-h29cc59b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/nss-3.118-h445c969_0.conda
@@ -4612,7 +4612,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.6.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/nlohmann_json-3.12.0-h5112557_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nodeenv-1.10.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-26.5.0-h80d1838_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-20.20.2-h80290e7_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numba-0.61.2-py312h9a042f1_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numexpr-2.10.2-mkl_py312h5e4250c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numpy-1.26.4-py312h8753938_0.conda
@@ -14218,37 +14218,31 @@ packages:
   - pkg:pypi/nodeenv?source=hash-mapping
   size: 40866
   timestamp: 1766261270149
-- conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-24.10.0-h8c692ec_1.conda
-  sha256: c648cd46243e73b51e616024ce9ce802fb09eeca19f2ce9a930c47f64a2c34a1
-  md5: 6b3b348dc3b72be5d9d7264656e2afb8
+- conda: https://conda.anaconda.org/conda-forge/linux-64/nodejs-20.19.6-hc8774ed_0.conda
+  sha256: af0f725985bd342f06c8ed125ea6147241f0ce0f68984790509c6dcdb4f99e74
+  md5: 73759c61e3ba658b26532a1628d6415e
   depends:
-  - libstdcxx >=14
-  - libgcc >=14
-  - __glibc >=2.28,<3.0.a0
-  - libuv >=1.51.0,<2.0a0
-  - libbrotlicommon >=1.1.0,<1.2.0a0
-  - libbrotlienc >=1.1.0,<1.2.0a0
-  - libbrotlidec >=1.1.0,<1.2.0a0
-  - zstd >=1.5.7,<1.6.0a0
-  - libnghttp2 >=1.67.0,<2.0a0
-  - c-ares >=1.34.5,<2.0a0
-  - openssl >=3.5.4,<4.0a0
+  - __glibc >=2.17,<3.0.a0
   - icu >=75.1,<76.0a0
-  - libsqlite >=3.51.1,<4.0a0
+  - libgcc >=14
+  - libstdcxx >=14
+  - libuv >=1.51.0,<2.0a0
   - libzlib >=1.3.1,<2.0a0
+  - openssl >=3.5.4,<4.0a0
+  - zlib
   license: MIT
   license_family: MIT
   purls: []
-  size: 23504799
-  timestamp: 1764765203787
-- conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-26.5.0-h80d1838_0.conda
-  sha256: 7abb526204569a6c588db2023fba02aa043592aff2f5fd7c11650356845b7615
-  md5: 3ceafecd1edea9607722ee17d358bb73
+  size: 17303839
+  timestamp: 1765387868386
+- conda: https://conda.anaconda.org/conda-forge/win-64/nodejs-20.20.2-h80290e7_2.conda
+  sha256: a5fc8060dfd2c4ad289d55f7c2897683338c1fc96a9164f378e323d642557e53
+  md5: 2044eaa17319d156ffc060b058d5730b
   license: MIT
   license_family: MIT
   purls: []
-  size: 34010185
-  timestamp: 1783543417685
+  size: 23287997
+  timestamp: 1788200035181
 - conda: https://conda.anaconda.org/conda-forge/noarch/nomkl-1.0-h5ca1d4c_0.tar.bz2
   sha256: d38542a151a90417065c1a234866f97fd1ea82a81de75ecb725955ab78f88b4b
   md5: 9a66894dfd07c4510beb6b3f9672ccc0

@@ -39,13 +39,13 @@ jobs:
       - name: json
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.json"
+          command: pixi run prettier --check "**/*.json"
           label: ubuntu18
 
       - name: yaml
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.y?(a)ml" "!conda/recipe.yaml" "!conda/meta.yaml"
+          command: pixi run prettier --check "**/*.y?(a)ml" "!conda/recipe.yaml" "!conda/meta.yaml"
           label: ubuntu18
 
       - name: mypy
