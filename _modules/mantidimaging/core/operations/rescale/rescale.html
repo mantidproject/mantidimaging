@@ -512,13 +512,13 @@
 <div class="viewcode-block" id="RescaleFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale.html#mantidimaging.core.operations.rescale.rescale.RescaleFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RescaleFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rescales the image data to a new [0, maximum output] range.</span>
+<span class="w">    </span><span class="sd">"""Rescales the image data to a new [0, maximum output] range.</span>
 
 <span class="sd">    Intended to be used on: Any</span>
 
 <span class="sd">    When: Automatically used when saving as unsigned integer image formats, to avoid clipping negative values</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s1">&#39;Rescale&#39;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s1">'Rescale'</span>
 
 <div class="viewcode-block" id="RescaleFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale.html#mantidimaging.core.operations.rescale.rescale.RescaleFilter.filter_func">[docs]</a>
@@ -528,7 +528,7 @@
                     <span class="n">max_input</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10000.0</span><span class="p">,</span>
                     <span class="n">max_output</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">256.0</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param min_input: The Minimum value of the data that will be used.</span>
 <span class="sd">                          Anything below this will be clipped to 0.</span>
 <span class="sd">        :param max_input: Maximum value of the data that will be used. Anything</span>
@@ -537,9 +537,9 @@
 <span class="sd">                           rescaled to range [0, MAX OUTPUT].</span>
 
 <span class="sd">        :return: The ImageStack object scaled to a new range.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;min_input&#39;</span><span class="p">:</span> <span class="n">min_input</span><span class="p">,</span> <span class="s1">&#39;max_input&#39;</span><span class="p">:</span> <span class="n">max_input</span><span class="p">,</span> <span class="s1">&#39;max_output&#39;</span><span class="p">:</span> <span class="n">max_output</span><span class="p">}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'min_input'</span><span class="p">:</span> <span class="n">min_input</span><span class="p">,</span> <span class="s1">'max_input'</span><span class="p">:</span> <span class="n">max_input</span><span class="p">,</span> <span class="s1">'max_output'</span><span class="p">:</span> <span class="n">max_output</span><span class="p">}</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">RescaleFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="p">[</span><span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">],</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">images</span></div>
 
@@ -548,7 +548,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.rescale.rescale.html#mantidimaging.core.operations.rescale.rescale.RescaleFilter.compute_function">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="p">,</span> <span class="n">max_output</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;min_input&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;max_input&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;max_output&#39;</span><span class="p">]</span>
+        <span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="p">,</span> <span class="n">max_output</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'min_input'</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">'max_input'</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">'max_output'</span><span class="p">]</span>
         <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">RescaleFilter</span><span class="o">.</span><span class="n">filter_array</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="p">,</span> <span class="n">max_output</span><span class="p">)</span></div>
 
 
@@ -565,44 +565,44 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">FiltersWindowView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">min_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Min input&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">min_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Min input'</span><span class="p">,</span>
                                                    <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                                    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                    <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
                                                    <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2147483647</span><span class="p">,</span> <span class="mi">2147483647</span><span class="p">),</span>
-                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Minimum value of the data that will be used.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                                   <span class="s2">&quot;Anything below this will be clipped to 0&quot;</span><span class="p">)</span>
+                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Minimum value of the data that will be used.</span><span class="se">\n</span><span class="s2">"</span>
+                                                   <span class="s2">"Anything below this will be clipped to 0"</span><span class="p">)</span>
         <span class="n">min_input_widget</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">max_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Max input&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">max_input_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Max input'</span><span class="p">,</span>
                                                    <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                                    <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                    <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
                                                    <span class="n">default_value</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
                                                    <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2147483647</span><span class="p">,</span> <span class="mi">2147483647</span><span class="p">),</span>
-                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Maximum value of the data that will be used.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                                   <span class="s2">&quot;Anything above it will be clipped to 0&quot;</span><span class="p">)</span>
+                                                   <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Maximum value of the data that will be used.</span><span class="se">\n</span><span class="s2">"</span>
+                                                   <span class="s2">"Anything above it will be clipped to 0"</span><span class="p">)</span>
         <span class="n">max_input_widget</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">max_output_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Max output&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">max_output_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Max output'</span><span class="p">,</span>
                                                     <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                                     <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                     <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
                                                     <span class="n">default_value</span><span class="o">=</span><span class="mf">65535.0</span><span class="p">,</span>
                                                     <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2147483647</span><span class="p">),</span>
-                                                    <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Maximum value of the OUTPUT images. They will </span><span class="se">\n</span><span class="s2">&quot;</span>
-                                                    <span class="s2">&quot;be rescaled to range [0, MAX OUTPUT]&quot;</span><span class="p">)</span>
+                                                    <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Maximum value of the OUTPUT images. They will </span><span class="se">\n</span><span class="s2">"</span>
+                                                    <span class="s2">"be rescaled to range [0, MAX OUTPUT]"</span><span class="p">)</span>
         <span class="n">max_output_widget</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">preset_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Preset&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">preset_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Preset'</span><span class="p">,</span>
                                                 <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
                                                 <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                 <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                                <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Use values from above&quot;</span><span class="p">,</span> <span class="s2">&quot;int8&quot;</span><span class="p">,</span> <span class="s2">&quot;int16&quot;</span><span class="p">,</span> <span class="s2">&quot;int32&quot;</span><span class="p">],</span>
-                                                <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Provides pre-set ranges to rescale to.&quot;</span><span class="p">)</span>
+                                                <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s2">"Use values from above"</span><span class="p">,</span> <span class="s2">"int8"</span><span class="p">,</span> <span class="s2">"int16"</span><span class="p">,</span> <span class="s2">"int32"</span><span class="p">],</span>
+                                                <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Provides pre-set ranges to rescale to."</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;min_input_widget&#39;</span><span class="p">:</span> <span class="n">min_input_widget</span><span class="p">,</span>
-            <span class="s1">&#39;max_input_widget&#39;</span><span class="p">:</span> <span class="n">max_input_widget</span><span class="p">,</span>
-            <span class="s1">&#39;max_output_widget&#39;</span><span class="p">:</span> <span class="n">max_output_widget</span><span class="p">,</span>
-            <span class="s1">&#39;preset_widget&#39;</span><span class="p">:</span> <span class="n">preset_widget</span>
+            <span class="s1">'min_input_widget'</span><span class="p">:</span> <span class="n">min_input_widget</span><span class="p">,</span>
+            <span class="s1">'max_input_widget'</span><span class="p">:</span> <span class="n">max_input_widget</span><span class="p">,</span>
+            <span class="s1">'max_output_widget'</span><span class="p">:</span> <span class="n">max_output_widget</span><span class="p">,</span>
+            <span class="s1">'preset_widget'</span><span class="p">:</span> <span class="n">preset_widget</span>
         <span class="p">}</span></div>
 
 
@@ -616,11 +616,11 @@
         <span class="n">max_input</span> <span class="o">=</span> <span class="n">max_input_widget</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="n">max_output</span> <span class="o">=</span> <span class="n">max_output_widget</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">preset_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;int8&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">preset_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"int8"</span><span class="p">:</span>
             <span class="n">max_output</span> <span class="o">=</span> <span class="mf">255.0</span>
-        <span class="k">elif</span> <span class="n">preset_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;int16&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">preset_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"int16"</span><span class="p">:</span>
             <span class="n">max_output</span> <span class="o">=</span> <span class="mf">65535.0</span>
-        <span class="k">elif</span> <span class="n">preset_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;int32&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">preset_widget</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"int32"</span><span class="p">:</span>
             <span class="n">max_output</span> <span class="o">=</span> <span class="mf">2147483647.0</span>
 
         <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">RescaleFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">min_input</span><span class="o">=</span><span class="n">min_input</span><span class="p">,</span> <span class="n">max_input</span><span class="o">=</span><span class="n">max_input</span><span class="p">,</span> <span class="n">max_output</span><span class="o">=</span><span class="n">max_output</span><span class="p">)</span></div>

@@ -526,9 +526,9 @@
 <div class="viewcode-block" id="SVParameters">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.SVParameters">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SVParameters</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Stack Visualiser parameters that the Stack Visualiser presenter can retrieve</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ROI</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
@@ -567,7 +567,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">dupe_stack_roi</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
-            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Notification handler failed&quot;</span><span class="p">)</span></div>
+            <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Notification handler failed"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="StackVisualiserPresenter.delete_data">
@@ -591,15 +591,15 @@
 <div class="viewcode-block" id="StackVisualiserPresenter.get_parameter_value">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.get_parameter_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_parameter_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">:</span> <span class="n">SVParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Gets a parameter from the stack visualiser for use elsewhere (e.g. operations).</span>
 <span class="sd">        :param parameter: The parameter value to be retrieved</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">parameter</span> <span class="o">==</span> <span class="n">SVParameters</span><span class="o">.</span><span class="n">ROI</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_roi</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid parameter name has been requested from the Stack &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;Visualiser, parameter: </span><span class="si">{</span><span class="n">parameter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Invalid parameter name has been requested from the Stack "</span>
+                             <span class="sa">f</span><span class="s2">"Visualiser, parameter: </span><span class="si">{</span><span class="n">parameter</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="StackVisualiserPresenter.toggle_image_mode">
@@ -616,8 +616,8 @@
 <div class="viewcode-block" id="StackVisualiserPresenter.dupe_stack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.dupe_stack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dupe_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Copying data, this may take a while&quot;</span><span class="p">,</span>
-                                   <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">"Copying data, this may take a while"</span><span class="p">,</span>
+                                   <span class="s2">"The data is being copied, this may take a while."</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
             <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_new_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>
@@ -626,8 +626,8 @@
 <div class="viewcode-block" id="StackVisualiserPresenter.dupe_stack_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.stack_visualiser.presenter.html#mantidimaging.gui.windows.stack_visualiser.presenter.StackVisualiserPresenter.dupe_stack_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">dupe_stack_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">&quot;Copying data, this may take a while&quot;</span><span class="p">,</span>
-                                   <span class="s2">&quot;The data is being copied, this may take a while.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">operation_in_progress</span><span class="p">(</span><span class="s2">"Copying data, this may take a while"</span><span class="p">,</span>
+                                   <span class="s2">"The data is being copied, this may take a while."</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">):</span>
             <span class="n">new_images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">copy_roi</span><span class="p">(</span><span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">get_roi</span><span class="p">()))</span>
             <span class="n">new_images</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_new_dataset_to_model_and_update_view</span><span class="p">(</span><span class="n">new_images</span><span class="p">)</span></div>

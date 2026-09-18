@@ -511,14 +511,14 @@
     <span class="n">datasetNameText</span><span class="p">:</span> <span class="n">QLabel</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/add_to_dataset.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">'gui/ui/add_to_dataset.ui'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_view</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">AddImagesToDatasetPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_id</span> <span class="o">=</span> <span class="n">dataset_id</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">imageTypeComboBox</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat After&quot;</span><span class="p">,</span> <span class="s2">&quot;Dark Before&quot;</span><span class="p">,</span> <span class="s2">&quot;Dark After&quot;</span><span class="p">,</span> <span class="s2">&quot;Recon&quot;</span><span class="p">,</span> <span class="s2">&quot;Images&quot;</span><span class="p">,</span> <span class="s2">&quot;Proj 180&quot;</span><span class="p">])</span>
+            <span class="p">[</span><span class="s2">"Sample"</span><span class="p">,</span> <span class="s2">"Flat Before"</span><span class="p">,</span> <span class="s2">"Flat After"</span><span class="p">,</span> <span class="s2">"Dark Before"</span><span class="p">,</span> <span class="s2">"Dark After"</span><span class="p">,</span> <span class="s2">"Recon"</span><span class="p">,</span> <span class="s2">"Images"</span><span class="p">,</span> <span class="s2">"Proj 180"</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">datasetNameText</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chooseFileButton</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">choose_file_path</span><span class="p">)</span>
@@ -531,10 +531,10 @@
 <div class="viewcode-block" id="AddImagesToDatasetDialog.choose_file_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.add_images_to_dataset_dialog.view.html#mantidimaging.gui.windows.add_images_to_dataset_dialog.view.AddImagesToDatasetDialog.choose_file_path">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">choose_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Select a file in the stack path that we wish to add/replace in the dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">selected_file</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Images&quot;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Image File (*.tif *.tiff *.fits)&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">selected_file</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s2">"Images"</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">"Image File (*.tif *.tiff *.fits)"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">selected_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filePathLineEdit</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">selected_file</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">buttonBox</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
@@ -542,23 +542,23 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :return: The path string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filePathLineEdit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">images_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :return: The name of the image stack.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">imageTypeComboBox</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dataset_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :return: The ID of the parent dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_id</span></div>
 
 </pre></div>

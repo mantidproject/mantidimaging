@@ -514,20 +514,20 @@
 <div class="viewcode-block" id="GaussianFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.gaussian.gaussian.html#mantidimaging.core.operations.gaussian.gaussian.GaussianFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GaussianFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies Gaussian filter to the data.</span>
+<span class="w">    </span><span class="sd">"""Applies Gaussian filter to the data.</span>
 
 <span class="sd">    Intended to be used on: Projections or reconstructed slices</span>
 
 <span class="sd">    When: As a pre-processing or post-reconstruction step to reduce noise.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Gaussian&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Gaussian"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="GaussianFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.gaussian.gaussian.html#mantidimaging.core.operations.gaussian.gaussian.GaussianFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param data: Input data as a 3D numpy.ndarray</span>
 <span class="sd">        :param size: Size of the kernel</span>
 <span class="sd">        :param mode: The mode with which to handle the edges.</span>
@@ -543,13 +543,13 @@
 <span class="sd">                      Higher order derivatives are not implemented</span>
 
 <span class="sd">        :return: The processed 3D numpy.ndarray</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">size</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Size parameter must be greater than 1, but value provided was </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Size parameter must be greater than 1, but value provided was </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="n">order</span><span class="p">}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'size'</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">'mode'</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span> <span class="s1">'order'</span><span class="p">:</span> <span class="n">order</span><span class="p">}</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">GaussianFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
 
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -561,9 +561,9 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="n">scipy_ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                      <span class="n">sigma</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">],</span>
-                                      <span class="n">mode</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">],</span>
-                                      <span class="n">order</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">],</span>
+                                      <span class="n">sigma</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">'size'</span><span class="p">],</span>
+                                      <span class="n">mode</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">'mode'</span><span class="p">],</span>
+                                      <span class="n">order</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">'order'</span><span class="p">],</span>
                                       <span class="n">output</span><span class="o">=</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
 
 
@@ -571,28 +571,28 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.gaussian.gaussian.html#mantidimaging.core.operations.gaussian.gaussian.GaussianFilter.register_gui">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">size_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Kernel Size&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">size_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Kernel Size'</span><span class="p">,</span>
                                              <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                              <span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
                                              <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Size of the median filter kernel&quot;</span><span class="p">)</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Size of the median filter kernel"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">order_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Order&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">order_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Order'</span><span class="p">,</span>
                                               <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                               <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
                                               <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                               <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                              <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Order of the Gaussian filter&quot;</span><span class="p">)</span>
+                                              <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Order of the Gaussian filter"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">mode_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Edge Mode&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">mode_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Edge Mode'</span><span class="p">,</span>
                                              <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
                                              <span class="n">valid_values</span><span class="o">=</span><span class="n">modes</span><span class="p">(),</span>
                                              <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Mode to handle the edges of the image&quot;</span><span class="p">)</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Mode to handle the edges of the image"</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;size_field&#39;</span><span class="p">:</span> <span class="n">size_field</span><span class="p">,</span> <span class="s1">&#39;order_field&#39;</span><span class="p">:</span> <span class="n">order_field</span><span class="p">,</span> <span class="s1">&#39;mode_field&#39;</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'size_field'</span><span class="p">:</span> <span class="n">size_field</span><span class="p">,</span> <span class="s1">'order_field'</span><span class="p">:</span> <span class="n">order_field</span><span class="p">,</span> <span class="s1">'mode_field'</span><span class="p">:</span> <span class="n">mode_field</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="GaussianFilter.execute_wrapper">
@@ -610,7 +610,7 @@
 <div class="viewcode-block" id="modes">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.gaussian.gaussian.html#mantidimaging.core.operations.gaussian.gaussian.modes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">():</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;reflect&#39;</span><span class="p">,</span> <span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="s1">&#39;mirror&#39;</span><span class="p">,</span> <span class="s1">&#39;wrap&#39;</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">'reflect'</span><span class="p">,</span> <span class="s1">'constant'</span><span class="p">,</span> <span class="s1">'nearest'</span><span class="p">,</span> <span class="s1">'mirror'</span><span class="p">,</span> <span class="s1">'wrap'</span><span class="p">]</span></div>
 
 </pre></div>
 

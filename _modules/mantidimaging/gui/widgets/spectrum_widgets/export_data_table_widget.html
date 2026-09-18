@@ -506,10 +506,10 @@
 <div class="viewcode-block" id="ExportDataTableWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.ExportDataTableWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExportDataTableWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A scalable table widget to display export-relevant data for each ROI.</span>
 <span class="sd">    For integration with the fitting/export tab in the spectrum viewer.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -534,12 +534,12 @@
 <div class="viewcode-block" id="ExportDataTableWidget.set_parameters">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.ExportDataTableWidget.set_parameters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set the column headers dynamically based on the given parameter names.</span>
 <span class="sd">        Clears any existing data in the table.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameter_names</span> <span class="o">=</span> <span class="n">parameter_names</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ROI Name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">parameter_names</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;RSS/DoF&quot;</span><span class="p">,</span> <span class="s2">&quot;Export Status&quot;</span><span class="p">]</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ROI Name"</span><span class="p">]</span> <span class="o">+</span> <span class="n">parameter_names</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"RSS/DoF"</span><span class="p">,</span> <span class="s2">"Export Status"</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span></div>
 
@@ -550,19 +550,19 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-        <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Ready&quot;</span><span class="p">,</span>
+        <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Ready"</span><span class="p">,</span>
         <span class="n">chi2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add or update a row for the specified ROI, populating parameter values, χ², and status.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_row_by_roi_name</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)</span>
         <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_item</span><span class="p">(</span><span class="n">roi_name</span><span class="p">)]</span>
 
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_names</span><span class="p">:</span>
             <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_item</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]))</span>
 
-        <span class="n">chi2_value</span> <span class="o">=</span> <span class="n">chi2</span> <span class="k">if</span> <span class="n">chi2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span>
+        <span class="n">chi2_value</span> <span class="o">=</span> <span class="n">chi2</span> <span class="k">if</span> <span class="n">chi2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"N/A"</span>
         <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_item</span><span class="p">(</span><span class="n">chi2_value</span><span class="p">))</span>
 
         <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_item</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
@@ -572,14 +572,14 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export table updated: ROI=</span><span class="si">%s</span><span class="s2">, Params=</span><span class="si">%s</span><span class="s2">, RSS/DoF=</span><span class="si">%s</span><span class="s2">, Status=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">chi2</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Export table updated: ROI=</span><span class="si">%s</span><span class="s2">, Params=</span><span class="si">%s</span><span class="s2">, RSS/DoF=</span><span class="si">%s</span><span class="s2">, Status=</span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">chi2</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QStandardItem</span><span class="p">:</span>
         <span class="n">item</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="n">item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -587,9 +587,9 @@
         <span class="k">return</span> <span class="n">item</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_row_by_roi_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Find the row index for a given ROI name. Returns None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="n">roi_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">row</span>
@@ -598,11 +598,11 @@
 <div class="viewcode-block" id="ExportDataTableWidget.clear_table">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.html#mantidimaging.gui.widgets.spectrum_widgets.export_data_table_widget.ExportDataTableWidget.clear_table">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Remove all rows from the table.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">removeRows</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">())</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export table cleared&quot;</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Export table cleared"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

@@ -503,8 +503,8 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndarray</span>
 
-<span class="n">ComputeFuncType</span> <span class="o">=</span> <span class="p">(</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="s1">&#39;ndarray&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
-                   <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">])</span>
+<span class="n">ComputeFuncType</span> <span class="o">=</span> <span class="p">(</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="s1">'ndarray'</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]</span>
+                   <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="s1">'ndarray'</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">])</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_Worker</span><span class="p">:</span>
@@ -539,14 +539,14 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_shared_mem_and_get_data</span><span class="p">(</span>
         <span class="n">arrays</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">pu</span><span class="o">.</span><span class="n">SharedArrayProxy</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Checks if all shared arrays in shared_list are using shared memory and returns this result in the first element</span>
 <span class="sd">    of the tuple. The second element of the tuple gives the data to use in the processing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">shared_array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">shared_array</span><span class="o">.</span><span class="n">has_shared_memory</span><span class="p">:</span>
-            <span class="c1"># If we&#39;re using shared memory then we must use the SharedArrayProxy for the data. This allows us to</span>
+            <span class="c1"># If we're using shared memory then we must use the SharedArrayProxy for the data. This allows us to</span>
             <span class="c1"># look up the SharedArray from within a subprocess without needing to pass it in directly</span>
             <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">shared_array</span><span class="o">.</span><span class="n">array_proxy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

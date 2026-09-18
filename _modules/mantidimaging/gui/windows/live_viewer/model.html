@@ -518,9 +518,9 @@
 <div class="viewcode-block" id="ImageCache">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageCache">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageCache</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    An ImageCache class to be used to store recent images in memory</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">cache_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
     <span class="n">max_cache_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">loading_func</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Callable</span>
@@ -538,7 +538,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">cache_dict</span><span class="p">[</span><span class="n">image</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_array</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_oldest_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image_Data</span><span class="p">:</span>
-        <span class="n">time_ordered_cache</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;image_modified_time&#39;</span><span class="p">))</span>
+        <span class="n">time_ordered_cache</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">'image_modified_time'</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">time_ordered_cache</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_remove_oldest_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -570,7 +570,7 @@
 <div class="viewcode-block" id="Image_Data">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.Image_Data">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Image_Data</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Image Data Class to store represent image data.</span>
 
 <span class="sd">    ...</span>
@@ -585,19 +585,19 @@
 <span class="sd">        size of image file</span>
 <span class="sd">    image_modified_time : float</span>
 <span class="sd">        last modified time of image file</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span>
     <span class="n">image_name</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Constructor for Image_Data class.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        image_path : str</span>
 <span class="sd">            path to image file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_path</span> <span class="o">=</span> <span class="n">image_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_name</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stat</span> <span class="o">=</span> <span class="n">image_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span>
@@ -609,8 +609,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">image_modified_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the image modified time as a string&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_modified_time</span><span class="p">))</span></div>
+<span class="w">        </span><span class="sd">"""Return the image modified time as a string"""</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S"</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_modified_time</span><span class="p">))</span></div>
 
 
 
@@ -632,7 +632,7 @@
 <div class="viewcode-block" id="LiveViewerWindowModel">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LiveViewerWindowModel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The model for the spectrum viewer window.</span>
 
 <span class="sd">    ...</span>
@@ -645,17 +645,17 @@
 <span class="sd">        path to dataset</span>
 <span class="sd">    images : list</span>
 <span class="sd">        list of images in directory</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">presenter</span><span class="p">:</span> <span class="n">LiveViewerWindowPresenter</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Constructor for LiveViewerWindowModel class.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        presenter : LiveViewerWindowPresenter</span>
 <span class="sd">            presenter for the spectrum viewer window</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -679,13 +679,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="o">.</span><span class="n">_handle_notified_of_directry_change</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_image_changed_in_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handle an image changed event. Update the image in the view.</span>
 <span class="sd">        This method is called when the image_watcher detects a change</span>
 <span class="sd">        which could be a new image, edited image or deleted image.</span>
 
 <span class="sd">        :param image_files: list of image files</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">image_files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify_update_image_list</span><span class="p">()</span>
 
@@ -698,7 +698,7 @@
 <div class="viewcode-block" id="LiveViewerWindowModel.close">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.LiveViewerWindowModel.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the model.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the model."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span><span class="o">.</span><span class="n">remove_path</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">image_watcher</span> <span class="o">=</span> <span class="kc">None</span>
@@ -757,7 +757,7 @@
 <div class="viewcode-block" id="ImageWatcher">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageWatcher</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A class to watch a directory for new images.</span>
 
 <span class="sd">    ...</span>
@@ -777,20 +777,20 @@
 <span class="sd">        Find all the images in the directory</span>
 <span class="sd">    sort_images_by_modified_time(images)</span>
 <span class="sd">        Sort the images by modified time.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># Signal emitted when an image is added or removed</span>
     <span class="n">update_spectrum</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>  <span class="c1"># Signal emitted to update the Live Viewer Spectrum</span>
     <span class="n">recent_image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">Path</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Constructor for ImageWatcher class which inherits from QObject.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        directory : Path</span>
 <span class="sd">            path to directory to watch</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
@@ -810,9 +810,9 @@
 <div class="viewcode-block" id="ImageWatcher.find_images">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.find_images">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Find all the images in the directory.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">image_files</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_image_file</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
@@ -830,7 +830,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">find_sub_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># COMPAT python &lt; 3.12 - Can replace with Path.walk()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/*&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"**/*"</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_sub_directory</span><span class="p">(</span><span class="n">SubDirectory</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
@@ -848,31 +848,31 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.sort_images_by_modified_time">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">sort_images_by_modified_time</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image_Data</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Sort the images by modified time.</span>
 
 <span class="sd">        :param images: list of image objects to sort by modified time</span>
 <span class="sd">        :return: sorted list of images</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">image_modified_time</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_notified_of_directry_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Quickly handle the notification event for a change, and start the timer if needed. If files are arriving faster</span>
-<span class="sd">        than _handle_directory_change() can process them, we don&#39;t end up with a queue of work to do. The timeout is set</span>
+<span class="sd">        than _handle_directory_change() can process them, we don't end up with a queue of work to do. The timeout is set</span>
 <span class="sd">        small so that we can pull multiple notification off the queue and then run _handle_directory_change() once.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">changed_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_change_timer</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_change_timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_handle_directory_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handle a directory change event. Update the list of images</span>
 <span class="sd">        to reflect directory changes and emit the image_changed signal</span>
 <span class="sd">        with the sorted image list.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">directory_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_directory</span>
 
         <span class="c1"># Force the modification time of signal directory, because file changes may not update</span>
@@ -884,8 +884,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_deleted_sub_directories</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Live directory not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span>
-                                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Has it been deleted?&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Live directory not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="si">}</span><span class="s2">"</span>
+                                    <span class="s2">"</span><span class="se">\n</span><span class="s2">Has it been deleted?"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">find_sub_directories</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sort_sub_directory_by_modified_time</span><span class="p">()</span>
 
@@ -903,21 +903,21 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_is_image_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Check if a file is an tiff or tif image file.</span>
 
 <span class="sd">        :param file_name: name of file</span>
 <span class="sd">        :return: True if file is an image file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">image_extensions</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;tif&#39;</span><span class="p">,</span> <span class="s1">&#39;tiff&#39;</span><span class="p">,</span> <span class="s1">&#39;fits&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">file_name</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">image_extensions</span>
+<span class="sd">        """</span>
+        <span class="n">image_extensions</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'tif'</span><span class="p">,</span> <span class="s1">'tiff'</span><span class="p">,</span> <span class="s1">'fits'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_name</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">image_extensions</span>
 
 <div class="viewcode-block" id="ImageWatcher.remove_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.model.html#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.remove_path">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Remove the currently set path</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">removePaths</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_directories</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recent_file_watcher</span><span class="o">.</span><span class="n">removePaths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">recent_file_watcher</span><span class="o">.</span><span class="n">files</span><span class="p">())</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">files</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span>

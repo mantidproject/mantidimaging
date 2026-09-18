@@ -515,7 +515,7 @@
 <div class="viewcode-block" id="DivideFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.divide.divide.html#mantidimaging.core.operations.divide.divide.DivideFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DivideFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Divides a stack of images by a value. That value can be the pixel size,</span>
+<span class="w">    </span><span class="sd">"""Divides a stack of images by a value. That value can be the pixel size,</span>
 <span class="sd">    and can be specified in either microns or cms, to obtain attenuation values.</span>
 
 <span class="sd">    Intended to be used on: Reconstructed slices</span>
@@ -523,28 +523,28 @@
 <span class="sd">    When: To calculate attenuation values by dividing by the pixel size in microns</span>
 
 <span class="sd">    Caution: Check preview values before applying divide</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Divide&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Divide"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="DivideFilter.filter_func">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.divide.divide.html#mantidimaging.core.operations.divide.divide.DivideFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micron&quot;</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"micron"</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param value: The division value.</span>
 <span class="sd">        :param unit: The unit of the divisor.</span>
 
 <span class="sd">        :return: The ImageStack object which has been divided by a value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;value parameter must not equal 0 or None&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'value parameter must not equal 0 or None'</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;micron&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">"micron"</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">*=</span> <span class="mf">1e-4</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'value'</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="n">ps</span><span class="o">.</span><span class="n">run_compute_func</span><span class="p">(</span><span class="n">DivideFilter</span><span class="o">.</span><span class="n">compute_function</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">images</span><span class="o">.</span><span class="n">shared_array</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">progress</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">images</span></div>
@@ -554,7 +554,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.divide.divide.html#mantidimaging.core.operations.divide.divide.DivideFilter.compute_function">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_function</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span>
         <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">value</span></div>
 
 
@@ -564,24 +564,24 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">:</span> <span class="n">QFormLayout</span><span class="p">,</span> <span class="n">on_change</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="n">BasePresenter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">value_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Divide by&quot;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">value_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">"Divide by"</span><span class="p">,</span>
                                                <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                                <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                                <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="mf">1e-7</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span>
                                                <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                               <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Value the data will be divided by&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">value_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Requested widget was for FLOAT, got None instead&quot;</span>
+                                               <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Value the data will be divided by"</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">value_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"Requested widget was for FLOAT, got None instead"</span>
         <span class="n">value_widget</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">unit_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">unit_widget</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">"Unit"</span><span class="p">,</span>
                                               <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
-                                              <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;micron&quot;</span><span class="p">,</span> <span class="s2">&quot;cm&quot;</span><span class="p">],</span>
+                                              <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s2">"micron"</span><span class="p">,</span> <span class="s2">"cm"</span><span class="p">],</span>
                                               <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                               <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                              <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;The unit of the input number. &quot;</span>
-                                              <span class="s2">&quot;Microns will be converted to cm before division&quot;</span><span class="p">)</span>
+                                              <span class="n">tooltip</span><span class="o">=</span><span class="s2">"The unit of the input number. "</span>
+                                              <span class="s2">"Microns will be converted to cm before division"</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;value_widget&#39;</span><span class="p">:</span> <span class="n">value_widget</span><span class="p">,</span> <span class="s1">&#39;unit_widget&#39;</span><span class="p">:</span> <span class="n">unit_widget</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'value_widget'</span><span class="p">:</span> <span class="n">value_widget</span><span class="p">,</span> <span class="s1">'unit_widget'</span><span class="p">:</span> <span class="n">unit_widget</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="DivideFilter.execute_wrapper">

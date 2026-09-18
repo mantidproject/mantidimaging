@@ -512,18 +512,18 @@
 
 
 
-<span class="n">COLUMN_NAMES</span> <span class="o">=</span> <span class="p">{</span><span class="n">Column</span><span class="o">.</span><span class="n">SLICE_INDEX</span><span class="p">:</span> <span class="s1">&#39;Slice Index&#39;</span><span class="p">,</span> <span class="n">Column</span><span class="o">.</span><span class="n">CENTRE_OF_ROTATION</span><span class="p">:</span> <span class="s1">&#39;COR&#39;</span><span class="p">}</span>
+<span class="n">COLUMN_NAMES</span> <span class="o">=</span> <span class="p">{</span><span class="n">Column</span><span class="o">.</span><span class="n">SLICE_INDEX</span><span class="p">:</span> <span class="s1">'Slice Index'</span><span class="p">,</span> <span class="n">Column</span><span class="o">.</span><span class="n">CENTRE_OF_ROTATION</span><span class="p">:</span> <span class="s1">'COR'</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="CorTiltPointQtModel">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.point_table_model.html#mantidimaging.gui.windows.recon.point_table_model.CorTiltPointQtModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CorTiltPointQtModel</span><span class="p">(</span><span class="n">QAbstractTableModel</span><span class="p">,</span> <span class="n">CorTiltDataModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model of the slice/rotation point data in the rotation/tilt view&#39;s tableView.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Model of the slice/rotation point data in the rotation/tilt view's tableView.</span>
 
 <span class="sd">    This class handles GUI interaction with the tableView  whilst CorTiltDataModel provides</span>
 <span class="sd">    methods for calculating rotation and gradient from the stored values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -594,9 +594,9 @@
 
         <span class="k">elif</span> <span class="n">role</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ItemDataRole</span><span class="o">.</span><span class="n">ToolTipRole</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">SLICE_INDEX</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s1">&#39;Slice index (y coordinate of projection)&#39;</span>
+                <span class="k">return</span> <span class="s1">'Slice index (y coordinate of projection)'</span>
             <span class="k">elif</span> <span class="n">col_field</span> <span class="o">==</span> <span class="n">Column</span><span class="o">.</span><span class="n">CENTRE_OF_ROTATION</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s1">&#39;Centre of rotation for specific slice&#39;</span>
+                <span class="k">return</span> <span class="s1">'Centre of rotation for specific slice'</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
 

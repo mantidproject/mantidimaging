@@ -530,20 +530,20 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">new_stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                  <span class="n">presenter</span><span class="p">:</span> <span class="n">StackComparePresenter</span> <span class="o">|</span> <span class="n">StackChoicePresenter</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QMainWindow</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;gui/ui/stack_choice_window.ui&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"gui/ui/stack_choice_window.ui"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">presenter</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Choose the stack you want to keep&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">"Choose the stack you want to keep"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowModality</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">WindowModality</span><span class="o">.</span><span class="n">ApplicationModal</span><span class="p">)</span>
 
         <span class="c1"># Create stacks and place them in the choice window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span> <span class="o">=</span> <span class="n">MIImageView</span><span class="p">(</span><span class="n">detailsSpanAllCols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Original Stack&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Original Stack"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span> <span class="o">=</span> <span class="n">MIImageView</span><span class="p">(</span><span class="n">detailsSpanAllCols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;New Stack&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"New Stack"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_stack_for_view</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="p">,</span> <span class="n">original_stack</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -663,8 +663,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="c1"># Confirm exit is actually wanted as it will lead to data loss</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">choice_made</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Data Loss! Are you sure?&quot;</span><span class="p">,</span>
-                                           <span class="s2">&quot;You will lose the original stack if you close this window! Are you sure?&quot;</span><span class="p">,</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"Data Loss! Are you sure?"</span><span class="p">,</span>
+                                           <span class="s2">"You will lose the original stack if you close this window! Are you sure?"</span><span class="p">,</span>
                                            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">Notification</span><span class="o">.</span><span class="n">CHOOSE_NEW_DATA</span><span class="p">)</span>
@@ -678,16 +678,16 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_from_old_to_new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Signal triggered when the histograms are locked and the contrast values changed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">levels</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_from_new_to_old</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Signal triggered when the histograms are locked and the contrast values changed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">levels</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">getLevels</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_stack</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setLevels</span><span class="p">(</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
 

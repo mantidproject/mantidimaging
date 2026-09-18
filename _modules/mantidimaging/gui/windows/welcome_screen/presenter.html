@@ -506,9 +506,9 @@
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">WELCOME_LINKS</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;Homepage&quot;</span><span class="p">,</span> <span class="s2">&quot;https://github.com/mantidproject/mantidimaging&quot;</span><span class="p">],</span>
-                 <span class="p">[</span><span class="s2">&quot;Documentation&quot;</span><span class="p">,</span> <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/index.html&quot;</span><span class="p">],</span>
-                 <span class="p">[</span><span class="s2">&quot;Troubleshooting&quot;</span><span class="p">,</span> <span class="s2">&quot;https://mantidproject.github.io/mantidimaging/troubleshooting.html&quot;</span><span class="p">]]</span>
+<span class="n">WELCOME_LINKS</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">"Homepage"</span><span class="p">,</span> <span class="s2">"https://github.com/mantidproject/mantidimaging"</span><span class="p">],</span>
+                 <span class="p">[</span><span class="s2">"Documentation"</span><span class="p">,</span> <span class="s2">"https://mantidproject.github.io/mantidimaging/index.html"</span><span class="p">],</span>
+                 <span class="p">[</span><span class="s2">"Troubleshooting"</span><span class="p">,</span> <span class="s2">"https://mantidproject.github.io/mantidimaging/troubleshooting.html"</span><span class="p">]]</span>
 
 
 <div class="viewcode-block" id="WelcomeScreenPresenter">
@@ -525,7 +525,7 @@
 <div class="viewcode-block" id="WelcomeScreenPresenter.do_set_up">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.do_set_up">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_set_up</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_version_label</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging </span><span class="si">{</span><span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_version_label</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mantid Imaging </span><span class="si">{</span><span class="n">versions</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_up_links</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_issues</span><span class="p">()</span></div>
 
@@ -539,15 +539,15 @@
 <div class="viewcode-block" id="WelcomeScreenPresenter.set_up_links">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.set_up_links">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_up_links</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets link colour from main/presenter.py&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Gets link colour from main/presenter.py"""</span>
         <span class="n">palette</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">palette</span><span class="p">()</span>
         <span class="n">text_color</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">WindowText</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">link_name</span><span class="p">,</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">WELCOME_LINKS</span><span class="p">:</span>
-            <span class="n">rich_text</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
-                         <span class="sa">f</span><span class="s1">&#39;style=&quot;color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s1"> !important; text-decoration: underline !important;&quot;&gt;&#39;</span>
-                         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">link_name</span><span class="si">}</span><span class="s1">&#39;</span>
-                         <span class="s1">&#39;&lt;/a&gt;&#39;</span><span class="p">)</span>
+            <span class="n">rich_text</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;a href="</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">" '</span>
+                         <span class="sa">f</span><span class="s1">'style="color: </span><span class="si">{</span><span class="n">text_color</span><span class="si">}</span><span class="s1"> !important; text-decoration: underline !important;"&gt;'</span>
+                         <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">link_name</span><span class="si">}</span><span class="s1">'</span>
+                         <span class="s1">'&lt;/a&gt;'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">rich_text</span><span class="p">)</span></div>
 
 
@@ -561,9 +561,9 @@
 <div class="viewcode-block" id="WelcomeScreenPresenter.recolor_links">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.welcome_screen.presenter.html#mantidimaging.gui.windows.welcome_screen.presenter.WelcomeScreenPresenter.recolor_links">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">recolor_links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Removes existing link labels and re-adds them with the new theme color logic.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">link_box_layout</span>
         <span class="k">while</span> <span class="n">layout</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
             <span class="n">item</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">takeAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -589,7 +589,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">detailed</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_issues</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">add_issues</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issues</span><span class="p">))</span></div>
 </div>
 
 </pre></div>

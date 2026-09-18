@@ -502,14 +502,14 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.unit_conversion.html#mantidimaging.core.utility.unit_conversion.convert_distance">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">convert_distance</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">from_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">to_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="n">conversion_factors</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;mm&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
+        <span class="s2">"mm"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">"m"</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">from_unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conversion_factors</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown unit: </span><span class="si">{</span><span class="n">from_unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown unit: </span><span class="si">{</span><span class="n">from_unit</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">to_unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conversion_factors</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown unit: </span><span class="si">{</span><span class="n">to_unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown unit: </span><span class="si">{</span><span class="n">to_unit</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">value_mm</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">conversion_factors</span><span class="p">[</span><span class="n">from_unit</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">value_mm</span> <span class="o">/</span> <span class="n">conversion_factors</span><span class="p">[</span><span class="n">to_unit</span><span class="p">]</span></div>
@@ -571,10 +571,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">tof_with_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_data_to_convert</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_offset</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">tof_with_offset</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time-of-flight (with offset) contains zero(s), which is likely invalid.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Time-of-flight (with offset) contains zero(s), which is likely invalid."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_to_camera_dist</span> <span class="o">/</span> <span class="n">tof_with_offset</span>
         <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No data to convert&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"No data to convert"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 
 <div class="viewcode-block" id="UnitConversion.set_data_offset">

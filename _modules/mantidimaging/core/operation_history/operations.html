@@ -503,15 +503,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_filter_packages</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">const</span>
 
-<span class="n">MODULE_NOT_FOUND</span> <span class="o">=</span> <span class="s2">&quot;Could not find module with name &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span>
+<span class="n">MODULE_NOT_FOUND</span> <span class="o">=</span> <span class="s2">"Could not find module with name '</span><span class="si">{}</span><span class="s2">'"</span>
 
 
 <div class="viewcode-block" id="ImageOperation">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.operation_history.operations.html#mantidimaging.core.operation_history.operations.ImageOperation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageOperation</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A deserialized representation of an item in a stack&#39;s operation_history</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A deserialized representation of an item in a stack's operation_history</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_name</span> <span class="o">=</span> <span class="n">filter_name</span>
@@ -550,8 +550,8 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">filter_name</span><span class="si">}</span><span class="s2">, &quot;</span> \
-               <span class="sa">f</span><span class="s2">&quot;kwargs: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_kwargs</span><span class="si">}</span><span class="s2">&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">filter_name</span><span class="si">}</span><span class="s2">, "</span> \
+               <span class="sa">f</span><span class="s2">"kwargs: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_kwargs</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 

@@ -527,9 +527,9 @@
 <div class="viewcode-block" id="get_memory_usage_linux">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.memory_usage.html#mantidimaging.core.utility.memory_usage.get_memory_usage_linux">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_memory_usage_linux</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get the memory usage of the system in bytes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 
     <span class="n">meminfo</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
@@ -544,11 +544,11 @@
     <span class="n">memory_in_kbs</span> <span class="o">=</span> <span class="n">get_memory_usage_linux</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span>
     <span class="n">memory_in_mbs</span> <span class="o">=</span> <span class="n">memory_in_kbs</span> <span class="o">/</span> <span class="mi">1024</span>
     <span class="c1"># handle caching</span>
-    <span class="n">memory_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">memory_in_kbs</span><span class="si">}</span><span class="s2"> KB, </span><span class="si">{</span><span class="n">memory_in_mbs</span><span class="si">}</span><span class="s2"> MB&quot;</span>
+    <span class="n">memory_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">memory_in_kbs</span><span class="si">}</span><span class="s2"> KB, </span><span class="si">{</span><span class="n">memory_in_mbs</span><span class="si">}</span><span class="s2"> MB"</span>
 
     <span class="c1"># use an attribute to this function only, instead a global variable visible</span>
     <span class="c1"># outside</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">get_memory_usage_linux_str</span><span class="p">,</span> <span class="s1">&#39;last_memory_cache&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">get_memory_usage_linux_str</span><span class="p">,</span> <span class="s1">'last_memory_cache'</span><span class="p">):</span>
         <span class="n">get_memory_usage_linux_str</span><span class="o">.</span><span class="n">last_memory_cache</span> <span class="o">=</span> <span class="n">memory_in_kbs</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># get memory difference in Megabytes</span>
@@ -559,7 +559,7 @@
         <span class="c1"># remove cached memory, del removes the reference so that hasattr will</span>
         <span class="c1"># work correctly</span>
         <span class="k">del</span> <span class="n">get_memory_usage_linux_str</span><span class="o">.</span><span class="n">last_memory_cache</span>
-        <span class="n">memory_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;. Memory change: </span><span class="si">{</span><span class="n">delta_memory</span><span class="si">}</span><span class="s2"> MB&quot;</span>
+        <span class="n">memory_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">". Memory change: </span><span class="si">{</span><span class="n">delta_memory</span><span class="si">}</span><span class="s2"> MB"</span>
 
     <span class="k">return</span> <span class="n">memory_string</span></div>
 

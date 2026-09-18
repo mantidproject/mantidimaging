@@ -509,11 +509,11 @@
 <div class="viewcode-block" id="LiveViewWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LiveViewWidget</span><span class="p">(</span><span class="n">GraphicsLayoutWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The widget containing the spectrum plot and the image projection.</span>
 
 <span class="sd">    @param parent: The parent widget</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span>
     <span class="n">image_shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">roi_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
@@ -523,7 +523,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Projection&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Projection"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
 
@@ -537,10 +537,10 @@
 <div class="viewcode-block" id="LiveViewWidget.show_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget.show_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Show the image in the image view.</span>
 <span class="sd">        @param image: The image to show</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span></div>
 
@@ -548,9 +548,9 @@
 <div class="viewcode-block" id="LiveViewWidget.handle_deleted">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.live_view_widget.html#mantidimaging.gui.windows.live_viewer.live_view_widget.LiveViewWidget.handle_deleted">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handle the deletion of the image.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
@@ -567,7 +567,7 @@
             <span class="k">return</span>
         <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_shape</span>
         <span class="n">roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_object</span> <span class="o">=</span> <span class="n">SpectrumROI</span><span class="p">(</span><span class="s1">&#39;roi&#39;</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">rotatable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaleSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translateSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_object</span> <span class="o">=</span> <span class="n">SpectrumROI</span><span class="p">(</span><span class="s1">'roi'</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">rotatable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaleSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translateSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_object</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">194</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_object</span><span class="o">.</span><span class="n">hoverPen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_object</span><span class="o">.</span><span class="n">colour</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_object</span><span class="o">.</span><span class="n">sigRegionChangeFinished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>

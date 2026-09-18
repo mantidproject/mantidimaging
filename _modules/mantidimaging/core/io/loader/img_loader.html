@@ -493,9 +493,9 @@
   <h1>Source code for mantidimaging.core.io.loader.img_loader</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI</span>
 <span class="c1"># SPDX - License - Identifier: GPL-3.0-or-later</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">This module handles the loading of FIT, FITS, TIF, TIFF</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
@@ -522,19 +522,19 @@
             <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span><span class="p">,</span>
             <span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Indices</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Reads a stack of images into memory, assuming dark and flat images</span>
 <span class="sd">    are in separate directories.</span>
 
 <span class="sd">    Usual type in fits is 16-bit pixel depth, data type is denoted with:</span>
-<span class="sd">        &#39;&gt;i2&#39; - uint16</span>
-<span class="sd">        &#39;&gt;f2&#39; - float16</span>
-<span class="sd">        &#39;&gt;f4&#39; - float32</span>
+<span class="sd">        '&gt;i2' - uint16</span>
+<span class="sd">        '&gt;f2' - float16</span>
+<span class="sd">        '&gt;f4' - float32</span>
 
 <span class="sd">    :returns: ImageStack object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_path</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No filenames were provided.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"No filenames were provided."</span><span class="p">)</span>
 
     <span class="c1"># The following codes assume that all images have the same size and properties as the first.</span>
     <span class="c1"># This is always true in the case of raw data</span>
@@ -580,11 +580,11 @@
             <span class="c1"># the loaded file was a single image</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_files</span><span class="p">(</span><span class="n">input_file_names</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data loaded has invalid shape: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Data loaded has invalid shape: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_do_files_load_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
-        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Loading&#39;</span><span class="p">)</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">'Loading'</span><span class="p">)</span>
         <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
@@ -592,24 +592,24 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_func</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
                     <span class="n">total_size</span> <span class="o">+=</span> <span class="n">in_file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
-                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;Image&#39;</span><span class="p">)</span>
+                    <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s1">'Image'</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;An image has different width and/or height &quot;</span>
-                                     <span class="s2">&quot;dimensions! All images must have the same &quot;</span>
-                                     <span class="sa">f</span><span class="s2">&quot;dimensions. Expected dimensions: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="si">}</span><span class="s2"> Error &quot;</span>
-                                     <span class="sa">f</span><span class="s2">&quot;message: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"An image has different width and/or height "</span>
+                                     <span class="s2">"dimensions! All images must have the same "</span>
+                                     <span class="sa">f</span><span class="s2">"dimensions. Expected dimensions: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="si">}</span><span class="s2"> Error "</span>
+                                     <span class="sa">f</span><span class="s2">"message: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
                 <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not load file </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. Error details: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not load file </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. Error details: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2"> files (name=</span><span class="si">{</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, format=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_format</span><span class="si">}</span><span class="s2">, &quot;</span>
-                 <span class="sa">f</span><span class="s2">&quot;total size=</span><span class="si">{</span><span class="n">total_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB, dtype=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">, shape=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2"> files (name=</span><span class="si">{</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, format=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">img_format</span><span class="si">}</span><span class="s2">, "</span>
+                 <span class="sa">f</span><span class="s2">"total size=</span><span class="si">{</span><span class="n">total_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB, dtype=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">, shape=</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="ImageLoader.load_files">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.io.loader.img_loader.html#mantidimaging.core.io.loader.img_loader.ImageLoader.load_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pu</span><span class="o">.</span><span class="n">SharedArray</span><span class="p">:</span>
         <span class="c1"># Zeroing here to make sure that we can allocate the memory.</span>
-        <span class="c1"># If it&#39;s not possible better crash here than later.</span>
+        <span class="c1"># If it's not possible better crash here than later.</span>
         <span class="n">num_images</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_images</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dtype</span><span class="p">)</span>

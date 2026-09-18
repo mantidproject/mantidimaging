@@ -523,7 +523,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span> <span class="o">=</span> <span class="n">widget</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use</span> <span class="o">=</span> <span class="n">use</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Path&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"Path"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select_button</span> <span class="o">=</span> <span class="n">select_button</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_info</span> <span class="o">=</span> <span class="n">file_info</span>
 
@@ -541,19 +541,19 @@
 <div class="viewcode-block" id="Field.clear">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.field.html#mantidimaging.gui.windows.image_load_dialog.field.Field.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the field to an unselected state.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path_widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Reset the field to an unselected state."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeWidgetItem</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the top-level widget of the section.</span>
 <span class="sd">        All other fields are nested under it</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_widget</span>
 
     <span class="nd">@property</span>
@@ -578,28 +578,28 @@
     <span class="nd">@path</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The object passed as path for this field is not a Path. Instead got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The object passed as path for this field is not a Path. Instead got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">path_widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">use</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">indices_item</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="p">)</span>
-        <span class="n">indices_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;File indices&quot;</span><span class="p">)</span>
+        <span class="n">indices_item</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"File indices"</span><span class="p">)</span>
         <span class="n">_spinbox_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_spinbox</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">())</span>
-        <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">()))</span>
+        <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Start"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">()))</span>
         <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_spinbox</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop_spinbox</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">())</span>
-        <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Stop&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">()))</span>
+        <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Stop"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">()))</span>
         <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_spinbox</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_increment_spinbox</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_increment_spinbox</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Increment&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">()))</span>
+        <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Increment"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">()))</span>
         <span class="n">_spinbox_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_increment_spinbox</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_spinbox_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">parent</span><span class="p">())</span>
@@ -647,7 +647,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTreeWidgetItem</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shape_widget</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_widget</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape_widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape_widget</span>
 
     <span class="nd">@_shape</span><span class="o">.</span><span class="n">setter</span>
@@ -661,10 +661,10 @@
 <div class="viewcode-block" id="Field.update_indices">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.field.html#mantidimaging.gui.windows.image_load_dialog.field.Field.update_indices">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_of_images</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param number_of_images: Number of images that will be loaded in from</span>
 <span class="sd">                                 the current selection</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Cap the end value FIRST, otherwise setValue might fail if the</span>
         <span class="c1"># previous max val is smaller</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">number_of_images</span><span class="p">)</span>
@@ -701,10 +701,10 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.image_load_dialog.field.html#mantidimaging.gui.windows.image_load_dialog.field.Field.update_shape">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> images&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> images"</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">num_images</span><span class="p">,</span> <span class="n">exp_mem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_expected_mem_usage</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num_images</span><span class="si">}</span><span class="s2"> images x </span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">exp_mem</span><span class="si">}</span><span class="s2">MB&quot;</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">num_images</span><span class="si">}</span><span class="s2"> images x </span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">exp_mem</span><span class="si">}</span><span class="s2">MB"</span></div>
 </div>
 
 </pre></div>

@@ -506,9 +506,9 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.versions</span><span class="w"> </span><span class="kn">import</span> <span class="n">package_version</span><span class="p">,</span> <span class="n">git_hash</span><span class="p">,</span> <span class="n">package_type</span>  <span class="c1"># type: ignore</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">package_version</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.dev1&#39;</span>
-    <span class="n">git_hash</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">package_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">package_version</span> <span class="o">=</span> <span class="s1">'0.0.0.dev1'</span>
+    <span class="n">git_hash</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="n">package_type</span> <span class="o">=</span> <span class="s1">''</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -538,28 +538,28 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.find_conda_executable">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_conda_executable</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;mamba&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;mamba&quot;</span>
-        <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">&quot;conda&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;conda&quot;</span>
+        <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"mamba"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">"mamba"</span>
+        <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s2">"conda"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">"conda"</span>
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span></div>
 
 
 <div class="viewcode-block" id="CheckVersion.show_versions">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.show_versions">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid imaging </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Install method </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_package_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_type</span> <span class="o">==</span> <span class="s2">&quot;conda&quot;</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;conda_available_version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mantid imaging </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Install method </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_package_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_type</span> <span class="o">==</span> <span class="s2">"conda"</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"conda_available_version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">git_hash</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Git hash </span><span class="si">{</span><span class="n">git_hash</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Git hash </span><span class="si">{</span><span class="n">git_hash</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CheckVersion.get_version">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.get_version">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get built in version&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get built in version"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span></div>
 
 
@@ -572,7 +572,7 @@
 <div class="viewcode-block" id="CheckVersion.get_conda_available_version">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.get_conda_available_version">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_conda_available_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get latest version number from conda&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get latest version number from conda"""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conda_available_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_conda_available_version</span><span class="p">()</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conda_available_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -582,7 +582,7 @@
 <div class="viewcode-block" id="CheckVersion.needs_update">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.needs_update">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">needs_update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_type</span> <span class="o">==</span> <span class="s2">&quot;conda&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_conda_uptodate</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_type</span> <span class="o">==</span> <span class="s2">"conda"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_conda_uptodate</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
@@ -590,8 +590,8 @@
 <div class="viewcode-block" id="CheckVersion.is_conda_uptodate">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.is_conda_uptodate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_conda_uptodate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if up to date with lasted version in conda&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Check if up to date with lasted version in conda"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
             <span class="c1"># If unable to get conda versions then assume everything is good</span>
             <span class="k">return</span> <span class="kc">True</span>
 
@@ -602,34 +602,34 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.version_check.html#mantidimaging.core.utility.version_check.CheckVersion.conda_update_message">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">conda_update_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
         <span class="n">conda_exe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_conda_executable</span><span class="p">()</span>
-        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;unstable&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_prerelease</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;main&quot;</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="s2">"unstable"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_prerelease</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"main"</span>
 
-        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Not running the latest Mantid Imaging&quot;</span>
-        <span class="k">if</span> <span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;main&quot;</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="se">\n</span><span class="s2">Found version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
-        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Please check the terminal for an update command!&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">"Not running the latest Mantid Imaging"</span>
+        <span class="k">if</span> <span class="n">suffix</span> <span class="o">!=</span> <span class="s2">"main"</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"-</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">".</span><span class="se">\n</span><span class="s2">Found version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">, "</span>
+        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Please check the terminal for an update command!"</span>
 
-        <span class="n">detailed</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Not running the latest Mantid Imaging </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Found version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span>
-        <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">detailed</span> <span class="o">+=</span> <span class="s2">&quot;To update your environment please copy and run the following command:</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
-            <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">conda_exe</span><span class="si">}</span><span class="s2"> activate </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CONDA_PREFIX&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &amp;&amp; &quot;</span>
-        <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">conda_exe</span><span class="si">}</span><span class="s2"> update -c mantid/label/</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2"> mantidimaging&quot;</span>
+        <span class="n">detailed</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Not running the latest Mantid Imaging </span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"Found version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">, "</span>
+        <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"latest: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conda_available_version</span><span class="p">()</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="n">detailed</span> <span class="o">+=</span> <span class="s2">"To update your environment please copy and run the following command:</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">'linux'</span><span class="p">:</span>
+            <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">conda_exe</span><span class="si">}</span><span class="s2"> activate </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'CONDA_PREFIX'</span><span class="p">]</span><span class="si">}</span><span class="s2"> &amp;&amp; "</span>
+        <span class="n">detailed</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">conda_exe</span><span class="si">}</span><span class="s2"> update -c mantid/label/</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2"> mantidimaging"</span>
         <span class="k">return</span> <span class="n">msg</span><span class="p">,</span> <span class="n">detailed</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_retrieve_conda_available_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://api.anaconda.org/package/mantid/mantidimaging&quot;</span><span class="p">)</span>
-            <span class="n">remote_main_version</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s2">&quot;latest_version&quot;</span><span class="p">]</span>
-            <span class="n">remote_unstable_version</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s2">&quot;versions&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
-                <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s2">&quot;versions&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://api.anaconda.org/package/mantid/mantidimaging"</span><span class="p">)</span>
+            <span class="n">remote_main_version</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s2">"latest_version"</span><span class="p">]</span>
+            <span class="n">remote_unstable_version</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s2">"versions"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="s2">"versions"</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">''</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="c1"># if anything goes wrong, in the end we don&#39;t have the version</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Could not connect to Anaconda remote to retrieve the latest version&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_conda_available_version</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="c1"># if anything goes wrong, in the end we don't have the version</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Could not connect to Anaconda remote to retrieve the latest version"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conda_available_version</span> <span class="o">=</span> <span class="s2">""</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_prerelease</span><span class="p">():</span>
@@ -643,7 +643,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_version</span><span class="p">(</span><span class="n">package_version_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Version</span><span class="p">:</span>
-    <span class="n">normalised_version_string</span> <span class="o">=</span> <span class="n">package_version_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;.post&quot;</span><span class="p">)</span>
+    <span class="n">normalised_version_string</span> <span class="o">=</span> <span class="n">package_version_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">".post"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parse</span><span class="p">(</span><span class="n">normalised_version_string</span><span class="p">)</span>
 
 

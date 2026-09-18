@@ -528,12 +528,12 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LiveViewerWindowPresenter</span><span class="p">(</span><span class="n">BasePresenter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The presenter for the Live Viewer window.</span>
 
 <span class="sd">    This presenter is responsible for handling user interaction with the view and</span>
 <span class="sd">    updating the model and view accordingly to look after the state of the window.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">view</span><span class="p">:</span> <span class="n">LiveViewerWindowView</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">LiveViewerWindowModel</span>
     <span class="n">op_func</span><span class="p">:</span> <span class="n">Callable</span>
@@ -563,7 +563,7 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter.close">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the window.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the window."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore # Presenter instance to be destroyed -type can be inconsistent</span>
@@ -573,21 +573,21 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter.set_dataset_path">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.set_dataset_path">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_dataset_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the path to the dataset.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the path to the dataset."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.clear_label">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.clear_label">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_label</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the label.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">label_active_filename</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Clear the label."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">label_active_filename</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.handle_deleted">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.handle_deleted">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the deletion of the image.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Handle the deletion of the image."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">remove_image</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_label</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">z_slider</span><span class="o">.</span><span class="n">set_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -597,7 +597,7 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter.update_image_list">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.update_image_list">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_image_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the image in the view.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update the image in the view."""</span>
         <span class="n">images_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">images_list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_deleted</span><span class="p">()</span>
@@ -649,7 +649,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">image_timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="o">.</span><span class="n">image_modified_time_stamp</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">label_active_filename</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">image_timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">label_active_filename</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">image_timestamp</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="p">)</span></div>
 
@@ -657,9 +657,9 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter.display_image">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.display_image">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">display_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data_obj</span><span class="p">:</span> <span class="n">Image_Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Display image in the view after validating contents</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">image_cache</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">image_data_obj</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ImageLoadFailError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
@@ -670,8 +670,8 @@
             <span class="k">return</span>
         <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">perform_operations</span><span class="p">(</span><span class="n">image_data</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">image_data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;reading image: </span><span class="si">{image_path}</span><span class="s2">: Image has zero size&quot;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;reading image: </span><span class="si">%s</span><span class="s2">: Image has zero size&quot;</span><span class="p">,</span> <span class="n">image_data_obj</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s2">"reading image: </span><span class="si">{image_path}</span><span class="s2">: Image has zero size"</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"reading image: </span><span class="si">%s</span><span class="s2">: Image has zero size"</span><span class="p">,</span> <span class="n">image_data_obj</span><span class="o">.</span><span class="n">image_path</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">remove_image</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">live_viewer</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
             <span class="k">return</span>
@@ -683,18 +683,18 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_image_from_path</span><span class="p">(</span><span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Load a .Tif, .Tiff or .Fits file only if it exists</span>
 <span class="sd">        and returns as an ndarray</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.tif&quot;</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">]:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">".tif"</span><span class="p">,</span> <span class="s2">".tiff"</span><span class="p">]:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">TiffFile</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">tif</span><span class="p">:</span>
                     <span class="n">image_data</span> <span class="o">=</span> <span class="n">tif</span><span class="o">.</span><span class="n">asarray</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">image_data</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">TiffFileError</span><span class="p">,</span> <span class="n">DeflateError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ImageLoadFailError</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
-        <span class="k">elif</span> <span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;.fits&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">".fits"</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fits_hdul</span><span class="p">:</span>
                     <span class="n">image_data</span> <span class="o">=</span> <span class="n">fits_hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
@@ -704,15 +704,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ImageLoadFailError</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span>
                                      <span class="n">source_error</span><span class="o">=</span><span class="ne">FileNotFoundError</span><span class="p">,</span>
-                                     <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Unsupported file type: </span><span class="si">{</span><span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                                     <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Unsupported file type: </span><span class="si">{</span><span class="n">image_path</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiveViewerWindowPresenter.update_image_modified">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.update_image_modified">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_image_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update the displayed image when the file is modified</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span> <span class="ow">and</span> <span class="n">image_path</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="o">.</span><span class="n">image_path</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">try_add_mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="p">)</span>
@@ -722,9 +722,9 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter.update_image_operation">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.update_image_operation">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_image_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Reload the current image if an operation has been performed on the current image</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">display_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_image</span><span class="p">)</span></div>
 
@@ -732,9 +732,9 @@
 <div class="viewcode-block" id="LiveViewerWindowPresenter.convert_image_to_imagestack">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.convert_image_to_imagestack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">convert_image_to_imagestack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert the single image to an imagestack so the Operations framework can be used</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">image_data_shape</span> <span class="o">=</span> <span class="n">image_data</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">image_data_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_data_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image_data_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="n">image_data_temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">image_data</span>
@@ -750,7 +750,7 @@
         <span class="k">for</span> <span class="n">operation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filter_params</span><span class="p">:</span>
             <span class="n">op_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">operation</span><span class="p">]</span>
             <span class="n">op_func</span> <span class="o">=</span> <span class="n">op_class</span><span class="o">.</span><span class="n">filter_func</span>
-            <span class="n">op_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="n">operation</span><span class="p">][</span><span class="s2">&quot;params&quot;</span><span class="p">]</span>
+            <span class="n">op_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">filter_params</span><span class="p">[</span><span class="n">operation</span><span class="p">][</span><span class="s2">"params"</span><span class="p">]</span>
             <span class="n">op_func</span><span class="p">(</span><span class="n">image_stack</span><span class="p">,</span> <span class="o">**</span><span class="n">op_params</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">image_stack</span><span class="o">.</span><span class="n">slice_as_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
@@ -780,7 +780,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">roi</span> <span class="o">=</span> <span class="n">roi</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="n">TaskWorkerThread</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;chunk_size&quot;</span><span class="p">:</span> <span class="n">CHUNK_SIZE</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"chunk_size"</span><span class="p">:</span> <span class="n">CHUNK_SIZE</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">task_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">calc_mean_chunk</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">))</span>
@@ -791,7 +791,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.live_viewer.presenter.html#mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.thread_cleanup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">thread_cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread</span><span class="p">:</span> <span class="n">TaskWorkerThread</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error during background processing: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">thread</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error during background processing: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">thread</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">thread</span><span class="o">.</span><span class="n">error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_intensity_with_mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -827,7 +827,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">try_next_mean_chunk</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">try_next_mean_chunk_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_next_mean_chunk_count</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">images</span><span class="p">)</span> <span class="o">/</span> <span class="n">CHUNK_SIZE</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_next_mean_chunk_max_retry</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Too many retries for mean calculation. Aborting.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Too many retries for mean calculation. Aborting."</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">handle_roi_change_timer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></div>

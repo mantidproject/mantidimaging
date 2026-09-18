@@ -513,7 +513,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructionParameters</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">tomopy</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">&#39;tomopy&#39;</span><span class="p">)</span>
+<span class="n">tomopy</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">'tomopy'</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TomopyRecon">
@@ -563,7 +563,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.full">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">:</span> <span class="n">ReconstructionParameters</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Performs a volume reconstruction using sample data provided as sinograms.</span>
 
 <span class="sd">        :param images: Array of sinogram images</span>
@@ -572,8 +572,8 @@
 <span class="sd">        :param recon_params: Reconstruction Parameters</span>
 <span class="sd">        :param progress: Optional progress reporter</span>
 <span class="sd">        :return: 3D image data for reconstructed volume</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;TomoPy reconstruction&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">'TomoPy reconstruction'</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">cors</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_all_cors</span><span class="p">()</span>
@@ -586,18 +586,18 @@
         <span class="k">assert</span> <span class="n">projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;ncore&#39;</span><span class="p">:</span> <span class="n">ncores</span><span class="p">,</span>
-            <span class="s1">&#39;tomo&#39;</span><span class="p">:</span> <span class="n">BaseRecon</span><span class="o">.</span><span class="n">prepare_sinogram</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">),</span>
-            <span class="s1">&#39;sinogram_order&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s1">&#39;theta&#39;</span><span class="p">:</span> <span class="n">projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">cor</span> <span class="ow">in</span> <span class="n">cors</span><span class="p">],</span>
-            <span class="s1">&#39;algorithm&#39;</span><span class="p">:</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
-            <span class="s1">&#39;filter_name&#39;</span><span class="p">:</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">filter_name</span>
+            <span class="s1">'ncore'</span><span class="p">:</span> <span class="n">ncores</span><span class="p">,</span>
+            <span class="s1">'tomo'</span><span class="p">:</span> <span class="n">BaseRecon</span><span class="o">.</span><span class="n">prepare_sinogram</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">recon_params</span><span class="p">),</span>
+            <span class="s1">'sinogram_order'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">'theta'</span><span class="p">:</span> <span class="n">projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s1">'center'</span><span class="p">:</span> <span class="p">[</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">cor</span> <span class="ow">in</span> <span class="n">cors</span><span class="p">],</span>
+            <span class="s1">'algorithm'</span><span class="p">:</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
+            <span class="s1">'filter_name'</span><span class="p">:</span> <span class="n">recon_params</span><span class="o">.</span><span class="n">filter_name</span>
         <span class="p">}</span>
 
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
             <span class="n">volume</span> <span class="o">=</span> <span class="n">tomopy</span><span class="o">.</span><span class="n">recon</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reconstructed 3D volume with shape: </span><span class="si">{</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Reconstructed 3D volume with shape: </span><span class="si">{</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ImageStack</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span></div>
 
@@ -606,7 +606,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.TomopyRecon.allowed_filters">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">allowed_filters</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;ramlak&quot;</span><span class="p">,</span> <span class="s1">&#39;shepp&#39;</span><span class="p">,</span> <span class="s1">&#39;cosine&#39;</span><span class="p">,</span> <span class="s1">&#39;hann&#39;</span><span class="p">,</span> <span class="s1">&#39;hamming&#39;</span><span class="p">,</span> <span class="s1">&#39;parzen&#39;</span><span class="p">,</span> <span class="s1">&#39;butterworth&#39;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">"ramlak"</span><span class="p">,</span> <span class="s1">'shepp'</span><span class="p">,</span> <span class="s1">'cosine'</span><span class="p">,</span> <span class="s1">'hann'</span><span class="p">,</span> <span class="s1">'hamming'</span><span class="p">,</span> <span class="s1">'parzen'</span><span class="p">,</span> <span class="s1">'butterworth'</span><span class="p">]</span></div>
 </div>
 
 
@@ -615,7 +615,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.reconstruct.tomopy_recon.html#mantidimaging.core.reconstruct.tomopy_recon.allowed_recon_kwargs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">allowed_recon_kwargs</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="c1"># only gridrec is used from tomopy</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;gridrec&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;num_gridx&#39;</span><span class="p">,</span> <span class="s1">&#39;num_gridy&#39;</span><span class="p">,</span> <span class="s1">&#39;filter_name&#39;</span><span class="p">,</span> <span class="s1">&#39;filter_par&#39;</span><span class="p">]}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">'gridrec'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'num_gridx'</span><span class="p">,</span> <span class="s1">'num_gridy'</span><span class="p">,</span> <span class="s1">'filter_name'</span><span class="p">,</span> <span class="s1">'filter_par'</span><span class="p">]}</span></div>
 
 </pre></div>
 

@@ -512,9 +512,9 @@
 <div class="viewcode-block" id="AutoColorMenu">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.html#mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu.AutoColorMenu">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AutoColorMenu</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_metaclass_sip_abc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Mixin class to be used with MIImageView and MIMiniImageView</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -542,9 +542,9 @@
                                    <span class="n">set_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QAction</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auto_color_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auto_color_recon_mode</span> <span class="o">=</span> <span class="n">recon_mode</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">auto_color_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Auto&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_color_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">"Auto"</span><span class="p">)</span>
 
-        <span class="n">index_of_rgb_item</span> <span class="o">=</span> <span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">actions</span><span class="p">()]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+        <span class="n">index_of_rgb_item</span> <span class="o">=</span> <span class="p">[</span><span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">actions</span><span class="p">()]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">"RGB"</span><span class="p">)</span>
         <span class="n">place</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">actions</span><span class="p">()[</span><span class="n">index_of_rgb_item</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">insertAction</span><span class="p">(</span><span class="n">place</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_color_action</span><span class="p">)</span>
@@ -563,9 +563,9 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_colour_change_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Opens the Palette Changer window</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">change_colour_palette</span> <span class="o">=</span> <span class="n">PaletteChangerView</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auto_color_parent</span><span class="p">,</span>
                                                    <span class="n">main_hist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">histogram</span><span class="p">,</span>
                                                    <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image_data</span><span class="p">,</span>

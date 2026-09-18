@@ -518,9 +518,9 @@
 <div class="viewcode-block" id="MI3DViewerPresenter.handle_stack_change">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.viewer_3d.presenter.html#mantidimaging.gui.windows.viewer_3d.presenter.MI3DViewerPresenter.handle_stack_change">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_stack_change</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handle the event when the selected stack changes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">current_stack_uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_stack</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -528,7 +528,7 @@
 
         <span class="n">current_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">current_stack_uuid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="s2">&quot;No ImageStack found for UUID&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="s2">"No ImageStack found for UUID"</span><span class="p">)</span>
 
         <span class="n">array3d</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">current_stack</span><span class="o">.</span><span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">update_viewer</span><span class="p">(</span><span class="n">array3d</span><span class="p">)</span></div>

@@ -513,7 +513,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operations.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseFilterClass</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;perf.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">"perf."</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FiltersWindowModel">
@@ -576,11 +576,11 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.filter_registration_func">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_registration_func</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">QFormLayout</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">BaseMainWindowView</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Gets the function used to register the GUI of a given filter.</span>
 
 <span class="sd">        :param filter_name: Name of the filter in the registry</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">filter_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_filter_index_from_filter_name</span><span class="p">(</span><span class="n">filter_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">filter_idx</span><span class="p">]</span><span class="o">.</span><span class="n">register_gui</span></div>
 
@@ -588,10 +588,10 @@
 <div class="viewcode-block" id="FiltersWindowModel.link_histograms">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.link_histograms">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">link_histograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Gets the link histogram status of a filter.</span>
 <span class="sd">        :return: True if the histograms should be linked, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">link_histograms</span></div>
 
 
@@ -622,12 +622,12 @@
 <div class="viewcode-block" id="FiltersWindowModel.apply_to_stacks">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.apply_to_stacks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply_to_stacks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">],</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Applies the selected filter to a given image stack.</span>
 
 <span class="sd">        It gets the image reference out of the StackVisualiserView and forwards</span>
 <span class="sd">        it to the function that actually processes the images.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">for</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">stacks</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">validate_kwargs</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">apply_to_images</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span></div>
@@ -640,17 +640,17 @@
 
         <span class="c1"># Run filter</span>
         <span class="n">exec_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">execute_wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">input_kwarg_widgets</span><span class="p">)</span>
-        <span class="n">exec_func</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">progress</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">exec_func</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;progress&quot;</span><span class="p">)</span>
+        <span class="n">exec_func</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="s2">"progress"</span><span class="p">]</span> <span class="o">=</span> <span class="n">progress</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">exec_func</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">"progress"</span><span class="p">)</span>
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">exec_func</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
         <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_preview</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting operation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> &quot;</span>
-                     <span class="sa">f</span><span class="s2">&quot;(shape=</span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-            <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">filter_name</span><span class="si">}</span><span class="s2"> completed in </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Starting operation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> "</span>
+                     <span class="sa">f</span><span class="s2">"(shape=</span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+            <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">filter_name</span><span class="si">}</span><span class="s2"> completed in </span><span class="si">{</span><span class="n">duration</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 
         <span class="c1"># store the executed filter in history if it executed successfully</span>
         <span class="n">images</span><span class="o">.</span><span class="n">record_operation</span><span class="p">(</span>
@@ -663,22 +663,22 @@
 <div class="viewcode-block" id="FiltersWindowModel.validate_kwargs">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.validate_kwargs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Validate required kwargs are supplied so pre-processing does not happen unnecessarily</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">input_kwarg_widgets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_widget_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">message</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_filter</span><span class="o">.</span><span class="n">validate_execute_kwargs</span><span class="p">(</span><span class="n">input_kwarg_widgets</span><span class="p">,</span> <span class="n">images</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Issue with operation inputs: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Issue with operation inputs: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowModel.do_apply_filter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">],</span> <span class="n">post_filter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Applies the selected filter to the selected stack.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stacks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No stack selected&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'No stack selected'</span><span class="p">)</span>
 
         <span class="c1"># Get auto parameters</span>
         <span class="c1"># Generate sub-stack and run filter</span>
@@ -689,11 +689,11 @@
 <div class="viewcode-block" id="FiltersWindowModel.do_apply_filter_sync">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.do_apply_filter_sync">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_apply_filter_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stacks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ImageStack</span><span class="p">],</span> <span class="n">post_filter</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Applies the selected filter to the selected stack in a synchronous manner</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stacks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No stack selected&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'No stack selected'</span><span class="p">)</span>
 
         <span class="c1"># Get auto parameters</span>
         <span class="c1"># Generate sub-stack and run filter</span>
@@ -703,9 +703,9 @@
 <div class="viewcode-block" id="FiltersWindowModel.get_filter_module_name">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.model.html#mantidimaging.gui.windows.operations.model.FiltersWindowModel.get_filter_module_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_filter_module_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_idx</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the class name of the filter index passed to it</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">filter_idx</span><span class="p">]</span><span class="o">.</span><span class="vm">__module__</span></div>
 </div>
 

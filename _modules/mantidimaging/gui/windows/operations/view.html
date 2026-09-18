@@ -516,18 +516,18 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">MainWindowView</span>  <span class="c1"># noqa:F401  # pragma: no cover</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.widgets.mi_mini_image_view.view</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIMiniImageView</span>
 
-<span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">(</span><span class="s1">&#39;mantidproject&#39;</span><span class="p">,</span> <span class="s1">&#39;Mantid Imaging&#39;</span><span class="p">)</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">QSettings</span><span class="p">(</span><span class="s1">'mantidproject'</span><span class="p">,</span> <span class="s1">'Mantid Imaging'</span><span class="p">)</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_strip_filter_name</span><span class="p">(</span><span class="n">filter_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Removes hyphens and spaces from a filter name and makes it all lower case.</span>
 <span class="sd">    :param filter_name: The human-readable filter name.</span>
 <span class="sd">    :return: The stripped filter name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">filter_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">filter_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FiltersWindowView">
@@ -563,7 +563,7 @@
     <span class="n">safeApply</span><span class="p">:</span> <span class="n">QCheckBox</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;gui/ui/filters_window.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">'gui/ui/filters_window.ui'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span> <span class="o">=</span> <span class="n">main_window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span> <span class="o">=</span> <span class="n">FiltersWindowPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">)</span>
@@ -616,10 +616,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filterHelpButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_help_webpage</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">pressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_filters_section</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;safeApply&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">'safeApply'</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_safe_apply_check</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">handle_filter_selection</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_filter_selection</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window_ready</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="FiltersWindowView.closeEvent">
@@ -659,9 +659,9 @@
 <div class="viewcode-block" id="FiltersWindowView.handle_filter_selection">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.handle_filter_selection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_filter_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handle selection of a filter from the drop down list.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># If a divider select the one below the divider.</span>
         <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">divider</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filterSelector</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filterSelector</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -673,7 +673,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">previews_updated</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;previews_updated has no connections to disconnect — expected on first filter selection&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'previews_updated has no connections to disconnect — expected on first filter selection'</span><span class="p">)</span>
         <span class="n">delete_all_widgets_from_layout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filterPropertiesLayout</span><span class="p">)</span>
 
         <span class="c1"># Do registration of new filter</span>
@@ -687,16 +687,16 @@
 <div class="viewcode-block" id="FiltersWindowView.handle_safe_apply_check">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.handle_safe_apply_check">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_safe_apply_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;safeApply&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span></div>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'safeApply'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">safeApply</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowView.on_auto_update_triggered">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.on_auto_update_triggered">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_auto_update_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Called when the signal indicating the filter, filter properties or data</span>
 <span class="sd">        has changed such that the previews are now out of date.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Disable the preview image box widget as it can misbehave if making a preview takes too long</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previewImageIndex</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
@@ -745,7 +745,7 @@
 
 <div class="viewcode-block" id="FiltersWindowView.show_error_dialog">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.show_error_dialog">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">show_error_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_error_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_icon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QApplication</span><span class="o">.</span><span class="n">style</span><span class="p">()</span><span class="o">.</span><span class="n">standardPixmap</span><span class="p">(</span><span class="n">QStyle</span><span class="o">.</span><span class="n">SP_MessageBoxCritical</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
@@ -764,7 +764,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">show_operation_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_icon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QApplication</span><span class="o">.</span><span class="n">style</span><span class="p">()</span><span class="o">.</span><span class="n">standardPixmap</span><span class="p">(</span><span class="n">QStyle</span><span class="o">.</span><span class="n">SP_DialogYesButton</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> completed successfully!&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> completed successfully!"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowView.show_operation_cancelled">
@@ -772,7 +772,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">show_operation_cancelled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation_name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notification_icon</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">QApplication</span><span class="o">.</span><span class="n">style</span><span class="p">()</span><span class="o">.</span><span class="n">standardPixmap</span><span class="p">(</span><span class="n">QStyle</span><span class="o">.</span><span class="n">SP_DialogYesButton</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> cancelled, original data restored&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notification_text</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">operation_name</span><span class="si">}</span><span class="s2"> cancelled, original data restored"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowView.open_help_webpage">
@@ -787,7 +787,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_update_apply_all_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">):</span>
-        <span class="n">list_of_apply_single_stack</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ROI Normalisation&quot;</span><span class="p">,</span> <span class="s2">&quot;Flat-fielding&quot;</span><span class="p">,</span> <span class="s2">&quot;Sum Stack Intensities&quot;</span><span class="p">]</span>
+        <span class="n">list_of_apply_single_stack</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ROI Normalisation"</span><span class="p">,</span> <span class="s2">"Flat-fielding"</span><span class="p">,</span> <span class="s2">"Sum Stack Intensities"</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">filter_name</span> <span class="ow">in</span> <span class="n">list_of_apply_single_stack</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">applyToAllButton</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -797,7 +797,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.roi_visualiser">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">roi_visualiser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_field</span><span class="p">,</span> <span class="n">roi_button</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># If nothing has been loaded then we can&#39;t visualise anything</span>
+            <span class="c1"># If nothing has been loaded then we can't visualise anything</span>
             <span class="k">return</span>
 
         <span class="n">roi_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -809,7 +809,7 @@
 
         <span class="c1"># Get the ROI values from the input field</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">roi_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">roi_field</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+            <span class="n">roi_values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">roi_field</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)]</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="n">roi_values</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -829,12 +829,12 @@
 <div class="viewcode-block" id="FiltersWindowView.toggle_filters_section">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView.toggle_filters_section">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toggle_filters_section</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&lt;&lt;&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"&lt;&lt;"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9999</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&gt;&gt;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"&gt;&gt;"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">setSizes</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">9999</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&lt;&lt;&quot;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collapseToggleButton</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"&lt;&lt;"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FiltersWindowView.lock_zoom_changed">

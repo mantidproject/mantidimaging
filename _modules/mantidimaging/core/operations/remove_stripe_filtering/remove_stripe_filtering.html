@@ -513,7 +513,7 @@
 <div class="viewcode-block" id="RemoveStripeFilteringFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.html#mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.RemoveStripeFilteringFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoveStripeFilteringFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stripe and ring artifact removal. Combination of algorithm 2 and algorithm 3 in Vo et al.,</span>
+<span class="w">    </span><span class="sd">"""Stripe and ring artifact removal. Combination of algorithm 2 and algorithm 3 in Vo et al.,</span>
 <span class="sd">    Optics Express 28396 (2018). Removing stripes using the filtering and sorting technique.</span>
 
 <span class="sd">    Source: https://github.com/algotom/algotom</span>
@@ -525,8 +525,8 @@
 
 <span class="sd">    Caution: Horizontal stripes caused by changes in image intensity (pixel values)</span>
 <span class="sd">    should be fixed by ROI Normalisation instead!</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Remove stripes with filtering&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Remove stripes with filtering"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">operate_on_sinograms</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -534,7 +534,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.html#mantidimaging.core.operations.remove_stripe_filtering.remove_stripe_filtering.RemoveStripeFilteringFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">window_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">filtering_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        :param sigma: The sigma of the Gaussian window used to separate the</span>
 <span class="sd">                      low-pass and high-pass components of the intensity profile</span>
 <span class="sd">                      of each column.</span>
@@ -547,10 +547,10 @@
 
 <span class="sd">        :return: The ImageStack object with the stripes removed using the</span>
 <span class="sd">                 filtering and sorting technique.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="n">window_dim</span><span class="p">}</span>
+<span class="sd">        """</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"sigma"</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s2">"dim"</span><span class="p">:</span> <span class="n">window_dim</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">filtering_dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"sort"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">compute_func</span> <span class="o">=</span> <span class="n">RemoveStripeFilteringFilter</span><span class="o">.</span><span class="n">compute_function_2d</span>
@@ -580,38 +580,38 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
 
         <span class="n">label</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="n">BaseFilter</span><span class="o">.</span><span class="n">SINOGRAM_FILTER_INFO</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">LABEL</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Sigma&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Sigma'</span><span class="p">,</span>
                                         <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                         <span class="n">default_value</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                                         <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                         <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Sigma of the Gaussian window used to separate the low-pass and&quot;</span>
-                                        <span class="s2">&quot; high-pass components of the intensity profile of each column.&quot;</span><span class="p">)</span>
+                                        <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Sigma of the Gaussian window used to separate the low-pass and"</span>
+                                        <span class="s2">" high-pass components of the intensity profile of each column."</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Stripe kernel&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Stripe kernel'</span><span class="p">,</span>
                                        <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                        <span class="n">default_value</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span>
                                        <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                        <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                       <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Window size of the median filter to remove large stripes.&quot;</span><span class="p">)</span>
+                                       <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Window size of the median filter to remove large stripes."</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">window_dim</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Dimension of the window&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">window_dim</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Dimension of the window'</span><span class="p">,</span>
                                              <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                              <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                              <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
                                              <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Whether to perform the median on 1D or 2D view of the data&quot;</span><span class="p">)</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Whether to perform the median on 1D or 2D view of the data"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">filtering_dim</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Filtering dim&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">filtering_dim</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Filtering dim'</span><span class="p">,</span>
                                                 <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                                 <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                                 <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
                                                 <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                 <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                                <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Whether to use a 1D or 2D low-pass filter. &quot;</span>
-                                                <span class="s2">&quot;This uses different Algotom methods&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">&#39;window_dim&#39;</span><span class="p">:</span> <span class="n">window_dim</span><span class="p">,</span> <span class="s1">&#39;filtering_dim&#39;</span><span class="p">:</span> <span class="n">filtering_dim</span><span class="p">}</span></div>
+                                                <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Whether to use a 1D or 2D low-pass filter. "</span>
+                                                <span class="s2">"This uses different Algotom methods"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'sigma'</span><span class="p">:</span> <span class="n">sigma</span><span class="p">,</span> <span class="s1">'size'</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">'window_dim'</span><span class="p">:</span> <span class="n">window_dim</span><span class="p">,</span> <span class="s1">'filtering_dim'</span><span class="p">:</span> <span class="n">filtering_dim</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="RemoveStripeFilteringFilter.execute_wrapper">

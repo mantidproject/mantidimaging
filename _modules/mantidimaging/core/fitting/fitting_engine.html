@@ -537,7 +537,7 @@
         <span class="n">initial_params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
         <span class="n">params_bounds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BoundType</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Fit the model to the given spectrum using unweighted least squares.</span>
 
 <span class="sd">        Returns:</span>
@@ -547,7 +547,7 @@
 
 <span class="sd">        Notes:</span>
 <span class="sd">            Uses the Nelder–Mead minimizer on the unweighted residuals.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">additional_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">prefitting</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">initial_params</span><span class="p">)</span>
 
@@ -560,7 +560,7 @@
             <span class="n">residuals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">params_subset</span><span class="p">)</span> <span class="o">-</span> <span class="n">ydata</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">residuals</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">residual_sum_squares</span><span class="p">,</span> <span class="n">params_to_fit</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;Nelder-Mead&quot;</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">params_bounds</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">residual_sum_squares</span><span class="p">,</span> <span class="n">params_to_fit</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"Nelder-Mead"</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">params_bounds</span><span class="p">)</span>
 
         <span class="n">all_param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_parameter_names</span><span class="p">()</span>
         <span class="n">all_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>

@@ -511,12 +511,12 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing.pool</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
 
-<span class="n">MEM_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;MI&#39;</span>
-<span class="n">MEM_DIR_LINUX</span> <span class="o">=</span> <span class="s1">&#39;/dev/shm&#39;</span>
+<span class="n">MEM_PREFIX</span> <span class="o">=</span> <span class="s1">'MI'</span>
+<span class="n">MEM_DIR_LINUX</span> <span class="o">=</span> <span class="s1">'/dev/shm'</span>
 <span class="n">CURRENT_PID</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">pid</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;perf.&quot;</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
+<span class="n">perf_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">"perf."</span> <span class="o">+</span> <span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">cores</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">pool</span><span class="p">:</span> <span class="n">Pool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -526,7 +526,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.create_and_start_pool">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_and_start_pool</span><span class="p">(</span><span class="n">process_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">get_context</span><span class="p">(</span><span class="s1">&#39;spawn&#39;</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">get_context</span><span class="p">(</span><span class="s1">'spawn'</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">cores</span>
     <span class="k">if</span> <span class="n">process_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">cores</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
@@ -535,7 +535,7 @@
     <span class="k">global</span> <span class="n">pool</span>
     <span class="n">pool</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">cores</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">worker_setup</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">perf_logger</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Process pool started in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="n">perf_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Process pool started in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t0</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
@@ -559,7 +559,7 @@
 <div class="viewcode-block" id="generate_mi_shared_mem_name">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.generate_mi_shared_mem_name">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_mi_shared_mem_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">MEM_PREFIX</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">CURRENT_PID</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span></div>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">MEM_PREFIX</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">CURRENT_PID</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span></div>
 
 
 
@@ -587,7 +587,7 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.manager.html#mantidimaging.core.parallel.manager.free_shared_memory_linux">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">free_shared_memory_linux</span><span class="p">(</span><span class="n">mem_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">mem_name</span> <span class="ow">in</span> <span class="n">mem_names</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">MEM_DIR_LINUX</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">mem_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">MEM_DIR_LINUX</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">mem_name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
 
 
 
@@ -596,7 +596,7 @@
     <span class="n">mem_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">MEM_DIR_LINUX</span><span class="p">)</span> <span class="o">/</span> <span class="n">mem_name</span>
     <span class="k">if</span> <span class="n">_is_mi_shared_mem</span><span class="p">(</span><span class="n">mem_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mem_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">mem_path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span> <span class="o">&lt;</span> <span class="n">process_start</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">pid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">pid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">_lookup_process</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">NoSuchProcess</span><span class="p">:</span>
             <span class="c1"># The process that owns the memory has ended</span>
@@ -616,7 +616,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_mi_shared_mem</span><span class="p">(</span><span class="n">mem_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="n">split_name</span> <span class="o">=</span> <span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+    <span class="n">split_name</span> <span class="o">=</span> <span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="nb">int</span><span class="p">(</span><span class="n">split_name</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -627,7 +627,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_mi_memory_from_current_process</span><span class="p">(</span><span class="n">mem_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">_is_mi_shared_mem</span><span class="p">(</span><span class="n">mem_name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">CURRENT_PID</span>
+    <span class="k">return</span> <span class="n">_is_mi_shared_mem</span><span class="p">(</span><span class="n">mem_name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">mem_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'_'</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">CURRENT_PID</span>
 </pre></div>
 
                 </article>

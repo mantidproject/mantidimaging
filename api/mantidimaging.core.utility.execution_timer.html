@@ -572,7 +572,7 @@
 <span id="mantidimaging-core-utility-execution-timer-module"></span><h1>mantidimaging.core.utility.execution_timer module<a class="headerlink" href="#module-mantidimaging.core.utility.execution_timer" title="Link to this heading">#</a></h1>
 <p>Context managers for logging execution time or profile of code.</p>
 <p>These are not used in the code, but are here as developer tools. They can be used by wrapping the code of interest:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;a_slow_function()&quot;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ExecutionProfiler</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">"a_slow_function()"</span><span class="p">):</span>
     <span class="n">a_slow_function</span><span class="p">()</span>
 </pre></div>
 </div>

@@ -526,16 +526,16 @@
 <div class="viewcode-block" id="create_array">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.create_array">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_array</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">DTypeLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SharedArray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create an array in shared memory</span>
 
 <span class="sd">    :param shape: Shape of the array</span>
 <span class="sd">    :param dtype: Dtype of the array</span>
 <span class="sd">    :return: The created SharedArray</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">enough_memory</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;The machine does not have enough physical memory available to allocate space for this data.&quot;</span><span class="p">)</span>
+            <span class="s2">"The machine does not have enough physical memory available to allocate space for this data."</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">_create_shared_array</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span></div>
 
@@ -566,9 +566,9 @@
 <div class="viewcode-block" id="calculate_chunksize">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.calculate_chunksize">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_chunksize</span><span class="p">(</span><span class="n">cores</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    TODO possible proper calculation of chunksize, although best performance has been with 1</span>
-<span class="sd">    From performance tests, the chunksize doesn&#39;t seem to make much of a</span>
+<span class="sd">    From performance tests, the chunksize doesn't seem to make much of a</span>
 <span class="sd">    difference, but having larger chunks usually led to slower performance:</span>
 
 <span class="sd">    Shape: (50,512,512)</span>
@@ -581,7 +581,7 @@
 <span class="sd">    7 chunks 3.058s</span>
 <span class="sd">    8 chunks 3.25s</span>
 <span class="sd">    9 chunks 3.45s</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="mi">1</span></div>
 
 
@@ -592,18 +592,18 @@
     <span class="c1"># This environment variable will be present when running PYDEVD from PyCharm</span>
     <span class="c1"># and that has the bug that multiprocessing Pools can never finish `.join()` ing</span>
     <span class="c1"># thus never actually finish their processing.</span>
-    <span class="k">if</span> <span class="s1">&#39;PYDEVD_LOAD_VALUES_ASYNC&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="s1">&#39;PYTEST_CURRENT_TEST&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Debugging environment variable &#39;PYDEVD_LOAD_VALUES_ASYNC&#39; found. Running synchronously on 1 core&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'PYDEVD_LOAD_VALUES_ASYNC'</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="s1">'PYTEST_CURRENT_TEST'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Debugging environment variable 'PYDEVD_LOAD_VALUES_ASYNC' found. Running synchronously on 1 core"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_shared_data</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Not all of the data uses shared memory&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Not all of the data uses shared memory"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">elif</span> <span class="n">shape</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shape under 10&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Shape under 10"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Multiprocessing required&quot;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Multiprocessing required"</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
@@ -611,12 +611,12 @@
 <div class="viewcode-block" id="execute_impl">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.parallel.utility.html#mantidimaging.core.parallel.utility.execute_impl">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">execute_impl</span><span class="p">(</span><span class="n">img_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">partial_func</span><span class="p">:</span> <span class="n">partial</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">img_num</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="n">task_name</span><span class="p">)</span>
     <span class="n">indices_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">img_num</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">multiprocessing_necessary</span><span class="p">(</span><span class="n">img_num</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running async on </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="si">}</span><span class="s2"> cores&quot;</span><span class="p">)</span>
-        <span class="c1"># Using _ in the for _ enumerate is slightly faster, because the tuple from enumerate isn&#39;t unpacked,</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Running async on </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="si">}</span><span class="s2"> cores"</span><span class="p">)</span>
+        <span class="c1"># Using _ in the for _ enumerate is slightly faster, because the tuple from enumerate isn't unpacked,</span>
         <span class="c1"># and thus some time is saved</span>
         <span class="c1"># Using imap here seems to be the best choice:</span>
         <span class="c1"># - imap_unordered gives the images back in random order</span>
@@ -624,7 +624,7 @@
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">partial_func</span><span class="p">,</span> <span class="n">indices_list</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">calculate_chunksize</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="p">)):</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running synchronously on 1 core&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Running synchronously on 1 core"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">indices_list</span><span class="p">:</span>
             <span class="n">partial_func</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
@@ -638,16 +638,16 @@
                           <span class="n">num_operations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                           <span class="n">is_shared_data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
                           <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                          <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+                          <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">task_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="n">num_operations</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="n">task_name</span><span class="p">)</span>
     <span class="n">indices_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_operations</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">multiprocessing_necessary</span><span class="p">(</span><span class="n">num_operations</span><span class="p">,</span> <span class="n">is_shared_data</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running async on </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="si">}</span><span class="s2"> cores&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Running async on </span><span class="si">{</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="si">}</span><span class="s2"> cores"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pm</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">worker_func</span><span class="p">,</span> <span class="n">indices_list</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="n">calculate_chunksize</span><span class="p">(</span><span class="n">pm</span><span class="o">.</span><span class="n">cores</span><span class="p">)):</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running synchronously on 1 core&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Running synchronously on 1 core"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">indices_list</span><span class="p">:</span>
             <span class="n">worker_func</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>

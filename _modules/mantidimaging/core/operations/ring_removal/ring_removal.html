@@ -513,14 +513,14 @@
 <div class="viewcode-block" id="RingRemovalFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.ring_removal.ring_removal.html#mantidimaging.core.operations.ring_removal.ring_removal.RingRemovalFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RingRemovalFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove ring artifacts from images in the reconstructed domain.</span>
+<span class="w">    </span><span class="sd">"""Remove ring artifacts from images in the reconstructed domain.</span>
 
 <span class="sd">    Intended to be used on: Reconstructed slices</span>
 
 <span class="sd">    When: To remove ring-artifacts that have not been removed, or have been introduced</span>
 <span class="sd">    by pre-processing</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Ring Removal&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Ring Removal"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">show_negative_overlay</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -528,7 +528,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.ring_removal.ring_removal.html#mantidimaging.core.operations.ring_removal.ring_removal.RingRemovalFilter.filter_func">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
-                    <span class="n">center_mode</span><span class="o">=</span><span class="s2">&quot;image center&quot;</span><span class="p">,</span>
+                    <span class="n">center_mode</span><span class="o">=</span><span class="s2">"image center"</span><span class="p">,</span>
                     <span class="n">center_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">center_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">thresh</span><span class="o">=</span><span class="mf">300.0</span><span class="p">,</span>
@@ -537,7 +537,7 @@
                     <span class="n">theta_min</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                     <span class="n">rwidth</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Removal of ring artifacts in reconstructed volume. Uses Wavelet-Fourier based ring removal</span>
 
 <span class="sd">        :param images: Sample data which is to be processed. Expected in radiograms</span>
@@ -555,18 +555,18 @@
 <span class="sd">        :param rwidth: (int, optional)</span>
 <span class="sd">                       Maximum width of the rings to be filtered in pixels</span>
 <span class="sd">        :returns: Filtered data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Ring Removal&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">'Ring Removal'</span><span class="p">)</span>
 
-        <span class="n">tp</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">&#39;tomopy.misc.corr&#39;</span><span class="p">)</span>
+        <span class="n">tp</span> <span class="o">=</span> <span class="n">safe_import</span><span class="p">(</span><span class="s1">'tomopy.misc.corr'</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">center_mode</span> <span class="o">!=</span> <span class="s2">&quot;manual&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">center_mode</span> <span class="o">!=</span> <span class="s2">"manual"</span><span class="p">:</span>
             <span class="n">center_x</span> <span class="o">=</span> <span class="n">center_y</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">h</span><span class="o">.</span><span class="n">check_data_stack</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Ring Removal&quot;</span><span class="p">)</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s2">"Ring Removal"</span><span class="p">)</span>
             <span class="n">sample</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span>
             <span class="n">tp</span><span class="o">.</span><span class="n">remove_ring</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span>
                            <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span>
@@ -590,64 +590,64 @@
         <span class="n">range1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">)</span>
         <span class="n">range2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1000000</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">center_mode</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Center of rotation&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">center_mode</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Center of rotation'</span><span class="p">,</span>
                                               <span class="n">Type</span><span class="o">.</span><span class="n">CHOICE</span><span class="p">,</span>
-                                              <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;image center&quot;</span><span class="p">,</span> <span class="s2">&quot;manual&quot;</span><span class="p">],</span>
+                                              <span class="n">valid_values</span><span class="o">=</span><span class="p">[</span><span class="s2">"image center"</span><span class="p">,</span> <span class="s2">"manual"</span><span class="p">],</span>
                                               <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                               <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                              <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Use image center or enter manually&quot;</span><span class="p">)</span>
+                                              <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Use image center or enter manually"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">x_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Center of rotation X position&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">x_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Center of rotation X position'</span><span class="p">,</span>
                                           <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                           <span class="n">valid_values</span><span class="o">=</span><span class="n">range1</span><span class="p">,</span>
                                           <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                           <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                          <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;abscissa location of center of rotation&quot;</span><span class="p">)</span>
+                                          <span class="n">tooltip</span><span class="o">=</span><span class="s2">"abscissa location of center of rotation"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">y_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Center of rotation Y position&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">y_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Center of rotation Y position'</span><span class="p">,</span>
                                           <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                           <span class="n">valid_values</span><span class="o">=</span><span class="n">range1</span><span class="p">,</span>
                                           <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                           <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                          <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;ordinate location of center of rotation&quot;</span><span class="p">)</span>
+                                          <span class="n">tooltip</span><span class="o">=</span><span class="s2">"ordinate location of center of rotation"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Threshold&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Threshold'</span><span class="p">,</span>
                                          <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                          <span class="n">valid_values</span><span class="o">=</span><span class="n">range2</span><span class="p">,</span>
                                          <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                          <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                         <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;maximum value of an offset due to a ring artifact&quot;</span><span class="p">)</span>
+                                         <span class="n">tooltip</span><span class="o">=</span><span class="s2">"maximum value of an offset due to a ring artifact"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">thresh_min</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Threshold Min&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">thresh_min</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Threshold Min'</span><span class="p">,</span>
                                              <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                              <span class="n">valid_values</span><span class="o">=</span><span class="n">range2</span><span class="p">,</span>
                                              <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;min value for portion of image to filter&quot;</span><span class="p">)</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">"min value for portion of image to filter"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">thresh_max</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Threshold Max&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">thresh_max</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Threshold Max'</span><span class="p">,</span>
                                              <span class="n">Type</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
                                              <span class="n">valid_values</span><span class="o">=</span><span class="n">range2</span><span class="p">,</span>
                                              <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                              <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;max value for portion of image to filter&quot;</span><span class="p">)</span>
+                                             <span class="n">tooltip</span><span class="o">=</span><span class="s2">"max value for portion of image to filter"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;Theta&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'Theta'</span><span class="p">,</span>
                                         <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                         <span class="n">valid_values</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">179</span><span class="p">),</span>
                                         <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                         <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;minimum angle in degrees to be considered ring artifact&quot;</span><span class="p">)</span>
+                                        <span class="n">tooltip</span><span class="o">=</span><span class="s2">"minimum angle in degrees to be considered ring artifact"</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">rwidth</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">&#39;RWidth&#39;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">rwidth</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s1">'RWidth'</span><span class="p">,</span>
                                          <span class="n">Type</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span>
                                          <span class="n">valid_values</span><span class="o">=</span><span class="n">range2</span><span class="p">,</span>
                                          <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                          <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                         <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Maximum width of the rings to be filtered in pixels&quot;</span><span class="p">)</span>
+                                         <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Maximum width of the rings to be filtered in pixels"</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">enable_center</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">center_mode</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;manual&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">center_mode</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"manual"</span><span class="p">:</span>
                 <span class="n">x_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">y_field</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -659,14 +659,14 @@
         <span class="n">enable_center</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;center_mode&quot;</span><span class="p">:</span> <span class="n">center_mode</span><span class="p">,</span>
-            <span class="s2">&quot;x_field&quot;</span><span class="p">:</span> <span class="n">x_field</span><span class="p">,</span>
-            <span class="s2">&quot;y_field&quot;</span><span class="p">:</span> <span class="n">y_field</span><span class="p">,</span>
-            <span class="s2">&quot;thresh&quot;</span><span class="p">:</span> <span class="n">thresh</span><span class="p">,</span>
-            <span class="s2">&quot;thresh_min&quot;</span><span class="p">:</span> <span class="n">thresh_min</span><span class="p">,</span>
-            <span class="s2">&quot;thresh_max&quot;</span><span class="p">:</span> <span class="n">thresh_max</span><span class="p">,</span>
-            <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span>
-            <span class="s2">&quot;rwidth&quot;</span><span class="p">:</span> <span class="n">rwidth</span><span class="p">,</span>
+            <span class="s2">"center_mode"</span><span class="p">:</span> <span class="n">center_mode</span><span class="p">,</span>
+            <span class="s2">"x_field"</span><span class="p">:</span> <span class="n">x_field</span><span class="p">,</span>
+            <span class="s2">"y_field"</span><span class="p">:</span> <span class="n">y_field</span><span class="p">,</span>
+            <span class="s2">"thresh"</span><span class="p">:</span> <span class="n">thresh</span><span class="p">,</span>
+            <span class="s2">"thresh_min"</span><span class="p">:</span> <span class="n">thresh_min</span><span class="p">,</span>
+            <span class="s2">"thresh_max"</span><span class="p">:</span> <span class="n">thresh_max</span><span class="p">,</span>
+            <span class="s2">"theta"</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span>
+            <span class="s2">"rwidth"</span><span class="p">:</span> <span class="n">rwidth</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 

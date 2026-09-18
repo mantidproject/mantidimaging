@@ -504,18 +504,18 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_cuda_is_present</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Checks if we can import CuPy to confirm that there&#39;s a CUDA installation on the device that we can work with</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Checks if we can import CuPy to confirm that there's a CUDA installation on the device that we can work with</span>
+<span class="sd">    """</span>
     <span class="n">cuda_is_present</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_import_cupy</span><span class="p">()</span>
         <span class="n">cuda_is_present</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;CuPy not installed&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'CuPy not installed'</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;CuPy installed, but unable to load CUDA&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'CuPy installed, but unable to load CUDA'</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">cuda_is_present</span>
 
@@ -523,11 +523,11 @@
 <div class="viewcode-block" id="not_found_message">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.not_found_message">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">not_found_message</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a message that can be displayed if a working CUDA installation isn&#39;t found.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cuda_not_found_msg</span> <span class="o">=</span> <span class="s2">&quot;Working CUDA installation not found.&quot;</span>
-    <span class="k">return</span> <span class="n">cuda_not_found_msg</span><span class="p">,</span> <span class="n">cuda_not_found_msg</span> <span class="o">+</span> <span class="s2">&quot; Will only use gridrec algorithm for reconstruction.&quot;</span><span class="p">,</span></div>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Generates a message that can be displayed if a working CUDA installation isn't found.</span>
+<span class="sd">    """</span>
+    <span class="n">cuda_not_found_msg</span> <span class="o">=</span> <span class="s2">"Working CUDA installation not found."</span>
+    <span class="k">return</span> <span class="n">cuda_not_found_msg</span><span class="p">,</span> <span class="n">cuda_not_found_msg</span> <span class="o">+</span> <span class="s2">" Will only use gridrec algorithm for reconstruction."</span><span class="p">,</span></div>
 
 
 
@@ -538,9 +538,9 @@
     <span class="n">_cuda_is_present</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CudaChecker</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Creates a singleton for storing the result of the Cuda check.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_cuda_is_present</span> <span class="o">=</span> <span class="n">_cuda_is_present</span><span class="p">()</span>
@@ -550,9 +550,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.CudaChecker.cuda_is_present">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">cuda_is_present</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the shared cuda check result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cuda_is_present</span></div>
 
 
@@ -560,9 +560,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.cuda_check.html#mantidimaging.core.utility.cuda_check.CudaChecker.clear_instance">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_instance</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Resets the instance. Used for making sure mocks don&#39;t leak in tests.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Resets the instance. Used for making sure mocks don't leak in tests.</span>
+<span class="sd">        """</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span></div>
 </div>
 

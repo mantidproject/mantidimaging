@@ -504,14 +504,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_filter_names</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">package</span><span class="o">.</span><span class="n">filter_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">package</span><span class="o">.</span><span class="n">filter_name</span> <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">load_filter_packages</span><span class="p">()}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">package</span><span class="o">.</span><span class="n">filter_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">package</span><span class="o">.</span><span class="n">filter_name</span> <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">load_filter_packages</span><span class="p">()}</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_log_and_exit</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Log an error message and exit.</span>
 <span class="sd">    :param msg: The log message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="n">exit</span><span class="p">()</span>
 
@@ -521,54 +521,54 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">CommandLineArguments</span><span class="p">:</span>
     <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_images_path</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">_init_operation</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">_init_operation</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">_show_recon</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">_show_live_viewer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">_show_live_viewer</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">_show_spectrum_viewer</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
-                <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-                <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+                <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
                 <span class="n">show_recon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                <span class="n">show_live_viewer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">show_live_viewer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
                 <span class="n">show_spectrum_viewer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Creates a singleton for storing the command line arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
             <span class="n">valid_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">filepath</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">):</span>
                     <span class="n">filepath_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">filepath_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                        <span class="n">_log_and_exit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2"> doesn&#39;t exist. Exiting.&quot;</span><span class="p">)</span>
+                        <span class="n">_log_and_exit</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Path </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2"> doesn't exist. Exiting."</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">valid_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filepath_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">_images_path</span> <span class="o">=</span> <span class="n">valid_paths</span>
             <span class="k">if</span> <span class="n">operation</span><span class="p">:</span>
                 <span class="n">command_line_names</span> <span class="o">=</span> <span class="n">_get_filter_names</span><span class="p">()</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_images_path</span><span class="p">:</span>
-                    <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">&quot;No path given for initial operation. Exiting.&quot;</span><span class="p">)</span>
+                    <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">"No path given for initial operation. Exiting."</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">operation</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">command_line_names</span><span class="p">:</span>
-                    <span class="n">valid_filters</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">command_line_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="n">valid_filters</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">command_line_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                     <span class="n">_log_and_exit</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> is not a known operation. Available filters arguments are </span><span class="si">{</span><span class="n">valid_filters</span><span class="si">}</span><span class="s2">.&quot;</span>
-                        <span class="s2">&quot; Exiting.&quot;</span><span class="p">)</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2"> is not a known operation. Available filters arguments are </span><span class="si">{</span><span class="n">valid_filters</span><span class="si">}</span><span class="s2">."</span>
+                        <span class="s2">" Exiting."</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">cls</span><span class="o">.</span><span class="n">_init_operation</span> <span class="o">=</span> <span class="n">command_line_names</span><span class="p">[</span><span class="n">operation</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
             <span class="k">if</span> <span class="n">show_recon</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
-                <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">&quot;No path given for reconstruction. Exiting.&quot;</span><span class="p">)</span>
+                <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">"No path given for reconstruction. Exiting."</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">_show_recon</span> <span class="o">=</span> <span class="n">show_recon</span>
             <span class="k">if</span> <span class="n">show_spectrum_viewer</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
-                <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">&quot;No path given for reconstruction. Exiting.&quot;</span><span class="p">)</span>
+                <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">"No path given for reconstruction. Exiting."</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">_show_spectrum_viewer</span> <span class="o">=</span> <span class="n">show_spectrum_viewer</span>
             <span class="k">if</span> <span class="n">show_live_viewer</span> <span class="ow">and</span> <span class="n">show_live_viewer</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_show_live_viewer</span><span class="p">:</span>
                 <span class="n">live_viewer_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">show_live_viewer</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">live_viewer_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                    <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">&quot;Path given for live view does not exist. Exiting.&quot;</span><span class="p">)</span>
+                    <span class="n">_log_and_exit</span><span class="p">(</span><span class="s2">"Path given for live view does not exist. Exiting."</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">cls</span><span class="o">.</span><span class="n">_show_live_viewer</span> <span class="o">=</span> <span class="n">live_viewer_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span>
@@ -577,9 +577,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.command_line_arguments.html#mantidimaging.core.utility.command_line_arguments.CommandLineArguments.path">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the command line images path.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_images_path</span></div>
 
 
@@ -587,9 +587,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.command_line_arguments.html#mantidimaging.core.utility.command_line_arguments.CommandLineArguments.operation">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">operation</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns the initial operation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_init_operation</span></div>
 
 
@@ -597,9 +597,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.command_line_arguments.html#mantidimaging.core.utility.command_line_arguments.CommandLineArguments.recon">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">recon</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns whether or not the recon window should be started.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_show_recon</span></div>
 
 
@@ -607,9 +607,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.command_line_arguments.html#mantidimaging.core.utility.command_line_arguments.CommandLineArguments.spectrum_viewer">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_viewer</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns whether or not the recon window should be started.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_show_spectrum_viewer</span></div>
 
 
@@ -617,9 +617,9 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.command_line_arguments.html#mantidimaging.core.utility.command_line_arguments.CommandLineArguments.live_viewer">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">live_viewer</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Returns live view path.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_show_live_viewer</span></div>
 
 
@@ -627,13 +627,13 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.command_line_arguments.html#mantidimaging.core.utility.command_line_arguments.CommandLineArguments.clear_window_args">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear_window_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clears the command line arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">_init_operation</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_init_operation</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_show_recon</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_show_spectrum_viewer</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">_show_live_viewer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_show_live_viewer</span> <span class="o">=</span> <span class="s2">""</span></div>
 </div>
 
 </pre></div>

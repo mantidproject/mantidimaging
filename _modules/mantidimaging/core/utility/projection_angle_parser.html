@@ -502,8 +502,8 @@
 <div class="viewcode-block" id="ProjectionAngleFileParser">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.projection_angle_parser.html#mantidimaging.core.utility.projection_angle_parser.ProjectionAngleFileParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProjectionAngleFileParser</span><span class="p">:</span>
-    <span class="n">ERROR_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;The provided file cannot be read. Angles are expected in DEGREES as comma </span><span class="se">\</span>
-<span class="s2">                    separated values on a single line, or a single angle value per line&quot;</span>
+    <span class="n">ERROR_MESSAGE</span> <span class="o">=</span> <span class="s2">"The provided file cannot be read. Angles are expected in DEGREES as comma </span><span class="se">\</span>
+<span class="s2">                    separated values on a single line, or a single angle value per line"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -512,7 +512,7 @@
 <div class="viewcode-block" id="ProjectionAngleFileParser.get_projection_angles">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.utility.projection_angle_parser.html#mantidimaging.core.utility.projection_angle_parser.ProjectionAngleFileParser.get_projection_angles">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_projection_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectionAngles</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;,&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s2">","</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># allows a file that has a single line of CSV angles,</span>
                 <span class="c1"># and a new line after it</span>
@@ -521,7 +521,7 @@
             <span class="c1"># Handles the angles provided as comma separated values</span>
 
             <span class="c1"># angles are in CSV format 0,0.1,0.2...</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">angle</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">string_content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)])</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">angle</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">string_content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Handles the angles provided as a value per line</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">angle</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contents</span><span class="p">])</span>

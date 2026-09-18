@@ -515,7 +515,7 @@
     <span class="n">_presenter</span><span class="p">:</span> <span class="n">AsyncTaskDialogPresenter</span> <span class="o">|</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QMainWindow</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">&#39;gui/ui/async_task_dialog.ui&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s1">'gui/ui/async_task_dialog.ui'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span> <span class="o">=</span> <span class="n">AsyncTaskDialogPresenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -533,23 +533,23 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">presenter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncTaskDialogPresenter</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Presenter accessed after handle_completion&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Presenter accessed after handle_completion"</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presenter</span>
 
 <div class="viewcode-block" id="AsyncTaskDialogView.handle_completion">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.view.html#mantidimaging.gui.dialogs.async_task.view.AsyncTaskDialogView.handle_completion">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">successful</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Updates the UI after the task has been completed.</span>
 
 <span class="sd">        :param successful: If the task was successful</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">successful</span><span class="p">:</span>
-            <span class="c1"># Set info text to &quot;Complete&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">infoText</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Complete&quot;</span><span class="p">)</span>
+            <span class="c1"># Set info text to "Complete"</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">infoText</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Complete"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">infoText</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Task failed.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">infoText</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Task failed."</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -595,7 +595,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">residual_image_view</span> <span class="o">=</span> <span class="n">residual_image_view</span>
         <span class="n">max_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">residual_image</span><span class="p">,</span> <span class="mi">95</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residual_image_view</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">residual_image</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_level</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">residual_image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">loadPreset</span><span class="p">(</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residual_image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">loadPreset</span><span class="p">(</span><span class="s2">"viridis"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residual_image_view</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">histogram</span><span class="o">.</span><span class="n">setHistogramRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_level</span><span class="p">)</span></div>
 
 
@@ -636,10 +636,10 @@
                           <span class="n">cancelable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">atd</span> <span class="o">=</span> <span class="n">AsyncTaskDialogView</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;progress&#39;</span><span class="p">:</span> <span class="n">Progress</span><span class="p">()}</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'progress'</span><span class="p">:</span> <span class="n">Progress</span><span class="p">()}</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;progress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">()</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;progress&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add_progress_handler</span><span class="p">(</span><span class="n">atd</span><span class="o">.</span><span class="n">presenter</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">'progress'</span><span class="p">]</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">()</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">'progress'</span><span class="p">]</span><span class="o">.</span><span class="n">add_progress_handler</span><span class="p">(</span><span class="n">atd</span><span class="o">.</span><span class="n">presenter</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">busy</span><span class="p">:</span>
         <span class="n">atd</span><span class="o">.</span><span class="n">progressBar</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>

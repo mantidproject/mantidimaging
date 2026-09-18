@@ -515,9 +515,9 @@
 <div class="viewcode-block" id="FittingDisplayWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FittingDisplayWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Widget for displaying fitting-related spectrum plot using the reusable SpectrumPlotWidget.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">unit_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 
@@ -557,15 +557,15 @@
 <div class="viewcode-block" id="FittingDisplayWidget.set_plot_mode">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.set_plot_mode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_plot_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;initial&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">"initial"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget.clear">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clear the fitting display widget data and reset to default state.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clearPlots</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_item</span><span class="o">.</span><span class="n">setImage</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)),</span> <span class="n">autoLevels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
@@ -575,13 +575,13 @@
 
 <div class="viewcode-block" id="FittingDisplayWidget.update_plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.update_plot">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ROI&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ROI"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_default_region_if_needed</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_log_emitted&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Spectrum plot updated: label=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_log_emitted"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Spectrum plot updated: label=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_emitted</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
@@ -596,8 +596,8 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_units_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a right-click units menu to the spectrum plot for unit conversion.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum_viewbox</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Units&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Add a right-click units menu to the spectrum plot for unit conversion."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum_viewbox</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">"Units"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">allowed_modes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tof_mode_select_group</span><span class="p">)</span>
@@ -605,16 +605,16 @@
             <span class="n">action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">units_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
             <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">,</span> <span class="n">mode</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;Image Index&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"Image Index"</span><span class="p">:</span>
                 <span class="n">action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FittingDisplayWidget.set_default_region_if_needed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.set_default_region_if_needed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_default_region_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Position the ROI centrally over the plotted data, if valid data and not in existing region</span>
+<span class="w">        </span><span class="sd">"""Position the ROI centrally over the plotted data, if valid data and not in existing region</span>
 <span class="sd">        We define valid data as a spectrum which is non-zero in length and does not consist of nans or zeros</span>
 <span class="sd">        We check for lengths &lt;= 1 to prevent the fitting region being shown for single-image ImageStacks, e.g. Flats</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">x_data</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">y_data</span><span class="p">))</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">y_data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fitting_region</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
             <span class="k">return</span>
@@ -656,9 +656,9 @@
 <div class="viewcode-block" id="FittingDisplayWidget.show_roi_on_thumbnail_from_widget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.show_roi_on_thumbnail_from_widget">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_roi_on_thumbnail_from_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Copy ROI size and color from the main image window ROI to the thumbnail overlay.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setPos</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setSize</span><span class="p">((</span><span class="n">roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_preview_roi</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">mkPen</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -669,7 +669,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.html#mantidimaging.gui.widgets.spectrum_widgets.fitting_display_widget.FittingDisplayWidget.show_fit_line">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">show_fit_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                       <span class="n">initial</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Plot a single fit line (initial or fitted) on the spectrum plot, removing any previous fit line.</span>
 
 <span class="sd">        Args:</span>
@@ -678,13 +678,13 @@
 <span class="sd">            color: The RGB color tuple for the line.</span>
 <span class="sd">            label: The legend label for the line.</span>
 <span class="sd">            initial: True if this is the initial fit, False if fitted curve.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_fit_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_plot</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">pen</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_showing_initial_fit</span> <span class="o">=</span> <span class="n">initial</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fit line displayed: label=</span><span class="si">%s</span><span class="s2">, initial=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">))</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Fit line displayed: label=</span><span class="si">%s</span><span class="s2">, initial=</span><span class="si">%s</span><span class="s2">, points=</span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="FittingDisplayWidget.is_initial_fit_visible">

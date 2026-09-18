@@ -525,14 +525,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_delete_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_current_stack_with_assert</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">&quot;No geometry to delete.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">"No geometry to delete."</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">):</span>
-            <span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="s1">'geometry'</span><span class="p">):</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'angles'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_widget_stack_page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">&quot;Geometry deleted. You can now create a new geometry.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">"Geometry deleted. You can now create a new geometry."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">emit_geometry_changed</span><span class="p">()</span></div>
 
 
@@ -556,7 +556,7 @@
 
         <span class="n">current_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">current_stack_uuid</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="s2">&quot;No ImageStack found for UUID&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">StackNotFoundError</span><span class="p">(</span><span class="s2">"No ImageStack found for UUID"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">current_stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_default_new_parameters</span><span class="p">(</span><span class="n">current_stack</span><span class="p">)</span>
@@ -572,16 +572,16 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.geometry.presenter.html#mantidimaging.gui.windows.geometry.presenter.GeometryWindowPresenter.update_parameters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Attempted to update parameters for ImageStack without geometry&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Attempted to update parameters for ImageStack without geometry"</span><span class="p">)</span>
 
         <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">value</span>
 
-        <span class="n">angle_range</span> <span class="o">=</span> <span class="s2">&quot;N/A&quot;</span>
+        <span class="n">angle_range</span> <span class="o">=</span> <span class="s2">"N/A"</span>
         <span class="n">real_projection_angles</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">real_projection_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">min_angle</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="n">real_projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">max_angle</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="n">real_projection_angles</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">angle_range</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">min_angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">° - </span><span class="si">{</span><span class="n">max_angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">°&quot;</span>
+            <span class="n">angle_range</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">min_angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">° - </span><span class="si">{</span><span class="n">max_angle</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">°"</span>
 
         <span class="n">mi_cor</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">cor</span><span class="o">.</span><span class="n">value</span>
         <span class="n">mi_tilt</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tilt</span>
@@ -589,8 +589,8 @@
         <span class="c1"># Geometry distances are stored internally in mm</span>
         <span class="n">src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position_unit</span>
         <span class="n">det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position_unit</span>
-        <span class="n">src_val</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">source_position_mm</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">)</span>
-        <span class="n">det_val</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">detector_position_mm</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">)</span>
+        <span class="n">src_val</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">source_position_mm</span><span class="p">,</span> <span class="s2">"mm"</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">)</span>
+        <span class="n">det_val</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">detector_position_mm</span><span class="p">,</span> <span class="s2">"mm"</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">geometry_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">angle_range</span>
@@ -624,8 +624,8 @@
 
         <span class="n">src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position_unit</span>
         <span class="n">det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position_unit</span>
-        <span class="n">src_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
-        <span class="n">det_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+        <span class="n">src_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">source_position</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">,</span> <span class="s2">"mm"</span><span class="p">)</span>
+        <span class="n">det_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">detector_position</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">,</span> <span class="s2">"mm"</span><span class="p">)</span>
 
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">updated_cor</span><span class="p">,</span> <span class="n">updated_tilt</span><span class="p">)</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">src_val_mm</span><span class="p">,</span> <span class="n">det_val_mm</span><span class="p">)</span>
@@ -662,14 +662,14 @@
         <span class="c1"># Convert source/detector positions from selected units to mm</span>
         <span class="n">src_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_source_position_unit</span>
         <span class="n">det_unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">new_detector_position_unit</span>
-        <span class="n">src_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">new_source_position</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
-        <span class="n">det_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">new_detector_position</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+        <span class="n">src_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">new_source_position</span><span class="p">,</span> <span class="n">src_unit</span><span class="p">,</span> <span class="s2">"mm"</span><span class="p">)</span>
+        <span class="n">det_val_mm</span> <span class="o">=</span> <span class="n">convert_distance</span><span class="p">(</span><span class="n">new_detector_position</span><span class="p">,</span> <span class="n">det_unit</span><span class="p">,</span> <span class="s2">"mm"</span><span class="p">)</span>
 
         <span class="n">new_angles</span> <span class="o">=</span> <span class="n">ProjectionAngles</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">new_min_angle</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">new_max_angle</span><span class="p">),</span> <span class="n">stack</span><span class="o">.</span><span class="n">num_projections</span><span class="p">))</span>
 
         <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">PARALLEL3D</span>
-        <span class="k">if</span> <span class="n">new_type</span> <span class="o">==</span> <span class="s2">&quot;Cone 3D&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">new_type</span> <span class="o">==</span> <span class="s2">"Cone 3D"</span><span class="p">:</span>
             <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="o">.</span><span class="n">CONE3D</span>
 
         <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">new_angles</span><span class="p">,</span> <span class="n">geometry_type</span><span class="p">)</span>
@@ -693,17 +693,17 @@
         <span class="n">new_type</span> <span class="o">=</span> <span class="n">GeometryType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">conversion_type</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">current_type</span> <span class="o">==</span> <span class="n">new_type</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Geometry is already </span><span class="si">{</span><span class="n">new_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Geometry is already </span><span class="si">{</span><span class="n">new_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">confirmation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">&quot;Confirm Conversion&quot;</span><span class="p">,</span>
-                                                      <span class="sa">f</span><span class="s2">&quot;Convert </span><span class="si">{</span><span class="n">current_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
+        <span class="n">confirmation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span><span class="s2">"Confirm Conversion"</span><span class="p">,</span>
+                                                      <span class="sa">f</span><span class="s2">"Convert </span><span class="si">{</span><span class="n">current_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_type</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">?"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">confirmation</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Conversion cancelled&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Conversion cancelled"</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting Geometry from </span><span class="si">{</span><span class="n">current_type</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Converting Geometry from </span><span class="si">{</span><span class="n">current_type</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">new_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">existing_angles</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
         <span class="k">assert</span> <span class="n">existing_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -714,7 +714,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_current_stack_with_assert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-        <span class="c1"># It shouldn&#39;t be possible to call this method with an invalid stack selected</span>
+        <span class="c1"># It shouldn't be possible to call this method with an invalid stack selected</span>
         <span class="n">current_stack_uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">current_stack</span>
         <span class="k">assert</span> <span class="n">current_stack_uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 

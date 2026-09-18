@@ -529,9 +529,9 @@
 <div class="viewcode-block" id="AsyncTaskDialogModel.do_execute_async">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.model.html#mantidimaging.gui.dialogs.async_task.model.AsyncTaskDialogModel.do_execute_async">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_execute_async</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Start asynchronous execution.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 
@@ -546,12 +546,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">task_function</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_task_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Handler for task thread completion.</span>
 
 <span class="sd">        Forwards task_done signal and calls post processing function (if</span>
 <span class="sd">        provided).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="c1"># Emit on complete function</span>
@@ -562,7 +562,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">on_complete_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to run task completion callback&quot;</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Failed to run task completion callback"</span><span class="p">)</span>
                 <span class="k">raise</span>
             <span class="k">finally</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup</span><span class="p">()</span>

@@ -530,19 +530,19 @@
 <div class="viewcode-block" id="SpectrumROI">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SpectrumROI</span><span class="p">(</span><span class="n">ROI</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Spectrum ROI object subclassed from pyqtgraph ROI containing ROI and associated data.</span>
 
 <span class="sd">    @param name: Name of the ROI</span>
 <span class="sd">    @param sensible_roi: Sensible ROI object containing the ROI data</span>
 <span class="sd">    @param args: Arguments to pass to the ROI object</span>
 <span class="sd">    @param kwargs: Keyword arguments to pass to the ROI object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">sig_colour_change</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">top</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"pos"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">top</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"size"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">height</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_colour</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
@@ -554,7 +554,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setAcceptedMouseButtons</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">change_color_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Change ROI Colour&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">change_color_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">"Change ROI Colour"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">change_color_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onChangeColor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">change_color_action</span><span class="p">)</span>
 
@@ -594,9 +594,9 @@
 <div class="viewcode-block" id="SpectrumROI.set_visibility">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.set_visibility">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set the visibility of the ROI and its handles.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getHandles</span><span class="p">():</span>
             <span class="n">handle</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span></div>
@@ -613,9 +613,9 @@
 <div class="viewcode-block" id="SpectrumROI.as_sensible_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumROI.as_sensible_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">as_sensible_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SensibleROI</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Converts the SpectrumROI to a SensibleROI object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">()</span>
         <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="n">left</span><span class="p">,</span> <span class="n">top</span> <span class="o">=</span> <span class="n">pos</span>
@@ -630,11 +630,11 @@
 <div class="viewcode-block" id="SpectrumWidget">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SpectrumWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The widget containing the spectrum plot and the image projection.</span>
 
 <span class="sd">    @param parent: The parent widget</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">MIMiniImageView</span>
     <span class="n">spectrum</span><span class="p">:</span> <span class="n">MIPlotItem</span>
     <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
@@ -677,13 +677,13 @@
 <div class="viewcode-block" id="SpectrumWidget.colour_generator">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.colour_generator">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">colour_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        A random colour generator to colour ROIs boarders.</span>
 <span class="sd">        Generates colours that are easy to see for colour blind people if colour_blind_friendly is True.</span>
 <span class="sd">        By default colour_blind_friendly is set to False</span>
 
 <span class="sd">        @return: A random colour in RGBA format. (0-255, 0-255, 0-255, 0-255)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">accessible_colours</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">194</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">176</span><span class="p">,</span> <span class="mi">166</span><span class="p">),</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">155</span><span class="p">),</span> <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span>
                               <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span> <span class="p">(</span><span class="mi">254</span><span class="p">,</span> <span class="mi">254</span><span class="p">,</span> <span class="mi">98</span><span class="p">),</span> <span class="p">(</span><span class="mi">211</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">183</span><span class="p">),</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">43</span><span class="p">)]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour_index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">accessible_colours</span><span class="p">):</span>
@@ -696,34 +696,34 @@
 <div class="viewcode-block" id="SpectrumWidget.change_roi_colour">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.change_roi_colour">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">change_roi_colour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Change the colour of an existing ROI</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">colour</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.set_roi_visibility_flags">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.set_roi_visibility_flags">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_roi_visibility_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Change the visibility of an existing ROI including handles and update</span>
 <span class="sd">        the ROI dictionary.</span>
 
 <span class="sd">        @param name: The name of the ROI.</span>
 <span class="sd">        @param visible: The new visibility of the ROI.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set_visibility</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.add_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.add_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Add an ROI to the image view.</span>
 
 <span class="sd">        @param roi: The ROI to add.</span>
 <span class="sd">        @param name: The name of the ROI.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">roi_object</span> <span class="o">=</span> <span class="n">SpectrumROI</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">rotatable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaleSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">translateSnap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">roi_object</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colour_generator</span><span class="p">()</span>
         <span class="n">roi_object</span><span class="o">.</span><span class="n">sig_colour_change</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">roiColorChangeRequested</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="p">))</span>
@@ -735,82 +735,82 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sigClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_clicked</span><span class="o">.</span><span class="n">emit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">hoverPen</span> <span class="o">=</span> <span class="n">mkPen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">colour</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI created: name=</span><span class="si">%s</span><span class="s2">, coords=(Left: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI created: name=</span><span class="si">%s</span><span class="s2">, coords=(Left: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">)"</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span>
                   <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.adjust_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.adjust_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">adjust_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Adjust the existing ROI with the given name.</span>
 <span class="sd">        @param new_roi: The new SpectrumROI to replace the existing SpectrumROI</span>
 <span class="sd">        @param roi_name: The name of the existing ROI.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">adjust_spec_roi</span><span class="p">(</span><span class="n">new_roi</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ROI adjusted: name=</span><span class="si">%s</span><span class="s2">, new coords=(Left: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"ROI adjusted: name=</span><span class="si">%s</span><span class="s2">, new coords=(Left: </span><span class="si">%d</span><span class="s2">, Right: </span><span class="si">%d</span><span class="s2">, Top: </span><span class="si">%d</span><span class="s2">, Bottom: </span><span class="si">%d</span><span class="s2">)"</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">,</span>
                   <span class="n">new_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">new_roi</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">new_roi</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">new_roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.get_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.get_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SensibleROI</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get the ROI with the given name. If no name is given, the default ROI is returned.</span>
 
 <span class="sd">        @param roi_name: The name of the ROI to return.</span>
 <span class="sd">        @return: The ROI with the given name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span><span class="o">.</span><span class="n">as_sensible_roi</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">roi_name</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">roi_name</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">CloseEnoughPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_roi_size</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_points</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI with name </span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2"> does not exist in self.roi_dict or and is not &#39;all&#39;&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ROI with name </span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2"> does not exist in self.roi_dict or and is not 'all'"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.remove_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.remove_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove a given ROI by name unless it is &#39;roi&#39; or &#39;all&#39;.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Remove a given ROI by name unless it is 'roi' or 'all'.</span>
 
 <span class="sd">        @param roi_name: The name of the ROI to remove.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">roi_name</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot remove the default &#39;all&#39; ROI.&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">roi_name</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Cannot remove the default 'all' ROI."</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">roi_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI &#39;</span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ROI '</span><span class="si">{</span><span class="n">roi_name</span><span class="si">}</span><span class="s2">' does not exist."</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">vb</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">])</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">roi_name</span><span class="p">]</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ROI deleted: name=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"ROI deleted: name=</span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">roi_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumWidget.rename_roi">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumWidget.rename_roi">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rename_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Rename a given ROI and corresponding spectrum by name</span>
-<span class="sd">        unless it is called &#39;roi&#39; or &#39;all&#39;</span>
+<span class="sd">        unless it is called 'roi' or 'all'</span>
 
 <span class="sd">        @param old_name: The name of the ROI to rename.</span>
 <span class="sd">        @param new_name: The new name of the ROI.</span>
-<span class="sd">        @raise KeyError: If the new name is already in use or equal to &#39;roi&#39; or &#39;all&#39;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        @raise KeyError: If the new name is already in use or equal to 'roi' or 'all'.</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">old_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot rename non-existent ROI: </span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cannot rename non-existent ROI: </span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">new_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New ROI name &#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&#39; is invalid or already in use.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"New ROI name '</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">' is invalid or already in use."</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_data_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_dict</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">new_name</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ROI renamed: from=</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> to=</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ROI renamed: from=</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> to=</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_emit_roi_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -828,7 +828,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">CustomViewBox</span><span class="p">(</span><span class="n">ViewBox</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># kwds[&#39;enableMenu&#39;] = False</span>
+        <span class="c1"># kwds['enableMenu'] = False</span>
         <span class="n">ViewBox</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMouseMode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PanMode</span><span class="p">)</span>
 
@@ -916,7 +916,7 @@
         <span class="n">tof_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tof_range</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_tof_range_label</span><span class="p">(</span><span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">tof_range</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Projection range changed: TOF=</span><span class="si">%.2f</span><span class="s2"> to </span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Projection range changed: TOF=</span><span class="si">%.2f</span><span class="s2"> to </span><span class="si">%.2f</span><span class="s2">"</span><span class="p">,</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tof_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <div class="viewcode-block" id="SpectrumPlotWidget.add_range">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.add_range">[docs]</a>
@@ -932,19 +932,19 @@
 <div class="viewcode-block" id="SpectrumPlotWidget.set_tof_range_label">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_tof_range_label">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_tof_range_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">range_max</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tof_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tof_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumPlotWidget.set_image_index_range_label">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_image_index_range_label">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_image_index_range_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">range_min</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">range_max</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_index_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Image index range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_index_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Image index range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumPlotWidget.set_tof_axis_label">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.SpectrumPlotWidget.set_tof_axis_label">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_tof_axis_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tof_axis_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">setLabel</span><span class="p">(</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">tof_axis_label</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">setLabel</span><span class="p">(</span><span class="s1">'bottom'</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">tof_axis_label</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SpectrumPlotWidget.set_unit_range_label">
@@ -953,7 +953,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_range_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nextRow</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_range_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLabel</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">unit_label</span><span class="si">}</span><span class="se">\n</span><span class="s2">Range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_range_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">unit_label</span><span class="si">}</span><span class="se">\n</span><span class="s2">Range: </span><span class="si">{</span><span class="n">range_min</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">range_max</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 </div>
 
 
@@ -965,13 +965,13 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Projection&quot;</span><span class="p">,</span> <span class="n">view_box_type</span><span class="o">=</span><span class="n">CustomViewBox</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">MIMiniImageView</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Projection"</span><span class="p">,</span> <span class="n">view_box_type</span><span class="o">=</span><span class="n">CustomViewBox</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ci</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setRowStretchFactor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">add_save_image_action</span><span class="p">()</span>
 
-        <span class="n">nan_check_menu</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;Crop Coordinates&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="s2">&quot;Crop Coordinates&quot;</span><span class="p">)),</span>
-                          <span class="p">(</span><span class="s2">&quot;NaN Removal&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="s2">&quot;NaN Removal&quot;</span><span class="p">))]</span>
+        <span class="n">nan_check_menu</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"Crop Coordinates"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="s2">"Crop Coordinates"</span><span class="p">)),</span>
+                          <span class="p">(</span><span class="s2">"NaN Removal"</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">show_operation</span><span class="p">(</span><span class="s2">"NaN Removal"</span><span class="p">))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">enable_nan_check</span><span class="p">(</span><span class="n">actions</span><span class="o">=</span><span class="n">nan_check_menu</span><span class="p">)</span></div>
 
 
@@ -986,19 +986,19 @@
         <span class="n">_graveyard</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vb</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">base_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getMenu</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Plot Style&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">"Plot Style"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span> <span class="o">=</span> <span class="n">QActionGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">joined_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Line&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="p">)</span>
+        <span class="n">joined_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">'Line'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="p">)</span>
         <span class="n">joined_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">joined_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s1">&#39;Line&#39;</span><span class="p">)</span>
+        <span class="n">joined_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s1">'Line'</span><span class="p">)</span>
         <span class="n">joined_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_join_plot</span><span class="p">)</span>
         <span class="n">joined_action</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">joined_action</span><span class="p">)</span>
 
-        <span class="n">scatter_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Points&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="p">)</span>
+        <span class="n">scatter_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">'Points'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="p">)</span>
         <span class="n">scatter_action</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">scatter_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s1">&#39;Points&#39;</span><span class="p">)</span>
+        <span class="n">scatter_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s1">'Points'</span><span class="p">)</span>
         <span class="n">scatter_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_join_plot</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">scatter_action</span><span class="p">)</span>
 
@@ -1011,7 +1011,7 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.plot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PlotDataItem</span><span class="p">:</span>
         <span class="n">new_plot</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">new_plot</span><span class="o">.</span><span class="n">original_pen</span> <span class="o">=</span> <span class="n">new_plot</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;pen&#39;</span><span class="p">]</span>
+        <span class="n">new_plot</span><span class="o">.</span><span class="n">original_pen</span> <span class="o">=</span> <span class="n">new_plot</span><span class="o">.</span><span class="n">opts</span><span class="p">[</span><span class="s1">'pen'</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_join_plot</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">new_plot</span></div>
 
@@ -1019,7 +1019,7 @@
 <div class="viewcode-block" id="MIPlotItem.set_join_plot">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.set_join_plot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_join_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">join_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Line&quot;</span>
+        <span class="n">join_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">join_choice_group</span><span class="o">.</span><span class="n">checkedAction</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"Line"</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">PlotDataItem</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">join_plot</span><span class="p">:</span>
@@ -1027,19 +1027,19 @@
                     <span class="n">item</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">original_pen</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">item</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                    <span class="n">item</span><span class="o">.</span><span class="n">setSymbol</span><span class="p">(</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">setSymbol</span><span class="p">(</span><span class="s1">'o'</span><span class="p">)</span>
                     <span class="n">item</span><span class="o">.</span><span class="n">setSymbolBrush</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">original_pen</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MIPlotItem.set_right_anchored_child">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.html#mantidimaging.gui.windows.spectrum_viewer.spectrum_widget.MIPlotItem.set_right_anchored_child">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_right_anchored_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">GraphicsItem</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Anchor a child object to the top right of this item</span>
 
 <span class="sd">        @param child: child object</span>
 <span class="sd">        @param offset: tuple (x,y) offset from the top right</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anchored_child</span> <span class="o">=</span> <span class="n">child</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anchored_offset</span> <span class="o">=</span> <span class="n">offset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_anchor</span><span class="p">()</span></div>

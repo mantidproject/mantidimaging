@@ -515,41 +515,41 @@
 
 <span class="n">formatwarning_orig</span> <span class="o">=</span> <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">formatwarning_orig</span><span class="p">(</span>
-    <span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
 
-<span class="n">settings</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QSettings</span><span class="p">(</span><span class="s1">&#39;mantidproject&#39;</span><span class="p">,</span> <span class="s1">&#39;Mantid Imaging&#39;</span><span class="p">)</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QSettings</span><span class="p">(</span><span class="s1">'mantidproject'</span><span class="p">,</span> <span class="s1">'Mantid Imaging'</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="parse_args">
 <a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.parse_args">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mantid Imaging GUI&quot;</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Mantid Imaging GUI"</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--log-level&quot;</span><span class="p">,</span>
+        <span class="s2">"--log-level"</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log verbosity level. &quot;</span>
-        <span class="s2">&quot;Available options are: DEBUG, INFO, WARN, CRITICAL&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"INFO"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Log verbosity level. "</span>
+        <span class="s2">"Available options are: DEBUG, INFO, WARN, CRITICAL"</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print version number and exit.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--version"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Print version number and exit."</span><span class="p">)</span>
 
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--path&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Comma separated Paths with no spaces for the data you wish to load.&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--operation&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The initial operation to run on the dataset.&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--recon&quot;</span><span class="p">,</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--path"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Comma separated Paths with no spaces for the data you wish to load."</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--operation"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"The initial operation to run on the dataset."</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--recon"</span><span class="p">,</span>
                         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Opens the reconstruction window at start up.&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-sv&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;--spectrum_viewer&quot;</span><span class="p">,</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">"Opens the reconstruction window at start up."</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"-sv"</span><span class="p">,</span>
+                        <span class="s2">"--spectrum_viewer"</span><span class="p">,</span>
                         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Opens the spectrum viewer window at start up.&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-lv&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;--live_viewer&quot;</span><span class="p">,</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">"Opens the spectrum viewer window at start up."</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"-lv"</span><span class="p">,</span>
+                        <span class="s2">"--live_viewer"</span><span class="p">,</span>
                         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path of directory to watch for new files in live viewer.&quot;</span><span class="p">)</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s2">"Path of directory to watch for new files in live viewer."</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
 
@@ -567,26 +567,26 @@
     <span class="n">extra_style_default</span> <span class="o">=</span> <span class="p">{</span>
 
         <span class="c1"># Density Scale</span>
-        <span class="s1">&#39;density_scale&#39;</span><span class="p">:</span> <span class="s1">&#39;-5&#39;</span><span class="p">,</span>
+        <span class="s1">'density_scale'</span><span class="p">:</span> <span class="s1">'-5'</span><span class="p">,</span>
 
         <span class="c1"># font</span>
-        <span class="s1">&#39;font_size&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font</span><span class="o">.</span><span class="n">pointSize</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;px&#39;</span><span class="p">,</span>
+        <span class="s1">'font_size'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font</span><span class="o">.</span><span class="n">pointSize</span><span class="p">())</span> <span class="o">+</span> <span class="s1">'px'</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;extra_style_default&#39;</span><span class="p">,</span> <span class="n">extra_style_default</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;extra_style&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;extra_style&#39;</span><span class="p">,</span> <span class="n">extra_style_default</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'extra_style_default'</span><span class="p">,</span> <span class="n">extra_style_default</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">'extra_style'</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'extra_style'</span><span class="p">,</span> <span class="n">extra_style_default</span><span class="p">)</span>
 
-    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;os_theme&#39;</span><span class="p">,</span> <span class="n">darkdetect</span><span class="o">.</span><span class="n">theme</span><span class="p">())</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;default_font_size&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font</span><span class="o">.</span><span class="n">pointSize</span><span class="p">()))</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">&#39;default_font_family&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font_info</span><span class="o">.</span><span class="n">family</span><span class="p">()))</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'os_theme'</span><span class="p">,</span> <span class="n">darkdetect</span><span class="o">.</span><span class="n">theme</span><span class="p">())</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'default_font_size'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font</span><span class="o">.</span><span class="n">pointSize</span><span class="p">()))</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s1">'default_font_family'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_font_info</span><span class="o">.</span><span class="n">family</span><span class="p">()))</span>
 
-    <span class="n">q_application</span><span class="o">.</span><span class="n">setApplicationName</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging&quot;</span><span class="p">)</span>
-    <span class="n">q_application</span><span class="o">.</span><span class="n">setOrganizationName</span><span class="p">(</span><span class="s2">&quot;mantidproject&quot;</span><span class="p">)</span>
-    <span class="n">q_application</span><span class="o">.</span><span class="n">setOrganizationDomain</span><span class="p">(</span><span class="s2">&quot;mantidproject.org&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;win32&#39;</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;QT_ENABLE_HIGHDPI_SCALING&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;QT_AUTO_SCREEN_SCALE_FACTOR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;QT_SCALE_FACTOR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+    <span class="n">q_application</span><span class="o">.</span><span class="n">setApplicationName</span><span class="p">(</span><span class="s2">"Mantid Imaging"</span><span class="p">)</span>
+    <span class="n">q_application</span><span class="o">.</span><span class="n">setOrganizationName</span><span class="p">(</span><span class="s2">"mantidproject"</span><span class="p">)</span>
+    <span class="n">q_application</span><span class="o">.</span><span class="n">setOrganizationDomain</span><span class="p">(</span><span class="s2">"mantidproject.org"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">'win32'</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"QT_ENABLE_HIGHDPI_SCALING"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"1"</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"QT_AUTO_SCREEN_SCALE_FACTOR"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"1"</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"QT_SCALE_FACTOR"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"1"</span>
     <span class="k">return</span> <span class="n">q_application</span></div>
 
 
@@ -602,8 +602,8 @@
 
     <span class="n">q_application</span> <span class="o">=</span> <span class="n">setup_application</span><span class="p">()</span>
     <span class="n">show_unclean_shutdown_warning</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">operation</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">operation</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">operation</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span> <span class="k">else</span> <span class="s2">""</span>
+    <span class="n">operation</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">operation</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">operation</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="n">CommandLineArguments</span><span class="p">(</span>
         <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
@@ -614,18 +614,18 @@
     <span class="p">)</span>
 
     <span class="n">h</span><span class="o">.</span><span class="n">initialise_logging</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">log_level</span><span class="p">)</span>
-    <span class="n">process_count</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;multiprocessing/process_count&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;app/last_shutdown_clean&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">process_count</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">"multiprocessing/process_count"</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">"app/last_shutdown_clean"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging</span><span class="w"> </span><span class="kn">import</span> <span class="n">gui</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pm</span><span class="o">.</span><span class="n">create_and_start_pool</span><span class="p">(</span><span class="n">process_count</span><span class="p">)</span>
         <span class="n">gui</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">q_application</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;app/last_shutdown_clean&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">"app/last_shutdown_clean"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">'linux'</span><span class="p">:</span>
             <span class="n">pm</span><span class="o">.</span><span class="n">clear_memory_from_current_process_linux</span><span class="p">()</span>
         <span class="k">raise</span>
     <span class="k">finally</span><span class="p">:</span>
@@ -636,35 +636,35 @@
 <div class="viewcode-block" id="show_unclean_shutdown_warning">
 <a class="viewcode-back" href="../../api/mantidimaging.main.html#mantidimaging.main.show_unclean_shutdown_warning">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">show_unclean_shutdown_warning</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">QSettings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">was_clean</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;app/last_shutdown_clean&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">was_clean</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">"app/last_shutdown_clean"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">was_clean</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="n">log_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;logging/log_dir&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">log_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">"logging/log_dir"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
     <span class="n">latest_log</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">log_dir</span><span class="p">:</span>
-        <span class="n">logs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">log_dir</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;mantid_imaging_*.log&quot;</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">log_dir</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"mantid_imaging_*.log"</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">logs</span><span class="p">:</span>
             <span class="n">latest_log</span> <span class="o">=</span> <span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">msg</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">()</span>
     <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
-    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Previous Shutdown Warning&quot;</span><span class="p">)</span>
+    <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">"Previous Shutdown Warning"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">latest_log</span> <span class="ow">and</span> <span class="n">latest_log</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mantid Imaging did not shut down cleanly last time.</span><span class="se">\n\n</span><span class="s2">Log file:</span><span class="se">\n</span><span class="si">{</span><span class="n">latest_log</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mantid Imaging did not shut down cleanly last time.</span><span class="se">\n\n</span><span class="s2">Log file:</span><span class="se">\n</span><span class="si">{</span><span class="n">latest_log</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Mantid Imaging did not shut down cleanly last time.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;No log file is available.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;To record log files to disk, configure a directory in File -&gt; Settings.&quot;</span><span class="p">)</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Mantid Imaging did not shut down cleanly last time.</span><span class="se">\n\n</span><span class="s2">"</span>
+                    <span class="s2">"No log file is available.</span><span class="se">\n\n</span><span class="s2">"</span>
+                    <span class="s2">"To record log files to disk, configure a directory in File -&gt; Settings."</span><span class="p">)</span>
 
     <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
     <span class="n">msg</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span></div>
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 

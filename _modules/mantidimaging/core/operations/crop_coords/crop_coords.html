@@ -514,7 +514,7 @@
 <div class="viewcode-block" id="CropCoordinatesFilter">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CropCoordinatesFilter</span><span class="p">(</span><span class="n">BaseFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Crop a region of interest from the image.</span>
+<span class="w">    </span><span class="sd">"""Crop a region of interest from the image.</span>
 
 <span class="sd">    Intended to be used on: A stack of projections, or reconstructed slices</span>
 
@@ -523,8 +523,8 @@
 
 <span class="sd">    Caution: Make sure the region of cropping does not crop parts of the sample</span>
 <span class="sd">    during the rotation of the sample in the dataset.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">&quot;Crop Coordinates&quot;</span>
+<span class="sd">    """</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="s2">"Crop Coordinates"</span>
     <span class="n">link_histograms</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="CropCoordinatesFilter.filter_func">
@@ -533,7 +533,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_func</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span>
                     <span class="n">region_of_interest</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">SensibleROI</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the Crop Coordinates by Region of Interest filter. This does</span>
+<span class="w">        </span><span class="sd">"""Execute the Crop Coordinates by Region of Interest filter. This does</span>
 <span class="sd">        NOT do any checks if the Region of interest is out of bounds!</span>
 
 <span class="sd">        If the region of interest is out of bounds, the crop will **FAIL** at</span>
@@ -549,7 +549,7 @@
 <span class="sd">                                   is - Left Top Right Bottom.</span>
 
 <span class="sd">        :return: The processed 3D numpy.ndarray</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">region_of_interest</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">region_of_interest</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
@@ -563,8 +563,8 @@
         <span class="n">sample</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">data</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">region_of_interest</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">region_of_interest</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;It seems the Region of Interest is outside of the current image dimensions.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                             <span class="s2">&quot;This can happen on the image preview right after a previous Crop Coordinates.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"It seems the Region of Interest is outside of the current image dimensions.</span><span class="se">\n</span><span class="s2">"</span>
+                             <span class="s2">"This can happen on the image preview right after a previous Crop Coordinates."</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">create_array</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">execute_single</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">region_of_interest</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
@@ -577,15 +577,15 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_gui</span><span class="p">(</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_property_to_form</span>
-        <span class="n">label</span><span class="p">,</span> <span class="n">roi_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;ROI&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">roi_field</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">"ROI"</span><span class="p">,</span>
                                                 <span class="n">Type</span><span class="o">.</span><span class="n">STR</span><span class="p">,</span>
                                                 <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
                                                 <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">,</span>
-                                                <span class="n">default_value</span><span class="o">=</span><span class="s2">&quot;0, 0, 200, 200&quot;</span><span class="p">)</span>
-        <span class="n">roi_button</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">&quot;Select ROI&quot;</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">BUTTON</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
+                                                <span class="n">default_value</span><span class="o">=</span><span class="s2">"0, 0, 200, 200"</span><span class="p">)</span>
+        <span class="n">roi_button</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">add_property_to_form</span><span class="p">(</span><span class="s2">"Select ROI"</span><span class="p">,</span> <span class="n">Type</span><span class="o">.</span><span class="n">BUTTON</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="n">on_change</span><span class="p">)</span>
         <span class="n">roi_button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">roi_visualiser</span><span class="p">(</span><span class="n">roi_field</span><span class="p">,</span> <span class="n">roi_button</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;roi_field&#39;</span><span class="p">:</span> <span class="n">roi_field</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">'roi_field'</span><span class="p">:</span> <span class="n">roi_field</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="CropCoordinatesFilter.execute_wrapper">
@@ -593,24 +593,24 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute_wrapper</span><span class="p">(</span><span class="n">roi_field</span><span class="p">:</span> <span class="n">QLineEdit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">partial</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">roi_field</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)])</span>
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">SensibleROI</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">roi_field</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"["</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"]"</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)])</span>
             <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">CropCoordinatesFilter</span><span class="o">.</span><span class="n">filter_func</span><span class="p">,</span> <span class="n">region_of_interest</span><span class="o">=</span><span class="n">roi</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The provided ROI string is invalid! Error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The provided ROI string is invalid! Error: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span></div>
 
 
 <div class="viewcode-block" id="CropCoordinatesFilter.on_stack_changed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.CropCoordinatesFilter.on_stack_changed">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">on_stack_changed</span><span class="p">(</span><span class="n">filter_widget_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">],</span> <span class="n">stack</span><span class="p">:</span> <span class="n">ImageStack</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update the ROI field with the bounding box of the newly selected stack.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">roi_field</span> <span class="o">=</span> <span class="n">filter_widget_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;roi_field&quot;</span><span class="p">)</span>
+        <span class="n">roi_field</span> <span class="o">=</span> <span class="n">filter_widget_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"roi_field"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">roi_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -630,7 +630,7 @@
 <div class="viewcode-block" id="execute_single">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.core.operations.crop_coords.crop_coords.html#mantidimaging.core.operations.crop_coords.crop_coords.execute_single">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">execute_single</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;Crop Coords&#39;</span><span class="p">)</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="o">.</span><span class="n">ensure_instance</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">'Crop Coords'</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">roi</span><span class="p">:</span>
         <span class="n">progress</span><span class="o">.</span><span class="n">add_estimated_steps</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -638,9 +638,9 @@
         <span class="k">with</span> <span class="n">progress</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span>
                        <span class="n">region</span> <span class="ow">in</span> <span class="n">roi</span><span class="p">),</span> \
-                <span class="s2">&quot;The region of interest coordinates are not integers!&quot;</span>
+                <span class="s2">"The region of interest coordinates are not integers!"</span>
 
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Cropping with coordinates: </span><span class="si">{</span><span class="n">roi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Cropping with coordinates: </span><span class="si">{</span><span class="n">roi</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="n">output</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:]</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data</span><span class="p">[:]</span>
             <span class="n">output</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">roi</span><span class="o">.</span><span class="n">top</span><span class="p">:</span><span class="n">roi</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">left</span><span class="p">:</span><span class="n">roi</span><span class="o">.</span><span class="n">right</span><span class="p">]</span>
