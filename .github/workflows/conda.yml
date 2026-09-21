@@ -37,40 +37,33 @@ jobs:
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: Other dependencies
-        shell: bash -l {0}
         run: |
           sudo apt update -y
           sudo apt-get install -y xvfb libxcb* libxkb*
 
       - name: List versions
-        shell: bash -l {0}
         run: |
           pixi run -e dev python --version
           pixi list -e dev
 
       - name: Yapf
-        shell: bash -l {0}
         run: |
           pixi run yapf
 
       - name: Ruff
-        shell: bash -l {0}
         run: |
           pixi run ruff
 
       - name: mypy
-        shell: bash -l {0}
         run: |
           pixi run mypy
 
       - name: pyright
-        shell: bash -l {0}
         run: |
           pixi run pyright
 
       - name: pytest
         timeout-minutes: 10
-        shell: bash -l {0}
         run: |
           pixi run -e dev xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
 
@@ -83,14 +76,12 @@ jobs:
         timeout-minutes: 5
 
       - name: GUI Tests System
-        shell: bash -l {0}
         run: |
           pixi run test-system-cpu
         timeout-minutes: 30
 
       - name: GUI Tests Screenshots Applitools
         if: github.event_name == 'pull_request'
-        shell: bash -l {0}
         env:
           APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
           APPLITOOLS_BATCH_ID: ${{ github.sha }}
@@ -101,7 +92,6 @@ jobs:
 
       - name: Coveralls
         continue-on-error: true
-        shell: bash -l {0}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

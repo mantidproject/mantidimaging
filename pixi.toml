@@ -147,7 +147,6 @@ rattler-build = "*"
 # Set environment variables for development environment during environment activation
 [feature.dev.activation.env]
 SOURCE_DIRS = "mantidimaging scripts docs/ext/"
-CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
 
 # Set environment variables for build environment during environment activation
 [feature.build.activation.env]
@@ -224,11 +223,8 @@ env = { QT_QPA_PLATFORM = "offscreen" }
 description = "Run system tests (Windows)"
 
 [target.win-64.tasks.test-screenshots-base]
-cmd = [
-    "cmd",
-    "/c",
-    "mkdir screenshot_tests_output 2>nul & set APPLITOOLS_API_KEY=local & set APPLITOOLS_IMAGE_DIR=screenshot_tests_output pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests",
-]
+cmd = ["cmd", "/c", "mkdir screenshot_tests_output 2>nul &echo Screenshots directory: screenshot_tests_output & pytest -p no:xdist -p no:randomly -p no:cov mantidimaging/eyes_tests/ -vs --run-eyes-tests"]
+env = {APPLIYTOOLS_API_KEY = "local", APPLITOOLS_IMAGE_DIR = "screenshot_tests_output"}
 description = "Run screenshot tests (Windows)"
 
 [target.win-64.tasks.test-system-show-base]
