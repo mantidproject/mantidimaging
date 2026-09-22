@@ -29,7 +29,7 @@ class ShutterCountColumn(Enum):
     SHUTTER_COUNT = auto()
 
 
-LogDataType = dict[LogColumn, list[float | int]]
+LogDataType = dict[LogColumn, list[str | float | int]]
 ShutterCountType = dict[ShutterCountColumn, list[float | int]]
 
 
@@ -154,7 +154,7 @@ class InstrumentLog:
     def register_parser(cls, parser: type[InstrumentLogParser]) -> None:
         cls.parsers.append(parser)
 
-    def get_column(self, key: LogColumn) -> list[float]:
+    def get_column(self, key: LogColumn) -> list[str | float | int]:
         return self.data[key]
 
     def projection_numbers(self) -> np.ndarray:
