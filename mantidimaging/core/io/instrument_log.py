@@ -17,6 +17,7 @@ class LogColumn(Enum):
     IMAGE_TYPE_IMAGE_COUNTER = auto()
     PROJECTION_NUMBER = auto()
     PROJECTION_ANGLE = auto()
+    PIXEL_SIZE = auto()  # in microns
     COUNTS_BEFORE = auto()
     COUNTS_AFTER = auto()
     TIME_OF_FLIGHT = auto()  # in seconds
