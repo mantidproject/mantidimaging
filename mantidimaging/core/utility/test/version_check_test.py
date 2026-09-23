@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import shutil
 from parameterized import parameterized
 import unittest
 from unittest import mock
@@ -12,6 +13,8 @@ from mantidimaging.test_helpers import mock_versions
 
 @mock_versions
 class TestCheckVersion(unittest.TestCase):
+
+    _CONDA_AVAILABLE = bool(shutil.which("conda") or shutil.which("mamba"))
 
     def setUp(self):
         with mock.patch("mantidimaging.core.utility.version_check.CheckVersion._retrieve_versions"):
@@ -88,6 +91,7 @@ class TestCheckVersion(unittest.TestCase):
 
         self.assertEqual(self.versions.is_prerelease(), prerelease)
 
+    @unittest.skipUnless(_CONDA_AVAILABLE, "conda/mamba not available on PATH")
     def test_conda_update_message(self):
         self.versions._conda_available_version = "2.0.0"
         msg, detailed = self.versions.conda_update_message()
