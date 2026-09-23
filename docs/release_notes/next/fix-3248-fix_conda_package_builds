@@ -1,0 +1,1 @@
+#3248: Fix build failure in CI | CD pipeline caused by move to Rattler Build and Pixi migrations where git describe should only be used for non-conda builds
