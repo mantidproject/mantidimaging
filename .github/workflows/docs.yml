@@ -31,7 +31,6 @@ jobs:
           cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: docs
-        shell: bash -l {0}
         run: |
           pixi run -e dev build-docs
         env:
