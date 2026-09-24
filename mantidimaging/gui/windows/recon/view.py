@@ -639,7 +639,7 @@ class ReconstructWindowView(BaseMainWindowView):
         for i in range(self.algorithmNameComboBox.count()):
             alg_name = self.algorithmNameComboBox.itemText(i)
             supported_types = get_reconstructor_for(alg_name).supported_geometry_types
-            supported = geometry_type in supported_types
+            supported = geometry_type in supported_types and alg_name in self.presenter.allowed_recon_kwargs
             model.item(i).setEnabled(supported)
             if supported and enabled_idx is None:
                 enabled_idx = i
