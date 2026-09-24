@@ -21,6 +21,7 @@ from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.windows.recon.model import ReconstructWindowModel
 from mantidimaging.core.data.geometry import Geometry
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 LOG = getLogger(__name__)
@@ -470,6 +471,8 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = self.view.tilt
         cor_top = ScalarCoR(self.view.rotation_centre)
         current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
+        current_image_stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_MODIFY,
+                                                       "Geometry Modified (CoR/Tilt refinement)")
 
     def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)
