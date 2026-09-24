@@ -7,6 +7,7 @@ from unittest import mock
 
 from PyQt5.QtWidgets import QWidget
 
+from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE
 from mantidimaging.core.utility.data_containers import ScalarCoR, Degrees, Slope
 from mantidimaging.gui.utility.qt_helpers import INPUT_DIALOG_FLAGS
@@ -214,6 +215,18 @@ class ReconstructWindowViewTest(unittest.TestCase):
 
     def test_algorithm_name(self):
         self.assertIn(self.view.algorithm_name, ["gridrec", "FBP_CUDA"])
+
+    def test_set_algorithm_options_by_geometry_keeps_cuda_algorithms_disabled_without_cuda(self):
+        self.presenter.allowed_recon_kwargs = {'gridrec': []}
+        self.view.set_algorithm_options_by_geometry(GeometryType.PARALLEL3D)
+        model = self.view.algorithmNameComboBox.model()
+        for i in range(self.view.algorithmNameComboBox.count()):
+            alg_name = self.view.algorithmNameComboBox.itemText(i)
+            if alg_name == 'gridrec':
+                self.assertTrue(model.item(i).isEnabled())
+            else:
+                self.assertFalse(model.item(i).isEnabled())
+        self.assertEqual(self.view.algorithmNameComboBox.currentText(), 'gridrec')
 
     def test_filter_name(self):
         self.assertIn(self.view.filter_name, ["ramlak", "ram-lak"])
