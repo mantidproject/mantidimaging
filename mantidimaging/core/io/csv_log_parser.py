@@ -7,6 +7,7 @@ import csv
 from collections.abc import Callable, Sequence
 from logging import getLogger
 from pathlib import Path
+from typing import ClassVar
 
 from mantidimaging.core.io.instrument_log import InstrumentLogParser, LogColumn, LogDataType
 
@@ -30,6 +31,7 @@ class CSVLogFileParser(InstrumentLogParser):
         "COUNTS BEFORE": (LogColumn.COUNTS_BEFORE, int),
         "COUNTS AFTER": (LogColumn.COUNTS_AFTER, int),
     }
+    _warned_headers: ClassVar[set[frozenset[str]]] = set()  # cache to avoid duplicate logs (see: #3251)
 
     @classmethod
     def match(cls, lines: list[str], filename: str) -> bool:
@@ -68,9 +70,10 @@ class CSVLogFileParser(InstrumentLogParser):
         """
         Log unrecognised headers to ensure it is clear what data is and isn't being parsed
         """
-        unrecognised = set(fieldnames) - cls.COLUMN_DEFINITIONS.keys()
-        if unrecognised:
-            LOG.warning(f"Ignoring unrecognised CSV headers: {unrecognised}")
+        unrecognised = frozenset(fieldnames) - frozenset(cls.COLUMN_DEFINITIONS.keys())
+        if unrecognised and unrecognised not in cls._warned_headers:
+            LOG.warning(f"Ignoring unrecognised CSV headers: {set(unrecognised)}")
+            cls._warned_headers.add(unrecognised)
 
     @classmethod
     def _parse_columns(cls, fieldnames: Sequence[str], rows: list[dict[str, str]]) -> LogDataType:
