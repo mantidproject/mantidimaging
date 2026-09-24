@@ -6,6 +6,7 @@ import datetime
 import json
 import uuid
 from copy import deepcopy
+from math import degrees
 from typing import Any, TextIO, TYPE_CHECKING, cast
 import logging
 from pathlib import Path
@@ -155,6 +156,48 @@ class ImageStack:
         :return: True if any of the data has been processed, False otherwise.
         """
         return const.OPERATION_HISTORY in self.metadata
+
+    def geometry_metadata_kwargs(self) -> dict[str, Any]:
+        """
+        Build a JSON-serialisable snapshot of the current geometry, for recording in the geometry history.
+        """
+        assert self.geometry is not None
+        geometry = self.geometry
+
+        kwargs: dict[str, Any] = {
+            const.GEOMETRY_STACK_NAME: self.name,
+            const.GEOMETRY_TYPE: geometry.type.value,
+            const.GEOMETRY_COR: float(geometry.cor.value),
+            const.GEOMETRY_TILT: float(geometry.tilt),
+            const.GEOMETRY_PIXEL_SIZE: tuple(float(p) for p in geometry.config.panel.pixel_size),
+            const.GEOMETRY_SOURCE_POSITION_MM: float(geometry.source_position_mm),
+            const.GEOMETRY_DETECTOR_POSITION_MM: float(geometry.detector_position_mm),
+        }
+
+        angles = self.projection_angles()
+        if angles is not None and len(angles.value) > 0:
+            kwargs[const.GEOMETRY_ANGLES_DEG] = [float(degrees(a)) for a in angles.value]
+
+        return kwargs
+
+    def record_geometry_operation(self, func_name: str, display_name: str) -> None:
+        """
+        Record a geometry state change into a dedicated geometry history, kept separate from
+        operation_history since geometry entries are not replayable filter operations.
+        """
+        kwargs = self.geometry_metadata_kwargs() if self.geometry is not None else {
+            const.GEOMETRY_STACK_NAME: self.name
+        }
+
+        if const.GEOMETRY_HISTORY not in self.metadata:
+            self.metadata[const.GEOMETRY_HISTORY] = []
+
+        self.metadata[const.GEOMETRY_HISTORY].append({
+            const.TIMESTAMP: datetime.datetime.now().isoformat(),
+            const.OPERATION_NAME: func_name,
+            const.OPERATION_KEYWORD_ARGS: kwargs,
+            const.OPERATION_DISPLAY_NAME: display_name
+        })
 
     def copy(self, flip_axes: bool = False) -> ImageStack:
         shape = (self.shape[1], self.shape[0], self.shape[2]) if flip_axes else self.shape
