@@ -49,7 +49,10 @@ class BlockQtSignals:
 
 def compile_ui(ui_file: str, qt_obj=None) -> QWidget:
     ui_path = Path(finder.ROOT_PATH) / ui_file
-    return uic.loadUi(str(ui_path), qt_obj)
+    loaded_ui = uic.loadUi(str(ui_path), qt_obj)
+    if loaded_ui is None:
+        raise RuntimeError(f"Failed to load UI file: {ui_file}")
+    return loaded_ui
 
 
 def select_directory(field: QWidget, caption: str) -> None:
@@ -259,7 +262,7 @@ def delete_all_widgets_from_layout(lo: QLayout) -> None:
             item.widget().setParent(None)
 
 
-def populate_menu(menu: QMenu, actions_list: list[QAction]) -> None:
+def populate_menu(menu: QMenu, actions_list: list[tuple[str, Callable | None]]) -> None:
     for (menu_text, func) in actions_list:
         if func is None:
             menu.addSeparator()

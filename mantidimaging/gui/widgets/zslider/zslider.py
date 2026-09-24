@@ -6,7 +6,8 @@ from typing import Any
 
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
-from pyqtgraph import PlotItem, InfiniteLine
+from pyqtgraph.graphicsItems.InfiniteLine import InfiniteLine
+from pyqtgraph.graphicsItems.PlotItem import PlotItem
 
 _graveyard: list[Any] = []
 

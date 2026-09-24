@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING, Any
 from weakref import WeakSet
 
 from PyQt5.QtCore import QTimer
-from pyqtgraph import ImageItem, ViewBox
+from pyqtgraph import ImageItem
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 from tifffile import tifffile
