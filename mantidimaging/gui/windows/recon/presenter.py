@@ -472,7 +472,7 @@ class ReconstructWindowPresenter(BasePresenter):
         cor_top = ScalarCoR(self.view.rotation_centre)
         current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
         current_image_stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_MODIFY,
-                                                       "Geometry Modified (CoR/Tilt refinement)")
+                                                      "Geometry Modified (CoR/Tilt refinement)")
 
     def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)
