@@ -46,7 +46,7 @@ class MetadataDialog(BaseDialogView):
     @staticmethod
     def build_metadata_tree(metadata: dict[str, Any]) -> QTreeWidget:
         """
-        Builds a QTreeWidget from the 'operation_history' metadata of an image.
+        Builds a QTreeWidget from the 'operation_history' and 'geometry_history' metadata of an image.
 
         The top level items are operations, and each has any args and/or kwargs as child nodes.
         """
@@ -55,7 +55,9 @@ class MetadataDialog(BaseDialogView):
         if len(metadata) != 0:
             for key, value in metadata.items():
                 if key == const.OPERATION_HISTORY:
-                    MetadataDialog._build_operation_history(main_widget, metadata)
+                    MetadataDialog._build_history_group(main_widget, "Operation History", value)
+                elif key == const.GEOMETRY_HISTORY:
+                    MetadataDialog._build_history_group(main_widget, "Geometry History", value)
                 else:
                     item = QTreeWidgetItem(main_widget)
                     item.setText(0, f"{key}: {str(value)}")
@@ -64,15 +66,18 @@ class MetadataDialog(BaseDialogView):
         return main_widget
 
     @staticmethod
-    def _build_operation_history(main_widget: QTreeWidget, metadata: dict[str, Any]) -> None:
-        for i, op in enumerate(metadata[const.OPERATION_HISTORY]):
-            operation_item = QTreeWidgetItem(main_widget)
+    def _build_history_group(main_widget: QTreeWidget, group_name: str, entries: list[dict[str, Any]]) -> None:
+        group_item = QTreeWidgetItem(main_widget)
+        group_item.setText(0, group_name)
+        group_item.setExpanded(True)
+        main_widget.insertTopLevelItem(0, group_item)
+
+        for op in entries:
+            operation_item = QTreeWidgetItem(group_item)
             if const.OPERATION_DISPLAY_NAME in op and op[const.OPERATION_DISPLAY_NAME]:
                 operation_item.setText(0, op[const.OPERATION_DISPLAY_NAME])
             else:
                 operation_item.setText(0, op[const.OPERATION_NAME])
-
-            main_widget.insertTopLevelItem(i, operation_item)
 
             if op.get(const.TIMESTAMP, False):
                 date_item = QTreeWidgetItem(operation_item)
