@@ -133,7 +133,6 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.assertEqual(history[-1][const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_DELETE)
         self.assertEqual(history[-1][const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_STACK_NAME], self.data.name)
 
-
     def test_handle_parameter_updates_converts_displayed_m_to_internal_mm(self):
         self.presenter.handle_create_new_geometry()
         assert self.data.geometry is not None
