@@ -33,7 +33,7 @@ jobs:
       - name: ruff
         uses: ./.github/actions/test
         with:
-          command: pixi run ruff
+          command: pixi run -e lint ruff-print
           label: ubuntu18
 
       - name: json
