@@ -160,6 +160,14 @@ class InstrumentLog:
     def projection_numbers(self) -> np.ndarray:
         return np.array(self.get_column(LogColumn.PROJECTION_NUMBER), dtype=np.uint32)
 
+    def has_pixel_size(self) -> bool:
+        return LogColumn.PIXEL_SIZE in self.data
+
+    def pixel_size(self) -> float:
+        """Returns first value only as it can be assuned pixel size is constant"""
+        pixel_data = self.get_column(LogColumn.PIXEL_SIZE)
+        return float(pixel_data[0])
+
     def has_projection_angles(self) -> bool:
         return LogColumn.PROJECTION_ANGLE in self.data
 

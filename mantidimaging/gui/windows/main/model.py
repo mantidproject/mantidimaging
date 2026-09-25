@@ -12,7 +12,7 @@ from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
+from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, DEFAULT_PIXEL_SIZE
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 
 if TYPE_CHECKING:
@@ -39,6 +39,15 @@ class MainWindowModel:
         return None
 
     def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> Dataset:
+        """
+        Load a dataset based on loading parameters.
+        Determines if stacks should be treated as sinograms or regular projections
+        Handles setting pixel size from logs or user definned overide, falling back to default
+
+        :param parameters: Loading parameters containing information about the dataset to load
+        :param progress: Progress reporting instance
+        :return: Loaded Dataset instance
+        """
 
         def load(im_param: ImageParameters) -> ImageStack:
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
@@ -49,7 +58,10 @@ class MainWindowModel:
             ds = Dataset(sample=sample.copy(flip_axes=True))
         else:
             ds = Dataset(sample=sample)
-        sample.pixel_size = parameters.pixel_size
+
+        sample_pixel_size = parameters.pixel_size if parameters.pixel_size != DEFAULT_PIXEL_SIZE else None
+        if sample_pixel_size is not None:
+            sample.pixel_size = sample_pixel_size
 
         for file_type in [
                 FILE_TYPES.FLAT_BEFORE,
