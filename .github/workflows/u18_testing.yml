@@ -19,50 +19,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Pre-load docker image
         run: docker pull ghcr.io/mantidproject/mantidimaging:ubuntu18
 
-      - name: List versions
-        uses: ./.github/actions/test
-        with:
-          command: python --version; conda list ; pip list
-          label: ubuntu18
-
       - name: yapf
         uses: ./.github/actions/test
         with:
-          command: yapf --parallel --diff --recursive .
+          command: pixi run yapf
           label: ubuntu18
 
       - name: ruff
         uses: ./.github/actions/test
         with:
-          command: ruff check .
+          command: pixi run -e lint ruff-print
           label: ubuntu18
 
       - name: json
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.json"
+          command: pixi run prettier-json
           label: ubuntu18
 
       - name: yaml
         uses: ./.github/actions/test
         with:
-          command: npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
+          command: pixi run prettier-yaml
           label: ubuntu18
 
       - name: mypy
         uses: ./.github/actions/test
         with:
-          command: mypy --ignore-missing-imports mantidimaging
+          command: pixi run mypy
           label: ubuntu18
 
       - name: pytest
         timeout-minutes: 5
         uses: ./.github/actions/test
         with:
-          command: xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+          command: pixi run -e dev xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
           label: ubuntu18
