@@ -1,0 +1,1 @@
+#3256: Enable the loading of a CSV log file that strictly follows a CSV format. Additionally add support for an optional pixel size header to exist.
