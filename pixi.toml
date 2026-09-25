@@ -17,7 +17,7 @@ platforms = ["linux-64", "win-64"]
 
 [environments]
 lint = ["lint", "runtime", "runtime-cpu", "ubuntu18"]
-dev = ["runtime", "runtime-cpu", "dev", "test", "lint"]
+dev = ["runtime", "runtime-cpu", "dev", "test", "lint", "ubuntu18"]
 dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
 build-cpu = ["runtime", "runtime-cpu", "build"]
 build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
