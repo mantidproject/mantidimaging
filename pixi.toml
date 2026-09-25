@@ -277,6 +277,7 @@ yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS",
 yapf-staged-base = { cmd = "python -m yapf --parallel --diff", description = "Check formatting of staged files with yapf (for pre-commit)" }  
 ruff-base = { cmd = "ruff check $SOURCE_DIRS", description = "Run ruff linter (fail on error)" }
 ruff-staged-base = { cmd = "ruff check", description = "Run ruff on staged files (for pre-commit)" }
+ruff-print = { cmd = "ruff check $SOURCE_DIRS --extend-select T201", description = "Run ruff linter with print checks for Ubuntu 18 (fail on error)" }
 prettier-json-base = { cmd = "npx prettier --check '**/*.json'", description = "Check formatting of JSON files with prettier (fail on error)" }
 prettier-yaml-base = { cmd = "npx prettier --check '**/*.y?(a)ml' '!conda/recipe.yaml' '!conda/meta.yaml'", description = "Check formatting of YAML files with prettier (fail on error)" }
 
@@ -332,6 +333,7 @@ mypy = { depends-on = [{ task = "mypy-base", environment = "dev" }], description
 pyright = { depends-on = [{ task = "pyright-base", environment = "dev" }], description = "Run pyright type checks (fail on error)" }
 yapf = { depends-on = [{ task = "yapf-base", environment = "lint" }], description = "Check code formatting with yapf (fail on error)" }
 ruff = { depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter (fail on error)" }
+ruff-ubuntu = { depends-on = [{ task = "ruff-print", environment = "lint" }], description = "Run ruff linter with print checks for Ubuntu 18 (fail on error)" }
 prettier-json = { depends-on = [{ task = "prettier-json-base", environment = "lint" }], description = "Check formatting of JSON files with prettier (fail on error)" }
 prettier-yaml = { depends-on = [{ task = "prettier-yaml-base", environment = "lint" }], description = "Check formatting of YAML files with prettier (fail on error)" }
 
