@@ -96,3 +96,20 @@ class LoaderTest(FakeFSTestCase):
         self._file_list_count_equal(filenames, reordered_filenames)
         self.assertListEqual(['foo_0.tif', 'foo_8.tif', 'foo_16.tif', 'foo_3.tif', 'foo_11.tif'],
                              [p.name for p in reordered_filenames[:5]])
+
+    @mock.patch('mantidimaging.core.io.loader.loader.load_log')
+    @mock.patch('mantidimaging.core.io.loader.loader.img_loader.execute')
+    def test_load_pixel_size_from_log_overides_default(self, mock_execute: mock.Mock, mock_load_log: mock.Mock):
+        mock_filename_group = mock.create_autospec(FilenameGroup, metadata_path=None, instance=True)
+        mock_filename_group.first_file.return_value = Path("img_0.tif")
+
+        image_stack_mock = mock.Mock(pixel_size=DEFAULT_PIXEL_SIZE)
+        mock_execute.return_value = image_stack_mock
+
+        mock_log_data = mock.create_autospec(InstrumentLog, instance=True)
+        mock_log_data.has_pixel_size.return_value = True
+        mock_log_data.pixel_size.return_value = 29.0
+        mock_load_log.return_value = mock_log_data
+
+        result = load(mock_filename_group, log_file=Path("log.csv"))
+        self.assertEqual(29.0, result.pixel_size)
