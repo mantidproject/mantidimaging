@@ -11,7 +11,7 @@ import numpy as np
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.dataset import Dataset
-from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
+from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, DEFAULT_PIXEL_SIZE
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES, Indices
 from mantidimaging.gui.windows.main import MainWindowModel
 from mantidimaging.gui.windows.main.model import _matching_dataset_attribute
@@ -51,6 +51,24 @@ class MainWindowModelTest(unittest.TestCase):
 
         load_mock.assert_called_once_with(sample_mock, progress_mock, dtype=lp.dtype)
         load_log_mock.assert_not_called()
+
+    @parameterized.expand([("user_set", DEFAULT_PIXEL_SIZE, 42), ("user_left_default", 55, DEFAULT_PIXEL_SIZE)])
+    @mock.patch('mantidimaging.core.io.loader.load_log')
+    @mock.patch('mantidimaging.core.io.loader.load_stack_from_image_params')
+    def test_do_load_dataset_pixel_size_override_WHEN_(self, _, sample_img_pixel, lp_pixel, load_mock: mock.Mock,
+                                                       load_log_mock: mock.Mock):
+        lp = LoadingParameters()
+        sample_mock = ImageParameters(mock.Mock())
+        lp.image_stacks[FILE_TYPES.SAMPLE] = sample_mock
+        lp.pixel_size = lp_pixel
+
+        sample_images_mock = mock.Mock(pixel_size=sample_img_pixel)
+        load_mock.return_value = sample_images_mock
+
+        self.model.do_load_dataset(lp, mock.Mock())
+
+        expected_pixel_size = lp_pixel if lp_pixel != DEFAULT_PIXEL_SIZE else sample_img_pixel
+        self.assertEqual(expected_pixel_size, sample_images_mock.pixel_size)
 
     @parameterized.expand([("log_file", mock.Mock(), None), ("shutter_count_file", None, mock.Mock()),
                            ("log_file_and_shutter_count_file", mock.Mock(), mock.Mock()),

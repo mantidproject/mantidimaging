@@ -161,6 +161,9 @@ def load(filename_group: FilenameGroup,
             angles = angles[indices[0]:indices[1]:indices[2]] if indices else angles
             image_stack.set_projection_angles(ProjectionAngles(angles))
 
+    if log_file is not None and log_data.has_pixel_size():
+        image_stack.pixel_size = log_data.pixel_size()
+
     if shutter_count_file is not None:
         image_stack.shutter_count_file = load_shutter_counts(shutter_count_file)
 
