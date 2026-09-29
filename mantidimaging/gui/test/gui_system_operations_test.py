@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import logging
 from itertools import product
 from unittest import mock
 from typing import TYPE_CHECKING
@@ -21,6 +22,8 @@ from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_
 
 if TYPE_CHECKING:
     from uuid import UUID
+
+LOG = logging.getLogger(__name__)
 
 OP_LIST = [
     ("Append Stacks", []),
@@ -131,7 +134,7 @@ class TestGuiSystemOperations(GuiSystemBase):
     @parameterized.expand(product(OP_LIST[:3], ["new", "original"]))
     def test_run_operation_stack_safe(self, op_info, keep_stack):
         op_name, params = op_info
-        print(f"test_run_operation_stack_safe {op_name=} {params=} {keep_stack=}")
+        LOG.debug(f"test_run_operation_stack_safe {op_name=} {params=} {keep_stack=}")
         QTest.qWait(SHOW_DELAY)
         index = self.op_window.filterSelector.findText(op_name)
         self.assertGreaterEqual(index, 0, f'Operation "{op_name}" not found in filterSelector')
@@ -149,7 +152,7 @@ class TestGuiSystemOperations(GuiSystemBase):
         QTest.qWait(SHOW_DELAY)
 
         def mock_wait_for_stack_choice(self, new_stack: ImageStack, stack_uuid: UUID):
-            print("mock_wait_for_stack_choice")
+            LOG.info("mock_wait_for_stack_choice")
             stack_choice = StackChoicePresenter(self.original_images_stack[stack_uuid], new_stack, self)
             stack_choice.show()
             QTest.qWait(SHOW_DELAY)

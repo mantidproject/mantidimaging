@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import logging
 from unittest import mock
 
 import numpy as np
@@ -11,6 +12,8 @@ from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, SHOW_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+
+LOG = logging.getLogger(__name__)
 
 
 class TestGuiLiveViewer(GuiSystemBase):
@@ -27,7 +30,7 @@ class TestGuiLiveViewer(GuiSystemBase):
         self._open_live_viewer()
         assert self.main_window.live_viewer_list[-1] is not None
         self.live_viewer_window = self.main_window.live_viewer_list[-1]
-        print(f"{self.live_viewer_window=}")
+        LOG.info(f"live_viewer_window={self.live_viewer_window}")
 
         self.assertTrue(self.live_viewer_window.isVisible())
         QTest.qWait(SHORT_DELAY)

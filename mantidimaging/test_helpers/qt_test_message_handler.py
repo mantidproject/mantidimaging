@@ -15,5 +15,5 @@ def qt_message_handler(mode, context, message):
     mode_str = mode_map.get(mode, 'DEBUG')
     if mode == QtCore.QtWarningMsg and 'propagateSizeHints' in message:
         return
-    print(f"qt_message_handler: line: {context.line}, func: {context.function}, file: {context.file}")
-    print(f"{mode_str}: {message}\n")
+    print(f"qt_message_handler: line: {context.line}, func: {context.function}, file: {context.file}")  # noqa: T201
+    print(f"{mode_str}: {message}\n")  # noqa: T201

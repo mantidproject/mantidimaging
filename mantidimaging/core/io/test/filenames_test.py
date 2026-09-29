@@ -328,7 +328,6 @@ class FilenameGroupTest(FakeFSTestCase):
     def test_find_related_proj_180_GRtomo(self):
         proj_name = "/a/180deg/foo_GR_180deg_180.0_000.tif"
         tomo_list = [Path("/a/GRtomo/foo_GRtomo_%01d.%04d_%03d.tif" % (i, i, i)) for i in range(10)]
-        print(f"{tomo_list=}")
         proj_180_list = [Path(proj_name)]
         for file_name in tomo_list + proj_180_list:
             self.fs.create_file(file_name)

@@ -96,7 +96,7 @@ def main() -> None:
     args = parse_args()
     if args.version:
         from mantidimaging import __version__ as version_no
-        print(version_no)
+        print(version_no)  # noqa: T201
         return
 
     q_application = setup_application()
