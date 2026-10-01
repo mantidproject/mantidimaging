@@ -205,33 +205,63 @@ class MainWindowModelTest(unittest.TestCase):
             mock.call(FILE_TYPES.PROJ_180, proj180_images_mock),
         ])
 
-    @mock.patch('mantidimaging.core.io.loader.load_log')
-    def test_add_log_to_sample(self, load_log: mock.Mock):
-        log_file = "Log file"
+    def test_add_log_to_sample(self):
         images_id = "id"
         images_mock = mock.MagicMock()
         self.model.get_images_by_uuid = get_images_mock = mock.Mock(return_value=images_mock)
+        log = mock.Mock()
+        log.has_projection_angles.return_value = False
 
-        self.model.add_log_to_sample(images_id=images_id, log_file=log_file)
+        self.model.add_log_to_sample(images_id=images_id, log=log)
 
-        load_log.assert_called_once_with(log_file)
         get_images_mock.assert_called_with(images_id)
-        self.assertEqual(load_log.return_value, images_mock.log_file)
+        self.assertEqual(log, images_mock.log_file)
         # stack_mock.return_value.widget.return_value.presenter.images.log_file.raise_if_angle_missing \
         #     .assert_called_once_with(stack_mock.return_value.widget.return_value.presenter.images.filenames)
 
+    @parameterized.expand([("unset", 0, 29.0), ("keep", 42.0, 42.0)])
+    def test_add_log_to_sample_pixel_size(self, _, initial_pixel_size: float, expected_pixel_size: float):
+        images = generate_images()
+        images.pixel_size = initial_pixel_size
+        self.model.get_images_by_uuid = mock.Mock(return_value=images)
+
+        log = mock.Mock()
+        log.has_pixel_size.return_value = True
+        log.pixel_size.return_value = 29.0
+        log.has_projection_angles.return_value = False
+
+        self.model.add_log_to_sample(images_id=images.id, log=log)
+
+        self.assertEqual(expected_pixel_size, images.pixel_size)
+        self.assertEqual(expected_pixel_size, images.metadata['pixel_size'])
+        self.assertIs(images.log_file, log)
+
     @mock.patch('mantidimaging.core.io.loader.load_log')
-    def test_add_log_to_sample_no_stack(self, load_log: mock.Mock):
+    def test_overwrite_pixel_size_from_log(self, load_log_mock: mock.Mock):
+        images = generate_images()
+        images.pixel_size = 41.0
+        self.model.get_images_by_uuid = mock.Mock(return_value=images)
+
+        log = load_log_mock.return_value
+        log.has_pixel_size.return_value = True
+        log.pixel_size.return_value = 29.0
+
+        self.model.overwrite_pixel_size_from_log(images_id=images.id, log=log)
+
+        self.assertEqual(29.0, images.pixel_size)
+        self.assertEqual(29.0, images.metadata['pixel_size'])
+
+    def test_add_log_to_sample_no_stack(self):
         """
         Test in add_log_to_sample when get_stack_by_name returns None
         """
-        log_file = "Log file"
         images_id = "id"
         stack_mock = mock.MagicMock()
         self.model.get_images_by_uuid = stack_mock
         stack_mock.return_value = None
+        log = mock.Mock()
 
-        self.assertRaises(RuntimeError, self.model.add_log_to_sample, images_id=images_id, log_file=log_file)
+        self.assertRaises(RuntimeError, self.model.add_log_to_sample, images_id=images_id, log=log)
 
         stack_mock.assert_called_with(images_id)
 
