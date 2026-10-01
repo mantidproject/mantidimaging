@@ -634,6 +634,12 @@ class ReconstructWindowView(BaseMainWindowView):
                     break
 
     def set_algorithm_options_by_geometry(self, geometry_type: GeometryType):
+        """
+        Enable/disable algorithms in the combobox based on both their support for the given
+        geometry type and whether the current environment (e.g. CUDA availability) allows them
+        to run, since 'self.presenter.allowed_recon_kwargs' only contains environment-supported
+        algorithms.
+        """
         model = self.algorithmNameComboBox.model()
         enabled_idx = None
         for i in range(self.algorithmNameComboBox.count()):
