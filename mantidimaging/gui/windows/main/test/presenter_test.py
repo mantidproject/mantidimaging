@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 import uuid
+from pathlib import Path
 
 from unittest import mock
 from unittest.mock import call
@@ -186,10 +187,35 @@ class MainWindowPresenterTest(unittest.TestCase):
     def test_get_stack_id_by_name_failure(self):
         self.assertIsNone(self.presenter._get_stack_visualiser_by_name("bad-id"))
 
-    def test_add_log_to_sample(self):
+    @mock.patch('mantidimaging.gui.windows.main.presenter.load_log')
+    def test_add_log_to_sample(self, load_log_mock: mock.Mock):
         self.presenter.stack_visualisers["doesn't exist"] = mock.Mock()
+        self.model.get_images_by_uuid.return_value = None
         self.presenter.add_log_to_sample("doesn't exist", "log file")
-        self.presenter.model.add_log_to_sample.assert_called_with("doesn't exist", "log file")
+        self.presenter.model.add_log_to_sample.assert_called_with("doesn't exist", load_log_mock.return_value)
+        self.presenter.model.overwrite_pixel_size_from_log.assert_not_called()
+
+    @parameterized.expand([("accept", True), ("decline", False)])
+    @mock.patch('mantidimaging.gui.windows.main.presenter.load_log')
+    def test_add_log_to_sample_with_pixel_size_conflict(self, _, confirm: bool, load_log_mock: mock.Mock):
+        stack_id = uuid.uuid4()
+        log_file = Path("log_file")
+        images = mock.Mock(pixel_size=42.0)
+        images.projection_angles.return_value = None
+        self.model.get_images_by_uuid.return_value = images
+
+        load_log_mock.return_value.has_pixel_size.return_value = True
+        load_log_mock.return_value.pixel_size.return_value = 29.0
+        self.view.show_question_dialog.return_value = confirm
+
+        self.presenter.add_log_to_sample(stack_id, log_file)
+
+        self.view.show_question_dialog.assert_called_once()
+        self.model.add_log_to_sample.assert_called_once_with(stack_id, load_log_mock.return_value)
+        if confirm:
+            self.model.overwrite_pixel_size_from_log.assert_called_once_with(stack_id, load_log_mock.return_value)
+        else:
+            self.model.overwrite_pixel_size_from_log.assert_not_called()
 
     def test_do_rename_stack(self):
         self.presenter.stack_visualisers["stack-id"] = mock_stack = mock.Mock()

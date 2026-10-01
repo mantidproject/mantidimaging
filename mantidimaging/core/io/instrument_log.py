@@ -17,6 +17,7 @@ class LogColumn(Enum):
     IMAGE_TYPE_IMAGE_COUNTER = auto()
     PROJECTION_NUMBER = auto()
     PROJECTION_ANGLE = auto()
+    PIXEL_SIZE = auto()  # in microns
     COUNTS_BEFORE = auto()
     COUNTS_AFTER = auto()
     TIME_OF_FLIGHT = auto()  # in seconds
@@ -28,7 +29,7 @@ class ShutterCountColumn(Enum):
     SHUTTER_COUNT = auto()
 
 
-LogDataType = dict[LogColumn, list[float | int]]
+LogDataType = dict[LogColumn, list[str | float | int]]
 ShutterCountType = dict[ShutterCountColumn, list[float | int]]
 
 
@@ -153,11 +154,19 @@ class InstrumentLog:
     def register_parser(cls, parser: type[InstrumentLogParser]) -> None:
         cls.parsers.append(parser)
 
-    def get_column(self, key: LogColumn) -> list[float]:
+    def get_column(self, key: LogColumn) -> list[str | float | int]:
         return self.data[key]
 
     def projection_numbers(self) -> np.ndarray:
         return np.array(self.get_column(LogColumn.PROJECTION_NUMBER), dtype=np.uint32)
+
+    def has_pixel_size(self) -> bool:
+        return LogColumn.PIXEL_SIZE in self.data
+
+    def pixel_size(self) -> float:
+        """Returns first value only as it can be assuned pixel size is constant"""
+        pixel_data = self.get_column(LogColumn.PIXEL_SIZE)
+        return float(pixel_data[0])
 
     def has_projection_angles(self) -> bool:
         return LogColumn.PROJECTION_ANGLE in self.data
