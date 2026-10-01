@@ -74,6 +74,7 @@ class AsyncTaskDialogView(BaseDialogView):
     def set_progress_plot(self, x: list, y: list):
         if self.progress_plot is None:
             self.progress_plot = PlotWidget()
+            _graveyard.append(self.progress_plot.plotItem.vb)
             self.PlotVerticalLayout.addWidget(self.progress_plot)
             self.progress_plot.hide()
             self.progress_plot.setLogMode(y=True)
