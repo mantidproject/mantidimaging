@@ -176,6 +176,13 @@ class MainWindowModel:
             angles = log.projection_angles()
             images.set_projection_angles(angles)
 
+    def overwrite_pixel_size_from_log(self, images_id: uuid.UUID, log: InstrumentLog) -> None:
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            raise RuntimeError(f"Failed to get ImageStack with ID {images_id}")
+        if log.has_pixel_size():
+            images.pixel_size = log.pixel_size()
+
     @staticmethod
     def _apply_log_pixel_size_if_missing(images: ImageStack, log: InstrumentLog) -> None:
         if log.has_pixel_size() and not images.pixel_size:
