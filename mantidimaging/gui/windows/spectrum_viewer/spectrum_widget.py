@@ -13,13 +13,13 @@ from pyqtgraph import (
     ROI,
     GraphicsLayoutWidget,
     LinearRegionItem,
-    PlotItem,
     mkPen,
-    ViewBox,
     PlotDataItem,
     GraphicsItem,
     LabelItem,
 )
+from pyqtgraph.graphicsItems.PlotItem import PlotItem
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
 import numpy as np
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint

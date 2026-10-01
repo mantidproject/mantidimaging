@@ -8,7 +8,9 @@ from typing import Any
 import numpy as np
 from PyQt5.QtCore import QPoint, QRect
 from PyQt5.QtGui import QGuiApplication, QResizeEvent
-from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem, LegendItem, PlotItem
+from pyqtgraph import ColorMap, GraphicsLayoutWidget, ImageItem
+from pyqtgraph.graphicsItems.LegendItem import LegendItem
+from pyqtgraph.graphicsItems.PlotItem import PlotItem
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 
 from mantidimaging.core.utility.histogram import set_histogram_log_scale
