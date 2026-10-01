@@ -2,6 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
+import logging
 import math
 import os
 import tempfile
@@ -19,6 +20,8 @@ from mantidimaging.gui.widgets.dataset_selector_dialog.dataset_selector_dialog i
 from mantidimaging.gui.windows.main.image_save_dialog import ImageSaveDialog
 from mantidimaging.gui.windows.main.nexus_save_dialog import NexusSaveDialog
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+
+LOG = logging.getLogger(__name__)
 
 
 class TestGuiSystemLoading(GuiSystemBase):
@@ -256,21 +259,21 @@ class TestGuiSystemLoading(GuiSystemBase):
 
     def _check_datasets_consistent(self, show_datasets=False) -> None:
         if show_datasets:
-            print("Main window datasets")
+            LOG.info("Main window datasets")
             for k, v in self.main_window.presenter.model.datasets.items():
-                print("  dataset:", k)
+                LOG.debug(f"  dataset: {k}")
                 for image_stack in v.all:
-                    print("    ", image_stack.id, image_stack.name)
-            print("Main window visualisers/tabs")
+                    LOG.debug(f"    {image_stack.id} {image_stack.name}")
+            LOG.debug("Main window visualisers/tabs")
             for vis in self.main_window.presenter.get_active_stack_visualisers():
-                print("  ", vis.id, vis.name)
-            print("Main window treeview")
+                LOG.debug(f"  {vis.id} {vis.name}")
+            LOG.debug("Main window treeview")
             for i in range(self.main_window.dataset_tree_widget.topLevelItemCount()):
                 tree_ds = self.main_window.dataset_tree_widget.topLevelItem(i)
-                print(f"  dataset: {tree_ds.id} {tree_ds.text(0)}")
+                LOG.debug(f"  dataset: {tree_ds.id} {tree_ds.text(0)}")
                 for j in range(tree_ds.childCount()):
                     tree_is = tree_ds.child(j)
-                    print(f"    {tree_is.id} {tree_is.text(0)}")
+                    LOG.debug(f"    {tree_is.id} {tree_is.text(0)}")
 
         # Datasets
         open_dataset_ids = list(self.main_window.presenter.model.datasets.keys())

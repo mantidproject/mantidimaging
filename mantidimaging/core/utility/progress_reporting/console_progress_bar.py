@@ -15,7 +15,7 @@ def _print_ascii_progress_bar(progress, bar_len, prefix='', suffix=''):
 
     bar = '{}[{}{}]{}'.format(prefix, '=' * filled_len, '-' * (bar_len - filled_len), suffix)
 
-    print(bar, end='\r')
+    print(bar, end='\r')  # noqa: T201
     sys.stdout.flush()
 
 
@@ -32,4 +32,4 @@ class ConsoleProgressBar(ProgressHandler):
         _print_ascii_progress_bar(self.progress.completion(), self.width, self.progress.task_name, suffix)
 
         if self.progress.is_completed():
-            print()
+            print()  # noqa: T201
