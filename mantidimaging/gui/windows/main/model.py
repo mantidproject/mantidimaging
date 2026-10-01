@@ -12,6 +12,7 @@ from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
+from mantidimaging.core.io.instrument_log import InstrumentLog
 from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, DEFAULT_PIXEL_SIZE
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 
@@ -159,17 +160,26 @@ class MainWindowModel:
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise StackNotFoundError(f"Failed to find dataset containing ImageStack with ID {images_id}")
 
-    def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path) -> None:
+    def add_log_to_sample(self, images_id: uuid.UUID, log: InstrumentLog) -> None:
+        """
+        Add log file to a stack, checking for projection angles and pixel size,
+        adding them if missing from image stack.
+        """
         images = self.get_images_by_uuid(images_id)
         if images is None:
             raise RuntimeError
-        log = loader.load_log(log_file)
         if images.filenames is not None:
             log.raise_if_angle_missing([str(f) for f in images.filenames])
         images.log_file = log
+        self._apply_log_pixel_size_if_missing(images, log)
         if hasattr(log, 'has_projection_angles') and log.has_projection_angles():
             angles = log.projection_angles()
             images.set_projection_angles(angles)
+
+    @staticmethod
+    def _apply_log_pixel_size_if_missing(images: ImageStack, log: InstrumentLog) -> None:
+        if log.has_pixel_size() and not images.pixel_size:
+            images.pixel_size = log.pixel_size()
 
     def add_shutter_counts_to_sample(self, images_id: uuid.UUID, shutter_counts_file: Path) -> None:
         """
