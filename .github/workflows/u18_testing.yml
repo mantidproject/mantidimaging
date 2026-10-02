@@ -27,31 +27,43 @@ jobs:
       - name: yapf
         uses: ./.github/actions/test
         with:
-          command: pixi run yapf
+          command: pixi run yapf .
           label: ubuntu18
 
       - name: ruff
         uses: ./.github/actions/test
         with:
-          command: pixi run -e lint ruff-print
+          command: pixi run ruff .
           label: ubuntu18
+
+      # - name: json
+      #   uses: ./.github/actions/test
+      #   with:
+      #     command: pixi run prettier-json
+      #     label: ubuntu18
 
       - name: json
         uses: ./.github/actions/test
         with:
-          command: pixi run prettier-json
+          command: pixi run -e lint npx prettier --check "**/*.json"
           label: ubuntu18
+
+      # - name: yaml
+      #   uses: ./.github/actions/test
+      #   with:
+      #     command: pixi run prettier-yaml
+      #     label: ubuntu18
 
       - name: yaml
         uses: ./.github/actions/test
         with:
-          command: pixi run prettier-yaml
+          command: pixi run -e lint npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
           label: ubuntu18
 
       - name: mypy
         uses: ./.github/actions/test
         with:
-          command: pixi run mypy
+          command: pixi run mypy mantidimaging
           label: ubuntu18
 
       - name: pytest
