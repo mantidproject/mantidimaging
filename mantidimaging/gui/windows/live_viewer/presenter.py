@@ -63,6 +63,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.update_image_list_timer.setSingleShot(True)
         self.update_image_list_timer.timeout.connect(self.update_image_list)
 
+        self.thread: TaskWorkerThread | None = None
+        self.recalc_pending = False
+        self.recalc_pending_force_clear = False
+
         self.model.image_cache.use_loading_function(self.load_image_from_path)
 
     def close(self) -> None:
@@ -106,8 +110,7 @@ class LiveViewerWindowPresenter(BasePresenter):
                     self.update_intensity(self.model.mean_nan_mask)
                     self.old_image_list_paths = images_list_paths
                 else:
-                    self.model.clear_mean_partial()
-                    self.handle_roi_moved()
+                    self.handle_roi_moved(force_clear=True)
             self.view.set_image_range((0, len(images_list) - 1))
             self.view.set_image_index(len(images_list) - 1)
             self.view.set_load_as_dataset_enabled(True)
@@ -229,26 +232,52 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.view.intensity_profile.clearPlots()
         self.view.intensity_profile.plot(spec_data)
 
-    def handle_roi_moved(self) -> None:
+    def handle_roi_moved(self, force_clear: bool = False) -> None:
+        """
+        Recalculate mean intensity in background thread. If already running,
+        request delayed until running calculation complete rather than having
+        overlapping thread that could cause race condition over shared model state.
+        """
+        if self.thread is not None and self.thread.isRunning():
+            self.recalc_pending = True
+            self.recalc_pending_force_clear = self.recalc_pending_force_clear or force_clear
+            return
+
         roi = self.view.live_viewer.get_roi()
-        if roi != self.model.roi:
+        if force_clear or roi != self.model.roi:
             self.model.clear_mean_partial()
             self.try_next_mean_chunk_count = 0
         self.model.roi = roi
         self.set_roi_enabled(False)
-        self.thread = TaskWorkerThread()
-        self.thread.kwargs = {"chunk_size": CHUNK_SIZE}
-        self.thread.task_function = self.model.calc_mean_chunk
 
-        self.thread.finished.connect(lambda: self.thread_cleanup(self.thread))
+        thread = TaskWorkerThread()
+        thread.kwargs = {"chunk_size": CHUNK_SIZE}
+        thread.task_function = self.model.calc_mean_chunk
+        # Bind spcific thread rather than reading self.thread at signal fire
+        # incase self.thread has been reassigned to newer thread
+        thread.finished.connect(lambda: self.thread_cleanup(thread))
+        self.thread = thread
         self.thread.start()
 
     def thread_cleanup(self, thread: TaskWorkerThread) -> None:
+        """
+        Handles clean thread closure and updates intensity profile with latest mean calculation.
+        Consume pending recalculation requests if any and trigger recalculation and/or roi
+        updates only if active thread has completed to avoid request loss or race conditions.
+        """
         if thread.error is not None:
             logger.error("Error during background processing: %s", thread.error)
             raise thread.error
         self.update_intensity_with_mean()
         self.set_roi_enabled(True)
+
+        if self.recalc_pending:
+            force_clear = self.recalc_pending_force_clear
+            self.recalc_pending = False
+            self.recalc_pending_force_clear = False
+            self.handle_roi_moved(force_clear=force_clear)
+            return
+
         if np.isnan(self.model.mean_nan_mask).any():
             self.try_next_mean_chunk()
 
