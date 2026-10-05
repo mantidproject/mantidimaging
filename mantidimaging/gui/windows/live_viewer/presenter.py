@@ -100,20 +100,35 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.model.clear_mean_partial()
             self.update_intensity_with_mean()
         else:
+            self.view.set_image_range((0, len(images_list) - 1))
+            self.view.set_image_index(len(images_list) - 1)
+
             if self.view.intensity_action.isChecked():
                 if not self.view.live_viewer.roi_object:
                     self.view.live_viewer.add_roi()
+
                 self.model.roi = self.view.live_viewer.get_roi()
-                images_list_paths = [image.image_path for image in images_list]
-                if self.old_image_list_paths == images_list_paths[:-1]:
-                    self.try_add_mean(images_list[-1])
-                    self.update_intensity(self.model.mean_nan_mask)
-                    self.old_image_list_paths = images_list_paths
-                else:
-                    self.handle_roi_moved(force_clear=True)
-            self.view.set_image_range((0, len(images_list) - 1))
-            self.view.set_image_index(len(images_list) - 1)
+                self._update_intensity_for_images(images_list)
             self.view.set_load_as_dataset_enabled(True)
+
+    def _update_intensity_for_images(self, image_list: list[Image_Data]) -> None:
+        """
+        Update intensity for a list of images based on ROI selection and calculated mean
+        """
+        image_paths = [image.image_path for image in image_list]
+        previous_image_count = len(self.old_image_list_paths)
+        is_initial_single_image = previous_image_count == 0 and len(image_list) == 1
+        is_append_only = previous_image_count > 0 and self.old_image_list_paths == image_paths[:previous_image_count]
+
+        if is_initial_single_image or is_append_only:
+            for image in image_list[previous_image_count:]:
+                self.try_add_mean(image)
+            self.update_intensity(self.model.mean_nan_mask)
+        else:
+            self.try_next_mean_chunk_count = 0
+            self.handle_roi_moved(force_clear=True)
+
+        self.old_image_list_paths = image_paths
 
     def notify_update_image_list(self) -> None:
         """Notify when image list needs to be updated if not already being updated"""
