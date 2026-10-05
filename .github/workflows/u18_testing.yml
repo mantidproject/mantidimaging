@@ -24,6 +24,13 @@ jobs:
       - name: Pre-load docker image
         run: docker pull ghcr.io/mantidproject/mantidimaging:ubuntu18
 
+      - name: List versions
+        uses: ./.github/actions/test
+        with:
+          command: pixi run -e dev python --version
+            pixi list -e dev
+          label: ubuntu18
+
       - name: yapf
         uses: ./.github/actions/test
         with:
@@ -39,13 +46,13 @@ jobs:
       - name: json
         uses: ./.github/actions/test
         with:
-          command: pixi run prettier-json
+          command: pixi run -e lint npx prettier --check "**/*.json"
           label: ubuntu18
 
       - name: yaml
         uses: ./.github/actions/test
         with:
-          command: pixi run prettier-yaml
+          command: pixi run -e lint npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
           label: ubuntu18
 
       - name: mypy

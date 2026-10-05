@@ -25,6 +25,13 @@ jobs:
       - name: Pre-load docker image
         run: docker pull ghcr.io/mantidproject/mantidimaging:rocky8
 
+      - name: List versions
+        uses: ./.github/actions/test
+        with:
+          command: pixi run -e dev python --version
+            pixi list -e dev
+          label: rocky8
+
       - name: yapf
         uses: ./.github/actions/test
         with:
