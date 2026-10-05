@@ -66,11 +66,17 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.thread: TaskWorkerThread | None = None
         self.recalc_pending = False
         self.recalc_pending_force_clear = False
+        self._closing = False
 
         self.model.image_cache.use_loading_function(self.load_image_from_path)
 
     def close(self) -> None:
         """Close the window."""
+        self._closing = True
+        self.update_image_list_timer.stop()
+        self.handle_roi_change_timer.stop()
+        self.recalc_pending = False
+        self.recalc_pending_force_clear = False
         if self.model is not None:
             self.model.close()
         self.model = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
@@ -93,6 +99,8 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self) -> None:
         """Update the image in the view."""
+        if self._closing:
+            return
         images_list = self.model.images
         if not images_list:
             self.handle_deleted()
@@ -132,7 +140,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def notify_update_image_list(self) -> None:
         """Notify when image list needs to be updated if not already being updated"""
-        if not self.update_image_list_timer.isActive():
+        if not self._closing and not self.update_image_list_timer.isActive():
             self.update_image_list_timer.start(IMAGE_LIST_UPDATE_TIME)
 
     def try_add_mean(self, image: Image_Data) -> None:
@@ -253,6 +261,8 @@ class LiveViewerWindowPresenter(BasePresenter):
         request delayed until running calculation complete rather than having
         overlapping thread that could cause race condition over shared model state.
         """
+        if self._closing:
+            return
         if self.thread is not None and self.thread.isRunning():
             self.recalc_pending = True
             self.recalc_pending_force_clear = self.recalc_pending_force_clear or force_clear
@@ -270,9 +280,16 @@ class LiveViewerWindowPresenter(BasePresenter):
         thread.task_function = self.model.calc_mean_chunk
         # Bind spcific thread rather than reading self.thread at signal fire
         # incase self.thread has been reassigned to newer thread
-        thread.finished.connect(lambda: self.thread_cleanup(thread))
+        # thread.finished.connect(lambda: self.thread_cleanup(thread))
+        thread.finished.connect(self._handle_mean_thread_finished)
         self.thread = thread
         self.thread.start()
+
+    def _handle_mean_thread_finished(self) -> None:
+        """Handle the completion of the mean calculation thread"""
+        thread = self.thread
+        if thread is not None:
+            self.thread_cleanup(thread)
 
     def thread_cleanup(self, thread: TaskWorkerThread) -> None:
         """
@@ -280,6 +297,10 @@ class LiveViewerWindowPresenter(BasePresenter):
         Consume pending recalculation requests if any and trigger recalculation and/or roi
         updates only if active thread has completed to avoid request loss or race conditions.
         """
+        if self.thread is thread:
+            self.thread = None
+        if self._closing:
+            return
         if thread.error is not None:
             logger.error("Error during background processing: %s", thread.error)
             raise thread.error
@@ -297,6 +318,8 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.try_next_mean_chunk()
 
     def handle_notify_roi_moved(self) -> None:
+        if self._closing:
+            return
         self.model.clear_mean_partial()
 
         if not self.handle_roi_change_timer.isActive():
@@ -311,6 +334,8 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.live_viewer.roi_object.blockSignals(not enable)
 
     def try_next_mean_chunk(self) -> None:
+        if self._closing:
+            return
         self.try_next_mean_chunk_count += 1
         if self.try_next_mean_chunk_count > (len(self.model.images) / CHUNK_SIZE) + self.try_next_mean_chunk_max_retry:
             logger.warning("Too many retries for mean calculation. Aborting.")
