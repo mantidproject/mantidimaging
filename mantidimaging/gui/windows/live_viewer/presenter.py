@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 logger = getLogger(__name__)
 
-IMAGE_lIST_UPDATE_TIME = 100
+IMAGE_LIST_UPDATE_TIME = 100
 CHUNK_SIZE = 10
 
 
@@ -113,7 +113,9 @@ class LiveViewerWindowPresenter(BasePresenter):
             self.view.set_load_as_dataset_enabled(True)
 
     def notify_update_image_list(self) -> None:
-        self.update_image_list_timer.start(IMAGE_lIST_UPDATE_TIME)
+        """Notify when image list needs to be updated if not already being updated"""
+        if not self.update_image_list_timer.isActive():
+            self.update_image_list_timer.start(IMAGE_LIST_UPDATE_TIME)
 
     def try_add_mean(self, image: Image_Data) -> None:
         try:
