@@ -40,7 +40,7 @@ jobs:
       - name: ruff
         uses: ./.github/actions/test
         with:
-          command: pixi run -e lint ruff-print
+          command: pixi run ruff "mantidimaging docs/ext/" "--extend-select T201"
           label: ubuntu18
 
       - name: json
