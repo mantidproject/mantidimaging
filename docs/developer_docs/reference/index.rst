@@ -10,3 +10,4 @@ Reference
    ../../api
    ../../release_notes/next
    vsc_extensions
+   pycharm_plugins
