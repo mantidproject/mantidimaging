@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Release &#8212; MantidImaging 3.2.0a1 documentation</title>
+    <title>PyCharm Plugins and Keybindings &#8212; MantidImaging 3.2.0a1 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_docs/how-to-guides/release';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_docs/reference/pycharm_plugins';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '/mantidimaging/_static/version_switcher.json';
@@ -59,8 +59,8 @@
     <link rel="icon" href="../../_static/mantid_imaging_64px.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Explanations" href="../explanations/index.html" />
-    <link rel="prev" title="Testing" href="testing.html" />
+    <link rel="next" title="Release Notes" href="../../release_notes/index.html" />
+    <link rel="prev" title="VSCode Extensions" href="vsc_extensions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.2" />
@@ -452,17 +452,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/started_ada.html">Getting Started with Ada</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">How-To Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="command.html">Command Line Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vsc_setup.html">VSCode</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../how-to-guides/index.html">How-To Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/command.html">Command Line Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/vsc_setup.html">VSCode</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="pycharm_setup.html">PyCharm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/pycharm_setup.html">PyCharm</a></li>
 
 
-<li class="toctree-l2"><a class="reference internal" href="debugging.html">Debugging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Creating a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/debugging.html">Debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to-guides/release.html">Creating a Release</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -471,7 +471,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../explanations/conda_packaging_and_docker_image.html">Conda Packaging and Docker images</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../support.html">Support</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api.html">API Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../api/mantidimaging.html">mantidimaging package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -484,8 +484,8 @@
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../release_notes/next.html">Mantid Imaging next release</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/vsc_extensions.html">VSCode Extensions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/pycharm_plugins.html">PyCharm Plugins and Keybindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vsc_extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">PyCharm Plugins and Keybindings</a></li>
 </ul>
 </details></li>
 </ul>
@@ -532,9 +532,9 @@
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Documentation</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">How-To Guides</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Reference</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Creating a Release</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">PyCharm Plugins and Keybindings</span></li>
   </ul>
 </nav>
 </div>
@@ -551,31 +551,111 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="creating-a-release">
-<h1>Creating a Release<a class="headerlink" href="#creating-a-release" title="Link to this heading">#</a></h1>
-<p>This is a checklist for creating a new release.</p>
-<p>Releases are created from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
-<p>The version number is expected to be in SemVer format and will be referred to as
-<code class="docutils literal notranslate"><span class="pre">M.m.p</span></code>, adjust this as appropriate.</p>
-<ul class="simple">
-<li><p>Create a new release branch</p></li>
-<li><dl class="simple">
-<dt>Update version numbers in:</dt><dd><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">setup.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mantidimaging/__init__.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Go to <a class="github reference external" href="https://github.com/mantidproject/mantidimaging/releases">mantidproject/mantidimaging</a></p></li>
-<li><p>Draft a new release, with the appropriate version number, targeting the new release branch</p></li>
-<li><p>Perform the necessary testing or merge necessary bug fixes in the release branch</p></li>
-<li><p>(optional) Add release notes in the docs GitHub</p></li>
-<li><p>Go to the release draft and publish it</p></li>
-<li><p>Once published the tag will be available for Conda to use, but a package with a <code class="code docutils literal notranslate"><span class="pre">main</span></code> label is not created automatically
-- To manually publish a package please follow <a class="reference internal" href="../explanations/conda_packaging_and_docker_image.html#conda-packaging-and-docker-images"><span class="std std-ref">Conda Packaging and Docker images</span></a></p></li>
-</ul>
+  <section id="pycharm-plugins-and-keybindings">
+<span id="pycharm-plugins"></span><h1>PyCharm Plugins and Keybindings<a class="headerlink" href="#pycharm-plugins-and-keybindings" title="Link to this heading">#</a></h1>
+<p>Plugins can be installed from the <a class="reference external" href="https://plugins.jetbrains.com/">JetBrains Marketplace</a> or through <code class="docutils literal notranslate"><span class="pre">Settings</span> <span class="pre">-&gt;</span> <span class="pre">Plugins</span></code> in PyCharm.</p>
+<section id="required-plugins">
+<h2>Required Plugins<a class="headerlink" href="#required-plugins" title="Link to this heading">#</a></h2>
+<section id="python-development">
+<h3>Python Development<a class="headerlink" href="#python-development" title="Link to this heading">#</a></h3>
+</section>
+</section>
+<section id="recommended-plugins">
+<h2>Recommended Plugins<a class="headerlink" href="#recommended-plugins" title="Link to this heading">#</a></h2>
+<section id="code-reviews">
+<h3>Code Reviews<a class="headerlink" href="#code-reviews" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Plugin</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://plugins.jetbrains.com/plugin/13115-github">GitHub</a></p></td>
+<td><p>Enables pull request and issue integration directly from PyCharm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://plugins.jetbrains.com/plugin/7499-gittoolbox">GitToolBox</a></p></td>
+<td><p>Adds advanced Git status insights and productivity features inside the IDE.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="markdown-and-documentation">
+<h3>Markdown and Documentation<a class="headerlink" href="#markdown-and-documentation" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Plugin</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://plugins.jetbrains.com/plugin/7793-markdown">Markdown</a></p></td>
+<td><p>Improves Markdown editing and preview when writing documentation and release notes.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="keybindings">
+<span id="pycharm-keyboard-shortcuts"></span><h2>Keybindings<a class="headerlink" href="#keybindings" title="Link to this heading">#</a></h2>
+<p>PyCharm provides a wide range of keyboard shortcuts for actions such as search, navigation, and run/debug.</p>
+<section id="commonly-used-keybindings">
+<h3>Commonly used keybindings<a class="headerlink" href="#commonly-used-keybindings" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Linux</p></th>
+<th class="head"><p>macOS</p></th>
+<th class="head"><p>Windows</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Search in Files</p></td>
+<td><p>Ctrl+Shift+F</p></td>
+<td><p>Cmd+Shift+F</p></td>
+<td><p>Ctrl+Shift+F</p></td>
+</tr>
+<tr class="row-odd"><td><p>Find Action</p></td>
+<td><p>Ctrl+Shift+A</p></td>
+<td><p>Cmd+Shift+A</p></td>
+<td><p>Ctrl+Shift+A</p></td>
+</tr>
+<tr class="row-even"><td><p>Open File</p></td>
+<td><p>Ctrl+O</p></td>
+<td><p>Cmd+O</p></td>
+<td><p>Ctrl+O</p></td>
+</tr>
+<tr class="row-odd"><td><p>Run Configuration/Script (Run Popup)</p></td>
+<td><p>Alt+Shift+F10</p></td>
+<td><p>Control+R</p></td>
+<td><p>Alt+Shift+F10</p></td>
+</tr>
+<tr class="row-even"><td><p>Debug Configuration/Script (Debug Popup)</p></td>
+<td><p>Alt+Shift+F9</p></td>
+<td><p>Control+D</p></td>
+<td><p>Alt+Shift+F9</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -589,20 +669,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="testing.html"
+       href="vsc_extensions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Testing</p>
+        <p class="prev-next-title">VSCode Extensions</p>
       </div>
     </a>
     <a class="right-next"
-       href="../explanations/index.html"
+       href="../../release_notes/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Explanations</p>
+        <p class="prev-next-title">Release Notes</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -618,10 +698,34 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-plugins">Required Plugins</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-development">Python Development</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recommended-plugins">Recommended Plugins</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-reviews">Code Reviews</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#markdown-and-documentation">Markdown and Documentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keybindings">Keybindings</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commonly-used-keybindings">Commonly used keybindings</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/developer_docs/how-to-guides/release.rst.txt"
+      <li><a href="../../_sources/developer_docs/reference/pycharm_plugins.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

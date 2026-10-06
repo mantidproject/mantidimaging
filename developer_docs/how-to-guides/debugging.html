@@ -60,7 +60,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Testing" href="testing.html" />
-    <link rel="prev" title="VSCode" href="vsc_setup.html" />
+    <link rel="prev" title="PyCharm" href="pycharm_setup.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.2" />
@@ -457,6 +457,9 @@
 <li class="toctree-l2"><a class="reference internal" href="vsc_setup.html">VSCode</a></li>
 
 
+<li class="toctree-l2"><a class="reference internal" href="pycharm_setup.html">PyCharm</a></li>
+
+
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Debugging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="release.html">Creating a Release</a></li>
@@ -482,6 +485,7 @@
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../release_notes/next.html">Mantid Imaging next release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/vsc_extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/pycharm_plugins.html">PyCharm Plugins and Keybindings</a></li>
 </ul>
 </details></li>
 </ul>
@@ -724,6 +728,20 @@
 </figure>
 <p>The debugger will pause execution at breakpoints, allowing variables and execution flow to be inspected.</p>
 </section>
+<section id="using-pycharm">
+<h3>Using PyCharm<a class="headerlink" href="#using-pycharm" title="Link to this heading">#</a></h3>
+<p>PyCharm does not use <code class="docutils literal notranslate"><span class="pre">launch.json</span></code>. Instead, configure test debugging through <strong>Run/Debug Configurations</strong>.</p>
+<ol class="arabic simple">
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">|</span> <span class="pre">Edit</span> <span class="pre">Configurations...</span></code>.</p></li>
+<li><p>Add a new <code class="docutils literal notranslate"><span class="pre">Python</span> <span class="pre">tests</span></code> configuration (for <code class="docutils literal notranslate"><span class="pre">pytest</span></code>), or edit an existing one.</p></li>
+<li><p>Set the test target (for example, a file, class, or test function).</p></li>
+<li><p>Add additional pytest arguments as needed, for example <code class="docutils literal notranslate"><span class="pre">--run-unit-tests</span> <span class="pre">--run-eyes-tests</span> <span class="pre">--run-system-tests</span></code>.</p></li>
+<li><p>Add environment variables if needed (for headless runs, <code class="docutils literal notranslate"><span class="pre">QT_QPA_PLATFORM=offscreen</span></code> and <code class="docutils literal notranslate"><span class="pre">MPLBACKEND=Agg</span></code>).</p></li>
+<li><p>Set breakpoints in the test or source file.</p></li>
+<li><p>Start debugging from <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">|</span> <span class="pre">Debug...</span></code> (or use the debug popup shortcut <code class="docutils literal notranslate"><span class="pre">Alt+Shift+F9</span></code> on Windows/Linux, <code class="docutils literal notranslate"><span class="pre">Control+D</span></code> on macOS).</p></li>
+</ol>
+<p>Once started, PyCharm will pause at breakpoints so you can inspect variables and step through execution.</p>
+</section>
 </section>
 </section>
 
@@ -738,12 +756,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="vsc_setup.html"
+       href="pycharm_setup.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">VSCode</p>
+        <p class="prev-next-title">PyCharm</p>
       </div>
     </a>
     <a class="right-next"
@@ -784,6 +802,7 @@
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-debugger">Run the debugger</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pycharm">Using PyCharm</a></li>
 </ul>
 </li>
 </ul>
