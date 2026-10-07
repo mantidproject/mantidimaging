@@ -1,0 +1,1 @@
+#3107: Fix potential segfault from ViewBox destructor in recon window residual plot
