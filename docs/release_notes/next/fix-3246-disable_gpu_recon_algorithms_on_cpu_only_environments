@@ -1,0 +1,1 @@
+#3246: Fix GPU reconstruction algorithms (FBP_CUDA, SIRT_CUDA, CIL_PDHG-TV) becoming selectable again after loading a dataset on CPU only environments, which caused a KeyError when reconstructing.
