@@ -956,7 +956,11 @@ are updated.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_algorithm_options_by_geometry">
 <span class="sig-name descname"><span class="pre">set_algorithm_options_by_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mantidimaging.core.data.geometry.html#mantidimaging.core.data.geometry.GeometryType" title="mantidimaging.core.data.geometry.GeometryType"><span class="pre">GeometryType</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/windows/recon/view.html#ReconstructWindowView.set_algorithm_options_by_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_algorithm_options_by_geometry" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Enable/disable algorithms in the combobox based on both their support for the given
+geometry type and whether the current environment (e.g. CUDA availability) allows them
+to run, since ‘self.presenter.allowed_recon_kwargs’ only contains environment-supported
+algorithms.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_correlate_buttons_enabled">

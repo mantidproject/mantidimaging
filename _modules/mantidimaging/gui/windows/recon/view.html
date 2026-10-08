@@ -1239,12 +1239,18 @@
 <div class="viewcode-block" id="ReconstructWindowView.set_algorithm_options_by_geometry">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.recon.view.html#mantidimaging.gui.windows.recon.view.ReconstructWindowView.set_algorithm_options_by_geometry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_algorithm_options_by_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry_type</span><span class="p">:</span> <span class="n">GeometryType</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable/disable algorithms in the combobox based on both their support for the given</span>
+<span class="sd">        geometry type and whether the current environment (e.g. CUDA availability) allows them</span>
+<span class="sd">        to run, since &#39;self.presenter.allowed_recon_kwargs&#39; only contains environment-supported</span>
+<span class="sd">        algorithms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
         <span class="n">enabled_idx</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
             <span class="n">alg_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithmNameComboBox</span><span class="o">.</span><span class="n">itemText</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="n">supported_types</span> <span class="o">=</span> <span class="n">get_reconstructor_for</span><span class="p">(</span><span class="n">alg_name</span><span class="p">)</span><span class="o">.</span><span class="n">supported_geometry_types</span>
-            <span class="n">supported</span> <span class="o">=</span> <span class="n">geometry_type</span> <span class="ow">in</span> <span class="n">supported_types</span>
+            <span class="n">supported</span> <span class="o">=</span> <span class="n">geometry_type</span> <span class="ow">in</span> <span class="n">supported_types</span> <span class="ow">and</span> <span class="n">alg_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">allowed_recon_kwargs</span>
             <span class="n">model</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">supported</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">supported</span> <span class="ow">and</span> <span class="n">enabled_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">enabled_idx</span> <span class="o">=</span> <span class="n">i</span>
