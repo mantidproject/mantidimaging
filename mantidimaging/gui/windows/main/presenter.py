@@ -16,7 +16,7 @@ from qt_material import apply_stylesheet
 
 from mantidimaging.core.data.dataset import _get_stack_data_type, Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
-from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path
+from mantidimaging.core.io.loader.loader import create_loading_parameters_for_file_path, load_log
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.core.utility.progress_reporting.progress import TaskCancelled
 from mantidimaging.gui.dialogs.async_task import start_async_task_view
@@ -131,13 +131,37 @@ class MainWindowPresenter(BasePresenter):
         return None
 
     def add_log_to_sample(self, stack_id: uuid.UUID, log_file: Path) -> None:
-        self.model.add_log_to_sample(stack_id, log_file)
+        """
+        Add a log to selected sample, checking if angles need to be updated.
+        If pixel size detected in log which is different from the current non-zero value
+        set, user is prompted to confirm or deny overwrite.
+
+        :param stack_id: The unique identifier of the stack to which the log is being added.
+        :param log_file: The path to the log file being added.
+        """
+        log = load_log(log_file)
+        overwrite_pixel_size = self._confirm_pixel_overwrite(stack_id, log, log_file)
+        self.model.add_log_to_sample(stack_id, log)
+
+        if overwrite_pixel_size:
+            self.model.overwrite_pixel_size_from_log(stack_id, log)
 
         image_stack = self.get_stack(stack_id)
         if image_stack is not None:
             proj_angles = image_stack.projection_angles()
             if proj_angles is not None:
                 self.stack_visualisers[stack_id].image_view.angles = proj_angles
+
+    def _confirm_pixel_overwrite(self, stack_id: uuid.UUID, log, log_file: Path) -> bool:
+        images = self.model.get_images_by_uuid(stack_id)
+        if images is None or not log.has_pixel_size() or not images.pixel_size:
+            return False
+        if images.pixel_size == log.pixel_size():
+            return False
+        return self.view.show_question_dialog(
+            "Replace pixel size with value from log?",
+            f"Would you like to use the pixel size: {log.pixel_size()} microns from {log_file.name} "
+            f"instead of the current value: {images.pixel_size} microns?")
 
     def add_shuttercounts_to_sample(self, stack_id: uuid.UUID, shuttercount_file: Path) -> None:
         self.model.add_shutter_counts_to_sample(stack_id, shuttercount_file)
