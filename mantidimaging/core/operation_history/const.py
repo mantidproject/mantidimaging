@@ -25,3 +25,19 @@ OPERATION_NAME_TOMOPY_RECON = "tomopy_recon"
 
 SINOGRAMS = "sinograms"
 RESCALED = "rescaled"
+
+# Geometry changes are recorded separately from operation_history, since they are not
+# replayable filter operations (see mantidimaging.core.operation_history.operations.ImageOperation).
+GEOMETRY_HISTORY = 'geometry_history'
+OPERATION_NAME_GEOMETRY_CREATE = 'geometry_create'
+OPERATION_NAME_GEOMETRY_MODIFY = 'geometry_modify'
+OPERATION_NAME_GEOMETRY_CONVERT = 'geometry_convert'
+OPERATION_NAME_GEOMETRY_DELETE = 'geometry_delete'
+GEOMETRY_STACK_NAME = 'stack_name'
+GEOMETRY_TYPE = 'type'
+GEOMETRY_COR = 'cor'
+GEOMETRY_TILT = 'tilt'
+GEOMETRY_PIXEL_SIZE = 'pixel_size'
+GEOMETRY_SOURCE_POSITION_MM = 'source_position_mm'
+GEOMETRY_DETECTOR_POSITION_MM = 'detector_position_mm'
+GEOMETRY_ANGLES_DEG = 'angles_deg'

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 from pathlib import Path
 from unittest import mock
 from parameterized import parameterized
@@ -227,6 +228,28 @@ class ImageStackTest(unittest.TestCase):
         self.assertIsNotNone(images.geometry)
         self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
         npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
+
+    def test_record_geometry_operation(self):
+        images = generate_images()
+        angles = ProjectionAngles(np.linspace(0, np.pi, 10))
+        images.create_geometry(angles)
+
+        images.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
+
+        self.assertNotIn(const.OPERATION_HISTORY, images.metadata)
+        history_entry = images.metadata[const.GEOMETRY_HISTORY][0]
+        self.assertEqual(history_entry[const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_CREATE)
+        self.assertEqual(history_entry[const.OPERATION_DISPLAY_NAME], "Geometry Created")
+        kwargs = history_entry[const.OPERATION_KEYWORD_ARGS]
+        self.assertEqual(kwargs[const.GEOMETRY_STACK_NAME], images.name)
+        self.assertEqual(kwargs[const.GEOMETRY_TYPE], images.geometry.type.value)
+        self.assertAlmostEqual(kwargs[const.GEOMETRY_COR], images.geometry.cor.value)
+        self.assertAlmostEqual(kwargs[const.GEOMETRY_TILT], images.geometry.tilt)
+        npt.assert_allclose(kwargs[const.GEOMETRY_ANGLES_DEG], np.degrees(angles.value))
+
+        # The recorded geometry must be plain JSON-serialisable primitives, since it is written
+        # directly into the exported metadata file.
+        json.dumps(images.metadata)
 
     def test_image_eq_method(self):
         data_array = np.arange(64, dtype=float).reshape([4, 4, 4])
