@@ -31,15 +31,15 @@ requirements:
     - scipy 1.14.*
     - scikit-image 0.25.*
     - tifffile=2023.7.18
-    - imagecodecs=2023.9.18
+    - imagecodecs=2024.12.30
     - imageio 2.33.*
     - numpy 1.26.*
     - numexpr 2.10.*
     - algotom 1.6.*
     - tomopy 1.12.*
-    - cudatoolkit 11.8.*
+    - cuda-version 12.9.*
     - cupy 12.3.*
-    - astra-toolbox=2.1.0 cuda*
+    - astra-toolbox=2.3.1 cuda*
     - requests 2.32.*
     - h5py 3.13.*
     - hdf5>=1.14.2,<1.15
