@@ -28,19 +28,19 @@ jobs:
       - name: yapf
         uses: ./.github/actions/test
         with:
-          command: pixi run yapf .
+          command: pixi run yapf
           label: rocky8
 
       - name: ruff
         uses: ./.github/actions/test
         with:
-          command: pixi run ruff .
+          command: pixi run ruff
           label: rocky8
 
       - name: mypy
         uses: ./.github/actions/test
         with:
-          command: pixi run mypy mantidimaging
+          command: pixi run mypy
           label: rocky8
 
       - name: pytest
