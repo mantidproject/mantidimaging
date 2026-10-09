@@ -16,6 +16,8 @@ requires-pixi = ">=0.59,<1.0"
 platforms = ["linux-64", "win-64"]
 
 [environments]
+# lint = ["lint", "runtime", "runtime-cpu", "ubuntu18"]
+# dev = ["runtime", "runtime-cpu", "dev", "test", "lint", "ubuntu18"]
 lint = ["lint", "runtime", "runtime-cpu"]
 dev = ["runtime", "runtime-cpu", "dev", "test", "lint"]
 dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
@@ -31,6 +33,10 @@ ruff = "0.3.7.*"
 types-requests = "*"
 types-pyyaml = "*"
 types-docutils = "*"
+
+# Ubuntu 18 compatibility
+# [feature.ubuntu18.system-requirements]
+# libc = { family = "glibc", version = "2.27" }
 
 # Testing packages
 [feature.test.dependencies]
@@ -132,6 +138,7 @@ libastra = "2.3.1.*"
 # GPU verification feature - adds __cuda requirement - needed to ensure GPU builds only go to GPU-capable systems
 [feature.gpu-verify.system-requirements]
 cuda = "12.9"
+libc = { family = "glibc", version = "2.28" }
 
 # Virtual package to ensure CUDA is available on GPU systems - needed for windows
 [feature.gpu-verify.target.win-64.dependencies]
@@ -156,6 +163,9 @@ AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
 # Linux specific dependencies (to get Qt platform theme working)
 [target.linux-64.dependencies]
 qt-gtk-platformtheme = "5.15.15.*"
+
+[feature.lint.system-requirements]
+libc = { family = "glibc", version = "2.27" }
 
 # Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
 [target.win-64.dependencies]
@@ -267,11 +277,11 @@ description = "Run screenshot tests (GPU)"
 # Combined linting task
 [feature.lint.tasks]
 # Base linting tasks (run in lint environment) - FAIL FAST (no || true)
-mypy-base = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS", description = "Run mypy type checks (fail on error)" }
+mypy-base = { cmd = "python -m mypy --ignore-missing-imports {{ paths }}", args = [{ arg = "paths", default = "$SOURCE_DIRS" }], description = "Run mypy type checks (fail on error)" }
 pyright-base = { cmd = "python -m pyright", description = "Run pyright type checks (fail on error)" }
-yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS", description = "Check code formatting with yapf (fail on error)" }
+yapf-base = { cmd = "python -m yapf --parallel --diff --recursive {{ paths }}", args = [{ arg = "paths", default = "$SOURCE_DIRS" }], description = "Check code formatting with yapf (fail on error)" }
 yapf-staged-base = { cmd = "python -m yapf --parallel --diff", description = "Check formatting of staged files with yapf (for pre-commit)" }  
-ruff-base = { cmd = "ruff check $SOURCE_DIRS", description = "Run ruff linter (fail on error)" }
+ruff-base = { cmd = "ruff check {{ paths }}", args = [{ arg = "paths", default = "$SOURCE_DIRS" }], description = "Run ruff linter (fail on error)" }
 ruff-staged-base = { cmd = "ruff check", description = "Run ruff on staged files (for pre-commit)" }
 
 # Base linting tasks - CONTINUE ON ERROR (with || true)
@@ -279,6 +289,7 @@ mypy-base-continue = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DI
 pyright-base-continue = { cmd = "python -m pyright || true", description = "Run pyright type checks (continue on error)" }
 yapf-base-continue = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS || true", description = "Check code formatting with yapf (continue on error)" }
 ruff-base-continue = { cmd = "ruff check $SOURCE_DIRS || true", description = "Run ruff linter (continue on error)" }
+
 [feature.lint.activation.env]
 SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 
@@ -319,10 +330,10 @@ package-pyinstaller-cpu = { depends-on = [{ task = "package-pyinstaller-base", e
 package-pyinstaller-gpu = { depends-on = [{ task = "package-pyinstaller-base", environment = "dev-gpu" }], description = "Build PyInstaller package (GPU)" }
 
 # Static analysis tasks - FAIL FAST (stop on first error)
-mypy = { depends-on = [{ task = "mypy-base", environment = "dev" }], description = "Run mypy type checks (fail on error)" }
+mypy = { args = [{ arg = "paths", default = "$SOURCE_DIRS" }], depends-on = [{ task = "mypy-base", environment = "dev", args = ["{{ paths }}"] }], description = "Run mypy type checks (fail on error)" }
 pyright = { depends-on = [{ task = "pyright-base", environment = "dev" }], description = "Run pyright type checks (fail on error)" }
-yapf = { depends-on = [{ task = "yapf-base", environment = "lint" }], description = "Check code formatting with yapf (fail on error)" }
-ruff = { depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter (fail on error)" }
+yapf = { args = [{ arg = "paths", default = "$SOURCE_DIRS" }], depends-on = [{ task = "yapf-base", environment = "lint", args = ["{{ paths }}"] }], description = "Check code formatting with yapf (fail on error)" }
+ruff = { args = [{ arg = "paths", default = "$SOURCE_DIRS" }], depends-on = [{ task = "ruff-base", environment = "lint", args = ["{{ paths }}"] }], description = "Run ruff linter (fail on error)" }
 
 # Static analysis tasks - CONTINUE ON ERROR (run all checks)
 mypy-continue = { depends-on = [{ task = "mypy-base-continue", environment = "dev" }], description = "Run mypy type checks (continue on error)" }
