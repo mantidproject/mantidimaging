@@ -20,6 +20,7 @@ Submodules
 .. toctree::
    :maxdepth: 3
 
+   mantidimaging.core.io.csv_log_parser
    mantidimaging.core.io.csv_output
    mantidimaging.core.io.filenames
    mantidimaging.core.io.instrument_log

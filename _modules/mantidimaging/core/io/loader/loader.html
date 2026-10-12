@@ -680,6 +680,9 @@
             <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="n">indices</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="k">if</span> <span class="n">indices</span> <span class="k">else</span> <span class="n">angles</span>
             <span class="n">image_stack</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">ProjectionAngles</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span>
 
+    <span class="k">if</span> <span class="n">log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">log_data</span><span class="o">.</span><span class="n">has_pixel_size</span><span class="p">():</span>
+        <span class="n">image_stack</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">log_data</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="n">shutter_count_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">image_stack</span><span class="o">.</span><span class="n">shutter_count_file</span> <span class="o">=</span> <span class="n">load_shutter_counts</span><span class="p">(</span><span class="n">shutter_count_file</span><span class="p">)</span>
 

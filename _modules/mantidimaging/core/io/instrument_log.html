@@ -512,6 +512,7 @@
     <span class="n">IMAGE_TYPE_IMAGE_COUNTER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">PROJECTION_NUMBER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">PROJECTION_ANGLE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">PIXEL_SIZE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>  <span class="c1"># in microns</span>
     <span class="n">COUNTS_BEFORE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">COUNTS_AFTER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">TIME_OF_FLIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>  <span class="c1"># in seconds</span>
@@ -527,7 +528,7 @@
 
 
 
-<span class="n">LogDataType</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">LogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span>
+<span class="n">LogDataType</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">LogColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span>
 <span class="n">ShutterCountType</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">ShutterCountColumn</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]]</span>
 
 
@@ -692,7 +693,7 @@
 
 <div class="viewcode-block" id="InstrumentLog.get_column">
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.get_column">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">LogColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">LogColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
@@ -700,6 +701,20 @@
 <a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.projection_numbers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">projection_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PROJECTION_NUMBER</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InstrumentLog.has_pixel_size">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.has_pixel_size">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_pixel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">LogColumn</span><span class="o">.</span><span class="n">PIXEL_SIZE</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="InstrumentLog.pixel_size">
+<a class="viewcode-back" href="../../../../api/mantidimaging.core.io.instrument_log.html#mantidimaging.core.io.instrument_log.InstrumentLog.pixel_size">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pixel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns first value only as it can be assuned pixel size is constant&quot;&quot;&quot;</span>
+        <span class="n">pixel_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">LogColumn</span><span class="o">.</span><span class="n">PIXEL_SIZE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">pixel_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="InstrumentLog.has_projection_angles">

@@ -1,0 +1,7 @@
+mantidimaging.core.io.csv\_log\_parser module
+=============================================
+
+.. automodule:: mantidimaging.core.io.csv_log_parser
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -505,7 +505,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span><span class="p">,</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">loader</span><span class="p">,</span> <span class="n">saver</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.filenames</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilenameGroup</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">ImageParameters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.instrument_log</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentLog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">ImageParameters</span><span class="p">,</span> <span class="n">DEFAULT_PIXEL_SIZE</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span><span class="p">,</span> <span class="n">FILE_TYPES</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -539,6 +540,15 @@
 <div class="viewcode-block" id="MainWindowModel.do_load_dataset">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.do_load_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">do_load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">LoadingParameters</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Progress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a dataset based on loading parameters.</span>
+<span class="sd">        Determines if stacks should be treated as sinograms or regular projections</span>
+<span class="sd">        Handles setting pixel size from logs or user definned overide, falling back to default</span>
+
+<span class="sd">        :param parameters: Loading parameters containing information about the dataset to load</span>
+<span class="sd">        :param progress: Progress reporting instance</span>
+<span class="sd">        :return: Loaded Dataset instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">im_param</span><span class="p">:</span> <span class="n">ImageParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ImageStack</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_stack_from_image_params</span><span class="p">(</span><span class="n">im_param</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -549,7 +559,10 @@
             <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">flip_axes</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ds</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">)</span>
-        <span class="n">sample</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pixel_size</span>
+
+        <span class="n">sample_pixel_size</span> <span class="o">=</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pixel_size</span> <span class="k">if</span> <span class="n">parameters</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">!=</span> <span class="n">DEFAULT_PIXEL_SIZE</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">sample_pixel_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sample</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">sample_pixel_size</span>
 
         <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="p">[</span>
                 <span class="n">FILE_TYPES</span><span class="o">.</span><span class="n">FLAT_BEFORE</span><span class="p">,</span>
@@ -674,18 +687,37 @@
 
 <div class="viewcode-block" id="MainWindowModel.add_log_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_log_to_sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_log_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_log_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">InstrumentLog</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add log file to a stack, checking for projection angles and pixel size,</span>
+<span class="sd">        adding them if missing from image stack.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span>
-        <span class="n">log</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">raise_if_angle_missing</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">images</span><span class="o">.</span><span class="n">filenames</span><span class="p">])</span>
         <span class="n">images</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_log_pixel_size_if_missing</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">log</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">log</span><span class="p">,</span> <span class="s1">&#39;has_projection_angles&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log</span><span class="o">.</span><span class="n">has_projection_angles</span><span class="p">():</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">projection_angles</span><span class="p">()</span>
             <span class="n">images</span><span class="o">.</span><span class="n">set_projection_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="MainWindowModel.overwrite_pixel_size_from_log">
+<a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.overwrite_pixel_size_from_log">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overwrite_pixel_size_from_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">InstrumentLog</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">images_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to get ImageStack with ID </span><span class="si">{</span><span class="n">images_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">log</span><span class="o">.</span><span class="n">has_pixel_size</span><span class="p">():</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">()</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_log_pixel_size_if_missing</span><span class="p">(</span><span class="n">images</span><span class="p">:</span> <span class="n">ImageStack</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">InstrumentLog</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">log</span><span class="o">.</span><span class="n">has_pixel_size</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">images</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">:</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MainWindowModel.add_shutter_counts_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.model.html#mantidimaging.gui.windows.main.model.MainWindowModel.add_shutter_counts_to_sample">[docs]</a>

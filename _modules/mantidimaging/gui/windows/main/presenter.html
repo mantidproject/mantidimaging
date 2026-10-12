@@ -509,7 +509,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_stack_data_type</span><span class="p">,</span> <span class="n">Dataset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span><span class="p">,</span> <span class="n">ImageStack</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.io.loader.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_loading_parameters_for_file_path</span><span class="p">,</span> <span class="n">load_log</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.progress_reporting.progress</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskCancelled</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.dialogs.async_task</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_async_task_view</span>
@@ -640,7 +640,20 @@
 <div class="viewcode-block" id="MainWindowPresenter.add_log_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_log_to_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_log_to_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a log to selected sample, checking if angles need to be updated.</span>
+<span class="sd">        If pixel size detected in log which is different from the current non-zero value</span>
+<span class="sd">        set, user is prompted to confirm or deny overwrite.</span>
+
+<span class="sd">        :param stack_id: The unique identifier of the stack to which the log is being added.</span>
+<span class="sd">        :param log_file: The path to the log file being added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span> <span class="o">=</span> <span class="n">load_log</span><span class="p">(</span><span class="n">log_file</span><span class="p">)</span>
+        <span class="n">overwrite_pixel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confirm_pixel_overwrite</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">log_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_log_to_sample</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">overwrite_pixel_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">overwrite_pixel_size_from_log</span><span class="p">(</span><span class="n">stack_id</span><span class="p">,</span> <span class="n">log</span><span class="p">)</span>
 
         <span class="n">image_stack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stack</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">image_stack</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -648,6 +661,17 @@
             <span class="k">if</span> <span class="n">proj_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stack_visualisers</span><span class="p">[</span><span class="n">stack_id</span><span class="p">]</span><span class="o">.</span><span class="n">image_view</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">proj_angles</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_confirm_pixel_overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stack_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_images_by_uuid</span><span class="p">(</span><span class="n">stack_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">images</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">log</span><span class="o">.</span><span class="n">has_pixel_size</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">images</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">images</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">==</span> <span class="n">log</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_question_dialog</span><span class="p">(</span>
+            <span class="s2">&quot;Replace pixel size with value from log?&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Would you like to use the pixel size: </span><span class="si">{</span><span class="n">log</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">()</span><span class="si">}</span><span class="s2"> microns from </span><span class="si">{</span><span class="n">log_file</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;instead of the current value: </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">pixel_size</span><span class="si">}</span><span class="s2"> microns?&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MainWindowPresenter.add_shuttercounts_to_sample">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.presenter.html#mantidimaging.gui.windows.main.presenter.MainWindowPresenter.add_shuttercounts_to_sample">[docs]</a>
