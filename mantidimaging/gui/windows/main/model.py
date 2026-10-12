@@ -12,7 +12,8 @@ from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.data.imagestack import StackNotFoundError, ImageStack
 from mantidimaging.core.io import loader, saver
 from mantidimaging.core.io.filenames import FilenameGroup
-from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters
+from mantidimaging.core.io.instrument_log import InstrumentLog
+from mantidimaging.core.io.loader.loader import LoadingParameters, ImageParameters, DEFAULT_PIXEL_SIZE
 from mantidimaging.core.utility.data_containers import ProjectionAngles, FILE_TYPES
 
 if TYPE_CHECKING:
@@ -39,6 +40,15 @@ class MainWindowModel:
         return None
 
     def do_load_dataset(self, parameters: LoadingParameters, progress: Progress) -> Dataset:
+        """
+        Load a dataset based on loading parameters.
+        Determines if stacks should be treated as sinograms or regular projections
+        Handles setting pixel size from logs or user definned overide, falling back to default
+
+        :param parameters: Loading parameters containing information about the dataset to load
+        :param progress: Progress reporting instance
+        :return: Loaded Dataset instance
+        """
 
         def load(im_param: ImageParameters) -> ImageStack:
             return loader.load_stack_from_image_params(im_param, progress, dtype=parameters.dtype)
@@ -49,7 +59,10 @@ class MainWindowModel:
             ds = Dataset(sample=sample.copy(flip_axes=True))
         else:
             ds = Dataset(sample=sample)
-        sample.pixel_size = parameters.pixel_size
+
+        sample_pixel_size = parameters.pixel_size if parameters.pixel_size != DEFAULT_PIXEL_SIZE else None
+        if sample_pixel_size is not None:
+            sample.pixel_size = sample_pixel_size
 
         for file_type in [
                 FILE_TYPES.FLAT_BEFORE,
@@ -147,17 +160,33 @@ class MainWindowModel:
     def raise_error_when_parent_dataset_not_found(self, images_id: uuid.UUID) -> NoReturn:
         raise StackNotFoundError(f"Failed to find dataset containing ImageStack with ID {images_id}")
 
-    def add_log_to_sample(self, images_id: uuid.UUID, log_file: Path) -> None:
+    def add_log_to_sample(self, images_id: uuid.UUID, log: InstrumentLog) -> None:
+        """
+        Add log file to a stack, checking for projection angles and pixel size,
+        adding them if missing from image stack.
+        """
         images = self.get_images_by_uuid(images_id)
         if images is None:
             raise RuntimeError
-        log = loader.load_log(log_file)
         if images.filenames is not None:
             log.raise_if_angle_missing([str(f) for f in images.filenames])
         images.log_file = log
+        self._apply_log_pixel_size_if_missing(images, log)
         if hasattr(log, 'has_projection_angles') and log.has_projection_angles():
             angles = log.projection_angles()
             images.set_projection_angles(angles)
+
+    def overwrite_pixel_size_from_log(self, images_id: uuid.UUID, log: InstrumentLog) -> None:
+        images = self.get_images_by_uuid(images_id)
+        if images is None:
+            raise RuntimeError(f"Failed to get ImageStack with ID {images_id}")
+        if log.has_pixel_size():
+            images.pixel_size = log.pixel_size()
+
+    @staticmethod
+    def _apply_log_pixel_size_if_missing(images: ImageStack, log: InstrumentLog) -> None:
+        if log.has_pixel_size() and not images.pixel_size:
+            images.pixel_size = log.pixel_size()
 
     def add_shutter_counts_to_sample(self, images_id: uuid.UUID, shutter_counts_file: Path) -> None:
         """
