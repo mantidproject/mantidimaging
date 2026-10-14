@@ -10,6 +10,7 @@ import numpy
 import numpy as np
 
 from mantidimaging.core.data.geometry import GeometryType
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.data_containers import ProjectionAngles
 from mantidimaging.test_helpers.unit_test_helper import generate_angles
 
@@ -97,6 +98,40 @@ class GeometryWindowPresenterTest(unittest.TestCase):
         self.presenter.update_parameters(self.data)
         self.assertEqual(self.view.source_position, -1.5)
         self.assertEqual(self.view.detector_position, 2.5)
+
+    def test_create_geometry_records_history(self):
+        self.presenter.handle_create_new_geometry()
+        history = self.data.metadata[const.GEOMETRY_HISTORY]
+        self.assertEqual(history[-1][const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_CREATE)
+        self.assertEqual(history[-1][const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_STACK_NAME], self.data.name)
+
+    def test_modify_geometry_records_history(self):
+        self.presenter.handle_create_new_geometry()
+        self.view.rotation_axis = 240
+        self.view.tilt = 15
+        self.presenter.handle_parameter_updates()
+        history = self.data.metadata[const.GEOMETRY_HISTORY]
+        self.assertEqual(history[-1][const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_MODIFY)
+        self.assertAlmostEqual(history[-1][const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_COR], 240, places=10)
+
+    def test_convert_geometry_records_history(self):
+        self.reset_new_stack()
+        test_stack = self.main_window.get_stack()
+        test_angles = generate_angles(360, test_stack.num_projections)
+        test_stack.create_geometry(test_angles)
+        self.view.conversion_type = "Cone 3D"
+        self.presenter.handle_convert_geometry()
+        history = test_stack.metadata[const.GEOMETRY_HISTORY]
+        self.assertEqual(history[-1][const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_CONVERT)
+
+    def test_delete_geometry_records_history_only_if_existed(self):
+        self.presenter.handle_delete_geometry()
+        self.assertNotIn(const.GEOMETRY_HISTORY, self.data.metadata)
+        self.presenter.handle_create_new_geometry()
+        self.presenter.handle_delete_geometry()
+        history = self.data.metadata[const.GEOMETRY_HISTORY]
+        self.assertEqual(history[-1][const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_DELETE)
+        self.assertEqual(history[-1][const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_STACK_NAME], self.data.name)
 
     def test_handle_parameter_updates_converts_displayed_m_to_internal_mm(self):
         self.presenter.handle_create_new_geometry()
