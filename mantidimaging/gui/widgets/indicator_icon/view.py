@@ -6,7 +6,7 @@ from collections.abc import Callable
 
 import numpy as np
 from PIL import Image
-from pyqtgraph import ViewBox
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
 from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu, QAction
 from PyQt5.QtGui import QPixmap, QImage, QColor
 
