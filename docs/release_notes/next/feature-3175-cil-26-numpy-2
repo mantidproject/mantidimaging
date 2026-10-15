@@ -1,0 +1,1 @@
+#3175: Upgrade CIL to 26.0.0 and NumPy to 2.0, with compatible CuPy and tifffile versions.
