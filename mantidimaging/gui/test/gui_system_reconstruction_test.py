@@ -1,6 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
+import logging
 from unittest import mock
 
 import pytest
@@ -12,6 +13,8 @@ from mantidimaging.gui.windows.recon.view import ReconstructWindowView
 from mantidimaging.gui.dialogs.cor_inspection.view import CORInspectionDialogView
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
 from mantidimaging.test_helpers.start_qapplication import start_multiprocessing_pool
+
+LOG = logging.getLogger(__name__)
 
 
 @start_multiprocessing_pool
@@ -119,7 +122,7 @@ class TestGuiSystemReconstruction(GuiSystemBase):
     @pytest.mark.xfail(reason="Unresolved, see #1641")
     def test_refine_stress(self):
         for i in range(5):
-            print(f"test_refine_stress iteration {i}")
+            LOG.debug(f"test_refine_stress iteration {i}")
             QTest.mouseClick(self.recon_window.correlateButton, Qt.MouseButton.LeftButton)
             QTest.qWait(SHORT_DELAY)
             wait_until(lambda: self.recon_window.correlateButton.isEnabled())

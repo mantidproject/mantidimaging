@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import logging
 import unittest
 from unittest import mock
 
@@ -29,6 +30,7 @@ SHOW_DELAY = 10  # Can be increased to watch tests
 SHORT_DELAY = 100
 
 QtCore.qInstallMessageHandler(qt_message_handler)
+LOG = logging.getLogger(__name__)
 
 
 @mock_versions
@@ -66,13 +68,13 @@ class GuiSystemBase(unittest.TestCase):
         # if self._outcome.result._excinfo is None then there were no AssertionErrors during the test
         test_error = self._outcome.result._excinfo  # type: ignore
 
-        # if the test passed but there were some leaked objects, print basic info
+        # if the test passed but there were some leaked objects, log basic info
         if test_error is None and (leak_count := leak_tracker.count()):
-            print("\nItems still alive:", leak_count)
+            LOG.warning(f"\nItems still alive: {leak_count}")
             leak_tracker.pretty_print(debug_init=False, debug_owners=False, trace_depth=5)
-            # if too many objects leaked, print debug info
+            # if too many objects leaked, log debug info
             if leak_count > self.leak_count_limit:
-                print("details:")
+                LOG.info("details:")
                 leak_tracker.pretty_print(debug_init=True, debug_owners=True, trace_depth=5)
                 raise RuntimeError(f"Too many leaked objects: {leak_count}")
 

@@ -220,3 +220,24 @@ PyCharm does not use ``launch.json``. Instead, configure test debugging through 
 
 Once started, PyCharm will pause at breakpoints so you can inspect variables and step through execution.
 
+Running GitHub Workflow Checks Locally
+--------------------------------------
+When debugging CI/CD workflow failures, the code quality checks can be run locally using the following commands. The ``-continue`` variant allows the result of the checks to be inspected without stopping at the first failure.
+
+.. list-table::
+   :widths: 35 75
+   :header-rows: 1
+
+   * - Command
+     - Description
+   * - ``pixi run yapf-continue``
+     - Checks Python code formatting using YAPF.
+   * - ``pixi run ruff-continue``
+     - Checks Python code for linting issues, such as potential errors and style violations, using Ruff.
+   * - ``pixi run mypy-continue``
+     - Performs static type checking using mypy to detect type errors in the code.
+   * - ``pixi run pyright-continue``
+     - Performs static type analysis using Pyright to identify type errors and inconsistencies.
+
+Running these commands locally helps identify and investigate issues before pushing changes.
+

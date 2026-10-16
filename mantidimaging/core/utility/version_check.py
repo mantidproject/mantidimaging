@@ -48,12 +48,12 @@ class CheckVersion:
         raise FileNotFoundError
 
     def show_versions(self) -> None:
-        print(f"Mantid imaging {self.get_version()}")
-        print(f"Install method {self._package_type}")
+        print(f"Mantid imaging {self.get_version()}")  # noqa: T201
+        print(f"Install method {self._package_type}")  # noqa: T201
         if self._package_type == "conda":
-            print(f"conda_available_version {self.get_conda_available_version()}")
+            print(f"conda_available_version {self.get_conda_available_version()}")  # noqa: T201
         if git_hash:
-            print(f"Git hash {git_hash}")
+            print(f"Git hash {git_hash}")  # noqa: T201
 
     def get_version(self) -> str:
         """Get built in version"""
