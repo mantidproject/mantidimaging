@@ -205,6 +205,21 @@ Run the debugger
 
 The debugger will pause execution at breakpoints, allowing variables and execution flow to be inspected.
 
+Using PyCharm
+~~~~~~~~~~~~~
+
+PyCharm does not use ``launch.json``. Instead, configure test debugging through **Run/Debug Configurations**.
+
+1. Open ``Run | Edit Configurations...``.
+2. Add a new ``Python tests`` configuration (for ``pytest``), or edit an existing one.
+3. Set the test target (for example, a file, class, or test function).
+4. Add additional pytest arguments as needed, for example ``--run-unit-tests --run-eyes-tests --run-system-tests``.
+5. Add environment variables if needed (for headless runs, ``QT_QPA_PLATFORM=offscreen`` and ``MPLBACKEND=Agg``).
+6. Set breakpoints in the test or source file.
+7. Start debugging from ``Run | Debug...`` (or use the debug popup shortcut ``Alt+Shift+F9`` on Windows/Linux, ``Control+D`` on macOS).
+
+Once started, PyCharm will pause at breakpoints so you can inspect variables and step through execution.
+
 Running GitHub Workflow Checks Locally
 --------------------------------------
 When debugging CI/CD workflow failures, the code quality checks can be run locally using the following commands. The ``-continue`` variant allows the result of the checks to be inspected without stopping at the first failure.
@@ -225,5 +240,4 @@ When debugging CI/CD workflow failures, the code quality checks can be run local
      - Performs static type analysis using Pyright to identify type errors and inconsistencies.
 
 Running these commands locally helps identify and investigate issues before pushing changes.
-
 

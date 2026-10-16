@@ -276,6 +276,10 @@ class CILRecon(BaseRecon):
         assert (proj_angles is not None)
         geom_type = images.geometry.type
 
+        if geom_type == GeometryType.CONE3D and images.geometry.source_position == 0:
+            raise ValueError("Cone beam reconstruction requires a non-zero source position. "
+                             "Set the source and detector positions in the Geometry window.")
+
         num_iter = recon_params.num_iter
         num_subsets = ceil(sino.shape[0] / recon_params.projections_per_subset)
         if recon_params.stochastic:

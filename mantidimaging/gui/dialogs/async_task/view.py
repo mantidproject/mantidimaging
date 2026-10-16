@@ -15,6 +15,8 @@ from .presenter import AsyncTaskDialogPresenter
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QTimer
 
+_graveyard: list[Any] = []
+
 
 class AsyncTaskDialogView(BaseDialogView):
     _presenter: AsyncTaskDialogPresenter | None
@@ -72,6 +74,7 @@ class AsyncTaskDialogView(BaseDialogView):
     def set_progress_plot(self, x: list, y: list):
         if self.progress_plot is None:
             self.progress_plot = PlotWidget()
+            _graveyard.append(self.progress_plot.plotItem.vb)
             self.PlotVerticalLayout.addWidget(self.progress_plot)
             self.progress_plot.hide()
             self.progress_plot.setLogMode(y=True)
@@ -82,6 +85,8 @@ class AsyncTaskDialogView(BaseDialogView):
     def set_progress_residual_plot(self, residual_image: np.ndarray) -> None:
         if self.residual_image_view is None:
             residual_image_view = ImageView()
+            _graveyard.append(residual_image_view.view)
+            _graveyard.append(residual_image_view.getRoiPlot().plotItem.vb)
             residual_image_view.ui.roiBtn.hide()
             residual_image_view.ui.menuBtn.hide()
             residual_image_view.setMinimumSize(600, 400)
