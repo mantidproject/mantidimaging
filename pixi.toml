@@ -66,7 +66,7 @@ eyes-images = "==5.23.*"
 # Core Python and utilities
 python = "3.12.*"
 pip = "*"
-numpy = "1.26.*"
+numpy = "2.0.*"
 scipy = "1.14.*"
 numba = "0.61.*"
 numexpr = "2.10.*"
@@ -77,7 +77,7 @@ pyyaml = "*"
 # Data I/O and file handling
 h5py = "3.13.*"
 hdf5 = ">=1.14.2,<1.15"
-tifffile = "2023.7.18.*"
+tifffile = "2024.8.30.*"
 imagecodecs = ">=2023.9,<2025"
 imageio = "2.33.*"
 
@@ -89,7 +89,7 @@ jenkspy = "0.4.*"
 # Tomography and reconstruction
 algotom = "1.6.*"
 tomopy = "1.12.*"
-cil = "25.0.*"
+cil = "26.0.*"
 ccpi-viewer = "25.0.*"
 
 # Visualization and GUI
@@ -102,7 +102,7 @@ darkdetect = "0.8.0.*"
 
 # GPU-specific packages - common across all platforms
 [feature.runtime-gpu.dependencies]
-cupy = "12.3.*"
+cupy = "13.4.*"
 cuda-version = "12.9.*"
 
 # Linux-specific GPU packages - Linux (CUDA-enabled builds)
