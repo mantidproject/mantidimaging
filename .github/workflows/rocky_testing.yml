@@ -28,8 +28,7 @@ jobs:
       - name: List versions
         uses: ./.github/actions/test
         with:
-          command: pixi run -e dev python --version
-            pixi list -e dev
+          command: pixi run -e dev python --version && pixi list -e dev
           label: rocky8
 
       - name: yapf
