@@ -17,7 +17,7 @@ Python Development
 
     * - Plugin
       - Purpose
-     - `Python (bundled with PyCharm) <https://www.jetbrains.com/help/pycharm/managing-plugins.html>`_
+    * - `Python (bundled with PyCharm) <https://www.jetbrains.com/help/pycharm/managing-plugins.html>`_
       - Core Python editing, navigation, refactoring, and debugging support.
     * - `Ruff <https://plugins.jetbrains.com/plugin/20574-ruff>`_
       - Integrates Ruff linting and formatting checks into the IDE.
