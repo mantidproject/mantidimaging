@@ -1,0 +1,1 @@
+#3242: Migrate the rocky and u18 docker workflows from conda/mamba to pixi and add ruff print checks

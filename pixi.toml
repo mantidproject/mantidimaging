@@ -16,8 +16,8 @@ requires-pixi = ">=0.59,<1.0"
 platforms = ["linux-64", "win-64"]
 
 [environments]
-lint = ["lint", "runtime", "runtime-cpu"]
-dev = ["runtime", "runtime-cpu", "dev", "test", "lint"]
+lint = ["lint", "runtime", "runtime-cpu", "ubuntu18"]
+dev = ["runtime", "runtime-cpu", "dev", "test", "lint", "ubuntu18"]
 dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
 build-cpu = ["runtime", "runtime-cpu", "build"]
 build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
@@ -31,6 +31,10 @@ ruff = "0.3.7.*"
 types-requests = "*"
 types-pyyaml = "*"
 types-docutils = "*"
+
+# Ubuntu 18 compatibility
+[feature.ubuntu18.system-requirements]
+libc = { family = "glibc", version = "2.27" }
 
 # Testing packages
 [feature.test.dependencies]
@@ -271,14 +275,15 @@ mypy-base = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS", desc
 pyright-base = { cmd = "python -m pyright", description = "Run pyright type checks (fail on error)" }
 yapf-base = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS", description = "Check code formatting with yapf (fail on error)" }
 yapf-staged-base = { cmd = "python -m yapf --parallel --diff", description = "Check formatting of staged files with yapf (for pre-commit)" }  
-ruff-base = { cmd = "ruff check $SOURCE_DIRS", description = "Run ruff linter (fail on error)" }
+ruff-base = { cmd = "ruff check {{ paths }}", args = [{arg = "paths", default = "$SOURCE_DIRS"}, {arg = "extend_select", default = ""}], description = "Run ruff linter (fail on error)" }
 ruff-staged-base = { cmd = "ruff check", description = "Run ruff on staged files (for pre-commit)" }
 
 # Base linting tasks - CONTINUE ON ERROR (with || true)
 mypy-base-continue = { cmd = "python -m mypy --ignore-missing-imports $SOURCE_DIRS || true", description = "Run mypy type checks (continue on error)" }
 pyright-base-continue = { cmd = "python -m pyright || true", description = "Run pyright type checks (continue on error)" }
 yapf-base-continue = { cmd = "python -m yapf --parallel --diff --recursive $SOURCE_DIRS || true", description = "Check code formatting with yapf (continue on error)" }
-ruff-base-continue = { cmd = "ruff check $SOURCE_DIRS || true", description = "Run ruff linter (continue on error)" }
+ruff-base-continue = { cmd = "ruff check {{paths}}|| true", args = [{arg = "paths", default = "$SOURCE_DIRS"}, {arg = "extend_select", default = ""}], description = "Run ruff linter (continue on error)" }
+
 [feature.lint.activation.env]
 SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 
@@ -322,7 +327,7 @@ package-pyinstaller-gpu = { depends-on = [{ task = "package-pyinstaller-base", e
 mypy = { depends-on = [{ task = "mypy-base", environment = "dev" }], description = "Run mypy type checks (fail on error)" }
 pyright = { depends-on = [{ task = "pyright-base", environment = "dev" }], description = "Run pyright type checks (fail on error)" }
 yapf = { depends-on = [{ task = "yapf-base", environment = "lint" }], description = "Check code formatting with yapf (fail on error)" }
-ruff = { depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter (fail on error)" }
+ruff = {args = [{ arg = "paths", default = "$SOURCE_DIRS" }, { arg = "extend_select", default = "" }], depends-on = [{ task = "ruff-base", environment = "lint" }], description = "Run ruff linter (fail on error)" }
 
 # Static analysis tasks - CONTINUE ON ERROR (run all checks)
 mypy-continue = { depends-on = [{ task = "mypy-base-continue", environment = "dev" }], description = "Run mypy type checks (continue on error)" }
