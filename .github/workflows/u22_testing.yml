@@ -1,4 +1,4 @@
-name: Testing with Ubuntu 18 docker
+name: Testing with Ubuntu 22 docker
 
 on:
   push:
@@ -22,47 +22,47 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Pre-load docker image
-        run: docker pull ghcr.io/mantidproject/mantidimaging:ubuntu18
+        run: docker pull ghcr.io/mantidproject/mantidimaging:ubuntu22
 
       - name: List versions
         uses: ./.github/actions/test
         with:
           command: pixi run -e dev python --version && pixi list -e dev
-          label: ubuntu18
+          label: ubuntu22
 
       - name: yapf
         uses: ./.github/actions/test
         with:
           command: pixi run yapf
-          label: ubuntu18
+          label: ubuntu22
 
       - name: ruff
         uses: ./.github/actions/test
         with:
           command: pixi run ruff "mantidimaging docs/ext/" "--extend-select T201"
-          label: ubuntu18
+          label: ubuntu22
 
       - name: json
         uses: ./.github/actions/test
         with:
           command: pixi run -e lint npx prettier --check "**/*.json"
-          label: ubuntu18
+          label: ubuntu22
 
       - name: yaml
         uses: ./.github/actions/test
         with:
           command: pixi run -e lint npx prettier --check "**/*.y?(a)ml" "!conda/meta.yaml"
-          label: ubuntu18
+          label: ubuntu22
 
       - name: mypy
         uses: ./.github/actions/test
         with:
           command: pixi run mypy
-          label: ubuntu18
+          label: ubuntu22
 
       - name: pytest
         timeout-minutes: 5
         uses: ./.github/actions/test
         with:
           command: pixi run -e dev xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
-          label: ubuntu18
+          label: ubuntu22
