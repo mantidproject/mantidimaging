@@ -761,7 +761,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         tof_data: The ToF data corresponding to the spectrum, used for determining the x-axis values for fitting.
         init_params: A dictionary of initial parameter guesses for the fitting function, keyed by parameter name.
         bound_params: A dictionary of parameter bounds for the fitting function, keyed by parameter name, where each
-                      value is a tuple of (min_bound, max_bound).
+        value is a tuple of (min_bound, max_bound).
 
         Returns
         -------

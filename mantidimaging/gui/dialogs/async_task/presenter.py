@@ -21,8 +21,11 @@ class Notification(Enum):
 
 class AsyncTaskDialogPresenter(QObject, ProgressHandler):
     progress_updated = pyqtSignal(float, str)
+    """Emitted when task progress is updated."""
     progress_plot_updated = pyqtSignal(list, list)
+    """Emitted when progress plot data is updated."""
     progress_residual_plot_updated = pyqtSignal(np.ndarray)
+    """Emitted when residual plot data is updated."""
 
     def __init__(self, view):
         super().__init__()

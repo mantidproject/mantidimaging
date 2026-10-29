@@ -28,7 +28,9 @@ class FittingParamFormWidget(QWidget):
     """
 
     fromROIButtonClicked = QtCore.pyqtSignal()
+    """Emitted when the 'From ROI' button is clicked."""
     initialEditFinished = QtCore.pyqtSignal()
+    """Emitted when the user finishes editing an initial parameter value."""
 
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)

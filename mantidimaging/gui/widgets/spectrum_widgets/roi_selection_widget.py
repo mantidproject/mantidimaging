@@ -14,11 +14,12 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     """
     A custom Qt widget for selecting an ROI.
     Attributes:
-        roiDropdown: A dropdown menu for selecting ROIs.
-        selectionChanged: Signal emitted when the ROI selection changes.
+    roiDropdown: A dropdown menu for selecting ROIs.
+    selectionChanged: Signal emitted when the ROI selection changes.
     """
 
     selectionChanged = QtCore.pyqtSignal(str)
+    """Emitted when the ROI selection changes."""
 
     def __init__(self, parent: QtWidgets.QWidget = None):
         super().__init__("Select ROI", parent)

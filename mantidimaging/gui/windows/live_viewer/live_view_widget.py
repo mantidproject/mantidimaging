@@ -22,7 +22,9 @@ class LiveViewWidget(GraphicsLayoutWidget):
     image: MIMiniImageView
     image_shape: tuple[int, int] | None = None
     roi_changed = pyqtSignal()
+    """Emitted when the ROI has changed."""
     roi_changing = pyqtSignal()
+    """Emitted when the ROI is changing."""
     roi_object: SpectrumROI | None = None
 
     def __init__(self) -> None:

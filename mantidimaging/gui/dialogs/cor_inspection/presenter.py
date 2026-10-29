@@ -32,6 +32,7 @@ class Notification(Enum):
 
 class CORInspectionDialogPresenter(BasePresenter):
     progress_updated = pyqtSignal(float, str)
+    """Emitted when the progress of the reconstruction is updated."""
 
     view: CORInspectionDialogView
 

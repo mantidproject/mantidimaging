@@ -39,6 +39,7 @@ class ROIFormWidget(BaseWidget):
     bin_size_spinBox: QSpinBox
     bin_step_spinBox: QSpinBox
     binningChanged = pyqtSignal(ROIBinner)
+    """Emitted when the binning parameters change."""
 
     def __init__(self, parent=None):
         super().__init__(parent, ui_file='gui/ui/roi_form_widget.ui')
@@ -135,6 +136,7 @@ class ROIPropertiesTableWidget(BaseWidget):
     group_box: QGroupBox
 
     roi_changed = pyqtSignal()
+    """Emitted when the ROI properties are changed."""
 
     def __init__(self, parent=None):
         super().__init__(parent, ui_file='gui/ui/roi_properties_table_widget.ui')
@@ -193,8 +195,11 @@ class ROITableWidget(RemovableRowTableView):
     selected_row: int
 
     selection_changed = pyqtSignal()
+    """Emitted when the selected row in the ROI table changes."""
     name_changed = pyqtSignal(str, str)
+    """Emitted when the name of an ROI is changed."""
     visibility_changed = pyqtSignal()
+    """Emitted when the visibility of an ROI is changed."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
