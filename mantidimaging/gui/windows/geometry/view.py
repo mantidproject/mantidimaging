@@ -47,6 +47,7 @@ class CustomRangeSpinBox(QDoubleSpinBox):
 class GeometryWindowView(BaseMainWindowView):
 
     geometry_changed = pyqtSignal()
+    """Emitted when the geometry has changed."""
 
     def __init__(self, main_window: MainWindowView):
         super().__init__(parent=None)
@@ -338,6 +339,7 @@ class GeometryWindowView(BaseMainWindowView):
 
     def emit_geometry_changed(self):
         self.geometry_changed.emit()
+        """Emitted when the geometry has changed."""
 
     @property
     def current_stack(self) -> UUID | None:

@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 class StackVisualiserView(QDockWidget):
     # Signal that signifies when the ROI is updated. Used to update previews in Filter views
     roi_updated = pyqtSignal(SensibleROI)
+    """Emitted when the ROI is updated."""
 
     image_view: MIImageView
     presenter: StackVisualiserPresenter

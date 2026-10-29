@@ -177,13 +177,13 @@ class SpectrumViewerWindowModel:
         Computes the mean spectrum of the given image stack within the specified region of interest (ROI).
         If the image stack is None, an empty numpy array is returned.
         Parameters:
-            stack (Optional[ImageStack]): The image stack to compute the spectrum from.
-                It can be None, in which case an empty array is returned.
-            roi (SensibleROI): The region of interest within the image stack.
-                It is a tuple or list of four integers specifying the left, top, right, and bottom coordinates.
+        stack (Optional[ImageStack]): The image stack to compute the spectrum from.
+        It can be None, in which case an empty array is returned.
+        roi (SensibleROI): The region of interest within the image stack.
+        It is a tuple or list of four integers specifying the left, top, right, and bottom coordinates.
         Returns:
-            numpy.ndarray: The mean spectrum of the image stack within the ROI.
-                It is a 1D array where each element is the mean of the corresponding layer of the stack within the ROI.
+        numpy.ndarray: The mean spectrum of the image stack within the ROI.
+        It is a 1D array where each element is the mean of the corresponding layer of the stack within the ROI.
         """
         if stack is None:
             return np.array([])

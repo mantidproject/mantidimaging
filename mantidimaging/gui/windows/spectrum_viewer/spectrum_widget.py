@@ -44,6 +44,7 @@ class SpectrumROI(ROI):
     @param kwargs: Keyword arguments to pass to the ROI object
     """
     sig_colour_change = pyqtSignal(str, tuple)
+    """Emitted when the colour of the ROI has changed."""
 
     def __init__(self, name: str, sensible_roi: SensibleROI, *args, **kwargs) -> None:
         kwargs["pos"] = sensible_roi.left, sensible_roi.top
@@ -124,10 +125,15 @@ class SpectrumWidget(QWidget):
     range_control: LinearRegionItem
 
     range_changed = pyqtSignal(object)
+    """Emitted when the range of the spectrum plot has changed."""
     roi_clicked = pyqtSignal(object)
+    """Emitted when a ROI is clicked."""
     roi_changed = pyqtSignal(object)
+    """Emitted when a ROI has changed."""
     roi_changing = pyqtSignal(object)
+    """Emitted when a ROI is being changed."""
     roiColorChangeRequested = pyqtSignal(str, tuple)
+    """Emitted when a ROI colour change is requested."""
 
     spectrum_plot_widget: SpectrumPlotWidget
     image_widget: SpectrumProjectionWidget
@@ -327,6 +333,7 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     spectrum: MIPlotItem
     range_control: LinearRegionItem
     range_changed = pyqtSignal(object)
+    """Emitted when the range of the spectrum plot has changed."""
     _wavelength_range_label: LabelItem | None
 
     def __init__(self) -> None:

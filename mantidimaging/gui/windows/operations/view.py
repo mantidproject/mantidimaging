@@ -39,8 +39,11 @@ def _strip_filter_name(filter_name: str):
 
 class FiltersWindowView(BaseMainWindowView):
     auto_update_triggered = pyqtSignal()
+    """Emitted when the filter, filter properties or data has changed."""
     filter_applied = pyqtSignal()
+    """Emitted when a filter has been applied to the data."""
     previews_updated = pyqtSignal()
+    """Emitted when the previews have been updated."""
     window_ready = False
 
     splitter: QSplitter

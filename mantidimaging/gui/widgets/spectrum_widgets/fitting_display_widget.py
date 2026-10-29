@@ -25,6 +25,7 @@ class FittingDisplayWidget(QWidget):
     """
 
     unit_changed = pyqtSignal(str)
+    """Emitted when the user selects a different unit for the spectrum plot."""
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)

@@ -26,6 +26,7 @@ class ZSlider(PlotItem):
 
     z_line: InfiniteLine
     valueChanged = pyqtSignal(int)
+    """Emitted when the slider value changes."""
 
     def __init__(self) -> None:
         super().__init__()
