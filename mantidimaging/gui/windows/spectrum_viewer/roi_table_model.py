@@ -27,7 +27,9 @@ class TableModel(QAbstractTableModel):
     user to select which ROIs to plot.
     """
     name_changed = pyqtSignal(str, str)
+    """Emitted when a ROI name has changed."""
     visibility_changed = pyqtSignal()
+    """Emitted when a ROI visibility has changed."""
 
     def __init__(self) -> None:
         super().__init__()

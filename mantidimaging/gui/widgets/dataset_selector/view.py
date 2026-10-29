@@ -23,8 +23,11 @@ def _string_contains_all_parts(string: str, parts: list[str]) -> bool:
 
 class DatasetSelectorWidgetView(QComboBox):
     datasets_updated = pyqtSignal()
+    """Emitted when the list of datasets is updated."""
     dataset_selected_uuid = pyqtSignal('PyQt_PyObject')
+    """Emitted when a dataset is selected, with the UUID of the selected dataset."""
     stack_selected_uuid = pyqtSignal('PyQt_PyObject')
+    """Emitted when a stack is selected, with the UUID of the selected stack."""
 
     main_window: MainWindowView
 

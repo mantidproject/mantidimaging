@@ -114,6 +114,7 @@ class Geometry(AcquisitionGeometry):
         Returns all cors across How many cors will be generated,
                              this should be equal to the image height
                              (i.e. number of sinograms that will be reconstructed)
+
         :return: List of cors for every slice of the image height
         """
         image_height = self.config.panel.num_pixels[1]
