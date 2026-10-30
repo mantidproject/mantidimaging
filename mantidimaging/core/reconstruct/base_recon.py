@@ -28,7 +28,8 @@ class BaseRecon:
         if recon_params.beam_hardening_coefs is not None:
             coefs = np.array([0.0, 1.0] + recon_params.beam_hardening_coefs)
             bhc_poly = Polynomial(coefs.astype(data.dtype))
-            return bhc_poly(logged_data)
+            # NumPy 2 promotes to float64 here because Polynomial uses float64 scalars
+            return bhc_poly(logged_data).astype(data.dtype, copy=False)
         else:
             return logged_data
 
