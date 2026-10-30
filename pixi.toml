@@ -92,7 +92,7 @@ jenkspy = "0.4.*"
 
 # Tomography and reconstruction
 algotom = "1.6.*"
-tomopy = "1.12.*"
+tomopy = "==1.15.3"
 cil = "26.0.*"
 ccpi-viewer = "25.0.*"
 

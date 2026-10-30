@@ -162,7 +162,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/imagecodecs-2024.12.30-py312hbc2ce58_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_resources-7.1.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-gmmlib-22.10.0-hb700be7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-media-driver-25.3.4-hecca717_0.conda
@@ -466,7 +465,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-w-1.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.15.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tornado-6.5.7-py312h4c3975b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyh8f84b5b_0.conda
@@ -668,7 +667,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/imagecodecs-2024.9.22-py312hc6ad62b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_resources-7.1.0-pyhd8ed1ab_0.conda
       - conda: https://software.repos.intel.com/python/conda/win-64/ipp-2021.12.1-intel_13.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/ipydatagrid-1.4.0-pyhcf101f3_2.conda
@@ -894,7 +892,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-w-1.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.15.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tornado-6.5.7-py312he06e257_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyha7b4d00_0.conda
@@ -1114,7 +1112,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/imagecodecs-2024.12.30-py312hbc2ce58_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_resources-7.1.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-gmmlib-22.10.0-hb700be7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-media-driver-25.3.4-hecca717_0.conda
@@ -1424,7 +1421,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-w-1.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.15.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tornado-6.5.7-py312h4c3975b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyh8f84b5b_0.conda
@@ -1636,7 +1633,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/imagecodecs-2024.9.22-py312hc6ad62b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_resources-7.1.0-pyhd8ed1ab_0.conda
       - conda: https://software.repos.intel.com/python/conda/win-64/ipp-2021.12.1-intel_13.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/ipydatagrid-1.4.0-pyhcf101f3_2.conda
@@ -1869,7 +1865,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-w-1.2.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomlkit-0.15.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tornado-6.5.7-py312he06e257_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyha7b4d00_0.conda
@@ -2214,7 +2210,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imagesize-2.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/iniconfig-2.3.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-gmmlib-22.10.0-hb700be7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-media-driver-25.3.4-hecca717_0.conda
@@ -2504,7 +2499,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_hd70dff1_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toml-0.10.2-pyhcf101f3_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tornado-6.5.7-py312h4c3975b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyh8f84b5b_0.conda
@@ -2701,7 +2696,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imagesize-2.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/iniconfig-2.3.0-pyhd8ed1ab_0.conda
       - conda: https://software.repos.intel.com/python/conda/win-64/ipp-2021.12.1-intel_13.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/ipydatagrid-1.4.0-pyhcf101f3_2.conda
@@ -2917,7 +2911,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h967ab96_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toml-0.10.2-pyhcf101f3_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tornado-6.5.7-py312he06e257_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyha7b4d00_0.conda
@@ -3134,7 +3128,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imagesize-2.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/iniconfig-2.3.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-gmmlib-22.10.0-hb700be7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-media-driver-25.3.4-hecca717_0.conda
@@ -3430,7 +3423,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_hd70dff1_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toml-0.10.2-pyhcf101f3_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tornado-6.5.7-py312h4c3975b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyh8f84b5b_0.conda
@@ -3637,7 +3630,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imagesize-2.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/iniconfig-2.3.0-pyhd8ed1ab_0.conda
       - conda: https://software.repos.intel.com/python/conda/win-64/ipp-2021.12.1-intel_13.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/ipydatagrid-1.4.0-pyhcf101f3_2.conda
@@ -3860,7 +3852,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h967ab96_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toml-0.10.2-pyhcf101f3_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tornado-6.5.7-py312he06e257_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyha7b4d00_0.conda
@@ -4047,7 +4039,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/imagecodecs-2024.12.30-py312hbc2ce58_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-gmmlib-22.10.0-hb700be7_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/intel-media-driver-25.3.4-hecca717_0.conda
       - conda: https://conda.anaconda.org/ccpi/linux-64/ipp-2021.12.1-intel_14.tar.bz2
@@ -4304,7 +4295,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_hd70dff1_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toml-0.10.2-pyhcf101f3_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tornado-6.5.7-py312h4c3975b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyh8f84b5b_0.conda
@@ -4476,7 +4467,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/imagecodecs-2024.12.30-py312h2b069aa_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/imageio-2.33.1-pyh8c1a49c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/importlib-metadata-9.0.0-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
       - conda: https://software.repos.intel.com/python/conda/win-64/ipp-2021.12.1-intel_13.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/ipydatagrid-1.4.0-pyhcf101f3_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/ipykernel-7.3.0-pyh6dadd2b_0.conda
@@ -4661,7 +4651,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/tk-8.6.13-h967ab96_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toml-0.10.2-pyhcf101f3_3.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.1-pyhcf101f3_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/tornado-6.5.7-py312he06e257_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.69.0-pyha7b4d00_0.conda
@@ -9340,16 +9330,6 @@ packages:
   purls:
   - pkg:pypi/importlib-metadata?source=compressed-mapping
   size: 34766
-  timestamp: 1779714582554
-- conda: https://conda.anaconda.org/conda-forge/noarch/importlib_metadata-9.0.0-h71f4f89_0.conda
-  sha256: d0df65ba03cde5965a3c333647033a9aba27fcfccd4cdcf57fa7032ae3cf76f4
-  md5: 9951d62277b9c8a33afd7a23216ad728
-  depends:
-  - importlib-metadata ==9.0.0 pyhcf101f3_0
-  license: Apache-2.0
-  license_family: APACHE
-  purls: []
-  size: 21465
   timestamp: 1779714582554
 - conda: https://conda.anaconda.org/conda-forge/noarch/importlib_resources-7.1.0-pyhd8ed1ab_0.conda
   sha256: a563a51aa522998172838e867e6dedcf630bc45796e8612f5a1f6d73e9c8125a
@@ -18090,27 +18070,27 @@ packages:
   license_family: MIT
   size: 49054
   timestamp: 1784287707171
-- conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.12.2-pyhd8ed1ab_1.tar.bz2
-  sha256: eb067cfe335cf1ce44b95423666fd54c42273ad43b711edac595668f0fe00c38
-  md5: 629bfac78d5cd98963bd21f68adead3c
+- conda: https://conda.anaconda.org/conda-forge/noarch/tomopy-1.15.3-pyhd8ed1ab_2.conda
+  sha256: 38df3fbebcbdb086832017da90df2cf4160f1d27c5e634f80a1569b579c74e73
+  md5: 2f15af4607497655132dbd8dab4be48c
   depends:
-  - importlib_metadata
-  - libtomo >=1.12.2,<2.0a0
-  - numexpr 2.*
-  - numpy >1.12,!=1.22.4
-  - python >=3.6,<4
-  - pywavelets 1.*
-  - scikit-image >=0.17,<1
-  - scipy 1.*
-  - tifffile >=2019
+  - importlib-metadata
+  - libtomo >=1.15.3,<2.0a0
+  - numexpr >=2.0,<3
+  - numpy >=2.0,<3
+  - python >=3.10,<4
+  - pywavelets >=1.0,<2
+  - scikit-image >=0.22,<0.26
+  - scipy >=1.12,<2
+  - tifffile >=2019,<2025.2.18
   constrains:
   - astra-toolbox >1.8,<3
   license: BSD-3-Clause AND MIT
   license_family: BSD
   purls:
   - pkg:pypi/tomopy?source=hash-mapping
-  size: 3315702
-  timestamp: 1667588969790
+  size: 3112171
+  timestamp: 1779992612252
 - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
   sha256: 4e379e1c18befb134247f56021fdf18e112fb35e64dd1691858b0a0f3bea9a45
   md5: c07a6153f8306e45794774cf9b13bd32

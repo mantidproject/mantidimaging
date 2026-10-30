@@ -66,7 +66,8 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(autouse=True)
 def purge_deleted_named_viewboxes():
-    # pyqtgraph keeps ViewBoxes in a global registry; deleted ones break later ViewBox creation
+    # Work around pyqtgraph registries retaining wrappers for Qt-deleted ViewBoxes, which crash later creation.
+    # Revisit after PyQt/pyqtgraph upgrades; remove if the regression test passes without this cleanup.
     for name, view in list(ViewBox.NamedViews.items()):
         if sip.isdeleted(view):
             del ViewBox.NamedViews[name]
