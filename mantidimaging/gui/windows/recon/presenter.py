@@ -462,6 +462,7 @@ class ReconstructWindowPresenter(BasePresenter):
         if current_image_stack is None:
             LOG.debug("No image stack or geometry found; skipping geometry update.")
             return
+        geometry_created = current_image_stack.geometry is None
         if current_image_stack.geometry is None:
             LOG.warning(f"No geometry found for ImageStack {current_uuid}; creating default geometry.")
             num_projs = getattr(current_image_stack, "num_projections", 1)
@@ -471,8 +472,11 @@ class ReconstructWindowPresenter(BasePresenter):
         tilt = self.view.tilt
         cor_top = ScalarCoR(self.view.rotation_centre)
         current_image_stack.geometry.set_geometry_from_cor_tilt(cor_top, tilt)
-        current_image_stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_MODIFY,
-                                                      "Geometry Modified (CoR/Tilt refinement)")
+        if geometry_created:
+            current_image_stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
+        else:
+            current_image_stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_MODIFY,
+                                                          "Geometry Modified (CoR/Tilt refinement)")
 
     def _set_precalculated_cor_tilt(self, cor: ScalarCoR, tilt: Degrees) -> None:
         self.model.set_precalculated(cor, tilt)

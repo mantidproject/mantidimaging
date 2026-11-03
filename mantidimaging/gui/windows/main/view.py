@@ -77,6 +77,7 @@ class MainWindowView(BaseMainWindowView):
     """Emitted when a new stack is created or an existing one deleted"""
     stack_modified = pyqtSignal()
     """Emitted when an existing stack is modified"""
+    metadata_changed = pyqtSignal()
     backend_message = pyqtSignal(bytes)
     """Emitted when a message is received from the backend"""
 
@@ -537,6 +538,7 @@ class MainWindowView(BaseMainWindowView):
             self.geometry.show()
 
     def handle_geometry_changed(self) -> None:
+        self.metadata_changed.emit()
         if self.recon is not None:
             self.recon.presenter.on_geometry_updated()
 

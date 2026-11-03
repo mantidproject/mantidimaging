@@ -196,6 +196,8 @@ class StackVisualiserView(QDockWidget):
 
     def show_image_metadata(self) -> None:
         dialog = MetadataDialog(self, self.presenter.images)
+        self._main_window.metadata_changed.connect(dialog.refresh)
+        dialog.finished.connect(lambda: self._main_window.metadata_changed.disconnect(dialog.refresh))
         dialog.show()
 
     def _request_create_gif(self) -> None:
