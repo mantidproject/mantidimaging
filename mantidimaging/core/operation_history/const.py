@@ -41,3 +41,7 @@ GEOMETRY_PIXEL_SIZE = 'pixel_size'
 GEOMETRY_SOURCE_POSITION_MM = 'source_position_mm'
 GEOMETRY_DETECTOR_POSITION_MM = 'detector_position_mm'
 GEOMETRY_ANGLES_DEG = 'angles_deg'
+# Recorded values are rounded to hide floating-point noise from the CIL offset/angle round trip.
+GEOMETRY_DECIMALS = 6
+# COR and tilt are entered via spinboxes with 2 decimals, so record them at the same precision.
+GEOMETRY_COR_TILT_DECIMALS = 2

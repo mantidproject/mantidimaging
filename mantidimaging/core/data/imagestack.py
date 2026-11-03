@@ -124,8 +124,21 @@ class ImageStack:
     def save_metadata(self, f: TextIO, rescale_params: dict[str, str | float] | None = None) -> None:
         if rescale_params is not None:
             self.metadata[const.RESCALED] = rescale_params
+        metadata = deepcopy(self.metadata)
+        compact_arrays: dict[str, str] = {}
 
-        json.dump(self.metadata, f, indent=4)
+        for entry in metadata.get(const.GEOMETRY_HISTORY, []):
+            kwargs = entry.get(const.OPERATION_KEYWORD_ARGS, {})
+            angles = kwargs.get(const.GEOMETRY_ANGLES_DEG)
+            if angles is not None:
+                placeholder = f"COMPACT_ARRAY_{uuid.uuid4().hex}"
+                compact_arrays[placeholder] = json.dumps(angles)
+                kwargs[const.GEOMETRY_ANGLES_DEG] = placeholder
+
+        json_str = json.dumps(metadata, indent=4)
+        for placeholder, array in compact_arrays.items():
+            json_str = json_str.replace(json.dumps(placeholder), array)
+        f.write(json_str)
 
     def record_operation(self, func_name: str, display_name: str, *args, **kwargs) -> None:
         if const.OPERATION_HISTORY not in self.metadata:
@@ -167,16 +180,18 @@ class ImageStack:
         kwargs: dict[str, Any] = {
             const.GEOMETRY_STACK_NAME: self.name,
             const.GEOMETRY_TYPE: geometry.type.value,
-            const.GEOMETRY_COR: float(geometry.cor.value),
-            const.GEOMETRY_TILT: float(geometry.tilt),
+            const.GEOMETRY_COR: round(float(geometry.cor.value), const.GEOMETRY_COR_TILT_DECIMALS),
+            const.GEOMETRY_TILT: round(float(geometry.tilt), const.GEOMETRY_COR_TILT_DECIMALS),
             const.GEOMETRY_PIXEL_SIZE: tuple(float(p) for p in geometry.config.panel.pixel_size),
-            const.GEOMETRY_SOURCE_POSITION_MM: float(geometry.source_position_mm),
-            const.GEOMETRY_DETECTOR_POSITION_MM: float(geometry.detector_position_mm),
+            const.GEOMETRY_SOURCE_POSITION_MM: round(float(geometry.source_position_mm), const.GEOMETRY_DECIMALS),
+            const.GEOMETRY_DETECTOR_POSITION_MM: round(float(geometry.detector_position_mm), const.GEOMETRY_DECIMALS),
         }
 
         angles = self.projection_angles()
         if angles is not None and len(angles.value) > 0:
-            kwargs[const.GEOMETRY_ANGLES_DEG] = [float(degrees(a)) for a in angles.value]
+            kwargs[const.GEOMETRY_ANGLES_DEG] = [
+                round(float(degrees(a)), const.GEOMETRY_DECIMALS) for a in angles.value
+            ]
 
         return kwargs
 
@@ -424,6 +439,7 @@ class ImageStack:
 
         if not self.geometry:
             self.create_geometry(angles)
+            self.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
         else:
             self.geometry.set_angles(angles=angles.value, angle_unit="radian")
 
@@ -489,6 +505,7 @@ class ImageStack:
         self.create_geometry(ProjectionAngles(np.zeros(0)))
         assert (self.geometry is not None)
         self.geometry.config = deepcopy(acquisition_geometry.config)
+        self.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
 
     def set_geometry_panels(self) -> None:
         """

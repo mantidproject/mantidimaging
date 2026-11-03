@@ -77,6 +77,7 @@ class MainWindowView(BaseMainWindowView):
     model_changed = pyqtSignal()
     # Emitted when an existing stack is modified
     stack_modified = pyqtSignal()
+    metadata_changed = pyqtSignal()
     backend_message = pyqtSignal(bytes)
 
     menuFile: QMenu
@@ -536,6 +537,7 @@ class MainWindowView(BaseMainWindowView):
             self.geometry.show()
 
     def handle_geometry_changed(self) -> None:
+        self.metadata_changed.emit()
         if self.recon is not None:
             self.recon.presenter.on_geometry_updated()
 

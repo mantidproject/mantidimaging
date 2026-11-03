@@ -25,6 +25,7 @@ class MetadataDialog(BaseDialogView):
         self.setSizeGripEnabled(True)
         self.resize(600, 300)
 
+        self.images = images
         self.metadata = images.metadata
         main_widget = MetadataDialog.build_metadata_tree(images.metadata)
 
@@ -35,13 +36,23 @@ class MetadataDialog(BaseDialogView):
         buttons.addButton(copy_button, QDialogButtonBox.ActionRole)
         copy_button.clicked.connect(self.copy_metadata_to_clipboard)
 
+        self.tree_widget = main_widget
         layout = QVBoxLayout()
         layout.addWidget(main_widget)
         layout.addWidget(buttons)
         self.setLayout(layout)
+        self._layout = layout
 
         shortcut = QShortcut(QKeySequence("Ctrl+C"), self)
         shortcut.activated.connect(self.copy_metadata_to_clipboard)
+
+    def refresh(self) -> None:
+        """Rebuild the tree from the stack's current metadata."""
+        self.metadata = self.images.metadata
+        new_widget = MetadataDialog.build_metadata_tree(self.metadata)
+        self._layout.replaceWidget(self.tree_widget, new_widget)
+        self.tree_widget.deleteLater()
+        self.tree_widget = new_widget
 
     @staticmethod
     def build_metadata_tree(metadata: dict[str, Any]) -> QTreeWidget:
