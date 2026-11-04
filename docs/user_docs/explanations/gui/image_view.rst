@@ -75,7 +75,7 @@ should note that the execution time of the algorithms increases greatly with the
     :align: center
 
 Viewing Image Data as Sinograms
----------------------------
+-------------------------------
 
 Image data is loaded into Mantid Imaging as projections, but if you would like to view the
 sinogram version of the data, use the right-click menu in the image view and select
