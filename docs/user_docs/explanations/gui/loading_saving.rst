@@ -44,7 +44,7 @@ left at the default value of *float32*.
 .. _load-dataset-as-sino:
 
 Load Sinograms
-************
+**************
 
 Sinograms can be loaded by checking the "Images are sinograms" checkbox:
 
