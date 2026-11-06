@@ -575,6 +575,7 @@
     <span class="n">model_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
     <span class="c1"># Emitted when an existing stack is modified</span>
     <span class="n">stack_modified</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">metadata_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
     <span class="n">backend_message</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span>
 
     <span class="n">menuFile</span><span class="p">:</span> <span class="n">QMenu</span>
@@ -1126,6 +1127,7 @@
 <div class="viewcode-block" id="MainWindowView.handle_geometry_changed">
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.main.view.html#mantidimaging.gui.windows.main.view.MainWindowView.handle_geometry_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_geometry_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recon</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">on_geometry_updated</span><span class="p">()</span></div>
 

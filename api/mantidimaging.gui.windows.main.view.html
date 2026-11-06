@@ -995,9 +995,24 @@ Displays warning if no stack is currently visible.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.metadata_changed">
+<span class="sig-name descname"><span class="pre">metadata_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.metadata_changed" title="Link to this definition">#</a></dt>
+<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.model_changed">
 <span class="sig-name descname"><span class="pre">model_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.model_changed" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
 <p>types is normally a sequence of individual types.  Each type is either a
 type object or a string that is the name of a C++ type.  Alternatively
 each type could itself be a sequence of types each describing a different
@@ -1223,7 +1238,7 @@ the welcome screen’s links if it’s still visible.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_modified">
 <span class="sig-name descname"><span class="pre">stack_modified</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_modified" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<dd><p>pyqtSignal(<a href="#id7"><span class="problematic" id="id8">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
 <p>types is normally a sequence of individual types.  Each type is either a
 type object or a string that is the name of a C++ type.  Alternatively
 each type could itself be a sequence of types each describing a different
@@ -1409,6 +1424,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.menuTreeView"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuTreeView</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.menuView"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuView</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.menuWorkflow"><code class="docutils literal notranslate"><span class="pre">MainWindowView.menuWorkflow</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.metadata_changed"><code class="docutils literal notranslate"><span class="pre">MainWindowView.metadata_changed</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.model_changed"><code class="docutils literal notranslate"><span class="pre">MainWindowView.model_changed</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.move_stack_dialog"><code class="docutils literal notranslate"><span class="pre">MainWindowView.move_stack_dialog</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mantidimaging.gui.windows.main.view.MainWindowView.new_dataset_tree_widget_item"><code class="docutils literal notranslate"><span class="pre">MainWindowView.new_dataset_tree_widget_item()</span></code></a></li>

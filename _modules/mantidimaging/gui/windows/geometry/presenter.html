@@ -504,6 +504,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageStack</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.imagestack</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackNotFoundError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operation_history</span><span class="w"> </span><span class="kn">import</span> <span class="n">const</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">ProjectionAngles</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.unit_conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_distance</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.mvp_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePresenter</span>
@@ -530,6 +531,7 @@
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">):</span>
             <span class="n">stack</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">record_geometry_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_GEOMETRY_DELETE</span><span class="p">,</span> <span class="s2">&quot;Geometry Deleted&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">set_widget_stack_page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">clear_plot</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_info_dialog</span><span class="p">(</span><span class="s2">&quot;Geometry deleted. You can now create a new geometry.&quot;</span><span class="p">)</span>
@@ -629,6 +631,7 @@
 
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">updated_cor</span><span class="p">,</span> <span class="n">updated_tilt</span><span class="p">)</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">src_val_mm</span><span class="p">,</span> <span class="n">det_val_mm</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">record_geometry_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_GEOMETRY_MODIFY</span><span class="p">,</span> <span class="s2">&quot;Geometry Modified&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_plot</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span>
         <span class="c1"># Notify main window that stack was modified (so recon window can update COR/Tilt)</span>
@@ -676,6 +679,7 @@
         <span class="k">assert</span> <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">new_cor</span><span class="p">,</span> <span class="n">new_tilt</span><span class="p">)</span>
         <span class="n">stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_source_detector_positions</span><span class="p">(</span><span class="n">src_val_mm</span><span class="p">,</span> <span class="n">det_val_mm</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">record_geometry_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_GEOMETRY_CREATE</span><span class="p">,</span> <span class="s2">&quot;Geometry Created&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">presenter</span><span class="o">.</span><span class="n">add_projection_angles_to_sample</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">new_angles</span><span class="p">)</span>
 
@@ -709,6 +713,7 @@
         <span class="k">assert</span> <span class="n">existing_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
         <span class="n">stack</span><span class="o">.</span><span class="n">create_geometry</span><span class="p">(</span><span class="n">existing_angles</span><span class="p">,</span> <span class="n">new_type</span><span class="p">)</span>
+        <span class="n">stack</span><span class="o">.</span><span class="n">record_geometry_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_GEOMETRY_CONVERT</span><span class="p">,</span> <span class="s2">&quot;Geometry Converted&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_stack_changed</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">emit_geometry_changed</span><span class="p">()</span></div>
 

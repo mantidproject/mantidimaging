@@ -514,6 +514,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.utility.qt_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockQtSignals</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.gui.windows.recon.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReconstructWindowModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.data.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.operation_history</span><span class="w"> </span><span class="kn">import</span> <span class="n">const</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mantidimaging.core.utility.data_containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectionAngles</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -1022,6 +1023,7 @@
         <span class="k">if</span> <span class="n">current_image_stack</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No image stack or geometry found; skipping geometry update.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
+        <span class="n">geometry_created</span> <span class="o">=</span> <span class="n">current_image_stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">current_image_stack</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No geometry found for ImageStack </span><span class="si">{</span><span class="n">current_uuid</span><span class="si">}</span><span class="s2">; creating default geometry.&quot;</span><span class="p">)</span>
             <span class="n">num_projs</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">current_image_stack</span><span class="p">,</span> <span class="s2">&quot;num_projections&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1031,6 +1033,11 @@
         <span class="n">tilt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">tilt</span>
         <span class="n">cor_top</span> <span class="o">=</span> <span class="n">ScalarCoR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">rotation_centre</span><span class="p">)</span>
         <span class="n">current_image_stack</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_geometry_from_cor_tilt</span><span class="p">(</span><span class="n">cor_top</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">geometry_created</span><span class="p">:</span>
+            <span class="n">current_image_stack</span><span class="o">.</span><span class="n">record_geometry_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_GEOMETRY_CREATE</span><span class="p">,</span> <span class="s2">&quot;Geometry Created&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_image_stack</span><span class="o">.</span><span class="n">record_geometry_operation</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">OPERATION_NAME_GEOMETRY_MODIFY</span><span class="p">,</span>
+                                                          <span class="s2">&quot;Geometry Modified (CoR/Tilt refinement)&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_precalculated_cor_tilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cor</span><span class="p">:</span> <span class="n">ScalarCoR</span><span class="p">,</span> <span class="n">tilt</span><span class="p">:</span> <span class="n">Degrees</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">set_precalculated</span><span class="p">(</span><span class="n">cor</span><span class="p">,</span> <span class="n">tilt</span><span class="p">)</span>
