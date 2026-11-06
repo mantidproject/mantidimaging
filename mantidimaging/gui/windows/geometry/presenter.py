@@ -11,6 +11,7 @@ from logging import getLogger
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.data.imagestack import StackNotFoundError
+from mantidimaging.core.operation_history import const
 from mantidimaging.core.utility.data_containers import ScalarCoR, ProjectionAngles
 from mantidimaging.core.utility.unit_conversion import convert_distance
 from mantidimaging.gui.mvp_base import BasePresenter
@@ -33,6 +34,7 @@ class GeometryWindowPresenter(BasePresenter):
         stack.geometry = None
         if hasattr(stack, 'geometry'):
             stack.metadata.pop('angles', None)
+        stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_DELETE, "Geometry Deleted")
         self.view.set_widget_stack_page(1)
         self.view.clear_plot()
         self.view.show_info_dialog("Geometry deleted. You can now create a new geometry.")
@@ -120,6 +122,7 @@ class GeometryWindowPresenter(BasePresenter):
 
         stack.geometry.set_geometry_from_cor_tilt(updated_cor, updated_tilt)
         stack.geometry.set_source_detector_positions(src_val_mm, det_val_mm)
+        stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_MODIFY, "Geometry Modified")
 
         self.refresh_plot(stack)
         # Notify main window that stack was modified (so recon window can update COR/Tilt)
@@ -161,6 +164,7 @@ class GeometryWindowPresenter(BasePresenter):
         assert stack.geometry is not None
         stack.geometry.set_geometry_from_cor_tilt(new_cor, new_tilt)
         stack.geometry.set_source_detector_positions(src_val_mm, det_val_mm)
+        stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
 
         self.main_window.presenter.add_projection_angles_to_sample(stack.id, new_angles)
 
@@ -191,6 +195,7 @@ class GeometryWindowPresenter(BasePresenter):
         assert existing_angles is not None
 
         stack.create_geometry(existing_angles, new_type)
+        stack.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CONVERT, "Geometry Converted")
         self.handle_stack_changed()
         self.view.emit_geometry_changed()
 

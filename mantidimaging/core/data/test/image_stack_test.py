@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import io
+import json
+from copy import deepcopy
 from pathlib import Path
 from unittest import mock
 from parameterized import parameterized
 
 from mantidimaging.core.io.instrument_log import InstrumentLog
-from mantidimaging.core.utility.data_containers import ProjectionAngles
+from mantidimaging.core.utility.data_containers import ProjectionAngles, ScalarCoR
 import unittest
 
 import numpy as np
@@ -217,6 +219,19 @@ class ImageStackTest(unittest.TestCase):
         self.assertEqual(10, len(actual.value))
         np.testing.assert_allclose(actual.value, pangles.value, atol=1e-4)
 
+    def test_set_projection_angles_records_creation_only_when_no_geometry(self):
+        images = generate_images()
+        pangles = ProjectionAngles(np.linspace(0, np.pi, 10))
+
+        images.set_projection_angles(pangles)
+        history = images.metadata[const.GEOMETRY_HISTORY]
+        self.assertEqual([e[const.OPERATION_NAME] for e in history], [const.OPERATION_NAME_GEOMETRY_CREATE])
+        self.assertEqual(history[0][const.OPERATION_KEYWORD_ARGS][const.GEOMETRY_STACK_NAME], images.name)
+
+        # Updating angles on existing geometry is not a creation
+        images.set_projection_angles(pangles)
+        self.assertEqual(len(images.metadata[const.GEOMETRY_HISTORY]), 1)
+
     def test_set_angles_geometry(self):
         images = generate_images()
         angles = range(0, 10)
@@ -227,6 +242,54 @@ class ImageStackTest(unittest.TestCase):
         self.assertIsNotNone(images.geometry)
         self.assertEqual(images.geometry.config.angles.angle_unit, angle_unit)
         npt.assert_array_equal(images.geometry.config.angles.angle_data, np.array(angles))
+
+    def test_record_geometry_operation(self):
+        images = generate_images()
+        angles = ProjectionAngles(np.linspace(0, np.pi, 10))
+        images.create_geometry(angles)
+
+        images.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
+
+        self.assertNotIn(const.OPERATION_HISTORY, images.metadata)
+        history_entry = images.metadata[const.GEOMETRY_HISTORY][0]
+        self.assertEqual(history_entry[const.OPERATION_NAME], const.OPERATION_NAME_GEOMETRY_CREATE)
+        self.assertEqual(history_entry[const.OPERATION_DISPLAY_NAME], "Geometry Created")
+        kwargs = history_entry[const.OPERATION_KEYWORD_ARGS]
+        self.assertEqual(kwargs[const.GEOMETRY_STACK_NAME], images.name)
+        self.assertEqual(kwargs[const.GEOMETRY_TYPE], images.geometry.type.value)
+        self.assertAlmostEqual(kwargs[const.GEOMETRY_COR], images.geometry.cor.value)
+        self.assertAlmostEqual(kwargs[const.GEOMETRY_TILT], images.geometry.tilt)
+        npt.assert_allclose(kwargs[const.GEOMETRY_ANGLES_DEG], np.degrees(angles.value))
+
+        # The recorded geometry must be plain JSON-serialisable primitives, since it is written
+        # directly into the exported metadata file.
+        json.dumps(images.metadata)
+
+    def test_save_metadata_writes_angles_on_one_line(self):
+        images = generate_images()
+        images.create_geometry(ProjectionAngles(np.linspace(0, np.pi, 10)))
+        images.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_CREATE, "Geometry Created")
+        original_metadata = deepcopy(images.metadata)
+
+        out = io.StringIO()
+        images.save_metadata(out)
+
+        self.assertEqual(json.loads(out.getvalue()), json.loads(json.dumps(original_metadata)))
+        angles_lines = [line for line in out.getvalue().splitlines() if const.GEOMETRY_ANGLES_DEG in line]
+        self.assertEqual(len(angles_lines), 1)
+        self.assertTrue(angles_lines[0].rstrip().endswith("]"))
+        self.assertEqual(images.metadata, original_metadata)
+
+    def test_record_geometry_operation_rounds_cor_and_tilt(self):
+        images = generate_images()
+        images.create_geometry(ProjectionAngles(np.linspace(0, np.pi, 10)))
+        images.geometry.set_geometry_from_cor_tilt(ScalarCoR(240.0), 15.0)
+
+        images.record_geometry_operation(const.OPERATION_NAME_GEOMETRY_MODIFY, "Geometry Modified")
+
+        kwargs = images.metadata[const.GEOMETRY_HISTORY][0][const.OPERATION_KEYWORD_ARGS]
+        self.assertEqual(kwargs[const.GEOMETRY_COR], 240.0)
+        self.assertEqual(kwargs[const.GEOMETRY_TILT], 15.0)
 
     def test_image_eq_method(self):
         data_array = np.arange(64, dtype=float).reshape([4, 4, 4])
