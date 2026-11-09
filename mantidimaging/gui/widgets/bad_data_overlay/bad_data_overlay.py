@@ -7,7 +7,8 @@ from collections.abc import Callable
 from typing import Final
 
 import numpy as np
-from pyqtgraph import ColorMap, ImageItem, ViewBox
+from pyqtgraph import ColorMap, ImageItem
+from pyqtgraph.graphicsItems.ViewBox import ViewBox
 from dataclasses import dataclass
 
 from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
