@@ -16,12 +16,13 @@ class FitSelectionWidget(QtWidgets.QGroupBox):
     """
     A custom Qt widget for selecting an Fitting Model.
     Attributes:
-        fitDropdown: A dropdown menu for selecting fits.
-        func_dict: A dictionary for storing fitting functions available in the viewer.
-        selectionChanged: Signal emitted when the fit selection changes.
+    fitDropdown: A dropdown menu for selecting fits.
+    func_dict: A dictionary for storing fitting functions available in the viewer.
+    selectionChanged: Signal emitted when the fit selection changes.
     """
     func_dict: dict[str, type[BaseFittingFunction]] = {}
     selectionChanged = QtCore.pyqtSignal(object)
+    """Emitted when the fit selection changes."""
 
     def __init__(self, parent: QtWidgets.QWidget = None):
         super().__init__("Select Fitting Function", parent)

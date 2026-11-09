@@ -1,7 +1,7 @@
 .. _getting-started-with-ada:
 
 Getting Started with Ada
----------------
+------------------------
 
 .. note:: Ada (previously known as IDAaaS) is a remote VM system available to STFC staff and ISIS users.
 

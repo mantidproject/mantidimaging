@@ -73,12 +73,14 @@ class QTreeDatasetWidgetItem(QTreeWidgetItem):
 class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
 
-    # Emitted when a new stack is created or an existing one deleted
     model_changed = pyqtSignal()
-    # Emitted when an existing stack is modified
+    """Emitted when a new stack is created or an existing one deleted"""
     stack_modified = pyqtSignal()
+    """Emitted when an existing stack is modified"""
     metadata_changed = pyqtSignal()
+    """Emitted when the meta data is modified"""
     backend_message = pyqtSignal(bytes)
+    """Emitted when a message is received from the backend"""
 
     menuFile: QMenu
     menuWorkflow: QMenu

@@ -86,6 +86,7 @@ class ROIBinner:
         - bin_size must be greater than zero (step_size must be checked at construction)
         - bin_size must be greater or equal than step_size (to avoid gaps)
         - bin_size must be less than or equal to roi width and height (to fit in the roi)
+
         Returns:
             validity (bool), message (str)
         """

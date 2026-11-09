@@ -86,6 +86,7 @@ class WizardStep(QWidget):
 
 class WizardView(BaseDialogView):
     close_steps = pyqtSignal()
+    """Emitted when a step is opened, to close all other steps."""
 
     def __init__(self, parent, presenter) -> None:
         super().__init__(parent, "gui/ui/wizard.ui")
