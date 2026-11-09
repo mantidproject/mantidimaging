@@ -518,8 +518,11 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.widgets.dataset_selector.view.html#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DatasetSelectorWidgetView</span><span class="p">(</span><span class="n">QComboBox</span><span class="p">):</span>
     <span class="n">datasets_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the list of datasets is updated.&quot;&quot;&quot;</span>
     <span class="n">dataset_selected_uuid</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="s1">&#39;PyQt_PyObject&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a dataset is selected, with the UUID of the selected dataset.&quot;&quot;&quot;</span>
     <span class="n">stack_selected_uuid</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="s1">&#39;PyQt_PyObject&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a stack is selected, with the UUID of the selected stack.&quot;&quot;&quot;</span>
 
     <span class="n">main_window</span><span class="p">:</span> <span class="n">MainWindowView</span>
 

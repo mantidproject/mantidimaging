@@ -778,9 +778,12 @@
 <span class="sd">    sort_images_by_modified_time(images)</span>
 <span class="sd">        Sort the images by modified time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># Signal emitted when an image is added or removed</span>
-    <span class="n">update_spectrum</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>  <span class="c1"># Signal emitted to update the Live Viewer Spectrum</span>
+    <span class="n">image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Signal emitted when an image is added or removed&quot;&quot;&quot;</span>
+    <span class="n">update_spectrum</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Signal emitted to update the Live Viewer Spectrum&quot;&quot;&quot;</span>
     <span class="n">recent_image_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">Path</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Signal emitted when the most recent image is modified&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>

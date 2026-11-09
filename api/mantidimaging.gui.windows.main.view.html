@@ -721,16 +721,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.backend_message">
 <span class="sig-name descname"><span class="pre">backend_message</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.backend_message" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when a message is received from the backend</p>
 </dd></dl>
 
 <dl class="py method">
@@ -997,31 +988,13 @@ Displays warning if no stack is currently visible.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.metadata_changed">
 <span class="sig-name descname"><span class="pre">metadata_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.metadata_changed" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when the meta data is modified</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.model_changed">
 <span class="sig-name descname"><span class="pre">model_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.model_changed" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when a new stack is created or an existing one deleted</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1238,16 +1211,7 @@ the welcome screen’s links if it’s still visible.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.main.view.MainWindowView.stack_modified">
 <span class="sig-name descname"><span class="pre">stack_modified</span></span><a class="headerlink" href="#mantidimaging.gui.windows.main.view.MainWindowView.stack_modified" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id7"><span class="problematic" id="id8">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when an existing stack is modified</p>
 </dd></dl>
 
 <dl class="py property">

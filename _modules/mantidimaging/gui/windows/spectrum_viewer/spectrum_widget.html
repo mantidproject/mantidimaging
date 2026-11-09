@@ -539,6 +539,7 @@
 <span class="sd">    @param kwargs: Keyword arguments to pass to the ROI object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sig_colour_change</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the colour of the ROI has changed.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="p">:</span> <span class="n">SensibleROI</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">sensible_roi</span><span class="o">.</span><span class="n">top</span>
@@ -640,10 +641,15 @@
     <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
 
     <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the range of the spectrum plot has changed.&quot;&quot;&quot;</span>
     <span class="n">roi_clicked</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a ROI is clicked.&quot;&quot;&quot;</span>
     <span class="n">roi_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a ROI has changed.&quot;&quot;&quot;</span>
     <span class="n">roi_changing</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a ROI is being changed.&quot;&quot;&quot;</span>
     <span class="n">roiColorChangeRequested</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a ROI colour change is requested.&quot;&quot;&quot;</span>
 
     <span class="n">spectrum_plot_widget</span><span class="p">:</span> <span class="n">SpectrumPlotWidget</span>
     <span class="n">image_widget</span><span class="p">:</span> <span class="n">SpectrumProjectionWidget</span>
@@ -888,6 +894,7 @@
     <span class="n">spectrum</span><span class="p">:</span> <span class="n">MIPlotItem</span>
     <span class="n">range_control</span><span class="p">:</span> <span class="n">LinearRegionItem</span>
     <span class="n">range_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the range of the spectrum plot has changed.&quot;&quot;&quot;</span>
     <span class="n">_wavelength_range_label</span><span class="p">:</span> <span class="n">LabelItem</span> <span class="o">|</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

@@ -664,31 +664,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageWatcher.image_changed">
 <span class="sig-name descname"><span class="pre">image_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.image_changed" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Signal emitted when an image is added or removed</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageWatcher.recent_image_changed">
 <span class="sig-name descname"><span class="pre">recent_image_changed</span></span><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.recent_image_changed" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Signal emitted when the most recent image is modified</p>
 </dd></dl>
 
 <dl class="py method">
@@ -729,16 +711,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_spectrum">
 <span class="sig-name descname"><span class="pre">update_spectrum</span></span><a class="headerlink" href="#mantidimaging.gui.windows.live_viewer.model.ImageWatcher.update_spectrum" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Signal emitted to update the Live Viewer Spectrum</p>
 </dd></dl>
 
 </section>
@@ -750,8 +723,8 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Image Data Class to store represent image data.</p>
 <p>…</p>
-<section id="id7">
-<h2>Attributes<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h2>Attributes<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>image_path<span class="classifier">Path</span></dt><dd><p>path to image file</p>
 </dd>
@@ -792,8 +765,8 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>The model for the spectrum viewer window.</p>
 <p>…</p>
-<section id="id8">
-<h2>Attributes<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h2>Attributes<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <dl class="simple">
 <dt>presenter<span class="classifier">LiveViewerWindowPresenter</span></dt><dd><p>presenter for the spectrum viewer window</p>
 </dd>

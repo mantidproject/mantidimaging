@@ -571,12 +571,14 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">MainWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
     <span class="n">NOT_THE_LATEST_VERSION</span> <span class="o">=</span> <span class="s2">&quot;This is not the latest version&quot;</span>
 
-    <span class="c1"># Emitted when a new stack is created or an existing one deleted</span>
     <span class="n">model_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
-    <span class="c1"># Emitted when an existing stack is modified</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a new stack is created or an existing one deleted&quot;&quot;&quot;</span>
     <span class="n">stack_modified</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when an existing stack is modified&quot;&quot;&quot;</span>
     <span class="n">metadata_changed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the meta data is modified&quot;&quot;&quot;</span>
     <span class="n">backend_message</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a message is received from the backend&quot;&quot;&quot;</span>
 
     <span class="n">menuFile</span><span class="p">:</span> <span class="n">QMenu</span>
     <span class="n">menuWorkflow</span><span class="p">:</span> <span class="n">QMenu</span>

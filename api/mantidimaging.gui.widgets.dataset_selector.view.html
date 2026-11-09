@@ -585,31 +585,13 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.dataset_selected_uuid">
 <span class="sig-name descname"><span class="pre">dataset_selected_uuid</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.dataset_selected_uuid" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when a dataset is selected, with the UUID of the selected dataset.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.datasets_updated">
 <span class="sig-name descname"><span class="pre">datasets_updated</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.datasets_updated" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when the list of datasets is updated.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -625,16 +607,7 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.stack_selected_uuid">
 <span class="sig-name descname"><span class="pre">stack_selected_uuid</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.dataset_selector.view.DatasetSelectorWidgetView.stack_selected_uuid" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id5"><span class="problematic" id="id6">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when a stack is selected, with the UUID of the selected stack.</p>
 </dd></dl>
 
 <dl class="py method">

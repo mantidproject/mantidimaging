@@ -519,8 +519,11 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.dialogs.async_task.presenter.html#mantidimaging.gui.dialogs.async_task.presenter.AsyncTaskDialogPresenter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AsyncTaskDialogPresenter</span><span class="p">(</span><span class="n">QObject</span><span class="p">,</span> <span class="n">ProgressHandler</span><span class="p">):</span>
     <span class="n">progress_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when task progress is updated.&quot;&quot;&quot;</span>
     <span class="n">progress_plot_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when progress plot data is updated.&quot;&quot;&quot;</span>
     <span class="n">progress_residual_plot_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when residual plot data is updated.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>

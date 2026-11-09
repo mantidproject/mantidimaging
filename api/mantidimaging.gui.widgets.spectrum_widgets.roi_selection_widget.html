@@ -578,11 +578,9 @@
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.</span></span><span class="sig-name descname"><span class="pre">ROISelectionWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QWidget</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mantidimaging/gui/widgets/spectrum_widgets/roi_selection_widget.html#ROISelectionWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGroupBox</span></code></p>
 <p>A custom Qt widget for selecting an ROI.
-Attributes:</p>
-<blockquote>
-<div><p>roiDropdown: A dropdown menu for selecting ROIs.
+Attributes:
+roiDropdown: A dropdown menu for selecting ROIs.
 selectionChanged: Signal emitted when the ROI selection changes.</p>
-</div></blockquote>
 <dl class="py property">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.current_roi_name">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">current_roi_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></em><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.current_roi_name" title="Link to this definition">#</a></dt>
@@ -608,16 +606,7 @@ selectionChanged: Signal emitted when the ROI selection changes.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.selectionChanged">
 <span class="sig-name descname"><span class="pre">selectionChanged</span></span><a class="headerlink" href="#mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget.ROISelectionWidget.selectionChanged" title="Link to this definition">#</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dd><p>Emitted when the ROI selection changes.</p>
 </dd></dl>
 
 <dl class="py method">

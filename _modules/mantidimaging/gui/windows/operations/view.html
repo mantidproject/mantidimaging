@@ -534,8 +534,11 @@
 <a class="viewcode-back" href="../../../../../api/mantidimaging.gui.windows.operations.view.html#mantidimaging.gui.windows.operations.view.FiltersWindowView">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FiltersWindowView</span><span class="p">(</span><span class="n">BaseMainWindowView</span><span class="p">):</span>
     <span class="n">auto_update_triggered</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the filter, filter properties or data has changed.&quot;&quot;&quot;</span>
     <span class="n">filter_applied</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when a filter has been applied to the data.&quot;&quot;&quot;</span>
     <span class="n">previews_updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the previews have been updated.&quot;&quot;&quot;</span>
     <span class="n">window_ready</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="n">splitter</span><span class="p">:</span> <span class="n">QSplitter</span>
