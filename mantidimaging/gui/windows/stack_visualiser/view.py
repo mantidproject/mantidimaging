@@ -28,6 +28,7 @@ if TYPE_CHECKING:
 class StackVisualiserView(QDockWidget):
     # Signal that signifies when the ROI is updated. Used to update previews in Filter views
     roi_updated = pyqtSignal(SensibleROI)
+    """Emitted when the ROI is updated."""
 
     image_view: MIImageView
     presenter: StackVisualiserPresenter
@@ -196,6 +197,8 @@ class StackVisualiserView(QDockWidget):
 
     def show_image_metadata(self) -> None:
         dialog = MetadataDialog(self, self.presenter.images)
+        self._main_window.metadata_changed.connect(dialog.refresh)
+        dialog.finished.connect(lambda: self._main_window.metadata_changed.disconnect(dialog.refresh))
         dialog.show()
 
     def _request_create_gif(self) -> None:

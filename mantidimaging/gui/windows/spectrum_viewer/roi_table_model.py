@@ -26,7 +26,9 @@ class TableModel(QAbstractTableModel):
     user to select which ROIs to plot.
     """
     name_changed = pyqtSignal(str, str)
+    """Emitted when a ROI name has changed."""
     visibility_changed = pyqtSignal()
+    """Emitted when a ROI visibility has changed."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -64,7 +66,8 @@ class TableModel(QAbstractTableModel):
 
         if role == Qt.ItemDataRole.BackgroundRole:
             if index.column() == 1:
-                return QBrush(QColor(*self._data[index.row()][index.column()]))
+                color = cast(tuple[int, int, int], self._data[index.row()][index.column()])
+                return QBrush(QColor(*color))
 
         if role == Qt.ItemDataRole.CheckStateRole:
             if index.column() == 2:

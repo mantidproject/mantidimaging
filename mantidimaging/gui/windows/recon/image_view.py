@@ -16,7 +16,9 @@ from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
 
 class ReconImagesView(GraphicsLayoutWidget):
     sigSliceIndexChanged = QtCore.pyqtSignal(int)
+    """Emitted when the slice index has changed."""
     sigCorPointClicked = QtCore.pyqtSignal(int)
+    """Emitted when a COR point is clicked."""
 
     def __init__(self, parent):
         super().__init__(parent)

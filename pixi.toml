@@ -16,8 +16,8 @@ requires-pixi = ">=0.59,<1.0"
 platforms = ["linux-64", "win-64"]
 
 [environments]
-lint = ["lint", "runtime", "runtime-cpu", "ubuntu18"]
-dev = ["runtime", "runtime-cpu", "dev", "test", "lint", "ubuntu18"]
+lint = ["lint", "runtime", "runtime-cpu"]
+dev = ["runtime", "runtime-cpu", "dev", "test", "lint"]
 dev-gpu = ["runtime", "runtime-gpu", "gpu-verify", "dev", "test", "lint"]
 build-cpu = ["runtime", "runtime-cpu", "build"]
 build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
@@ -25,16 +25,12 @@ build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
 # Linting packages
 [feature.lint.dependencies]
 mypy = "==1.17"
-pyright = "==1.1.391"
+pyright = "==1.1.410"
 yapf = "0.43.*"
 ruff = "0.3.7.*"
 types-requests = "*"
 types-pyyaml = "*"
 types-docutils = "*"
-
-# Ubuntu 18 compatibility
-[feature.ubuntu18.system-requirements]
-libc = { family = "glibc", version = "2.27" }
 
 # Testing packages
 [feature.test.dependencies]

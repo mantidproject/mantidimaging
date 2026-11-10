@@ -34,6 +34,7 @@ class CloseButton(QPushButton):
 class WelcomeScreenView(QWidget):
 
     closed = pyqtSignal()
+    """Emitted when the welcome screen is closed."""
 
     def __init__(self, parent, presenter):
         super().__init__(parent)

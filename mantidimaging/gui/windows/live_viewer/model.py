@@ -247,9 +247,12 @@ class ImageWatcher(QObject):
     sort_images_by_modified_time(images)
         Sort the images by modified time.
     """
-    image_changed = pyqtSignal(list)  # Signal emitted when an image is added or removed
-    update_spectrum = pyqtSignal(np.ndarray)  # Signal emitted to update the Live Viewer Spectrum
+    image_changed = pyqtSignal(list)
+    """Signal emitted when an image is added or removed"""
+    update_spectrum = pyqtSignal(np.ndarray)
+    """Signal emitted to update the Live Viewer Spectrum"""
     recent_image_changed = pyqtSignal(Path)
+    """Signal emitted when the most recent image is modified"""
 
     def __init__(self, directory: Path):
         """

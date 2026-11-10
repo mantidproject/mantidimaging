@@ -6,7 +6,7 @@ import uuid
 from logging import getLogger
 from pathlib import Path
 import time
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
 import numpy as np
@@ -74,11 +74,14 @@ class QTreeDatasetWidgetItem(QTreeWidgetItem):
 class MainWindowView(BaseMainWindowView):
     NOT_THE_LATEST_VERSION = "This is not the latest version"
 
-    # Emitted when a new stack is created or an existing one deleted
     model_changed = pyqtSignal()
-    # Emitted when an existing stack is modified
+    """Emitted when a new stack is created or an existing one deleted"""
     stack_modified = pyqtSignal()
+    """Emitted when an existing stack is modified"""
+    metadata_changed = pyqtSignal()
+    """Emitted when the meta data is modified"""
     backend_message = pyqtSignal(bytes)
+    """Emitted when a message is received from the backend"""
 
     menuFile: QMenu
     menuWorkflow: QMenu
@@ -537,6 +540,7 @@ class MainWindowView(BaseMainWindowView):
             self.geometry.show()
 
     def handle_geometry_changed(self) -> None:
+        self.metadata_changed.emit()
         if self.recon is not None:
             self.recon.presenter.on_geometry_updated()
 
@@ -769,7 +773,7 @@ class MainWindowView(BaseMainWindowView):
         for i in range(parent.childCount()):
             child = parent.child(i)
             if child.text(0) == SINO_TEXT:
-                return child
+                return cast(QTreeDatasetWidgetItem, child)
         return None
 
     def _open_tree_menu(self, position: QPoint) -> None:
@@ -856,8 +860,9 @@ class MainWindowView(BaseMainWindowView):
         :return: The recon group if found.
         """
         for i in range(dataset_item.childCount()):
-            if dataset_item.child(i).text(0) == RECON_GROUP_TEXT:
-                return dataset_item.child(i)
+            child = dataset_item.child(i)
+            if child.text(0) == RECON_GROUP_TEXT:
+                return cast(QTreeDatasetWidgetItem, child)
         return None
 
     def get_dataset_tree_view_item(self, dataset_id: uuid.UUID) -> QTreeDatasetWidgetItem:
@@ -869,8 +874,8 @@ class MainWindowView(BaseMainWindowView):
         top_level_item_count = self.dataset_tree_widget.topLevelItemCount()
         for i in range(top_level_item_count):
             top_level_item = self.dataset_tree_widget.topLevelItem(i)
-            if top_level_item.id == dataset_id:
-                return top_level_item
+            if top_level_item is not None and getattr(top_level_item, "id", None) == dataset_id:
+                return cast(QTreeDatasetWidgetItem, top_level_item)
         raise RuntimeError(f"Unable to find dataset with ID {dataset_id}")
 
     @property

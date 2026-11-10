@@ -12,8 +12,8 @@ from .task import TaskWorkerThread
 
 class AsyncTaskDialogModel(QObject):
 
-    # Signal emitted when task processing has terminated
     task_done = pyqtSignal(bool)
+    """Emitted when task processing has terminated."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -47,7 +47,6 @@ class AsyncTaskDialogModel(QObject):
     def _on_task_exit(self) -> None:
         """
         Handler for task thread completion.
-
         Forwards task_done signal and calls post processing function (if
         provided).
         """

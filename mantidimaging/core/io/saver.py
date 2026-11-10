@@ -81,7 +81,9 @@ def image_save(images: ImageStack,
                progress: Progress | None = None) -> list[Path]:
     """
     Save image volume (3d) into a series of slices along the Z axis.
+
     The Z axis in the script is the ndarray.shape[0].
+
     :param images: Data as images/slices stores in numpy array
     :param output_dir: Output directory for the files
     :param name_prefix: Prefix for the names of the images,
