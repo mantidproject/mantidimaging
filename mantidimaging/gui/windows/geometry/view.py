@@ -3,10 +3,10 @@
 
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 from uuid import UUID
 
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QDoubleSpinBox,
@@ -136,7 +136,7 @@ class GeometryWindowView(BaseMainWindowView):
 
     def _build_left_pane(self) -> QWidget:
         left_container = QWidget()
-        left_container.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+        left_container.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
         left_layout = QVBoxLayout(left_container)
         left_layout.addWidget(self._build_imagestack_selector_group())
         left_layout.addWidget(self._build_geometry_pages_widget())
@@ -152,7 +152,7 @@ class GeometryWindowView(BaseMainWindowView):
         return stack_selector_group
 
     def _build_geometry_pages_widget(self) -> QWidget:
-        self.geometryPagesWidget.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.geometryPagesWidget.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         self.geometryPagesWidget.addWidget(self._build_geometry_data_display_page())
         self.geometryPagesWidget.addWidget(self._build_new_geometry_page())
 
@@ -170,7 +170,7 @@ class GeometryWindowView(BaseMainWindowView):
 
     def _build_data_display_group(self) -> QWidget:
         data_display_group = QGroupBox("Geometry Data")
-        data_display_group.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        data_display_group.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         data_display_group_layout = QFormLayout(data_display_group)
 
         data_display_group_layout.addRow(QLabel("Type:"), self.typeDisplay)
@@ -201,7 +201,7 @@ class GeometryWindowView(BaseMainWindowView):
 
     def _build_geometry_conversion_group(self) -> QWidget:
         conversion_group = QGroupBox("Convert Geometry")
-        conversion_group.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        conversion_group.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         conversion_group_layout = QFormLayout(conversion_group)
 
         for supported_type in GeometryType:
@@ -231,11 +231,11 @@ class GeometryWindowView(BaseMainWindowView):
 
         icon = QLabel()
         icon.setPixmap(pixmap)
-        icon.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        icon.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
         text = QLabel("No Geometry for selected stack")
         text.setWordWrap(True)
-        text.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        text.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
         warning_message = QWidget()
         warning_layout = QHBoxLayout(warning_message)

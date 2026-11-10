@@ -4,7 +4,7 @@ from __future__ import annotations
 from math import isnan
 
 import numpy as np
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 from pyqtgraph import GraphicsLayoutWidget, InfiniteLine, ScatterPlotItem, mkBrush, mkPen
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -191,7 +191,8 @@ class ReconImagesView(GraphicsLayoutWidget):
 
     def _on_cor_scatter_hovered(self, plot: ScatterPlotItem, points: list) -> None:
         if plot_canvas := plot.getViewWidget():
-            plot_canvas.setCursor(QtCore.Qt.OpenHandCursor if len(points) else QtCore.Qt.ArrowCursor)
+            plot_canvas.setCursor(
+                QtCore.Qt.CursorShape.OpenHandCursor if len(points) else QtCore.Qt.CursorShape.ArrowCursor)
 
     def show_cor_line(self, tilt: Degrees, pos: float) -> None:
         if not isnan(tilt.value):  # is isnan it means there is no tilt, i.e. the line is vertical

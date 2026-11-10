@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
-from pyqtgraph.graphicsItems.InfiniteLine import InfiniteLine
-from pyqtgraph.graphicsItems.PlotItem import PlotItem
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtWidgets import QGraphicsSceneMouseEvent
+from pyqtgraph import PlotItem, InfiniteLine
 
 _graveyard: list[Any] = []
 
@@ -26,7 +25,6 @@ class ZSlider(PlotItem):
 
     z_line: InfiniteLine
     valueChanged = pyqtSignal(int)
-    """Emitted when the slider value changes."""
 
     def __init__(self) -> None:
         super().__init__()

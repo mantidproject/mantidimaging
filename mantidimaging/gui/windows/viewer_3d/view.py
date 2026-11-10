@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QMessageBox
-from PyQt5.QtCore import QTimer
+from PyQt6.QtWidgets import QVBoxLayout, QWidget, QMessageBox
+from PyQt6.QtCore import QTimer
 from ccpi.viewer.utils.conversion import Converter
 
 from ccpi.viewer.QCILViewerWidget import QCILViewerWidget

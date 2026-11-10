@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 
-from PyQt5.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel
+from PyQt6.QtWidgets import QComboBox, QFileDialog, QDialogButtonBox, QPushButton, QLineEdit, QLabel
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import AddImagesToDatasetPresenter, Notification
@@ -27,7 +27,7 @@ class AddImagesToDatasetDialog(BaseDialogView):
 
         self.datasetNameText.setText(dataset_name)
         self.chooseFileButton.clicked.connect(self.choose_file_path)
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
         self.accepted.connect(self._on_accepted)
 
     def _on_accepted(self) -> None:
@@ -40,7 +40,7 @@ class AddImagesToDatasetDialog(BaseDialogView):
         selected_file, _ = QFileDialog.getOpenFileName(caption="Images", filter="Image File (*.tif *.tiff *.fits)")
         if selected_file:
             self.filePathLineEdit.setText(selected_file)
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
 
     @property
     def path(self) -> str:

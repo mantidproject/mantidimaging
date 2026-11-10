@@ -6,8 +6,8 @@ from unittest import mock
 from unittest.mock import DEFAULT, Mock, patch
 from uuid import uuid4
 
-from PyQt5 import sip
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6 import sip
+from PyQt6.QtWidgets import QMessageBox
 from pyqtgraph import ViewBox
 
 import mantidimaging.test_helpers.unit_test_helper as th
@@ -137,8 +137,7 @@ class StackChoiceViewTest(unittest.TestCase):
         self.v.choice_made = False
         self.v.original_stack = mock.MagicMock()
         self.v.new_stack = mock.MagicMock()
-        message_box.warning.return_value = QMessageBox.Ok
-        message_box.Ok = QMessageBox.Ok
+        message_box.warning.return_value = message_box.StandardButton.Ok
         mock_event = mock.MagicMock()
 
         self.v.closeEvent(mock_event)
@@ -154,7 +153,7 @@ class StackChoiceViewTest(unittest.TestCase):
         self.v.choice_made = False
         self.v.original_stack = mock.MagicMock()
         self.v.new_stack = mock.MagicMock()
-        message_box.warning.return_value = QMessageBox.Cancel
+        message_box.warning.return_value = QMessageBox.StandardButton.Cancel
         mock_event = mock.MagicMock()
 
         self.v.closeEvent(mock_event)

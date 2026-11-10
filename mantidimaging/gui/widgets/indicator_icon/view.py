@@ -6,9 +6,10 @@ from collections.abc import Callable
 
 import numpy as np
 from PIL import Image
-from pyqtgraph.graphicsItems.ViewBox import ViewBox
-from PyQt5.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu, QAction
-from PyQt5.QtGui import QPixmap, QImage, QColor
+from pyqtgraph import ViewBox
+from PyQt6.QtWidgets import QGraphicsPixmapItem, QGraphicsSimpleTextItem, QMenu
+from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QPixmap, QImage, QColor
 
 
 class IndicatorIconView(QGraphicsPixmapItem):  # type: ignore

@@ -9,7 +9,7 @@ from uuid import uuid4
 
 from unittest import mock
 import numpy as np
-from PyQt5.QtWidgets import QDialog
+from PyQt6.QtWidgets import QDialog
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.utility.data_containers import ProjectionAngles
@@ -486,7 +486,7 @@ class MainWindowViewTest(unittest.TestCase):
                                                     stack_data_type)
             move_stack_mock.return_value.show.assert_called_once()
 
-    @mock.patch("PyQt5.QtWidgets.QFileDialog.getExistingDirectory")
+    @mock.patch("PyQt6.QtWidgets.QFileDialog.getExistingDirectory")
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView.show_live_viewer")
     def test_live_viewer_asks_for_data_dir(self, mock_show_live_viewer, mock_get_existing_dir):
         mock_path = Path("/test/path")
@@ -496,7 +496,7 @@ class MainWindowViewTest(unittest.TestCase):
 
         mock_show_live_viewer.assert_called_once_with(mock_path)
 
-    @mock.patch("PyQt5.QtWidgets.QFileDialog.getExistingDirectory")
+    @mock.patch("PyQt6.QtWidgets.QFileDialog.getExistingDirectory")
     @mock.patch("mantidimaging.gui.windows.main.MainWindowView.show_live_viewer")
     def test_live_viewer_asks_for_data_dir_no_path(self, mock_show_live_viewer, mock_get_existing_dir):
         mock_get_existing_dir.return_value = ""

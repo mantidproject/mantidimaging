@@ -6,7 +6,7 @@ import unittest
 import uuid
 from unittest import mock
 
-from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt6.QtWidgets import QDialogButtonBox
 
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.presenter import Notification
 from mantidimaging.gui.windows.add_images_to_dataset_dialog.view import AddImagesToDatasetDialog
@@ -36,7 +36,7 @@ class AddImagesToDatasetDialogTest(unittest.TestCase):
         assert self.view.imageTypeComboBox.isEnabled()
 
     def test_file_path_empty_and_ok_disabled_without_file_choice(self):
-        assert not self.view.buttonBox.button(QDialogButtonBox.Ok).isEnabled()
+        assert not self.view.buttonBox.button(QDialogButtonBox.StandardButton.Ok).isEnabled()
         self.assertEqual(self.view.filePathLineEdit.text(), "")
 
     def test_file_choice_changes_line_edit_and_enables_ok_button(self):
@@ -47,7 +47,7 @@ class AddImagesToDatasetDialogTest(unittest.TestCase):
             self.view.choose_file_path()
 
         self.assertEqual(self.view.filePathLineEdit.text(), file_path)
-        assert self.view.buttonBox.button(QDialogButtonBox.Ok).isEnabled()
+        assert self.view.buttonBox.button(QDialogButtonBox.StandardButton.Ok).isEnabled()
 
     def test_path_returns_file_path_line_edit(self):
         test_path = "file/path"

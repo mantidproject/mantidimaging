@@ -7,8 +7,8 @@ from collections import Counter
 
 import matplotlib
 import pytest
-from PyQt5 import QtCore, sip
-from PyQt5.QtGui import QFont
+from PyQt6 import QtCore, sip
+from PyQt6.QtGui import QFont
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker

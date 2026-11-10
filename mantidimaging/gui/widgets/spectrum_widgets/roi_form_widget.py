@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from PyQt5.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QLabel
+from PyQt6.QtCore import pyqtSignal, QSignalBlocker, QModelIndex
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QLabel
 from logging import getLogger
 
 from mantidimaging.core.utility import finder
@@ -16,7 +16,7 @@ from mantidimaging.gui.widgets import RemovableRowTableView
 from mantidimaging.gui.windows.spectrum_viewer.roi_table_model import TableModel
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox, QWidget
+    from PyQt6.QtWidgets import QTabWidget, QComboBox, QPushButton, QSpinBox, QGroupBox, QWidget
 
 LOG = getLogger(__name__)
 
@@ -207,8 +207,8 @@ class ROITableWidget(RemovableRowTableView):
         self.selected_row = 0
 
         # Point table
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setAlternatingRowColors(True)
 
         # Initialise model
@@ -218,9 +218,9 @@ class ROITableWidget(RemovableRowTableView):
         # Configure up the table view
         self.setVisible(True)
         header = self.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
 
         self.selectionModel().currentRowChanged.connect(self.on_row_change)
         self.roi_table_model.name_changed.connect(self.name_changed.emit)

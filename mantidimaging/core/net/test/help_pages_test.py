@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 from unittest import mock
-from PyQt5.QtCore import QUrl
+from PyQt6.QtCore import QUrl
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs, open_help_webpage, SECTION_USER_GUIDE
 
