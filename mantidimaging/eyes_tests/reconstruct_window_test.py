@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-from PyQt5.QtTest import QTest
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 from mantidimaging.test_helpers.unit_test_helper import generate_images_with_geometry

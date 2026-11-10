@@ -8,9 +8,8 @@ from typing import cast, overload, Literal
 # Contains ROI table model class which will be used to store ROI information
 # and display it in the spectrum viewer.
 
-# Dependencies
-from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, pyqtSignal
-from PyQt5.QtGui import QColor, QBrush
+from PyQt6.QtCore import QAbstractTableModel, Qt, QModelIndex, pyqtSignal
+from PyQt6.QtGui import QColor, QBrush
 
 from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
 
@@ -55,29 +54,29 @@ class TableModel(QAbstractTableModel):
         and set background colour of colour column
 
         @param index: index of selected row
-        @param role: Qt.DisplayRole or Qt.BackgroundRole
+        @param role: Qt.ItemDataRole.DisplayRole or Qt.ItemDataRole.BackgroundRole
         @return: ROI name or colour values and background colour of colour column
         """
-        if role == Qt.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole:
             if index.column() == 2:
                 return None
             return self._data[index.row()][index.column()]
 
-        if role == Qt.BackgroundRole:
+        if role == Qt.ItemDataRole.BackgroundRole:
             if index.column() == 1:
                 return QBrush(QColor(*self._data[index.row()][index.column()]))
 
-        if role == Qt.CheckStateRole:
+        if role == Qt.ItemDataRole.CheckStateRole:
             if index.column() == 2:
                 if self._data[index.row()][index.column()]:
-                    return Qt.Checked
-                return Qt.Unchecked
+                    return Qt.CheckState.Checked
+                return Qt.CheckState.Unchecked
 
     def update_color(self, row: int, new_color: tuple[int, int, int]) -> None:
         if 0 <= row < len(self._data):
             self._data[row][1] = new_color
             index = self.index(row, 1)
-            self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.BackgroundRole])
+            self.dataChanged.emit(index, index, [Qt.ItemDataRole.DisplayRole, Qt.ItemDataRole.BackgroundRole])
 
     def setData(self, index: QModelIndex, value: ElementType, role: Qt.ItemDataRole) -> bool:
         """
@@ -85,11 +84,11 @@ class TableModel(QAbstractTableModel):
 
         @param index: index of selected row
         @param value: new value
-        @param role: Qt.EditRole
+        @param role: Qt.ItemDataRole.EditRole
         """
 
         match (index.column(), index.row(), role):
-            case 0, row, Qt.EditRole:
+            case 0, row, Qt.ItemDataRole.EditRole:
                 assert isinstance(value, str)
                 old_name = self.get_element(row, 0)
                 new_name = value.strip()
@@ -100,7 +99,7 @@ class TableModel(QAbstractTableModel):
                     return False
                 self.name_changed.emit(old_name, new_name)
 
-            case 2, row, Qt.CheckStateRole:
+            case 2, row, Qt.ItemDataRole.CheckStateRole:
                 self.set_element(row, 2, value)
                 self.visibility_changed.emit()
 
@@ -166,11 +165,11 @@ class TableModel(QAbstractTableModel):
 
         @param section: column number
         @param orientation: horizontal
-        @param role: Qt.DisplayRole
+        @param role: Qt.ItemDataRole.DisplayRole
         @return: ROI or Colour
         """
-        if role == Qt.DisplayRole:
-            if orientation == Qt.Horizontal:
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
                 if section == 0:
                     return "ROI"
                 if section == 1:
@@ -220,14 +219,14 @@ class TableModel(QAbstractTableModel):
         if index is equal to roi, item not editable
 
         @param index: index of selected row
-        @return: Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        @return: Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
         """
         if index.column() == 0:
-            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+            return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEditable
         elif index.column() == 2:
-            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsUserCheckable
+            return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsUserCheckable
         else:
-            return Qt.ItemIsEnabled
+            return Qt.ItemFlag.ItemIsEnabled
 
     def roi_names(self) -> list[str]:
         """

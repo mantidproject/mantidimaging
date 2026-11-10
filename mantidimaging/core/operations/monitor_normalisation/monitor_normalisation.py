@@ -13,7 +13,7 @@ from mantidimaging.core.parallel import shared as ps
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
     from mantidimaging.gui.mvp_base import BaseMainWindowView
-    from PyQt5.QtWidgets import QFormLayout, QWidget
+    from PyQt6.QtWidgets import QFormLayout, QWidget
 
 
 class MonitorNormalisation(BaseFilter):

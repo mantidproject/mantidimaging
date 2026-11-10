@@ -7,7 +7,7 @@ from enum import Enum
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters

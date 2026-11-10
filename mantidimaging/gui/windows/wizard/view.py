@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from __future__ import annotations
-from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt6.QtWidgets import QLabel, QWidget, QVBoxLayout, QGroupBox, QPushButton, QStyle
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import pyqtSignal, Qt
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .model import EnablePredicateFactory

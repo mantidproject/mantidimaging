@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow
 from parameterized import parameterized
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtWidgets import QGraphicsSceneMouseEvent
 from pyqtgraph import PlotItem, InfiniteLine
 
 _graveyard: list[Any] = []

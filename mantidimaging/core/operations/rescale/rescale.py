@@ -13,7 +13,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
     from mantidimaging.gui.windows.operations import FiltersWindowView
-    from PyQt5.QtWidgets import QComboBox, QDoubleSpinBox
+    from PyQt6.QtWidgets import QComboBox, QDoubleSpinBox
 
 
 class RescaleFilter(BaseFilter):

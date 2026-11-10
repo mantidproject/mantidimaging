@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.core.io.instrument_log import InstrumentLog, LogColumn
 from mantidimaging.test_helpers.qt_test_helpers import wait_until

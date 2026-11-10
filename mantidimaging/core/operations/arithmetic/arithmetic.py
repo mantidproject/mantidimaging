@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     import numpy as np
     from mantidimaging.gui.mvp_base import BaseMainWindowView
     from mantidimaging.core.data import ImageStack
-    from PyQt5.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
+    from PyQt6.QtWidgets import QFormLayout, QWidget, QDoubleSpinBox
 
 
 class ArithmeticFilter(BaseFilter):

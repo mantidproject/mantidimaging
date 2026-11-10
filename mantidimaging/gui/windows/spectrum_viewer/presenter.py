@@ -14,7 +14,7 @@ import pyqtgraph as pg
 from mantidimaging.core.fitting.fitting_engine import BoundType
 from mantidimaging.core.utility.progress_reporting.progress import Progress
 import numpy as np
-from PyQt5.QtCore import QSignalBlocker, QTimer, Qt
+from PyQt6.QtCore import QSignalBlocker, QTimer, Qt
 
 from mantidimaging.core.fitting.fitting_functions import BadFittingRoiError, FittingRegion
 from mantidimaging.core.utility.sensible_roi import SensibleROI
@@ -1007,7 +1007,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
 
         with open(path, 'w', newline='') as file:
             writer = csv.writer(file)
-            headers = [model.headerData(i, Qt.Horizontal) for i in range(model.columnCount())]
+            headers = [model.headerData(i, Qt.Orientation.Horizontal) for i in range(model.columnCount())]
             writer.writerow(headers)
             for row in range(model.rowCount()):
                 roi_name = model.item(row, 0).text()

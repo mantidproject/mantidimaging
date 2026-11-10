@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from mantidimaging.core.utility.sensible_roi import ROIBinner
 from mantidimaging.gui.windows.spectrum_viewer.model import ROI_RITS
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 from logging import getLogger
 
 from mantidimaging.gui.windows.spectrum_viewer.presenter import ExportMode
@@ -23,7 +23,7 @@ class ROISelectionWidget(QtWidgets.QGroupBox):
     def __init__(self, parent: QtWidgets.QWidget = None):
         super().__init__("Select ROI", parent)
 
-        self.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
         layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(10, 5, 10, 5)
         layout.setSpacing(2)

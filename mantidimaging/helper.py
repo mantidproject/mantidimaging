@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from PyQt5.QtCore import QSettings
+from PyQt6.QtCore import QSettings
 
 from mantidimaging.core.data import ImageStack
 

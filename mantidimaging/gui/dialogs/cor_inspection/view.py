@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget, QMessageBox
+from PyQt6.QtGui import QCloseEvent
+from PyQt6.QtWidgets import QPushButton, QDoubleSpinBox, QSpinBox, QStackedWidget, QMessageBox
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.utility.data_containers import ScalarCoR, ReconstructionParameters
@@ -75,9 +75,9 @@ class CORInspectionDialogView(BaseDialogView):
             self,
             "Cancel Refinement?",
             "Are you sure you want to cancel the refinement? Any unsaved changes will be lost.",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
-        ) == QMessageBox.Yes)
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        ) == QMessageBox.StandardButton.Yes)
 
     def set_image(self, image_type: ImageType, recon_data: np.ndarray, title: str) -> None:
         self.image_canvas.set_image(image_type, recon_data, title)

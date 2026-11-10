@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from PyQt5.QtTest import QTest
+from PyQt6.QtTest import QTest
 
 
 def wait_until(test_func: Callable[[], bool],

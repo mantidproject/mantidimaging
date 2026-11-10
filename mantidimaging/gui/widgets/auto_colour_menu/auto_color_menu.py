@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import QAction
+from PyQt6.QtGui import QAction
 
 from mantidimaging.gui.utility.qt_helpers import _metaclass_sip_abc
 from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
@@ -13,7 +13,7 @@ from mantidimaging.gui.widgets.palette_changer.view import PaletteChangerView
 if TYPE_CHECKING:
     from pyqtgraph import HistogramLUTItem
     import numpy as np
-    from PyQt5.QtWidgets import QWidget
+    from PyQt6.QtWidgets import QWidget
 
 
 class AutoColorMenu(ABC, metaclass=_metaclass_sip_abc):

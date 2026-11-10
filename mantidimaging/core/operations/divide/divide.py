@@ -14,7 +14,7 @@ from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
+    from PyQt6.QtWidgets import QFormLayout, QDoubleSpinBox, QComboBox
     from mantidimaging.gui.mvp_base import BasePresenter
     from mantidimaging.core.data import ImageStack
 

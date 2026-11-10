@@ -11,8 +11,8 @@ from typing import TYPE_CHECKING, Any
 from unittest import mock
 from uuid import uuid4
 
-from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtTest import QTest
+from PyQt6.QtWidgets import QWidget, QApplication
+from PyQt6.QtTest import QTest
 
 from mantidimaging.gui.windows.main import MainWindowView
 

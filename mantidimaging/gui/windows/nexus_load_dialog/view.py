@@ -2,8 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtCore import Qt, QEventLoop
-from PyQt5.QtWidgets import QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
+from PyQt6.QtCore import Qt, QEventLoop
+from PyQt6.QtWidgets import QPushButton, QFileDialog, QLineEdit, QTreeWidget, QTreeWidgetItem, \
     QHeaderView, QCheckBox, QDialogButtonBox, QComboBox, QDoubleSpinBox, \
     QStackedWidget, QApplication, QWidget, QHBoxLayout, QLabel, QSpinBox
 
@@ -43,11 +43,11 @@ class NexusLoadDialog(BaseDialogView):
         self.tree.expandItem(self.tree.topLevelItem(1))
         self.checkboxes = {}
 
-        self.tree.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.tree.header().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.tree.header().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+        self.tree.header().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
 
         self.chooseFileButton.clicked.connect(self.choose_nexus_file)
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
 
         self.start_widget = QSpinBox()
         self.stop_widget = QSpinBox()
@@ -96,7 +96,7 @@ class NexusLoadDialog(BaseDialogView):
             QApplication.instance().processEvents(QEventLoop.ProcessEventsFlag.AllEvents, 1)
             self.checkboxes.clear()
             self.clear_widgets()
-            self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
             self.filePathLineEdit.setText(selected_file)
             self.presenter.notify(Notification.NEXUS_FILE_SELECTED)
             self.stackedWidget.setCurrentIndex(0)
@@ -196,7 +196,7 @@ class NexusLoadDialog(BaseDialogView):
         """
         Disable the OK button when the NeXus file isn't usable.
         """
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
 
     @staticmethod
     def set_found_status(tree_widget_item: QTreeWidgetItem, found: bool) -> None:
@@ -207,7 +207,7 @@ class NexusLoadDialog(BaseDialogView):
         :param found: Whether or not the data was found.
         """
         tree_widget_item.setText(FOUND_COLUMN, FOUND_TEXT[found])
-        tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignHCenter)
+        tree_widget_item.setTextAlignment(FOUND_COLUMN, Qt.AlignmentFlag.AlignHCenter)
 
     def _set_preview_step(self) -> None:
         """

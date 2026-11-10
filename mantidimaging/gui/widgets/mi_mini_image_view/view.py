@@ -6,12 +6,13 @@ from itertools import chain, tee
 from typing import TYPE_CHECKING, Any
 from weakref import WeakSet
 
-from PyQt5.QtCore import QTimer
+from PyQt6.QtCore import QTimer
 from pyqtgraph import ImageItem, ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 from tifffile import tifffile
-from PyQt5.QtWidgets import QAction, QFileDialog
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QFileDialog
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
@@ -20,7 +21,7 @@ from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataO
 import numpy as np
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QWidget
+    from PyQt6.QtWidgets import QWidget
 
 graveyard: list[Any] = []
 

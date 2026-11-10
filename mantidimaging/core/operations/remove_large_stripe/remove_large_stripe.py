@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 if TYPE_CHECKING:
     from mantidimaging.core.data.imagestack import ImageStack
     from numpy import ndarray
-    from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox
+    from PyQt6.QtWidgets import QSpinBox, QDoubleSpinBox
 
 
 class RemoveLargeStripesFilter(BaseFilter):

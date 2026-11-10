@@ -9,7 +9,7 @@ from enum import Enum
 from collections.abc import Callable
 
 import numpy as np
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from mantidimaging.core.utility.progress_reporting import ProgressHandler
 from .model import AsyncTaskDialogModel

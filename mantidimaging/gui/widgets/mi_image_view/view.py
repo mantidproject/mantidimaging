@@ -7,8 +7,8 @@ from time import sleep
 from typing import TYPE_CHECKING
 from collections.abc import Callable
 
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
 from pyqtgraph import ROI, ImageItem, ImageView, ViewBox
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
@@ -86,14 +86,14 @@ class MIImageView(ImageView, BadDataOverlay, AutoColorMenu):
 
         self.button_stack_left = QPushButton()
         self.button_stack_left.setText("<")
-        self.button_stack_left.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.button_stack_left.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         self.button_stack_left.setMaximumSize(40, 40)
         self.button_stack_left.pressed.connect(lambda: self.toggle_jumping_frame(-1))
         self.button_stack_left.released.connect(lambda: self.toggle_jumping_frame())
 
         self.button_stack_right = QPushButton()
         self.button_stack_right.setText(">")
-        self.button_stack_right.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.button_stack_right.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         self.button_stack_right.setMaximumSize(40, 40)
         self.button_stack_right.pressed.connect(lambda: self.toggle_jumping_frame(1))
         self.button_stack_right.released.connect(lambda: self.toggle_jumping_frame())

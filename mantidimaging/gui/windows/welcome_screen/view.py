@@ -1,8 +1,8 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
-from PyQt5.QtCore import Qt, QSize, QTimer, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt, QSize, QTimer, pyqtSignal
+from PyQt6.QtWidgets import QWidget, QLabel, QPushButton
+from PyQt6.QtGui import QPixmap, QIcon
 
 from mantidimaging.core.utility import finder
 from mantidimaging.gui.utility import compile_ui
@@ -73,12 +73,12 @@ class WelcomeScreenView(QWidget):
 
     def add_link(self, label: str, row: int) -> None:
         link_label = QLabel()
-        link_label.setTextFormat(Qt.RichText)
+        link_label.setTextFormat(Qt.TextFormat.RichText)
         link_label.setText(label)
         link_label.setOpenExternalLinks(True)
 
         link_label.setStyleSheet("QLabel { font-size: 18px; margin-left: 5px; }")
-        self.link_box_layout.addWidget(link_label, row, 0, Qt.AlignLeft)
+        self.link_box_layout.addWidget(link_label, row, 0, Qt.AlignmentFlag.AlignLeft)
         self.link_box_layout.update()
 
     def add_issues(self, issues_text: str) -> None:

@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtGui import QTransform
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtGui import QTransform
+from PyQt6.QtWidgets import QWidget, QVBoxLayout
 import pyqtgraph as pg
 
 if TYPE_CHECKING:
