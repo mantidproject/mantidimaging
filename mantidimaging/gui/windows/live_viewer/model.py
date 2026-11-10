@@ -285,8 +285,6 @@ class ImageWatcher(QObject):
         self.timer.setInterval(1)
         self.timer.timeout.connect(self.check_queue)
 
-        self.number_of_images = 0
-        # self.handle_directory_change.connect(self._handle_directory_change)
         self.handle_number_images_change.connect(self._handle_images_change)
         self.queue = Queue()
         self.out_queue = Queue()
@@ -387,7 +385,6 @@ class ImageWatcher(QObject):
         images = self.sort_images_by_modified_time(images)
         self.update_recent_watcher(images[-1:])
         self.image_changed.emit(images)
-        self.number_of_images = len(images)
 
     @staticmethod
     def _is_image_file(file_name: str) -> bool:
