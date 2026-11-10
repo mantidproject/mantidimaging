@@ -289,12 +289,17 @@ class ImageWatcher(QObject):
         self.timer.timeout.connect(self.check_queue)
 
         self.number_of_images = 0
-        self.handle_directory_change.connect(self._handle_directory_change)
+        # self.handle_directory_change.connect(self._handle_directory_change)
         self.handle_number_images_change.connect(self._handle_images_change)
         self.queue = Queue()
         self.out_queue = Queue()
         self.go_event = Event()
         self.exit_event = Event()
+        self.create_and_start_process()
+        self.file_image_number_tracker = {}
+        self.processed_image_paths = {}
+
+    def create_and_start_process(self):
         self.process = Process(
             target=find_sub_directories,
             args=(
@@ -304,8 +309,6 @@ class ImageWatcher(QObject):
                 self.exit_event,
             ),
         )
-        self.file_image_number_tracker = {}
-        self.processed_image_paths = {}
         self.process.start()
 
     def find_images(self, directory: Path) -> list[Image_Data]:
@@ -371,16 +374,12 @@ class ImageWatcher(QObject):
             raise FileNotFoundError(f"Live directory not found: {self.directory}"
                                     "\nHas it been deleted?")
 
-        self.queue.put(self.directory)
-        self.current_directories_queue.put(list(self.sub_directories.keys()))
-        self.number_of_images_queue.put(self.number_of_images)
+        self.queue.put(directory_path)
         self.go_event.set()
         self.timer.start()
 
     def _handle_images_change(self):
-
         for newest_directory in self.sub_directories.values():
-            # print(f"{newest_directory.path=}")
             try:
                 images = self.find_images(newest_directory.path)
             except FileNotFoundError:
@@ -425,6 +424,9 @@ class ImageWatcher(QObject):
     def add_sub_directory(self, sub_dir: SubDirectory) -> None:
         if sub_dir.path not in self.sub_directories:
             self.watcher.addPath(str(sub_dir.path))
+        else:
+            if sub_dir.mtime < self.sub_directories[sub_dir.path].mtime:
+                return
 
         self.sub_directories[sub_dir.path] = sub_dir
 
