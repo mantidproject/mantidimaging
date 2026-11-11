@@ -74,6 +74,7 @@ jobs:
         timeout-minutes: 10
         env:
           QT_QPA_PLATFORM: offscreen
+          QT_QPA_FONTDIR: 'C:\Windows\Fonts'
           TEST_RESULT_DIR: system_tests_output
           APPLITOOLS_IMAGE_DIR: system_tests_output
         shell: pwsh
