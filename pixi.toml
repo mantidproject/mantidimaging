@@ -96,7 +96,7 @@ ccpi-viewer = "25.0.*"
 vtk = { version = ">=9.2.6,<9.4", build = "qt*" }
 pyqt6 = ">=6.7,<7"
 qt6-main = ">=6.7,<7"
-pyqtgraph = "0.13.7.*"
+pyqtgraph = ">=0.14,<0.15"
 qt-material = "2.14.*"
 darkdetect = "0.8.0.*"
 
