@@ -32,8 +32,8 @@ class RescaleTest(unittest.TestCase):
 
         # below min_input has been clipped to 0
         npt.assert_equal(0, images.data[0:3])
-        npt.assert_equal(images.data[3:6], value / 2)
-        npt.assert_equal(images.data[6:10], value)
+        npt.assert_equal(images.data[3:6], np.float32(value / 2))
+        npt.assert_equal(images.data[6:10], np.float32(value))
 
     def test_execute_wrapper_no_preset(self):
         min_input_value = 12
@@ -106,6 +106,6 @@ class RescaleTest(unittest.TestCase):
         # below min_input has been clipped to 0
         npt.assert_equal(0, images.data[0:3])
 
-        npt.assert_equal(images.data[3:5], value / 2)
-        npt.assert_equal(images.data[7:10], value)
+        npt.assert_equal(images.data[3:5], np.float32(value / 2))
+        npt.assert_equal(images.data[7:10], np.float32(value))
         assert all(math.isnan(x) for x in images.data[6][0:10].flatten())
