@@ -1,0 +1,1 @@
+#3260: Resolve issue where the live viewer intensity plot recalculation beace slow for large numbers of watched images. The fix optimises how the intensity is recalculated when new images arrive.
