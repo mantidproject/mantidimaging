@@ -46,7 +46,9 @@ class MIMiniImageViewTest(unittest.TestCase):
     def test_save_displayed_image_saves_correct_data(self):
         image = generate_images(seed=2023, shape=(10, 10))
         self.view.setImage(image.data)
-        with patch.object(QFileDialog, 'getSaveFileName', return_value=(self.test_png, "")), \
-             patch('PyQt6.QtGui.QImage.save', return_value=True) as mock_save:
+        with (
+                patch.object(QFileDialog, 'getSaveFileName', return_value=(self.test_png, "")),
+                patch.object(self.view.im, 'save', return_value=True) as mock_save,
+        ):
             self.view.save_displayed_image()
-            mock_save.assert_called_once()
+        mock_save.assert_called_once_with(self.test_png)
