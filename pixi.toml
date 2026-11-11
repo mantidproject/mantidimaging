@@ -93,7 +93,7 @@ cil = "26.0.*"
 ccpi-viewer = "25.0.*"
 
 # Visualization and GUI
-vtk = { version = ">=9.2.6,<9.4", build = "qt*" }
+vtk = { version = ">=9.3.1,<9.4", build = "qt*" }
 pyqt6 = ">=6.7,<7"
 qt6-main = ">=6.7,<7"
 pyqtgraph = ">=0.14,<0.15"
