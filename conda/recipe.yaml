@@ -52,7 +52,7 @@ requirements:
     - qt-material=2.14
     - darkdetect=0.8.0
     - ccpi-viewer 25.0.*
-    - vtk>=9.2.6,<9.4.0 qt*
+    - vtk>=9.3.1,<9.4.0 qt*
     - if: linux
       then: qt-gtk-platformtheme
 
