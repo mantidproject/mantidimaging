@@ -38,6 +38,7 @@ requirements:
     - ccpi-regulariser=25.0.*
     - jenkspy=0.4.*
     - pyqt6>=6.7,<7
+    - qt6-main>=6.8.3,<7
     - pyqtgraph>=0.14,<0.15
     - qt-material=2.14
     - darkdetect=0.8.0
