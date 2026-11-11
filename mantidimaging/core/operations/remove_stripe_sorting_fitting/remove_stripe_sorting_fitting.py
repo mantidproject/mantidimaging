@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 if TYPE_CHECKING:
     from numpy import ndarray
     from mantidimaging.core.data.imagestack import ImageStack
-    from PyQt5.QtWidgets import QSpinBox
+    from PyQt6.QtWidgets import QSpinBox
 
 
 class RemoveStripeSortingFittingFilter(BaseFilter):

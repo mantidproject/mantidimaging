@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import numpy as np
 from functools import partial
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem, QAction, QActionGroup
-from PyQt5.QtGui import QTransform
-from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGraphicsItem
+from PyQt6.QtGui import QAction, QActionGroup, QTransform
+from PyQt6 import QtCore
+from PyQt6.QtCore import pyqtSignal
 from pyqtgraph import RectROI, mkPen, ImageItem, PlotDataItem, ROI
 
 from mantidimaging.gui.windows.spectrum_viewer.model import allowed_modes
@@ -44,8 +44,8 @@ class FittingDisplayWidget(QWidget):
         self.spectrum_plot.spectrum.addItem(self.fitting_region)
 
         self.image_item = ImageItem()
-        self.image_item.setFlag(QGraphicsItem.ItemIsMovable, True)
-        self.image_item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.image_item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
+        self.image_item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
         self.image_item.setImage(np.zeros((150, 150)), autoLevels=True)
         self.image_item.setParentItem(self.spectrum_plot.spectrum)
         self.image_item.setZValue(20)
@@ -54,7 +54,7 @@ class FittingDisplayWidget(QWidget):
         self.image_preview_roi = ROI([0, 0], [10, 10], pen=mkPen((0, 255, 0), width=2))
         self.image_preview_roi.setZValue(21)
         self.image_preview_roi.setParentItem(self.image_item)
-        self.image_preview_roi.setAcceptedMouseButtons(QtCore.Qt.NoButton)  # Optional: make non-interactive
+        self.image_preview_roi.setAcceptedMouseButtons(QtCore.Qt.MouseButton.NoButton)
         self.image_preview_roi.hide()
         self._add_units_menu()
 

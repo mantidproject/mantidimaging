@@ -8,7 +8,8 @@ from unittest import mock
 
 import numpy as np
 import numpy.testing as npt
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
+from PyQt6.QtWidgets import QPushButton, QGroupBox, QCheckBox, QTabWidget
+from PyQt6.QtGui import QAction, QActionGroup
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset

@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication, QLineEdit
+from PyQt6.QtWidgets import QApplication, QLineEdit
 
 from logging import getLogger
 from mantidimaging.core.data import ImageStack

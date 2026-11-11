@@ -7,10 +7,10 @@ import logging
 import unittest
 from unittest import mock
 
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtTest import QTest
-from PyQt5.QtWidgets import QApplication, QMessageBox, QInputDialog, QDialog
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtTest import QTest
+from PyQt6.QtWidgets import QApplication, QMessageBox, QInputDialog, QDialog
 import pytest
 
 from mantidimaging.core.utility.data_containers import FILE_TYPES
@@ -99,7 +99,7 @@ class GuiSystemBase(unittest.TestCase):
             if isinstance(widget, QMessageBox) and widget.isVisible():
                 for button in widget.buttons():
                     if button.text().replace("&", "") == button_text:
-                        QTest.mouseClick(button, Qt.LeftButton)
+                        QTest.mouseClick(button, Qt.MouseButton.LeftButton)
                         return
                 button_texts = [button.text() for button in widget.buttons()]
                 raise ValueError(f"Could not find button '{button_text}' in {button_texts}.\n"

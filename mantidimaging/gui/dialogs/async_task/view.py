@@ -13,8 +13,8 @@ from mantidimaging.core.utility.progress_reporting import Progress
 from mantidimaging.gui.mvp_base import BaseDialogView
 from .presenter import AsyncTaskDialogPresenter
 
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import QTimer
+from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtCore import QTimer
 
 _graveyard: list[Any] = []
 

@@ -6,7 +6,7 @@ import uuid
 from collections.abc import Iterable
 from pathlib import Path
 
-from PyQt5.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
+from PyQt6.QtWidgets import QDialogButtonBox, QFileDialog, QRadioButton
 
 from mantidimaging.core.data.dataset import Dataset
 from mantidimaging.gui.mvp_base import BaseDialogView

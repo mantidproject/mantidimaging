@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest import mock
 
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget
 
 from mantidimaging.core.data.geometry import GeometryType
 from mantidimaging.core.net.help_pages import SECTION_USER_GUIDE

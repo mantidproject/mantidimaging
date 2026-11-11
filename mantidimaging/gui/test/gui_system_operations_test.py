@@ -8,9 +8,9 @@ from unittest import mock
 from typing import TYPE_CHECKING
 
 from parameterized import parameterized
-from PyQt5.QtTest import QTest
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QFormLayout, QLabel, QWidget, QPushButton
+from PyQt6.QtTest import QTest
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QFormLayout, QLabel, QWidget, QPushButton
 
 from mantidimaging.gui.widgets.roi_selector.view import ROISelectorView
 from mantidimaging.gui.windows.stack_choice.presenter import StackChoicePresenter
@@ -117,7 +117,7 @@ class TestGuiSystemOperations(GuiSystemBase):
             widget = self._get_operation_parameter_widget(self.op_window.filterPropertiesLayout, param_name)
             widget.selectAll()
             QTest.keyClicks(widget, param_value)
-            QTest.keyClick(widget, Qt.Key_Return)
+            QTest.keyClick(widget, Qt.Key.Key_Return)
             QTest.qWait(SHOW_DELAY)
 
         self.op_window.safeApply.setChecked(False)
@@ -145,7 +145,7 @@ class TestGuiSystemOperations(GuiSystemBase):
             widget = self._get_operation_parameter_widget(self.op_window.filterPropertiesLayout, param_name)
             widget.selectAll()
             QTest.keyClicks(widget, param_value)
-            QTest.keyClick(widget, Qt.Key_Return)
+            QTest.keyClick(widget, Qt.Key.Key_Return)
             QTest.qWait(SHOW_DELAY)
 
         self.op_window.safeApply.setChecked(True)
@@ -198,7 +198,7 @@ class TestGuiSystemOperations(GuiSystemBase):
         widget = self._get_operation_parameter_widget(self.op_window.filterPropertiesLayout, "ROI")
         widget.selectAll()
         QTest.keyClicks(widget, "0,0,20,20")
-        QTest.keyClick(widget, Qt.Key_Return)
+        QTest.keyClick(widget, Qt.Key.Key_Return)
         QTest.qWait(SHOW_DELAY)
 
         self.op_window.safeApply.setChecked(False)

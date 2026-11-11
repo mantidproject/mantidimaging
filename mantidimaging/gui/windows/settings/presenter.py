@@ -5,7 +5,7 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSettings, QSignalBlocker
+from PyQt6.QtCore import QSettings, QSignalBlocker
 
 from mantidimaging.gui.mvp_base import BasePresenter
 from mantidimaging.helper import initialise_logging

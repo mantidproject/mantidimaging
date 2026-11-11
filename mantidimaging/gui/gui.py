@@ -7,7 +7,7 @@ import os
 import sys
 import traceback
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 import pyqtgraph
 
 from mantidimaging.gui.windows.main import MainWindowView
@@ -50,7 +50,7 @@ def execute() -> None:
                     pm.free_shared_memory_linux(memory_to_clean)
                     done = QMessageBox(application_window)
                     done.setWindowTitle("Clean Up Shared Memory")
-                    done.setIcon(QMessageBox.Information)
+                    done.setIcon(QMessageBox.Icon.Information)
                     done.setText("Clean up process complete")
                     done.exec()
 

@@ -17,7 +17,7 @@ from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
-    from PyQt5.QtWidgets import QWidget
+    from PyQt6.QtWidgets import QWidget
 
 
 def modes() -> list[str]:

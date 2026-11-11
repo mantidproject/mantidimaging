@@ -14,7 +14,7 @@ from mantidimaging.gui.mvp_base import BaseMainWindowView
 from logging import getLogger
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
+    from PyQt6.QtWidgets import QFormLayout  # noqa: F401  # pragma: no cover
     from mantidimaging.gui.windows.operations import FiltersWindowPresenter  # pragma: no cover
     from mantidimaging.core.data import ImageStack
     from mantidimaging.core.operations.loader import BaseFilterClass

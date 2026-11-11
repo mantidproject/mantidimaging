@@ -2,8 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtCore import Qt, QModelIndex
-from PyQt5.QtWidgets import QTableView
+from PyQt6.QtCore import Qt, QModelIndex
+from PyQt6.QtWidgets import QTableView
 
 
 class RemovableRowTableView(QTableView):

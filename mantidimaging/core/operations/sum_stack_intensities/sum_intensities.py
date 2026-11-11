@@ -14,7 +14,7 @@ from mantidimaging.gui.utility.qt_helpers import Type
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout
+    from PyQt6.QtWidgets import QFormLayout
     from mantidimaging.core.data import ImageStack
 
 

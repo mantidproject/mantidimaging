@@ -7,7 +7,7 @@ from unittest import mock
 import numpy as np
 import os
 
-from PyQt5.QtTest import QTest
+from PyQt6.QtTest import QTest
 
 from mantidimaging.core.operations.loader import load_filter_packages
 from mantidimaging.gui.windows.live_viewer.model import Image_Data

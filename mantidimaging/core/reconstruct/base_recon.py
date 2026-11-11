@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
-from numpy.polynomial import Polynomial
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
@@ -26,9 +25,8 @@ class BaseRecon:
     def prepare_sinogram(data: np.ndarray, recon_params: ReconstructionParameters) -> np.ndarray:
         logged_data = BaseRecon.negative_log(data)
         if recon_params.beam_hardening_coefs is not None:
-            coefs = np.array([0.0, 1.0] + recon_params.beam_hardening_coefs)
-            bhc_poly = Polynomial(coefs.astype(data.dtype))
-            return bhc_poly(logged_data)
+            coefs = np.array([0.0, 1.0] + recon_params.beam_hardening_coefs, dtype=logged_data.dtype)
+            return np.polynomial.polynomial.polyval(logged_data, coefs)
         else:
             return logged_data
 

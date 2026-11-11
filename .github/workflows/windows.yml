@@ -68,10 +68,32 @@ jobs:
           mv ~/mantidimaging-data-small ~/mantidimaging-data
         timeout-minutes: 5
 
+      - name: GUI Live Viewer Isolated
+        id: live_viewer_isolated
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QPA_FONTDIR: 'C:\Windows\Fonts'
+          TEST_RESULT_DIR: system_tests_output
+          APPLITOOLS_IMAGE_DIR: system_tests_output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "$HOME/mantidimaging-data/ISIS/IMAT/IMAT00010675/Tomo/IMAT_Flower_Tomo_000000.tif")) {
+            throw "GUI system test sample data is missing"
+          }
+          New-Item -ItemType Directory -Force system_tests_output | Out-Null
+          pixi run -e dev python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --durations=10 --run-system-tests mantidimaging/gui/test/gui_system_liveviewer_test.py
+
       - name: GUI Tests System
         run: |
           pixi run test-system-cpu
         timeout-minutes: 20
+
+      - name: Check isolated live viewer result
+        if: ${{ !cancelled() && steps.live_viewer_isolated.outcome == 'failure' }}
+        shell: pwsh
+        run: exit 1
 
       - name: Set display resolution for screenshot tests
         run: |

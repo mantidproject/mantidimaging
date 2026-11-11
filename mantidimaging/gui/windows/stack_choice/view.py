@@ -6,8 +6,8 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING
 
 import numpy as np
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QCheckBox, QMainWindow, QMessageBox, QPushButton, QSizePolicy
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.data.imagestack import ImageStack
@@ -129,7 +129,7 @@ class StackChoiceView(BaseMainWindowView):
         stack.ui.roiBtn.hide()
         stack.button_stack_right.hide()
         stack.button_stack_left.hide()
-        details_size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
+        details_size_policy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
         details_size_policy.setHorizontalStretch(1)
         stack.details.setSizePolicy(details_size_policy)
         self.roiButton.clicked.connect(stack.roiClicked)
@@ -165,8 +165,8 @@ class StackChoiceView(BaseMainWindowView):
         if not self.choice_made:
             response = QMessageBox.warning(self, "Data Loss! Are you sure?",
                                            "You will lose the original stack if you close this window! Are you sure?",
-                                           QMessageBox.Ok | QMessageBox.Cancel)
-            if response == QMessageBox.Ok:
+                                           QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+            if response == QMessageBox.StandardButton.Ok:
                 self.presenter.notify(Notification.CHOOSE_NEW_DATA)
             else:
                 e.ignore()

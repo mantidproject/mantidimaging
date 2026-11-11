@@ -1,7 +1,7 @@
 # Copyright (C) 2021 ISIS Rutherford Appleton Laboratory UKRI
 # SPDX - License - Identifier: GPL-3.0-or-later
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets
 from logging import getLogger
 from collections.abc import Callable
 
@@ -30,7 +30,8 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
         self.setObjectName("experimentSetupGroupBox")
 
         self.resize(300, 94)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
@@ -38,7 +39,7 @@ class ExperimentSetupFormWidget(QtWidgets.QGroupBox):
         target = self.parent() if self.parent() else self
         target.setSizePolicy(sizePolicy)
         target.setMinimumSize(QtCore.QSize(300, 94))
-        target.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        target.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.DefaultContextMenu)
 
         layout = QtWidgets.QGridLayout(self)
 

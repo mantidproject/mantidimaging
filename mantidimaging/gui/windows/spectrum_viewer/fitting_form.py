@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from logging import getLogger
 
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 
 from mantidimaging.gui.widgets.spectrum_widgets.fitting_selection_widget import FitSelectionWidget
 from mantidimaging.gui.widgets.spectrum_widgets.roi_selection_widget import ROISelectionWidget
@@ -16,7 +16,7 @@ from mantidimaging.core.utility.sensible_roi import SensibleROI
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.spectrum_viewer import SpectrumViewerWindowView
     from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction
-    from PyQt5.QtGui import QShowEvent
+    from PyQt6.QtGui import QShowEvent
 
 LOG = getLogger(__name__)
 

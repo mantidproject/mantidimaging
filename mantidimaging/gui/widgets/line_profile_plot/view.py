@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QRect, QPoint
+from PyQt6.QtCore import QRect, QPoint
 from pyqtgraph import GraphicsLayout, LineSegmentROI
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint

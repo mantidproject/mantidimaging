@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtWidgets import QSpinBox, QComboBox
+from PyQt6.QtWidgets import QSpinBox, QComboBox
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.palette_changer.presenter import PaletteChangerPresenter

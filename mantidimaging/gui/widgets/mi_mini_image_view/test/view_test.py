@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from unittest.mock import patch
 import numpy as np
-from PyQt5.QtWidgets import QFileDialog
+from PyQt6.QtWidgets import QFileDialog
 
 from mantidimaging.test_helpers.unit_test_helper import generate_images
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -46,7 +46,9 @@ class MIMiniImageViewTest(unittest.TestCase):
     def test_save_displayed_image_saves_correct_data(self):
         image = generate_images(seed=2023, shape=(10, 10))
         self.view.setImage(image.data)
-        with patch.object(QFileDialog, 'getSaveFileName', return_value=(self.test_png, "")), \
-             patch('PyQt5.QtGui.QImage.save', return_value=True) as mock_save:
+        with (
+                patch.object(QFileDialog, 'getSaveFileName', return_value=(self.test_png, "")),
+                patch.object(self.view.im, 'save', return_value=True) as mock_save,
+        ):
             self.view.save_displayed_image()
-            mock_save.assert_called_once()
+        mock_save.assert_called_once_with(self.test_png)

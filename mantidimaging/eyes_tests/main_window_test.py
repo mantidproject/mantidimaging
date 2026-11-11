@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest import mock
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtTest import QTest
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
 
 from mantidimaging.eyes_tests.base_eyes import BaseEyesTest
 
@@ -76,8 +76,8 @@ class MainWindowTest(BaseEyesTest):
 
         second_stack_item = self.imaging.dataset_tree_widget.topLevelItem(1).child(0)
         second_stack_rect = self.imaging.dataset_tree_widget.visualItemRect(second_stack_item)
-        QTest.mouseClick(self.imaging.dataset_tree_widget.viewport(), Qt.LeftButton, Qt.NoModifier,
-                         second_stack_rect.center())
+        QTest.mouseClick(self.imaging.dataset_tree_widget.viewport(), Qt.MouseButton.LeftButton,
+                         Qt.KeyboardModifier.NoModifier, second_stack_rect.center())
 
         self.check_target()
 

@@ -4,10 +4,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from logging import getLogger
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QSizePolicy, QPushButton, QCheckBox, \
      QGroupBox
-from PyQt5.QtGui import QDoubleValidator
+from PyQt6.QtGui import QDoubleValidator
 
 from mantidimaging.core.fitting.fitting_engine import BoundType
 
@@ -35,7 +35,7 @@ class FittingParamFormWidget(QWidget):
     def __init__(self, presenter: SpectrumViewerWindowPresenter, parent=None) -> None:
         super().__init__(parent)
         self.presenter = presenter
-        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Maximum)
 
         main_layout = QVBoxLayout(self)
         self.params_layout = QVBoxLayout()

@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import json
 from typing import Any
-from PyQt5.QtWidgets import (QWidget, QTreeWidget, QTreeWidgetItem, QDialogButtonBox, QVBoxLayout, QShortcut,
-                             QPushButton)
-from PyQt5.QtGui import QKeySequence, QGuiApplication
+from PyQt6.QtWidgets import QWidget, QTreeWidget, QTreeWidgetItem, QDialogButtonBox, QVBoxLayout, QPushButton
+from PyQt6.QtGui import QKeySequence, QGuiApplication, QShortcut
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.operation_history import const
@@ -29,11 +28,11 @@ class MetadataDialog(BaseDialogView):
         self.metadata = images.metadata
         main_widget = MetadataDialog.build_metadata_tree(images.metadata)
 
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok)
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         buttons.accepted.connect(self.accept)
 
         copy_button = QPushButton("Copy")
-        buttons.addButton(copy_button, QDialogButtonBox.ActionRole)
+        buttons.addButton(copy_button, QDialogButtonBox.ButtonRole.ActionRole)
         copy_button.clicked.connect(self.copy_metadata_to_clipboard)
 
         self.tree_widget = main_widget

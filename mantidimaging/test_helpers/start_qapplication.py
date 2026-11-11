@@ -20,7 +20,7 @@ from unittest import mock
 
 import pyqtgraph
 from mantidimaging.core.parallel.manager import create_and_start_pool, end_pool
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 
 _QAPP = QApplication.instance()
 

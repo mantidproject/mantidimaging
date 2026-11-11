@@ -19,14 +19,15 @@ class BaseReconTest(unittest.TestCase):
         (np.float32, [1, 1, 1, 1], 2, -0.474886),
         (np.float64, [1, 1, 1, 1], 2, -0.474886),
         (np.float32, [1, 2, 3, 4], 2, -0.826249),
+        (np.uint16, [1, 1, 1, 1], 2, -0.474886),
     ])
-    def test_prepare_recon_bhc(self, dtype, coefs, input, output):
-        data = np.zeros([10, 10], dtype=dtype) + input
+    def test_prepare_recon_bhc(self, dtype, coefs, input_value, output):
+        data = np.zeros([10, 10], dtype=dtype) + input_value
         recon_params = mock.create_autospec(ReconstructionParameters, instance=True)
         recon_params.beam_hardening_coefs = coefs
 
         result = BaseRecon.prepare_sinogram(data, recon_params)
 
         self.assertEqual(data.shape, result.shape)
-        self.assertEqual(data.dtype, result.dtype)
+        self.assertEqual(BaseRecon.negative_log(data).dtype, result.dtype)
         self.assertAlmostEqual(output, result[0, 0], 4)

@@ -6,9 +6,9 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtCore import Qt
-from PyQt5.QtTest import QTest
-from PyQt5.QtGui import QColor
+from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QTest
+from PyQt6.QtGui import QColor
 from numpy.testing._private.utils import assert_array_equal
 from parameterized import parameterized
 from pyqtgraph.graphicsItems.PlotDataItem import PlotDataItem
@@ -141,7 +141,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         table_view = self.spectrum_window.table_view
         table_view.edit(table_model.index(row, 0))
         QTest.keyClicks(table_view.keyboardGrabber(), new_name)
-        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key_Enter)
+        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key.Key_Enter)
 
         self.assertNotIn(old_name, self.spectrum_window.spectrum_widget.roi_dict)
         self.assertIn(new_name, self.spectrum_window.spectrum_widget.roi_dict)
@@ -162,7 +162,7 @@ class TestGuiSpectrumViewer(GuiSystemBase):
         table_view = self.spectrum_window.table_view
         table_view.edit(table_model.index(row, 0))
         QTest.keyClicks(table_view.keyboardGrabber(), new_name)
-        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key_Enter)
+        QTest.keyClick(table_view.keyboardGrabber(), Qt.Key.Key_Enter)
 
         rois_after = list(self.spectrum_window.spectrum_widget.roi_dict.keys())
         self.assertListEqual(rois_before, rois_after)

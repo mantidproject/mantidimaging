@@ -5,9 +5,9 @@ from logging import getLogger
 from typing import TYPE_CHECKING, cast
 
 import numpy as np
-from PyQt5.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
+from PyQt6.QtWidgets import (QAbstractItemView, QComboBox, QDoubleSpinBox, QInputDialog, QPushButton, QSpinBox,
                              QVBoxLayout, QWidget, QTextEdit, QLabel, QApplication, QStyle, QCheckBox)
-from PyQt5.QtCore import QSignalBlocker
+from PyQt6.QtCore import QSignalBlocker
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.data.geometry import GeometryType
@@ -169,8 +169,8 @@ class ReconstructWindowView(BaseMainWindowView):
 
         # Point table
         self.tableView.horizontalHeader().setStretchLastSection(True)
-        self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tableView.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
 
         self.cor_table_model.rowsInserted.connect(self.on_table_row_count_change)  # type: ignore
         self.cor_table_model.rowsRemoved.connect(self.on_table_row_count_change)  # type: ignore
