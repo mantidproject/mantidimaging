@@ -9,7 +9,7 @@ import matplotlib
 import pytest
 from PyQt6 import QtCore, sip
 from PyQt6.QtGui import QFont
-from pyqtgraph import ViewBox
+from pyqtgraph.graphicsItems.ViewBox.ViewBox import ViewBox
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
 
@@ -68,11 +68,16 @@ def pytest_collection_modifyitems(config, items):
 def purge_deleted_named_viewboxes():
     # Work around pyqtgraph registries retaining wrappers for Qt-deleted ViewBoxes, which crash later creation.
     # Revisit after PyQt/pyqtgraph upgrades; remove if the regression test passes without this cleanup.
-    for name, view in list(ViewBox.NamedViews.items()):
-        if sip.isdeleted(view):
-            del ViewBox.NamedViews[name]
-    ViewBox.AllViews = type(ViewBox.AllViews)((v, None) for v in list(ViewBox.AllViews) if not sip.isdeleted(v))
+    def purge_deleted_views() -> None:
+        QtCore.QCoreApplication.sendPostedEvents(None, QtCore.QEvent.Type.DeferredDelete)
+        QtCore.QCoreApplication.processEvents()
+        for name, view in list(ViewBox.NamedViews.items()):
+            if sip.isdeleted(view):
+                del ViewBox.NamedViews[name]
+        ViewBox.AllViews = type(ViewBox.AllViews)((v, None) for v in list(ViewBox.AllViews) if not sip.isdeleted(v))
+    purge_deleted_views()
     yield
+    purge_deleted_views()
 
 
 # Leak track for tests
