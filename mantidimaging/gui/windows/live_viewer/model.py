@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 import typing
 from multiprocessing import Queue, Process, Event
+from multiprocessing.synchronize import Event as EventClass
 from operator import attrgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
@@ -289,13 +290,13 @@ class ImageWatcher(QObject):
         self.timer.timeout.connect(self.check_queue)
 
         self.handle_number_images_change.connect(self._handle_images_change)
-        self.queue = Queue()
-        self.out_queue = Queue()
-        self.go_event = Event()
-        self.exit_event = Event()
+        self.queue: Queue = Queue()
+        self.out_queue: Queue = Queue()
+        self.go_event: EventClass = Event()
+        self.exit_event: EventClass = Event()
         self.create_and_start_process()
-        self.file_image_number_tracker = {}
-        self.processed_image_paths = {}
+        self.file_image_number_tracker: dict[SubDirectory, int] = {}
+        self.processed_image_paths: dict[Path, Image_Data] = {}
 
     def create_and_start_process(self):
         self.process = Process(
@@ -432,7 +433,7 @@ class ImageWatcher(QObject):
             self.watcher.removePath(str(sub_dir))
 
         del self.sub_directories[sub_dir]
-        self.processed_image_paths = []
+        self.processed_image_paths = {}
 
     def clear_deleted_sub_directories(self, directory: Path) -> None:
         for sub_dir in list(self.sub_directories):
@@ -456,7 +457,7 @@ class ImageWatcher(QObject):
                     self.handle_number_images_change.emit()
 
 
-def find_sub_directories(queue, out_queue, go_event, exit_event):
+def find_sub_directories(queue: Queue, out_queue: Queue, go_event: EventClass, exit_event: EventClass):
     while True:
         go_event.wait()
         if exit_event.is_set():
