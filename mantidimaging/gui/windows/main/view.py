@@ -78,6 +78,7 @@ class MainWindowView(BaseMainWindowView):
     stack_modified = pyqtSignal()
     """Emitted when an existing stack is modified"""
     metadata_changed = pyqtSignal()
+    """Emitted when the meta data is modified"""
     backend_message = pyqtSignal(bytes)
     """Emitted when a message is received from the backend"""
 

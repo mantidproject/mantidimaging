@@ -259,7 +259,6 @@ class ImageWatcher(QObject):
     handle_directory_change = pyqtSignal()
     handle_number_images_change = pyqtSignal()
 
-
     def __init__(self, directory: Path):
         """
         Constructor for ImageWatcher class which inherits from QObject.
