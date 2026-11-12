@@ -81,6 +81,7 @@ class LiveViewerWindowTest(FakeFSTestCase, BaseEyesTest):
         mock_load_image.side_effect = ImageLoadFailError(file_list[0], source_error=ValueError)
         self.imaging.show_live_viewer(self.live_directory)
         self.imaging.live_viewer_list[-1].presenter.model._handle_image_changed_in_list(image_list)
+        QTest.qWait(int(IMAGE_LIST_UPDATE_TIME * 1.5))
         self.check_target(widget=self.imaging.live_viewer_list[-1])
 
     @mock.patch('mantidimaging.gui.windows.live_viewer.presenter.LiveViewerWindowPresenter.load_image_from_path')
