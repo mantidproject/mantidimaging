@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import time
 import typing
+from multiprocessing import Queue, Process, Event
+from multiprocessing.synchronize import Event as EventClass
 from operator import attrgetter
 from typing import TYPE_CHECKING
 from pathlib import Path
@@ -186,6 +188,8 @@ class LiveViewerWindowModel:
         """Close the model."""
         if self.image_watcher:
             self.image_watcher.remove_path()
+            self.image_watcher.exit_event.set()
+            self.image_watcher.process.kill()
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
 
@@ -253,6 +257,8 @@ class ImageWatcher(QObject):
     """Signal emitted to update the Live Viewer Spectrum"""
     recent_image_changed = pyqtSignal(Path)
     """Signal emitted when the most recent image is modified"""
+    handle_directory_change = pyqtSignal()
+    handle_number_images_change = pyqtSignal()
 
     def __init__(self, directory: Path):
         """
@@ -279,6 +285,31 @@ class ImageWatcher(QObject):
         self.sub_directories: dict[Path, SubDirectory] = {}
         self.add_sub_directory(SubDirectory(self.directory))
 
+        self.timer = QTimer()
+        self.timer.setInterval(1)
+        self.timer.timeout.connect(self.check_queue)
+
+        self.handle_number_images_change.connect(self._handle_images_change)
+        self.queue: Queue = Queue()
+        self.out_queue: Queue = Queue()
+        self.go_event: EventClass = Event()
+        self.exit_event: EventClass = Event()
+        self.create_and_start_process()
+        self.file_image_number_tracker: dict[SubDirectory, int] = {}
+        self.processed_image_paths: dict[Path, Image_Data] = {}
+
+    def create_and_start_process(self):
+        self.process = Process(
+            target=find_sub_directories,
+            args=(
+                self.queue,
+                self.out_queue,
+                self.go_event,
+                self.exit_event,
+            ),
+        )
+        self.process.start()
+
     def find_images(self, directory: Path) -> list[Image_Data]:
         """
         Find all the images in the directory.
@@ -286,22 +317,17 @@ class ImageWatcher(QObject):
         image_files = []
         for file_path in directory.iterdir():
             if self._is_image_file(file_path.name):
-                try:
-                    image_obj = Image_Data(file_path)
-                    image_files.append(image_obj)
-                except FileNotFoundError:
-                    continue
+                if file_path not in self.processed_image_paths:
+                    try:
+                        image_obj = Image_Data(file_path)
+                        image_files.append(image_obj)
+                        self.processed_image_paths[file_path] = image_obj
+                    except FileNotFoundError:
+                        continue
+                else:
+                    image_files.append(self.processed_image_paths[file_path])
 
         return image_files
-
-    def find_sub_directories(self, directory: Path) -> None:
-        # COMPAT python < 3.12 - Can replace with Path.walk()
-        try:
-            for filename in directory.glob("**/*"):
-                if filename.is_dir():
-                    self.add_sub_directory(SubDirectory(filename))
-        except FileNotFoundError:
-            pass
 
     def sort_sub_directory_by_modified_time(self) -> None:
         self.sub_directories = dict(
@@ -346,9 +372,12 @@ class ImageWatcher(QObject):
         if not self.sub_directories:
             raise FileNotFoundError(f"Live directory not found: {self.directory}"
                                     "\nHas it been deleted?")
-        self.find_sub_directories(directory_path)
-        self.sort_sub_directory_by_modified_time()
 
+        self.queue.put(directory_path)
+        self.go_event.set()
+        self.timer.start()
+
+    def _handle_images_change(self):
         for newest_directory in self.sub_directories.values():
             try:
                 images = self.find_images(newest_directory.path)
@@ -393,6 +422,9 @@ class ImageWatcher(QObject):
     def add_sub_directory(self, sub_dir: SubDirectory) -> None:
         if sub_dir.path not in self.sub_directories:
             self.watcher.addPath(str(sub_dir.path))
+        else:
+            if sub_dir.mtime < self.sub_directories[sub_dir.path].mtime:
+                return
 
         self.sub_directories[sub_dir.path] = sub_dir
 
@@ -401,8 +433,41 @@ class ImageWatcher(QObject):
             self.watcher.removePath(str(sub_dir))
 
         del self.sub_directories[sub_dir]
+        self.processed_image_paths = {}
 
     def clear_deleted_sub_directories(self, directory: Path) -> None:
         for sub_dir in list(self.sub_directories):
             if sub_dir.is_relative_to(directory) and not sub_dir.exists():
                 self.remove_sub_directory(sub_dir)
+
+    def check_queue(self):
+        """Check for new data in the queue."""
+        if self.process is None or not self.process.is_alive():
+            self.timer.stop()
+
+        self.out_queue.put(None)
+        for item in iter(self.out_queue.get, None):
+            if isinstance(item, dict):
+                if item != self.file_image_number_tracker:
+                    # New folder in tree
+                    for key, _ in item.items():
+                        self.add_sub_directory(key)
+                    self.sort_sub_directory_by_modified_time()
+                    self.file_image_number_tracker = item
+                    self.handle_number_images_change.emit()
+
+
+def find_sub_directories(queue: Queue, out_queue: Queue, go_event: EventClass, exit_event: EventClass):
+    while True:
+        go_event.wait()
+        if exit_event.is_set():
+            return
+        directory = queue.get()
+        file_images_tracker = {}
+        try:
+            for dirpath, _, filenames in directory.walk():
+                file_images_tracker[SubDirectory(Path(dirpath))] = len(filenames)
+        except FileNotFoundError:
+            pass
+        out_queue.put(file_images_tracker)
+        go_event.clear()
