@@ -28,24 +28,24 @@ Load the Conda environment setup script by running::
 For development, it's recommended to create a new environment that includes the
 required tools::
 
-    python3 ./setup.py create_dev_env
+    pixi install -e dev
 
-This will create an environment named ``mantidimaging-dev``.
+This will create an environment named ``dev``.
 
-Then confirm that the ``mantidimaging-dev`` environment appears when you list Conda environments::
+Then confirm that the ``dev`` environment appears when you list Pixi environments::
 
-    conda env list
+    pixi info
 
 Activate it using::
 
-    mamba activate mantidimaging-dev
+    pixi shell -e dev
 
 Mantid Imaging can then be run using the Ada Workspace GUI window. Open a new terminal in your workspace, activate the
-``mantidimaging-dev`` Conda environment, and launch Mantid Imaging with the following command::
+``dev`` Pixi environment, and launch Mantid Imaging with the following command::
 
-    python3 -m mantidimaging
+    pixi run MI-gpu
 
 
 The ``--path`` flag can be used to specify a dataset to load at startup. For example, to launch Mantid Imaging with a reconstructed dataset run::
 
-    python3 -m mantidimaging --path /mnt/ceph/auxiliary/tomography/example_data/processed/flower_recon_200/
+    pixi run python -m mantidimaging --path /mnt/ceph/auxiliary/tomography/example_data/processed/flower_recon_200/

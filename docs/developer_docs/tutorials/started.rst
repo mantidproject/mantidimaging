@@ -17,22 +17,22 @@ If you have a github account you can use ssh access (See `Github docs <https://d
 
 To set up a developer environment, from with in the cloned directory run::
 
-    python3 ./setup.py create_dev_env
+    pixi install -e dev
 
-This will create a conda environment containing all the packages needed to run and develop Mantid Imaging. The activate command will activate the environment.
+This will create a Pixi environment containing all the packages needed to run and develop Mantid Imaging. The shell command will activate the environment.
 
 Afterwards the environment can be activated by running::
 
-    mamba activate mantidimaging-dev
+    pixi shell -e dev
 
 To check that the set up was successful, try running the tests from the source directory::
 
-    python3 -m pytest
+    pixi run test-base
 
 Mantid Imaging can be run directly from the checked-out git directory::
 
-    python3 -m mantidimaging
+    pixi run MI-gpu
 
 or to run with additional diagnostics::
 
-    python3 -X faulthandler -m mantidimaging --log-level DEBUG
+    pixi run MI-debug-gpu
