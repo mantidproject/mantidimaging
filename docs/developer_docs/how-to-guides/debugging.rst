@@ -6,9 +6,9 @@ This pages contains some Mantid Imaging specific debugging tips.
 Getting Debug Output
 --------------------
 
-There are several options that can be used so that Mantid Imaging outputs more information as it runs, for example::
+There are several options that can be used so that Mantid Imaging outputs more information as it runs. These options have been defined in the `pixi.toml` file and can be run using the `pixi` command::
 
-  python -X faulthandler -W default -m mantidimaging --log-level DEBUG
+  pixi run MI-debug-base
 
 These options:
 
