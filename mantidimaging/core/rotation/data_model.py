@@ -37,6 +37,10 @@ class CorTiltDataModel:
 
     def linear_regression(self) -> None:
         LOG.debug(f'Running linear regression with {self.num_points} points')
+
+        if len(self.slices) < 2 or len(self.cors) < 2:
+            raise ValueError("At least 2 data points are required to perform linear regression")
+
         self._cached_gradient, self._cached_cor, *_ = sp.stats.linregress(self.slices, self.cors)
 
     def add_point(self, idx: int | None = None, slice_idx: int = 0, cor: float = 0.0) -> None:

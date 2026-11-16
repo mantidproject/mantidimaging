@@ -64,22 +64,6 @@ def pytest_collection_modifyitems(config, items):
             skipped_tests.append(item.nodeid)
 
 
-@pytest.fixture(autouse=True)
-def purge_deleted_named_viewboxes():
-    # Work around pyqtgraph registries retaining wrappers for Qt-deleted ViewBoxes, which crash later creation.
-    # Revisit after PyQt/pyqtgraph upgrades; remove if the regression test passes without this cleanup.
-    def purge_deleted_views() -> None:
-        QtCore.QCoreApplication.sendPostedEvents(None, QtCore.QEvent.Type.DeferredDelete)
-        QtCore.QCoreApplication.processEvents()
-        for name, view in list(ViewBox.NamedViews.items()):
-            if sip.isdeleted(view):
-                del ViewBox.NamedViews[name]
-        ViewBox.AllViews = type(ViewBox.AllViews)((v, None) for v in list(ViewBox.AllViews) if not sip.isdeleted(v))
-    purge_deleted_views()
-    yield
-    purge_deleted_views()
-
-
 # Leak track for tests
 # To use, set autouse to True
 # Add:
