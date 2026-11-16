@@ -44,7 +44,6 @@ requirements:
     - darkdetect=0.8.0
     - ccpi-viewer=25.0.*
     - vtk>=9.3.1,<9.4.0 qt*
-    - qt-gtk-platformtheme # [linux]
 
 
 build:

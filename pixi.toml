@@ -153,10 +153,6 @@ SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 UPLOAD_USER = "mantidimaging"
 AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
 
-# Linux specific dependencies (to get Qt platform theme working)
-[target.linux-64.dependencies]
-qt-gtk-platformtheme = "5.15.15.*"
-
 # Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
 [target.win-64.dependencies]
 ipp = { version = "2021.12.*", channel = "https://software.repos.intel.com/python/conda" }

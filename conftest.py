@@ -48,7 +48,7 @@ def pytest_collection_modifyitems(config, items):
     if os.environ.get("QT_QPA_PLATFORM") in ["offscreen", "minimal"]:
         matplotlib.use("Agg")
     else:
-        matplotlib.use("Qt5Agg")
+        matplotlib.use("QtAgg")
 
     for item in items:
         if "gui_system" in item.nodeid:
