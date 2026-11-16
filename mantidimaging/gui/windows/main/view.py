@@ -466,7 +466,7 @@ class MainWindowView(BaseMainWindowView):
     def close_welcome_screen(self):
         if self.welcome_dock:
             self.removeDockWidget(self.welcome_dock)
-            self.welcome_dock.setParent(None)
+            self.welcome_dock.deleteLater()
             self.welcome_dock = None
             self.welcome_screen = None
             self.welcome_presenter = None
