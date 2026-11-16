@@ -19,6 +19,7 @@ import mantidimaging.core.parallel.manager as pm
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
+from mantidimaging.gui.font_utils import load_application_font
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -61,6 +62,7 @@ def parse_args() -> argparse.Namespace:
 
 def setup_application() -> QApplication:
     q_application = QApplication(sys.argv)
+    load_application_font(q_application)
 
     default_font = QFont()
     default_font_info = QFontInfo(default_font)
