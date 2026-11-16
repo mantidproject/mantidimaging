@@ -5,7 +5,7 @@ from __future__ import annotations
 from logging import getLogger
 from collections.abc import Callable
 
-from PyQt5.QtCore import QThread
+from PyQt6.QtCore import QThread
 
 from mantidimaging.core.utility.func_call import call_with_known_parameters
 from mantidimaging.core.utility.progress_reporting.progress import TaskCancelled

@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from skimage.transform import resize
+from PyQt6.QtWidgets import QHBoxLayout, QRadioButton, QLabel, QComboBox
 
 from mantidimaging.core.operations.base_filter import BaseFilter
 from mantidimaging.core.parallel import utility as pu, shared as ps
@@ -84,7 +85,6 @@ class RebinFilter(BaseFilter):
         _, shape_x = add_property_to_form('X', Type.INT, 100, shape_range, on_change=on_change)
         _, shape_y = add_property_to_form('Y', Type.INT, 100, shape_range, on_change=on_change)
 
-        from PyQt5.QtWidgets import QHBoxLayout, QRadioButton, QLabel, QComboBox
         shape_fields = QHBoxLayout()
         shape_fields.addWidget(shape_x)
         shape_fields.addWidget(shape_y)

@@ -3,9 +3,9 @@
 from __future__ import annotations
 from logging import getLogger
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTableView, QHeaderView, QAbstractItemView
+from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtCore import Qt
 
 LOG = getLogger(__name__)
 
@@ -26,10 +26,10 @@ class ExportDataTableWidget(QWidget):
         self.model = QStandardItemModel(self)
         self.table_view.setModel(self.model)
 
-        self.table_view.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table_view.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.table_view.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table_view.horizontalHeader().setStretchLastSection(True)
-        self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.table_view.verticalHeader().setVisible(False)
 
         layout.addWidget(self.table_view)
@@ -82,7 +82,7 @@ class ExportDataTableWidget(QWidget):
         else:
             item.setText(value)
             item.setData(value)
-        item.setTextAlignment(Qt.AlignCenter)
+        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         return item
 
     def _find_row_by_roi_name(self, roi_name: str) -> int | None:

@@ -3,15 +3,33 @@
 from __future__ import annotations
 
 import logging
+import os
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtTest import QTest
+from PyQt6.QtTest import QTest
 from numpy.testing import assert_raises
 from parameterized import parameterized
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHORT_DELAY, SHOW_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until
+
+if os.environ.get("MI_TRACE_AXIS_PAINT") == "1":
+    from pyqtgraph.graphicsItems.AxisItem import AxisItem
+
+    _original_draw_picture = AxisItem.drawPicture
+
+    def _trace_axis_draw_picture(self, *args, **kwargs):
+        text_specs = args[3] if len(args) > 3 else ()
+        labels = [text for _, _, text in text_specs]
+        print(
+            f"AxisItem.drawPicture: orientation={self.orientation}, visible={self.isVisible()}, "
+            f"range={self.range}, labels={labels!r}",
+            flush=True,
+        )
+        return _original_draw_picture(self, *args, **kwargs)
+
+    AxisItem.drawPicture = _trace_axis_draw_picture
 
 LOG = logging.getLogger(__name__)
 

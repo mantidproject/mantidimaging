@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from mantidimaging.gui.mvp_base import BaseDialogView
 from mantidimaging.gui.widgets.dataset_selector.view import DatasetSelectorWidgetView
-from PyQt5.QtWidgets import QGridLayout, QPushButton
+from PyQt6.QtWidgets import QGridLayout, QPushButton
 
 if TYPE_CHECKING:
     from mantidimaging.gui.windows.main.view import MainWindowView  # pragma: no cover

@@ -6,7 +6,7 @@ import uuid
 import numpy as np
 from unittest import mock
 
-from PyQt5.QtGui import QColor
+from PyQt6.QtGui import QColor
 from parameterized import parameterized
 
 from pyqtgraph import Point

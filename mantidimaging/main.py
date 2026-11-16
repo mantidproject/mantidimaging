@@ -10,15 +10,16 @@ import os
 from pathlib import Path
 
 import darkdetect
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5 import QtCore
-from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
+from PyQt6.QtCore import QSettings
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6 import QtCore
+from PyQt6.QtGui import QFont, QFontInfo
 
 import mantidimaging.core.parallel.manager as pm
 
 from mantidimaging import helper as h
 from mantidimaging.core.utility.command_line_arguments import CommandLineArguments
+from mantidimaging.gui.font_utils import configure_qt_font_directory, load_application_font
 
 formatwarning_orig = warnings.formatwarning
 warnings.formatwarning = lambda message, category, filename, lineno, line=None: formatwarning_orig(
@@ -60,8 +61,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_application() -> QApplication:
-    QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    configure_qt_font_directory()
     q_application = QApplication(sys.argv)
+    load_application_font(q_application)
 
     default_font = QFont()
     default_font_info = QFontInfo(default_font)
@@ -120,7 +122,7 @@ def main() -> None:
     try:
         pm.create_and_start_pool(process_count)
         gui.execute()
-        result = q_application.exec_()
+        result = q_application.exec()
         settings.setValue("app/last_shutdown_clean", True)
         return result
     except BaseException:
@@ -145,7 +147,7 @@ def show_unclean_shutdown_warning(settings: QSettings) -> None:
             latest_log = logs[0]
 
     msg = QMessageBox()
-    msg.setIcon(QMessageBox.Warning)
+    msg.setIcon(QMessageBox.Icon.Warning)
     msg.setWindowTitle("Previous Shutdown Warning")
 
     if latest_log and latest_log.exists():
@@ -155,8 +157,8 @@ def show_unclean_shutdown_warning(settings: QSettings) -> None:
                     "No log file is available.\n\n"
                     "To record log files to disk, configure a directory in File -> Settings.")
 
-    msg.setStandardButtons(QMessageBox.Ok)
-    msg.exec_()
+    msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+    msg.exec()
 
 
 if __name__ == "__main__":

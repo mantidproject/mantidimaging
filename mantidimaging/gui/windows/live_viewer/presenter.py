@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from collections.abc import Callable
 from logging import getLogger
 import numpy as np
-from PyQt5.QtCore import QTimer
+from PyQt6.QtCore import QTimer
 from astropy.io import fits
 from astropy.utils.exceptions import AstropyUserWarning
 
