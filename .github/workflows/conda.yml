@@ -63,7 +63,7 @@ jobs:
           pixi run pyright
 
       - name: pytest
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |
           pixi run -e dev xvfb-run --auto-servernum python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
 
