@@ -77,7 +77,7 @@ jobs:
 
       - name: GUI Tests System
         run: |
-          pixi run test-system-cpu
+          xvfb-run --auto-servernum pixi run test-system-show-cpu
         timeout-minutes: 30
 
       - name: GUI Tests Screenshots Applitools
