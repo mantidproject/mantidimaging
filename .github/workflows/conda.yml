@@ -75,9 +75,16 @@ jobs:
           mv ~/mantidimaging-data-small ~/mantidimaging-data
         timeout-minutes: 5
 
+      - name: Compare Qt Axis Paint Imports
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          pixi run -e dev python scripts/diagnose_qt_axis_paint.py
+          pixi run -e dev python scripts/diagnose_qt_axis_paint.py --with-app-imports
+
       - name: GUI Tests System
         run: |
-          xvfb-run --auto-servernum pixi run test-system-show-cpu
+          pixi run test-system-cpu
         timeout-minutes: 30
 
       - name: GUI Tests Screenshots Applitools

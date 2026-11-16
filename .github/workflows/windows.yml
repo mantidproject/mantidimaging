@@ -82,11 +82,18 @@ jobs:
             throw "GUI system test sample data is missing"
           }
           New-Item -ItemType Directory -Force system_tests_output | Out-Null
-          pixi run -e dev python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --durations=10 --run-system-tests-show mantidimaging/gui/test/gui_system_liveviewer_test.py
+          pixi run -e dev python -m pytest -vs -rs -p no:xdist -p no:randomly -p no:repeat -p no:cov -o log_cli=true --durations=10 --run-system-tests mantidimaging/gui/test/gui_system_liveviewer_test.py
+
+      - name: Compare Qt Axis Paint Imports
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          pixi run -e dev python scripts/diagnose_qt_axis_paint.py
+          pixi run -e dev python scripts/diagnose_qt_axis_paint.py --with-app-imports
 
       - name: GUI Tests System
         run: |
-          pixi run test-system-show-cpu
+          pixi run test-system-cpu
         timeout-minutes: 20
 
       - name: Check isolated live viewer result
