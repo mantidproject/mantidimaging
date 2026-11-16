@@ -41,6 +41,23 @@ class MainWindowPresenterTest(unittest.TestCase):
 
         self.main_window.show_image_load_dialog_with_path.assert_not_called()
 
+    def test_WHEN_initial_image_list_changes_THEN_first_refresh_is_delayed(self):
+        self.presenter.update_image_list_timer = mock.Mock()
+        self.presenter.update_image_list_timer.isActive.return_value = False
+
+        self.presenter.notify_update_image_list()
+
+        self.presenter.update_image_list_timer.start.assert_called_once_with(200)
+
+    def test_WHEN_initial_refresh_is_complete_THEN_later_refreshes_use_normal_delay(self):
+        self.presenter.update_image_list_timer = mock.Mock()
+        self.presenter.update_image_list_timer.isActive.return_value = False
+        self.presenter._initial_image_list_update = False
+
+        self.presenter.notify_update_image_list()
+
+        self.presenter.update_image_list_timer.start.assert_called_once_with(100)
+
     @parameterized.expand([
         ([], False),
         ([mock.Mock()], True),

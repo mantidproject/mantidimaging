@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 logger = getLogger(__name__)
 
 IMAGE_LIST_UPDATE_TIME = 100
+INITIAL_IMAGE_LIST_UPDATE_TIME = 200
 CHUNK_SIZE = 10
 
 
@@ -53,6 +54,7 @@ class LiveViewerWindowPresenter(BasePresenter):
         self.main_window = main_window
         self.model = LiveViewerWindowModel(self)
         self.selected_image: Image_Data | None = None
+        self._initial_image_list_update = True
         self.filters = {f.filter_name: f for f in load_filter_packages()}
 
         self.handle_roi_change_timer = QTimer()
@@ -93,6 +95,7 @@ class LiveViewerWindowPresenter(BasePresenter):
 
     def update_image_list(self) -> None:
         """Update the image in the view."""
+        self._initial_image_list_update = False
         images_list = self.model.images
         if not images_list:
             self.handle_deleted()
@@ -133,7 +136,8 @@ class LiveViewerWindowPresenter(BasePresenter):
     def notify_update_image_list(self) -> None:
         """Notify when image list needs to be updated if not already being updated"""
         if not self.update_image_list_timer.isActive():
-            self.update_image_list_timer.start(IMAGE_LIST_UPDATE_TIME)
+            delay = INITIAL_IMAGE_LIST_UPDATE_TIME if self._initial_image_list_update else IMAGE_LIST_UPDATE_TIME
+            self.update_image_list_timer.start(delay)
 
     def try_add_mean(self, image: Image_Data) -> None:
         try:
