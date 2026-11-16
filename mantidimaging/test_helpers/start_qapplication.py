@@ -21,7 +21,7 @@ from unittest import mock
 import pyqtgraph
 from mantidimaging.core.parallel.manager import create_and_start_pool, end_pool
 from PyQt6.QtWidgets import QApplication
-from mantidimaging.gui.font_utils import load_application_font
+from mantidimaging.gui.font_utils import configure_qt_font_directory, load_application_font
 
 _QAPP = QApplication.instance()
 
@@ -51,6 +51,7 @@ def get_application(name=''):
         current_excepthook(exc_type, exc_value, exc_traceback)
 
     if _QAPP is None:
+        configure_qt_font_directory()
         _QAPP = QApplication([name])
         _QAPP.setStyle('Fusion')
         sys.excepthook = handle_uncaught_exceptions

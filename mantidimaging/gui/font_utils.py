@@ -3,11 +3,26 @@
 from __future__ import annotations
 
 from importlib.resources import files
+import os
+from pathlib import Path
 
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QApplication
 
 _font_family: str | None = None
+
+
+def configure_qt_font_directory() -> str | None:
+    font_directory = files("qt_material").joinpath("fonts", "roboto")
+    if not font_directory.is_dir():
+        return None
+
+    configured_directory = os.environ.get("QT_QPA_FONTDIR")
+    if configured_directory and Path(configured_directory).is_dir():
+        return configured_directory
+
+    os.environ["QT_QPA_FONTDIR"] = str(font_directory)
+    return str(font_directory)
 
 
 def load_application_font(app: QApplication) -> str | None:
