@@ -32,8 +32,8 @@ class ImageWatcherTest(FakeFSTestCase):
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
             with mock.patch("mantidimaging.gui.windows.live_viewer.model.ImageWatcher.create_and_start_process"):
                 self.watcher = ImageWatcher(self.top_path)
-                self.watcher.queue = Queue()
-                self.watcher.out_queue = Queue()
+                self.watcher.queue = Queue()  # type: ignore
+                self.watcher.out_queue = Queue()  # type: ignore
                 self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
                 self.watcher.image_changed = self.mock_signal_image
                 self.watcher.process = mock.Mock(return_value=None)
