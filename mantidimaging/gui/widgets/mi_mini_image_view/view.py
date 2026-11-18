@@ -52,6 +52,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.vb = view_box_type(invertY=True, lockAspect=True, name=name)
         self.vb.addItem(self.im)
         self.hist = HistogramLUTItem(self.im)
+        self.hist.axis.setStyle(showValues=False)
         graveyard.append(self.vb)
         graveyard.append(self.hist.vb)
         self.add_save_image_action()
