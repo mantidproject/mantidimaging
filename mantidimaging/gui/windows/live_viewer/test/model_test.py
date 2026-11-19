@@ -12,7 +12,6 @@ from unittest import mock
 
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
-from queue import Queue
 
 from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data, find_sub_directories
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
@@ -32,8 +31,35 @@ class ImageWatcherTest(FakeFSTestCase):
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
             with mock.patch("mantidimaging.gui.windows.live_viewer.model.ImageWatcher.create_and_start_process"):
                 self.watcher = ImageWatcher(self.top_path)
-                self.watcher.queue = Queue()  # type: ignore
-                self.watcher.out_queue = Queue()  # type: ignore
+                mock_queue_list: list = []
+                mock_out_queue_list: list = []
+                self.watcher.queue = mock.Mock(return_value=mock_queue_list)
+                self.watcher.out_queue = mock.Mock(return_value=mock_out_queue_list)
+
+                def mock_queue_get():
+                    if len(mock_queue_list) > 0:
+                        return mock_queue_list.pop(0)
+                    else:
+                        return None
+
+                def mock_out_queue_get():
+                    if len(mock_out_queue_list) > 0:
+                        return mock_out_queue_list.pop(0)
+                    else:
+                        return None
+
+                self.watcher.queue.get = mock.MagicMock(side_effect=mock_queue_get)
+                self.watcher.out_queue.get = mock.MagicMock(side_effect=mock_out_queue_get)
+
+                def mock_queue_put(item):
+                    mock_queue_list.append(item)
+
+                def mock_out_queue_put(item):
+                    mock_out_queue_list.append(item)
+
+                self.watcher.queue.put = mock.MagicMock(side_effect=mock_queue_put)
+                self.watcher.out_queue.put = mock.MagicMock(side_effect=mock_out_queue_put)
+
                 self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
                 self.watcher.image_changed = self.mock_signal_image
                 self.watcher.process = mock.Mock(return_value=None)
