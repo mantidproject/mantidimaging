@@ -5,7 +5,7 @@ import unittest
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtCore import QRect
+from PyQt6.QtCore import QRect
 from parameterized import parameterized
 
 from mantidimaging.gui.widgets.line_profile_plot.view import LineProfilePlot, ImageViewLineROI

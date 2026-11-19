@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
-from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
+from PyQt6.QtCore import QFileSystemWatcher, pyqtSignal
 
 from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase

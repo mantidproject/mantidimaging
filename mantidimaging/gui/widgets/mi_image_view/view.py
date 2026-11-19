@@ -7,11 +7,12 @@ from time import sleep
 from typing import TYPE_CHECKING
 from collections.abc import Callable
 
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
-from pyqtgraph import ROI, ImageItem
-from pyqtgraph.imageview import ImageView
+from PyQt6.QtCore import Qt, QRectF
+from PyQt6.QtWidgets import QApplication, QHBoxLayout, QLabel, QPushButton, QSizePolicy
+from pyqtgraph.graphicsItems.ImageItem import ImageItem
+from pyqtgraph.graphicsItems.ROI import ROI
 from pyqtgraph.graphicsItems.ViewBox import ViewBox
+from pyqtgraph.imageview.ImageView import ImageView
 from pyqtgraph.GraphicsScene.mouseEvents import HoverEvent
 
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
@@ -24,7 +25,7 @@ from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataO
 import numpy as np
 
 if TYPE_CHECKING:
-    from pyqtgraph import HistogramLUTItem
+    from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
     from mantidimaging.core.utility.data_containers import ProjectionAngles
 
 

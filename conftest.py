@@ -7,8 +7,8 @@ from collections import Counter
 
 import matplotlib
 import pytest
-from PyQt5 import QtCore, sip
-from PyQt5.QtGui import QFont
+from PyQt6 import QtCore, sip
+from PyQt6.QtGui import QFont
 from pyqtgraph import ViewBox
 
 from mantidimaging.core.utility.leak_tracker import leak_tracker
@@ -45,10 +45,10 @@ def pytest_collection_modifyitems(config, items):
         allowed_markers.append(pytest.mark.unit.mark)
     if qt_platform is not None:
         os.environ["QT_QPA_PLATFORM"] = qt_platform
-    if os.environ.get("QT_QPA_PLATFORM") in ["offscreen", "minimal"]:
-        matplotlib.use("Agg")
+    if config.getoption("--run-system-tests-show"):
+        matplotlib.use("QtAgg")
     else:
-        matplotlib.use("Qt5Agg")
+        matplotlib.use("Agg")
 
     for item in items:
         if "gui_system" in item.nodeid:

@@ -15,7 +15,7 @@ from mantidimaging.core.fitting.bounding_box import get_bounding_box
 
 if TYPE_CHECKING:
     from mantidimaging.core.data import ImageStack
-    from PyQt5.QtWidgets import QLineEdit, QWidget
+    from PyQt6.QtWidgets import QLineEdit, QWidget
 
 
 class CropCoordinatesFilter(BaseFilter):

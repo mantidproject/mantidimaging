@@ -13,7 +13,7 @@ from mantidimaging.core.parallel import shared as ps
 from mantidimaging.gui.utility.qt_helpers import Type
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QFormLayout, QWidget
+    from PyQt6.QtWidgets import QFormLayout, QWidget
     from mantidimaging.core.data import ImageStack
     from mantidimaging.gui.mvp_base import BaseMainWindowView
     from collections.abc import Callable

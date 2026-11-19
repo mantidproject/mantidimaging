@@ -93,12 +93,14 @@ cil = "26.0.*"
 ccpi-viewer = "25.0.*"
 
 # Visualization and GUI
-vtk = { version = ">=9.2.6,<9.4", build = "qt*" }
-pyqt = { version = "5.15.11.*", build = "py312h*_2" }
-qt-main = "5.15.15.*"
-pyqtgraph = "0.13.7.*"
-qt-material = "2.14.*"
+vtk = { version = ">=9.3.1,<9.4", build = "qt*" }
+pyqt6 = ">=6.7,<7"
+qt6-main = ">=6.8.3,<7"
+pyqtgraph = ">=0.14,<0.15"
 darkdetect = "0.8.0.*"
+
+[feature.runtime.pypi-dependencies]
+qt-material = "==2.17"
 
 # GPU-specific packages - common across all platforms
 [feature.runtime-gpu.dependencies]
@@ -152,10 +154,6 @@ SOURCE_DIRS = "mantidimaging scripts docs/ext/"
 [feature.build.activation.env]
 UPLOAD_USER = "mantidimaging"
 AUTHENTICATION_PARAMS = "--user $UPLOAD_USER --token $ANACONDA_API_TOKEN"
-
-# Linux specific dependencies (to get Qt platform theme working)
-[target.linux-64.dependencies]
-qt-gtk-platformtheme = "5.15.15.*"
 
 # Windows specific dependencies (to get VS runtime and Intel OpenMP for MKL)
 [target.win-64.dependencies]

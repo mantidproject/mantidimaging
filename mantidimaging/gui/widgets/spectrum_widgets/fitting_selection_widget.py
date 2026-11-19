@@ -4,7 +4,7 @@ from __future__ import annotations
 import inspect
 
 from mantidimaging.core.fitting import fitting_functions
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 from mantidimaging.core.fitting.fitting_functions import BaseFittingFunction
 from logging import getLogger
