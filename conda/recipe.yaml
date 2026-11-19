@@ -54,8 +54,6 @@ requirements:
     - darkdetect=0.8.0
     - ccpi-viewer 25.0.*
     - vtk>=9.3.1,<9.4.0 qt*
-    - if: linux
-      then: qt-gtk-platformtheme
 
 tests:
   - python:

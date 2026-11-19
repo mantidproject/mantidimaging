@@ -39,7 +39,7 @@ jobs:
       - name: Other dependencies
         run: |
           sudo apt update -y
-          sudo apt-get install -y xvfb libxcb* libxkb*
+          sudo apt-get install -y xvfb xauth libxkbcommon-x11-0 libxcb-cursor0
 
       - name: List versions
         run: |

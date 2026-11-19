@@ -58,7 +58,7 @@ Selecting the Python interpreter
 Verify that the selected interpreter is correct by opening a python file and checking the bottom right corner of VSCode, it should display the name of the selected environment.
 
 If you are using Pixi, the interpreter may be detected automatically from the ``.pixi`` folder in the project root. In that case, the Pixi environment will appear as something like:  
-``Python 3.12.12 (dev) ./.pixi/envs/dev/bin/python``
+``Python 3.12 (dev) ./.pixi/envs/dev/bin/python``
 
 More details on configuring Pixi with VS Code can be found `here <https://pixi.prefix.dev/latest/integration/editor/vscode/#python-extension>`_.
 
