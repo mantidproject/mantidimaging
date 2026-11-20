@@ -8,6 +8,7 @@ import time
 import unittest
 
 from pathlib import Path
+from threading import Event
 from unittest import mock
 
 import numpy as np
@@ -30,40 +31,44 @@ class ImageWatcherTest(FakeFSTestCase):
 
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
             with mock.patch("mantidimaging.gui.windows.live_viewer.model.ImageWatcher.create_and_start_process"):
-                self.watcher = ImageWatcher(self.top_path)
-                mock_queue_list: list = []
-                mock_out_queue_list: list = []
-                self.watcher.queue = mock.Mock(return_value=mock_queue_list)
-                self.watcher.out_queue = mock.Mock(return_value=mock_out_queue_list)
+                with mock.patch("mantidimaging.gui.windows.live_viewer.model.ImageWatcher.create_queues_and_events"):
+                    self.watcher = ImageWatcher(self.top_path)
+                    mock_queue_list: list = []
+                    mock_out_queue_list: list = []
+                    self.watcher.queue = mock.Mock(return_value=mock_queue_list)
+                    self.watcher.out_queue = mock.Mock(return_value=mock_out_queue_list)
 
-                def mock_queue_get():
-                    if len(mock_queue_list) > 0:
-                        return mock_queue_list.pop(0)
-                    else:
-                        return None
+                    def mock_queue_get():
+                        if len(mock_queue_list) > 0:
+                            return mock_queue_list.pop(0)
+                        else:
+                            return None
 
-                def mock_out_queue_get():
-                    if len(mock_out_queue_list) > 0:
-                        return mock_out_queue_list.pop(0)
-                    else:
-                        return None
+                    def mock_out_queue_get():
+                        if len(mock_out_queue_list) > 0:
+                            return mock_out_queue_list.pop(0)
+                        else:
+                            return None
 
-                self.watcher.queue.get = mock.MagicMock(side_effect=mock_queue_get)
-                self.watcher.out_queue.get = mock.MagicMock(side_effect=mock_out_queue_get)
+                    self.watcher.queue.get = mock.MagicMock(side_effect=mock_queue_get)
+                    self.watcher.out_queue.get = mock.MagicMock(side_effect=mock_out_queue_get)
 
-                def mock_queue_put(item):
-                    mock_queue_list.append(item)
+                    def mock_queue_put(item):
+                        mock_queue_list.append(item)
 
-                def mock_out_queue_put(item):
-                    mock_out_queue_list.append(item)
+                    def mock_out_queue_put(item):
+                        mock_out_queue_list.append(item)
 
-                self.watcher.queue.put = mock.MagicMock(side_effect=mock_queue_put)
-                self.watcher.out_queue.put = mock.MagicMock(side_effect=mock_out_queue_put)
+                    self.watcher.queue.put = mock.MagicMock(side_effect=mock_queue_put)
+                    self.watcher.out_queue.put = mock.MagicMock(side_effect=mock_out_queue_put)
 
-                self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
-                self.watcher.image_changed = self.mock_signal_image
-                self.watcher.process = mock.Mock(return_value=None)
-                self.watcher.timer = mock.Mock()
+                    self.watcher.go_event = Event()  # type: ignore
+                    self.watcher.exit_event = Event()  # type: ignore
+
+                    self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
+                    self.watcher.image_changed = self.mock_signal_image
+                    self.watcher.process = mock.Mock(return_value=None)
+                    self.watcher.timer = mock.Mock()
 
     def _make_simple_dir(self, directory: Path, t0: float = 1000):
         file_list = [directory / f"abc_{i:06d}.tif" for i in range(5)]
