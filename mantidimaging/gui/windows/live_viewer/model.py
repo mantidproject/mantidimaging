@@ -188,7 +188,8 @@ class LiveViewerWindowModel:
         """Close the model."""
         if self.image_watcher:
             self.image_watcher.remove_path()
-            self.image_watcher.exit_event.set()
+            if self.image_watcher.exit_event is not None:
+                self.image_watcher.exit_event.set()
             self.image_watcher.process.kill()
             self.image_watcher = None
         self.presenter = None  # type: ignore # Model instance to be destroyed -type can be inconsistent
@@ -260,6 +261,11 @@ class ImageWatcher(QObject):
     handle_directory_change = pyqtSignal()
     handle_number_images_change = pyqtSignal()
 
+    queue: Queue | None = None
+    out_queue: Queue | None = None
+    go_event: EventClass | None = None
+    exit_event: EventClass | None = None
+
     def __init__(self, directory: Path):
         """
         Constructor for ImageWatcher class which inherits from QObject.
@@ -290,13 +296,16 @@ class ImageWatcher(QObject):
         self.timer.timeout.connect(self.check_queue)
 
         self.handle_number_images_change.connect(self._handle_images_change)
-        self.queue: Queue = Queue()
-        self.out_queue: Queue = Queue()
-        self.go_event: EventClass = Event()
-        self.exit_event: EventClass = Event()
+        self.create_queues_and_events()
         self.create_and_start_process()
         self.file_image_number_tracker: dict[SubDirectory, int] = {}
         self.processed_image_paths: dict[Path, Image_Data] = {}
+
+    def create_queues_and_events(self):
+        self.queue = Queue()
+        self.out_queue = Queue()
+        self.go_event = Event()
+        self.exit_event = Event()
 
     def create_and_start_process(self):
         self.process = Process(
@@ -373,8 +382,10 @@ class ImageWatcher(QObject):
             raise FileNotFoundError(f"Live directory not found: {self.directory}"
                                     "\nHas it been deleted?")
 
-        self.queue.put(directory_path)
-        self.go_event.set()
+        if self.queue is not None:
+            self.queue.put(directory_path)
+        if self.go_event is not None:
+            self.go_event.set()
         self.timer.start()
 
     def _handle_images_change(self):
