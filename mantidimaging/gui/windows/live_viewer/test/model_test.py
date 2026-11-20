@@ -8,12 +8,13 @@ import time
 import unittest
 
 from pathlib import Path
+from threading import Event
 from unittest import mock
 
 import numpy as np
 from PyQt5.QtCore import QFileSystemWatcher, pyqtSignal
 
-from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data
+from mantidimaging.gui.windows.live_viewer.model import ImageWatcher, ImageCache, Image_Data, find_sub_directories
 from mantidimaging.test_helpers.unit_test_helper import FakeFSTestCase
 
 
@@ -29,9 +30,45 @@ class ImageWatcherTest(FakeFSTestCase):
             mock_file_watcher = mock.create_autospec(QFileSystemWatcher, fileChanged=mock.Mock(), instance=True)
 
             mocker.side_effect = [mock_dir_watcher, mock_file_watcher]
-            self.watcher = ImageWatcher(self.top_path)
-            self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
-            self.watcher.image_changed = self.mock_signal_image
+            with mock.patch("mantidimaging.gui.windows.live_viewer.model.ImageWatcher.create_and_start_process"):
+                with mock.patch("mantidimaging.gui.windows.live_viewer.model.ImageWatcher.create_queues_and_events"):
+                    self.watcher = ImageWatcher(self.top_path)
+                    mock_queue_list: list = []
+                    mock_out_queue_list: list = []
+                    self.watcher.queue = mock.Mock(return_value=mock_queue_list)
+                    self.watcher.out_queue = mock.Mock(return_value=mock_out_queue_list)
+
+                    def mock_queue_get():
+                        if len(mock_queue_list) > 0:
+                            return mock_queue_list.pop(0)
+                        else:
+                            return None
+
+                    def mock_out_queue_get():
+                        if len(mock_out_queue_list) > 0:
+                            return mock_out_queue_list.pop(0)
+                        else:
+                            return None
+
+                    self.watcher.queue.get = mock.MagicMock(side_effect=mock_queue_get)
+                    self.watcher.out_queue.get = mock.MagicMock(side_effect=mock_out_queue_get)
+
+                    def mock_queue_put(item):
+                        mock_queue_list.append(item)
+
+                    def mock_out_queue_put(item):
+                        mock_out_queue_list.append(item)
+
+                    self.watcher.queue.put = mock.MagicMock(side_effect=mock_queue_put)
+                    self.watcher.out_queue.put = mock.MagicMock(side_effect=mock_out_queue_put)
+
+                    self.watcher.go_event = Event()  # type: ignore
+                    self.watcher.exit_event = Event()  # type: ignore
+
+                    self.mock_signal_image = mock.create_autospec(pyqtSignal, emit=mock.Mock(), instance=True)
+                    self.watcher.image_changed = self.mock_signal_image
+                    self.watcher.process = mock.Mock(return_value=None)
+                    self.watcher.timer = mock.Mock()
 
     def _make_simple_dir(self, directory: Path, t0: float = 1000):
         file_list = [directory / f"abc_{i:06d}.tif" for i in range(5)]
@@ -59,6 +96,11 @@ class ImageWatcherTest(FakeFSTestCase):
                 n += 1
 
         return file_list
+
+    def _simulate_thread_check_queue(self):
+        self.watcher.go_event.clear = lambda: self.watcher.exit_event.set()
+        find_sub_directories(self.watcher.queue, self.watcher.out_queue, self.watcher.go_event, self.watcher.exit_event)
+        self.watcher.check_queue()
 
     def _get_recent_emitted_files(self):
         self.mock_signal_image.emit.assert_called()
@@ -90,6 +132,7 @@ class ImageWatcherTest(FakeFSTestCase):
     def test_WHEN_empty_dir_THEN_no_files(self):
         self.watcher.changed_directory = self.top_path
         self.watcher._handle_directory_change()
+        self._simulate_thread_check_queue()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, [])
@@ -97,6 +140,7 @@ class ImageWatcherTest(FakeFSTestCase):
     def test_WHEN_missing_dir_THEN_useful_error(self):
         self.fs.rmdir(self.top_path)
         self.watcher.changed_directory = self.top_path
+        self.watcher.sub_directories = {}
 
         with self.assertRaises(FileNotFoundError) as context_manager:
             self.watcher._handle_directory_change()
@@ -109,7 +153,9 @@ class ImageWatcherTest(FakeFSTestCase):
         subdir_names = ["tomo", "flat_before", "flat_after"]
         self._make_sub_directories(self.top_path, subdir_names)
 
-        self.watcher.find_sub_directories(self.top_path)
+        self.watcher.go_event.set()
+        self.watcher.queue.put(self.top_path)
+        self._simulate_thread_check_queue()
         for sub_dir in subdir_names:
             self._file_in_sequence(self.top_path / sub_dir, self.watcher.sub_directories.keys())
 
@@ -120,6 +166,7 @@ class ImageWatcherTest(FakeFSTestCase):
         self.watcher.changed_directory = self.top_path
         self.watcher._handle_directory_change()
 
+        self._simulate_thread_check_queue()
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
 
@@ -133,6 +180,7 @@ class ImageWatcherTest(FakeFSTestCase):
 
         self.watcher.changed_directory = self.top_path / "empty"
         self.watcher._handle_directory_change()
+        self._simulate_thread_check_queue()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
@@ -147,6 +195,7 @@ class ImageWatcherTest(FakeFSTestCase):
 
         self.watcher.changed_directory = self.top_path
         self.watcher._handle_directory_change()
+        self._simulate_thread_check_queue()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list)
@@ -160,6 +209,7 @@ class ImageWatcherTest(FakeFSTestCase):
 
         self.watcher.changed_directory = self.top_path / "more"
         self.watcher._handle_directory_change()
+        self._simulate_thread_check_queue()
 
         emitted_images = self._get_recent_emitted_files()
         self._file_list_count_equal(emitted_images, file_list2)

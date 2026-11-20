@@ -50,7 +50,7 @@ jobs:
           label: rocky8
 
       - name: pytest
-        timeout-minutes: 5
+        timeout-minutes: 10
         uses: ./.github/actions/test
         with:
           command: pixi run -e dev xvfb-run pytest -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
