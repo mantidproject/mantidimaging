@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import pyqtSignal
-from pyqtgraph import GraphicsLayoutWidget, mkPen
+from pyqtgraph import AxisItem, GraphicsLayoutWidget, mkPen
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -11,6 +11,20 @@ from mantidimaging.gui.widgets.zslider.zslider import ZSlider
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
 import numpy as np
+
+
+class LiveViewerAxisItem(AxisItem):
+
+    def paint(self, painter, option, widget):
+        painter.save()
+        try:
+            if self.style["tickFont"]:
+                painter.setFont(self.style["tickFont"])
+            specs = self.generateDrawSpecs(painter)
+            if specs is not None:
+                self.drawPicture(painter, *specs)
+        finally:
+            painter.restore()
 
 
 class LiveViewWidget(GraphicsLayoutWidget):
@@ -34,7 +48,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.addItem(self.image, 0, 0)
         self.nextRow()
 
-        self.z_slider = ZSlider()
+        self.z_slider = ZSlider(axis_items={"bottom": LiveViewerAxisItem(orientation="bottom")})
         self.addItem(self.z_slider)
 
         self.image.enable_message()

@@ -6,6 +6,7 @@ from typing import Any
 
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import QGraphicsSceneMouseEvent
+from pyqtgraph.graphicsItems.AxisItem import AxisItem
 from pyqtgraph.graphicsItems.InfiniteLine import InfiniteLine
 from pyqtgraph.graphicsItems.PlotItem import PlotItem
 
@@ -27,8 +28,8 @@ class ZSlider(PlotItem):
     z_line: InfiniteLine
     valueChanged = pyqtSignal(int)
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, axis_items: dict[str, AxisItem] | None = None) -> None:
+        super().__init__(axisItems=axis_items)
         _graveyard.append(self.vb)
         self.setFixedHeight(40)
         self.hideAxis("left")
