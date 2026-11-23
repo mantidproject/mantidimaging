@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import QColorDialog, QMenu, QSplitter, QWidget, QVBoxLayout
 from PyQt6.QtGui import QAction, QActionGroup
 
 from pyqtgraph import (
+    AxisItem,
     ROI,
     GraphicsLayoutWidget,
     LinearRegionItem,
@@ -337,11 +338,11 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     """Emitted when the range of the spectrum plot has changed."""
     _wavelength_range_label: LabelItem | None
 
-    def __init__(self) -> None:
+    def __init__(self, axis_items: dict[str, AxisItem] | None = None) -> None:
         super().__init__()
 
         self.spectrum_viewbox = CustomViewBox(enableMenu=True)
-        self.spectrum = MIPlotItem(viewBox=self.spectrum_viewbox)
+        self.spectrum = MIPlotItem(viewBox=self.spectrum_viewbox, axisItems=axis_items)
         self.addItem(self.spectrum)
         self.nextRow()
         self._tof_range_label = self.addLabel()

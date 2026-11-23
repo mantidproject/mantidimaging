@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QVBoxLayout, QSplitter
 from PyQt6.QtGui import QAction, QActionGroup
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView
-from .live_view_widget import LiveViewWidget
+from .live_view_widget import LiveViewerAxisItem, LiveViewWidget
 from .presenter import LiveViewerWindowPresenter
 
 import numpy as np
@@ -39,7 +39,10 @@ class LiveViewerWindowView(BaseMainWindowView):
         self.imageLayout.addWidget(self.splitter)
         self.live_viewer.z_slider.valueChanged.connect(self.presenter.select_image)
 
-        self.spectrum_plot_widget = SpectrumPlotWidget()
+        self.spectrum_plot_widget = SpectrumPlotWidget(axis_items={
+            "bottom": LiveViewerAxisItem(orientation="bottom"),
+            "left": LiveViewerAxisItem(orientation="left"),
+        })
         self.intensity_profile = self.spectrum_plot_widget.spectrum
         self.live_viewer.roi_changing.connect(self.presenter.handle_notify_roi_moved)
 
