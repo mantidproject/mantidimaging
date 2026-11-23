@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from unittest import mock
 
 import numpy as np
@@ -31,6 +32,8 @@ class TestGuiLiveViewer(GuiSystemBase):
         assert self.main_window.live_viewer_list[-1] is not None
         self.live_viewer_window = self.main_window.live_viewer_list[-1]
         LOG.info(f"live_viewer_window={self.live_viewer_window}")
+        if os.environ.get("MI_TEST_HIDE_LIVEVIEWER_SLIDER_AXIS") == "1":
+            self.live_viewer_window.live_viewer.z_slider.hideAxis("bottom")
 
         self.assertTrue(self.live_viewer_window.isVisible())
         QTest.qWait(SHORT_DELAY)

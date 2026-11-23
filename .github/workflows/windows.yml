@@ -71,6 +71,8 @@ jobs:
         timeout-minutes: 5
 
       - name: GUI Tests System
+        env:
+          QT_QPA_FONTDIR: ${{ github.workspace }}\.pixi\envs\dev\Lib\site-packages\qt_material\fonts\roboto
         run: |
           pixi run test-system-cpu
         timeout-minutes: 20
