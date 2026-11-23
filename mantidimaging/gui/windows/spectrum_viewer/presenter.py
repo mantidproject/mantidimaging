@@ -285,9 +285,10 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         if self.model.tof_mode == ToFUnitMode.IMAGE_NUMBER:
             self.model.tof_range = (int(tof_range[0]), int(tof_range[1]))
         else:
-            image_index_min = np.abs(self.model.tof_data - tof_range[0]).argmin()
-            image_index_max = np.abs(self.model.tof_data - tof_range[1]).argmin()
-            self.model.tof_range = tuple(sorted((image_index_min, image_index_max)))
+            image_index_min = int(np.abs(self.model.tof_data - tof_range[0]).argmin())
+            image_index_max = int(np.abs(self.model.tof_data - tof_range[1]).argmin())
+            image_index_min, image_index_max = sorted((image_index_min, image_index_max))
+            self.model.tof_range = (image_index_min, image_index_max)
         self.view.spectrum_widget.spectrum_plot_widget.set_image_index_range_label(*self.model.tof_range)
         self.view.spectrum_widget.spectrum_plot_widget.set_tof_range_label(*self.model.tof_plot_range)
         self.update_displayed_image(autoLevels=False)
@@ -783,7 +784,7 @@ class SpectrumViewerWindowPresenter(BasePresenter):
         except (ValueError, BadFittingRoiError) as e:
             LOG.warning(f"Failed to find fit: {e}")
             param_names = self.model.fitting_engine.get_parameter_names()
-            failed_params = {p: 0.0 for p in param_names}
+            failed_params = dict.fromkeys(param_names, 0.0)
             return SpectrumFitResult(params=failed_params, rss=0.0, rss_per_dof=0.0, status="Failed")
 
     def fit_all_regions(self, progress: Progress) -> list[tuple[str, SpectrumFitResult]]:

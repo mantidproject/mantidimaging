@@ -47,7 +47,7 @@ class FilterPreviews(GraphicsLayoutWidget):
             screen_height = QGuiApplication.screenAt(widget_location).availableGeometry().height()
         else:
             screen_height = max(QGuiApplication.primaryScreen().availableGeometry().height(), 600)
-            LOG.info("Unable to detect current screen. Setting screen height to %s" % screen_height)
+            LOG.info("Unable to detect current screen. Setting screen height to %s", screen_height)
         self.ALLOWED_HEIGHT: QRect = screen_height * 0.8
 
         self.addLabel("Image before")

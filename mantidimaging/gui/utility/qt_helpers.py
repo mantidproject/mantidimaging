@@ -151,7 +151,7 @@ def add_property_to_form(label: str,
 
         if single_step_size is not None:
             box.setSingleStep(single_step_size)
-        elif cast_func == float:
+        elif cast_func is float:
             # Override the default step size for QDoubleSpinBox
             box.setSingleStep(0.1)
 

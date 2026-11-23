@@ -27,7 +27,7 @@ build-gpu = ["runtime", "runtime-gpu", "gpu-verify", "build"]
 mypy = "==1.17"
 pyright = "==1.1.410"
 yapf = "0.43.*"
-ruff = "0.3.7.*"
+ruff = ">=0.9,<1"
 types-requests = "*"
 types-pyyaml = "*"
 types-docutils = "*"
@@ -39,13 +39,13 @@ pytest-cov = "4.1.*"
 pytest-randomly = "3.15.*"
 pytest-xdist = "3.3.*"
 testfixtures = "7.2.*"
-pyfakefs = "5.3.*"
+pyfakefs = "5.10.*"
 parameterized = "0.9.*"
 
 # Packages required for development and building
 [feature.dev.dependencies]
 gitpython = "3.1.*"
-coverage = ">=7.0,<7.5"
+coverage = ">=7.6,<8"
 coveralls = "4.1.*"
 pyinstaller = "6.14.*"
 make = "==4.3"
@@ -64,14 +64,14 @@ eyes-images = "==5.23.*"
 # Core packages required at runtime
 [feature.runtime.dependencies]
 # Core Python and utilities
-python = "3.12.*"
+python = "3.13.*"
 pip = "*"
-numpy = "2.0.*"
+numpy = ">=2.1,<3"
 scipy = "1.18.*"
 numba = "0.61.*"
 numexpr = "2.10.*"
 requests = "2.32.*"
-psutil = "5.9.*"
+psutil = ">=6.1,<8"
 pyyaml = "*"
 
 # Data I/O and file handling
@@ -93,9 +93,9 @@ cil = "26.0.*"
 ccpi-viewer = "25.0.*"
 
 # Visualization and GUI
-vtk = { version = ">=9.3.1,<9.4", build = "qt*" }
-pyqt6 = ">=6.7,<7"
-qt6-main = ">=6.8.3,<7"
+vtk = { version = "==9.3.1", build = "qt*" }
+pyqt6 = "==6.8.1"
+qt6-main = "==6.8.3"
 pyqtgraph = ">=0.14,<0.15"
 darkdetect = "0.8.0.*"
 
@@ -122,14 +122,14 @@ libastra = { version = "2.4.1.*", build = "cuda*" }
 # CPU-specific packages (non-CUDA builds)
 [feature.runtime-cpu.target.linux-64.dependencies]
 ccpi-regulariser = { version = "25.0.*", build = "cpu*" }
-astra-toolbox =  "2.3.1.*"
-libastra =  "2.3.1.*"
+astra-toolbox = "2.4.1.*"
+libastra =  "2.4.1.*"
 
 # Windows-specific CPU packages - Windows (non-CUDA builds with specific hashes)
 [feature.runtime-cpu.target.win-64.dependencies]
 ccpi-regulariser = { version = "25.0.*", build = "cpu*" }
-astra-toolbox = "2.3.1.*"
-libastra = "2.3.1.*"
+astra-toolbox = "2.4.1.*"
+libastra = "2.4.1.*"
 
 # GPU verification feature - adds __cuda requirement - needed to ensure GPU builds only go to GPU-capable systems
 [feature.gpu-verify.system-requirements]
@@ -141,7 +141,6 @@ __cuda = "12.9.*"
 
 # Packages required for building and uploading conda packages
 [feature.build.dependencies]
-boa = "*" #could potentially be removed with the migration to rattler-build
 anaconda-client = "*"
 conda-build = "*" #could potentially be removed with the migration to pixi
 rattler-build = "*"

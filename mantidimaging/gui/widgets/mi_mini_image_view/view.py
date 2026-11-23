@@ -186,7 +186,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         image = self.im.image
         if image is not None and pos.y < image.shape[0] and pos.x < image.shape[1]:
             pixel_value = image[pos.y, pos.x]
-            value_string = ("%.6f" % pixel_value)[:8]
+            value_string = f"{pixel_value:.6f}"[:8]
             self.details.setText(f"x={pos.x}, y={pos.y}, value={value_string}")
 
     def link_sibling_axis(self) -> None:

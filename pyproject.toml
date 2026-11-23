@@ -12,7 +12,7 @@ ignore = ["UP014"]
 
 [tool.pyright]
 typeCheckingMode = "basic"
-pythonVersion = "3.12"
+pythonVersion = "3.13"
 include = ["mantidimaging/**/*.py"]
 exclude =  ["tests/**/*.py", "test/**/*.py", "**/*test.py"]
 reportMissingTypeStubs = false
