@@ -57,6 +57,9 @@ class FiltersWindowView(BaseMainWindowView):
 
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
+    preview_image_before: MIMiniImageView
+    preview_image_after: MIMiniImageView
+    preview_image_difference: MIMiniImageView
     stackSelector: DatasetSelectorWidgetView
 
     notification_icon: QLabel
@@ -96,6 +99,9 @@ class FiltersWindowView(BaseMainWindowView):
         self.applyToAllButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER_TO_ALL))
 
         self.previews = FilterPreviews(self)
+        self.preview_image_before = self.previews.imageview_before
+        self.preview_image_after = self.previews.imageview_after
+        self.preview_image_difference = self.previews.imageview_difference
         self.previews.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
@@ -211,18 +217,6 @@ class FiltersWindowView(BaseMainWindowView):
             self.previews.link_all_views()
         else:
             self.previews.unlink_all_views()
-
-    @property
-    def preview_image_before(self) -> MIMiniImageView:
-        return self.previews.imageview_before
-
-    @property
-    def preview_image_after(self) -> MIMiniImageView:
-        return self.previews.imageview_after
-
-    @property
-    def preview_image_difference(self) -> MIMiniImageView:
-        return self.previews.imageview_difference
 
     def show_error_dialog(self, msg=""):
         self.notification_text.show()
