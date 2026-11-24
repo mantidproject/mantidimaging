@@ -91,8 +91,20 @@ def main() -> None:
     parser.add_argument("--mode", choices=["normal", "slow", "faulty"], help="Copy method", default="normal")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose")
     args = parser.parse_args()
-    copy_dataset(args.source_dir, args.dest_dir, args.rate, args.mode, args.verbose)
-    print("Copy complete")
+    if isinstance(args.source_dir, str):
+        args.source_dir = Path(args.source_dir)
+    if isinstance(args.dest_dir, str):
+        args.dest_dir = Path(args.dest_dir)
+
+    for num in range(0, 80):
+        filename = args.dest_dir / str(num)
+        print(f"creating {filename}")
+        if not filename.exists():
+            copy_dataset(args.source_dir, filename, args.rate, args.mode, args.verbose)
+        else:
+            shutil.rmtree(args.dest_dir)
+            return
+        print("Copy complete")
 
 
 if __name__ == "__main__":

@@ -65,6 +65,7 @@ class TestGuiLiveViewer(GuiSystemBase):
         QTest.qWait(SHORT_DELAY)
         wait_until(lambda: not np.isnan(self.live_viewer_window.presenter.model.mean_nan_mask).any(), max_retry=600)
         old_mean = self.live_viewer_window.presenter.model.mean_nan_mask
+        wait_until(lambda: self.live_viewer_window.live_viewer.roi_object is not None, max_retry=600)
         roi = self.live_viewer_window.live_viewer.roi_object
         roi.movePoint(handle_index, new_position)
         self.live_viewer_window.presenter.model.clear_mean_partial()
