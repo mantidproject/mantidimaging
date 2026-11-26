@@ -60,7 +60,16 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_application() -> QApplication:
+    # The 3D Viewers use of VTK's Linux renderer requires Qt X11 backend
+    if sys.platform == 'linux':
+        os.environ.setdefault("QT_QPA_PLATFORM", "xcb")
+        os.environ.setdefault("QT_QPA_PLATFORMTHEME", "xdgdesktopportal")
     q_application = QApplication(sys.argv)
+
+    if sys.platform == 'win32':
+        os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+        os.environ["QT_SCALE_FACTOR"] = "1"
 
     default_font = QFont()
     default_font_info = QFontInfo(default_font)
@@ -84,10 +93,7 @@ def setup_application() -> QApplication:
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
-    if sys.platform == 'win32':
-        os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
-        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-        os.environ["QT_SCALE_FACTOR"] = "1"
+
     return q_application
 
 
