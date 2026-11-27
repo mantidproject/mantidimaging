@@ -5,9 +5,9 @@ from __future__ import annotations
 import time
 from logging import getLogger
 
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication, QWidget
+from PyQt6 import QtCore
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QDialog, QApplication, QWidget
 
 from mantidimaging.gui.utility import compile_ui
 
@@ -63,7 +63,7 @@ class BaseMainWindowView(QMainWindow):
         :return: True if the user selects "OK", false otherwise.
         """
         response = QMessageBox.question(self, title, msg)
-        return response == QMessageBox.Yes
+        return response == QMessageBox.StandardButton.Yes
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
@@ -82,7 +82,7 @@ class BaseDialogView(QDialog):
         super().__init__(parent)
 
         # Prevents the context help button appearing in the dialog title bar on Windows
-        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
+        self.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, False)
 
         if ui_file is not None:
             compile_ui(ui_file, self)
@@ -104,7 +104,7 @@ class BaseDialogView(QDialog):
         :return: True if the user selects "Yes", False otherwise.
         """
         response = QMessageBox.question(self, title, msg)
-        return response == QMessageBox.Yes
+        return response == QMessageBox.StandardButton.Yes
 
 
 class BaseWidget(QWidget):

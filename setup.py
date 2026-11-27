@@ -90,7 +90,7 @@ class CompilePyQtUiFiles(Command):
 
     @staticmethod
     def compile_single_file(ui_filename: Path):
-        from PyQt5 import uic
+        from PyQt6 import uic
 
         py_filename = ui_filename.with_suffix(".py")
         with py_filename.open("w") as py_file:
@@ -189,7 +189,7 @@ setup(
     version=versions.__version__,
     packages=find_packages(),
     package_data={
-        "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png", "windows/wizard/*.yml"],
+        "mantidimaging.gui": ["ui/*.ui", "ui/*.qss", "ui/images/*.png", "ui/images/*.svg", "windows/wizard/*.yml"],
         "mantidimaging.core": ["gpu/*.cu"],
     },
     entry_points={

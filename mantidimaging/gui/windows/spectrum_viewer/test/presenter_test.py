@@ -8,7 +8,8 @@ from unittest import mock
 
 import numpy as np
 import numpy.testing as npt
-from PyQt5.QtWidgets import QPushButton, QActionGroup, QGroupBox, QAction, QCheckBox, QTabWidget
+from PyQt6.QtWidgets import QPushButton, QGroupBox, QCheckBox, QTabWidget
+from PyQt6.QtGui import QAction, QActionGroup
 from parameterized import parameterized
 
 from mantidimaging.core.data.dataset import Dataset
@@ -208,6 +209,16 @@ class SpectrumViewerWindowPresenterTest(unittest.TestCase):
         self.presenter.handle_range_slide_moved(new_tof_range)
 
         self.assertEqual(self.presenter.model.tof_range, new_tof_range)
+
+    def test_tof_range_indices_are_python_ints(self):
+        self.presenter.model.tof_mode = ToFUnitMode.WAVELENGTH
+        self.presenter.model.tof_data = np.array([1.0, 2.0, 3.0])
+        self.presenter.update_displayed_image = mock.Mock()
+
+        self.presenter.handle_range_slide_moved((2.8, 1.2))
+
+        self.assertEqual(self.presenter.model.tof_range, (0, 2))
+        self.assertTrue(all(type(index) is int for index in self.presenter.model.tof_range))
 
     @mock.patch("mantidimaging.gui.windows.spectrum_viewer.model.SpectrumViewerWindowModel.save_csv")
     def test_handle_export_csv_none(self, mock_save_csv: mock.Mock):

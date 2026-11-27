@@ -381,7 +381,7 @@ class TestRunner:
             test_case.message = "arrays are equal"
 
     def gui_compare_image_stacks(self, baseline_image_stack, new_image_stack):
-        from PyQt5.QtWidgets import QApplication, QWidget, QHBoxLayout
+        from PyQt6.QtWidgets import QApplication, QWidget, QHBoxLayout
         from mantidimaging.gui.widgets.mi_image_view.view import MIImageView
         app = QApplication([])
         win = QWidget()

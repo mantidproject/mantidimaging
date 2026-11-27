@@ -10,10 +10,12 @@ from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
 import numpy as np
-from PyQt5.QtCore import Qt, pyqtSignal, QUrl, QPoint
-from PyQt5.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
-from PyQt5.QtWidgets import QAction, QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout
+from PyQt6.QtCore import Qt, pyqtSignal, QUrl, QPoint, QDir
+from PyQt6.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices, QFont, QPalette, QColor
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout, QApplication
+from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -172,11 +174,11 @@ class MainWindowView(BaseMainWindowView):
             self.show_live_viewer(live_data_path=Path(self.args.live_viewer()))
 
         self.dataset_tree_widget = QTreeWidget()
-        self.dataset_tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.dataset_tree_widget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.dataset_tree_widget.customContextMenuRequested.connect(self._open_tree_menu)
         self.dataset_tree_widget.itemClicked.connect(self._bring_stack_tab_to_front)
 
-        self.splitter = QSplitter(Qt.Horizontal, self)
+        self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
         self.splitter.addWidget(self.dataset_tree_widget)
 
         self.dataset_tree_widget.setMinimumWidth(250)
@@ -196,12 +198,12 @@ class MainWindowView(BaseMainWindowView):
         self.welcome_dock = QDockWidget("About Mantid Imaging", self)
         self.welcome_dock.setWidget(self.welcome_screen)
         self._hide_dock_widget_title(self.welcome_dock)
-        self.welcome_dock.setFeatures(QDockWidget.DockWidgetClosable)
+        self.welcome_dock.setFeatures(QDockWidget.DockWidgetFeature.DockWidgetClosable)
         self.welcome_dock.setStyleSheet("QDockWidget::title { background: transparent; }")
-        self.welcome_dock.setAllowedAreas(Qt.RightDockWidgetArea)
+        self.welcome_dock.setAllowedAreas(Qt.DockWidgetArea.RightDockWidgetArea)
 
         self.welcome_dock.id = "welcome_screen"
-        self.addDockWidget(Qt.RightDockWidgetArea, self.welcome_dock)
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.welcome_dock)
 
     @staticmethod
     def _hide_dock_widget_title(dock: QDockWidget) -> None:
@@ -216,6 +218,48 @@ class MainWindowView(BaseMainWindowView):
         """
         if self.welcome_presenter:
             self.welcome_presenter.recolor_links()
+
+    def apply_theme(self, theme: str, dark_mode: bool | None, font_family: str, extra_style: dict[str, Any]) -> None:
+        app = QApplication.instance()
+        font_size = int(extra_style['font_size'].replace('px', ''))
+        app.setFont(QFont(font_family, font_size))
+        if theme == 'Fusion':
+            self.apply_fusion_theme(dark_mode)
+        else:
+            apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
+            # qt-material uses px by default so need to switch to selected pt
+            font_override = f'\n*, QGroupBox {{ font-size: {font_size}pt; }}'
+            app.setStyleSheet(app.styleSheet() + font_override)
+        self.refresh_welcome_links()
+
+    @staticmethod
+    def apply_fusion_theme(dark_mode: bool | None) -> None:
+        app = QApplication.instance()
+        if dark_mode is True:
+            palette = QPalette()
+            palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.WindowText, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Base, QColor(25, 25, 25))
+            palette.setColor(QPalette.ColorRole.AlternateBase, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.ToolTipBase, Qt.GlobalColor.black)
+            palette.setColor(QPalette.ColorRole.ToolTipText, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Text, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.BrightText, Qt.GlobalColor.red)
+            palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
+            palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
+            palette.setColor(QPalette.ColorRole.HighlightedText, Qt.GlobalColor.black)
+            app.setPalette(palette)
+        elif dark_mode is False:
+            app.styleHints().setColorScheme(Qt.ColorScheme.Light)
+            app.setPalette(QPalette(QColor("#efefef")))
+
+        ui_dir = Path(finder.ROOT_PATH) / "gui/ui"
+        QDir.setSearchPaths("miicons", [str(ui_dir / "images")])
+        stylesheet = (ui_dir / "fusion_checkboxes.qss").read_text(encoding="utf-8")
+        app.setStyle("Fusion")
+        app.setStyleSheet(stylesheet)
 
     def show_welcome_screen(self, show: bool = True):
         if self.welcome_dock:
@@ -569,7 +613,7 @@ class MainWindowView(BaseMainWindowView):
         caption = "Choose live data directory"
         live_data_directory: str = QFileDialog.getExistingDirectory(self,
                                                                     caption=caption,
-                                                                    options=QFileDialog.ShowDirsOnly)
+                                                                    options=QFileDialog.Option.ShowDirsOnly)
         if live_data_directory != "":
             self.show_live_viewer(Path(live_data_directory))
 
@@ -800,7 +844,7 @@ class MainWindowView(BaseMainWindowView):
                 rename_action = self.menuTreeView.addAction("Rename Stack")
                 rename_action.triggered.connect(self._rename_dataset)
 
-            self.menuTreeView.exec_(self.dataset_tree_widget.viewport().mapToGlobal(position))
+            self.menuTreeView.exec(self.dataset_tree_widget.viewport().mapToGlobal(position))
 
     def _delete_container(self) -> None:
         """
@@ -949,7 +993,7 @@ class MainWindowView(BaseMainWindowView):
         """
         dialog = GifParametersWidget(self, image_stack, optimal_skip)
         result = dialog.exec()
-        return (dialog.get_frame_skip(), dialog.get_duration(), result == QDialog.Accepted)
+        return (dialog.get_frame_skip(), dialog.get_duration(), result == QDialog.DialogCode.Accepted)
 
     def get_gif_output_path(self, image_stack: ImageStack) -> str:
         """

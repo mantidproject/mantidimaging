@@ -2,7 +2,7 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtTest import QTest
+from PyQt6.QtTest import QTest
 
 from mantidimaging.gui.test.gui_system_base import GuiSystemBase, SHOW_DELAY
 from mantidimaging.test_helpers.qt_test_helpers import wait_until

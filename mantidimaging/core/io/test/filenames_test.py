@@ -313,7 +313,7 @@ class FilenameGroupTest(FakeFSTestCase):
         ("/a/180deg/foo_180deg_000000.tif"),
     ])
     def test_find_related_proj_180(self, proj_name):
-        tomo_list = [Path("/a/Tomo/foo_Tomo_%06d.tif" % i) for i in range(10)]
+        tomo_list = [Path(f"/a/Tomo/foo_Tomo_{i:06d}.tif") for i in range(10)]
         proj_180_list = [Path(proj_name)]
         for file_name in tomo_list + proj_180_list:
             self.fs.create_file(file_name)
@@ -327,7 +327,7 @@ class FilenameGroupTest(FakeFSTestCase):
 
     def test_find_related_proj_180_GRtomo(self):
         proj_name = "/a/180deg/foo_GR_180deg_180.0_000.tif"
-        tomo_list = [Path("/a/GRtomo/foo_GRtomo_%01d.%04d_%03d.tif" % (i, i, i)) for i in range(10)]
+        tomo_list = [Path(f"/a/GRtomo/foo_GRtomo_{i:1d}.{i:04d}_{i:03d}.tif") for i in range(10)]
         proj_180_list = [Path(proj_name)]
         for file_name in tomo_list + proj_180_list:
             self.fs.create_file(file_name)
@@ -340,12 +340,12 @@ class FilenameGroupTest(FakeFSTestCase):
         self._file_list_count_equal(proj_180_list, list(proj_180_fg.all_files()))
 
     def test_find_related_dotfiles(self):
-        tomo_list = [Path("/Tomo/IMAT00021865_CMOS_LegoScan_EquiDis_PH60_Tomo_%3d.tif" % i) for i in range(10)]
+        tomo_list = [Path(f"/Tomo/IMAT00021865_CMOS_LegoScan_EquiDis_PH60_Tomo_{i:3d}.tif") for i in range(10)]
         flat_before_list = [
-            Path("/Flat_After/IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_%3d.tif" % i) for i in range(10)
+            Path(f"/Flat_After/IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_{i:3d}.tif") for i in range(10)
         ]
         flat_bad_list = [
-            Path("/Flat_After/._IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_%3d.tif" % i) for i in range(10)
+            Path(f"/Flat_After/._IMAT00021866_CMOS_LegoScan_EquiDis_PH60_Flat_After_{i:3d}.tif") for i in range(10)
         ]
         for file_name in tomo_list + flat_before_list + flat_bad_list:
             self.fs.create_file(file_name)

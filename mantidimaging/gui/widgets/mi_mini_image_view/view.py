@@ -6,13 +6,14 @@ from itertools import chain, tee
 from typing import TYPE_CHECKING, Any
 from weakref import WeakSet
 
-from PyQt5.QtCore import QTimer
-from pyqtgraph import ImageItem
-from pyqtgraph.graphicsItems.ViewBox import ViewBox
+from PyQt6.QtCore import QTimer
+from pyqtgraph.graphicsItems.ImageItem import ImageItem
+from pyqtgraph.graphicsItems.ViewBox.ViewBox import ViewBox
 from pyqtgraph.graphicsItems.GraphicsLayout import GraphicsLayout
 from pyqtgraph.graphicsItems.HistogramLUTItem import HistogramLUTItem
 from tifffile import tifffile
-from PyQt5.QtWidgets import QAction, QFileDialog
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QFileDialog
 from mantidimaging.core.utility.close_enough_point import CloseEnoughPoint
 from mantidimaging.gui.utility.qt_helpers import BlockQtSignals
 from mantidimaging.gui.widgets.auto_colour_menu.auto_color_menu import AutoColorMenu
@@ -21,7 +22,7 @@ from mantidimaging.gui.widgets.bad_data_overlay.bad_data_overlay import BadDataO
 import numpy as np
 
 if TYPE_CHECKING:
-    from PyQt5.QtWidgets import QWidget
+    from PyQt6.QtWidgets import QWidget
 
 graveyard: list[Any] = []
 
@@ -51,6 +52,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         self.vb = view_box_type(invertY=True, lockAspect=True, name=name)
         self.vb.addItem(self.im)
         self.hist = HistogramLUTItem(self.im)
+        self.hist.axis.setStyle(showValues=False)
         graveyard.append(self.vb)
         graveyard.append(self.hist.vb)
         self.add_save_image_action()
@@ -184,7 +186,7 @@ class MIMiniImageView(GraphicsLayout, BadDataOverlay, AutoColorMenu):
         image = self.im.image
         if image is not None and pos.y < image.shape[0] and pos.x < image.shape[1]:
             pixel_value = image[pos.y, pos.x]
-            value_string = ("%.6f" % pixel_value)[:8]
+            value_string = f"{pixel_value:.6f}"[:8]
             self.details.setText(f"x={pos.x}, y={pos.y}, value={value_string}")
 
     def link_sibling_axis(self) -> None:

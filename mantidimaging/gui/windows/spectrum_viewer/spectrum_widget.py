@@ -5,11 +5,13 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING, Any
 
-from PyQt5.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
-from PyQt5.QtGui import QColor, QResizeEvent
-from PyQt5.QtWidgets import QColorDialog, QAction, QMenu, QSplitter, QWidget, QVBoxLayout, QActionGroup
+from PyQt6.QtCore import pyqtSignal, Qt, QSignalBlocker, QEvent
+from PyQt6.QtGui import QColor, QResizeEvent
+from PyQt6.QtWidgets import QColorDialog, QMenu, QSplitter, QWidget, QVBoxLayout
+from PyQt6.QtGui import QAction, QActionGroup
 
 from pyqtgraph import (
+    AxisItem,
     ROI,
     GraphicsLayoutWidget,
     LinearRegionItem,
@@ -146,7 +148,7 @@ class SpectrumWidget(QWidget):
         self.image = self.image_widget.image
         self.spectrum_plot_widget = SpectrumPlotWidget()
         self.spectrum = self.spectrum_plot_widget.spectrum
-        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter = QSplitter(Qt.Orientation.Vertical)
         self.splitter.addWidget(self.image_widget)
         self.splitter.addWidget(self.spectrum_plot_widget)
         self.vbox.addWidget(self.splitter)
@@ -293,7 +295,7 @@ class CustomViewBox(ViewBox):
         self.setMouseMode(self.PanMode)
 
     def keyPressEvent(self, event: QEvent) -> None:
-        if event.key() == Qt.Key_Control:
+        if event.key() == Qt.Key.Key_Control:
             self.setMouseMode(self.RectMode)
             for child in self.allChildren():
                 if isinstance(child, LinearRegionItem):
@@ -302,7 +304,7 @@ class CustomViewBox(ViewBox):
                     child.translatable = False
 
     def keyReleaseEvent(self, event: QEvent) -> None:
-        if event.key() == Qt.Key_Control:
+        if event.key() == Qt.Key.Key_Control:
             self.rbScaleBox.hide()
             self.setMouseMode(self.PanMode)
             for child in self.allChildren():
@@ -336,11 +338,11 @@ class SpectrumPlotWidget(GraphicsLayoutWidget):
     """Emitted when the range of the spectrum plot has changed."""
     _wavelength_range_label: LabelItem | None
 
-    def __init__(self) -> None:
+    def __init__(self, axis_items: dict[str, AxisItem] | None = None) -> None:
         super().__init__()
 
         self.spectrum_viewbox = CustomViewBox(enableMenu=True)
-        self.spectrum = MIPlotItem(viewBox=self.spectrum_viewbox)
+        self.spectrum = MIPlotItem(viewBox=self.spectrum_viewbox, axisItems=axis_items)
         self.addItem(self.spectrum)
         self.nextRow()
         self._tof_range_label = self.addLabel()

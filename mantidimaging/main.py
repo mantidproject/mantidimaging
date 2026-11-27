@@ -10,10 +10,10 @@ import os
 from pathlib import Path
 
 import darkdetect
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5 import QtCore
-from PyQt5.QtGui import QGuiApplication, QFont, QFontInfo
+from PyQt6.QtCore import QSettings
+from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6 import QtCore
+from PyQt6.QtGui import QFont, QFontInfo
 
 import mantidimaging.core.parallel.manager as pm
 
@@ -60,11 +60,19 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_application() -> QApplication:
-    QGuiApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    # The 3D Viewers use of VTK's Linux renderer requires Qt X11 backend
+    if sys.platform == 'linux':
+        os.environ.setdefault("QT_QPA_PLATFORM", "xcb")
+        os.environ.setdefault("QT_QPA_PLATFORMTHEME", "xdgdesktopportal")
     q_application = QApplication(sys.argv)
 
-    default_font = QFont()
-    default_font_info = QFontInfo(default_font)
+    if sys.platform == 'win32':
+        os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+        os.environ["QT_SCALE_FACTOR"] = "1"
+
+    system_font = QFont()
+    system_font_info = QFontInfo(system_font)
 
     extra_style_default = {
 
@@ -72,23 +80,34 @@ def setup_application() -> QApplication:
         'density_scale': '-5',
 
         # font
-        'font_size': str(default_font.pointSize()) + 'px',
+        'font_size': str(system_font.pointSize()) + 'px',
     }
+    # If no saved style, copy default and use saved font or fall back to 12pt which seems reasonable
+    DEFAULT_CUSTOM_FONT_SIZE = 12
     settings.setValue('extra_style_default', extra_style_default)
-    if settings.value('extra_style') is None:
-        settings.setValue('extra_style', extra_style_default)
+    extra_style = settings.value('extra_style')
+    selected_font_size = settings.value('selected_font_size')
+    if extra_style is None:
+        extra_style = extra_style_default.copy()
+        extra_style['font_size'] = (selected_font_size or f'{DEFAULT_CUSTOM_FONT_SIZE}') + 'px'
+    if selected_font_size is None:
+        settings.setValue('selected_font_size', f'{DEFAULT_CUSTOM_FONT_SIZE}')
+        extra_style['font_size'] = f'{DEFAULT_CUSTOM_FONT_SIZE}px'
+    settings.setValue('extra_style', extra_style)
 
     settings.setValue('os_theme', darkdetect.theme())
-    settings.setValue('default_font_size', str(default_font.pointSize()))
-    settings.setValue('default_font_family', str(default_font_info.family()))
+    settings.setValue('default_font_size', str(system_font.pointSize()))
+    settings.setValue('default_font_family', str(system_font_info.family()))
+
+    # Set font before widgets to avoid using system font if custom saved in settings
+    if settings.value('use_os_defaults', defaultValue='True') == 'True':
+        extra_style = extra_style_default
+    q_application.setFont(QFont(system_font_info.family(), int(extra_style['font_size'].replace('px', ''))))
 
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")
     q_application.setOrganizationDomain("mantidproject.org")
-    if sys.platform == 'win32':
-        os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
-        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-        os.environ["QT_SCALE_FACTOR"] = "1"
+
     return q_application
 
 
@@ -120,7 +139,7 @@ def main() -> None:
     try:
         pm.create_and_start_pool(process_count)
         gui.execute()
-        result = q_application.exec_()
+        result = q_application.exec()
         settings.setValue("app/last_shutdown_clean", True)
         return result
     except BaseException:
@@ -145,7 +164,7 @@ def show_unclean_shutdown_warning(settings: QSettings) -> None:
             latest_log = logs[0]
 
     msg = QMessageBox()
-    msg.setIcon(QMessageBox.Warning)
+    msg.setIcon(QMessageBox.Icon.Warning)
     msg.setWindowTitle("Previous Shutdown Warning")
 
     if latest_log and latest_log.exists():
@@ -155,8 +174,8 @@ def show_unclean_shutdown_warning(settings: QSettings) -> None:
                     "No log file is available.\n\n"
                     "To record log files to disk, configure a directory in File -> Settings.")
 
-    msg.setStandardButtons(QMessageBox.Ok)
-    msg.exec_()
+    msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+    msg.exec()
 
 
 if __name__ == "__main__":

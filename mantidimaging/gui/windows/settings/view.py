@@ -4,8 +4,8 @@ from __future__ import annotations
 from logging import getLogger
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import QSettings, QSignalBlocker
-from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QLineEdit, QPushButton, QFileDialog,
+from PyQt6.QtCore import QSettings, QSignalBlocker
+from PyQt6.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QLineEdit, QPushButton, QFileDialog,
                              QComboBox, QWidget, QTabWidget, QSpinBox)
 
 from mantidimaging.gui.mvp_base import BaseMainWindowView

@@ -5,8 +5,8 @@ import functools
 import logging
 from typing import TYPE_CHECKING
 
-from PyQt5.QtCore import pyqtSignal, QSettings
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
+from PyQt6.QtCore import pyqtSignal, QSettings
+from PyQt6.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel, QPushButton, QSizePolicy, QSplitter, QStyle,
                              QTextEdit, QVBoxLayout)
 
 from mantidimaging.core.net.help_pages import open_user_operation_docs
@@ -57,6 +57,9 @@ class FiltersWindowView(BaseMainWindowView):
 
     previewsLayout: QVBoxLayout
     previews: FilterPreviews
+    preview_image_before: MIMiniImageView
+    preview_image_after: MIMiniImageView
+    preview_image_difference: MIMiniImageView
     stackSelector: DatasetSelectorWidgetView
 
     notification_icon: QLabel
@@ -96,7 +99,10 @@ class FiltersWindowView(BaseMainWindowView):
         self.applyToAllButton.clicked.connect(lambda: self.presenter.notify(PresNotification.APPLY_FILTER_TO_ALL))
 
         self.previews = FilterPreviews(self)
-        self.previews.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.preview_image_before = self.previews.imageview_before
+        self.preview_image_after = self.previews.imageview_after
+        self.preview_image_difference = self.previews.imageview_difference
+        self.previews.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.previewsLayout.addWidget(self.previews)
         self.clear_previews()
 
@@ -211,18 +217,6 @@ class FiltersWindowView(BaseMainWindowView):
             self.previews.link_all_views()
         else:
             self.previews.unlink_all_views()
-
-    @property
-    def preview_image_before(self) -> MIMiniImageView:
-        return self.previews.imageview_before
-
-    @property
-    def preview_image_after(self) -> MIMiniImageView:
-        return self.previews.imageview_after
-
-    @property
-    def preview_image_difference(self) -> MIMiniImageView:
-        return self.previews.imageview_difference
 
     def show_error_dialog(self, msg=""):
         self.notification_text.show()

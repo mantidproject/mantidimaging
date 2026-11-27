@@ -3,7 +3,7 @@
 from __future__ import annotations
 import uuid
 
-from PyQt5.QtWidgets import QLabel, QComboBox
+from PyQt6.QtWidgets import QLabel, QComboBox, QDialogButtonBox
 from mantidimaging.gui.widgets.dataset_selector import DatasetSelectorWidgetView
 
 from mantidimaging.gui.mvp_base import BaseDialogView
@@ -16,6 +16,7 @@ class MoveStackDialog(BaseDialogView):
     originDataType: QLabel
 
     destinationTypeComboBox: QComboBox
+    confirmationButtonBox: QDialogButtonBox
 
     def __init__(self, parent, origin_dataset_id: uuid.UUID, stack_id: uuid.UUID, origin_dataset_name: str,
                  origin_data_type: str):
@@ -28,6 +29,9 @@ class MoveStackDialog(BaseDialogView):
 
         self.parent_view = parent
         self.presenter = MoveStackPresenter(self)
+
+        self.confirmationButtonBox.accepted.connect(self.accept)
+        self.confirmationButtonBox.rejected.connect(self.reject)
 
         self.datasetSelector = DatasetSelectorWidgetView(self)
         self.layout().addWidget(self.datasetSelector, 3, 1)

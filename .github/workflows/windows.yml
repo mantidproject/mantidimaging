@@ -57,9 +57,11 @@ jobs:
           pixi run pyright
 
       - name: pytest
-        timeout-minutes: 10
+        timeout-minutes: 20
+        env:
+          COVERAGE_CORE: pytrace
         run: |
-          pixi run -e dev python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true --ignore=mantidimaging/eyes_tests --durations=10
+          pixi run -e dev python -m pytest --cov --cov-report=xml -n auto --maxprocesses=4 --dist loadgroup -o log_cli=true -o faulthandler_timeout=60 --ignore=mantidimaging/eyes_tests --durations=10
 
       - name: Get test data
         run: |
@@ -69,6 +71,8 @@ jobs:
         timeout-minutes: 5
 
       - name: GUI Tests System
+        env:
+          QT_QPA_FONTDIR: ${{ github.workspace }}\.pixi\envs\dev\Lib\site-packages\qt_material\fonts\roboto
         run: |
           pixi run test-system-cpu
         timeout-minutes: 20

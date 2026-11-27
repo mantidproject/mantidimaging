@@ -2,8 +2,8 @@
 # SPDX - License - Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from PyQt5.QtCore import pyqtSignal
-from pyqtgraph import GraphicsLayoutWidget, mkPen
+from PyQt6.QtCore import QRectF, pyqtSignal
+from pyqtgraph import AxisItem, GraphicsLayoutWidget, mkPen
 
 from mantidimaging.core.utility.sensible_roi import SensibleROI
 from mantidimaging.gui.widgets.mi_mini_image_view.view import MIMiniImageView
@@ -11,6 +11,20 @@ from mantidimaging.gui.widgets.zslider.zslider import ZSlider
 from mantidimaging.gui.windows.spectrum_viewer.spectrum_widget import SpectrumROI
 
 import numpy as np
+
+
+class LiveViewerAxisItem(AxisItem):
+
+    def paint(self, painter, option, widget):
+        painter.save()
+        try:
+            if self.style["tickFont"]:
+                painter.setFont(self.style["tickFont"])
+            specs = self.generateDrawSpecs(painter)
+            if specs is not None:
+                self.drawPicture(painter, *specs)
+        finally:
+            painter.restore()
 
 
 class LiveViewWidget(GraphicsLayoutWidget):
@@ -34,7 +48,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.addItem(self.image, 0, 0)
         self.nextRow()
 
-        self.z_slider = ZSlider()
+        self.z_slider = ZSlider(axis_items={"bottom": LiveViewerAxisItem(orientation="bottom")})
         self.addItem(self.z_slider)
 
         self.image.enable_message()
@@ -48,6 +62,7 @@ class LiveViewWidget(GraphicsLayoutWidget):
         """
         self.image_shape = (np.shape(image)[0], np.shape(image)[1])
         self.image.setImage(image)
+        self.constrain_roi_to_image()
 
     def handle_deleted(self) -> None:
         """
@@ -69,6 +84,23 @@ class LiveViewWidget(GraphicsLayoutWidget):
         self.roi_object.sigRegionChangeFinished.connect(self.roi_changed.emit)
         self.roi_object.sigRegionChanged.connect(self.roi_changing.emit)
         self.image.vb.addItem(self.roi_object)
+
+    def constrain_roi_to_image(self) -> None:
+        if self.roi_object is None or self.image_shape is None:
+            return
+
+        height, width = self.image_shape
+        roi = self.get_roi()
+        if roi is None:
+            return
+        if roi.left >= width or roi.top >= height or roi.right <= 0 or roi.bottom <= 0:
+            bounded_roi = SensibleROI(0, 0, width, height)
+        else:
+            bounded_roi = SensibleROI(max(0, roi.left), max(0, roi.top), min(width, roi.right), min(height, roi.bottom))
+
+        self.roi_object.maxBounds = QRectF(0, 0, width, height)
+        if bounded_roi != roi:
+            self.roi_object.adjust_spec_roi(bounded_roi)
 
     def get_roi(self) -> SensibleROI | None:
         if not self.roi_object:
