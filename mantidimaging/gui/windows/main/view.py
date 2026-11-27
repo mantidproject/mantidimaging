@@ -10,11 +10,12 @@ from typing import TYPE_CHECKING, Any, cast
 from uuid import UUID
 
 import numpy as np
-from PyQt6.QtCore import Qt, pyqtSignal, QUrl, QPoint
-from PyQt6.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices
+from PyQt6.QtCore import Qt, pyqtSignal, QUrl, QPoint, QDir
+from PyQt6.QtGui import QIcon, QDragEnterEvent, QDropEvent, QDesktopServices, QFont, QPalette, QColor
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QDialog, QLabel, QMessageBox, QMenu, QFileDialog, QSplitter, \
-    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout
+    QTreeWidgetItem, QTreeWidget, QDockWidget, QWidget, QVBoxLayout, QApplication
+from qt_material import apply_stylesheet
 
 from mantidimaging.core.data import ImageStack
 from mantidimaging.core.io.utility import find_first_file_that_is_possibly_a_sample
@@ -217,6 +218,44 @@ class MainWindowView(BaseMainWindowView):
         """
         if self.welcome_presenter:
             self.welcome_presenter.recolor_links()
+
+    def apply_theme(self, theme: str, dark_mode: bool | None, font_family: str, extra_style: dict[str, Any]) -> None:
+        app = QApplication.instance()
+        app.setFont(QFont(font_family, int(extra_style['font_size'].replace('px', ''))))
+        if theme == 'Fusion':
+            self.apply_fusion_theme(dark_mode)
+        else:
+            apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
+        self.refresh_welcome_links()
+
+    @staticmethod
+    def apply_fusion_theme(dark_mode: bool | None) -> None:
+        app = QApplication.instance()
+        if dark_mode is True:
+            palette = QPalette()
+            palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.WindowText, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Base, QColor(25, 25, 25))
+            palette.setColor(QPalette.ColorRole.AlternateBase, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.ToolTipBase, Qt.GlobalColor.black)
+            palette.setColor(QPalette.ColorRole.ToolTipText, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Text, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
+            palette.setColor(QPalette.ColorRole.ButtonText, Qt.GlobalColor.white)
+            palette.setColor(QPalette.ColorRole.BrightText, Qt.GlobalColor.red)
+            palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
+            palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
+            palette.setColor(QPalette.ColorRole.HighlightedText, Qt.GlobalColor.black)
+            app.setPalette(palette)
+        elif dark_mode is False:
+            app.styleHints().setColorScheme(Qt.ColorScheme.Light)
+            app.setPalette(QPalette(QColor("#efefef")))
+
+        ui_dir = Path(finder.ROOT_PATH) / "gui/ui"
+        QDir.setSearchPaths("miicons", [str(ui_dir / "images")])
+        stylesheet = (ui_dir / "fusion_checkboxes.qss").read_text(encoding="utf-8")
+        app.setStyle("Fusion")
+        app.setStyleSheet(stylesheet)
 
     def show_welcome_screen(self, show: bool = True):
         if self.welcome_dock:
