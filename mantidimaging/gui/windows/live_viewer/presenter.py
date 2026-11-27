@@ -73,6 +73,11 @@ class LiveViewerWindowPresenter(BasePresenter):
         """Close the window."""
         if self.model is not None:
             self.model.close()
+        if self.thread is not None:
+            if self.thread.isRunning():
+                self.thread.terminate()
+        self.handle_roi_change_timer.stop()
+        self.recalc_pending = False
         self.model = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
         self.view = None  # type: ignore # Presenter instance to be destroyed -type can be inconsistent
 
