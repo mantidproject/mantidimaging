@@ -1,0 +1,27 @@
+QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #767676;
+    border-radius: 3px;
+    background-color: palette(base);
+}
+QCheckBox::indicator:checked, QCheckBox::indicator:indeterminate {
+    background-color: #2a82da;
+    border-color: #1e68ac;
+}
+QCheckBox::indicator:checked {
+    image: url("miicons:checkbox-tick.svg");
+}
+QCheckBox::indicator:indeterminate {
+    image: url("miicons:checkbox-partial.svg");
+}
+QCheckBox::indicator:hover, QCheckBox::indicator:focus {
+    border-color: #2a82da;
+}
+QCheckBox::indicator:disabled {
+    border-color: #999999;
+    background-color: palette(window);
+}
+QCheckBox::indicator:checked:disabled, QCheckBox::indicator:indeterminate:disabled {
+    background-color: #999999;
+}

@@ -189,7 +189,7 @@ setup(
     version=versions.__version__,
     packages=find_packages(),
     package_data={
-        "mantidimaging.gui": ["ui/*.ui", "ui/images/*.png", "windows/wizard/*.yml"],
+        "mantidimaging.gui": ["ui/*.ui", "ui/*.qss", "ui/images/*.png", "ui/images/*.svg", "windows/wizard/*.yml"],
         "mantidimaging.core": ["gpu/*.cu"],
     },
     entry_points={

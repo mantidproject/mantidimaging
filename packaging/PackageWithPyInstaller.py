@@ -43,6 +43,7 @@ class PackagingPatterns:
     def get_patterns() -> list[DataFilePattern]:
         return [
             DataFilePattern('../mantidimaging/gui/ui/*.ui', 'mantidimaging/gui/ui/', 'Qt UI files'),
+            DataFilePattern('../mantidimaging/gui/ui/*.qss', 'mantidimaging/gui/ui/', 'Qt stylesheets'),
             DataFilePattern('../mantidimaging/gui/ui/images/*', 'mantidimaging/gui/ui/images/', 'UI image resources'),
             DataFilePattern('../mantidimaging/core/gpu/*.cu', 'mantidimaging/core/gpu/', 'CUDA GPU code'),
             DataFilePattern('../mantidimaging/versions.py', 'mantidimaging/', 'Version file'),
