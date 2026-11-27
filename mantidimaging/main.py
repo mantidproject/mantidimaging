@@ -71,8 +71,8 @@ def setup_application() -> QApplication:
         os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
         os.environ["QT_SCALE_FACTOR"] = "1"
 
-    default_font = QFont()
-    default_font_info = QFontInfo(default_font)
+    system_font = QFont()
+    system_font_info = QFontInfo(system_font)
 
     extra_style_default = {
 
@@ -80,15 +80,29 @@ def setup_application() -> QApplication:
         'density_scale': '-5',
 
         # font
-        'font_size': str(default_font.pointSize()) + 'px',
+        'font_size': str(system_font.pointSize()) + 'px',
     }
+    # If no saved style, copy default and use saved font or fall back to 12pt which seems reasonable
+    DEFAULT_CUSTOM_FONT_SIZE = 12
     settings.setValue('extra_style_default', extra_style_default)
-    if settings.value('extra_style') is None:
-        settings.setValue('extra_style', extra_style_default)
+    extra_style = settings.value('extra_style')
+    selected_font_size = settings.value('selected_font_size')
+    if extra_style is None:
+        extra_style = extra_style_default.copy()
+        extra_style['font_size'] = (selected_font_size or f'{DEFAULT_CUSTOM_FONT_SIZE}') + 'px'
+    if selected_font_size is None:
+        settings.setValue('selected_font_size', f'{DEFAULT_CUSTOM_FONT_SIZE}')
+        extra_style['font_size'] = f'{DEFAULT_CUSTOM_FONT_SIZE}px'
+    settings.setValue('extra_style', extra_style)
 
     settings.setValue('os_theme', darkdetect.theme())
-    settings.setValue('default_font_size', str(default_font.pointSize()))
-    settings.setValue('default_font_family', str(default_font_info.family()))
+    settings.setValue('default_font_size', str(system_font.pointSize()))
+    settings.setValue('default_font_family', str(system_font_info.family()))
+
+    # Set font before widgets to avoid using system font if custom saved in settings
+    if settings.value('use_os_defaults', defaultValue='True') == 'True':
+        extra_style = extra_style_default
+    q_application.setFont(QFont(system_font_info.family(), int(extra_style['font_size'].replace('px', ''))))
 
     q_application.setApplicationName("Mantid Imaging")
     q_application.setOrganizationName("mantidproject")

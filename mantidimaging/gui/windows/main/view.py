@@ -221,11 +221,15 @@ class MainWindowView(BaseMainWindowView):
 
     def apply_theme(self, theme: str, dark_mode: bool | None, font_family: str, extra_style: dict[str, Any]) -> None:
         app = QApplication.instance()
-        app.setFont(QFont(font_family, int(extra_style['font_size'].replace('px', ''))))
+        font_size = int(extra_style['font_size'].replace('px', ''))
+        app.setFont(QFont(font_family, font_size))
         if theme == 'Fusion':
             self.apply_fusion_theme(dark_mode)
         else:
             apply_stylesheet(app, theme=theme, invert_secondary=False, extra=extra_style)
+            # qt-material uses px by default so need to switch to selected pt
+            font_override = f'\n*, QGroupBox {{ font-size: {font_size}pt; }}'
+            app.setStyleSheet(app.styleSheet() + font_override)
         self.refresh_welcome_links()
 
     @staticmethod
