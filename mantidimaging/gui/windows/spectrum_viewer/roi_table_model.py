@@ -60,9 +60,9 @@ class TableModel(QAbstractTableModel):
         @return: ROI name or colour values and background colour of colour column
         """
         if role == Qt.ItemDataRole.DisplayRole:
-            if index.column() == 2:
-                return None
-            return self._data[index.row()][index.column()]
+            if index.column() == 0:
+                return self._data[index.row()][0]
+            return None
 
         if role == Qt.ItemDataRole.BackgroundRole:
             if index.column() == 1:
